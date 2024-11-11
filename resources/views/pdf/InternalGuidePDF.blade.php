@@ -164,62 +164,61 @@
             <tbody>
                 <tr>
                     <td style="padding: 2px; border: none;">Fecha de Emisión:</td>
-                    <td style="padding: 2px; border: none; font-weight: normal;">{{ \Illuminate\Support\Carbon::createFromFormat('Y-m-d', $additionalData['emission_date'])->format('d/m/Y') }}</td>
+                    <td style="padding: 2px; border: none; font-weight: normal;">{{ \Illuminate\Support\Carbon::createFromFormat('Y-m-d', $additional['emission_date'])->format('d/m/Y') }}</td>
                     <td style="padding: 2px; border: none;">Fecha de Traslado:</td>
-                    <td style="padding: 2px; border: none; font-weight: normal;">{{ \Illuminate\Support\Carbon::createFromFormat('Y-m-d', $additionalData['transfer_date'])->format('d/m/Y') }}</td>
+                    <td style="padding: 2px; border: none; font-weight: normal;">{{ \Illuminate\Support\Carbon::createFromFormat('Y-m-d', $additional['transfer_date'])->format('d/m/Y') }}</td>
                 </tr>
                 <tr>
                     <td style="padding: 2px; border: none;">Punto de Partida:</td>
-                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additionalData['start_point'] }}</td>
+                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additional['start_point'] }}</td>
                     <td style="padding: 2px; border: none;"></td>
                     <td style="padding: 2px; border: none;"></td>
                 </tr>
                 <tr>
                     <td style="padding: 2px; border: none;">Punto de Llegada:</td>
-                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additionalData['end_point'] }}</td>
+                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additional['end_point'] }}</td>
                     <td style="padding: 2px; border: none;"></td>
                     <td style="padding: 2px; border: none;"></td>
                 </tr>
                 <tr>
                     <td style="padding: 2px; border: none;">Destinatario:</td>
-                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additionalData['addresee'] }}</td>
+                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additional['addresee'] }}</td>
                     <td style="padding: 2px; border: none;"></td>
                     <td style="padding: 2px; border: none;"></td>
                 </tr>
                 <tr>
                     <td style="padding: 2px; border: none;">R.U.C.</td>
-                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additionalData['ruc'] }}</td>
+                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additional['ruc'] }}</td>
                     <td style="padding: 2px; border: none;"></td>
                     <td style="padding: 2px; border: none;"></td>
                 </tr>
                 <tr>
                     <td style="padding: 2px; border: none;">Unidad de Transporte y Conducir:</td>
-                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additionalData['transport_unit'] }}</td>
+                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additional['transport_unit'] }}</td>
                     <td style="padding: 2px; border: none;"></td>
                     <td style="padding: 2px; border: none;"></td>
                 </tr>
                 <tr>
                     <td style="padding: 2px; border: none;">Marca:</td>
-                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additionalData['brand'] }}</td>
+                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additional['brand'] }}</td>
                     <td style="padding: 2px; border: none;">Placa:</td>
-                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additionalData['plate'] }}</td>
+                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additional['plate'] }}</td>
                 </tr>
                 <tr>
                     <td style="padding: 2px; border: none;">N° de Licencia de Conducir</td>
-                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additionalData['license'] }}
-                    </td>
+                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additional['license'] }}</td>
                     <td style="padding: 2px; border: none;">Control de Inscrip</td>
-                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additionalData['inscrip_const'] }}</td>
+                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additional['inscrip'] }}</td>
                 </tr>
                 <tr>
                     <td style="padding: 2px; border: none;">Empresa de Transporte:</td>
-                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additionalData['transport_company'] }}</td>
+                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additional['company'] }}</td>
                     <td style="padding: 2px; border: none;"></td>
                     <td style="padding: 2px; border: none;"></td>
                 </tr>
                 <tr>
                     <td style="padding: 2px; border: none;">Nombre:</td>
-                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additionalData['name'] }}</td>
+                    <td style="padding: 2px; border: none; font-weight: normal;">{{ $additional['name'] }}</td>
                     <td style="padding: 2px; border: none;"></td>
                     <td style="padding: 2px; border: none;"></td>
                 </tr>
@@ -233,71 +232,113 @@
             <tr>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">1.- Venta</td>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">
-                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;"></div>
+                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;
+                        text-align: center; vertical-align: middle; font-size: 9px;">
+                        @if ($additional['concept'] == '1') X @endif
+                    </div>
                 </td>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">8.- Recojo de bienes transformados</td>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">
-                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;"></div>
+                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;
+                        text-align: center; vertical-align: middle; font-size: 9px;">
+                        @if ($additional['concept'] == '8') X @endif
+                    </div>
                 </td>
             </tr>
             <tr>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">2.- Venta Sujeta a Confirmar</td>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">
-                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;"></div>
+                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;
+                        text-align: center; vertical-align: middle; font-size: 9px;">
+                        @if ($additional['concept'] == '2') X @endif
+                    </div>
                 </td>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">9.- Emisor Itinerante</td>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">
-                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;"></div>
+                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;
+                        text-align: center; vertical-align: middle; font-size: 9px;">
+                        @if ($additional['concept'] == '9') X @endif
+                    </div>
                 </td>
             </tr>
             <tr>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">3.- Compra</td>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">
-                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;"></div>
+                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;
+                        text-align: center; vertical-align: middle; font-size: 9px;">
+                        @if ($additional['concept'] == '3') X @endif
+                    </div>
                 </td>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">10.- Zona Primaria</td>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">
-                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;"></div>
+                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;
+                        text-align: center; vertical-align: middle; font-size: 9px;">
+                        @if ($additional['concept'] == '10') X @endif
+                    </div>
                 </td>
             </tr>
             <tr>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">4.- Consignación</td>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">
-                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;"></div>
+                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;
+                        text-align: center; vertical-align: middle; font-size: 9px;">
+                        @if ($additional['concept'] == '4') X @endif
+                    </div>
                 </td>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">11.- Importación</td>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">
-                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;"></div>
+                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;
+                        text-align: center; vertical-align: middle; font-size: 9px;">
+                        @if ($additional['concept'] == '11') X @endif
+                    </div>
                 </td>
             </tr>
             <tr>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">5.- Devolución</td>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">
-                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;"></div>
+                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;
+                        text-align: center; vertical-align: middle; font-size: 9px;">
+                        @if ($additional['concept'] == '5') X @endif
+                    </div>
                 </td>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">12.- Exportación</td>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">
-                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;"></div>
+                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;
+                        text-align: center; vertical-align: middle; font-size: 9px;">
+                        @if ($additional['concept'] == '12') X @endif
+                    </div>
                 </td>
             </tr>
             <tr>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">6.- Traslado entre establecimientos de una misma empresa</td>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">
-                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;"></div>
+                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;
+                        text-align: center; vertical-align: middle; font-size: 9px;">
+                        @if ($additional['concept'] == '6') X @endif
+                    </div>
                 </td>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">13.- Venta con entrega a terceros</td>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">
-                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;"></div>
+                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;
+                        text-align: center; vertical-align: middle; font-size: 9px;">
+                        @if ($additional['concept'] == '13') X @endif
+                    </div>
                 </td>
             </tr>
             <tr>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">7.- Para Transformación</td>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">
-                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;"></div>
+                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;
+                        text-align: center; vertical-align: middle; font-size: 9px;">
+                        @if ($additional['concept'] == '7') X @endif
+                    </div>
                 </td>
-                <td style="padding: 2px; margin: 0; line-height: 1; border: none;">14.- Otros</td>
+                <td style="padding: 2px; margin: 0; line-height: 1; border: none;">14.- Otros{{ $additional['additional'] ? ': ' . $additional['additional'] : ''}}</td>
                 <td style="padding: 2px; margin: 0; line-height: 1; border: none;">
-                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;"></div>
+                    <div style="width: 10px; height: 10px; border: 1px solid black; display: inline-block;
+                        text-align: center; vertical-align: middle; font-size: 9px;">
+                        @if ($additional['concept'] == '14') X @endif
+                    </div>
                 </td>
             </tr>
         </tbody>
