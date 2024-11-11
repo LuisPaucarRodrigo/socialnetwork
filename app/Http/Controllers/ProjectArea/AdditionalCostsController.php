@@ -127,10 +127,10 @@ class AdditionalCostsController extends Controller
         if ($request->opEndDate) {
             $result->where('operation_date', '<=', $request->opEndDate);
         }
-        if (count($request->selectedZones) < 6) {
+        if (count($request->selectedZones) < 7) {
             $result = $result->whereIn('zone', $request->selectedZones);
         }
-        if (count($request->selectedExpenseTypes) < 14) {
+        if (count($request->selectedExpenseTypes) < 16) {
             $result = $result->whereIn('expense_type', $request->selectedExpenseTypes);
         }
         if (count($request->selectedDocTypes) < 5) {

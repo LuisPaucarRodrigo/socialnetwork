@@ -1167,7 +1167,7 @@ function handlerPreview(id) {
     );
 }
 
-const zones = ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1", "MDD2"];
+const zones = ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1", "MDD2", "Oficina"];
 
 const expenseTypes = [
     "Hospedaje",
@@ -1183,6 +1183,8 @@ const expenseTypes = [
     "EPPs",
     "Seguros y Pólizas",
     "Gastos de Representación",
+    "Cocheras",
+    "Acarreos",
     "Otros",
 ];
 
