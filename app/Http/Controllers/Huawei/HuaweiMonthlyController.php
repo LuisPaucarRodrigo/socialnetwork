@@ -127,8 +127,8 @@ class HuaweiMonthlyController extends Controller
     {
         $expenses = HuaweiMonthlyExpense::where('huawei_monthly_project_id', $project->id);
         $employeeCount = $project->huawei_monthly_employees()->count();
-        if (!empty($request->selectedZones)) {  // Filtrar solo si hay valor
-            $expenses->where('zone', $request->selectedZones);
+        if (count($request->selectedZones) < 17) {  // Filtrar solo si hay valor
+            $expenses->whereIn('zone', $request->selectedZones);
         }
         if (count($request->selectedExpenseTypes) < 9){
             $expenses->whereIn('expense_type', $request->selectedExpenseTypes);
