@@ -18,6 +18,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use function Pest\Laravel\json;
+use Carbon\Carbon;
 
 class QuickMaterialsController extends Controller
 {
@@ -240,19 +241,9 @@ class QuickMaterialsController extends Controller
     public function generateInternalGuide(Request $request)
     {
         $additionalData = $request->validate([
-            'emission_date' => 'required',
-            'transfer_date' => 'required',
-            'start_point' => 'nullable',
-            'end_point' => 'nullable',
-            'addresee' => 'nullable',
-            'ruc' => 'nullable',
-            'transport_unit' => 'nullable',
-            'brand' => 'nullable',
-            'plate' => 'nullable',
-            'license' => 'nullable',
-            'transport_company' => 'nullable',
-            'inscrip_const' => 'nullable',
-            'name' => 'nullable'
+            'file' => 'required',
+            'concept' => 'required',
+            'additional' => 'nullable'
         ]);
 
         if ($request->hasFile('file')) {
@@ -265,6 +256,24 @@ class QuickMaterialsController extends Controller
             $data = [];
             $characterCount = 0;
 
+            $additional = [
+                'emission_date' => Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($sheet->getCell('G2')->getValue()))->toDateString(),
+                'transfer_date' => Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($sheet->getCell('H2')->getValue()))->toDateString(),
+                'start_point' => $sheet->getCell('I2')->getValue(),
+                'end_point' => $sheet->getCell('J2')->getValue(),
+                'addresee' => $sheet->getCell('K2')->getValue(),
+                'ruc' => $sheet->getCell('L2')->getValue(),
+                'transport_unit' => $sheet->getCell('M2')->getValue(),
+                'brand' => $sheet->getCell('N2')->getValue(),
+                'plate' => $sheet->getCell('O2')->getValue(),
+                'license' => $sheet->getCell('P2')->getValue(),
+                'inscrip' => $sheet->getCell('Q2')->getValue(),
+                'company' => $sheet->getCell('R2')->getValue(),
+                'name' => $sheet->getCell('S2')->getValue(),
+                'concept' => $additionalData['concept'],
+                'additional' => $additionalData['additional']
+            ];
+
             foreach ($sheet->getRowIterator() as $rowIndex => $row) {
                 if ($rowIndex === 1) {
                     // Saltar la fila de cabecera
@@ -275,20 +284,23 @@ class QuickMaterialsController extends Controller
                 $cells->setIterateOnlyExistingCells(false); // Permitir celdas vacías
 
                 $materialData = [];
+                $cells->next();
+                $cells->next();
 
-                // Columna A (nombre)
+                //columna C
                 $materialData['name'] = $cells->current()->getValue();
                 $cells->next();
 
-                // Columna B (Serie, puede estar vacía)
-                $materialData['serie'] = $cells->current()->getValue();
-                $cells->next();
-
-                // Columna C (Cantidad)
+                //columna D
                 $materialData['quantity'] = $cells->current()->getValue();
                 $cells->next();
 
+                //columna E
                 $materialData['unit'] = $cells->current()->getValue();
+                $cells->next();
+
+                //columna F
+                $materialData['serie'] = $cells->current()->getValue();
 
                 if (empty($materialData['name']) && empty($materialData['serie']) && empty($materialData['quantity'])) {
                     break;
@@ -316,7 +328,7 @@ class QuickMaterialsController extends Controller
                 'code' => $code
             ]);
 
-            $pdf = Pdf::loadView('pdf.InternalGuidePDF', compact(['data', 'additionalData', 'code']));
+            $pdf = Pdf::loadView('pdf.InternalGuidePDF', compact(['data', 'additional', 'code']));
             $path = public_path('documents/huawei/internal_guides/' . $fileName);
             $pdf->save($path);
 

@@ -127,8 +127,8 @@ class HuaweiMonthlyController extends Controller
     {
         $expenses = HuaweiMonthlyExpense::where('huawei_monthly_project_id', $project->id);
         $employeeCount = $project->huawei_monthly_employees()->count();
-        if (count($request->selectedZones) < 17){
-            $expenses->whereIn('zone', $request->selectedZones);
+        if (!empty($request->selectedZones)) {  // Filtrar solo si hay valor
+            $expenses->where('zone', $request->selectedZones);
         }
         if (count($request->selectedExpenseTypes) < 9){
             $expenses->whereIn('expense_type', $request->selectedExpenseTypes);
@@ -244,5 +244,27 @@ class HuaweiMonthlyController extends Controller
     public function exportMonthlyExpenses (HuaweiMonthlyProject $project)
     {
         return Excel::download(new HuaweiMonthlyExport($project->id), 'Gastos del proyecto ' . $project->description . '.xlsx');
+    }
+
+
+    public function massiveUpdate (Request $request)
+    {
+        $data = $request->validate([
+            'ids' => 'required | array | min:1',
+            'ids.*' => 'integer',
+            'ec_expense_date' => 'required|date',
+            'ec_op_number' => 'required|min:6',
+        ]);
+
+
+        HuaweiMonthlyExpense::whereIn('id', $data['ids'])->update([
+            'ec_expense_date' => $data['ec_expense_date'],
+            'ec_op_number' => $data['ec_op_number'],
+        ]);
+
+        $updatedCosts = HuaweiMonthlyExpense::whereIn('id', $data['ids'])
+            ->get();
+
+        return response()->json($updatedCosts, 200);
     }
 }
