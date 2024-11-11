@@ -139,6 +139,24 @@ class HuaweiMonthlyController extends Controller
         if (count($request->selectedEmployees) < $employeeCount){
             $expenses->whereIn('employee', $request->selectedEmployees);
         }
+        if($request->exStartDate){
+            $expenses->where('expense_date', '>=', $request->exStartDate);
+        }
+        if($request->exEndDate){
+            $expenses->where('expense_date', '<=', $request->exEndDate);
+        }
+        if($request->exNoDate){
+            $expenses->where('expense_date', null);
+        }
+        if($request->opStartDate){
+            $expenses->where('ec_expense_date', '>=', $request->opStartDate);
+        }
+        if($request->opEndDate){
+            $expenses->where('ec_expense_date', '<=', $request->opEndDate);
+        }
+        if($request->opNoDate){
+            $expenses->where('ec_expense_date', null);
+        }
         $expenses = $expenses->orderBy('created_at', 'desc')->get(); // Asegúrate de asignar el resultado
         return response()->json(["expenses" => $expenses], 200);
     }
