@@ -72,45 +72,52 @@ class CicsaController extends Controller
     }
 
     public function search(Request $request)
-    {
-        $projectsCicsa = CicsaAssignation::where(function ($query) {
-            $query->whereDoesntHave('cicsa_charge_area')
-                ->orWhere(function ($query) {
-                    $query->whereHas('cicsa_charge_area', function ($subQuery) {
-                        $subQuery->where(function ($subQuery) {
-                            $subQuery->whereNull('invoice_number')
-                                ->orWhereNull('invoice_date')
-                                ->orWhereNull('amount');
-                        })
-                            ->whereNull('deposit_date');
+    {   
+        $stages = $request->typeStages;
+        if (!$stages) {
+            $projectsCicsa = CicsaAssignation::where(function ($query) {
+                $query->whereDoesntHave('cicsa_charge_area')
+                    ->orWhere(function ($query) {
+                        $query->whereHas('cicsa_charge_area', function ($subQuery) {
+                            $subQuery->where(function ($subQuery) {
+                                $subQuery->whereNull('invoice_number')
+                                    ->orWhereNull('invoice_date')
+                                    ->orWhereNull('amount');
+                            })
+                                ->whereNull('deposit_date');
+                        });
                     });
-                });
-        })
+            })
+                ->with(
+                    'cicsa_feasibility.cicsa_feasibility_materials',
+                    'cicsa_materials.cicsa_material_items',
+                    'cicsa_installation.cicsa_installation_materials',
+                    'cicsa_purchase_order',
+                    'cicsa_purchase_order_validation',
+                    'cicsa_service_order',
+                    'cicsa_charge_area'
+                );
+        }else{
+            $projectsCicsa = CicsaAssignation::query();
+            if($stages === "Proyecto"){
+                $projectsCicsa->with(
+                    'cicsa_feasibility.cicsa_feasibility_materials',
+                    'cicsa_materials.cicsa_material_items',
+                    'cicsa_installation.cicsa_installation_materials',
+                );
+            } elseif ($stages === "Administracion"){
+                $projectsCicsa->with(
+                    'cicsa_purchase_order',
+                    'cicsa_purchase_order_validation',
+                    'cicsa_service_order',
+                );
+            }else{
+                $projectsCicsa->with(
+                    'cicsa_charge_area'
+                );
+            }
+        }
 
-            ->with(
-                'cicsa_feasibility.cicsa_feasibility_materials',
-                'cicsa_materials.cicsa_material_items',
-                'cicsa_installation.cicsa_installation_materials',
-                'cicsa_purchase_order',
-                'cicsa_purchase_order_validation',
-                'cicsa_service_order',
-                'cicsa_charge_area'
-            );
-
-        // if (!empty($request->assignation_date)) {
-        //     $assignationDate = $request->assignation_date;
-        //     if (!empty($request->project_deadline)) {
-        //         $deadLineDate = $request->project_deadline;
-        //         $projectsCicsa = $projectsCicsa->where('assignation_date', '>', $assignationDate)
-        //             ->where('project_deadline', '<', $deadLineDate);
-        //     } else {
-        //         $projectsCicsa = $projectsCicsa->where('assignation_date', '>', $assignationDate);
-        //     }
-        // }
-        // if (!empty($request->project_deadline)) {
-        //     $selectedPS = $request->project_deadline;
-        //     $projectsCicsa = $projectsCicsa->where('project_deadline', '<', $request->project_deadline);
-        // }
         if ($request->opNoDate) {
             $projectsCicsa->where('assignation_date', null);
         }
@@ -748,7 +755,7 @@ class CicsaController extends Controller
             'document' => 'required',
             'amount' => 'required',
             'transaction_number_current' => 'nullable',
-            'checking_account_amount' => 'nullable|numeric',
+            'checking_account_amount' => 'nullable|string',
             'deposit_date_bank' => 'nullable|date',
             'transaction_number_bank' => 'nullable',
             'amount_bank' => 'nullable|numeric',

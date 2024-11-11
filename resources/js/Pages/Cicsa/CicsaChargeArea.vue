@@ -109,10 +109,6 @@
                                     </th>
                                     <th
                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Documento
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                         Crédito a
                                     </th>
                                     <th
@@ -157,6 +153,10 @@
                                     </th>
                                     <th
                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Doc Detraccion
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                         Encargado
                                     </th>
                                     <th
@@ -182,12 +182,7 @@
                                             {{ formattedDate(materialDetail?.invoice_date) }}
                                         </p>
                                     </td>
-                                    <td class="border-b text-center border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <button v-if="materialDetail?.document" type="button"
-                                            @click="openPDF(materialDetail?.id)">
-                                            <EyeIcon class="w-5 h-5 text-green-600" />
-                                        </button>
-                                    </td>
+
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 text-center">
                                             {{ materialDetail?.credit_to ? materialDetail?.credit_to + 'día(s)'
@@ -257,6 +252,12 @@
                                             }}
                                         </p>
                                     </td>
+                                    <td class="border-b text-center border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <button v-if="materialDetail?.document" type="button"
+                                            @click="openPDF(materialDetail?.id)">
+                                            <EyeIcon class="w-5 h-5 text-green-600" />
+                                        </button>
+                                    </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 text-center">
                                             {{ materialDetail?.user_name }}
@@ -284,137 +285,154 @@
             </div>
         </div>
 
-        <Modal :show="showAddEditModal" @close="closeAddAssignationModal">
-            <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    {{ form.id ? 'Editar Cobranza' : 'Nueva Cobranza' }} {{ invoice_number ? ": " + invoice_number : ""
-                    }}
-                </h2>
-                <br>
-                <form @submit.prevent="submit">
-                    <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
-                        <div class="sm:col-span-1">
-                            <InputLabel for="invoice_number">Número de Factura</InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="text" v-model="form.invoice_number" autocomplete="off"
-                                    id="invoice_number" />
-                                <InputError :message="form.errors.invoice_number" />
+        <Modal :show="showAddEditModal" @close="closeAddAssignationModal" class="max-w-5xl">
+            <div class="p-6 flex gap-6">
+                <div class="w-full" >
+                    <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
+                        {{ form.id ? 'Editar Cobranza' : 'Nueva Cobranza' }} {{ invoice_number ? ": " + invoice_number :
+                            ""
+                        }}
+                    </h2>
+                    <br>
+                    <form @submit.prevent="submit">
+                        <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
+                            <div class="sm:col-span-1">
+                                <InputLabel for="invoice_number">Número de Factura</InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="text" v-model="form.invoice_number" autocomplete="off"
+                                        id="invoice_number" />
+                                    <InputError :message="form.errors.invoice_number" />
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-1">
+                                <InputLabel for="invoice_date">Fecha de Factura</InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="date" v-model="form.invoice_date" autocomplete="off"
+                                        id="invoice_date" />
+                                    <InputError :message="form.errors.invoice_date" />
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-1">
+                                <InputLabel for="credit_to">Crédito a</InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="number" v-model="form.credit_to" autocomplete="off"
+                                        id="invoice_date" />
+                                    <InputError :message="form.errors.credit_to" />
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-1">
+                                <InputLabel for="payment_date">Fecha de Pago</InputLabel>
+                                <div class="mt-2">
+                                    <TextInput disabled readonly type="date" v-model="form.payment_date"
+                                        autocomplete="off" id="payment_date" />
+                                    <InputError :message="form.errors.payment_date" />
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-1">
+                                <InputLabel for="amount">Monto Total de Factura</InputLabel>
+                                <div class="mt-2">
+                                    <input type="number" v-model="form.amount" id="amount" autocomplete="off"
+                                        step="0.01"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.amount" />
+                                </div>
+                            </div>
+                            <div class="sm:col-span-1">
+                                <InputLabel for="amount">Doc Factura</InputLabel>
+                                <div class="mt-2">
+                                    <button class="flex justify-center py-1.5" type="button" @click="togglePdfPreview">
+                                        <EyeIcon class="w-5 h-5 text-green-600" />
+                                    </button>
+                                </div>
+                            </div>
+                            <h2 class="sm:col-span-full text-lg font-medium text-gray-800 border-b-2 border-gray-100">
+                                Pagos
+                            </h2>
+                            <div class="sm:col-span-1 sm:col-start-1">
+                                <InputLabel for="deposit_date">Fecha de Abono a cuenta corriente</InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="date" v-model="form.deposit_date" autocomplete="off"
+                                        id="deposit_date" />
+                                    <InputError :message="form.errors.deposit_date" />
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-1">
+                                <InputLabel for="transaction_number_current">Número de Transacción de cuenta corriente
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="text" v-model="form.transaction_number_current" autocomplete="off"
+                                        id="transaction_number_current" />
+                                    <InputError :message="form.errors.transaction_number_current" />
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-1">
+                                <InputLabel for="checking_account_amount">Monto de cuenta corriente</InputLabel>
+                                <div class="mt-2">
+                                    <input type="number" v-model="form.checking_account_amount"
+                                        id="checking_account_amount" autocomplete="off" min="0"
+                                        :max="form.checking_account_amount" step="0.01"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.checking_account_amount" />
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-1 sm:col-start-1">
+                                <InputLabel for="deposit_date_bank">Fecha de Abono a cuenta de la detraccion
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="date" v-model="form.deposit_date_bank" autocomplete="off"
+                                        id="deposit_date_bank" />
+                                    <InputError :message="form.errors.deposit_date_bank" />
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-1">
+                                <InputLabel for="transaction_number_bank">Número de Transacción de la detraccion
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="text" v-model="form.transaction_number_bank" autocomplete="off"
+                                        id="transaction_number_bank" />
+                                    <InputError :message="form.errors.transaction_number_bank" />
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-1">
+                                <InputLabel for="amount_bank">Monto de la detraccion</InputLabel>
+                                <div class="mt-2">
+                                    <input type="number" v-model="form.amount_bank" id="amount_bank" autocomplete="off"
+                                        min="0" :max="form.amount_bank" step="0.01"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.amount_bank" />
+                                </div>
+                            </div>
+                            <div class="sm:col-span-1">
+                                <InputLabel for="document">Documento de Detraccion</InputLabel>
+                                <div>
+                                    <InputFile type="file" v-model="form.document" id="document" accept=".pdf" />
+                                    <InputError :message="form.errors.document" />
+                                </div>
                             </div>
                         </div>
 
-                        <div class="sm:col-span-1">
-                            <InputLabel for="invoice_date">Fecha de Factura</InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="date" v-model="form.invoice_date" autocomplete="off"
-                                    id="invoice_date" />
-                                <InputError :message="form.errors.invoice_date" />
-                            </div>
+                        <div class="mt-6 flex justify-end">
+                            <SecondaryButton type="button" @click="closeAddAssignationModal"> Cancelar
+                            </SecondaryButton>
+                            <PrimaryButton class="ml-3 tracking-widest uppercase text-xs"
+                                :class="{ 'opacity-25': form.processing }" :disabled="form.processing" type="submit">
+                                Guardar
+                            </PrimaryButton>
                         </div>
-
-                        <div class="sm:col-span-1">
-                            <InputLabel for="credit_to">Crédito a</InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="number" v-model="form.credit_to" autocomplete="off"
-                                    id="invoice_date" />
-                                <InputError :message="form.errors.credit_to" />
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-1">
-                            <InputLabel for="payment_date">Fecha de Pago</InputLabel>
-                            <div class="mt-2">
-                                <TextInput disabled readonly type="date" v-model="form.payment_date" autocomplete="off"
-                                    id="payment_date" />
-                                <InputError :message="form.errors.payment_date" />
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-1">
-                            <InputLabel for="document">Documento</InputLabel>
-                            <div>
-                                <InputFile type="file" v-model="form.document" id="document" accept=".pdf" />
-                                <InputError :message="form.errors.document" />
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-1">
-                            <InputLabel for="amount">Monto Total de Factura</InputLabel>
-                            <div class="mt-2">
-                                <input type="number" v-model="form.amount" id="amount" autocomplete="off" step="0.01"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.amount" />
-                            </div>
-                        </div>
-                        <h2 class="sm:col-span-full text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                            Pagos
-                        </h2>
-                        <div class="sm:col-span-1 sm:col-start-1">
-                            <InputLabel for="deposit_date">Fecha de Abono a cuenta corriente</InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="date" v-model="form.deposit_date" autocomplete="off"
-                                    id="deposit_date" />
-                                <InputError :message="form.errors.deposit_date" />
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-1">
-                            <InputLabel for="transaction_number_current">Número de Transacción de cuenta corriente
-                            </InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="text" v-model="form.transaction_number_current" autocomplete="off"
-                                    id="transaction_number_current" />
-                                <InputError :message="form.errors.transaction_number_current" />
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-1">
-                            <InputLabel for="checking_account_amount">Monto de cuenta corriente</InputLabel>
-                            <div class="mt-2">
-                                <input type="number" v-model="form.checking_account_amount" id="checking_account_amount"
-                                    autocomplete="off" min="0" :max="form.checking_account_amount" step="0.01"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.checking_account_amount" />
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-1 sm:col-start-1">
-                            <InputLabel for="deposit_date_bank">Fecha de Abono a cuenta de la detraccion</InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="date" v-model="form.deposit_date_bank" autocomplete="off"
-                                    id="deposit_date_bank" />
-                                <InputError :message="form.errors.deposit_date_bank" />
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-1">
-                            <InputLabel for="transaction_number_bank">Número de Transacción de la detraccion
-                            </InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="text" v-model="form.transaction_number_bank" autocomplete="off"
-                                    id="transaction_number_bank" />
-                                <InputError :message="form.errors.transaction_number_bank" />
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-1">
-                            <InputLabel for="amount_bank">Monto de la detraccion</InputLabel>
-                            <div class="mt-2">
-                                <input type="number" v-model="form.amount_bank" id="amount_bank" autocomplete="off"
-                                    min="0" :max="form.amount_bank" step="0.01"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.amount_bank" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-6 flex justify-end">
-                        <SecondaryButton type="button" @click="closeAddAssignationModal"> Cancelar </SecondaryButton>
-                        <PrimaryButton class="ml-3 tracking-widest uppercase text-xs"
-                            :class="{ 'opacity-25': form.processing }" :disabled="form.processing" type="submit">
-                            Guardar
-                        </PrimaryButton>
-                    </div>
-                </form>
+                    </form>
+                </div>
+                <div v-if="showPdfPreview" class="w-1/2 h-full bg-gray-100 rounded-lg p-4 overflow-y-auto">
+                    <iframe :src="pdfUrl" class="w-full h-full border-none" frameborder="0"></iframe>
+                </div>
             </div>
         </Modal>
         <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Cobranza Actualizada'"
@@ -454,6 +472,8 @@ const charge_areas = ref(charge_area)
 const invoice_number = ref(null)
 const errorAmount = ref(false)
 const charge_area_row = ref(0)
+const showPdfPreview = ref(false)
+const pdfUrl = ref(null)
 
 const initialState = {
     id: null,
@@ -599,6 +619,11 @@ async function openPDF(chargeAreaId) {
     } else {
         console.error('No se proporcionó un ID de imagen válido');
     }
+}
+
+function togglePdfPreview(){
+    showPdfPreview.value = !showPdfPreview.value
+    pdfUrl.value = 'http://127.0.0.1:8000/documents/cicsa/cicsaChargeAreaOrder/1731273392._Ensayo.pdf'
 }
 
 function updateChargeArea(chargeArea) {

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
+use Psy\CodeCleaner\ReturnTypePass;
 
 class CicsaAssignation extends Model
 {
@@ -28,6 +29,7 @@ class CicsaAssignation extends Model
     protected $appends = [
         'total_materials',
         'cicsa_project_status',
+        'cicsa_administration_status',
         'cicsa_charge_status',
     ];
 
@@ -202,8 +204,8 @@ class CicsaAssignation extends Model
 
     public function checkPurchaseOrder()
     {
-        $purchaseOrder = $this->cicsa_purchase_order()->first();
-        if (!$purchaseOrder) {
+        $purchaseOrders = $this->cicsa_purchase_order()->get();
+        if ($purchaseOrders->isEmpty()) {
             return false;
         }
         $fieldsToCheck = [
@@ -212,9 +214,19 @@ class CicsaAssignation extends Model
             'master_format',
             'item3456',
             'budget',
+            'document'
         ];
-        foreach ($fieldsToCheck as $field) {
-            if (is_null($purchaseOrder->$field)) {
+        foreach ($purchaseOrders as $purchaseOrder) {
+            foreach ($fieldsToCheck as $field) {
+                if (is_null($purchaseOrder->$field)) {
+                    return false;
+                }
+            }
+            if (
+                $purchaseOrder->master_format !== 'Completado'
+                || $purchaseOrder->item3456 !== 'Completado'
+                || $purchaseOrder->budget !== 'Completado'
+            ) {
                 return false;
             }
         }
@@ -223,43 +235,51 @@ class CicsaAssignation extends Model
 
     public function checkValidationOrder()
     {
-        $validationOrder = $this->cicsa_purchase_order_validation()->first();
-        if (!$validationOrder) {
+        $validationOrders = $this->cicsa_purchase_order_validation()->get();
+        if ($validationOrders->isEmpty()) {
             return false;
         }
         $fieldsToCheck = [
             'validation_date',
             'materials_control',
+            'file_validation',
             'supervisor',
             'warehouse',
             'boss',
             'liquidator',
-            'superintendent',
+            'superintendent'
         ];
-        foreach ($fieldsToCheck as $field) {
-            if (is_null($validationOrder->$field)) {
+        foreach ($validationOrders as $validationOrder) {
+            foreach ($fieldsToCheck as $field) {
+                if (is_null($validationOrder->$field)) {
+                    return false;
+                }
+            }
+            if (
+                $validationOrder->materials_control !== 'Completado'
+                || $validationOrder->file_validation !== 'Completado'
+                || $validationOrder->supervisor !== 'Completado'
+                || $validationOrder->warehouse !== 'Completado'
+                || $validationOrder->boss !== 'Completado'
+                || $validationOrder->liquidator !== 'Completado'
+                || $validationOrder->superintendent !== 'Completado'
+            ) {
                 return false;
             }
         }
-        if (
-            $validationOrder->materials_control !== 'Completado'
-            || $validationOrder->supervisor !== 'Completado'
-            || $validationOrder->warehouse !== 'Completado'
-            || $validationOrder->boss !== 'Completado'
-            || $validationOrder->liquidator !== 'Completado'
-            || $validationOrder->superintendent !== 'Completado'
-        ) {
-            return false;
-        }
+
+
+
         return true;
     }
 
     public function checkServiceOrder()
     {
-        $serviceOrder = $this->cicsa_service_order()->first();
-        if (!$serviceOrder) {
+        $serviceOrders = $this->cicsa_service_order()->get();
+        if ($serviceOrders->isEmpty()) {
             return false;
         }
+
         $fieldsToCheck = [
             'service_order_date',
             'service_order',
@@ -267,81 +287,130 @@ class CicsaAssignation extends Model
             'purchase_order',
             'pdf_invoice',
             'zip_invoice',
+            'document',
         ];
-        foreach ($fieldsToCheck as $field) {
-            if (is_null($serviceOrder->$field)) {
+
+        foreach ($serviceOrders as $serviceOrder) {
+            foreach ($fieldsToCheck as $field) {
+                if (is_null($serviceOrder->$field)) {
+                    return false;
+                }
+            }
+            if (
+                $serviceOrder->service_order !== 'Completado'
+                || $serviceOrder->estimate_sheet !== 'Completado'
+                || $serviceOrder->purchase_order !== 'Completado'
+                || $serviceOrder->pdf_invoice !== 'Completado'
+                || $serviceOrder->zip_invoice !== 'Completado'
+            ) {
                 return false;
             }
         }
+
+
+        return true;
+    }
+
+    // public function checkCicsaChargeArea()
+    // {
+
+    //     $chargeAreas = $this->cicsa_charge_area()->get();
+    //     if ($chargeAreas->isEmpty()) {
+    //         return false;
+    //     }
+    //     $fieldsToCheck = [
+    //         'invoice_number',
+    //         'invoice_date',
+    //         'credit_to',
+    //         'amount',
+    //         'deposit_date',
+    //         'transaction_number_current',
+    //         'checking_account_amount',
+    //         'deposit_date_bank',
+    //         'transaction_number_bank',
+    //         'amount_bank',
+    //         'document',
+    //     ];
+    //     foreach ($chargeAreas as $chargeArea) {
+    //         foreach ($fieldsToCheck as $field) {
+    //             if (is_null($chargeArea->$field)) {
+    //                 return false;
+    //             }
+    //         }
+    //     }
+    //     return true;
+    // }
+
+    // public function checkCSP()
+    // {
+    //     $purchaseOrder = $this->cicsa_purchase_order()->first();
+    //     if ($purchaseOrder) {
+    //         return true;
+    //     }
+    //     $validationOrder = $this->cicsa_purchase_order_validation()->first();
+    //     if ($validationOrder) {
+    //         return true;
+    //     }
+    //     $serviceOrder = $this->cicsa_service_order()->first();
+    //     if ($serviceOrder) {
+    //         return true;
+    //     }
+    //     $chargeArea = $this->cicsa_charge_area()->first();
+    //     if ($chargeArea) {
+    //         return true;
+    //     }
+    //     return false;
+    // }
+
+    public function getCicsaAdministrationStatusAttribute()
+    {
         if (
-            $serviceOrder->estimate_sheet !== 'Completado'
-            || $serviceOrder->purchase_order !== 'Completado'
-            || $serviceOrder->pdf_invoice !== 'Completado'
-            || $serviceOrder->zip_invoice !== 'Completado'
+            $this->checkPurchaseOrder()
+            && $this->checkValidationOrder()
+            && $this->checkServiceOrder()
         ) {
-            return false;
-        }
-        return true;
-    }
-
-    public function checkCicsaChargeArea()
-    {
-        $chargeArea = $this->cicsa_charge_area()->first();
-        if (!$chargeArea) {
-            return false;
-        }
-        $fieldsToCheck = [
-            'invoice_number',
-            'invoice_date',
-            'payment_date',
-            'deposit_date',
-            'amount',
-        ];
-        foreach ($fieldsToCheck as $field) {
-            if (is_null($chargeArea->$field)) {
-                return false;
+            return 'Completado';
+        } else {
+            if (
+                !$this->checkPurchaseOrder()
+                && !$this->checkValidationOrder()
+                && !$this->checkServiceOrder()
+            ) {
+                return 'Pendiente';
+            } else {
+                return 'En Proceso';
             }
         }
-        return true;
-    }
-
-    public function checkCSP()
-    {
-        $purchaseOrder = $this->cicsa_purchase_order()->first();
-        if ($purchaseOrder) {
-            return true;
-        }
-        $validationOrder = $this->cicsa_purchase_order_validation()->first();
-        if ($validationOrder) {
-            return true;
-        }
-        $serviceOrder = $this->cicsa_service_order()->first();
-        if ($serviceOrder) {
-            return true;
-        }
-        $chargeArea = $this->cicsa_charge_area()->first();
-        if ($chargeArea) {
-            return true;
-        }
-        return false;
     }
 
     public function getCicsaChargeStatusAttribute()
     {
-        if (
-            $this->checkCicsaChargeArea()
-            // && $this->checkValidationOrder()
-            // && $this->checkServiceOrder()
-            // && $this->checkPurchaseOrder()
-        ) {
-            return 'Completado';
+        $chargeAreas = $this->cicsa_charge_area()->get();
+        $fieldsToCheck = [
+            'invoice_number',
+            'invoice_date',
+            'credit_to',
+            'amount',
+            'deposit_date',
+            'transaction_number_current',
+            'checking_account_amount',
+            'deposit_date_bank',
+            'transaction_number_bank',
+        ];
+
+        foreach ($chargeAreas as $chargeArea) {
+            if (is_null($chargeArea->document)) {
+                return 'Pendiente';
+            } else {
+                foreach ($fieldsToCheck as $field) {
+                    if(is_null($chargeArea->$field)){
+                        return 'En Proceso';
+                    }
+                }
+            }
         }
-        if ($this->checkCSP()) {
-            return 'En Proceso';
-        }
-        if (!$this->checkPurchaseOrder()) {
-            return 'Pendiente';
-        }
+
+        return'Completado';
     }
 
 

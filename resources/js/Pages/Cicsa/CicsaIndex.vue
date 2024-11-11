@@ -1,14 +1,27 @@
 <template>
 
     <Head title="F. Pext" />
-
     <AuthenticatedLayout :redirectRoute="'cicsa.index'">
         <template #header> Facturación Pext </template>
 
         <div class="min-w-full ">
+            <div class="flex text-center bg-gray-100 rounded-lg gap-x-3 pb-5">
+                <div>
+                    <span class="text-gray-700 font-medium pr-2 bg-green-100">Co</span>
+                    <span class="text-gray-700 font-medium">: Completado</span>
+                </div>
+                <div>
+                    <span class="text-gray-700 font-medium pr-2 bg-yellow-100">Pr</span>
+                    <span class="text-gray-700 font-medium">: En Proceso</span>
+                </div>
+                <div>
+                    <span class="text-gray-700 font-medium pr-2 bg-red-100">Pe</span>
+                    <span class="text-gray-700 font-medium">: Pendiente</span>
+                </div>
+            </div>
             <div class="flex justify-between">
                 <div class="flex space-x-4">
-                    <FilterProcess :options="[
+                    <FilterProcess v-if="!filterForm.typeStages" :options="[
                         'Asignación',
                         'Factibilidad PINT y PEXT',
                         'Materiales',
@@ -26,24 +39,31 @@
                         class="p-2 bg-transparent ring-1 ring-slate-300 rounded-md text-slate-900 hover:text-slate-400">
                         <ArrowPathIcon class="h-5 w-5" />
                     </button>
+
                 </div>
                 <div class="flex space-x-4">
-                    <Link :href="route('cicsa.charge_areas.accepted')"
+                    <!-- <Link :href="route('cicsa.charge_areas.accepted')"
                         class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                     Completados
                     </Link>
                     <Link :href="route('cicsa.charge')"
                         class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
                     Por Cobrar
-                    </Link>
+                    </Link> -->
                     <TextInput data-tooltip-target="search_fields" type="text" v-model="filterForm.search"
                         placeholder="Buscar ..." />
-                    <SelectCicsaComponent currentSelect="Proceso" />
                     <div id="search_fields" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Nombre,Cliente,Codigo
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
+                    <select v-model="filterForm.typeStages"
+                        class="block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        <option disabled value="">Seleccionar Etapa</option>
+                        <option v-for="item in stages" :key="item.id">{{ item }}</option>
+                    </select>
+                    <SelectCicsaComponent currentSelect="Proceso" />
+
                 </div>
             </div>
             <br />
@@ -78,18 +98,20 @@
                                 colspan="9">
                                 Instalación PINT y PEXT
                             </th>
-                            <th
+                            <th v-if="
+                                checkVisibility(['Asignación', 'Factibilidad PINT y PEXT', 'Materiales'
+                                    , 'Instalación PINT y PEXT'])"
                                 class="w-[150px] bg-indigo-800 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
                                 Estado del Proyecto
                             </th>
                             <th v-if="checkVisibility('Orden de Compra')"
                                 class="bg-purple-700 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
-                                colspan="8">
+                                colspan="6">
                                 Orden de Compra
                             </th>
                             <th v-if="checkVisibility('Validación de OC')"
                                 class="bg-purple-700 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
-                                colspan="10">
+                                colspan="8">
                                 Validación de OC
                             </th>
                             <th v-if="checkVisibility('Orden de Servicio')"
@@ -97,15 +119,20 @@
                                 colspan="8">
                                 Orden de Servicio
                             </th>
+                            <th v-if="checkVisibility(['Orden de Compra', 'Validación de OC'
+                                , 'Orden de Servicio'])"
+                                class="w-[150px] bg-green-700 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
+                                Estado de Administracion
+                            </th>
                             <th v-if="checkVisibility('Cobranza')"
                                 class="bg-purple-700 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
-                                colspan="10">
+                                colspan="15">
                                 Cobranza
                             </th>
-                            <th v-if="!checkVisibility('Cobranza')"
+                            <!-- <th v-if="!checkVisibility('Cobranza')"
                                 class="bg-gray-700 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider border-r-2">
-                            </th>
-                            <th
+                            </th> -->
+                            <th v-if="checkVisibility('Cobranza')"
                                 class="w-[150px] bg-purple-700 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider">
                                 Estado de Cobranza
                             </th>
@@ -117,311 +144,327 @@
                             class=" border-b bg-gray-50 text-[11px] font-semibold uppercase tracking-wide text-gray-500">
                             <th v-if="checkVisibility('Asignación')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                <TableDateFilter labelClass="text-[11px]" label="Fecha de Asignación"
+                                <TableDateFilter labelClass="title" label="Fecha de Asignación" :reverse="true"
                                     v-model:startDate="filterForm.opStartDate" v-model:endDate="filterForm.opEndDate"
                                     v-model:noDate="filterForm.opNoDate" width="w-40" />
                             </th>
                             <th ref="thProjectName" :class="[
-                                'border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600',
+                                'title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600',
                                 `sticky left-0 z-30`,
-                            ]">
-                                <div class="flex justify-center">
-                                    <p class="sm:w-[250px] w-[70px]">
-                                        Nombre del Proyecto
-                                    </p>
-                                </div>
+                            ]" v-html="reverseWordsWithBreaks('Nombre del Proyecto')">
                             </th>
                             <th ref="thProjectCode" :style="thStickyStyle.pc_sticky" :class="[
-                                `border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600`,
+                                `title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600`,
                             ]">
                                 <div class="flex justify-center">
-                                    <p class="">Código del Proyecto</p>
+                                    <p v-html="reverseWordsWithBreaks('Código del Proyecto')"></p>
                                 </div>
                             </th>
-                            <th ref="thProjectCode" :style="thStickyStyle.pc_sticky" :class="[
-                                `border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600`,
-                            ]">
-                                <div class="flex justify-center">
-                                    <p class="">Centro de Costo</p>
-                                </div>
-                            </th>
+
                             <th :style="thStickyStyle.pcpe_sticky" :class="[
-                                'border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600',
+                                'title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600',
                                 checkVisibility('Asignación')
                                     ? ''
                                     : 'border-r-2',
                             ]">
                                 CPE
                             </th>
+                            <th v-if="checkVisibility('Asignación')" v-html="reverseWordsWithBreaks('Centro de Costos')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            </th>
                             <th v-if="checkVisibility('Asignación')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                                 Zona
                             </th>
                             <th v-if="checkVisibility('Asignación')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                                 Cliente
                             </th>
                             <th v-if="checkVisibility('Asignación')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                <div class="w-[150px]">Gestor</div>
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                Gestor
                             </th>
-                            <th v-if="checkVisibility('Asignación')"
-                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                <div class="w-[150px]">Encargado</div>
+                            <th v-if="checkVisibility('Asignación')" v-html="reverseWordsWithBreaks('Encargado CCIP')"
+                                class="title border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            </th>
+                            <th v-if="
+                                checkVisibility('Factibilidad PINT y PEXT')
+                            " v-html="reverseWordsWithBreaks('Fecha de Factibilidad')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
                             </th>
                             <th v-if="
                                 checkVisibility('Factibilidad PINT y PEXT')
                             "
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de Factibilidad
-                            </th>
-                            <th v-if="
-                                checkVisibility('Factibilidad PINT y PEXT')
-                            "
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                                 Informe
                             </th>
                             <th v-if="
                                 checkVisibility('Factibilidad PINT y PEXT')
-                            "
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Lista de Materiales de Factibilidad
+                            " v-html="reverseWordsWithBreaks('Materiales de Factibilidad')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
                             </th>
                             <th v-if="
                                 checkVisibility('Factibilidad PINT y PEXT')
                             "
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                                 Coordinador
                             </th>
                             <th v-if="
                                 checkVisibility('Factibilidad PINT y PEXT')
-                            "
-                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                <div class="w-[150px]">Encargado</div>
+                            " v-html="reverseWordsWithBreaks('Encargado CCIP')"
+                                class="title border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
+                            </th>
+                            <th v-if="checkVisibility('Materiales')" v-html="reverseWordsWithBreaks('Fecha de Recojo')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
                             </th>
                             <th v-if="checkVisibility('Materiales')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de Recojo
-                            </th>
-                            <th v-if="checkVisibility('Materiales')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                                 Guía
                             </th>
                             <th v-if="checkVisibility('Materiales')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Lista de Materiales
+                                v-html="reverseWordsWithBreaks('Lista de Materiales')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
                             </th>
-                            <th v-if="checkVisibility('Materiales')"
-                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                <div class="w-[150px]">Encargado</div>
+                            <th v-if="checkVisibility('Materiales')" v-html="reverseWordsWithBreaks('Encargado CCIP')"
+                                class="title border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
+                            </th>
+                            <th v-if="
+                                checkVisibility('Instalación PINT y PEXT')
+                            " v-html="reverseWordsWithBreaks('Fecha de Pext')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
+                            </th>
+                            <th v-if="
+                                checkVisibility('Instalación PINT y PEXT')
+                            " v-html="reverseWordsWithBreaks('Fecha de Pint')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
+                            </th>
+                            <th v-if="
+                                checkVisibility('Instalación PINT y PEXT')
+                            " v-html="reverseWordsWithBreaks('Acta de Conformidad')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
                             </th>
                             <th v-if="
                                 checkVisibility('Instalación PINT y PEXT')
                             "
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de Pext
-                            </th>
-                            <th v-if="
-                                checkVisibility('Instalación PINT y PEXT')
-                            "
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de Pint
-                            </th>
-                            <th v-if="
-                                checkVisibility('Instalación PINT y PEXT')
-                            "
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Acta de Conformidad
-                            </th>
-                            <th v-if="
-                                checkVisibility('Instalación PINT y PEXT')
-                            "
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                                 Informe
                             </th>
                             <th v-if="
                                 checkVisibility('Instalación PINT y PEXT')
-                            "
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Lista de Materiales Liquidados
+                            " v-html="reverseWordsWithBreaks('Lista de Materiales Liquidados')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
                             </th>
                             <th v-if="
                                 checkVisibility('Instalación PINT y PEXT')
-                            "
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de Envío de Informe
+                            " v-html="reverseWordsWithBreaks('Fecha de Envío de Informe')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
                             </th>
                             <th v-if="
                                 checkVisibility('Instalación PINT y PEXT')
-                            "
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Monto Proyectado sin IGV
+                            " v-html="reverseWordsWithBreaks('Monto Proyectado sin IGV')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
                             </th>
-                            <th v-if="
-                                checkVisibility('Instalación PINT y PEXT')
-                            "
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            <th v-if="checkVisibility('Instalación PINT y PEXT')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                                 Coordinador
                             </th>
                             <th v-if="
                                 checkVisibility('Instalación PINT y PEXT')
-                            "
-                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                <div class="w-[150px]">Encargado</div>
+                            " v-html="reverseWordsWithBreaks('Encargado CCIP')"
+                                class="title border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
                             </th>
-                            <th
-                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-[11px] font-semibold uppercase tracking-wider">
+                            <th v-if="
+                                checkVisibility(['Asignación', 'Factibilidad PINT y PEXT', 'Materiales'
+                                    , 'Instalación PINT y PEXT'])" class=" border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-[11px]
+                                font-semibold uppercase tracking-wider">
                                 <div class="w-[150px]">
                                     <TableHeaderCicsaFilter label="E. P." labelClass=" text-gray-600"
                                         :options="[...stats]" v-model="filterForm.project_status" ref="childRef" />
                                 </div>
                             </th>
-                            <th v-if="checkVisibility('Orden de Compra')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de Orden de Compra
+                            <th v-if="checkVisibility('Orden de Compra')" v-html="reverseWordsWithBreaks('Fecha de OC')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
                             </th>
                             <th v-if="checkVisibility('Orden de Compra')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Numero de Orden de Compra
+                                v-html="reverseWordsWithBreaks('Numero de OC')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
                             </th>
                             <th v-if="checkVisibility('Orden de Compra')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Formato Maestro
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                Doc OC
                             </th>
                             <th v-if="checkVisibility('Orden de Compra')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Item 3456
+                                v-html="reverseWordsWithBreaks('Formato Maestro')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
+                            </th>
+                            <th v-if="checkVisibility('Orden de Compra')" v-html="reverseWordsWithBreaks('Item 3456')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
                             </th>
                             <th v-if="checkVisibility('Orden de Compra')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                class="title border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                                 Presupuesto
                             </th>
-                            <th v-if="checkVisibility('Orden de Compra')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Documento
-                            </th>
-                            <th v-if="checkVisibility('Orden de Compra')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Observaciones
-                            </th>
-                            <th v-if="checkVisibility('Orden de Compra')"
-                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                <div class="w-[150px]">Encargado</div>
+                            <th v-if="checkVisibility('Validación de OC')"
+                                v-html="reverseWordsWithBreaks('Fecha de IniciO')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
                             </th>
                             <th v-if="checkVisibility('Validación de OC')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de Inicio de Validación
+                                v-html="reverseWordsWithBreaks('Validacion de expediente')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
                             </th>
                             <th v-if="checkVisibility('Validación de OC')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Validacion de expediente
+                                v-html="reverseWordsWithBreaks('Control de Materiales')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
                             </th>
                             <th v-if="checkVisibility('Validación de OC')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Control de Materiales
-                            </th>
-                            <th v-if="checkVisibility('Validación de OC')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                                 Supervisor
                             </th>
                             <th v-if="checkVisibility('Validación de OC')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                                 Almacen
                             </th>
                             <th v-if="checkVisibility('Validación de OC')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Jefe de Obra
+                                v-html="reverseWordsWithBreaks('Jefe de Obra')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
                             </th>
                             <th v-if="checkVisibility('Validación de OC')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                                 Liquidador
                             </th>
                             <th v-if="checkVisibility('Validación de OC')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                class="title border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                                 Superintendente
                             </th>
-                            <th v-if="checkVisibility('Validación de OC')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Observaciones
-                            </th>
-                            <th v-if="checkVisibility('Validación de OC')"
-                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                <div class="w-[150px]">Encargado</div>
+                            <th v-if="checkVisibility('Orden de Servicio')"
+                                v-html="reverseWordsWithBreaks('Fecha de Orden de Servicio')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
                             </th>
                             <th v-if="checkVisibility('Orden de Servicio')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de Orden de Servicio
+                                v-html="reverseWordsWithBreaks('Orden de Servicio')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
+                            </th>
+                            <th v-if="checkVisibility('Orden de Servicio')" v-html="reverseWordsWithBreaks('Doc OS')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
                             </th>
                             <th v-if="checkVisibility('Orden de Servicio')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Orden de Servicio
+                                v-html="reverseWordsWithBreaks('Hoja de Estimación')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
                             </th>
                             <th v-if="checkVisibility('Orden de Servicio')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Hoja de Estimación
+                                v-html="reverseWordsWithBreaks('Orden de Compra')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
                             </th>
                             <th v-if="checkVisibility('Orden de Servicio')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Orden de Compra
+                                v-html="reverseWordsWithBreaks('Factura en PDF')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
                             </th>
                             <th v-if="checkVisibility('Orden de Servicio')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Factura en PDF
+                                v-html="reverseWordsWithBreaks('Factura en ZIP')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
                             </th>
-                            <th v-if="checkVisibility('Orden de Servicio')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Factura en ZIP
+                            <th v-if="checkVisibility('Orden de Servicio')" v-html="reverseWordsWithBreaks('Doc Fac')"
+                                class="title border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
                             </th>
-                            <th v-if="checkVisibility('Orden de Servicio')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Documento
-                            </th>
-                            <th v-if="checkVisibility('Orden de Servicio')"
-                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                <div class="w-[150px]">Encargado</div>
+                            <th v-if="checkVisibility(['Orden de Compra', 'Validación de OC'
+                                , 'Orden de Servicio'])"
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-[11px] font-semibold uppercase tracking-wider">
+                                <div class="w-[150px]">
+                                    <TableHeaderCicsaFilter label="E. C." labelClass=" text-gray-600"
+                                        :options="[...stats]" v-model="filterForm.charge_status" ref="childRef2" />
+                                </div>
                             </th>
 
-                            <th v-if="checkVisibility('Cobranza')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Número de Factura
+                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Número de Factura')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
+                            </th>
+                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Fecha de Factura')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
+                            </th>
+                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Crédito A')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
+                            </th>
+                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Fecha de Pago')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
+                            </th>
+                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Días de Atraso')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
+                            </th>
+                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Fecha de Abono')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
+                            </th>
+                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Monto con IGV')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
+                            </th>
+                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Fecha de abono de Cuenta Corriente')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
+                            </th>
+                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Numero de Transaccion de Cuenta Corriente')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
+                            </th>
+                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Monto de Cuenta Corriente')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
+                            </th>
+                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Fecha de abono de Detraccion')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
+                            </th>
+                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Numero de Transaccion de Detraccion')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
+                            </th>
+                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Monto de Detraccion')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
+                            </th>
+                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Doc Detraccion')"
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
+                            </th>
+                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Estado de Pago')"
+                                class="title border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+
                             </th>
                             <th v-if="checkVisibility('Cobranza')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de Factura
-                            </th>
-                            <th v-if="checkVisibility('Cobranza')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Documento
-                            </th>
-                            <th v-if="checkVisibility('Cobranza')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Crédito A
-                            </th>
-                            <th v-if="checkVisibility('Cobranza')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de Pago
-                            </th>
-                            <th v-if="checkVisibility('Cobranza')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Días de Atraso
-                            </th>
-                            <th v-if="checkVisibility('Cobranza')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de Abono
-                            </th>
-                            <th v-if="checkVisibility('Cobranza')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Monto con IGV
-                            </th>
-                            <th v-if="checkVisibility('Cobranza')"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Estado de Pago
-                            </th>
-                            <th v-if="checkVisibility('Cobranza')"
-                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                <div class="w-[150px]">Encargado</div>
-                            </th>
-                            <th
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-[11px] font-semibold uppercase tracking-wider">
                                 <div class="w-[150px]">
                                     <TableHeaderCicsaFilter label="E. C." labelClass=" text-gray-600"
@@ -429,7 +472,7 @@
                                 </div>
                             </th>
                             <th v-if="auth.user.role_id === 1"
-                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="title border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
                     </thead>
@@ -443,9 +486,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-amber-200 px-2 py-2 text-[13px] sticky left-0 z-30">
                                 <div class="flex justify-center">
-                                    <p class="sm:w-[250px] w-[70px] break-words text-gray-900 text-center">
-                                        {{ item.project_name }}
-                                    </p>
+                                    {{ item.project_name }}
                                 </div>
                             </td>
                             <td :style="thStickyStyle.pc_sticky"
@@ -456,18 +497,16 @@
                                     </p>
                                 </div>
                             </td>
-                            <td :style="thStickyStyle.pc_sticky"
-                                class="sticky border-b bg-amber-200 border-gray-200 px-2 py-2 text-[13px] whitespace-nowrap">
-                                <div class="flex justify-center">
-                                    <p class="text-gray-900 text-center">
-                                        {{ item.cost_center }}
-                                    </p>
-                                </div>
-                            </td>
                             <td :style="thStickyStyle.pcpe_sticky"
                                 class="border-b bg-amber-200 border-gray-200 px-2 py-2 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cpe }}
+                                </p>
+                            </td>
+                            <td v-if="checkVisibility('Asignación')" :class="stateClass(item.cost_center)"
+                                class="border-b border-gray-200 px-2 py-2 text-[13px]">
+                                <p class="text-gray-900 text-center">
+                                    {{ item.cost_center }}
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Asignación')" :class="stateClass(item.zone)"
@@ -483,15 +522,15 @@
                                 </p>
                             </td>
                             <td :class="stateClass(item.manager)" v-if="checkVisibility('Asignación')"
-                                class="border-b border-gray-200 px-2 py-2 text-[13px]">
+                                class="border-b border-gray-200 px-2 py-2 text-[13px] whitespace-nowrap">
                                 <p class="text-gray-900 text-center">
                                     {{ item.manager }}
                                 </p>
                             </td>
                             <td :class="stateClass(item.user_name)" v-if="checkVisibility('Asignación')"
-                                class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px]">
+                                class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px] whitespace-nowrap">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.user_name }}
+                                    {{ formatoManager(item.user_name) }}
                                 </p>
                             </td>
 
@@ -515,7 +554,7 @@
                                     checkVisibility('Factibilidad PINT y PEXT')
                                 " class="border-b border-gray-200 px-2 py-2 text-[13px]">
                                 <p class="text-gray-900 text-center whitespace-nowrap">
-                                    {{ item?.cicsa_feasibility?.report }}
+                                    {{ formattedState(item?.cicsa_feasibility?.report) }}
                                 </p>
                             </td>
                             <td :class="stateClass(
@@ -547,7 +586,7 @@
                             )
                                 " v-if="
                                     checkVisibility('Factibilidad PINT y PEXT')
-                                " class="border-b border-gray-200 px-2 py-2 text-[13px]">
+                                " class="border-b border-gray-200 px-2 py-2 text-[13px] whitespace-nowrap">
                                 <p class="text-gray-900 text-center">
                                     {{ item?.cicsa_feasibility?.coordinator }}
                                 </p>
@@ -558,9 +597,9 @@
                             )
                                 " v-if="
                                     checkVisibility('Factibilidad PINT y PEXT')
-                                " class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px]">
+                                " class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px] whitespace-nowrap">
                                 <p class="text-gray-900 text-center">
-                                    {{ item?.cicsa_feasibility?.user_name }}
+                                    {{ formatoManager(item?.cicsa_feasibility?.user_name) }}
                                 </p>
                             </td>
 
@@ -618,7 +657,7 @@
                                 <p v-for="materials in item?.cicsa_materials"
                                     class="text-gray-900 text-center whitespace-nowrap">
                                     {{
-                                        materials.user_name
+                                        formatoManager(materials.user_name)
                                     }}
                                 </p>
                             </td>
@@ -658,7 +697,7 @@
                                     checkVisibility('Instalación PINT y PEXT')
                                 " class="border-b border-gray-200 px-2 py-2 text-[13px]">
                                 <p class="text-gray-900 text-center whitespace-nowrap">
-                                    {{ item?.cicsa_installation?.conformity }}
+                                    {{ formattedState(item?.cicsa_installation?.conformity) }}
                                 </p>
                             </td>
                             <td :class="stateClass(item?.cicsa_installation?.report)
@@ -666,7 +705,7 @@
                                     checkVisibility('Instalación PINT y PEXT')
                                 " class="border-b border-gray-200 px-2 py-2 text-[13px]">
                                 <p class="text-gray-900 text-center whitespace-nowrap">
-                                    {{ item?.cicsa_installation?.report }}
+                                    {{ formattedState(item?.cicsa_installation?.report) }}
                                 </p>
                             </td>
                             <td :class="stateClass(
@@ -729,7 +768,7 @@
                                 " v-if="
                                     checkVisibility('Instalación PINT y PEXT')
                                 " class="border-b border-gray-200 px-2 py-2 text-[13px]">
-                                <p class="text-gray-900 text-center">
+                                <p class="text-gray-900 text-center whitespace-nowrap">
                                     {{
                                         item?.cicsa_installation?.coordinator
                                     }}
@@ -741,12 +780,13 @@
                                 " v-if="
                                     checkVisibility('Instalación PINT y PEXT')
                                 " class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item?.cicsa_installation?.user_name }}
+                                <p class="text-gray-900 text-center whitespace-nowrap">
+                                    {{ formatoManager(item?.cicsa_installation?.user_name) }}
                                 </p>
                             </td>
 
-                            <td :class="stateClass(item?.cicsa_project_status)"
+                            <td v-if="checkVisibility(['Asignación', 'Factibilidad PINT y PEXT', 'Materiales', 'Instalación PINT y PEXT'])"
+                                :class="stateClass(item?.cicsa_project_status)"
                                 class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px]">
                                 <div class="flex justify-center">
                                     <p class="font-black uppercase text-center">
@@ -779,36 +819,6 @@
                             </td>
                             <td v-if="checkVisibility('Orden de Compra')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
-                                <p v-for="order in item?.cicsa_purchase_order" :class="stateClassP(
-                                    order?.master_format
-                                )
-                                    " class="text-center">
-                                    {{
-                                        order
-                                            ?.master_format
-                                    }}
-                                </p>
-                            </td>
-                            <td v-if="checkVisibility('Orden de Compra')"
-                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
-                                <p v-for="order in item?.cicsa_purchase_order" :class="stateClassP(
-                                    order?.item3456
-                                )
-                                    " class="text-center">
-                                    {{ order?.item3456 }}
-                                </p>
-                            </td>
-                            <td v-if="checkVisibility('Orden de Compra')"
-                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
-                                <p v-for="order in item?.cicsa_purchase_order" :class="stateClassP(
-                                    order?.budget
-                                )
-                                    " class="text-center">
-                                    {{ order?.budget }}
-                                </p>
-                            </td>
-                            <td v-if="checkVisibility('Orden de Compra')"
-                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
                                 <div v-for="order in item?.cicsa_purchase_order" class="text-center text-red-500">
                                     <button v-if="order.document" type="button"
                                         @click="openPDF(order?.id, 'purchaseOrder')">
@@ -820,24 +830,35 @@
                                 </div>
                             </td>
                             <td v-if="checkVisibility('Orden de Compra')"
-                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
+                                class="border-b border-gray-200 py-2 text-[13px] bg-white">
                                 <p v-for="order in item?.cicsa_purchase_order" :class="stateClassP(
-                                    order?.observation
+                                    order?.master_format
                                 )
-                                    " class="text-gray-900 text-center">
-                                    {{ order?.observation || "--" }}
+                                    " class="text-center">
+                                    {{
+                                        formattedState(order
+                                            ?.master_format)
+                                    }}
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Orden de Compra')"
-                                class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px] bg-white whitespace-nowrap ">
+                                class="border-b border-gray-200 py-2 text-[13px] bg-white">
                                 <p v-for="order in item?.cicsa_purchase_order" :class="stateClassP(
-                                    order?.user_name
+                                    order?.item3456
                                 )
                                     " class="text-center">
-                                    {{ order?.user_name }}
+                                    {{ formattedState(order?.item3456) }}
                                 </p>
                             </td>
-
+                            <td v-if="checkVisibility('Orden de Compra')"
+                                class="border-b border-r-2 border-gray-200 py-2 text-[13px] bg-white">
+                                <p v-for="order in item?.cicsa_purchase_order" :class="stateClassP(
+                                    order?.budget
+                                )
+                                    " class="text-center">
+                                    {{ formattedState(order?.budget) }}
+                                </p>
+                            </td>
                             <td v-if="checkVisibility('Validación de OC')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
                                 <p v-for="order_validation in item?.cicsa_purchase_order_validation" :class="stateClassP(
@@ -854,123 +875,96 @@
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Validación de OC')"
-                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
+                                class="border-b border-gray-200 py-2 text-[13px] bg-white">
                                 <p v-for="order_validation in item?.cicsa_purchase_order_validation" :class="stateClassP(
                                     order_validation
                                         ?.file_validation
                                 )
                                     " class="text-gray-900 text-center whitespace-nowrap">
                                     {{
-                                        order_validation
-                                            ?.file_validation
+                                        formattedState(order_validation
+                                            ?.file_validation)
                                     }}
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Validación de OC')"
-                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
+                                class="border-b border-gray-200 py-2 text-[13px] bg-white">
                                 <p v-for="order_validation in item?.cicsa_purchase_order_validation" :class="stateClassP(
                                     order_validation
                                         ?.materials_control
                                 )
                                     " class="text-gray-900 text-center whitespace-nowrap">
                                     {{
-                                        order_validation
-                                            ?.materials_control
+                                        formattedState(order_validation
+                                            ?.materials_control)
                                     }}
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Validación de OC')"
-                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
+                                class="border-b border-gray-200 py-2 text-[13px] bg-white">
                                 <p v-for="order_validation in item?.cicsa_purchase_order_validation" :class="stateClassP(
                                     order_validation
                                         ?.supervisor
                                 )
                                     " class="text-gray-900 text-center whitespace-nowrap">
                                     {{
-                                        order_validation
-                                            ?.supervisor
+                                        formattedState(order_validation
+                                            ?.supervisor)
                                     }}
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Validación de OC')"
-                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
+                                class="border-b border-gray-200 py-2 text-[13px] bg-white">
                                 <p v-for="order_validation in item?.cicsa_purchase_order_validation" :class="stateClassP(
                                     order_validation
                                         ?.warehouse
                                 )
                                     " class="text-gray-900 text-center whitespace-nowrap">
                                     {{
-                                        order_validation
-                                            ?.warehouse
+                                        formattedState(order_validation
+                                            ?.warehouse)
                                     }}
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Validación de OC')"
-                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
+                                class="border-b border-gray-200 py-2 text-[13px] bg-white">
                                 <p v-for="order_validation in item?.cicsa_purchase_order_validation" :class="stateClassP(
                                     order_validation
                                         ?.boss
                                 )
                                     " class="text-gray-900 text-center whitespace-nowrap">
                                     {{
-                                        order_validation
-                                            ?.boss
+                                        formattedState(order_validation
+                                            ?.boss)
                                     }}
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Validación de OC')"
-                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
+                                class="border-b border-gray-200 py-2 text-[13px] bg-white">
                                 <p v-for="order_validation in item?.cicsa_purchase_order_validation" :class="stateClassP(
                                     order_validation
                                         ?.liquidator
                                 )
                                     " class="text-gray-900 text-center whitespace-nowrap">
                                     {{
-                                        order_validation
-                                            ?.liquidator
+                                        formattedState(order_validation
+                                            ?.liquidator)
                                     }}
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Validación de OC')"
-                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
+                                class="border-b border-gray-200 border-r-2 py-2 text-[13px] bg-white">
                                 <p v-for="order_validation in item?.cicsa_purchase_order_validation" :class="stateClassP(
                                     order_validation
                                         ?.superintendent
                                 )
                                     " class="text-gray-900 text-center whitespace-nowrap">
                                     {{
-                                        order_validation
-                                            ?.superintendent
+                                        formattedState(order_validation
+                                            ?.superintendent)
                                     }}
                                 </p>
                             </td>
-                            <td v-if="checkVisibility('Validación de OC')"
-                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
-                                <p v-for="order_validation in item?.cicsa_purchase_order_validation" :class="stateClassP(
-                                    order_validation
-                                        ?.observations
-                                )
-                                    " class="text-gray-900 text-center whitespace-nowrap">
-                                    {{
-                                        order_validation
-                                            ?.observations || "--"
-                                    }}
-                                </p>
-                            </td>
-                            <td v-if="checkVisibility('Validación de OC')"
-                                class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px] bg-white">
-                                <p v-for="order_validation in item?.cicsa_purchase_order_validation" :class="stateClassP(
-                                    order_validation
-                                        ?.user_name
-                                )
-                                    " class="text-gray-900 text-center whitespace-nowrap">
-                                    {{
-                                        order_validation
-                                            ?.user_name || "--"
-                                    }}
-                                </p>
-                            </td>
-
                             <td v-if="checkVisibility('Orden de Servicio')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
                                 <p v-for="service_order in item?.cicsa_service_order" :class="stateClassP(
@@ -988,65 +982,17 @@
                             </td>
 
                             <td v-if="checkVisibility('Orden de Servicio')"
-                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
+                                class="border-b border-gray-200 py-2 text-[13px] bg-white">
                                 <p v-for="service_order in item?.cicsa_service_order" :class="stateClassP(
                                     service_order
                                         ?.service_order
                                 )
                                     " class="text-gray-900 text-center whitespace-nowrap">
                                     {{
-                                        service_order?.service_order
+                                        formattedState(service_order?.service_order)
                                     }}
                                 </p>
                             </td>
-
-                            <td v-if="checkVisibility('Orden de Servicio')"
-                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
-                                <p v-for="service_order in item?.cicsa_service_order" :class="stateClassP(
-                                    service_order
-                                        ?.estimate_sheet
-                                )
-                                    " class="text-gray-900 text-center whitespace-nowrap">
-                                    {{
-                                        service_order
-                                            ?.estimate_sheet
-                                    }}
-                                </p>
-                            </td>
-                            <td v-if="checkVisibility('Orden de Servicio')"
-                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
-                                <p v-for="service_order in item?.cicsa_service_order" :class="stateClassP(
-                                    service_order
-                                        ?.purchase_order
-                                )
-                                    " class="text-gray-900 text-center whitespace-nowrap">
-                                    {{
-                                        service_order
-                                            ?.purchase_order
-                                    }}
-                                </p>
-                            </td>
-                            <td v-if="checkVisibility('Orden de Servicio')"
-                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
-                                <p v-for="service_order in item?.cicsa_service_order" :class="stateClassP(
-                                    service_order
-                                        ?.pdf_invoice
-                                )
-                                    " class="text-gray-900 text-center whitespace-nowrap">
-                                    {{ service_order?.pdf_invoice }}
-                                </p>
-                            </td>
-                            <td v-if="checkVisibility('Orden de Servicio')"
-                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
-                                <p v-for="service_order in item?.cicsa_service_order" :class="stateClassP(
-                                    service_order
-                                        ?.zip_invoice
-                                )
-                                    " class="text-gray-900 text-center whitespace-nowrap">
-                                    {{ service_order?.zip_invoice }}
-                                </p>
-                            </td>
-
                             <td v-if="checkVisibility('Orden de Servicio')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
                                 <div v-for="service_order in item?.cicsa_service_order"
@@ -1060,16 +1006,73 @@
                                     </p>
                                 </div>
                             </td>
-
                             <td v-if="checkVisibility('Orden de Servicio')"
-                                class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px] bg-white">
+                                class="border-b border-gray-200 py-2 text-[13px] bg-white">
                                 <p v-for="service_order in item?.cicsa_service_order" :class="stateClassP(
                                     service_order
-                                        ?.user_name
+                                        ?.estimate_sheet
                                 )
                                     " class="text-gray-900 text-center whitespace-nowrap">
-                                    {{ service_order?.user_name || "--" }}
+                                    {{
+                                        formattedState(service_order
+                                            ?.estimate_sheet)
+                                    }}
                                 </p>
+                            </td>
+                            <td v-if="checkVisibility('Orden de Servicio')"
+                                class="border-b border-gray-200 py-2 text-[13px] bg-white">
+                                <p v-for="service_order in item?.cicsa_service_order" :class="stateClassP(
+                                    service_order
+                                        ?.purchase_order
+                                )
+                                    " class="text-gray-900 text-center whitespace-nowrap">
+                                    {{
+                                        formattedState(service_order
+                                            ?.purchase_order)
+                                    }}
+                                </p>
+                            </td>
+                            <td v-if="checkVisibility('Orden de Servicio')"
+                                class="border-b border-gray-200 py-2 text-[13px] bg-white">
+                                <p v-for="service_order in item?.cicsa_service_order" :class="stateClassP(
+                                    service_order
+                                        ?.pdf_invoice
+                                )
+                                    " class="text-gray-900 text-center whitespace-nowrap">
+                                    {{ formattedState(service_order?.pdf_invoice) }}
+                                </p>
+                            </td>
+                            <td v-if="checkVisibility('Orden de Servicio')"
+                                class="border-b border-gray-200 py-2 text-[13px] bg-white">
+                                <p v-for="service_order in item?.cicsa_service_order" :class="stateClassP(
+                                    service_order
+                                        ?.zip_invoice
+                                )
+                                    " class="text-gray-900 text-center whitespace-nowrap">
+                                    {{ formattedState(service_order?.zip_invoice) }}
+                                </p>
+                            </td>
+                            <td v-if="checkVisibility('Orden de Servicio')"
+                                class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px] bg-white">
+                                <div v-for="service_order in item?.cicsa_service_order"
+                                    class="text-center text-red-500">
+                                    <button v-if="service_order.document_invoice" type="button"
+                                        @click="openPDF(service_order?.id, 'serviceOrder')">
+                                        <EyeIcon class="w-4 h-4 text-green-600" />
+                                    </button>
+                                    <p v-else>
+                                        --
+                                    </p>
+                                </div>
+                            </td>
+                            <td v-if="checkVisibility(['Orden de Compra', 'Validación de OC', 'Orden de Servicio'])"
+                                :class="stateClass(item?.cicsa_administration_status)"
+                                class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px]">
+                                <div class="flex justify-center">
+                                    <p class="font-black uppercase text-center">
+                                        {{ item?.cicsa_administration_status }}
+                                    </p>
+                                </div>
                             </td>
 
                             <td v-if="checkVisibility('Cobranza')"
@@ -1080,7 +1083,7 @@
                                 )
                                     " class="text-gray-900 text-center whitespace-nowrap">
                                     {{
-                                        item?.cicsa_charge_area?.invoice_number || "--"
+                                        charge_area?.invoice_number || "--"
                                     }}
                                 </p>
                             </td>
@@ -1099,18 +1102,7 @@
                                     }}
                                 </p>
                             </td>
-                            <td v-if="checkVisibility('Cobranza')"
-                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
-                                <div v-for="charge_area in item?.cicsa_charge_area" class="text-center text-red-500">
-                                    <button v-if="charge_area.document" type="button"
-                                        @click="openPDF(charge_area?.id, 'chargeAreaOrder')">
-                                        <EyeIcon class="w-4 h-4 text-green-600" />
-                                    </button>
-                                    <p v-else>
-                                        --
-                                    </p>
-                                </div>
-                            </td>
+                            
 
                             <td v-if="checkVisibility('Cobranza')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
@@ -1172,7 +1164,8 @@
                                     }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
+                            <td v-if="checkVisibility('Cobranza')"
+                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
                                 <p v-for="charge_area in item?.cicsa_charge_area" :class="stateClassP(
                                     charge_area
                                         ?.amount
@@ -1183,11 +1176,100 @@
                                             ? "S/."
                                             : ""
                                     }}
-                                    {{ charge_area?.amount ?? "--" }}
+                                    {{ charge_area?.amount ? charge_area?.amount.toFixed(2) : "--" }}
+                                </p>
+                            </td>
+
+                            <td v-if="checkVisibility('Cobranza')"
+                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
+                                <p v-for="charge_area in item?.cicsa_charge_area" :class="stateClassP(
+                                    charge_area
+                                        ?.deposit_date
+                                )
+                                    " class="text-gray-900 text-center whitespace-nowrap">
+                                    {{ formattedDate(charge_area?.deposit_date) ?? "--" }}
+                                </p>
+                            </td>
+
+                            <td v-if="checkVisibility('Cobranza')"
+                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
+                                <p v-for="charge_area in item?.cicsa_charge_area" :class="stateClassP(
+                                    charge_area
+                                        ?.transaction_number_current
+                                )
+                                    " class="text-gray-900 text-center whitespace-nowrap">
+                                    {{ charge_area?.transaction_number_current ?? "--" }}
+                                </p>
+                            </td>
+
+                            <td v-if="checkVisibility('Cobranza')"
+                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
+                                <p v-for="charge_area in item?.cicsa_charge_area" :class="stateClassP(
+                                    charge_area
+                                        ?.checking_account_amount
+                                )
+                                    " class="text-gray-900 text-center whitespace-nowrap">
+                                    {{
+                                        charge_area?.checking_account_amount
+                                            ? "S/."
+                                            : ""
+                                    }}
+                                    {{ charge_area?.checking_account_amount ? charge_area?.checking_account_amount.toFixed(2) : "--" }}
+                                </p>
+                            </td>
+
+                            <td v-if="checkVisibility('Cobranza')"
+                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
+                                <p v-for="charge_area in item?.cicsa_charge_area" :class="stateClassP(
+                                    charge_area
+                                        ?.deposit_date_bank
+                                )
+                                    " class="text-gray-900 text-center whitespace-nowrap">
+
+                                    {{ formattedDate(charge_area?.deposit_date_bank) ?? "--" }}
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Cobranza')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
+                                <p v-for="charge_area in item?.cicsa_charge_area" :class="stateClassP(
+                                    charge_area
+                                        ?.transaction_number_bank
+                                )
+                                    " class="text-gray-900 text-center whitespace-nowrap">
+                                    
+                                    {{ charge_area?.transaction_number_bank ?? "--" }}
+                                </p>
+                            </td>
+
+                            <td v-if="checkVisibility('Cobranza')"
+                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
+                                <p v-for="charge_area in item?.cicsa_charge_area" :class="stateClassP(
+                                    charge_area
+                                        ?.amount_bank
+                                )
+                                    " class="text-gray-900 text-center whitespace-nowrap">
+                                    {{
+                                        charge_area?.amount_bank
+                                            ? "S/."
+                                            : ""
+                                    }}
+                                    {{ charge_area?.amount_bank ? charge_area?.amount_bank.toFixed(2) : "--" }}
+                                </p>
+                            </td>
+                            <td v-if="checkVisibility('Cobranza')"
+                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
+                                <div v-for="charge_area in item?.cicsa_charge_area" class="text-center text-red-500">
+                                    <button v-if="charge_area.document" type="button"
+                                        @click="openPDF(charge_area?.id, 'chargeAreaOrder')">
+                                        <EyeIcon class="w-4 h-4 text-green-600" />
+                                    </button>
+                                    <p v-else>
+                                        --
+                                    </p>
+                                </div>
+                            </td>
+                            <td v-if="checkVisibility('Cobranza')"
+                                class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px] bg-white">
                                 <p v-for="charge_area in item?.cicsa_charge_area" :class="stateClassP(
                                     charge_area
                                         ?.state
@@ -1197,17 +1279,10 @@
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Cobranza')"
-                                class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px] bg-white">
-                                <p v-for="charge_area in item?.cicsa_charge_area" :class="stateClassP(
-                                    charge_area
-                                        ?.user_name
+                                class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px]" :class="stateClass(
+                                    item?.cicsa_charge_status
                                 )
-                                    " class="text-gray-900 text-center whitespace-nowrap">
-                                    {{ charge_area?.user_name ?? "--" }}
-                                </p>
-                            </td>
-                            <td :class="stateClass(item?.cicsa_charge_status)"
-                                class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px]">
+                                    ">
                                 <div class="flex justify-center">
                                     <p class="font-black uppercase text-center">
                                         {{ item?.cicsa_charge_status }}
@@ -1241,7 +1316,7 @@
                             </p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 text-center">
+                            <p v-if="dataToRender[0].cicsa_charge_area" class="text-gray-900 text-center">
                                 Monto Total: S/.
                                 {{ getTotalAmount(dataToRender) }}
                             </p>
@@ -1417,6 +1492,8 @@ const { auth, projects } = defineProps({
     auth: Object,
     projects: Object,
 });
+
+console.log(projects)
 const dataToRender = ref(projects.data);
 const filterMode = ref(false);
 
@@ -1483,9 +1560,15 @@ const selectedOptions = ref([
     "Orden de Servicio",
     "Cobranza",
 ]);
+
 function checkVisibility(option) {
-    return selectedOptions.value.includes(option);
+    if (typeof option === 'string') {
+        return selectedOptions.value.includes(option);
+    } else {
+        return option.some(item => selectedOptions.value.includes(item));
+    }
 }
+
 watch(selectedOptions, async () => {
     await nextTick();
     establishStickyStyles();
@@ -1515,13 +1598,13 @@ const stateClassP = (state) => {
         case false:
         case "":
         case "Pendiente":
-            return "text-red-500";
+            return "bg-red-100";
         case "En Proceso":
-            return "text-yellow-500";
+            return "bg-yellow-100";
         case "Completado":
-            return "text-green-500";
+            return "bg-green-100";
         default:
-            return "text-black";
+            return "bg-white";
     }
 };
 
@@ -1537,8 +1620,10 @@ function getTotalAmount(objArray) {
 }
 
 //filter
+const stages = ["Proyecto", "Administracion", "Cobranza"];
 const stats = ["Pendiente", "En Proceso", "Completado"];
 const initSearch = {
+    typeStages: "",
     project_status: [...stats],
     charge_status: [...stats],
     opStartDate: "",
@@ -1551,6 +1636,7 @@ const filterForm = ref({ ...initSearch });
 
 watch(
     () => [
+        filterForm.value.typeStages,
         filterForm.value.project_status,
         filterForm.value.charge_status,
         filterForm.value.opStartDate,
@@ -1566,6 +1652,29 @@ watch(
     { deep: true }
 );
 
+watch(
+    () => [
+        filterForm.value.typeStages,
+    ],
+    () => {
+        if (filterForm.value.typeStages === "Proyecto") {
+            selectedOptions.value = ["Asignación",
+                "Factibilidad PINT y PEXT",
+                "Materiales",
+                "Instalación PINT y PEXT"]
+        } else if (filterForm.value.typeStages === "Administracion") {
+            selectedOptions.value = [
+                "Orden de Compra",
+                "Validación de OC",
+                "Orden de Servicio"]
+        } else {
+            selectedOptions.value = [
+                "Cobranza"]
+        }
+    },
+    { deep: true }
+);
+
 watch(dataToRender, async () => {
     await nextTick();
     establishStickyStyles();
@@ -1574,11 +1683,13 @@ watch(dataToRender, async () => {
 async function search_advance($data) {
     let res = await axios.post(route("cicsa.advance.search"), $data);
     dataToRender.value = res.data;
+    console.log(dataToRender.value)
 }
 
 const childRef = ref(null);
 const childRef2 = ref(null);
 function getAllData() {
+    filterForm.value.typeStages = ""
     filterMode.value = true;
     childRef.value.checkAll();
     childRef2.value.checkAll();
@@ -1657,4 +1768,35 @@ async function openPDF(id, cicsa) {
         console.error('No se proporcionó un ID de imagen válido');
     }
 }
+
+function formattedState(state) {
+    switch (state) {
+        case 'Pendiente': return 'Pe'
+        case 'En Proceso': return 'Pr'
+        case 'Completado': return 'Co'
+        default: return ''
+    }
+}
+
+function formatoManager(userName) {
+    if (userName) {
+        const name = userName.split(" ");
+        const firstName = name[0];
+        const firstLastName = name[1] ? name[1][0] + "." : "";
+        return `${firstName} ${firstLastName}`;
+    } else {
+        return ""
+    }
+}
+
+function reverseWordsWithBreaks(columnTitle) {
+    return columnTitle.split(" ").reverse().join("<br>");
+}
+
 </script>
+<style>
+.title {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+}
+</style>

@@ -10,8 +10,8 @@
         <div class="inline-block min-w-full mb-4">
             <div class="flex gap-4 justify-between">
                 <div class="hidden sm:flex sm:items-center space-x-3">
-                    <PrimaryButton v-if="hasPermission('ProjectManager') && filterForm.rejected" @click="openCreateAdditionalModal"
-                        type="button" class="whitespace-nowrap">
+                    <PrimaryButton v-if="hasPermission('ProjectManager') && filterForm.rejected"
+                        @click="openCreateAdditionalModal" type="button" class="whitespace-nowrap">
                         + Agregar
                     </PrimaryButton>
                     <button data-tooltip-target="export_tooltip" type="button"
@@ -58,7 +58,8 @@
                         <template #content class="origin-left">
                             <div class="dropdown">
                                 <div class="dropdown-menu">
-                                    <button v-if="hasPermission('ProjectManager') && filterForm.rejected" @click="openCreateAdditionalModal"
+                                    <button v-if="hasPermission('ProjectManager') && filterForm.rejected"
+                                        @click="openCreateAdditionalModal"
                                         class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                         Agregar
                                     </button>
@@ -258,6 +259,14 @@
                                 <div v-else class="w-1/2"></div>
 
                                 <div v-if="hasPermission('ProjectManager')" class="flex gap-3 mr-3">
+                                    <button v-if="!filterForm.rejected" data-tooltip-target="tooltip-up-ac" @click="() => validateRegister(item.id, true)
+                                        " class="flex items-center rounded-xl text-blue-700 hover:bg-green-200">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15m0-3-3-3m0 0-3 3m3-3V15" />
+                                        </svg>
+                                    </button>
                                     <button @click="openEditAdditionalModal(item)"
                                         class="text-amber-600 hover:underline">
                                         <PencilSquareIcon class="h-5 w-5 ml-1" />
@@ -521,8 +530,8 @@
 
         <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Gasto"
             :deleteFunction="deleteAdditional" @closeModal="closeModalDoc" />
-        <SuccessOperationModal :confirming="confirmValidation" :title="'Validación'"
-            :message="'La validación del gasto fue exitosa.'" />
+        <!-- <SuccessOperationModal :confirming="confirmValidation" :title="'Validación'"
+            :message="'La validación del gasto fue exitosa.'" /> -->
     </AuthenticatedLayout>
 </template>
 
@@ -804,17 +813,22 @@ watch([() => form.type_doc, () => form.zone], () => {
     }
 });
 
-const confirmValidation = ref(false);
+// const confirmValidation = ref(false);
 
 async function validateRegister(expense_id, is_accepted) {
     const url = route("projectmanagement.pext.expenses.validate", { 'expense_id': expense_id })
     try {
         await axios.put(url, { 'is_accepted': is_accepted });
-        updateExpense(expense_id, "validate", is_accepted)
-        confirmValidation.value = true;
-        setTimeout(() => {
-            confirmValidation.value = false;
-        }, 1000);
+        if(filterForm.value.rejected){
+            updateExpense(expense_id, "validate", is_accepted)
+        } else {
+            updateExpense(expense_id, "rejectedValidate")
+        }
+        
+        // confirmValidation.value = true;
+        // setTimeout(() => {
+        //     confirmValidation.value = false;
+        // }, 1000);
     } catch (e) {
         console.log(e);
     }
@@ -823,7 +837,7 @@ async function validateRegister(expense_id, is_accepted) {
 function updateExpense(expense, action, state) {
     if (action === "create") {
         expenses.value.data.unshift(expense)
-        notify('Gasto Guardado')
+        notify('Gasto Creado')
     } else if (action === "update") {
         let index = expenses.value.data.findIndex(item => item.id == expense.id)
         expenses.value.data[index] = expense
@@ -836,14 +850,21 @@ function updateExpense(expense, action, state) {
         let index = expenses.value.data.findIndex(item => item.id == expense)
         if (state) {
             expenses.value.data[index].is_accepted = state;
+            notify('Gasto Aceptado')
         } else {
             expenses.value.data.splice(index, 1);
+            notify('Gasto Rechazado')
         }
-
-    }
+    } else if (action === "rejectedValidate") {
+        let index = expenses.value.data.findIndex(item => item.id == expense)
+        expenses.value.data.splice(index, 1);
+        notify('El gasto paso a ser aceptado')
+    } 
 }
 
 async function rejectedExpenses() {
+    console.log(filterForm.value.rejected)
     filterForm.value.rejected = !filterForm.value.rejected
+    
 }
 </script>
