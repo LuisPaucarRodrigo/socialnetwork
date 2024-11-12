@@ -285,9 +285,9 @@
             </div>
         </div>
 
-        <Modal :show="showAddEditModal" @close="closeAddAssignationModal">
+        <Modal :show="showAddEditModal" @close="closeAddAssignationModal" :maxWidth="showPdfPreview ? '6xl' : '2xl'">
             <div class="p-6 flex gap-6">
-                <div class="w-full h-full" >
+                <div :class="showPdfPreview ? 'w-1/2' : 'w-full'">
                     <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
                         {{ form.id ? 'Editar Cobranza' : 'Nueva Cobranza' }} {{ invoice_number ? ": " + invoice_number :
                             ""
@@ -341,14 +341,14 @@
                                     <InputError :message="form.errors.amount" />
                                 </div>
                             </div>
-                            <!-- <div class="sm:col-span-1">
-                                <InputLabel for="amount">Doc Factura</InputLabel>
+                            <div v-if="doc_invoice" class="sm:col-span-1">
+                                <InputLabel for="doc_invoice">Doc Factura</InputLabel>
                                 <div class="mt-2">
                                     <button class="flex justify-center py-1.5" type="button" @click="togglePdfPreview">
                                         <EyeIcon class="w-5 h-5 text-green-600" />
                                     </button>
                                 </div>
-                            </div> -->
+                            </div>
                             <h2 class="sm:col-span-full text-lg font-medium text-gray-800 border-b-2 border-gray-100">
                                 Pagos
                             </h2>
@@ -430,8 +430,9 @@
                         </div>
                     </form>
                 </div>
-                <div v-if="showPdfPreview" class="w-200 h-1\2 bg-gray-100 rounded-lg p-4 overflow-y-auto bg-red-100">
-                    <iframe :src="pdfUrl" class="w-full h-full border-none" frameborder="0"></iframe>
+                <div v-if="showPdfPreview" class="w-1/2 bg-gray-100 rounded-lg p-4 overflow-y-auto">
+                    <iframe :src="pdfUrl" class="w-full h-full " style="min-height: auto; max-height: auto;"
+                        ></iframe>
                 </div>
             </div>
         </Modal>
@@ -474,6 +475,8 @@ const errorAmount = ref(false)
 const charge_area_row = ref(0)
 const showPdfPreview = ref(false)
 const pdfUrl = ref(null)
+const service_order_id = ref(null)
+const doc_invoice = ref(null)
 
 const initialState = {
     id: null,
@@ -493,6 +496,7 @@ const initialState = {
     user_name: '',
     cicsa_assignation_id: '',
     cicsa_purchase_order_id: '',
+    
 }
 
 const form = useForm(
@@ -503,6 +507,9 @@ const form = useForm(
 const showAddEditModal = ref(false);
 
 function closeAddAssignationModal() {
+    doc_invoice.value = null
+    service_order_id.value = null
+    showPdfPreview.value  = false
     showAddEditModal.value = false
     form.defaults({ ...initialState })
     form.reset()
@@ -511,6 +518,8 @@ function closeAddAssignationModal() {
 const confirmUpdateAssignation = ref(false);
 
 function openEditModal(item) {
+    doc_invoice.value = item.cicsa_purchase_order.cicsa_service_order.document_invoice
+    service_order_id.value = item.cicsa_purchase_order.cicsa_service_order.id
     invoice_number.value = item?.invoice_number
     form.defaults({ ...item, user_name: auth.user.name, user_id: auth.user.id })
     form.reset()
@@ -621,9 +630,15 @@ async function openPDF(chargeAreaId) {
     }
 }
 
-function togglePdfPreview(){
-    showPdfPreview.value = !showPdfPreview.value
-    pdfUrl.value = 'http://127.0.0.1:8000/documents/cicsa/cicsaChargeAreaOrder/1731273392._Ensayo.pdf'
+async function togglePdfPreview() {
+    const url = route('cicsa.service_orders.showDocument', { serviceOrder: service_order_id.value, doc: 'invoiceCharge' });
+    try {
+        let response = await axios.get(url)
+        pdfUrl.value = response.data.url;
+        showPdfPreview.value = !showPdfPreview.value
+    } catch (error) {
+        console.error(error.message)
+    }
 }
 
 function updateChargeArea(chargeArea) {

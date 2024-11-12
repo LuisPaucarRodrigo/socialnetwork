@@ -11,7 +11,8 @@
                 <a :href="route('cicsa.service_orders.export') + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)" placeholder="Buscar ..." />
+                    <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
+                        placeholder="Buscar ..." />
                     <SelectCicsaComponent currentSelect="Orden de Servicio" />
                     <div id="search_fields" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
@@ -158,7 +159,7 @@
                                     </td>
                                     <td class="border-b text-center border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <button v-if="materialDetail?.document" type="button"
-                                            @click="openPDF(materialDetail?.id)">
+                                            @click="openPDF(materialDetail?.id, 'OS')">
                                             <EyeIcon class="w-5 h-5 text-green-600" />
                                         </button>
                                     </td>
@@ -183,10 +184,10 @@
                                         </p>
                                     </td>
                                     <td class="border-b text-center border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <!-- <button v-if="materialDetail?.document" type="button"
-                                            @click="openPDF(materialDetail?.id)">
+                                        <button v-if="materialDetail?.document_invoice" type="button"
+                                            @click="openPDF(materialDetail?.id, 'invoice')">
                                             <EyeIcon class="w-5 h-5 text-green-600" />
-                                        </button> -->
+                                        </button>
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 text-center">
@@ -309,13 +310,13 @@
                                 <InputError :message="form.errors.zip_invoice" />
                             </div>
                         </div>
-                        <!-- <div class="sm:col-span-1">
+                        <div class="sm:col-span-1">
                             <InputLabel for="document">Documento Fac</InputLabel>
                             <div>
-                                <InputFile type="file" v-model="form.documentFac" id="document" accept=".pdf" />
-                                <InputError :message="form.errors.documentFac" />
+                                <InputFile type="file" v-model="form.document_invoice" id="document" accept=".pdf" />
+                                <InputError :message="form.errors.document_invoice" />
                             </div>
-                        </div> -->
+                        </div>
                     </div>
                     <br>
                     <div class="mt-6 flex justify-end">
@@ -373,7 +374,7 @@ const initialState = {
     pdf_invoice: 'Pendiente',
     zip_invoice: 'Pendiente',
     document: '',
-    documentFac: '',
+    document_invoice: '',
     user_name: '',
     cicsa_assignation_id: '',
     cicsa_purchase_order_id: '',
@@ -444,9 +445,9 @@ const toggleDetails = (cicsa_service_order) => {
     }
 }
 
-async function openPDF(serviceOrderId) {
+async function openPDF(serviceOrderId, doc) {
     if (serviceOrderId) {
-        const url = route('cicsa.service_orders.showDocument', { serviceOrder: serviceOrderId });
+        const url = route('cicsa.service_orders.showDocument', { serviceOrder: serviceOrderId, doc: doc });
         await axios.get(url)
             .then(response => {
                 const imageUrl = response.data.url;

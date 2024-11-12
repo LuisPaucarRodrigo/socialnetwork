@@ -87,7 +87,7 @@
                                     {{ formattedDate(item.assignation_date) }}
                                 </p>
                             </td>
-                            
+
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.customer }}
@@ -275,9 +275,13 @@ import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import { setAxiosErrors } from "@/utils/utils";
 
-const { assignation, auth } = defineProps({
+const { assignation, auth, searchCondition } = defineProps({
     assignation: Object,
-    auth: Object
+    auth: Object,
+    searchCondition: {
+        type: String,
+        Required: false
+    }
 })
 
 const assignations = ref(assignation);
@@ -390,5 +394,9 @@ function updateAssignation(cicsa_assignation_id, assignation) {
     if (validations.length > assignations.value.per_page) {
         validations.pop();
     }
+}
+
+if(searchCondition){
+    search(searchCondition)
 }
 </script>

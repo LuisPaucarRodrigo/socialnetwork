@@ -78,24 +78,24 @@
                                 colspan="3"></th>
                             <th v-if="checkVisibility('Asignación')"
                                 class="bg-indigo-800 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
-                                colspan="9">
+                                colspan="10">
                                 Asignación
                             </th>
                             <th v-if="
                                 checkVisibility('Factibilidad PINT y PEXT')
                             " class="bg-indigo-800 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
-                                colspan="5">
+                                colspan="6">
                                 Factibilidad PINT y PEXT
                             </th>
                             <th v-if="checkVisibility('Materiales')"
                                 class="bg-indigo-800 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
-                                colspan="4">
+                                colspan="5">
                                 Materiales
                             </th>
                             <th v-if="
                                 checkVisibility('Instalación PINT y PEXT')
                             " class="bg-indigo-800 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
-                                colspan="9">
+                                colspan="10">
                                 Instalación PINT y PEXT
                             </th>
                             <th v-if="
@@ -149,142 +149,227 @@
                                     v-model:noDate="filterForm.opNoDate" width="w-40" />
                             </th>
                             <th ref="thProjectName" :class="[
-                                'title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600',
+                                'border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600',
                                 `sticky left-0 z-30`,
-                            ]" v-html="reverseWordsWithBreaks('Nombre del Proyecto')">
-                            </th>
-                            <th ref="thProjectCode" :style="thStickyStyle.pc_sticky" :class="[
-                                `title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600`,
                             ]">
                                 <div class="flex justify-center">
-                                    <p v-html="reverseWordsWithBreaks('Código del Proyecto')"></p>
+                                    <p class="title" v-html="reverseWordsWithBreaks('Nombre del Proyecto')"></p>
+                                </div>
+                            </th>
+                            <th ref="thProjectCode" :style="thStickyStyle.pc_sticky" :class="[
+                                `border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600`,
+                            ]">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Código del Proyecto')"></p>
                                 </div>
                             </th>
 
                             <th :style="thStickyStyle.pcpe_sticky" :class="[
-                                'title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600',
+                                'border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600',
                                 checkVisibility('Asignación')
                                     ? ''
                                     : 'border-r-2',
                             ]">
-                                CPE
-                            </th>
-                            <th v-if="checkVisibility('Asignación')" v-html="reverseWordsWithBreaks('Centro de Costos')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            </th>
-                            <th v-if="checkVisibility('Asignación')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Zona
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('CPE')"></p>
+                                </div>
                             </th>
                             <th v-if="checkVisibility('Asignación')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Cliente
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Centro de Costos')"></p>
+                                </div>
                             </th>
                             <th v-if="checkVisibility('Asignación')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Gestor
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Zona')"></p>
+                                </div>
                             </th>
-                            <th v-if="checkVisibility('Asignación')" v-html="reverseWordsWithBreaks('Encargado CCIP')"
-                                class="title border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            <th v-if="checkVisibility('Asignación')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Cliente')"></p>
+                                </div>
                             </th>
-                            <th v-if="
-                                checkVisibility('Factibilidad PINT y PEXT')
-                            " v-html="reverseWordsWithBreaks('Fecha de Factibilidad')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                            <th v-if="checkVisibility('Asignación')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Gestor')"></p>
+                                </div>
+                            </th>
+                            <th v-if="checkVisibility('Asignación')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Encargado CCIP')"></p>
+                                </div>
+                            </th>
+                            <th v-if="checkVisibility('Asignación')"
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Acciones')"></p>
+                                </div>
                             </th>
                             <th v-if="
                                 checkVisibility('Factibilidad PINT y PEXT')
                             "
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Informe
-                            </th>
-                            <th v-if="
-                                checkVisibility('Factibilidad PINT y PEXT')
-                            " v-html="reverseWordsWithBreaks('Materiales de Factibilidad')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Fecha de Factibilidad')"></p>
+                                </div>
                             </th>
                             <th v-if="
                                 checkVisibility('Factibilidad PINT y PEXT')
                             "
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Coordinador
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Informe')"></p>
+                                </div>
                             </th>
                             <th v-if="
                                 checkVisibility('Factibilidad PINT y PEXT')
-                            " v-html="reverseWordsWithBreaks('Encargado CCIP')"
-                                class="title border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                            "
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Materiales de Factibilidad')"></p>
+                                </div>
                             </th>
-                            <th v-if="checkVisibility('Materiales')" v-html="reverseWordsWithBreaks('Fecha de Recojo')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                            <th v-if="
+                                checkVisibility('Factibilidad PINT y PEXT')
+                            "
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Coordinador')"></p>
+                                </div>
+                            </th>
+                            <th v-if="
+                                checkVisibility('Factibilidad PINT y PEXT')
+                            "
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Encargado CCIP')"></p>
+                                </div>
+                            </th>
+                            <th v-if="
+                                checkVisibility('Factibilidad PINT y PEXT')
+                            "
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Acciones')"></p>
+                                </div>
                             </th>
                             <th v-if="checkVisibility('Materiales')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Guía
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Fecha de Recojo')"></p>
+                                </div>
                             </th>
                             <th v-if="checkVisibility('Materiales')"
-                                v-html="reverseWordsWithBreaks('Lista de Materiales')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Guía')"></p>
+                                </div>
                             </th>
-                            <th v-if="checkVisibility('Materiales')" v-html="reverseWordsWithBreaks('Encargado CCIP')"
-                                class="title border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                            <th v-if="checkVisibility('Materiales')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Lista de Materiales')"></p>
+                                </div>
                             </th>
-                            <th v-if="
-                                checkVisibility('Instalación PINT y PEXT')
-                            " v-html="reverseWordsWithBreaks('Fecha de Pext')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
-                            </th>
-                            <th v-if="
-                                checkVisibility('Instalación PINT y PEXT')
-                            " v-html="reverseWordsWithBreaks('Fecha de Pint')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                            <th v-if="checkVisibility('Materiales')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Encargado CCIP')"></p>
+                                </div>
                             </th>
                             <th v-if="
-                                checkVisibility('Instalación PINT y PEXT')
-                            " v-html="reverseWordsWithBreaks('Acta de Conformidad')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                                checkVisibility('Materiales')
+                            "
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Acciones')"></p>
+                                </div>
                             </th>
                             <th v-if="
                                 checkVisibility('Instalación PINT y PEXT')
                             "
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Informe
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Fecha de Pext')"></p>
+                                </div>
+                            </th>
+                            <th v-if="
+                                checkVisibility('Instalación PINT y PEXT')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Fecha de Pint')"></p>
+                                </div>
                             </th>
                             <th v-if="
                                 checkVisibility('Instalación PINT y PEXT')
-                            " v-html="reverseWordsWithBreaks('Lista de Materiales Liquidados')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                            "
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Acta de Conformidad')"></p>
+                                </div>
                             </th>
                             <th v-if="
                                 checkVisibility('Instalación PINT y PEXT')
-                            " v-html="reverseWordsWithBreaks('Fecha de Envío de Informe')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                            "
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Informe')"></p>
+                                </div>
                             </th>
                             <th v-if="
                                 checkVisibility('Instalación PINT y PEXT')
-                            " v-html="reverseWordsWithBreaks('Monto Proyectado sin IGV')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                            "
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Lista de Materiales Liquidados')">
+                                    </p>
+                                </div>
+                            </th>
+                            <th v-if="
+                                checkVisibility('Instalación PINT y PEXT')
+                            "
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Fecha de Envío de Informe')">
+                                    </p>
+                                </div>
+                            </th>
+                            <th v-if="
+                                checkVisibility('Instalación PINT y PEXT')
+                            "
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Monto Proyectado sin IGV')">
+                                    </p>
+                                </div>
                             </th>
                             <th v-if="checkVisibility('Instalación PINT y PEXT')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Coordinador
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Coordinador')">
+                                    </p>
+                                </div>
                             </th>
                             <th v-if="
                                 checkVisibility('Instalación PINT y PEXT')
-                            " v-html="reverseWordsWithBreaks('Encargado CCIP')"
-                                class="title border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                            "
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Encargado CCIP')"></p>
+                                </div>
+                            </th>
+                            <th v-if="
+                                checkVisibility('Instalación PINT y PEXT')
+                            "
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Acciones')"></p>
+                                </div>
                             </th>
                             <th v-if="
                                 checkVisibility(['Asignación', 'Factibilidad PINT y PEXT', 'Materiales'
@@ -295,184 +380,257 @@
                                         :options="[...stats]" v-model="filterForm.project_status" ref="childRef" />
                                 </div>
                             </th>
-                            <th v-if="checkVisibility('Orden de Compra')" v-html="reverseWordsWithBreaks('Fecha de OC')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            <th v-if="checkVisibility('Orden de Compra')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Fecha de OC')"> </p>
+                                </div>
+                            </th>
+                            <th v-if="checkVisibility('Orden de Compra')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Numero de OC')"> </p>
+                                </div>
+                            </th>
+                            <th v-if="checkVisibility('Orden de Compra')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Doc OC')">
+                                    </p>
+                                </div>
+                            </th>
+                            <th v-if="checkVisibility('Orden de Compra')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Formato Maestro')">
+                                    </p>
+                                </div>
+                            </th>
+                            <th v-if="checkVisibility('Orden de Compra')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Item 3456')">
+                                    </p>
+                                </div>
 
                             </th>
                             <th v-if="checkVisibility('Orden de Compra')"
-                                v-html="reverseWordsWithBreaks('Numero de OC')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
-                            </th>
-                            <th v-if="checkVisibility('Orden de Compra')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Doc OC
-                            </th>
-                            <th v-if="checkVisibility('Orden de Compra')"
-                                v-html="reverseWordsWithBreaks('Formato Maestro')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
-                            </th>
-                            <th v-if="checkVisibility('Orden de Compra')" v-html="reverseWordsWithBreaks('Item 3456')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
-                            </th>
-                            <th v-if="checkVisibility('Orden de Compra')"
-                                class="title border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Presupuesto
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Presupuesto')"> </p>
+                                </div>
                             </th>
                             <th v-if="checkVisibility('Validación de OC')"
-                                v-html="reverseWordsWithBreaks('Fecha de IniciO')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Fecha de Inicio')"> </p>
+                                </div>
                             </th>
                             <th v-if="checkVisibility('Validación de OC')"
-                                v-html="reverseWordsWithBreaks('Validacion de expediente')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Validacion de expediente')"> </p>
+                                </div>
                             </th>
                             <th v-if="checkVisibility('Validación de OC')"
-                                v-html="reverseWordsWithBreaks('Control de Materiales')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Control de Materiales')"> </p>
+                                </div>
                             </th>
                             <th v-if="checkVisibility('Validación de OC')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Supervisor
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Supervisor')"> </p>
+                                </div>
                             </th>
                             <th v-if="checkVisibility('Validación de OC')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Almacen
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Almacen')"> </p>
+                                </div>
                             </th>
                             <th v-if="checkVisibility('Validación de OC')"
-                                v-html="reverseWordsWithBreaks('Jefe de Obra')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Jefe de Obra')"> </p>
+                                </div>
                             </th>
                             <th v-if="checkVisibility('Validación de OC')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Liquidador
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Liquidador')"> </p>
+                                </div>
                             </th>
                             <th v-if="checkVisibility('Validación de OC')"
-                                class="title border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                Superintendente
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Superintendente')"> </p>
+                                </div>
                             </th>
                             <th v-if="checkVisibility('Orden de Servicio')"
-                                v-html="reverseWordsWithBreaks('Fecha de Orden de Servicio')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Fecha de Orden de Servicio')"> </p>
+                                </div>
                             </th>
                             <th v-if="checkVisibility('Orden de Servicio')"
-                                v-html="reverseWordsWithBreaks('Orden de Servicio')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
-                            </th>
-                            <th v-if="checkVisibility('Orden de Servicio')" v-html="reverseWordsWithBreaks('Doc OS')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Orden de Servicio')"> </p>
+                                </div>
                             </th>
                             <th v-if="checkVisibility('Orden de Servicio')"
-                                v-html="reverseWordsWithBreaks('Hoja de Estimación')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Doc OS')"> </p>
+                                </div>
                             </th>
                             <th v-if="checkVisibility('Orden de Servicio')"
-                                v-html="reverseWordsWithBreaks('Orden de Compra')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Hoja de Estimación')"> </p>
+                                </div>
                             </th>
                             <th v-if="checkVisibility('Orden de Servicio')"
-                                v-html="reverseWordsWithBreaks('Factura en PDF')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Orden de Compra')"> </p>
+                                </div>
                             </th>
                             <th v-if="checkVisibility('Orden de Servicio')"
-                                v-html="reverseWordsWithBreaks('Factura en ZIP')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Factura en PDF')"> </p>
+                                </div>
                             </th>
-                            <th v-if="checkVisibility('Orden de Servicio')" v-html="reverseWordsWithBreaks('Doc Fac')"
-                                class="title border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                            <th v-if="checkVisibility('Orden de Servicio')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Factura en ZIP')"> </p>
+                                </div>
+                            </th>
+                            <th v-if="checkVisibility('Orden de Servicio')"
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Doc Fac')"> </p>
+                                </div>
                             </th>
                             <th v-if="checkVisibility(['Orden de Compra', 'Validación de OC'
                                 , 'Orden de Servicio'])"
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-[11px] font-semibold uppercase tracking-wider">
                                 <div class="w-[150px]">
                                     <TableHeaderCicsaFilter label="E. C." labelClass=" text-gray-600"
-                                        :options="[...stats]" v-model="filterForm.charge_status" ref="childRef2" />
+                                        :options="[...stats]" v-model="filterForm.administration_status"
+                                        ref="childRef2" />
                                 </div>
                             </th>
 
-                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Número de Factura')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Número de Factura')"> </p>
+                                </div>
                             </th>
-                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Fecha de Factura')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Fecha de Factura')"> </p>
+                                </div>
                             </th>
-                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Crédito A')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Crédito A')"> </p>
+                                </div>
                             </th>
-                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Fecha de Pago')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Fecha de Pago')"> </p>
+                                </div>
                             </th>
-                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Días de Atraso')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Días de Atraso')"> </p>
+                                </div>
                             </th>
-                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Fecha de Abono')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Fecha de Abono')"> </p>
+                                </div>
                             </th>
-                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Monto con IGV')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Monto con IGV')"> </p>
+                                </div>
                             </th>
-                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Fecha de abono de Cuenta Corriente')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title"
+                                        v-html="reverseWordsWithBreaks('Fecha de abono de Cuenta Corriente')"> </p>
+                                </div>
                             </th>
-                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Numero de Transaccion de Cuenta Corriente')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title"
+                                        v-html="reverseWordsWithBreaks('Numero de Transaccion de Cuenta Corriente')">
+                                    </p>
+                                </div>
                             </th>
-                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Monto de Cuenta Corriente')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Monto de Cuenta Corriente')"> </p>
+                                </div>
                             </th>
-                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Fecha de abono de Detraccion')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Fecha de abono de Detraccion')">
+                                    </p>
+                                </div>
                             </th>
-                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Numero de Transaccion de Detraccion')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title"
+                                        v-html="reverseWordsWithBreaks('Numero de Transaccion de Detraccion')">
+                                    </p>
+                                </div>
                             </th>
-                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Monto de Detraccion')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Monto de Detraccion')"> </p>
+                                </div>
                             </th>
-                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Doc Detraccion')"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Doc Detraccion')"> </p>
+                                </div>
                             </th>
-                            <th v-if="checkVisibility('Cobranza')" v-html="reverseWordsWithBreaks('Estado de Pago')"
-                                class="title border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Estado de Pago')"> </p>
+                                </div>
                             </th>
                             <th v-if="checkVisibility('Cobranza')"
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-[11px] font-semibold uppercase tracking-wider">
                                 <div class="w-[150px]">
                                     <TableHeaderCicsaFilter label="E. C." labelClass=" text-gray-600"
-                                        :options="[...stats]" v-model="filterForm.charge_status" ref="childRef2" />
+                                        :options="[...stats]" v-model="filterForm.charge_status" ref="childRef3" />
                                 </div>
                             </th>
                             <th v-if="auth.user.role_id === 1"
-                                class="title border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
                     </thead>
@@ -484,39 +642,52 @@
                                     {{ formattedDate(item.assignation_date) }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-amber-200 px-2 py-2 text-[13px] sticky left-0 z-30">
+                            <td :class="stateClassSticky(
+                                item.project_name
+                            )
+                                " class="border-b border-gray-200 px-2 py-2 text-[13px] sticky left-0 z-30">
                                 <div class="flex justify-center">
                                     {{ item.project_name }}
                                 </div>
                             </td>
-                            <td :style="thStickyStyle.pc_sticky"
-                                class="sticky border-b bg-amber-200 border-gray-200 px-2 py-2 text-[13px]">
+                            <td :style="thStickyStyle.pc_sticky" :class="stateClassSticky(
+                                item.project_code
+                            )
+                                " class="sticky border-b border-gray-200 px-2 py-2 text-[13px]">
                                 <div class="flex justify-center">
                                     <p class="text-gray-900 text-center">
-                                        {{ item.project_code }}
+                                        {{ item.project_code || "--" }}
                                     </p>
                                 </div>
                             </td>
-                            <td :style="thStickyStyle.pcpe_sticky"
-                                class="border-b bg-amber-200 border-gray-200 px-2 py-2 text-[13px]">
+                            <td :style="thStickyStyle.pcpe_sticky" :class="stateClassSticky(
+                                item.cpe
+                            )
+                                " class="border-b border-gray-200 px-2 py-2 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.cpe }}
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Asignación')" :class="stateClass(item.cost_center)"
-                                class="border-b border-gray-200 px-2 py-2 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cost_center }}
+                                class="border-b border-gray-200 px-2 py-2 text-[13px] whitespace-nowrap">
+                                <p class="text-gray-900 text-center" :class="stateClassP(
+                                    item.cost_center
+                                )
+                                    ">
+                                    {{ item.cost_center || "--" }}
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Asignación')" :class="stateClass(item.zone)"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.zone }}
+                                <p class="text-gray-900 text-center" :class="stateClassP(
+                                    item.cost_center
+                                )
+                                    ">
+                                    {{ item.zone || "--" }}
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Asignación')" :class="stateClass(item.customer)"
-                                class="border-b border-gray-200 px-2 py-2 text-[13px]">
+                                class="border-b border-gray-200 px-2 py-2 text-[13px] whitespace-nowrap">
                                 <p class="text-gray-900 text-center">
                                     {{ item.customer }}
                                 </p>
@@ -527,13 +698,23 @@
                                     {{ item.manager }}
                                 </p>
                             </td>
+
                             <td :class="stateClass(item.user_name)" v-if="checkVisibility('Asignación')"
-                                class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px] whitespace-nowrap">
+                                class="border-b border-gray-200 px-2 py-2 text-[13px] whitespace-nowrap">
                                 <p class="text-gray-900 text-center">
                                     {{ formatoManager(item.user_name) }}
                                 </p>
                             </td>
-
+                            <td v-if="checkVisibility('Asignación')"
+                                class="bg-white border-b border-r-2 border-gray-200 px-2 py-2 text-[13px] whitespace-nowrap">
+                                <button @click="router.get(route('assignation.index', { searchCondition: item.cpe }))">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="m15 11.25-3-3m0 0-3 3m3-3v7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                    </svg>
+                                </button>
+                            </td>
                             <td :class="stateClass(
                                 item?.cicsa_feasibility?.feasibility_date
                             )
@@ -588,7 +769,7 @@
                                     checkVisibility('Factibilidad PINT y PEXT')
                                 " class="border-b border-gray-200 px-2 py-2 text-[13px] whitespace-nowrap">
                                 <p class="text-gray-900 text-center">
-                                    {{ item?.cicsa_feasibility?.coordinator }}
+                                    {{ formatoManager(item?.cicsa_feasibility?.coordinator) }}
                                 </p>
                             </td>
 
@@ -597,12 +778,21 @@
                             )
                                 " v-if="
                                     checkVisibility('Factibilidad PINT y PEXT')
-                                " class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px] whitespace-nowrap">
+                                " class="border-b border-gray-200 px-2 py-2 text-[13px] whitespace-nowrap">
                                 <p class="text-gray-900 text-center">
                                     {{ formatoManager(item?.cicsa_feasibility?.user_name) }}
                                 </p>
                             </td>
-
+                            <td v-if="checkVisibility('Factibilidad PINT y PEXT')"
+                                class="bg-white border-b border-r-2 border-gray-200 px-2 py-2 text-[13px] whitespace-nowrap">
+                                <button @click="router.get(route('feasibilities.index', { searchCondition: item.cpe }))">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="m15 11.25-3-3m0 0-3 3m3-3v7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                    </svg>
+                                </button>
+                            </td>
                             <td :class="stateClass(
                                 item?.cicsa_materials?.some(
                                     (item) => item?.pick_date
@@ -613,7 +803,7 @@
                                 <p v-for="materials in item?.cicsa_materials"
                                     class="text-gray-900 text-center whitespace-nowrap">
                                     {{
-                                        materials.pick_date
+                                        materials.pick_date || "--"
                                     }}
                                 </p>
                             </td>
@@ -627,7 +817,7 @@
                                 <p v-for="materials in item?.cicsa_materials"
                                     class="text-gray-900 text-center whitespace-nowrap">
                                     {{
-                                        materials.guide_number
+                                        materials.guide_number || "--"
                                     }}
                                 </p>
                             </td>
@@ -653,7 +843,7 @@
                                 )
                             )
                                 " v-if="checkVisibility('Materiales')"
-                                class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px]">
+                                class="border-b border-gray-200 px-2 py-2 text-[13px]">
                                 <p v-for="materials in item?.cicsa_materials"
                                     class="text-gray-900 text-center whitespace-nowrap">
                                     {{
@@ -661,7 +851,16 @@
                                     }}
                                 </p>
                             </td>
-
+                            <td v-if="checkVisibility('Materiales')"
+                                class="bg-white border-b border-r-2 border-gray-200 px-2 py-2 text-[13px] whitespace-nowrap">
+                                <button @click="router.get(route('material.index', { searchCondition: item.cpe }))">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="m15 11.25-3-3m0 0-3 3m3-3v7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                    </svg>
+                                </button>
+                            </td>
                             <td :class="stateClass(
                                 item?.cicsa_installation?.pext_date
                             )
@@ -770,7 +969,7 @@
                                 " class="border-b border-gray-200 px-2 py-2 text-[13px]">
                                 <p class="text-gray-900 text-center whitespace-nowrap">
                                     {{
-                                        item?.cicsa_installation?.coordinator
+                                        formatoManager(item?.cicsa_installation?.coordinator)
                                     }}
                                 </p>
                             </td>
@@ -779,12 +978,21 @@
                             )
                                 " v-if="
                                     checkVisibility('Instalación PINT y PEXT')
-                                " class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px]">
+                                " class="border-b border-gray-200 px-2 py-2 text-[13px]">
                                 <p class="text-gray-900 text-center whitespace-nowrap">
                                     {{ formatoManager(item?.cicsa_installation?.user_name) }}
                                 </p>
                             </td>
-
+                            <td v-if="checkVisibility('Instalación PINT y PEXT')"
+                                class="bg-white border-b border-r-2 border-gray-200 px-2 py-2 text-[13px] whitespace-nowrap">
+                                <button @click="router.get(route('cicsa.installation.index', { searchCondition: item.cpe }))">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="m15 11.25-3-3m0 0-3 3m3-3v7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                    </svg>
+                                </button>
+                            </td>
                             <td v-if="checkVisibility(['Asignación', 'Factibilidad PINT y PEXT', 'Materiales', 'Instalación PINT y PEXT'])"
                                 :class="stateClass(item?.cicsa_project_status)"
                                 class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px]">
@@ -998,7 +1206,7 @@
                                 <div v-for="service_order in item?.cicsa_service_order"
                                     class="text-center text-red-500">
                                     <button v-if="service_order.document" type="button"
-                                        @click="openPDF(service_order?.id, 'serviceOrder')">
+                                        @click="openPDF(service_order?.id, 'serviceOrder', 'OS')">
                                         <EyeIcon class="w-4 h-4 text-green-600" />
                                     </button>
                                     <p v-else>
@@ -1057,7 +1265,7 @@
                                 <div v-for="service_order in item?.cicsa_service_order"
                                     class="text-center text-red-500">
                                     <button v-if="service_order.document_invoice" type="button"
-                                        @click="openPDF(service_order?.id, 'serviceOrder')">
+                                        @click="openPDF(service_order?.id, 'serviceOrder', 'invoice')">
                                         <EyeIcon class="w-4 h-4 text-green-600" />
                                     </button>
                                     <p v-else>
@@ -1102,7 +1310,7 @@
                                     }}
                                 </p>
                             </td>
-                            
+
 
                             <td v-if="checkVisibility('Cobranza')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
@@ -1214,7 +1422,9 @@
                                             ? "S/."
                                             : ""
                                     }}
-                                    {{ charge_area?.checking_account_amount ? charge_area?.checking_account_amount.toFixed(2) : "--" }}
+                                    {{ charge_area?.checking_account_amount ?
+                                        charge_area?.checking_account_amount.toFixed(2) :
+                                        "--" }}
                                 </p>
                             </td>
 
@@ -1236,7 +1446,7 @@
                                         ?.transaction_number_bank
                                 )
                                     " class="text-gray-900 text-center whitespace-nowrap">
-                                    
+
                                     {{ charge_area?.transaction_number_bank ?? "--" }}
                                 </p>
                             </td>
@@ -1316,7 +1526,7 @@
                             </p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p v-if="dataToRender[0].cicsa_charge_area" class="text-gray-900 text-center">
+                            <p v-if="dataToRender[0]?.cicsa_charge_area" class="text-gray-900 text-center">
                                 Monto Total: S/.
                                 {{ getTotalAmount(dataToRender) }}
                             </p>
@@ -1386,7 +1596,7 @@
             </div>
         </Modal>
 
-        <Modal :show="showInstMaterials" @close="closeInstMaterialsModal" max-width="md" :closeable="true">
+        <Modal :show="showInstMaterials" @close="closeInstMaterialsModal" :closeable="true">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
                     Materiales Liquidados
@@ -1493,7 +1703,6 @@ const { auth, projects } = defineProps({
     projects: Object,
 });
 
-console.log(projects)
 const dataToRender = ref(projects.data);
 const filterMode = ref(false);
 
@@ -1591,6 +1800,18 @@ const stateClass = (state) => {
     }
 };
 
+const stateClassSticky = (state) => {
+    switch (state) {
+        case undefined:
+        case null:
+        case false:
+        case "":
+            return "bg-red-200";
+        default:
+            return "bg-amber-200";
+    }
+};
+
 const stateClassP = (state) => {
     switch (state) {
         case undefined:
@@ -1625,11 +1846,11 @@ const stats = ["Pendiente", "En Proceso", "Completado"];
 const initSearch = {
     typeStages: "",
     project_status: [...stats],
+    administration_status: [...stats],
     charge_status: [...stats],
     opStartDate: "",
     opEndDate: "",
     opNoDate: "",
-    project_deadline: "",
     search: "",
 };
 const filterForm = ref({ ...initSearch });
@@ -1638,11 +1859,11 @@ watch(
     () => [
         filterForm.value.typeStages,
         filterForm.value.project_status,
+        filterForm.value.administration_status,
         filterForm.value.charge_status,
         filterForm.value.opStartDate,
         filterForm.value.opEndDate,
         filterForm.value.opNoDate,
-        filterForm.value.project_deadline,
         filterForm.value.search,
     ],
     () => {
@@ -1671,6 +1892,10 @@ watch(
             selectedOptions.value = [
                 "Cobranza"]
         }
+
+        filterForm.value.project_status = [...stats],
+            filterForm.value.administration_status = [...stats],
+            filterForm.value.charge_status = [...stats]
     },
     { deep: true }
 );
@@ -1683,16 +1908,17 @@ watch(dataToRender, async () => {
 async function search_advance($data) {
     let res = await axios.post(route("cicsa.advance.search"), $data);
     dataToRender.value = res.data;
-    console.log(dataToRender.value)
 }
 
 const childRef = ref(null);
 const childRef2 = ref(null);
+const childRef3 = ref(null);
 function getAllData() {
     filterForm.value.typeStages = ""
     filterMode.value = true;
     childRef.value.checkAll();
     childRef2.value.checkAll();
+    childRef3.value.checkAll();
     search_advance(filterForm.value);
 }
 
@@ -1745,16 +1971,15 @@ function updateCicsaIndex(cisca_assignation_id) {
     dataToRender.value.splice(index, 1)
 }
 
-async function openPDF(id, cicsa) {
+async function openPDF(id, cicsa, doc) {
     let url = null
     if (cicsa === 'purchaseOrder') {
         url = route('purchase.order.showDocument', { purchaseOrder: id })
     } if (cicsa === 'serviceOrder') {
-        url = route('cicsa.service_orders.showDocument', { serviceOrder: id })
+        url = route('cicsa.service_orders.showDocument', { serviceOrder: id, doc: doc })
     } if (cicsa === 'chargeAreaOrder') {
         url = route('cicsa.charge_areas.showDocument', { chargeAreaOrder: id })
     }
-    console.log(cicsa)
     if (id) {
         await axios.get(url)
             .then(response => {
@@ -1796,7 +2021,7 @@ function reverseWordsWithBreaks(columnTitle) {
 </script>
 <style>
 .title {
-    writing-mode: vertical-rl;
-    text-orientation: upright;
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
 }
 </style>

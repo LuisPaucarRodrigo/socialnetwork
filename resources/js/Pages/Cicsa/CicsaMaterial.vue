@@ -11,7 +11,8 @@
                 <!-- <a :href="route('material.export') + '?' + uniqueParam"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a> -->
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)" placeholder="Buscar ..." />
+                    <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
+                        placeholder="Buscar ..." />
                     <SelectCicsaComponent currentSelect="Materiales" />
                     <div id="search_fields" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
@@ -506,9 +507,13 @@ import { formattedDate, setAxiosErrors } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 
-const { material, auth } = defineProps({
+const { material, auth, searchCondition } = defineProps({
     material: Object,
-    auth: Object
+    auth: Object,
+    searchCondition: {
+        type: String,
+        required: false
+    }
 })
 
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
@@ -745,4 +750,7 @@ function updateMaterial(item, material) {
     }
 }
 
+if (searchCondition) {
+    search(searchCondition)
+}
 </script>

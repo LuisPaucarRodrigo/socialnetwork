@@ -19,6 +19,7 @@ class CicsaServiceOrder extends Model
         'pdf_invoice',
         'zip_invoice',
         'document',
+        'document_invoice',
         'user_name',
         'user_id',
         'cicsa_assignation_id',
@@ -46,7 +47,17 @@ class CicsaServiceOrder extends Model
             if ($cicsaPurchaseOrder->isDirty('document')) {
                 $document = $cicsaPurchaseOrder->getOriginal('document');
                 if ($document) {
-                    $filePath = public_path('documents/cicsa/cicsaServiceOrder/' . $document);
+                    $filePath = public_path('documents/cicsa/cicsaServiceOrder/docsOS/' . $document);
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    }
+                }
+            }
+
+            if ($cicsaPurchaseOrder->isDirty('document_invoice')) {
+                $documentFac = $cicsaPurchaseOrder->getOriginal('document_invoice');
+                if ($documentFac) {
+                    $filePath = public_path('documents/cicsa/cicsaServiceOrder/docsFac/' . $documentFac);
                     if (file_exists($filePath)) {
                         unlink($filePath);
                     }

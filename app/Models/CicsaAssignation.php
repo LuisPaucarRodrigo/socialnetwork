@@ -399,7 +399,7 @@ class CicsaAssignation extends Model
         ];
 
         foreach ($chargeAreas as $chargeArea) {
-            if (is_null($chargeArea->document)) {
+            if (is_null($chargeArea->amount)) {
                 return 'Pendiente';
             } else {
                 foreach ($fieldsToCheck as $field) {
