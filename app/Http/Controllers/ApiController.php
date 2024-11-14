@@ -503,8 +503,20 @@ class ApiController extends Controller
 
     public function cicsaProcess($zone)
     {
-        $cicsaProcess = CicsaAssignation::select('id', 'project_name', 'zone')
-            ->where('zone', $zone)->get();
+        $cicsaProcess = CicsaAssignation::select('id', 'project_name', 'zone', 'zone2')
+            ->where(function ($query) use ($zone) {
+                $query->where('zone', $zone)
+                    ->orWhere('zone2', $zone);
+            })
+            ->whereHas('cicsa_charge_area', function ($subQuery) {
+                $subQuery->where(function ($subQuery) {
+                    $subQuery->whereNull('invoice_number')
+                        ->orWhereNull('invoice_date')
+                        ->orWhereNull('amount');
+                })
+                    ->whereNull('deposit_date');
+            })
+            ->get();
         $cicsaProcess->each->setAppends([]);
         return response()->json($cicsaProcess, 200);
     }
@@ -523,7 +535,7 @@ class ApiController extends Controller
                     'error' => "No se encontraron proyectos pext al cual asignar su gasto."
                 ], 404);
             }
-            $validateData['pext_project_id'] = '1';
+            $validateData['pext_project_id'] = $pextProject->id;
             $docDate = Carbon::createFromFormat('d/m/Y', $validateData['doc_date']);
             $validateData['doc_date'] = $docDate->format('Y-m-d');
 
@@ -563,7 +575,12 @@ class ApiController extends Controller
     public function historyExpensesPext()
     {
         $user = Auth::user();
-        $expensesPext = PextProjectExpense::where('user_id', $user->id)->get();
+        $month = now()->format('Y-m');
+        $expensesPext = PextProjectExpense::where('user_id', $user->id)
+            ->whereHas('pext_project', function ($query) use ($month) {
+                $query->where('date', $month);
+            })
+            ->get();
         return response()->json($expensesPext, 200);
     }
 }

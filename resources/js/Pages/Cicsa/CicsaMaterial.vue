@@ -11,7 +11,8 @@
                 <!-- <a :href="route('material.export') + '?' + uniqueParam"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a> -->
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)" placeholder="Buscar ..." />
+                    <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
+                        placeholder="Buscar ..." />
                     <SelectCicsaComponent currentSelect="Materiales" />
                     <div id="search_fields" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
@@ -166,7 +167,7 @@
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 whitespace-no-wrap">
                                             <button class="text-blue-900"
-                                                @click="openEditSotModal(materialDetail, item.cicsa_feasibility?.cicsa_feasibility_materials)">
+                                                @click="openEditSotModal(materialDetail, item.cicsa_feasibility?.cicsa_feasibility_materials, item.project_name, item.cpe)">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                     stroke-width="1.5" stroke="currentColor"
                                                     class="w-5 h-5 text-amber-400">
@@ -194,7 +195,9 @@
         <Modal :show="showAddEditModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    {{ form.id ? 'Editar Material' : 'Nuevo Material' }}
+                    {{ form.id ? 'Editar Material' : 'Nuevo Material' }} {{ ': ' + dateModal.project_name
+                        + ' - '
+                        + dateModal.cpe }}
                 </h2>
                 <br>
                 <form @submit.prevent="submit">
@@ -506,9 +509,13 @@ import { formattedDate, setAxiosErrors } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 
-const { material, auth } = defineProps({
+const { material, auth, searchCondition } = defineProps({
     material: Object,
-    auth: Object
+    auth: Object,
+    searchCondition: {
+        type: String,
+        required: false
+    }
 })
 
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
@@ -539,6 +546,7 @@ const cicsa_assignation_id = ref(null);
 const cicsa_material_id = ref(null);
 const materialRow = ref(0);
 const showModalImport = ref(false);
+const dateModal = ref({});
 
 function closeAddMaterialModal() {
     cicsa_assignation_id.value = null;
@@ -549,7 +557,9 @@ function closeAddMaterialModal() {
 
 const confirmUpdateMaterial = ref(false);
 
-function openEditSotModal(item, feasibility_materials) {
+function openEditSotModal(item, feasibility_materials, project_name, cpe) {
+    dateModal.value = { 'project_name': project_name, 'cpe': cpe }
+
     cicsa_material_id.value = item.id;
     let cicsa_material_items = []
     if (item?.id) {
@@ -735,6 +745,7 @@ function updateMaterialItem(e) {
 }
 
 function updateMaterial(item, material) {
+    console.log(material)
     const validations = materials.value.data || materials.value;
     const index = validations.findIndex(item => item.id === material.cicsa_assignation_id);
     if (item) {
@@ -745,4 +756,7 @@ function updateMaterial(item, material) {
     }
 }
 
+if (searchCondition) {
+    search(searchCondition)
+}
 </script>

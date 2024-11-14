@@ -971,7 +971,8 @@ const zones = [
     "Moquegua",
     "Tacna",
     "MDD1-PM",
-    "MDD2-MAZ"
+    "MDD2-MAZ",
+    "Oficina"
 ];
 const expenseTypes = [
     "Alquiler de Vehículos",
@@ -982,6 +983,16 @@ const expenseTypes = [
     "Proveídos",
     "Terceros",
     "Viáticos",
+    "Seguros y Pólizas",
+    "Gastos de Representación",
+    "Reposición de Equipo",
+    "Herramientas",
+    "Equipos",
+    "EPPs",
+    "Adicionales",
+    "Filtros y Aceites",
+    "Daños de Vehículos",
+    "Planilla",
     "Otros",
 ];
 const docTypes = [

@@ -74,6 +74,10 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Observaciones
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Coordinador
                             </th>
                             <th
@@ -178,6 +182,11 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
+                                    {{ item.cicsa_installation?.observation }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
                                     {{ item.cicsa_installation?.coordinator }}
                                 </p>
                             </td>
@@ -191,6 +200,8 @@
                                     <button class="text-blue-900" @click="
                                         openEditFeasibilityModal(
                                             item.id,
+                                            item.project_name,
+                                            item.cpe,
                                             item.cicsa_installation,
                                             item.total_materials,
                                             item?.cicsa_installation
@@ -226,7 +237,9 @@
         <Modal :show="showAddEditModal" @close="closeAddAssignationModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    {{ form.id ? "Editar Instalación" : "Nueva Instalación" }}
+                    {{ form.id ? "Editar Instalación" : "Nueva Instalación" }} {{ ': ' + dateModal.project_name
+                        + ' - '
+                        + dateModal.cpe }}
                 </h2>
                 <br />
                 <form @submit.prevent="submit">
@@ -234,7 +247,13 @@
                         <div class="sm:col-span-1">
                             <InputLabel for="coordinator">Coordinador</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.coordinator" autocomplete="off" id="coordinator" />
+                                <select id="coordinator" v-model="form.coordinator" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="" disabled>Seleccionar Coordinador</option>
+                                    <option>Valery Joana</option>
+                                    <option>Maria Moscoso</option>
+                                    <option>Angela Mayela</option>
+                                </select>
                                 <InputError :message="form.errors.coordinator" />
                             </div>
                         </div>
@@ -293,6 +312,14 @@
                                 <TextInput type="date" v-model="form.shipping_report_date" autocomplete="off"
                                     id="shipping_report_date" />
                                 <InputError :message="form.errors.shipping_report_date" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-1">
+                            <InputLabel for="observation">Observaciones</InputLabel>
+                            <div class="mt-2">
+                                <textarea v-model="form.observation" id="observation"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.observation" />
                             </div>
                         </div>
                     </div>
@@ -614,9 +641,13 @@ import { setAxiosErrors } from "@/utils/utils";
 import { ref, watch } from "vue";
 
 
-const { installation, auth } = defineProps({
+const { installation, auth, searchCondition } = defineProps({
     installation: Object,
     auth: Object,
+    searchCondition: {
+        type: String,
+        required: false
+    }
 });
 
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
@@ -628,6 +659,7 @@ const initialState = {
     user_id: auth.user.id,
     user_name: auth.user.name,
     coordinator: '',
+    observation: '',
     cicsa_assignation_id: '',
     pext_date: '',
     pint_date: '',
@@ -650,6 +682,7 @@ const mateiralObject = ref({
 const showAddEditModal = ref(false);
 const confirmAssignation = ref(false);
 const showModalMaterial = ref(false);
+const dateModal = ref({})
 
 function modalMaterial() {
     showModalMaterial.value = !showModalMaterial.value;
@@ -666,10 +699,14 @@ const confirmUpdateAssignation = ref(false);
 
 function openEditFeasibilityModal(
     ca_id,
+    project_name,
+    cpe,
     item,
     total_materials,
     cicsa_installation_materials
 ) {
+    dateModal.value = { 'project_name': project_name, 'cpe': cpe }
+
     total_materials =
         cicsa_installation_materials?.length > 0
             ? cicsa_installation_materials
@@ -781,5 +818,9 @@ function updateInstallations(cicsa_assignation_id, installation) {
     const validations = installations.value.data || installations.value;
     const index = validations.findIndex(item => item.id === cicsa_assignation_id);
     validations[index].cicsa_installation = installation
+}
+
+if(searchCondition){
+    search(searchCondition)
 }
 </script>

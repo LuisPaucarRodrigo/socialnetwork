@@ -1,9 +1,9 @@
 <template>
     <div
-        :class="['relative flex justify-between items-center', widthClass]"
+        :class="['relative flex justify-center items-center gap-x-3', widthClass]"
         ref="popup"
     >
-        <p :class="labelClass">{{ label }}</p>
+        <p :class="labelClass" v-html="reverse ? reverseWordsWithBreaks(label) : label" ></p>
         <button @click="togglePopup" class="cursor-pointer">
             <BarsArrowDownIcon class="h-5 w-5" />
         </button>
@@ -70,6 +70,10 @@ const props = defineProps({
         type: String,
         default: "w-full",
     },
+    reverse: {
+        type: Boolean,
+        default: false
+    }
 });
 
 const emit = defineEmits([
@@ -150,4 +154,9 @@ onMounted(() => {
 onUnmounted(() => {
     document.removeEventListener("click", closePopup);
 });
+
+function reverseWordsWithBreaks(columnTitle) {
+    return columnTitle.split(" ").reverse().join("<br>");
+}
+
 </script>

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('project_code')->nullable();
             $table->string('cpe')->nullable();
             $table->string('zone');
+            $table->string('zone2')->nullable();
             $table->string('manager');
             $table->string('user_name');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');

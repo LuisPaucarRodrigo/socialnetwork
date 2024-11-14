@@ -29,6 +29,7 @@ class StoreOrUpdateAssigantionRequest extends FormRequest
             'project_code' => 'nullable|string',
             'cpe' => 'nullable|string',
             'zone' => 'required|string',
+            'zone2' => 'nullable|string',
             'manager' => 'required|string',
             'user_name' => 'required|string',
             'user_id' => 'required|numeric',

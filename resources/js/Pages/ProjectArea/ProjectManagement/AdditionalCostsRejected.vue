@@ -226,7 +226,6 @@
                         >
                             <div class="flex items-center gap-3 w-full">
                                 <button
-                                data-tooltip-target="tooltip-up-ac"
                                     @click="
                                         () => validateRegister(item.id, true)
                                     "
@@ -1059,17 +1058,13 @@ import { ref, watch } from "vue";
 import { Head, useForm, router } from "@inertiajs/vue3";
 import { TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { formattedDate } from "@/utils/utils";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputFile from "@/Components/InputFile.vue";
-import Pagination from "@/Components/Pagination.vue";
 import { EyeIcon } from "@heroicons/vue/24/outline";
 import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
 import axios from "axios";
 import TextInput from "@/Components/TextInput.vue";
-import Dropdown from "@/Components/Dropdown.vue";
-import DropdownLink from "@/Components/DropdownLink.vue";
 import { setAxiosErrors, toFormData } from "@/utils/utils";
-import { notify, notifyError, notifyWarning } from "@/Components/Notification";
+import { notify, notifyError } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 
 

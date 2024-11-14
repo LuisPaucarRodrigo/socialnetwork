@@ -60,7 +60,7 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Zona
+                                Zonas
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -87,7 +87,7 @@
                                     {{ formattedDate(item.assignation_date) }}
                                 </p>
                             </td>
-                            
+
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
                                     {{ item.customer }}
@@ -110,7 +110,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.zone }}
+                                    {{ item.zone }} {{ item.zone2 }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -240,6 +240,22 @@
                                 <InputError :message="form.errors.zone" />
                             </div>
                         </div>
+                        <div class="">
+                            <InputLabel for="zone2">Zona2 (Opcional)</InputLabel>
+                            <div class="mt-2">
+                                <select id="zone2" v-model="form.zone2" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="">Seleccionar Zona</option>
+                                    <option>Arequipa</option>
+                                    <option>Moquegua</option>
+                                    <option>Tacna</option>
+                                    <option>Cuzco</option>
+                                    <option>Puno</option>
+                                    <option>MDD</option>
+                                </select>
+                                <InputError :message="form.errors.zone2" />
+                            </div>
+                        </div>
                     </div>
                     <br>
                     <div class="mt-6 flex justify-end">
@@ -275,9 +291,13 @@ import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import { setAxiosErrors } from "@/utils/utils";
 
-const { assignation, auth } = defineProps({
+const { assignation, auth, searchCondition } = defineProps({
     assignation: Object,
-    auth: Object
+    auth: Object,
+    searchCondition: {
+        type: String,
+        Required: false
+    }
 })
 
 const assignations = ref(assignation);
@@ -293,6 +313,7 @@ const initialState = {
     project_code: '',
     cpe: '',
     zone: '',
+    zone2: '',
     manager: '',
     user_name: auth.user.name,
 }
@@ -391,4 +412,10 @@ function updateAssignation(cicsa_assignation_id, assignation) {
         validations.pop();
     }
 }
+
+if (searchCondition) {
+    search(searchCondition)
+}
+
 </script>
+

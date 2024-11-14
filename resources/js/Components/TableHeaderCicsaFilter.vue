@@ -1,6 +1,6 @@
 <template>
     <div :class="['relative flex justify-between items-center', widthClass]" ref="popup">
-        <p :class="labelClass">{{ label }}</p>
+        <p :class="labelClass"> {{ label }}</p>
         <template v-if="options">
             <button @click="togglePopup">
                 <BarsArrowDownIcon class="h-5 w-5" />
@@ -65,7 +65,7 @@ const props = defineProps({
     width: {
         type: String,
         default: 'w-full'
-    }
+    },
 });
 
 const emit = defineEmits(['update:modelValue']);
