@@ -13,6 +13,7 @@ use App\Models\HuaweiEntryDetail;
 use App\Models\HuaweiEquipmentSerie;
 use App\Models\HuaweiMaterial;
 use App\Models\Brand;
+use App\Models\HuaweiPendingOrder;
 use App\Models\HuaweiRefund;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Collection;
@@ -204,7 +205,8 @@ class HuaweiManagementController extends Controller
             'guide_number' => 'nullable|unique:huawei_entries,guide_number',
             'entry_date' => 'nullable',
             'observation' => 'nullable',
-            'order_number' => 'nullable',
+            'order_number' => 'required',
+            'order_date' => 'required',
             'materials' => 'nullable|array',
             'equipments' => 'nullable|array',
             'warehouse' => 'required'
@@ -241,6 +243,14 @@ class HuaweiManagementController extends Controller
             // Manejar materiales
             if ($request->materials) {
                 foreach ($request->materials as $material) {
+                    if (!$material['order_number'] && !$request->order_number){
+                        DB::rollBack();
+                        abort(403, 'Acción no permitida.');
+                    }
+                    if (!$material['order_date'] && !$request->order_date){
+                        DB::rollBack();
+                        abort(403, 'Acción no permitida.');
+                    }
                     if (isset($material['material_id']) && $material['material_id']) {
                         HuaweiEntryDetail::create([
                             'huawei_entry_id' => $huawei_entry->id,
@@ -248,7 +258,8 @@ class HuaweiManagementController extends Controller
                             'quantity' => $material['quantity'],
                             'unit_price' => $material['unit_price'],
                             'observation' => $material['observation'],
-                            'order_number' => $material['order_number']
+                            'order_number' => $material['order_number'],
+                            'order_date' => $material['order_date']
                         ]);
                     } else {
                         $new_material = HuaweiMaterial::create([
@@ -264,7 +275,8 @@ class HuaweiManagementController extends Controller
                             'quantity' => $material['quantity'],
                             'unit_price' => $material['unit_price'],
                             'observation' => $material['observation'],
-                            'order_number' => $material['order_number']
+                            'order_number' => $material['order_number'],
+                            'order_date' => $material['order_date']
                         ]);
                     }
                 }
@@ -293,6 +305,11 @@ class HuaweiManagementController extends Controller
                                     abort(403, 'Acción no permitida.');
                                 }
 
+                                if (!$serie['order_date'] && !$request->order_date){
+                                    DB::rollBack();
+                                    abort(403, 'Acción no permitida.');
+                                }
+
                                 $new_serie = HuaweiEquipmentSerie::create([
                                     'huawei_equipment_id' => $equipment['equipment_id'], // Asegúrate de usar 'huawei_equipment_id' aquí
                                     'serie_number' => $serie['serie']
@@ -305,7 +322,8 @@ class HuaweiManagementController extends Controller
                                     'unit_price' => $serie['unit_price'],
                                     'assigned_diu' => $serie['assigned_diu'],
                                     'observation' => $serie['observation'],
-                                    'order_number' => $serie['order_number']
+                                    'order_number' => $serie['order_number'],
+                                    'order_date' => $serie['order_date']
                                 ]);
                             }
                         } else {
@@ -336,7 +354,171 @@ class HuaweiManagementController extends Controller
                                     'unit_price' => $serie['unit_price'],
                                     'assigned_diu' => $serie['assigned_diu'],
                                     'observation' => $serie['observation'],
-                                    'order_number' => $serie['order_number']
+                                    'order_number' => $serie['order_number'],
+                                    'order_date' => $serie['order_date']
+                                ]);
+                            }
+                        }
+                }
+            }
+
+            DB::commit(); // Confirmar la transacción si todo va bien
+
+        } catch (Throwable $e) {
+            DB::rollBack(); // Revertir transacción en caso de error
+            return response()->json(['error' => $e], 500);
+        }
+    }
+
+    public function storeOrder (Request $request)
+    {
+        $request->validate([
+            'order_number' => 'required',
+            'order_date' => 'required',
+            'materials' => 'nullable|array',
+            'equipments' => 'nullable|array',
+            'warehouse' => 'required',
+            'observation' => 'nullable'
+        ]);
+
+        if (empty($request->materials) && empty($request->equipments)) {
+            return back()->withErrors(['error_empty' => 'Debe agregar al menos un material o equipo.'])->withInput();
+        }
+
+        DB::beginTransaction();
+
+        $huawei_pending_order = HuaweiPendingOrder::create([
+            'order_number' => $request->order_number,
+            'order_date' => $request->order_date,
+            'observation' => $request->observation
+        ]);
+
+        $warehouse = null;
+
+        switch ($request->warehouse){
+            case '1':
+                $warehouse = 'Claro';
+                break;
+            case '2':
+                $warehouse = 'Entel';
+                break;
+            default:
+                abort(403, 'Acción no permitida');
+        }
+
+        try {
+            // Manejar materiales
+            if ($request->materials) {
+                foreach ($request->materials as $material) {
+                    if (!$material['order_number'] && !$request->order_number){
+                        DB::rollBack();
+                        abort(403, 'Acción no permitida.');
+                    }
+                    if (!$material['order_date'] && !$request->order_date){
+                        DB::rollBack();
+                        abort(403, 'Acción no permitida.');
+                    }
+                    if (isset($material['material_id']) && $material['material_id']) {
+                        HuaweiEntryDetail::create([
+                            'huawei_order_id' => $huawei_pending_order->id,
+                            'huawei_material_id' => $material['material_id'],
+                            'quantity' => $material['quantity'],
+                            'unit_price' => $material['unit_price'],
+                            'observation' => $material['observation'],
+                            'order_number' => $material['order_number'],
+                            'order_date' => $material['order_date']
+                        ]);
+                    } else {
+                        $new_material = HuaweiMaterial::create([
+                            'name' => '(' . $warehouse . ') ' . $material['name'],
+                            'claro_code' => $material['claro_code'],
+                            'unit' => $material['unit'],
+                            'prefix' => $warehouse
+                        ]);
+
+                        HuaweiEntryDetail::create([
+                            'huawei_order_id' => $huawei_pending_order->id,
+                            'huawei_material_id' => $new_material->id,
+                            'quantity' => $material['quantity'],
+                            'unit_price' => $material['unit_price'],
+                            'observation' => $material['observation'],
+                            'order_number' => $material['order_number'],
+                            'order_date' => $material['order_date']
+                        ]);
+                    }
+                }
+            }
+
+            // Manejar equipos
+            if ($request->equipments) {
+                foreach ($request->equipments as $equipment) {
+                        if (isset($equipment['equipment_id']) && $equipment['equipment_id']) {
+                            foreach ($equipment['series'] as $serie) {
+                                $existing_serie = HuaweiEquipmentSerie::where('huawei_equipment_id', $equipment['equipment_id'])
+                                    ->where('serie_number', $serie)
+                                    ->first();
+
+                                if ($existing_serie){
+                                    DB::rollBack();
+                                    return response()->json(['error' => 'Ocurrió un error durante la inserción de datos o se encontraron duplicados'], 500);
+                                }
+
+                                if (!$serie['order_number'] && !$request->order_number){
+                                    DB::rollBack();
+                                    abort(403, 'Acción no permitida.');
+                                }
+
+                                if (!$serie['order_date'] && !$request->order_date){
+                                    DB::rollBack();
+                                    abort(403, 'Acción no permitida.');
+                                }
+
+                                $new_serie = HuaweiEquipmentSerie::create([
+                                    'huawei_equipment_id' => $equipment['equipment_id'], // Asegúrate de usar 'huawei_equipment_id' aquí
+                                    'serie_number' => $serie['serie']
+                                ]);
+
+                                $huawei_entry_detail = HuaweiEntryDetail::create([
+                                    'huawei_order_id' => $huawei_pending_order->id,
+                                    'huawei_equipment_serie_id' => $new_serie->id,
+                                    'quantity' => 1,
+                                    'unit_price' => $serie['unit_price'],
+                                    'assigned_diu' => $serie['assigned_diu'],
+                                    'observation' => $serie['observation'],
+                                    'order_number' => $serie['order_number'],
+                                    'order_date' => $serie['order_date']
+                                ]);
+                            }
+                        } else {
+                            // Crear nuevo equipo
+                            $new_equipment = HuaweiEquipment::create([
+                                'name' => '(' . $warehouse . ') ' . $equipment['name'],
+                                'claro_code' => $equipment['claro_code'],
+                                'model_id' => $equipment['brand_model'],
+                                'prefix' => $warehouse,
+                                'unit' => 'Unidad'
+                            ]);
+
+                            foreach ($equipment['series'] as $serie) {
+                                if (!$serie['order_number'] && !$request->order_number){
+                                    DB::rollBack();
+                                    abort(403, 'Acción no permitida.');
+                                }
+
+                                $new_serie = HuaweiEquipmentSerie::create([
+                                    'huawei_equipment_id' => $new_equipment->id, // Usar el ID del nuevo equipo creado
+                                    'serie_number' => $serie['serie']
+                                ]);
+
+                                $huawei_entry_detail = HuaweiEntryDetail::create([
+                                    'huawei_order_id' => $huawei_pending_order->id,
+                                    'huawei_equipment_serie_id' => $new_serie->id,
+                                    'quantity' => 1,
+                                    'unit_price' => $serie['unit_price'],
+                                    'assigned_diu' => $serie['assigned_diu'],
+                                    'observation' => $serie['observation'],
+                                    'order_number' => $serie['order_number'],
+                                    'order_date' => $serie['order_date']
                                 ]);
                             }
                         }
@@ -395,14 +577,14 @@ class HuaweiManagementController extends Controller
                     $query->where('id', $id);
                 });
             })
-            ->with('huawei_entry', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
+            ->with('huawei_entry', 'huawei_pending_order', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
             ->paginate(10);
 
             foreach ($entries as $entry){
                 $entry->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($entry->huawei_equipment_serie->huawei_equipment->name);
             }
         } else {
-            $entries = HuaweiEntryDetail::where('huawei_material_id', $id)->with('huawei_entry', 'huawei_material', 'huawei_project_resources.huawei_project', 'huawei_project_resources.huawei_project_liquidation')->paginate(10);
+            $entries = HuaweiEntryDetail::where('huawei_material_id', $id)->with('huawei_entry', 'huawei_pending_order', 'huawei_material', 'huawei_project_resources.huawei_project', 'huawei_project_resources.huawei_project_liquidation')->paginate(10);
             foreach ($entries as $entry){
                 $entry->huawei_material->name = $this->sanitizeText2($entry->huawei_material->name);
             }

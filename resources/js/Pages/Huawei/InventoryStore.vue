@@ -5,9 +5,24 @@
           <h1 class="text-lg font-semibold leading-7 text-gray-900">Agregar Entrada</h1>
         </template>
         <div class="min-w-full rounded-lg shadow p-6">
+            <div class="flex items-center justify-center space-x-4 p-2 bg-gray-100 mb-5">
+                <p class="text-sm font-semibold">Pedido</p>
+                <button
+                    class="relative w-10 h-5 rounded-full transition-colors duration-200 ease-in-out focus:outline-none flex items-center"
+                    :class="{ 'bg-green-500': isActive, 'bg-red-600': !isActive }"
+                    @click="toggleSwitch"
+                >
+                    <span
+                        class="w-5 h-5 bg-white border rounded-full shadow transform transition-transform duration-200 ease-in-out"
+                        :class="{ 'translate-x-5': isActive }"
+                    ></span>
+                </button>
+                <p class="text-sm font-semibold">Guía</p>
+            </div>
+
           <form class="mb-8">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="col-span-1">
+              <div v-if="isActive" class="col-span-1">
                 <label for="guide_number" class="block text-sm font-medium text-gray-700">Número de Guía</label>
                 <input
                   id="guide_number"
@@ -18,7 +33,7 @@
                 <InputError :message="form.errors.guide_number" />
               </div>
 
-              <div class="col-span-1">
+              <div v-if="isActive" class="col-span-1">
                 <label for="entry_date" class="block text-sm font-medium text-gray-700">Fecha de Entrada</label>
                 <input
                   id="entry_date"
@@ -41,6 +56,17 @@
               </div>
 
               <div class="col-span-1">
+                <label for="order_date" class="block text-sm font-medium text-gray-700">Fecha de Pedido</label>
+                <input
+                  id="entry_date"
+                  type="date"
+                  v-model="form.order_date"
+                  class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                />
+                <InputError :message="form.errors.order_date" />
+              </div>
+
+              <div class="col-span-1">
                 <label for="warehouse" class="block text-sm font-medium text-gray-700">Almacén</label>
                 <select
                     id="warehouse"
@@ -55,7 +81,7 @@
                 <InputError :message="form.errors.warehouse" />
             </div>
 
-            <div class="col-span-1 md:col-span-2">
+            <div class="col-span-1">
                 <label for="observation" class="block text-sm font-medium text-gray-700">Observaciones</label>
                 <textarea
                   id="observation"
@@ -105,6 +131,9 @@
                         N° de Pedido
                       </th>
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                        Fecha de Pedido
+                      </th>
+                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                         Observación
                       </th>
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
@@ -119,6 +148,7 @@
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.quantity }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.unit }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.order_number }}</td>
+                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.order_date) }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.observation }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                         <div class="flex items-center">
@@ -131,7 +161,7 @@
               </div>
             </div>
 
-            <div v-if="form.guide_number && form.entry_date && ready" class="col-span-2">
+            <div v-if="ready" class="col-span-2">
               <div class="flex items-center mb-4">
                   <h2 class="text-lg font-medium leading-7 text-gray-900 mr-4">Equipos</h2>
                   <button @click="openEquipmentModal" type="button" class="text-blue-500 hover:text-purple-500">
@@ -220,10 +250,6 @@
         <input type="text" :disabled="autoCompletement" v-model="materialForm.claro_code" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
       </div>
       <div>
-        <InputLabel class="mb-1" for="order_number">N° de Pedido</InputLabel>
-        <input id="order_number" type="text" v-model="materialForm.order_number" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
-      </div>
-      <div>
         <InputLabel class="mb-1" for="unit_price">Precio Unitario</InputLabel>
         <input type="number" step="0.01" min="0" v-model="materialForm.unit_price" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
       </div>
@@ -244,7 +270,17 @@
         <input type="number" min="0" step="0.01" v-model="materialForm.quantity" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
       </div>
 
-      <div class="col-span-1">
+      <div>
+        <InputLabel class="mb-1" for="order_number">N° de Pedido</InputLabel>
+        <input id="order_number" type="text" v-model="materialForm.order_number" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+      </div>
+
+      <div>
+        <InputLabel class="mb-1" for="order_date">Fecha de Pedido</InputLabel>
+        <input id="order_date" type="date" v-model="materialForm.order_date" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+      </div>
+
+      <div class="col-span-1 md:col-span-2">
         <InputLabel class="mb-1" for="observation">Observación</InputLabel>
         <textarea v-model="materialForm.observation" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600"></textarea>
       </div>
@@ -317,17 +353,22 @@
         </div>
 
         <div class="col-span-1">
-            <InputLabel class="mb-1" for="order_number">N° de Pedido</InputLabel>
-            <input type="text" v-model="equipmentForm.order_number" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
-        </div>
-
-        <div class="col-span-1">
             <InputLabel class="mb-1" for="unit_price">Precio Unitario</InputLabel>
             <input type="number" step="0.01" min="0" v-model="equipmentForm.unit_price" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
         </div>
 
         <div class="col-span-1">
-            <InputLabel class="mb-1" for="assigned_diu">DIU Asignada</InputLabel>
+            <InputLabel class="mb-1" for="order_number">N° de Pedido</InputLabel>
+            <input type="text" v-model="equipmentForm.order_number" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+        </div>
+
+        <div class="col-span-1">
+            <InputLabel class="mb-1" for="order_date">Fecha de Pedido</InputLabel>
+            <input type="date" v-model="equipmentForm.order_date" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+        </div>
+
+        <div class="col-span-1">
+            <InputLabel class="mb-1" for="assigned_diu">DU Asignada</InputLabel>
             <input type="text" v-model="equipmentForm.assigned_diu" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
         </div>
 
@@ -336,7 +377,7 @@
             <input v-model="equipmentForm.observation" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
         </div>
 
-        <div class="col-span-1">
+        <div class="col-span-1 md:col-span-2">
             <InputLabel class="mb-1" for="new_serie">Agregar Serie</InputLabel>
             <div class="flex items-center">
             <input type="text" v-model="newSerie" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
@@ -358,6 +399,7 @@
                 <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">DIU</th>
                 <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">Precio Unitario</th>
                 <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">N° de Pedido</th>
+                <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">Fecha de Pedido</th>
                 <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">Observación</th>
                 <th></th>
                 </tr>
@@ -367,8 +409,9 @@
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ index + 1 }}</td>
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.serie }}</td>
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.assigned_diu }}</td>
-                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-right">{{ item.unit_price ? "S/. " + item.unit_price.toFixed(2) : '' }}</td>
+                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap text-right">{{ item.unit_price ? "S/. " + item.unit_price.toFixed(2) : '' }}</td>
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.order_number }}</td>
+                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(item.order_date) }}</td>
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.observation }}</td>
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-right">
                     <button @click.prevent="removeSerie(index)" class="text-red-600 hover:underline"><TrashIcon class="h-5 w-5" /></button>
@@ -402,13 +445,16 @@
                         Serie
                       </th>
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                        DIU
+                        DU
                       </th>
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                         Precio Unitario
                       </th>
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                         N° de Pedido
+                      </th>
+                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                        Fecha de Pedido
                       </th>
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                         Observación
@@ -420,8 +466,9 @@
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ index + 1 }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.serie }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.assigned_diu }}</td>
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-right">{{ item.unit_price ? "S/. " + item.unit_price.toFixed(2) : '' }}</td>
+                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap text-right">{{ item.unit_price ? "S/. " + item.unit_price.toFixed(2) : '' }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.order_number }}</td>
+                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(item.order_date) }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ item.observation }}</td>
                     </tr>
                   </tbody>
@@ -472,7 +519,7 @@
           <SuccessOperationModal :confirming="addSuccess" title="" message="" />
           <SuccessOperationModal :confirming="showModal" title="Éxito" message="La entrada se registró correctamente." />
           <ErrorOperationModal :showError="showErrorModal" :title="'Error'" :message="'Debe proporcionar al menos un equipo o material'" />
-          <ErrorOperationModal :showError="emptyModal" :title="'Error'" :message="'Debe llenar todos los campos, excepto el precio unitario, diu y observación.'" />
+          <ErrorOperationModal :showError="emptyModal" :title="'Error'" :message="'Debe llenar todos los campos, excepto el precio unitario, DU y observación.'" />
           <ErrorOperationModal :showError="existingSerie" :title="'Error'" :message="'El número de serie ya está registrado para este equipo.'" />
           <ErrorOperationModal :showError="newExistingResource" :title="'Error'" :message="'El material o equipo acaba de ser registrado.'" />
           <ErrorOperationModal :showError="noOrderNumber" :title="'Error'" :message="'Si no tiene un número de pedido general debe especificarlo para cada equipo.'" />
@@ -494,6 +541,7 @@
     import axios from 'axios';
     import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
     import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
+    import { formattedDate } from '@/utils/utils';
 
     const props = defineProps({
       brand_models: Object,
@@ -521,6 +569,7 @@
     const ready = ref(false);
     const prefix = ref(null);
     const noOrderNumber = ref(false);
+    const isActive = ref(true);
 
     const openMaterialModal = () => {
       materialModal.value = true;
@@ -547,6 +596,7 @@
       observation: '',
       warehouse: '',
       order_number: '',
+      order_date: '',
       materials: [],
       equipments: [],
     });
@@ -559,7 +609,8 @@
       material_id: '',
       unit: '',
       observation: '',
-      order_number: ''
+      order_number: '',
+      order_date: ''
     });
 
     const equipmentForm = useForm({
@@ -572,7 +623,8 @@
       equipment_id: '',
       assigned_diu: '',
       observation: '',
-      order_number: ''
+      order_number: '',
+      order_date: ''
     });
 
     const addSerie = async () => {
@@ -614,7 +666,8 @@
                     assigned_diu: equipmentForm.assigned_diu,
                     unit_price: equipmentForm.unit_price,
                     observation: equipmentForm.observation,
-                    order_number: equipmentForm.order_number ? equipmentForm.order_number : form.order_number
+                    order_number: equipmentForm.order_number ? equipmentForm.order_number : form.order_number,
+                    order_date: equipmentForm.order_date ? equipmentForm.order_date : form.order_date
                 });
                 newSerie.value = '';
             }
@@ -632,7 +685,8 @@
                     assigned_diu: equipmentForm.assigned_diu,
                     unit_price: equipmentForm.unit_price,
                     observation: equipmentForm.observation,
-                    order_number: equipmentForm.order_number ? equipmentForm.order_number : form.order_number
+                    order_number: equipmentForm.order_number ? equipmentForm.order_number : form.order_number,
+                    order_date: equipmentForm.order_date ? equipmentForm.order_date : form.order_date
                 });
                 newSerie.value = '';
             }
@@ -689,7 +743,8 @@
             material_id: materialForm.material_id,
             observation: materialForm.observation,
             unit: materialForm.unit,
-            order_number: materialForm.order_number ? materialForm.order_number : form.order_number
+            order_number: materialForm.order_number ? materialForm.order_number : form.order_number,
+            order_date: materialForm.order_date ? materialForm.order_date : form.order_date
             });
 
             materialForm.reset();
@@ -803,7 +858,8 @@
     const submit = () => {
       form.materials = newMaterials;
       form.equipments = newEquipments;
-      form.post(route('huawei.inventory.store'), {
+      if (isActive.value == true){
+        form.post(route('huawei.inventory.store'), {
             onSuccess: () => {
                 showModal.value = true;
                 setTimeout(() => {
@@ -820,6 +876,25 @@
               }
             }
         })
+      }else{
+        form.post(route('huawei.inventory.store.order'), {
+            onSuccess: () => {
+                showModal.value = true;
+                setTimeout(() => {
+                    showModal.value = false;
+                    router.visit(route('huawei.inventory.show', {warehouse: 1}))
+                }, 2000);
+            },
+            onError: (e) => {
+              if (e.error_empty){
+                showErrorModal.value = true;
+                setTimeout(() => {
+                  showErrorModal.value = false;
+                }, 3000);
+              }
+            }
+        })
+      }
     }
     const handleAutocomplete = (e, material) => {
     if (material) {
@@ -888,4 +963,7 @@
             })
     };
 
+    const toggleSwitch = () => {
+        isActive.value = !isActive.value;
+    };
     </script>
