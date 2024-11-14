@@ -21,6 +21,7 @@ class CicsaAssignation extends Model
         'project_code',
         'cpe',
         'zone',
+        'zone2',
         'manager',
         'user_name',
         'user_id'
@@ -78,9 +79,10 @@ class CicsaAssignation extends Model
 
 
     public function checkAssignation()
-    {
+    {   
+        $campoExcepcion = 'zone2';
         foreach ($this->fillable as $field) {
-            if (is_null($this->$field)) {
+            if ($field !== $campoExcepcion && is_null($this->$field)) {
                 return false;
             }
         }
@@ -386,11 +388,15 @@ class CicsaAssignation extends Model
     public function getCicsaChargeStatusAttribute()
     {
         $chargeAreas = $this->cicsa_charge_area()->get();
+        if ($chargeAreas->isEmpty()) {
+            return 'Pendiente';
+        }
         $fieldsToCheck = [
+            'amount',
             'invoice_number',
             'invoice_date',
             'credit_to',
-            'amount',
+            'document',
             'deposit_date',
             'transaction_number_current',
             'checking_account_amount',
@@ -399,18 +405,16 @@ class CicsaAssignation extends Model
         ];
 
         foreach ($chargeAreas as $chargeArea) {
-            if (is_null($chargeArea->amount)) {
-                return 'Pendiente';
-            } else {
-                foreach ($fieldsToCheck as $field) {
-                    if(is_null($chargeArea->$field)){
-                        return 'En Proceso';
-                    }
+            foreach ($fieldsToCheck as $field) {
+                if (is_null($chargeArea->amount)) {
+                    return "Pendiente";
+                }
+                if (is_null($chargeArea->$field)) {
+                    return "En Proceso";
                 }
             }
         }
-
-        return'Completado';
+        return 'Completado';
     }
 
 

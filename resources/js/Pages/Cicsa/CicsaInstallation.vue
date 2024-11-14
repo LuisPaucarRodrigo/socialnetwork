@@ -200,6 +200,8 @@
                                     <button class="text-blue-900" @click="
                                         openEditFeasibilityModal(
                                             item.id,
+                                            item.project_name,
+                                            item.cpe,
                                             item.cicsa_installation,
                                             item.total_materials,
                                             item?.cicsa_installation
@@ -235,7 +237,9 @@
         <Modal :show="showAddEditModal" @close="closeAddAssignationModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    {{ form.id ? "Editar Instalación" : "Nueva Instalación" }}
+                    {{ form.id ? "Editar Instalación" : "Nueva Instalación" }} {{ ': ' + dateModal.project_name
+                        + ' - '
+                        + dateModal.cpe }}
                 </h2>
                 <br />
                 <form @submit.prevent="submit">
@@ -678,6 +682,7 @@ const mateiralObject = ref({
 const showAddEditModal = ref(false);
 const confirmAssignation = ref(false);
 const showModalMaterial = ref(false);
+const dateModal = ref({})
 
 function modalMaterial() {
     showModalMaterial.value = !showModalMaterial.value;
@@ -694,10 +699,14 @@ const confirmUpdateAssignation = ref(false);
 
 function openEditFeasibilityModal(
     ca_id,
+    project_name,
+    cpe,
     item,
     total_materials,
     cicsa_installation_materials
 ) {
+    dateModal.value = { 'project_name': project_name, 'cpe': cpe }
+
     total_materials =
         cicsa_installation_materials?.length > 0
             ? cicsa_installation_materials

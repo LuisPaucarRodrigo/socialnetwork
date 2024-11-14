@@ -318,9 +318,13 @@ import axios from 'axios';
 import InputFile from '@/Components/InputFile.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 
-const { purchaseOrder, auth } = defineProps({
+const { purchaseOrder, auth, searchCondition } = defineProps({
     purchaseOrder: Object,
-    auth: Object
+    auth: Object,
+    searchCondition: {
+        type: String,
+        Required: false
+    }
 })
 
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
@@ -447,5 +451,9 @@ function updatePurchaseOrder(item, purchaseOrder) {
         const indexMaterial = validations[index].cicsa_purchase_order.findIndex(item => item.id === purchaseOrder.id);
         validations[index].cicsa_purchase_order[indexMaterial] = purchaseOrder
     }
+}
+
+if (searchCondition) {
+    search(searchCondition)
 }
 </script>

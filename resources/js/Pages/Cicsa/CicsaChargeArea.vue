@@ -463,9 +463,13 @@ import { EyeIcon } from '@heroicons/vue/24/outline';
 import InputFile from '@/Components/InputFile.vue';
 
 
-const { charge_area, auth } = defineProps({
+const { charge_area, auth, searchCondition } = defineProps({
     charge_area: Object,
-    auth: Object
+    auth: Object,
+    searchCondition: {
+        type: String,
+        Required: false
+    }
 })
 
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
@@ -503,7 +507,6 @@ const form = useForm(
     { ...initialState }
 );
 
-
 const showAddEditModal = ref(false);
 
 function closeAddAssignationModal() {
@@ -518,8 +521,8 @@ function closeAddAssignationModal() {
 const confirmUpdateAssignation = ref(false);
 
 function openEditModal(item) {
-    doc_invoice.value = item.cicsa_purchase_order.cicsa_service_order.document_invoice
-    service_order_id.value = item.cicsa_purchase_order.cicsa_service_order.id
+    doc_invoice.value = item.cicsa_purchase_order?.cicsa_service_order?.document_invoice
+    service_order_id.value = item.cicsa_purchase_order?.cicsa_service_order?.id
     invoice_number.value = item?.invoice_number
     form.defaults({ ...item, user_name: auth.user.name, user_id: auth.user.id })
     form.reset()
@@ -646,5 +649,9 @@ function updateChargeArea(chargeArea) {
     const index = validations.findIndex(item => item.id === chargeArea.cicsa_assignation_id)
     const indexChargeArea = validations[index].cicsa_charge_area.findIndex(item => item.id === chargeArea.id)
     validations[index].cicsa_charge_area[indexChargeArea] = chargeArea
+}
+
+if (searchCondition) {
+    search(searchCondition)
 }
 </script>

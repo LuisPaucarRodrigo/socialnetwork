@@ -354,9 +354,13 @@ import TextInput from '@/Components/TextInput.vue';
 import InputFile from '@/Components/InputFile.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 
-const { service_order, auth } = defineProps({
+const { service_order, auth,searchCondition } = defineProps({
     service_order: Object,
-    auth: Object
+    auth: Object,
+    searchCondition: {
+        type: String,
+        Required: false
+    }
 })
 
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
@@ -466,5 +470,9 @@ function updateServiceOrder(serviceOrder) {
     const index = validations.findIndex(item => item.id === serviceOrder.cicsa_assignation_id)
     const indexServiceOrder = validations[index].cicsa_service_order.findIndex(item => item.id === serviceOrder.id)
     validations[index].cicsa_service_order[indexServiceOrder] = serviceOrder
+}
+
+if (searchCondition) {
+    search(searchCondition)
 }
 </script>

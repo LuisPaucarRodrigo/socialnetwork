@@ -106,17 +106,17 @@
                             </th>
                             <th v-if="checkVisibility('Orden de Compra')"
                                 class="bg-purple-700 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
-                                colspan="6">
+                                colspan="7">
                                 Orden de Compra
                             </th>
                             <th v-if="checkVisibility('Validación de OC')"
                                 class="bg-purple-700 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
-                                colspan="8">
+                                colspan="9">
                                 Validación de OC
                             </th>
                             <th v-if="checkVisibility('Orden de Servicio')"
                                 class="bg-purple-700 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
-                                colspan="8">
+                                colspan="9">
                                 Orden de Servicio
                             </th>
                             <th v-if="checkVisibility(['Orden de Compra', 'Validación de OC'
@@ -126,7 +126,7 @@
                             </th>
                             <th v-if="checkVisibility('Cobranza')"
                                 class="bg-purple-700 border-r-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider"
-                                colspan="15">
+                                colspan="16">
                                 Cobranza
                             </th>
                             <!-- <th v-if="!checkVisibility('Cobranza')"
@@ -412,12 +412,18 @@
                                     <p class="title" v-html="reverseWordsWithBreaks('Item 3456')">
                                     </p>
                                 </div>
-
+                            </th>
+                            <th v-if="checkVisibility('Orden de Compra')"
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Presupuesto')"> </p>
+                                </div>
                             </th>
                             <th v-if="checkVisibility('Orden de Compra')"
                                 class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                                 <div class="flex justify-center">
-                                    <p class="title" v-html="reverseWordsWithBreaks('Presupuesto')"> </p>
+                                    <p class="title" v-html="reverseWordsWithBreaks('Acciones')">
+                                    </p>
                                 </div>
                             </th>
                             <th v-if="checkVisibility('Validación de OC')"
@@ -463,9 +469,16 @@
                                 </div>
                             </th>
                             <th v-if="checkVisibility('Validación de OC')"
-                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                                 <div class="flex justify-center">
                                     <p class="title" v-html="reverseWordsWithBreaks('Superintendente')"> </p>
+                                </div>
+                            </th>
+                            <th v-if="checkVisibility('Validación de OC')"
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Acciones')">
+                                    </p>
                                 </div>
                             </th>
                             <th v-if="checkVisibility('Orden de Servicio')"
@@ -511,9 +524,16 @@
                                 </div>
                             </th>
                             <th v-if="checkVisibility('Orden de Servicio')"
-                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                                 <div class="flex justify-center">
                                     <p class="title" v-html="reverseWordsWithBreaks('Doc Fac')"> </p>
+                                </div>
+                            </th>
+                            <th v-if="checkVisibility('Orden de Servicio')"
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Acciones')">
+                                    </p>
                                 </div>
                             </th>
                             <th v-if="checkVisibility(['Orden de Compra', 'Validación de OC'
@@ -617,9 +637,16 @@
                                 </div>
                             </th>
                             <th v-if="checkVisibility('Cobranza')"
-                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                                 <div class="flex justify-center">
                                     <p class="title" v-html="reverseWordsWithBreaks('Estado de Pago')"> </p>
+                                </div>
+                            </th>
+                            <th v-if="checkVisibility('Cobranza')"
+                                class="border-b-2 border-r-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="flex justify-center">
+                                    <p class="title" v-html="reverseWordsWithBreaks('Acciones')">
+                                    </p>
                                 </div>
                             </th>
                             <th v-if="checkVisibility('Cobranza')"
@@ -642,14 +669,21 @@
                                     {{ formattedDate(item.assignation_date) }}
                                 </p>
                             </td>
-                            <td :class="stateClassSticky(
-                                item.project_name
-                            )
-                                " class="border-b border-gray-200 px-2 py-2 text-[13px] sticky left-0 z-30">
-                                <div class="flex justify-center">
+                            <td :class="stateClassSticky(item.project_name)"
+                                class="border-b border-gray-200 px-2 py-2 text-[13px] sticky left-0 z-30">
+
+                                <div data-tooltip-target="project_name"
+                                    class="flex justify-center w-64 truncate relative">
                                     {{ item.project_name }}
                                 </div>
+
+                                <div id="project_name" role="tooltip" class="absolute z-50 -top-8 left-0 w-max opacity-0 invisible transition-opacity duration-300 
+                bg-gray-900 text-white text-xs font-medium px-2 py-1 rounded-lg shadow-sm dark:bg-gray-700">
+                                    {{ item.project_name }}
+                                    <div class="tooltip-arrow" data-popper-arrow></div>
+                                </div>
                             </td>
+
                             <td :style="thStickyStyle.pc_sticky" :class="stateClassSticky(
                                 item.project_code
                             )
@@ -683,7 +717,7 @@
                                     item.cost_center
                                 )
                                     ">
-                                    {{ item.zone || "--" }}
+                                    {{ item.zone || "--" }} {{ item.zone2 }}
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Asignación')" :class="stateClass(item.customer)"
@@ -785,7 +819,8 @@
                             </td>
                             <td v-if="checkVisibility('Factibilidad PINT y PEXT')"
                                 class="bg-white border-b border-r-2 border-gray-200 px-2 py-2 text-[13px] whitespace-nowrap">
-                                <button @click="router.get(route('feasibilities.index', { searchCondition: item.cpe }))">
+                                <button
+                                    @click="router.get(route('feasibilities.index', { searchCondition: item.cpe }))">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -985,7 +1020,8 @@
                             </td>
                             <td v-if="checkVisibility('Instalación PINT y PEXT')"
                                 class="bg-white border-b border-r-2 border-gray-200 px-2 py-2 text-[13px] whitespace-nowrap">
-                                <button @click="router.get(route('cicsa.installation.index', { searchCondition: item.cpe }))">
+                                <button
+                                    @click="router.get(route('cicsa.installation.index', { searchCondition: item.cpe }))">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -1059,13 +1095,26 @@
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Orden de Compra')"
-                                class="border-b border-r-2 border-gray-200 py-2 text-[13px] bg-white">
+                                class="border-b border-gray-200 py-2 text-[13px] bg-white">
                                 <p v-for="order in item?.cicsa_purchase_order" :class="stateClassP(
                                     order?.budget
                                 )
                                     " class="text-center">
                                     {{ formattedState(order?.budget) }}
                                 </p>
+                            </td>
+                            <td v-if="checkVisibility('Orden de Compra')"
+                                class="bg-white border-b border-r-2 border-gray-200 px-2 py-2 text-[13px] whitespace-nowrap">
+                                <div v-for="order in item?.cicsa_purchase_order">
+                                    <button
+                                        @click="router.get(route('purchase.order.index', { searchCondition: order.oc_number }))">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m15 11.25-3-3m0 0-3 3m3-3v7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </td>
                             <td v-if="checkVisibility('Validación de OC')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
@@ -1161,7 +1210,7 @@
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Validación de OC')"
-                                class="border-b border-gray-200 border-r-2 py-2 text-[13px] bg-white">
+                                class="border-b border-gray-200 py-2 text-[13px] bg-white">
                                 <p v-for="order_validation in item?.cicsa_purchase_order_validation" :class="stateClassP(
                                     order_validation
                                         ?.superintendent
@@ -1172,6 +1221,19 @@
                                             ?.superintendent)
                                     }}
                                 </p>
+                            </td>
+                            <td v-if="checkVisibility('Validación de OC')"
+                                class="bg-white border-b border-r-2 border-gray-200 px-2 py-2 text-[13px] whitespace-nowrap">
+                                <div v-for="order in item?.cicsa_purchase_order">
+                                    <button
+                                        @click="router.get(route('cicsa.purchase_orders.validation', { searchCondition: order.oc_number }))">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m15 11.25-3-3m0 0-3 3m3-3v7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </td>
                             <td v-if="checkVisibility('Orden de Servicio')"
                                 class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
@@ -1261,7 +1323,7 @@
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Orden de Servicio')"
-                                class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px] bg-white">
+                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
                                 <div v-for="service_order in item?.cicsa_service_order"
                                     class="text-center text-red-500">
                                     <button v-if="service_order.document_invoice" type="button"
@@ -1271,6 +1333,19 @@
                                     <p v-else>
                                         --
                                     </p>
+                                </div>
+                            </td>
+                            <td v-if="checkVisibility('Orden de Servicio')"
+                                class="bg-white border-b border-r-2 border-gray-200 px-2 py-2 text-[13px] whitespace-nowrap">
+                                <div v-for="order in item?.cicsa_purchase_order">
+                                    <button
+                                        @click="router.get(route('cicsa.service_orders', { searchCondition: order.oc_number }))">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m15 11.25-3-3m0 0-3 3m3-3v7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+                                    </button>
                                 </div>
                             </td>
                             <td v-if="checkVisibility(['Orden de Compra', 'Validación de OC', 'Orden de Servicio'])"
@@ -1395,7 +1470,7 @@
                                         ?.deposit_date
                                 )
                                     " class="text-gray-900 text-center whitespace-nowrap">
-                                    {{ formattedDate(charge_area?.deposit_date) ?? "--" }}
+                                    {{ charge_area?.deposit_date ? formattedDate(charge_area?.deposit_date) : "--" }}
                                 </p>
                             </td>
 
@@ -1436,7 +1511,8 @@
                                 )
                                     " class="text-gray-900 text-center whitespace-nowrap">
 
-                                    {{ formattedDate(charge_area?.deposit_date_bank) ?? "--" }}
+                                    {{ charge_area?.deposit_date_bank ? formattedDate(charge_area?.deposit_date_bank) :
+                                        "--" }}
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Cobranza')"
@@ -1479,7 +1555,7 @@
                                 </div>
                             </td>
                             <td v-if="checkVisibility('Cobranza')"
-                                class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px] bg-white">
+                                class="border-b border-gray-200 px-2 py-2 text-[13px] bg-white">
                                 <p v-for="charge_area in item?.cicsa_charge_area" :class="stateClassP(
                                     charge_area
                                         ?.state
@@ -1487,6 +1563,19 @@
                                     " class="text-gray-900 text-center whitespace-nowrap">
                                     {{ charge_area?.state }}
                                 </p>
+                            </td>
+                            <td v-if="checkVisibility('Cobranza')"
+                                class="bg-white border-b border-r-2 border-gray-200 px-2 py-2 text-[13px] whitespace-nowrap">
+                                <div v-for="order in item?.cicsa_purchase_order">
+                                    <button
+                                        @click="router.get(route('cicsa.charge_areas', { searchCondition: order.oc_number }))">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m15 11.25-3-3m0 0-3 3m3-3v7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </td>
                             <td v-if="checkVisibility('Cobranza')"
                                 class="border-b border-r-2 border-gray-200 px-2 py-2 text-[13px]" :class="stateClass(
@@ -1499,7 +1588,6 @@
                                     </p>
                                 </div>
                             </td>
-
                             <td v-if="auth.user.role_id === 1"
                                 class="border-b border-gray-200 bg-white px-2 py-0 text-[13px]">
                                 <div class="flex space-x-3 justify-center">
@@ -1908,6 +1996,7 @@ watch(dataToRender, async () => {
 async function search_advance($data) {
     let res = await axios.post(route("cicsa.advance.search"), $data);
     dataToRender.value = res.data;
+    console.log(dataToRender.value)
 }
 
 const childRef = ref(null);
@@ -2023,5 +2112,19 @@ function reverseWordsWithBreaks(columnTitle) {
 .title {
     writing-mode: vertical-lr;
     transform: rotate(180deg);
+}
+
+/* Tooltip oculto inicialmente */
+#project_name {
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    top: -25px;
+}
+
+/* Mostrar tooltip al pasar el cursor */
+[data-tooltip-target="project_name"]:hover+#project_name {
+    visibility: visible;
+    opacity: 1;
 }
 </style>

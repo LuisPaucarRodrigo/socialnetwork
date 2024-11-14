@@ -381,9 +381,13 @@ import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate, setAxiosErrors } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 
-const { purchase_validation, auth } = defineProps({
+const { purchase_validation, auth,searchCondition } = defineProps({
     purchase_validation: Object,
-    auth: Object
+    auth: Object,
+    searchCondition: {
+        type: String,
+        Required: false
+    }
 })
 
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
@@ -473,5 +477,9 @@ function updatePurchaseOrderValidation(OCValidation) {
     const index = validations.findIndex(item => item.id === OCValidation.cicsa_assignation_id)
     const indexOCValidation = validations[index].cicsa_purchase_order_validation.findIndex(item => item.id === OCValidation.id)
     validations[index].cicsa_purchase_order_validation[indexOCValidation] = OCValidation
+}
+
+if (searchCondition) {
+    search(searchCondition)
 }
 </script>
