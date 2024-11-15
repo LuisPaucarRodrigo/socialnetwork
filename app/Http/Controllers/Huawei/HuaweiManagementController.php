@@ -597,95 +597,133 @@ class HuaweiManagementController extends Controller
         ]);
     }
 
-    public function getGeneralEquipments ()
+    public function getGeneralEquipments($prefix)
     {
         $equipments = HuaweiEntryDetail::whereNull('huawei_material_id')
-            ->with('huawei_entry', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
-            ->paginate(20);
+        ->whereHas('huawei_equipment_serie.huawei_equipment', function ($query) use ($prefix) {
+            $query->where('prefix', $prefix);
+        })
+        ->with([
+            'huawei_entry',
+            'huawei_equipment_serie.huawei_equipment',  // Relación ya filtrada
+            'latest_huawei_project_resource.huawei_project'
+        ])
+        ->paginate(20);
 
-        foreach ($equipments as $equipment){
+        $data = [
+            'order_numbers' => $equipments->pluck('order_number')->filter()->unique()->values()->toArray(),
+            'guide_numbers' => $equipments->pluck('huawei_entry.guide_number')->filter()->unique()->values()->toArray(),
+            'series' => $equipments->pluck('huawei_equipment_serie.serie_number')->filter()->unique()->values()->toArray(),
+            'sap_codes' => $equipments->pluck('huawei_equipment_serie.huawei_equipment.claro_code')->filter()->unique()->values()->toArray(),
+            'names' => $equipments->pluck('huawei_equipment_serie.huawei_equipment.name')->filter()->unique()->values()->toArray(),
+            'states' => $equipments->pluck('state')->filter()->unique()->values()->toArray(),
+            'du_s' => $equipments->pluck('assigned_diu')->filter()->unique()->values()->toArray(),
+            'sites' => $equipments->map(function ($equipment) {
+                return [$equipment->assigned_site, $equipment->new_site];
+            })->flatten()->filter()->unique()->values()->toArray(),
+        ];
+
+        // Sanitizar nombres de equipos
+        foreach ($data['names'] as &$name) {
+            $name = $this->sanitizeText2($name);
+        }
+        foreach ($equipments as $equipment) {
             $equipment->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($equipment->huawei_equipment_serie->huawei_equipment->name);
         }
 
         return Inertia::render('Huawei/GeneralEquipments', [
-            'equipments' => $equipments
+            'equipments' => $equipments,
+            'warehouse' => $prefix,
+            'data' => $data
         ]);
     }
 
-    public function searchGeneralEquipments($request)
+    public function searchGeneralEquipments($prefix, $request)
     {
         $searchTerm = strtolower($request);
-        // Paso 1: Consulta inicial basada en parámetros de búsqueda específicos
-        $equipmentsQuery = HuaweiEntryDetail::whereNull('huawei_material_id')->with('huawei_entry');
-        $equipmentsQueryFilter = HuaweiEntryDetail::whereNull('huawei_material_id')->with('huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project', 'huawei_entry')->get();
-        // Resultados de todas las condiciones de búsqueda combinados
-        $equipments = collect();
 
-        // Filtrar por assigned_diu
-        $equipments = $equipments->merge(
-            $equipmentsQuery->whereRaw('LOWER(assigned_diu) LIKE ?', ["%{$searchTerm}%"])
-                            ->orWhereRaw('LOWER(new_site) LIKE ?', ["%{$searchTerm}%"])
-                ->with('huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
-                ->get()
-        );
+        // Consulta principal, incluyendo filtro de `prefix` y campos de búsqueda especificados
+        $equipments = HuaweiEntryDetail::whereNull('huawei_material_id')
+            ->whereHas('huawei_equipment_serie.huawei_equipment', function ($query) use ($prefix) {
+                $query->where('prefix', $prefix);
+            })
+            ->where(function ($query) use ($searchTerm) {
+                // Campos de búsqueda específicos
+                $query->whereRaw('LOWER(assigned_diu) LIKE ?', ["%{$searchTerm}%"])
+                      ->orWhereRaw('LOWER(new_site) LIKE ?', ["%{$searchTerm}%"])
+                      ->orWhereRaw('LOWER(order_number) LIKE ?', ["%{$searchTerm}%"])
+                      ->orWhereRaw('LOWER(observation) LIKE ?', ["%{$searchTerm}%"])
+                      ->orWhereHas('huawei_equipment_serie', function ($subQuery) use ($searchTerm) {
+                          $subQuery->whereRaw('LOWER(serie_number) LIKE ?', ["%{$searchTerm}%"])
+                                   ->orWhereHas('huawei_equipment', function ($innerQuery) use ($searchTerm) {
+                                       $innerQuery->whereRaw('LOWER(claro_code) LIKE ?', ["%{$searchTerm}%"])
+                                                  ->orWhereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
+                                   });
+                      });
+            })
+            ->with([
+                'huawei_entry',
+                'huawei_equipment_serie.huawei_equipment',
+                'latest_huawei_project_resource.huawei_project'
+            ])
+            ->get();
 
-        // Filtrar por claro_code y name en huawei_equipment
-        $equipments = $equipments->merge(
-            $equipmentsQuery->orWhereHas('huawei_equipment_serie.huawei_equipment', function ($subQuery) use ($searchTerm) {
-                $subQuery->whereRaw('LOWER(claro_code) LIKE ?', ["%{$searchTerm}%"])
-                         ->orWhereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
-            })->with('huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
-              ->get()
-        );
+        // Consulta adicional para los filtros por campos calculados
+        $equipmentsToFilter = HuaweiEntryDetail::whereNull('huawei_material_id')
+            ->whereHas('huawei_equipment_serie.huawei_equipment', function ($query) use ($prefix) {
+                $query->where('prefix', $prefix);
+            })
+            ->with([
+                'huawei_entry',
+                'huawei_equipment_serie.huawei_equipment',
+                'latest_huawei_project_resource.huawei_project'
+            ])->get();
 
-        // Filtrar por serie_number en huawei_equipment_serie
-        $equipments = $equipments->merge(
-            $equipmentsQuery->orWhereHas('huawei_equipment_serie', function ($subQuery) use ($searchTerm) {
-                $subQuery->whereRaw('LOWER(serie_number) LIKE ?', ["%{$searchTerm}%"]);
-            })->with('huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
-              ->get()
-        );
-
-        // Filtrar por unit_price
-        $equipments = $equipments->merge(
-            $equipmentsQuery->orWhereRaw('LOWER(unit_price) LIKE ?', ["%{$searchTerm}%"])
-                ->with('huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
-                ->get()
-        );
-
-        // Filtrar por observation
-        $equipments = $equipments->merge(
-            $equipmentsQuery->orWhereRaw('LOWER(observation) LIKE ?', ["%{$searchTerm}%"])
-                ->with('huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
-                ->get()
-        );
-
-        $stateFilteredEquipments = $equipmentsQueryFilter->filter(function ($detail) use ($searchTerm) {
+        // Filtro por `state` y `instalation_state`
+        $stateFilteredEquipments = $equipmentsToFilter->filter(function ($detail) use ($searchTerm) {
             return str_contains(strtolower($detail->state), $searchTerm) || str_contains(strtolower($detail->instalation_state), $searchTerm);
         });
 
-        $assignedSiteFilteredEquipments = $equipmentsQueryFilter->filter(function ($detail) use ($searchTerm) {
+        // Filtro por `assigned_site`
+        $assignedSiteFilteredEquipments = $equipmentsToFilter->filter(function ($detail) use ($searchTerm) {
             return str_contains(strtolower($detail->assigned_site), $searchTerm);
         });
 
+        // Combinación de todos los resultados, eliminando duplicados
         $finalEquipments = $equipments
             ->merge($stateFilteredEquipments)
             ->merge($assignedSiteFilteredEquipments)
             ->unique('id');
 
-        foreach ($finalEquipments as $equipment){
-            $equipment->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($equipment->huawei_equipment_serie->huawei_equipment->name);
+        // Sanitización del campo `name` en `huawei_equipment`
+        foreach ($finalEquipments as $equipment) {
+            if ($equipment->huawei_equipment_serie && $equipment->huawei_equipment_serie->huawei_equipment) {
+                $equipment->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($equipment->huawei_equipment_serie->huawei_equipment->name);
+            }
         }
 
         return Inertia::render('Huawei/GeneralEquipments', [
             'equipments' => $finalEquipments,
-            'search' => $request
+            'search' => $request,
+            'warehouse' => $prefix
         ]);
     }
 
+    public function searchGeneralAdvance ($prefix, Request $request)
+    {
+        $equipments = HuaweiEntryDetail::whereNull('huawei_material_id')
+            ->whereHas('huawei_equipment_serie.huawei_equipment', function ($query) use ($prefix) {
+                $query->where('prefix', $prefix);
+        });
+        $equipments->whereIn('order_number', $request->selectedOrderNumbers);
+        $equipments = $equipments->orderBy('created_at', 'desc')->with([
+            'huawei_entry',
+            'huawei_equipment_serie.huawei_equipment',
+            'latest_huawei_project_resource.huawei_project'
+        ])->get();
 
-
-
+        return response()->json(["equipments" => $equipments], 200);
+    }
 
     public function detailsWithoutDiu ($id)
     {
@@ -714,104 +752,61 @@ class HuaweiManagementController extends Controller
     {
         $searchTerm = strtolower($request);
 
-        // Consulta principal
+        // Consulta base
         $query = HuaweiEntryDetail::query();
 
         if ($equipment) {
-            // Consultas específicas para equipos
-            $equipmentSerieQuery = HuaweiEntryDetail::query()
-                ->whereHas('huawei_equipment_serie', function ($query) use ($searchTerm, $id) {
-                    $query->where('huawei_equipment_id', $id)
-                          ->whereRaw('LOWER(serie_number) LIKE ?', ["%{$searchTerm}%"]);
-                })->whereNull('huawei_material_id')
-                ->with('huawei_entry', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
-                ->get();
+            // Filtrar por equipo
+            $query->whereHas('huawei_equipment_serie', function ($subQuery) use ($id) {
+                $subQuery->where('huawei_equipment_id', $id);
+            })->whereNull('huawei_material_id');
 
-            $diuQuery = HuaweiEntryDetail::query()
-                ->whereHas('huawei_equipment_serie', function ($query) use ($searchTerm, $id) {
-                    $query->where('huawei_equipment_id', $id);
-                })->whereNull('huawei_material_id')
-                ->whereRaw('LOWER(assigned_diu) LIKE ?', ["%{$searchTerm}%"])
-                ->with('huawei_entry', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
-                ->get();
+            // Filtros específicos aplicados a la consulta base
+            $query->where(function ($filterQuery) use ($searchTerm) {
+                $filterQuery->whereRaw('LOWER(assigned_diu) LIKE ?', ["%{$searchTerm}%"])
+                            ->orWhereRaw('LOWER(order_number) LIKE ?', ["%{$searchTerm}%"])
+                            ->orWhereHas('huawei_entry', function ($subFilterQuery) use ($searchTerm) {
+                                $subFilterQuery->whereRaw('LOWER(guide_number) LIKE ?', ["%{$searchTerm}%"]);
+                            })
+                            ->orWhereHas('huawei_equipment_serie', function ($subQuery) use ($searchTerm) {
+                                $subQuery->whereRaw('LOWER(serie_number) LIKE ?', ["%{$searchTerm}%"]);
+                            })
+                            ->orWhereHas('huawei_project_resources.huawei_project', function ($projectQuery) use ($searchTerm) {
+                                $projectQuery->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"])
+                                             ->orWhereRaw('LOWER(ot) LIKE ?', ["%{$searchTerm}%"]);
+                            });
+            });
 
-            $guideNumberQuery = HuaweiEntryDetail::query()
-                ->whereHas('huawei_equipment_serie', function ($query) use ($searchTerm, $id) {
-                    $query->where('huawei_equipment_id', $id);
-                })->whereNull('huawei_material_id')
-                ->whereHas('huawei_entry', function ($query) use ($searchTerm) {
-                    $query->whereRaw('LOWER(guide_number) LIKE ?', ["%{$searchTerm}%"]);
-                })->whereNull('huawei_material_id')
-                ->with('huawei_entry', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
-                ->get();
-
-            $projectQuery = HuaweiEntryDetail::query()
-                ->whereHas('huawei_equipment_serie', function ($query) use ($searchTerm, $id) {
-                    $query->where('huawei_equipment_id', $id);
-                })->whereNull('huawei_material_id')
-                ->whereHas('huawei_project_resources', function ($query) use ($searchTerm) {
-                    $query->whereHas('huawei_project', function ($query) use ($searchTerm) {
-                        $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
-                    })
-                    ->orWhereHas('huawei_project', function ($query) use ($searchTerm) {
-                        $query->whereRaw('LOWER(ot) LIKE ?', ["%{$searchTerm}%"]);
-                    });
-                })->whereNull('huawei_material_id')
-                ->with('huawei_entry', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
-                ->get();
-
+            // Consulta separada para `queryByCode`
             $queryByCode = HuaweiEntryDetail::query()
                 ->whereHas('huawei_equipment_serie', function ($query) use ($searchTerm, $id) {
                     $query->where('huawei_equipment_id', $id);
-                })->whereNull('huawei_material_id')
+                })
                 ->whereNull('huawei_material_id')
-                ->with(['huawei_entry', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project'])
+                ->with(['huawei_entry', 'huawei_pending_order', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project'])
                 ->get()
                 ->filter(function ($detail) use ($searchTerm) {
-                    if ($detail->latest_huawei_project_resource &&
-                        $detail->latest_huawei_project_resource->huawei_project &&
-                        str_contains(strtolower($detail->latest_huawei_project_resource->huawei_project->code), $searchTerm)) {
-                        return true;
-                    }
-                    return false;
+                    return $detail->latest_huawei_project_resource &&
+                           $detail->latest_huawei_project_resource->huawei_project &&
+                           str_contains(strtolower($detail->latest_huawei_project_resource->huawei_project->code), $searchTerm);
                 });
 
-            // Fusionar todas las colecciones de resultados en una sola y eliminar duplicados
-            $mergedResults = collect()
-                ->merge($equipmentSerieQuery)
-                ->merge($diuQuery)
-                ->merge($guideNumberQuery)
-                ->merge($projectQuery)
-                ->merge($queryByCode)
-                ->unique('id')
-                ->map(function ($detail) {
-                    $detail->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($detail->huawei_equipment_serie->huawei_equipment->name); // Aplica la función de sanitización al nombre
-                    return $detail;
-                })
-                ->values(); // Asegurarse de que las claves sean secuenciales
-
+            // Combinar ambos conjuntos de resultados
+            $mergedResults = $query->with('huawei_entry', 'huawei_pending_order', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
+                                   ->get()
+                                   ->merge($queryByCode)
+                                   ->unique('id');
         } else {
-            // Si no es equipo, buscar por material y número de guía
-            $query->whereHas('huawei_material', function ($query) use ($id) {
-                $query->where('id', $id);
+            // Filtrar por material
+            $query->whereHas('huawei_material', function ($materialQuery) use ($id) {
+                $materialQuery->where('id', $id);
+            })->whereHas('huawei_entry', function ($entryQuery) use ($searchTerm) {
+                $entryQuery->whereRaw('LOWER(guide_number) LIKE ?', ["%{$searchTerm}%"]);
             });
 
-            $query->whereHas('huawei_entry', function ($query) use ($searchTerm) {
-                $query->whereRaw('LOWER(guide_number) LIKE ?', ["%{$searchTerm}%"]);
-            });
-
-            // Obtener los resultados finales para no equipos
-            $mergedResults = $query->distinct()
-                ->with('huawei_entry', 'huawei_material',)
-                ->get()
-                ->map(function ($detail) {
-                    $detail->huawei_material->name = $this->sanitizeText2($detail->huawei_material->name); // Aplica la función de sanitización al nombre
-                    return $detail;
-                });
+            $mergedResults = $query->with('huawei_entry', 'huawei_pending_order', 'huawei_material')->get();
         }
 
-
-        // Retornar los resultados fusionados
         return Inertia::render('Huawei/Details', [
             'entries' => $mergedResults,
             'equipment' => $equipment,
@@ -819,6 +814,7 @@ class HuaweiManagementController extends Controller
             'search' => $request
         ]);
     }
+
 
     public function assignDIU (Request $request)
     {

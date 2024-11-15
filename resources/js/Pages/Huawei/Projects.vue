@@ -143,7 +143,7 @@
                         </h3>
                     </div>
                     <div class="flex gap-1">
-                        <p class="text-sm font-semibold text-black">DIU: </p>
+                        <p class="text-sm font-semibold text-black">DU: </p>
                         <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-1 whitespace-nowrap">
                             {{ item.assigned_diu }}
                         </h3>

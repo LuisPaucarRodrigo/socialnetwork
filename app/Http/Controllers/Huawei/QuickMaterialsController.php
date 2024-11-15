@@ -314,13 +314,13 @@ class QuickMaterialsController extends Controller
             }
 
 
-            if ($characterCount > 50){
+            if ($characterCount > 55){
                 return response()->json(['file_error' => 'Cantidad de registros excedida']);
             }
 
             $lastGuide = HuaweiInternalGuide::latest('id')->first();
             $newId = $lastGuide ? $lastGuide->id + 1 : 1;
-            $code = 'N° ' . str_pad($newId + 436, 5, '0', STR_PAD_LEFT);
+            $code = 'N° ' . str_pad($newId + 443, 5, '0', STR_PAD_LEFT);
             $fileName = time() . '_internal_guide.pdf';
 
             $internal_guide = HuaweiInternalGuide::create([
