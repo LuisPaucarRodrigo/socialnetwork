@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
@@ -32,6 +33,9 @@ class CicsaAssignation extends Model
         'cicsa_project_status',
         'cicsa_administration_status',
         'cicsa_charge_status',
+        'last_project_status_date',
+        'last_administration_status_date',
+        'last_charge_status_date',
     ];
 
     public function user()
@@ -79,7 +83,7 @@ class CicsaAssignation extends Model
 
 
     public function checkAssignation()
-    {   
+    {
         $campoExcepcion = 'zone2';
         foreach ($this->fillable as $field) {
             if ($field !== $campoExcepcion && is_null($this->$field)) {
@@ -417,6 +421,55 @@ class CicsaAssignation extends Model
         return 'Completado';
     }
 
+    public function getLastProjectStatusDateAttribute()
+    {
+        $updatedDates = [
+            $this->updated_at,
+            $this->cicsa_feasibility()->first()?->updated_at,
+            $this->cicsa_materials()->first()?->updated_at,
+            $this->cicsa_installation()->first()?->updated_at,
+        ];
+
+        $lastUpdate = collect($updatedDates)->filter()->max();
+
+        return Carbon::parse($lastUpdate)->format('d-m-Y');
+    }
+
+
+    public function getLastAdministrationStatusDateAttribute()
+    {
+        $updatedDates = [];
+
+        foreach ($this->cicsa_purchase_order()->get() as $purchase_order) {
+            $updatedDates[] = $purchase_order->updated_at;
+        }
+
+        foreach ($this->cicsa_purchase_order_validation()->get() as $purchase_order_validation) {
+            $updatedDates[] = $purchase_order_validation->updated_at;
+        }
+
+        foreach ($this->cicsa_service_order()->get() as $service_order) {
+            $updatedDates[] = $service_order->updated_at;
+        }
+
+        $lastUpdate = collect($updatedDates)->filter()->max();
+
+        return Carbon::parse($lastUpdate)->format('d-m-Y');
+    }
+
+
+    public function getLastChargeStatusDateAttribute()
+    {
+        $updatedDates = [];
+
+        foreach ($this->cicsa_charge_area()->get() as $charge_area) {
+            $updatedDates[] = $charge_area->updated_at;
+        }
+
+        $lastUpdate = collect($updatedDates)->filter()->max();
+
+        return Carbon::parse($lastUpdate)->format('d-m-Y');
+    }
 
     public function getTotalMaterialsAttribute()
     {
@@ -434,6 +487,7 @@ class CicsaAssignation extends Model
                     $total_materials[$key]["guide_number"] = $newGuideNumber;
                 } else {
                     array_push($total_materials, [
+                        'total_quantity' => $item->total_quantity,
                         'name' => $item->name,
                         'unit' => $item->unit,
                         'type' => $item->type,

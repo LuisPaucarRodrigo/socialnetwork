@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('unit');
             $table->string('type');
+            $table->integer('total_quantity');
             $table->integer('quantity');
             $table->timestamps();
         });
