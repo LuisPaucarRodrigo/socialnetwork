@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ProjectArea;
 
+use App\Constants\PintConstants;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CostsRequest\AdditionalCostsRequest;
 use App\Imports\CostsImport;
@@ -24,6 +25,11 @@ class AdditionalCostsController extends Controller
 {
     public function index(Project $project_id)
     {
+        $expenseTypes = PintConstants::acExpenseTypes();
+        $docTypes = PintConstants::acDocTypes();
+        $zones = PintConstants::acZones();
+        $stateTypes = [PintConstants::ACEPTADO, PintConstants::PENDIENTE];
+
         $additional_costs = AdditionalCost::where('project_id', $project_id->id)
             ->where(function ($query) {
                 $query->where('is_accepted', 1)
@@ -47,6 +53,10 @@ class AdditionalCostsController extends Controller
             'additional_costs' => $additional_costs,
             'project_id' => $project_id,
             'providers' => $providers,
+            'zones' => $zones,
+            'expenseTypes' => $expenseTypes,
+            'docTypes' => $docTypes,
+            'stateTypes' => $stateTypes,
         ]);
     }
     public function indexRejected(Project $project_id)
@@ -71,6 +81,8 @@ class AdditionalCostsController extends Controller
 
     public function search_costs(Request $request, $project_id)
     {
+        
+
         $result = AdditionalCost::where('project_id', $project_id)->with([
             'project:id,description',
             'provider'
@@ -90,7 +102,7 @@ class AdditionalCostsController extends Controller
         if ($request->state === false) {
             $result->where('is_accepted', 0);
         } else {
-            if (count($request->selectedStateTypes) < 2) {
+            if (count($request->selectedStateTypes) < PintConstants::countAcStateTypes()) {
                 $newSS = array_values(array_map(function ($item) {
                     if ($item === 'Aceptado') return '1';
                     if ($item === 'Pendiente') return null;
@@ -127,13 +139,13 @@ class AdditionalCostsController extends Controller
         if ($request->opEndDate) {
             $result->where('operation_date', '<=', $request->opEndDate);
         }
-        if (count($request->selectedZones) < 7) {
+        if (count($request->selectedZones) < PintConstants::countAcZones()) {
             $result = $result->whereIn('zone', $request->selectedZones);
         }
-        if (count($request->selectedExpenseTypes) < 16) {
+        if (count($request->selectedExpenseTypes) < PintConstants::countAcExpenseTypes()) {
             $result = $result->whereIn('expense_type', $request->selectedExpenseTypes);
         }
-        if (count($request->selectedDocTypes) < 5) {
+        if (count($request->selectedDocTypes) < PintConstants::countAcDocTypes()) {
             $result = $result->whereIn('type_doc', $request->selectedDocTypes);
         }
         $result = $result->orderBy('doc_date')->get();

@@ -995,7 +995,13 @@ const props = defineProps({
     userPermissions: Array,
     searchQuery: String,
     state: String,
+    zones: Array,
+    expenseTypes: Array,
+    docTypes: Array,
+    stateTypes: Array,
 });
+
+const { expenseTypes, docTypes, zones ,stateTypes } = props
 
 const dataToRender = ref(props.additional_costs.data);
 const filterMode = ref(false);
@@ -1167,36 +1173,6 @@ function handlerPreview(id) {
     );
 }
 
-const zones = ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1", "MDD2", "Oficina"];
-
-const expenseTypes = [
-    "Hospedaje",
-    "Mensajería",
-    "Consumibles",
-    "Pasaje Interprovincial",
-    "Taxis y Pasajes",
-    "Bandeos",
-    "Peaje",
-    "Herramientas",
-    "Equipos",
-    "Daños de Vehículos",
-    "EPPs",
-    "Seguros y Pólizas",
-    "Gastos de Representación",
-    "Cocheras",
-    "Acarreos",
-    "Otros",
-];
-
-const docTypes = [
-    "Efectivo",
-    "Deposito",
-    "Factura",
-    "Boleta",
-    "Voucher de Pago",
-];
-
-const stateTypes = ["Aceptado", "Pendiente"];
 
 const initialFilterFormState = {
     search: "",
