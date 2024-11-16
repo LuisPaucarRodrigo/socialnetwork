@@ -86,7 +86,7 @@
                                 <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <div class="flex space-x-3 justify-center">
                                         <button
-                                            @click="openCreateSotModal(item.id, item?.cicsa_feasibility?.cicsa_feasibility_materials)">
+                                            @click="openCreateSotModal(item.id, item?.cicsa_feasibility?.cicsa_feasibility_materials,item.project_name,item.cpe)">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-green-600">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -287,12 +287,12 @@
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                             <p class="text-gray-900 text-center">
-                                                {{ item.type }}
+                                                {{ item.unit }}
                                             </p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                             <p class="text-gray-900 text-center">
-                                                {{ item.unit }}
+                                                {{ item.type }}
                                             </p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -554,7 +554,7 @@ function closeAddMaterialModal() {
     form.defaults({ ...initialState })
     form.reset()
 }
-
+ 
 const confirmUpdateMaterial = ref(false);
 
 function openEditSotModal(item, feasibility_materials, project_name, cpe) {
@@ -681,11 +681,12 @@ const toggleDetails = (material) => {
     }
 }
 
-function openCreateSotModal(cicsa_assignation_id, cicsa_material_feasibility) {
+function openCreateSotModal(cicsa_assignation_id, cicsa_material_feasibility, project_name,cpe) {
+    dateModal.value = { 'project_name': project_name, 'cpe': cpe }
     form.defaults({ ...initialState })
     form.cicsa_assignation_id = cicsa_assignation_id
-    // form.cicsa_material_items = cicsa_material_feasibility ?? []
-    form.cicsa_material_items = []
+    form.cicsa_material_items = cicsa_material_feasibility ?? []
+    // form.cicsa_material_items = []
     showAddEditModal.value = true
 }
 
@@ -694,7 +695,6 @@ function modalImportMaterial() {
 }
 
 function submitImportExcel() {
-
     axios.post(route('material.import'), formImport, {
         headers: {
             'Content-Type': 'multipart/form-data',
