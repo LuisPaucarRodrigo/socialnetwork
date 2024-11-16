@@ -97,7 +97,14 @@ class PintConstants
         return [
             self::PENDIENTE,
             self::ACEPTADO,
-            self::PENDIENTE,  
+            self::RECHAZADO,  
+        ];
+    }
+
+    public static function acStatesPenAccep (): array{
+        return [
+            self::PENDIENTE,
+            self::ACEPTADO,
         ];
     }
 

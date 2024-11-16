@@ -28,7 +28,7 @@ class AdditionalCostsController extends Controller
         $expenseTypes = PintConstants::acExpenseTypes();
         $docTypes = PintConstants::acDocTypes();
         $zones = PintConstants::acZones();
-        $stateTypes = [PintConstants::ACEPTADO, PintConstants::PENDIENTE];
+        $stateTypes = PintConstants::acStatesPenAccep();
 
         $additional_costs = AdditionalCost::where('project_id', $project_id->id)
             ->where(function ($query) {
@@ -102,7 +102,7 @@ class AdditionalCostsController extends Controller
         if ($request->state === false) {
             $result->where('is_accepted', 0);
         } else {
-            if (count($request->selectedStateTypes) < PintConstants::countAcStateTypes()) {
+            if (count($request->selectedStateTypes) < count(PintConstants::acStatesPenAccep())) {
                 $newSS = array_values(array_map(function ($item) {
                     if ($item === 'Aceptado') return '1';
                     if ($item === 'Pendiente') return null;
