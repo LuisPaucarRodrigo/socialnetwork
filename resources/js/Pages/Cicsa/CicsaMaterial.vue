@@ -86,7 +86,11 @@
                                 <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <div class="flex space-x-3 justify-center">
                                         <button
+<<<<<<< HEAD
                                             @click="openCreateSotModal(item.id, item?.cicsa_feasibility?.cicsa_feasibility_materials,item.project_name,item.cpe)">
+=======
+                                            @click="openCreateSotModal(item.id, item?.cicsa_feasibility?.cicsa_feasibility_materials, item.project_name, item.cpe)">
+>>>>>>> 5b6fde208a8ae478fc7c1535d49030ab9bbdbc5c
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-green-600">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -192,7 +196,7 @@
             </div>
         </div>
 
-        <Modal :show="showAddEditModal">
+        <Modal :show="showAddEditModal" maxWidth="4xl">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
                     {{ form.id ? 'Editar Material' : 'Nuevo Material' }} {{ ': ' + dateModal.project_name
@@ -266,6 +270,10 @@
                                         </th>
                                         <th
                                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                            Cantidad Total
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                             Cantidad
                                         </th>
                                         <th
@@ -293,6 +301,11 @@
                                         <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                             <p class="text-gray-900 text-center">
                                                 {{ item.type }}
+                                            </p>
+                                        </td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                            <p class="text-gray-900 text-center">
+                                                {{ item.total_quantity ?? item.quantity }}
                                             </p>
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -395,8 +408,6 @@
                     <PrimaryButton type="button" @click="addFeasibility"> Agregar </PrimaryButton>
                 </div>
             </div>
-
-
         </Modal>
 
         <Modal :show="showMaterials" @close="closeMaterialsModal" :closeable="true">
@@ -627,6 +638,7 @@ const material_item = ref({
     unit: '',
     type: '',
     quantity: 0,
+    total_quantity:null
 });
 
 function addFeasibility() {
@@ -636,7 +648,8 @@ function addFeasibility() {
             name: material_item.value.name,
             unit: material_item.value.unit,
             type: material_item.value.type,
-            quantity: material_item.value.quantity
+            quantity: material_item.value.quantity,
+            total_quantity: material_item.value.quantity
         };
         form.cicsa_material_items.push(newFeasibility);
         cleanArrayMaterial()
@@ -651,6 +664,7 @@ function cleanArrayMaterial() {
     material_item.value.unit = '';
     material_item.value.type = '';
     material_item.value.quantity = '';
+    material_item.value.total_quantity = '';
 }
 
 
@@ -681,12 +695,14 @@ const toggleDetails = (material) => {
     }
 }
 
-function openCreateSotModal(cicsa_assignation_id, cicsa_material_feasibility, project_name,cpe) {
+function openCreateSotModal(cicsa_assignation_id, cicsa_material_feasibility, project_name, cpe) {
     dateModal.value = { 'project_name': project_name, 'cpe': cpe }
     form.defaults({ ...initialState })
     form.cicsa_assignation_id = cicsa_assignation_id
-    form.cicsa_material_items = cicsa_material_feasibility ?? []
-    // form.cicsa_material_items = []
+    form.cicsa_material_items = cicsa_material_feasibility ? cicsa_material_feasibility.map(item => ({
+        ...item,
+        total_quantity: item.quantity,
+    })) : [];
     showAddEditModal.value = true
 }
 
@@ -745,7 +761,6 @@ function updateMaterialItem(e) {
 }
 
 function updateMaterial(item, material) {
-    console.log(material)
     const validations = materials.value.data || materials.value;
     const index = validations.findIndex(item => item.id === material.cicsa_assignation_id);
     if (item) {

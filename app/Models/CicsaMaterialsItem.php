@@ -17,6 +17,7 @@ class CicsaMaterialsItem extends Model
         'unit',
         'type',
         'quantity',
+        'total_quantity',
     ];
 
     public function cicsa_material() {
