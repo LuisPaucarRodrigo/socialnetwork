@@ -229,19 +229,19 @@
                         </th>
                         <th
                             class="sticky left-2 z-10 border-b-2 border-r border-gray-200 bg-gray-100 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 w-12">
-                            <label :for="`check-all`" class="flex gap-3 justify-center w-full px-2 py-1">
+                            <label :for="`check-all`" class="flex gap-3 justify-center w-12 px-2 py-1">
                                 <input @change="handleCheckAll" :id="`check-all`" :checked="actionForm.ids.length > 0"
                                     type="checkbox" />
                                 {{ actionForm.ids.length ?? "" }}
                             </label>
                         </th>
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            class="sticky left-14 z-10 border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Zona" :options="zones"
                                 v-model="filterForm.selectedZones" width="w-32" />
                         </th>
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            class="sticky left-48 z-10 border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Gasto" :options="expenseTypes"
                                 v-model="filterForm.selectedExpenseTypes" width="w-44" />
                         </th>
@@ -332,15 +332,15 @@
                         ]"></td>
                         <td
                             class="sticky left-2 z-10 border-b border-r border-gray-200 bg-amber-100 text-center text-[13px] whitespace-nowrap tabular-nums">
-                            <label :for="`check-${item.id}`" class="block w-full px-2 py-1">
+                            <label :for="`check-${item.id}`" class="block w-12 px-2 py-1">
                                 <input v-model="actionForm.ids" :value="item.id" :id="`check-${item.id}`"
                                     type="checkbox" />
                             </label>
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        <td class="sticky left-14 z-10 border-b w-32 border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                             {{ item.zone }}
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        <td class="sticky left-48 z-10 border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                             <p class="w-48 break-words">
                                 {{ item.expense_type }}
                             </p>
