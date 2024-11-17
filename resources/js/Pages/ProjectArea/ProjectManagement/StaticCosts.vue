@@ -129,8 +129,11 @@ const filterForm = ref({...initialFilterFormState});<template>
                 <thead>
                     <tr
                         class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                        <th class="sticky left-0 z-10 bg-gray-100 border-b-2 border-gray-20">
+                            <div class="w-2"></div>
+                        </th>
                         <th
-                            class="sticky left-0 z-10 border-b-2 border-r border-gray-200 bg-gray-100 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 w-12">
+                            class="sticky left-2 z-10 border-b-2 border-r border-gray-200 bg-gray-100 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 w-12">
                             <label :for="`check-all`" class="flex gap-3 justify-center w-full px-2 py-1">
                                 <input @change="handleCheckAll" :id="`check-all`" :checked="actionForm.ids.length > 0"
                                     type="checkbox" />
@@ -138,14 +141,14 @@ const filterForm = ref({...initialFilterFormState});<template>
                             </label>
                         </th>
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            class="sticky left-14 z-10 border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Zona" :options="zones"
                                 v-model="filterForm.selectedZones" width="w-32" />
                         </th>
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            class="sticky left-48 z-10 border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Gasto" :options="expenseTypes"
-                                v-model="filterForm.selectedExpenseTypes" width="w-48" />
+                                v-model="filterForm.selectedExpenseTypes" width="w-44" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
@@ -206,58 +209,70 @@ const filterForm = ref({...initialFilterFormState});<template>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in dataToRender" :key="item.id" class="text-gray-700">
+                    <tr v-for="item in dataToRender" :key="item.id" class="text-gray-700 bg-white hover:bg-gray-200 hover:opacity-80">
+                        <td :class="[
+                            'sticky left-0 z-10 border-b border-gray-200 bg-gray-400',
+                            'bg-gray-600',
+                            {
+                                'bg-indigo-500': item.is_accepted === null,
+                                'bg-green-500': item.is_accepted == true,
+                                'bg-red-500': item.is_accepted == false,
+                                
+                            },
+                        ]"></td>
                         <td
-                            class="sticky left-0 z-10 border-b border-r border-gray-200 bg-amber-100 text-center text-[13px] whitespace-nowrap tabular-nums">
+                            class="sticky left-2 z-10 border-b border-r border-gray-200 bg-amber-100 text-center text-[13px] whitespace-nowrap tabular-nums">
                             <label :for="`check-${item.id}`" class="block w-full px-2 py-1">
                                 <input v-model="actionForm.ids" :value="item.id" :id="`check-${item.id}`"
                                     type="checkbox" />
                             </label>
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        <td class="sticky left-14 z-10 border-b w-32 border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
                             {{ item.zone }}
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        <td class="sticky left-48 z-10 border-b border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
                             <p class="w-48 break-words">
                                 {{ item.expense_type }}
                             </p>
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             {{ item.type_doc }}
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             {{ item.ruc }}
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                            {{ item?.provider?.company_name }}
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
+                            <p class="line-clamp-2 hover:line-clamp-none">
+                                {{ item?.provider?.company_name }}
+                                </p>
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             {{ item.operation_number }}
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px] ">
                             {{ item.operation_date && formattedDate(item.operation_date) }}
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px] whitespace-nowrap">
                             {{ item.doc_number }}
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             {{ formattedDate(item.doc_date) }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap">
+                            class="border-b border-gray-200 px-2 py-2 text-center text-[13px] whitespace-nowrap">
                             S/. {{ item.amount.toFixed(2) }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap">
+                            class="border-b border-gray-200 px-2 py-2 text-center text-[13px] whitespace-nowrap">
                             S/. {{ item.real_amount.toFixed(2) }}
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <button v-if="item.photo" @click="handlerPreview(item.id)">
                                 <EyeIcon class="w-4 h-4 text-teal-600" />
                             </button>
                             <span v-else>-</span>
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <p class="w-[250px]">
                                 {{ item.description }}
                             </p>
@@ -265,7 +280,7 @@ const filterForm = ref({...initialFilterFormState});<template>
                         <td v-if="
                             auth.user.role_id === 1 &&
                             project_id.status === null
-                        " class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        " class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <div class="flex items-center">
                                 <button @click="openEditAdditionalModal(item)"
                                     class="text-amber-600 hover:underline mr-2">

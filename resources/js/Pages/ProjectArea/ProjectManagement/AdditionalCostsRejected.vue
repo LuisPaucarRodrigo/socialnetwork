@@ -177,7 +177,9 @@
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
-                            {{ item?.provider?.company_name }}
+                        <p class="line-clamp-2 hover:line-clamp-none">
+                                {{ item?.provider?.company_name }}
+                                </p>
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
@@ -1478,9 +1480,6 @@ async function submitAcceptModal () {
         confirmValidation.value = false;
     }, 1000);
 }
-
-
-
 
 
 

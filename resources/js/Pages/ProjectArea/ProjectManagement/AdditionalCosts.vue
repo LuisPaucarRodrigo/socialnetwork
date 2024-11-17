@@ -358,7 +358,9 @@
                             {{ item.ruc }}
                         </td>
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
-                            {{ item?.provider?.company_name }}
+                            <p class="line-clamp-2 hover:line-clamp-none">
+                                {{ item?.provider?.company_name }}
+                                </p>
                         </td>
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             {{ item.operation_number }}
@@ -369,7 +371,7 @@
                                 formattedDate(item.operation_date)
                             }}
                         </td>
-                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px] tabular-nums">
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap">
                             {{ item.doc_number }}
                         </td>
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
@@ -1401,24 +1403,14 @@ async function validateRegister(ac_id, is_accepted) {
 
 
 //block actions
-
-const actionForm = ref({
-    ids: [],
-});
-
+const actionForm = ref({ids: [],});
 const handleCheckAll = (e) => {
-    if (e.target.checked) {
-        actionForm.value.ids = dataToRender.value.map((item) => item.id);
-    } else {
-        actionForm.value.ids = [];
-    }
+    if (e.target.checked) {actionForm.value.ids = dataToRender.value.map((item) => item.id);} 
+    else { actionForm.value.ids = [];}
 };
-
 watch(
     () => filterForm.value,
-    () => {
-        actionForm.value = { ids: [] };
-    },
+    () => {actionForm.value = { ids: [] };},
     { deep: true }
 );
 
