@@ -818,7 +818,7 @@ import TableDateFilter from "@/Components/TableDateFilter.vue";
 import axios from "axios";
 import TextInput from "@/Components/TextInput.vue";
 import { setAxiosErrors, toFormData } from "@/utils/utils";
-import { notify, notifyWarning } from "@/Components/Notification";
+import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 
 import Dropdown from "@/Components/Dropdown.vue";
@@ -926,7 +926,7 @@ const submit = async () => {
         if (e.response?.data?.errors) {
             setAxiosErrors(e.response.data.errors, form)
         }
-        console.log(e)
+        notifyError('Server Error')
     }
 };
 
@@ -948,7 +948,7 @@ const submitEdit = async () => {
         if (e.response?.data?.errors) {
             setAxiosErrors(e.response.data.errors, form)
         }
-        console.log(e)
+        notifyError('Server Error')
     }
 };
 
