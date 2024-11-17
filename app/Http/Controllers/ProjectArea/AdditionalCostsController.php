@@ -35,15 +35,13 @@ class AdditionalCostsController extends Controller
                 $query->where('is_accepted', 1)
                     ->orWhere('is_accepted', null);
             })
-
-
             ->with(['project', 'provider'])
             ->orderBy('updated_at', 'desc')
             ->paginate(20);
 
         $additional_costs->getCollection()->transform(function ($item) {
             $item->project->setAppends([]);
-            $item->setAppends(['real_amount']);
+            $item->setAppends(['real_amount', 'real_state']);
             return $item;
         });
 
@@ -68,7 +66,7 @@ class AdditionalCostsController extends Controller
             ->get();
         $additional_costs->transform(function ($item) {
             $item->project->setAppends([]);
-            $item->setAppends(['real_amount']);
+            $item->setAppends(['real_amount', 'real_state']);
             return $item;
         });
         $providers = Provider::all();
@@ -102,23 +100,10 @@ class AdditionalCostsController extends Controller
         if ($request->state === false) {
             $result->where('is_accepted', 0);
         } else {
-            if (count($request->selectedStateTypes) < count(PintConstants::acStatesPenAccep())) {
-                $newSS = array_values(array_map(function ($item) {
-                    if ($item === 'Aceptado') return '1';
-                    if ($item === 'Pendiente') return null;
-                }, $request->selectedStateTypes));
-                $acceptedValues = array_filter($newSS, fn($value) => $value !== null);
-                $result = $result->when(
-                    in_array(null, $newSS, true),
-                    fn($query) => $query->whereNull('is_accepted'),
-                    fn($query) => $query->whereIn('is_accepted', $acceptedValues)
-                );
-            } else {
-                $result->where(function ($query) {
-                    $query->where('is_accepted', 1)
-                        ->orWhere('is_accepted', null);
-                });
-            }
+            $result->where(function ($query) {
+                $query->where('is_accepted', 1)
+                    ->orWhere('is_accepted', null);
+            });
         }
 
         if ($request->docNoDate) {
@@ -152,9 +137,15 @@ class AdditionalCostsController extends Controller
 
         $result->transform(function ($item) {
             $item->project->setAppends([]);
-            $item->setAppends(['real_amount']);
+            $item->setAppends(['real_amount', 'real_state']);
             return $item;
         });
+        
+        if ($request->state !== false && count($request->selectedStateTypes) < count(PintConstants::acStatesPenAccep())) {
+            $result = $result->filter(function($item) use ($request) {
+                return in_array($item->real_state, $request->selectedStateTypes);
+            })->values()->all();
+        } 
 
         return response()->json($result, 200);
     }
@@ -176,7 +167,7 @@ class AdditionalCostsController extends Controller
         $item = AdditionalCost::create($data);
         $item->load('project', 'provider:id,company_name');
         $item->project->setAppends([]);
-        $item->setAppends(['real_amount']);
+        $item->setAppends(['real_amount', 'real_state']);
         return response()->json($item, 200);
     }
 
@@ -244,7 +235,7 @@ class AdditionalCostsController extends Controller
         $additional_cost->update($data);
         $additional_cost->load('project', 'provider:id,company_name');
         $additional_cost->project->setAppends([]);
-        $additional_cost->setAppends(['real_amount']);
+        $additional_cost->setAppends(['real_amount', 'real_state']);
         return response()->json($additional_cost, 200);
     }
 
@@ -271,7 +262,7 @@ class AdditionalCostsController extends Controller
         ->get();
         $updatedCosts->each(function ($cost) {
         $cost->project->setAppends([]);
-        $cost->setAppends(['real_amount']);
+        $cost->setAppends(['real_amount', 'real_state']);
         });
         return response()->json($updatedCosts, 200);
     }

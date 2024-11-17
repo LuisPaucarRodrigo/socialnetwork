@@ -21,9 +21,6 @@
                         + Agregar
                     </PrimaryButton>
                     <PrimaryButton data-tooltip-target="update_data_tooltip" type="button" @click="() => {
-                        // filterMode = true;
-                        // reAll = true;
-                        // search_advance(initialFilterFormState);
                         filterForm = {...initialFilterFormState}
                     }
                         ">
@@ -206,7 +203,7 @@
 
                 <form @submit.prevent="handleSearch" class="flex items-center w-full sm:w-auto">
                     <TextInput data-tooltip-target="search_fields" type="text" placeholder="Buscar..."
-                        v-model="filterForm.search" :handleEnter="search_advance" />
+                        v-model="filterForm.search" :handleEnter="handleSearch" />
                     <button type="submit"
                         class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                         <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none"
@@ -225,7 +222,7 @@
                 </form>
             </div>
         </div>
-        <div class="overflow-x-auto h-[85vh]">
+        <div class="overflow-x-auto h-[72vh]">
             <table class="w-full bg-white">
                 <thead class="sticky top-0 z-20">
                     <tr
@@ -242,12 +239,12 @@
                             </label>
                         </th>
                         <th
-                            class="sticky left-14 z-10 border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            class="sm:sticky sm:left-14 sm:z-10 border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Zona" :options="zones"
                                 v-model="filterForm.selectedZones" width="w-32" />
                         </th>
                         <th
-                            class="sticky left-48 z-10 border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            class="sm:sticky sm:left-48 sm:z-10 border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Gasto" :options="expenseTypes"
                                 v-model="filterForm.selectedExpenseTypes" width="w-44" />
                         </th>
@@ -303,7 +300,7 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Estado" :options="stateTypes"
-                                v-model="filterForm.selectedStateTypes" width="w-28" />
+                                v-model="filterForm.selectedStateTypes" width="w-48" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
@@ -331,9 +328,10 @@
                         <td :class="[
                             'sticky left-0 z-10 border-b border-gray-200',
                             {
-                                'bg-indigo-500': item.is_accepted === null,
-                                'bg-green-500': item.is_accepted == true,
-                                'bg-red-500': item.is_accepted == false,
+                                'bg-indigo-500': item.real_state === 'Pendiente',
+                                'bg-green-500': item.real_state == 'Aceptado - Validado',
+                                'bg-amber-500': item.real_state == 'Aceptado',
+                                'bg-red-500': item.real_state == 'Rechazado',
                             },
                         ]"></td>
                         <td
@@ -343,10 +341,10 @@
                                     type="checkbox" />
                             </label>
                         </td>
-                        <td class="sticky left-14 z-10 border-b w-32 border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
+                        <td class="sm:sticky sm:left-14 sm:z-10 border-b w-32 border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
                             {{ item.zone }}
                         </td>
-                        <td class="sticky left-48 z-10 border-b border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
+                        <td class="sm:sticky sm:left-48 sm:z-10 border-b border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
                             <p class="w-48 break-words">
                                 {{ item.expense_type }}
                             </p>
@@ -417,8 +415,18 @@
                                 </button>
                             </div>
                             
-                            <div v-else class="text-center text-green-500">
-                                Aceptado
+                            <div v-else 
+                                :class = "[
+                                'text-center',
+                                {
+                                    'text-indigo-500': item.real_state === 'Pendiente',
+                                    'text-green-500': item.real_state == 'Aceptado - Validado',
+                                    'text-amber-500': item.real_state == 'Aceptado',
+                                    'text-red-500': item.real_state == 'Rechazado',
+                                },
+                            ]"
+                            >
+                                {{ item.real_state }}
                             </div>
                         </td>
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
@@ -1277,12 +1285,8 @@ watch(
         filterForm.value.docNoDate,
     ],
     () => {
-        // if (!reAll) {
-            filterMode.value = true;
-            search_advance(filterForm.value);
-            // console.log(filterForm.value)
-        // }
-        // reAll.value = false
+        filterMode.value = true;
+        search_advance(filterForm.value);
     }
 );
 

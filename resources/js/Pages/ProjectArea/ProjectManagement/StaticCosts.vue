@@ -105,7 +105,7 @@ const filterForm = ref({...initialFilterFormState});<template>
 
                 <form @submit.prevent="handleSearch" class="flex items-center w-full sm:w-auto">
                     <TextInput data-tooltip-target="search_fields" type="text" placeholder="Buscar..."
-                        v-model="filterForm.search" :handleEnter="search_advance" />
+                        v-model="filterForm.search" :handleEnter="handleSearch" />
 
                     <button type="submit"
                         class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
@@ -124,7 +124,7 @@ const filterForm = ref({...initialFilterFormState});<template>
                 </form>
             </div>
         </div>
-        <div class="overflow-x-auto h-[85vh] z-10">
+        <div class="overflow-x-auto h-[72vh] z-10">
             <table class="w-full">
                 <thead>
                     <tr
@@ -141,12 +141,12 @@ const filterForm = ref({...initialFilterFormState});<template>
                             </label>
                         </th>
                         <th
-                            class="sticky left-14 z-10 border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            class="sm:sticky sm:left-14 sm:z-10 border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Zona" :options="zones"
                                 v-model="filterForm.selectedZones" width="w-32" />
                         </th>
                         <th
-                            class="sticky left-48 z-10 border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            class="sm:sticky sm:left-48 sm:z-10 border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Gasto" :options="expenseTypes"
                                 v-model="filterForm.selectedExpenseTypes" width="w-44" />
                         </th>
@@ -199,6 +199,11 @@ const filterForm = ref({...initialFilterFormState});<template>
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Descripción
                         </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            <TableHeaderFilter labelClass="text-[11px]" label="Estado" :options="stateTypes"
+                                v-model="filterForm.selectedStateTypes" width="w-48" />
+                        </th>
                         <th v-if="
                             auth.user.role_id === 1 &&
                             project_id.status === null
@@ -211,12 +216,12 @@ const filterForm = ref({...initialFilterFormState});<template>
                 <tbody>
                     <tr v-for="item in dataToRender" :key="item.id" class="text-gray-700 bg-white hover:bg-gray-200 hover:opacity-80">
                         <td :class="[
-                            'sticky left-0 z-10 border-b border-gray-200 bg-gray-400',
-                            'bg-gray-600',
+                            'sticky left-0 z-10 border-b border-gray-200 ',
                             {
-                                'bg-indigo-500': item.is_accepted === null,
-                                'bg-green-500': item.is_accepted == true,
-                                'bg-red-500': item.is_accepted == false,
+                                'bg-indigo-500': item.real_state === 'Pendiente',
+                                'bg-green-500': item.real_state == 'Aceptado - Validado',
+                                'bg-amber-500': item.real_state == 'Aceptado',
+                                'bg-red-500': item.real_state == 'Rechazado',
                                 
                             },
                         ]"></td>
@@ -227,10 +232,10 @@ const filterForm = ref({...initialFilterFormState});<template>
                                     type="checkbox" />
                             </label>
                         </td>
-                        <td class="sticky left-14 z-10 border-b w-32 border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
+                        <td class="sm:sticky sm:left-14 sm:z-10 border-b w-32 border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
                             {{ item.zone }}
                         </td>
-                        <td class="sticky left-48 z-10 border-b border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
+                        <td class="sm:sticky sm:left-48 sm:z-10 border-b border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
                             <p class="w-48 break-words">
                                 {{ item.expense_type }}
                             </p>
@@ -277,6 +282,21 @@ const filterForm = ref({...initialFilterFormState});<template>
                                 {{ item.description }}
                             </p>
                         </td>
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
+                            <div :class = "[
+                                'text-center',
+                                {
+                                    'text-indigo-500': item.real_state === 'Pendiente',
+                                    'text-green-500': item.real_state == 'Aceptado - Validado',
+                                    'text-amber-500': item.real_state == 'Aceptado',
+                                    'text-red-500': item.real_state == 'Rechazado',
+                                },
+                            ]"
+                            >
+                                {{ item.real_state }}
+                            </div>
+                        </td>
+                        
                         <td v-if="
                             auth.user.role_id === 1 &&
                             project_id.status === null
@@ -293,6 +313,7 @@ const filterForm = ref({...initialFilterFormState});<template>
                         </td>
                     </tr>
                     <tr class="sticky bottom-0 z-10 text-gray-700">
+                        <td class="border-b border-gray-200 bg-white text-sm"></td>
                         <td colspan="10" class="font-bold border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             TOTAL
                         </td>
@@ -315,6 +336,7 @@ const filterForm = ref({...initialFilterFormState});<template>
                                     .toFixed(2)
                             }}
                         </td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
                         <td v-if="
@@ -808,7 +830,13 @@ const props = defineProps({
     auth: Object,
     userPermissions: Array,
     searchQuery: String,
+    zones: Array,
+    expenseTypes: Array,
+    docTypes: Array,
+    stateTypes: Array,
 });
+
+const { expenseTypes, docTypes, zones ,stateTypes } = props
 
 const dataToRender = ref(props.additional_costs.data);
 const filterMode = ref(false);
@@ -980,49 +1008,13 @@ function openExportPhoto() {
     window.location.href = url;
 }
 
-const zones = [
-    "Arequipa",
-    "Chala",
-    "Moquegua",
-    "Tacna",
-    "MDD1-PM",
-    "MDD2-MAZ",
-    "Oficina"
-];
-const expenseTypes = [
-    "Alquiler de Vehículos",
-    "Alquiler de Locales",
-    "Combustible",
-    "Combustible GEP",
-    "Celulares",
-    "Proveídos",
-    "Terceros",
-    "Viáticos",
-    "Seguros y Pólizas",
-    "Gastos de Representación",
-    "Reposición de Equipo",
-    "Herramientas",
-    "Equipos",
-    "EPPs",
-    "Adicionales",
-    "Filtros y Aceites",
-    "Daños de Vehículos",
-    "Planilla",
-    "Otros",
-];
-const docTypes = [
-    "Efectivo",
-    "Deposito",
-    "Factura",
-    "Boleta",
-    "Voucher de Pago",
-];
 
 const initialFilterFormState = {
     search: "",
     selectedZones: zones,
     selectedExpenseTypes: expenseTypes,
     selectedDocTypes: docTypes,
+    selectedStateTypes: stateTypes,
     opStartDate: "",
     opEndDate: "",
     opNoDate: false,
@@ -1038,6 +1030,7 @@ watch(
         filterForm.value.selectedZones,
         filterForm.value.selectedExpenseTypes,
         filterForm.value.selectedDocTypes,
+        filterForm.value.selectedStateTypes,
         filterForm.value.opStartDate,
         filterForm.value.opEndDate,
         filterForm.value.opNoDate,

@@ -1122,7 +1122,7 @@ const props = defineProps({
     searchQuery: String,
     state: String,
 });
-
+console.log(props.additional_costs)
 const dataToRender = ref(props.additional_costs);
 const filterMode = ref(false);
 
