@@ -216,6 +216,9 @@ class AdditionalCostsController extends Controller
             $as = AccountStatement::where('operation_date', $data['operation_date'])
                 ->where('operation_number', $on)->first();
             $data['account_statement_id'] = $as?->id;
+            $data['is_accepted'] = 1;
+        } else {
+            $data['is_accepted'] = null;
         }
 
         if ($request->hasFile('photo')) {
@@ -261,6 +264,7 @@ class AdditionalCostsController extends Controller
             'operation_date' => $data['operation_date'],
             'operation_number' => $data['operation_number'],
             'account_statement_id' => $data['account_statement_id'],
+            'is_accepted' => 1
         ]);
         $updatedCosts = AdditionalCost::whereIn('id', $data['ids'])
         ->with(['project', 'provider:id,company_name'])
@@ -310,11 +314,18 @@ class AdditionalCostsController extends Controller
 
     public function validateRegister(Request $request, $ac_id)
     {
+        if($request->is_accepted === 1){
+            $data = $request->validate([
+                'operation_date' => 'required|date',
+                'operation_number' => 'required|min:6',
+                'is_accepted' => 'required'
+            ]);
+        } else {
+            $data = ['is_accepted' => $request->is_accepted];
+        }
         $ac = AdditionalCost::with('project', 'provider')
             ->find($ac_id);
-        $ac->update([
-            'is_accepted' => $request->is_accepted
-        ]);
+        $ac->update($data);
         return response()->json(['additional_cost' => $ac], 200);
     }
 
