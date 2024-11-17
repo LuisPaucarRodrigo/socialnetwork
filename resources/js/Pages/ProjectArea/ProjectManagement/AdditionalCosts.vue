@@ -457,6 +457,7 @@
                         <td colspan="10" class="font-bold border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             TOTAL
                         </td>
+                        <td class="font-bold border-b border-gray-200 bg-white"></td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
                             S/.
                             {{
