@@ -1035,6 +1035,8 @@
                                 <div class="flex justify-center">
                                     <p class="font-black uppercase text-center">
                                         {{ item?.cicsa_project_status }}
+                                        <br>
+                                        {{ item?.last_project_status_date }}
                                     </p>
                                 </div>
                             </td>
@@ -1354,6 +1356,8 @@
                                 <div class="flex justify-center">
                                     <p class="font-black uppercase text-center">
                                         {{ item?.cicsa_administration_status }}
+                                        <br>
+                                        {{ item?.last_administration_status_date }}
                                     </p>
                                 </div>
                             </td>
@@ -1585,6 +1589,8 @@
                                 <div class="flex justify-center">
                                     <p class="font-black uppercase text-center">
                                         {{ item?.cicsa_charge_status }}
+                                        <br>
+                                        {{ item?.last_charge_status_date }}
                                     </p>
                                 </div>
                             </td>
@@ -1700,6 +1706,9 @@
                                         Material
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Cantidad Total
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
                                         Recibidos
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
@@ -1708,12 +1717,18 @@
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
                                         Resto
                                     </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Materiales Asignados
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="(item, i) in instMaterials" :key="i" class="text-gray-700 bg-white text-sm">
                                     <td class="border-b border-slate-300 px-4 py-4">
                                         {{ item?.name }}
+                                    </td>
+                                    <td class="border-b border-slate-300 px-4 py-4">
+                                        {{ item?.total_quantity }}
                                     </td>
                                     <td class="border-b border-slate-300 px-4 py-4">
                                         {{ item?.quantity }}
@@ -1725,6 +1740,10 @@
                                         {{
                                             item?.quantity - item?.used_quantity
                                         }}
+                                    </td>
+                                    <td class="border-b border-slate-300 px-4 py-4">
+                                        {{ item.quantity === item.used_quantity ? item.total_quantity -
+                                                item.quantity : 'No se asigno materiales' }}
                                     </td>
                                 </tr>
                             </tbody>

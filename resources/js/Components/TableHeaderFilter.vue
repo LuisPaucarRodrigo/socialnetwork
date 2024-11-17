@@ -58,6 +58,7 @@ const selectedOptions = ref([...props.modelValue]);
 const selectAll = ref(true);
 const popup = ref(null);
 
+
 const widthClass = computed(() => props.width);
 
 const togglePopup = () => {
@@ -79,13 +80,20 @@ const toggleAll = () => {
 };
 
 watch(selectedOptions, (newSelectedOptions) => {
-    emit('update:modelValue', newSelectedOptions);
+    //si viene del padre newSelectedOptions es igual a newVal misma referencia
+    emit('update:modelValue', selectedOptions.value);
     if (newSelectedOptions.length === props.options.length) {
         selectAll.value = true;
     } else {
         selectAll.value = false;
     }
 });
+
+watch(()=>props.modelValue, (newVal) => {
+    //si viene del hijo el newVal es lo mismo que el newSelectedOptions
+    selectedOptions.value = props.modelValue
+});
+
 
 onMounted(() => {
     document.addEventListener('click', closePopup);

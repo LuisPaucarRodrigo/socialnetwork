@@ -9,7 +9,8 @@
                 <a :href="route('cicsa.installation.export') + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)" placeholder="Buscar ..." />
+                    <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
+                        placeholder="Buscar ..." />
                     <SelectCicsaComponent currentSelect="Instalación PINT y PEXT" />
                     <div id="search_fields" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
@@ -341,6 +342,10 @@
                                             </th>
                                             <th
                                                 class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                                Cantidad Total
+                                            </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
                                                 Recibidos
                                             </th>
                                             <th
@@ -359,6 +364,9 @@
                                             ) in pintList" :key="i" class="text-gray-700 bg-white text-sm">
                                             <td class="border-b border-slate-300 px-2 py-4">
                                                 {{ item?.name }}
+                                            </td>
+                                            <td class="border-b border-slate-300 text-center px-2 py-4">
+                                                {{ item?.total_quantity }}
                                             </td>
                                             <td class="border-b border-slate-300 text-center px-2 py-4">
                                                 {{ item?.quantity }}
@@ -398,6 +406,10 @@
                                             </th>
                                             <th
                                                 class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                                Cantidad Total
+                                            </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
                                                 Recibidos
                                             </th>
                                             <th
@@ -408,6 +420,10 @@
                                                 class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
                                                 Resto
                                             </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                                Materiales
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -416,6 +432,9 @@
                                             ) in pextList" :key="i" class="text-gray-700 bg-white text-sm">
                                             <td class="border-b border-slate-300 px-2 py-4">
                                                 {{ item?.name }}
+                                            </td>
+                                            <td class="border-b border-slate-300 text-center px-2 py-4">
+                                                {{ item?.total_quantity }}
                                             </td>
                                             <td class="border-b border-slate-300 text-center px-2 py-4">
                                                 {{ item?.quantity }}
@@ -432,6 +451,11 @@
                                                     item?.quantity -
                                                     item.used_quantity
                                                 }}
+                                            </td>
+                                            <td class="border-b border-slate-300 text-center px-2 py-4">
+                                                {{ item.quantity === item.used_quantity ? item.total_quantity -
+                                                item.quantity : 'No se asigno materiales' }}
+
                                             </td>
                                         </tr>
                                     </tbody>
@@ -518,6 +542,9 @@
                                         Tipo
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Cantidad Total
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
                                         Cantidad
                                     </th>
                                 </tr>
@@ -535,6 +562,9 @@
                                     </td>
                                     <td class="border-b border-slate-300  px-4 py-4">
                                         {{ item?.type }}
+                                    </td>
+                                    <td class="border-b border-slate-300 px-4 py-4">
+                                        {{ item?.total_quantity }}
                                     </td>
                                     <td class="border-b border-slate-300 px-4 py-4">
                                         {{ item?.quantity }}
@@ -820,7 +850,7 @@ function updateInstallations(cicsa_assignation_id, installation) {
     validations[index].cicsa_installation = installation
 }
 
-if(searchCondition){
+if (searchCondition) {
     search(searchCondition)
 }
 </script>

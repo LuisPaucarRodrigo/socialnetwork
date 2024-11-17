@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Constants\PintConstants;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+
 
 class Project extends Model
 {
@@ -106,7 +108,7 @@ class Project extends Model
             ->get()
             ->sum('real_amount');
         $staticCosts = $this->staticCosts()
-            ->where('expense_type', '!=', 'Combustible GEP')
+            ->whereNotIn('expense_type', PintConstants::scExpensesThatDontCount())
             ->get()
             ->sum('real_amount');
         $currentBudget = $currentBudget
