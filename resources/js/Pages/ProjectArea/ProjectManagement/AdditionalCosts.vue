@@ -283,6 +283,18 @@
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            <div class="flex space-x-1 items-center justify-end">
+                                <p>
+                                    Fecha de Registro
+                                </p>
+                                <button @click="sortValue">
+                                    <ArrowsUpDownIcon class="h-5 w-5" />
+                                </button>
+                            </div>
+                            
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Monto
                         </th>
                         <th
@@ -302,18 +314,7 @@
                             <TableHeaderFilter labelClass="text-[11px]" label="Estado" :options="stateTypes"
                                 v-model="filterForm.selectedStateTypes" width="w-48" />
                         </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <div class="flex space-x-1 items-center justify-end">
-                                <p>
-                                    Fecha de Registro
-                                </p>
-                                <button @click="sortValue">
-                                    <ArrowsUpDownIcon class="h-5 w-5" />
-                                </button>
-                            </div>
-                            
-                        </th>
+                       
                         <th v-if="
                             auth.user.role_id === 1 &&
                             project_id.status === null
@@ -375,6 +376,9 @@
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             {{ formattedDate(item.doc_date) }}
                         </td>
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
+                            {{ formattedDate(item.created_at) }}
+                        </td>
                         <td
                             class="border-b border-gray-200 px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap">
                             S/. {{ item.amount.toFixed(2) }}
@@ -428,9 +432,6 @@
                             >
                                 {{ item.real_state }}
                             </div>
-                        </td>
-                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
-                            {{ formattedDate(item.created_at) }}
                         </td>
                         <td v-if="
                             auth.user.role_id === 1 &&

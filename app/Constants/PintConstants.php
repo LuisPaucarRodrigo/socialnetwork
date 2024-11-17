@@ -195,6 +195,12 @@ class PintConstants
         ];
     }
 
+    public static function scExpensesThatDontCount (): array { 
+        return [
+        PintConstants::COMBUSTIBLE_GEP,
+        PintConstants::REPOSICION_DE_EQUIPO,
+    ];}
+
 
 
 
