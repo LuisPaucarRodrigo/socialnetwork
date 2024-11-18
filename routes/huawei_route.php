@@ -19,6 +19,8 @@ Route::middleware('permission:HuaweiManager')->group(function () {
 
     //Inventory
     Route::get('/huawei/inventory/{warehouse}/get/{equipment?}', [HuaweiManagementController::class, 'show'])->name('huawei.inventory.show');
+    Route::get('/huawei/inventory/orders/pending_orders/get', [HuaweiManagementController::class, 'getPendingOrders'])->name('huawei.inventory.pendingorders');
+    Route::post('/huawei/inventory/orders/pending_orders/search_advance/post', [HuaweiManagementController::class, 'ordersSearchAdvance'])->name('huawei.inventory.pendingorders.searchadvance');
     Route::get('/huawei/inventory/search/{warehouse}/get/{request}/{equipment?}', [HuaweiManagementController::class, 'searchIndex'])->name('huawei.inventory.show.search');
     Route::get('/huawei/inventory/create/form/get', [HuaweiManagementController::class, 'create'])->name('huawei.inventory.create');
     Route::post('/huawei/inventory/create/form/post', [HuaweiManagementController::class, 'store'])->name('huawei.inventory.store');
@@ -36,7 +38,7 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::get('/huawei/inventory/export/general/export/get', [HuaweiManagementController::class, 'exportInventory'])->name('huawei.inventory.export');
     Route::get('/huawei/inventory/general/general_equipments/{prefix}/get', [HuaweiManagementController::class, 'getGeneralEquipments'])->name('huawei.inventory.general.equipments');
     Route::post('/huawei/inventory/general/general_equipments/{prefix}/search_advance/post', [HuaweiManagementController::class, 'searchGeneralAdvance'])->name('huawei.inventory.general.equipments.searchadvance');
-
+    Route::post('/huawei/inventory/general/general_equipments/massive_update/post', [HuaweiManagementController::class, 'generalMassiveUpdate'])->name('huawei.inventory.general.equipments.massiveupdate');
     Route::get('/huawei/inventory/general/general_equipments/{prefix}/search/{request}', [HuaweiManagementController::class, 'searchGeneralEquipments'])->name('huawei.inventory.general.equipments.search');
     Route::put('huawei/inventory/update_entry_detail_date/{huawei_entry_detail}/put', [HuaweiManagementController::class, 'updateEntryDate'])->name('huawei.inventory.update.entrydetail');
     Route::put('huawei/inventory/update_entry_detail_site/{huawei_entry_detail}/put', [HuaweiManagementController::class, 'updateSite'])->name('huawei.inventory.update.entrydetail.site');
