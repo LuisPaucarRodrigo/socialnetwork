@@ -21,8 +21,7 @@
                         + Agregar
                     </PrimaryButton>
                     <PrimaryButton data-tooltip-target="update_data_tooltip" type="button" @click="() => {
-                        filterMode = true;
-                        search_advance(initialFilterFormState);
+                        filterForm = {...initialFilterFormState}
                     }
                         ">
                         <ServerIcon class="w-5 h-5 text-white" />
@@ -117,7 +116,11 @@
                                         </button>
                                         <button @click=""
                                             class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                            Swap
+                                            Rechazar
+                                        </button>
+                                        <button @click=""
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Eliminar
                                         </button>
                                     </div>
                                 </div>
@@ -200,7 +203,7 @@
 
                 <form @submit.prevent="handleSearch" class="flex items-center w-full sm:w-auto">
                     <TextInput data-tooltip-target="search_fields" type="text" placeholder="Buscar..."
-                        v-model="filterForm.search" :handleEnter="search_advance" />
+                        v-model="filterForm.search" :handleEnter="handleSearch" />
                     <button type="submit"
                         class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                         <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none"
@@ -219,8 +222,8 @@
                 </form>
             </div>
         </div>
-        <div class="overflow-x-auto h-[85vh]">
-            <table class="w-full">
+        <div class="overflow-x-auto h-[72vh]">
+            <table class="w-full bg-white">
                 <thead class="sticky top-0 z-20">
                     <tr
                         class="border-b bg-gray-50 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -229,19 +232,19 @@
                         </th>
                         <th
                             class="sticky left-2 z-10 border-b-2 border-r border-gray-200 bg-gray-100 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 w-12">
-                            <label :for="`check-all`" class="flex gap-3 justify-center w-full px-2 py-1">
+                            <label :for="`check-all`" class="flex gap-3 justify-center w-12 px-2 py-1">
                                 <input @change="handleCheckAll" :id="`check-all`" :checked="actionForm.ids.length > 0"
                                     type="checkbox" />
                                 {{ actionForm.ids.length ?? "" }}
                             </label>
                         </th>
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            class="sm:sticky sm:left-14 sm:z-10 border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Zona" :options="zones"
                                 v-model="filterForm.selectedZones" width="w-32" />
                         </th>
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            class="sm:sticky sm:left-48 sm:z-10 border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Gasto" :options="expenseTypes"
                                 v-model="filterForm.selectedExpenseTypes" width="w-44" />
                         </th>
@@ -280,6 +283,18 @@
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            <div class="flex space-x-1 items-center justify-end">
+                                <p>
+                                    Fecha de Registro
+                                </p>
+                                <button @click="sortValue">
+                                    <ArrowsUpDownIcon class="h-5 w-5" />
+                                </button>
+                            </div>
+                            
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Monto
                         </th>
                         <th
@@ -297,8 +312,9 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Estado" :options="stateTypes"
-                                v-model="filterForm.selectedStateTypes" width="w-28" />
+                                v-model="filterForm.selectedStateTypes" width="w-48" />
                         </th>
+                       
                         <th v-if="
                             auth.user.role_id === 1 &&
                             project_id.status === null
@@ -309,76 +325,82 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in dataToRender" :key="item.id" class="text-gray-700">
+                    <tr v-for="item in dataToRender" :key="item.id" class="text-gray-700 bg-white hover:bg-gray-200 hover:opacity-80">
                         <td :class="[
                             'sticky left-0 z-10 border-b border-gray-200',
                             {
-                                'bg-indigo-500': item.is_accepted === null,
-                                'bg-green-500': item.is_accepted == true,
-                                'bg-red-500': item.is_accepted == false,
+                                'bg-indigo-500': item.real_state === 'Pendiente',
+                                'bg-green-500': item.real_state == 'Aceptado - Validado',
+                                'bg-amber-500': item.real_state == 'Aceptado',
+                                'bg-red-500': item.real_state == 'Rechazado',
                             },
                         ]"></td>
                         <td
                             class="sticky left-2 z-10 border-b border-r border-gray-200 bg-amber-100 text-center text-[13px] whitespace-nowrap tabular-nums">
-                            <label :for="`check-${item.id}`" class="block w-full px-2 py-1">
+                            <label :for="`check-${item.id}`" class="block w-12 px-2 py-1">
                                 <input v-model="actionForm.ids" :value="item.id" :id="`check-${item.id}`"
                                     type="checkbox" />
                             </label>
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        <td class="sm:sticky sm:left-14 sm:z-10 border-b w-32 border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
                             {{ item.zone }}
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        <td class="sm:sticky sm:left-48 sm:z-10 border-b border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
                             <p class="w-48 break-words">
                                 {{ item.expense_type }}
                             </p>
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             {{ item.type_doc }}
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums">
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px] tabular-nums">
                             {{ item.ruc }}
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                            {{ item?.provider?.company_name }}
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
+                            <p class="line-clamp-2 hover:line-clamp-none">
+                                {{ item?.provider?.company_name }}
+                                </p>
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             {{ item.operation_number }}
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             {{
                                 item.operation_date &&
                                 formattedDate(item.operation_date)
                             }}
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums">
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap">
                             {{ item.doc_number }}
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             {{ formattedDate(item.doc_date) }}
                         </td>
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
+                            {{ formattedDate(item.created_at) }}
+                        </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap">
+                            class="border-b border-gray-200 px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap">
                             S/. {{ item.amount.toFixed(2) }}
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap">
+                            class="border-b border-gray-200 px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap">
                             S/. {{ item.real_amount.toFixed(2) }}
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <button v-if="item.photo" @click="handlerPreview(item.id)">
                                 <EyeIcon class="w-4 h-4 text-teal-600" />
                             </button>
                             <span v-else>-</span>
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <p class="w-[250px]">
                                 {{ item.description }}
                             </p>
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <div v-if="item.is_accepted === null" class="flex gap-3 justify-center w-full">
-                                <button @click="() => validateRegister(item.id, true)
+                                <button @click="() => openAcceptModal(item)
                                     " class="flex items-center rounded-xl text-blue-500 hover:bg-green-200">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-green-500">
@@ -396,14 +418,25 @@
                                     </svg>
                                 </button>
                             </div>
-                            <div v-else class="text-center text-green-500">
-                                Aceptado
+                            
+                            <div v-else 
+                                :class = "[
+                                'text-center',
+                                {
+                                    'text-indigo-500': item.real_state === 'Pendiente',
+                                    'text-green-500': item.real_state == 'Aceptado - Validado',
+                                    'text-amber-500': item.real_state == 'Aceptado',
+                                    'text-red-500': item.real_state == 'Rechazado',
+                                },
+                            ]"
+                            >
+                                {{ item.real_state }}
                             </div>
                         </td>
                         <td v-if="
                             auth.user.role_id === 1 &&
                             project_id.status === null
-                        " class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        " class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <div class="flex items-center justify-center gap-3 w-full">
                                 <div class="flex gap-3 mr-3">
                                     <button @click="openEditAdditionalModal(item)"
@@ -424,6 +457,7 @@
                         <td colspan="10" class="font-bold border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             TOTAL
                         </td>
+                        <td class="font-bold border-b border-gray-200 bg-white"></td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
                             S/.
                             {{
@@ -907,9 +941,12 @@
 
         <Modal :show="showOpNuDatModal" @close="closeOpNuDatModal">
             <div class="p-6">
-                <h2 class="text-base font-medium leading-7 text-gray-900">
+                <h2 class="text-base font-medium leading-7 text-gray-900 mb-2">
                     Actualización Masiva
                 </h2>
+                <h4 class="text-sm font-light text-green-900 bg-green-500/10 rounded-lg p-3 ">
+                    Los registros con fecha de operación y número de operación, pasarán a automáticamente estar aceptados.
+                </h4>
                 <form @submit.prevent="submitOpNuDatModal">
                     <div class="space-y-12">
                         <div class="border-b grid grid-cols-1 gap-6 border-gray-900/10 pb-12">
@@ -949,6 +986,50 @@
             </div>
         </Modal>
 
+        <Modal :show="showAcceptModal" @close="closeAcceptModal">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900 mb-2">
+                    Aceptar Gasto Adicional
+                </h2>
+                <form @submit.prevent="submitAcceptModal">
+                    <div class="space-y-12">
+                        <div class="border-b grid grid-cols-1 gap-6 border-gray-900/10 pb-12">
+                            <div>
+                                <InputLabel for="operation_number" class="font-medium leading-6 text-gray-900">Numero de
+                                    Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="text" v-model="opNuDateForm.operation_number" id="operation_number"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="opNuDateForm.errors.operation_number" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="operation_date" class="font-medium leading-6 text-gray-900">Fecha de
+                                    Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="date" v-model="opNuDateForm.operation_date" id="operation_date"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="opNuDateForm.errors.operation_date" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <SecondaryButton @click="closeAcceptModal">
+                                Cancelar
+                            </SecondaryButton>
+                            <button type="submit" :disabled="isFetching" :class="{ 'opacity-25': isFetching }"
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </Modal>
+
         <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Costo Adicional"
             :deleteFunction="deleteAdditional" @closeModal="closeModalDoc" :processing="isFetching" />
         <SuccessOperationModal :confirming="confirmImport" :title="'Datos Importados'"
@@ -972,6 +1053,7 @@ import {
     TrashIcon,
     PencilSquareIcon,
     ServerIcon,
+    ArrowsUpDownIcon
 } from "@heroicons/vue/24/outline";
 import { formattedDate } from "@/utils/utils";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
@@ -995,10 +1077,17 @@ const props = defineProps({
     userPermissions: Array,
     searchQuery: String,
     state: String,
+    zones: Array,
+    expenseTypes: Array,
+    docTypes: Array,
+    stateTypes: Array,
 });
 
+
+const { expenseTypes, docTypes, zones ,stateTypes } = props
 const dataToRender = ref(props.additional_costs.data);
 const filterMode = ref(false);
+const allReg = ref(false)
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
@@ -1167,36 +1256,6 @@ function handlerPreview(id) {
     );
 }
 
-const zones = ["Arequipa", "Chala", "Moquegua", "Tacna", "MDD1", "MDD2", "Oficina"];
-
-const expenseTypes = [
-    "Hospedaje",
-    "Mensajería",
-    "Consumibles",
-    "Pasaje Interprovincial",
-    "Taxis y Pasajes",
-    "Bandeos",
-    "Peaje",
-    "Herramientas",
-    "Equipos",
-    "Daños de Vehículos",
-    "EPPs",
-    "Seguros y Pólizas",
-    "Gastos de Representación",
-    "Cocheras",
-    "Acarreos",
-    "Otros",
-];
-
-const docTypes = [
-    "Efectivo",
-    "Deposito",
-    "Factura",
-    "Boleta",
-    "Voucher de Pago",
-];
-
-const stateTypes = ["Aceptado", "Pendiente"];
 
 const initialFilterFormState = {
     search: "",
@@ -1227,7 +1286,7 @@ watch(
         filterForm.value.docEndDate,
         filterForm.value.docNoDate,
     ],
-    ([]) => {
+    () => {
         filterMode.value = true;
         search_advance(filterForm.value);
     }
@@ -1350,24 +1409,14 @@ async function validateRegister(ac_id, is_accepted) {
 
 
 //block actions
-
-const actionForm = ref({
-    ids: [],
-});
-
+const actionForm = ref({ids: [],});
 const handleCheckAll = (e) => {
-    if (e.target.checked) {
-        actionForm.value.ids = dataToRender.value.map((item) => item.id);
-    } else {
-        actionForm.value.ids = [];
-    }
+    if (e.target.checked) {actionForm.value.ids = dataToRender.value.map((item) => item.id);} 
+    else { actionForm.value.ids = [];}
 };
-
 watch(
     () => filterForm.value,
-    () => {
-        actionForm.value = { ids: [] };
-    },
+    () => {actionForm.value = { ids: [] };},
     { deep: true }
 );
 
@@ -1383,6 +1432,7 @@ const closeOpNuDatModal = () => {
     showOpNuDatModal.value = false
     isFetching.value = false
     opNuDateForm.reset()
+    opNuDateForm.clearErrors()
 }
 
 const openOpNuDaModal = () => {
@@ -1419,6 +1469,58 @@ const submitOpNuDatModal = async () => {
     dataToRender.value = updatedArray
     closeOpNuDatModal();
     notify("Registros Seleccionados Actualizados");
+}
+
+
+const showAcceptModal = ref(false)
+const itemToAccept = ref(null)
+const closeAcceptModal = () => {
+    showAcceptModal.value = false
+    isFetching.value = false
+    itemToAccept.value = null
+    opNuDateForm.reset()
+    opNuDateForm.clearErrors()
+}
+const openAcceptModal = (item) => {
+    itemToAccept.value = item
+    showAcceptModal.value = true
+}
+async function submitAcceptModal () {
+    isFetching.value = true;
+    const res = await axios.post(
+            route("projectmanagement.validateAdditionalCost", { ac_id: itemToAccept.value.id }),
+            { is_accepted:1, ...opNuDateForm.data() }
+        )
+        .catch((e) => {
+            isFetching.value = false;
+            if (e.response?.data?.errors) {
+                setAxiosErrors(e.response.data.errors, opNuDateForm);
+            } else {
+                notifyError("Server Error");
+            }
+        });
+    let index = dataToRender.value.findIndex((item) => item.id == res.data.additional_cost.id);
+    dataToRender.value[index] = res.data.additional_cost;
+    closeAcceptModal();
+    confirmValidation.value = true;
+    setTimeout(() => {
+        confirmValidation.value = false;
+    }, 1000);
+}
+
+
+
+
+
+
+const stateCreateAtSort = ref(false)
+function sortValue() {
+    if (stateCreateAtSort.value) {
+        dataToRender.value.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    } else {
+        dataToRender.value.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    }
+    stateCreateAtSort.value = !stateCreateAtSort.value;
 }
 
 
