@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cicsa;
 
 use App\Exports\CicsaProcess\AssignationExport;
 use App\Exports\CicsaProcess\ChargeAreaExport;
+use App\Exports\CicsaProcess\CicsaProcessExport;
 use App\Exports\CicsaProcess\FeasibilitiesExport;
 use App\Exports\CicsaProcess\InstallationExport;
 use App\Exports\CicsaProcess\MaterialExport;
@@ -71,6 +72,10 @@ class CicsaController extends Controller
         ]);
     }
 
+    public function exportCiscaProcess(){
+        return Excel::download(new CicsaProcessExport, 'Proceso Cicsa ' . date('d-m-Y') . '.xlsx');
+    }
+
     public function search(Request $request)
     {
         $stages = $request->typeStages;
@@ -130,7 +135,6 @@ class CicsaController extends Controller
         if ($request->opEndDate) {
             $projectsCicsa->where('assignation_date', '<=', $request->opEndDate);
         }
-
         if (!empty($request->search)) {
             $search = $request->search;
             $searchTerms = explode(' ', $search);
@@ -141,6 +145,11 @@ class CicsaController extends Controller
                         ->orWhere('cpe', 'like', "%$term%");
                 }
             });
+        }
+
+        if (count($request->cost_center) < 7) {
+            $costCenter = $request->cost_center;
+            $projectsCicsa = $projectsCicsa->whereIn('cost_center',$costCenter);
         }
 
         $projectsCicsa = $projectsCicsa->get();
@@ -154,6 +163,8 @@ class CicsaController extends Controller
                 return $item->cicsa_administration_status === 'Completado';
             });
         }
+
+        
 
         if (count($request->project_status) < 3) {
             $selectedPS = $request->project_status;

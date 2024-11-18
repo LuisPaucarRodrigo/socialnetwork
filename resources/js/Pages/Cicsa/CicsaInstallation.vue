@@ -427,9 +427,8 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="(
-                                                item, i
-                                            ) in pextList" :key="i" class="text-gray-700 bg-white text-sm">
+                                        <tr v-for="(item, i) in pextList" :key="i" 
+                                            class="text-gray-700 bg-white text-sm">
                                             <td class="border-b border-slate-300 px-2 py-4">
                                                 {{ item?.name }}
                                             </td>

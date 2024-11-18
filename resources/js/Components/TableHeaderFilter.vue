@@ -1,6 +1,6 @@
 <template>
     <div :class="['relative flex justify-center items-center gap-x-3', widthClass]" ref="popup">
-        <p :class="labelClass">{{ label }}</p>
+        <p :class="labelClass" v-html="reverse ? reverseWordsWithBreaks(label) : label" ></p>
         <button @click="togglePopup">
             <BarsArrowDownIcon class="h-5 w-5" />
         </button>
@@ -102,4 +102,5 @@ onMounted(() => {
 onUnmounted(() => {
     document.removeEventListener('click', closePopup);
 });
+
 </script>

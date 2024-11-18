@@ -1,6 +1,6 @@
 <template>
-    <div :class="['relative flex justify-between items-center', widthClass]" ref="popup">
-        <p :class="labelClass"> {{ label }}</p>
+    <div :class="['relative flex justify-center items-center gap-x-3', widthClass]" ref="popup">
+        <p :class="labelClass" v-html="reverse ? reverseWordsWithBreaks(label) : label" ></p>
         <template v-if="options">
             <button @click="togglePopup">
                 <BarsArrowDownIcon class="h-5 w-5" />
@@ -66,6 +66,10 @@ const props = defineProps({
         type: String,
         default: 'w-full'
     },
+    reverse: {
+        type: Boolean,
+        default: false
+    }
 });
 
 const emit = defineEmits(['update:modelValue']);
@@ -127,4 +131,7 @@ const handleInput = (event) => {
     emit('update:modelValue', event.target.value);
 };
 
+function reverseWordsWithBreaks(columnTitle) {
+    return columnTitle.split(" ").reverse().join("<br>");
+}
 </script>
