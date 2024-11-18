@@ -19,6 +19,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Collection;
 use App\Models\HuaweiSpecialRefund;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
@@ -1151,7 +1152,7 @@ class HuaweiManagementController extends Controller
 
     public function getPendingOrders ()
     {
-        $pending_orders = HuaweiPendingOrder::with([
+        $pending_orders = HuaweiPendingOrder::where('status', 0)->with([
             'huawei_entry_details' => function ($query) {
                 $query->select('id', 'quantity', 'unit_price', 'huawei_order_id', 'huawei_material_id', 'huawei_equipment_serie_id', 'observation') // Ajusta los campos que necesitas
                       ->with([
@@ -1183,7 +1184,7 @@ class HuaweiManagementController extends Controller
 
     public function ordersSearchAdvance (Request $request)
     {
-        $pending_orders = HuaweiPendingOrder::with([
+        $pending_orders = HuaweiPendingOrder::where('status', 0)->with([
             'huawei_entry_details' => function ($query) {
                 $query->select('id', 'quantity', 'unit_price', 'huawei_order_id', 'huawei_material_id', 'huawei_equipment_serie_id', 'observation') // Ajusta los campos que necesitas
                       ->with([
@@ -1197,13 +1198,14 @@ class HuaweiManagementController extends Controller
             }
         ]);
 
-        $order_numbers = $pending_orders->get()->pluck('order_number')->toArray();
+        $order_numbers = $pending_orders->get()->pluck('order_number')->filter()->unique()->count();
+        $requestOrders = count($request->selectedOrderNumbers);
 
-        if (count($request->selectedOrderNumbers) < count($order_numbers)){
-            $pending_orders->whereIn('order_number', $request->selectedNumbers);
+        if ($requestOrders < $order_numbers){
+            $pending_orders->whereIn('order_number', $request->selectedOrderNumbers);
         }
 
-        $pending_orders->get()->each(function ($pendingOrder) {
+        $finalOrders = $pending_orders->get()->each(function ($pendingOrder) {
             $pendingOrder->huawei_entry_details->each(function ($entryDetail) {
                 $entryDetail->makeHidden([
                     'state',
@@ -1219,6 +1221,65 @@ class HuaweiManagementController extends Controller
             });
         });
 
-        return response()->json(['orders' => $pending_orders], 200);
+        return response()->json(['orders' => $finalOrders], 200);
+    }
+
+    public function orderAssignGuide (HuaweiPendingOrder $order, Request $request)
+    {
+        $data = $request->validate([
+            'guide_number' => 'required',
+            'entry_date' => 'required',
+            'observation' => 'required'
+        ]);
+
+        $entry = HuaweiEntry::create($data);
+
+        foreach ($order->huawei_entry_details as $entryDetail) {
+            $entryDetail->update([
+                'huawei_entry_id' => $entry->id
+            ]);
+        }
+
+        $order->update([
+            'status' => true
+        ]);
+
+        $pending_orders = HuaweiPendingOrder::where('status', 0)->with([
+            'huawei_entry_details' => function ($query) {
+                $query->select('id', 'quantity', 'unit_price', 'huawei_order_id', 'huawei_material_id', 'huawei_equipment_serie_id', 'observation') // Ajusta los campos que necesitas
+                      ->with([
+                          'huawei_material' => function ($subQuery) {
+                              $subQuery->select('id', 'name', 'claro_code', 'unit');
+                          },
+                          'huawei_equipment_serie.huawei_equipment' => function ($subQuery) {
+                              $subQuery->select('id', 'name', 'claro_code');
+                          }
+                      ]);
+            }
+        ]);
+
+        $finalOrders = $pending_orders->get()->each(function ($pendingOrder) {
+            $pendingOrder->huawei_entry_details->each(function ($entryDetail) {
+                $entryDetail->makeHidden([
+                    'state',
+                    'refund_quantity',
+                    'project_quantity',
+                    'available_quantity',
+                    'assigned_site',
+                    'instalation_state',
+                    'antiquation_state',
+                    'huawei_project_resources',
+                    'huawei_pending_order'
+                ]);
+            });
+        });
+
+        return response()->json(['orders' => $finalOrders], 200);
+    }
+
+    public function fetchPendingOrders ()
+    {
+        $pending_orders = HuaweiPendingOrder::where('status', 0)->get();
+        return response()->json(['orders' => $pending_orders]);
     }
 }

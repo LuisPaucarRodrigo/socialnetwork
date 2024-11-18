@@ -21,6 +21,8 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::get('/huawei/inventory/{warehouse}/get/{equipment?}', [HuaweiManagementController::class, 'show'])->name('huawei.inventory.show');
     Route::get('/huawei/inventory/orders/pending_orders/get', [HuaweiManagementController::class, 'getPendingOrders'])->name('huawei.inventory.pendingorders');
     Route::post('/huawei/inventory/orders/pending_orders/search_advance/post', [HuaweiManagementController::class, 'ordersSearchAdvance'])->name('huawei.inventory.pendingorders.searchadvance');
+    Route::post('/huawei/inventory/orders/pending_orders/assign_guide/{order}/post', [HuaweiManagementController::class, 'orderAssignGuide'])->name('huawei.inventory.pendingorders.assignguide');
+    Route::get('/huawei/inventory/orders/pending_orders/fetch_orders/get', [HuaweiManagementController::class, 'fetchPendingOrders'])->name('huawei.inventory.pendingorders.fetch');
     Route::get('/huawei/inventory/search/{warehouse}/get/{request}/{equipment?}', [HuaweiManagementController::class, 'searchIndex'])->name('huawei.inventory.show.search');
     Route::get('/huawei/inventory/create/form/get', [HuaweiManagementController::class, 'create'])->name('huawei.inventory.create');
     Route::post('/huawei/inventory/create/form/post', [HuaweiManagementController::class, 'store'])->name('huawei.inventory.store');

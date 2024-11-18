@@ -604,11 +604,8 @@ const props = defineProps({
     data: Object,
 });
 
-const confirmAssign = ref(false);
 const refundModal = ref(false);
 const showRefundConfirm = ref(false);
-const confirmUpdateModal = ref(false);
-const confirmUpdateSite = ref(false);
 const selectedWarehouse = ref(props.warehouse);
 const dataToRender = ref(props.equipments);
 const filterMode = ref(false);
