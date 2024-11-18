@@ -453,9 +453,8 @@
                                                 }}
                                             </td>
                                             <td class="border-b border-slate-300 text-center px-2 py-4">
-                                                {{ item.quantity === item.used_quantity ? item.total_quantity -
+                                                {{ item.quantity === item.used_quantity && item.total_quantity ? item.total_quantity -
                                                 item.quantity : 'No se asigno materiales' }}
-
                                             </td>
                                         </tr>
                                     </tbody>
