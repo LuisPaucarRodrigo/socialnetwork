@@ -12,13 +12,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use App\Providers\GlobalFunctionsServiceProvider;
+use Exception;
 
 class ProviderController extends Controller
 {
     public function index()
     {
-        return Inertia::render('ShoppingArea/ProviderManagement/Provider',
-            ['providers' => Provider::paginate(),
+        return Inertia::render(
+            'ShoppingArea/ProviderManagement/Provider',
+            [
+                'providers' => Provider::paginate(),
+                'category' => ProviderCategory::all(),
             ]
         );
     }
@@ -69,26 +73,33 @@ class ProviderController extends Controller
             'name' => 'required'
         ]);
         $new = ProviderCategory::create($data);
-        return response()->json(['new'=> $new],200);
+        return response()->json(['new' => $new], 200);
     }
 
     public function segment_provider(Request $request)
     {
         $data = $request->validate([
+            'provider_category_id' => 'required',
             'name' => 'required'
         ]);
         $new = ProviderSegment::create($data);
-        return response()->json(['new'=> $new],200);
+        return response()->json(['new' => $new], 200);
+    }
+
+    public function segment_list($category_id)
+    {
+        $segments = ProviderSegment::where('provider_category_id', $category_id)->get();
+        return response()->json($segments, 200);
     }
 
     public function search($request)
     {
         $searchTerm = strtolower($request); // Convertir a minúsculas
 
-        $providers = Provider::where(function($query) use ($searchTerm) {
-            $query->whereRaw('LOWER(ruc) like ?', ['%'.$searchTerm.'%'])
-                  ->orWhereRaw('LOWER(company_name) like ?', ['%'.$searchTerm.'%'])
-                  ->orWhereRaw('LOWER(contact_name) like ?', ['%'.$searchTerm.'%']);
+        $providers = Provider::where(function ($query) use ($searchTerm) {
+            $query->whereRaw('LOWER(ruc) like ?', ['%' . $searchTerm . '%'])
+                ->orWhereRaw('LOWER(company_name) like ?', ['%' . $searchTerm . '%'])
+                ->orWhereRaw('LOWER(contact_name) like ?', ['%' . $searchTerm . '%']);
         })->get();
 
         return Inertia::render('ShoppingArea/ProviderManagement/Provider', [

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('provider_segments', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->foreignId('provider_category_id')->constrained()->onDelete('csacade');
             $table->timestamps();
         });
     }

@@ -86,11 +86,7 @@
                                 <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <div class="flex space-x-3 justify-center">
                                         <button
-<<<<<<< HEAD
-                                            @click="openCreateSotModal(item.id, item?.cicsa_feasibility?.cicsa_feasibility_materials,item.project_name,item.cpe)">
-=======
                                             @click="openCreateSotModal(item.id, item?.cicsa_feasibility?.cicsa_feasibility_materials, item.project_name, item.cpe)">
->>>>>>> 5b6fde208a8ae478fc7c1535d49030ab9bbdbc5c
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-green-600">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -565,7 +561,7 @@ function closeAddMaterialModal() {
     form.defaults({ ...initialState })
     form.reset()
 }
- 
+
 const confirmUpdateMaterial = ref(false);
 
 function openEditSotModal(item, feasibility_materials, project_name, cpe) {
@@ -617,9 +613,13 @@ async function submit() {
             }, 1500)
         } catch (error) {
             if (error.response) {
-                setAxiosErrors(error.response.data.errors, form)
+                if (error.response.data.errors) {
+                    setAxiosErrors(error.response.data.errors, form)
+                } else {
+                    console.error("Server error:", error.response.data)
+                }
             } else {
-                console.error(error)
+                console.error("Network or other error:", error)
             }
         }
     }
@@ -638,7 +638,7 @@ const material_item = ref({
     unit: '',
     type: '',
     quantity: 0,
-    total_quantity:null
+    total_quantity: null
 });
 
 function addFeasibility() {

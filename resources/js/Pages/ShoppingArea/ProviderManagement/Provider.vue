@@ -53,7 +53,7 @@
                                 zona
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="w-64 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Direccion
                             </th>
                             <th
@@ -80,46 +80,54 @@
                     <tbody>
                         <tr v-for="provider in (props.search ? providers : providers.data)" :key="provider.id"
                             class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ provider.ruc }}</p>
+                            <td class="border-b border-gray-200 bg-white px-3 py-2">
+                                <p class="text-gray-900 whitespace-no-wrap text-xs">{{ provider.ruc }}</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ provider.company_name }}</p>
+                            <td class="border-b border-gray-200 bg-white px-3 py-2">
+                                <p class="text-gray-900 whitespace-no-wrap text-xs">{{ provider.company_name }}</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ provider.contact_name }}</p>
+                            <td class="border-b border-gray-200 bg-white px-3 py-2">
+                                <p class="text-gray-900 whitespace-no-wrap text-xs">{{ provider.contact_name }}</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ provider.zone }}</p>
+                            <td class="border-b border-gray-200 bg-white px-3 py-2">
+                                <p class="text-gray-900 whitespace-no-wrap text-xs">{{ provider.zone }}</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ provider.address }}</p>
+                            <td class="border-b border-gray-200 bg-white px-3 py-2">
+                                <p class="text-gray-900 whitespace-no-wrap text-xs w-64">{{ provider.address }}</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ provider.phone1 }} {{ provider.phone2 }}
+                            <td class="border-b border-gray-200 bg-white px-3 py-2">
+                                <p class="text-gray-900 whitespace-no-wrap text-xs">{{ provider.phone1 }} {{
+                                    provider.phone2 }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ provider.email }}</p>
+                            <td class="border-b border-gray-200 bg-white px-3 py-2">
+                                <p class="text-gray-900 whitespace-no-wrap text-xs">{{ provider.email }}</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ provider.category }}</p>
+                            <td class="border-b border-gray-200 bg-white px-3 py-2">
+                                <p class="text-gray-900 whitespace-no-wrap text-xs">{{ provider.category }}</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ provider.segment }}</p>
+                            <td class="border-b border-gray-200 bg-white px-3 py-2">
+                                <p class="text-gray-900 whitespace-no-wrap text-xs">{{ provider.segment }}</p>
                             </td>
-                            <td v-if="auth.user.role_id == 1" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="auth.user.role_id == 1" class="border-b border-gray-200 bg-white px-3 py-2">
                                 <div class="flex space-x-3 justify-center">
-                                    <Link class="text-blue-900 whitespace-no-wrap"
+                                    <!-- <Link class="text-blue-900 whitespace-no-wrap"
                                         :href="route('providersmanagement.edit', { id: provider.id })">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                     </svg>
-                                    </Link>
-                                    <button type="button"
-                                        @click="confirmProviderDeletion(provider)"
+                                    </Link> -->
+                                    <button type="button" @click="add_information(provider)"
+                                        class="text-blue-900 whitespace-no-wrap">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                    </svg>
+                                    </button>
+                                    <button type="button" @click="confirmProviderDeletion(provider)"
                                         class="text-blue-900 whitespace-no-wrap">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
@@ -135,10 +143,12 @@
             </div>
 
             <div v-if="props.search === undefined"
-                class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+                class="flex flex-col items-center border-t bg-white px-3 py-2 xs:flex-row xs:justify-between">
                 <pagination :links="providers.links" />
             </div>
         </div>
+        <ProviderCreateAndUpdate :showModalStoreOrUpdate="showModalStoreOrUpdate" :provider="form" :categories="category"  @submit="submitCategoryOrSegment"
+        @close="closeModalStoreOrUpdate"/>
         <ConfirmDeleteModal :confirmingDeletion="confirmingProviderDeletion" itemType="proveedor" :nameText="name"
             :deleteFunction="deleteProvider" @closeModal="closeModal" />
     </AuthenticatedLayout>
@@ -149,12 +159,22 @@ import Pagination from '@/Components/Pagination.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import { Head, router, Link, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import ProviderCreateAndUpdate from './ProviderCreateAndUpdate.vue';
+import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
+import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
+import InputError from '@/Components/InputError.vue';
+import TextInput from '@/Components/TextInput.vue';
+import Modal from '@/Components/Modal.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import InputLabel from '@/Components/InputLabel.vue';
 
 const props = defineProps({
     providers: Object,
     auth: Object,
     search: String,
-    userPermissions:Array
+    userPermissions: Array,
+    category:Object
 });
 
 const hasPermission = (permission) => {
@@ -164,6 +184,21 @@ const hasPermission = (permission) => {
 const confirmingProviderDeletion = ref(false);
 const provider = ref(null);
 const name = ref(null);
+const showModalStoreOrUpdate = ref(false)
+
+const form = useForm({
+    company_name: '',
+    contact_name: '',
+    address: '',
+    phone1: '',
+    phone2: '',
+    email: '',
+    category: '',
+    segment: '',
+    zone: '',
+    ruc: '',
+    id: null,
+});
 
 const confirmProviderDeletion = (provider_fun) => {
     provider.value = provider_fun;
@@ -184,8 +219,9 @@ const closeModal = () => {
     confirmingProviderDeletion.value = false;
 };
 
-const add_information = () => {
-    router.get(route('providersmanagement.create'));
+const add_information = (item) => {
+    showModalStoreOrUpdate.value = !showModalStoreOrUpdate.value
+    Object.assign(form,item)
 };
 
 const searchForm = useForm({
@@ -199,6 +235,28 @@ const search = () => {
         router.visit(route('providersmanagement.search', { request: searchForm.searchTerm }));
     }
 
+}
+
+const submit = () => {
+    let url = showModalStoreOrUpdate.value
+    if (provider) {
+        form.id = provider.id
+        form.put(route('providersmanagement.update', provider.id), form)
+    } else {
+        form.post(route('providersmanagement.store'), {
+            onSuccess: () => {
+                showModal.value = true;
+                setTimeout(() => {
+                    showModal.value = false;
+                    router.visit(route('providersmanagement.index'))
+                }, 2000);
+            },
+        })
+    }
+};
+
+function closeModalStoreOrUpdate() {
+    showModalStoreOrUpdate.value = false
 }
 
 </script>

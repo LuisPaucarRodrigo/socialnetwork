@@ -11,4 +11,8 @@ class ProviderCategory extends Model
     protected $fillable = [
         'name'
     ];
+
+    public function providersSegment(){
+        return $this->hasMany(ProviderSegment::class);
+    }
 }

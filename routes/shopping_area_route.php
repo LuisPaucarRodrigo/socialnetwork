@@ -12,8 +12,9 @@ Route::middleware('permission:PurchasingManager')->group(function () {
     Route::get('/shopping_area/providers/create', [ProviderController::class, 'create'])->name('providersmanagement.create');
     Route::post('/shopping_area/providers/store', [ProviderController::class, 'store'])->name('providersmanagement.store');
 
-    Route::post('/shopping_area/providers/category', [ProviderController::class, 'category_provider'])->name('provider.category');
-    Route::post('/shopping_area/providers/segment', [ProviderController::class, 'segment_provider'])->name('provider.segment');
+    Route::post('/shopping_area/providers/category/store', [ProviderController::class, 'category_provider'])->name('provider.category.post');
+    Route::post('/shopping_area/providers/segment/store', [ProviderController::class, 'segment_provider'])->name('provider.segment.post');
+    Route::get('/shopping_area/providers/segment/list', [ProviderController::class, 'segment_list'])->name('provider.segments.list');
 
     //Purchase request
     Route::get('/shopping_area/purchasesrequest/create', [PurchaseRequestController::class, 'create'])->name('purchasesrequest.create');
