@@ -800,6 +800,7 @@ class CicsaController extends Controller
         DB::beginTransaction();
         try {
             $validateData['amount'] = floatval($validateData['amount']);
+            $validateData['amount_bank'] = floatval($validateData['amount_bank']);
             if ($request->hasFile('document')) {
                 $document = $request->file('document');
                 $validateData['document'] = time() . '._' . $document->getClientOriginalName();
