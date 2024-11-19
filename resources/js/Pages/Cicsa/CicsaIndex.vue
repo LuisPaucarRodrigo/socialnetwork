@@ -21,20 +21,12 @@
             </div>
             <div class="flex justify-between">
                 <div class="flex space-x-4">
-                    <FilterProcess v-if="!filterForm.typeStages" :options="[
-                        'Asignación',
-                        'Factibilidad PINT y PEXT',
-                        'Materiales',
-                        'Instalación PINT y PEXT',
-                        'Orden de Compra',
-                        'Validación de OC',
-                        'Orden de Servicio',
-                        'Cobranza',
-                    ]" v-model="selectedOptions" :width="'w-[230px]'" />
-                    <button @click="getAllData()"
+                    <FilterProcess v-if="!filterForm.typeStages" :options="selectableOptions" v-model="selectedOptions"
+                        :width="'w-[230px]'" />
+                    <!-- <button @click="getAllData()"
                         class="p-2 bg-white ring-1 ring-slate-400 rounded-md text-slate-900 hover:text-slate-400">
                         <ServerIcon class="h-5 w-5 font-bold" />
-                    </button>
+                    </button> -->
                     <button @click="router.visit(route('cicsa.index'))"
                         class="p-2 bg-transparent ring-1 ring-slate-300 rounded-md text-slate-900 hover:text-slate-400">
                         <ArrowPathIcon class="h-5 w-5" />
@@ -50,7 +42,7 @@
                     </button>
                     <div id="export_cicsa_process" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                        Exportar Excel Total
+                        Exportar Excel {{ filterForm.typeStages }}
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
                 </div>
@@ -73,7 +65,9 @@
                     <select v-model="filterForm.typeStages"
                         class="block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
                         <option disabled value="">Seleccionar Etapa</option>
-                        <option v-for="item in stages" :key="item.id">{{ item }}</option>
+                        <option v-for="item in stages" :key="item.id">
+                            {{ item === "" ? "Todos" : item }}
+                        </option>
                     </select>
                     <SelectCicsaComponent currentSelect="Proceso" />
 
@@ -190,12 +184,10 @@
                             <th v-if="checkVisibility('Asignación')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                                 <div class="w-[190px]">
-                                    <TableHeaderCicsaFilter label="Centro de Costos" labelClass="title text-gray-600" :reverse="true"
-                                        :options="[...cost_center]" v-model="filterForm.cost_center" ref="childRef" />
+                                    <TableHeaderCicsaFilter label="Centro de Costos" labelClass="title text-gray-600"
+                                        :reverse="true" :options="[...cost_center]" v-model="filterForm.cost_center" />
                                 </div>
-                                <!-- <div class="flex justify-center">
-                                    <p class="title" v-html="reverseWordsWithBreaks('Centro de Costos')"></p>
-                                </div> -->
+
                             </th>
                             <th v-if="checkVisibility('Asignación')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
@@ -1760,7 +1752,7 @@
                                     </td>
                                     <td class="border-b border-slate-300 px-4 py-4">
                                         {{ item.quantity === item.used_quantity ? item.total_quantity -
-                                                item.quantity : 'No se asigno materiales' }}
+                                            item.quantity : 'No se asigno materiales' }}
                                     </td>
                                 </tr>
                             </tbody>
@@ -1881,9 +1873,7 @@ function openInstMaterialsModal(arrayMaterials) {
 function closeInstMaterialsModal() {
     showInstMaterials.value = false;
 }
-
-//Stage visibility
-const selectedOptions = ref([
+const selectableOptions = [
     "Asignación",
     "Factibilidad PINT y PEXT",
     "Materiales",
@@ -1892,7 +1882,9 @@ const selectedOptions = ref([
     "Validación de OC",
     "Orden de Servicio",
     "Cobranza",
-]);
+]
+//Stage visibility
+const selectedOptions = ref(selectableOptions);
 
 function checkVisibility(option) {
     if (typeof option === 'string') {
@@ -1965,13 +1957,13 @@ function getTotalAmount(objArray) {
 }
 
 //filter
-const stages = ["Proyecto", "Administracion", "Cobranza"];
+const stages = ["","Proyecto", "Administracion", "Cobranza"];
 const stats = ["Pendiente", "En Proceso", "Completado"];
-const cost_center = ["Mantto Pext Claro","Instalaciones GTD","Mantto Pext GTD","Densificacion","Adicionales","Instalaciones Claro","TSS"];
+const cost_center = ["Mantto Pext Claro", "Instalaciones GTD", "Mantto Pext GTD", "Densificacion", "Adicionales", "Instalaciones Claro", "TSS"];
 const initSearch = {
     typeStages: "",
-    cost_center:[],
-    project_status: [...cost_center],
+    cost_center: [...cost_center],
+    project_status: [...stats],
     administration_status: [...stats],
     charge_status: [...stats],
     opStartDate: "",
@@ -2015,14 +2007,16 @@ watch(
                 "Orden de Compra",
                 "Validación de OC",
                 "Orden de Servicio"]
-        } else {
+        } else if (filterForm.value.typeStages === "Cobranza") {
             selectedOptions.value = [
                 "Cobranza"]
+        } else {
+            selectedOptions.value = selectableOptions
         }
 
-        filterForm.value.project_status = [...stats],
-            filterForm.value.administration_status = [...stats],
-            filterForm.value.charge_status = [...stats]
+        filterForm.value.project_status = [...stats]
+        filterForm.value.administration_status = [...stats]
+        filterForm.value.charge_status = [...stats]
     },
     { deep: true }
 );
@@ -2035,7 +2029,6 @@ watch(dataToRender, async () => {
 async function search_advance($data) {
     let res = await axios.post(route("cicsa.advance.search"), $data);
     dataToRender.value = res.data;
-    console.log(dataToRender.value)
 }
 
 const childRef = ref(null);
@@ -2044,9 +2037,9 @@ const childRef3 = ref(null);
 function getAllData() {
     filterForm.value.typeStages = ""
     filterMode.value = true;
-    childRef.value.checkAll();
-    childRef2.value.checkAll();
-    childRef3.value.checkAll();
+    // childRef.value.checkAll();
+    // childRef2.value.checkAll();
+    // childRef3.value.checkAll();
     search_advance(filterForm.value);
 }
 
@@ -2149,7 +2142,7 @@ function reverseWordsWithBreaks(columnTitle) {
 function openExportExcel() {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
     const url =
-        route("cicsa.export") +
+        route("cicsa.export", { stages: filterForm.value.typeStages }) +
         "?" +
         uniqueParam;
     window.location.href = url;

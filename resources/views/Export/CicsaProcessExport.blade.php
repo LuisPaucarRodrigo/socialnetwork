@@ -13,7 +13,7 @@ $serviceOrderFields = [
 'purchase_order', 'pdf_invoice', 'zip_invoice', 'user_name'
 ];
 
-$chargeAreaFields = [
+$chargeAreaFields = ['cicsa_purchase_order.oc_number',
 'invoice_number', 'invoice_date', 'credit_to',
 'deposit_date', 'amount', 'user_name'
 ];
@@ -35,6 +35,7 @@ $chargeAreaFields = [
             <td> {{ $item->customer }} </td>
             <td> {{ $item->project_code }} </td>
             <td> {{ $item->cpe }} </td>
+            @if($stages === 'Proyecto' || $stages === 'Todos')
             <td> {{ $item->manager }} </td>
             <td> {{ $item->user_name }} </td>
 
@@ -42,7 +43,7 @@ $chargeAreaFields = [
             <td> {{ $item->cicsa_feasibility?->report }} </td>
             <td> {{ $item->cicsa_feasibility?->coordinator }} </td>
             <td> {{ $item->cicsa_feasibility?->user_name }} </td>
-            
+
             @foreach($materialFields as $field)
             <td>
                 @if($item->cicsa_materials)
@@ -62,11 +63,12 @@ $chargeAreaFields = [
             <td> {{ $item->cicsa_installation?->projected_amount }} </td>
             <td> {{ $item->cicsa_installation?->coordinator }} </td>
             <td> {{ $item->cicsa_installation?->user_name }} </td>
-
+            @endif
+            @if($stages === 'Administracion' || $stages === 'Todos')
             @foreach($OCFields as $field)
             <td>
-                @if($item->purchaseOrder)
-                @foreach($item->purchaseOrder as $order)
+                @if($item->cicsa_purchase_order)
+                @foreach($item->cicsa_purchase_order as $order)
                 <p>{{ $order->$field ?? '--' }}</p>
                 @endforeach
                 @endif
@@ -89,14 +91,16 @@ $chargeAreaFields = [
                 @endforeach
             </td>
             @endforeach
-
+            @endif
+            @if($stages === 'Cobranza' || $stages === 'Todos')          
             @foreach($chargeAreaFields as $field)
             <td>
                 @foreach($item->cicsa_charge_area as $chargeArea)
-                <p>{{ $chargeArea->$field ?? '--' }}</p>
+                <p>{{ data_get($chargeArea, $field, '--') }}</p>
                 @endforeach
             </td>
             @endforeach
+            @endif
         </tr>
         @endforeach
     </tbody>

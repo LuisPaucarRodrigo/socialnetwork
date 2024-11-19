@@ -356,6 +356,10 @@
                                                 class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
                                                 Resto
                                             </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                                Cantidad de Materiales Conproco
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -383,6 +387,11 @@
                                                     item?.quantity -
                                                     item.used_quantity
                                                 }}
+                                            </td>
+                                            <td class="border-b border-slate-300 text-center px-2 py-4">
+                                                {{ item.total_quantity && item.quantity === item.used_quantity
+                                                    ? Math.max(0, item.total_quantity - item.quantity)
+                                                    : 0 }}
                                             </td>
                                         </tr>
                                     </tbody>
@@ -422,12 +431,12 @@
                                             </th>
                                             <th
                                                 class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
-                                                Materiales
+                                                Cantidad de Materiales Conproco
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="(item, i) in pextList" :key="i" 
+                                        <tr v-for="(item, i) in pextList" :key="i"
                                             class="text-gray-700 bg-white text-sm">
                                             <td class="border-b border-slate-300 px-2 py-4">
                                                 {{ item?.name }}
@@ -452,8 +461,9 @@
                                                 }}
                                             </td>
                                             <td class="border-b border-slate-300 text-center px-2 py-4">
-                                                {{ item.quantity === item.used_quantity && item.total_quantity ? item.total_quantity -
-                                                item.quantity : 'No se asigno materiales' }}
+                                                {{ item.total_quantity && item.quantity === item.used_quantity
+                                                    ? Math.max(0, item.total_quantity - item.quantity)
+                                                    : 0 }}
                                             </td>
                                         </tr>
                                     </tbody>
