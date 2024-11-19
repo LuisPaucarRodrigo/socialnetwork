@@ -68,7 +68,7 @@
                                         @click="openNuUpdateModal"
                                         class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                                     >
-                                        Actualizar Operación
+                                        Actualizar Datos
                                     </button>
                                 </div>
                             </div>
@@ -234,7 +234,7 @@
                                         label="DU Asignada"
                                         :options="props.data.du_s"
                                         v-model="filterForm.selectedDUs"
-                                        width="w-64"
+                                        width="w-72"
                                     />
                                 </th>
                                 <th
@@ -737,7 +737,7 @@ const opNuDateForm = useForm({
 const handleCheckAll = (e) => {
     if (e.target.checked) {
         actionForm.value.ids =
-            props.search || filterMode.value
+            props.search
                 ? dataToRender.value.map((item) => item.id)
                 : dataToRender.value.data.map((item) => item.id);
     } else {
@@ -746,22 +746,39 @@ const handleCheckAll = (e) => {
 };
 
 const openNuUpdateModal = () => {
-    if (actionForm.value.ids.length === 0) {
-        notifyWarning("No hay registros selccionados");
-        return;
-    }
-    const hasInProjectState = actionForm.value.ids.some(id => {
-        const record = props.search || filterMode.value ? dataToRender.value.find(item => item.id === id) : dataToRender.value.data.find(item => item.id === id);
-        return record?.state == 'En Proyecto';
-    });
-    if (hasInProjectState) {
-        notifyWarning("Algunos registros están en proyecto, por lo que no se puede modificar la DU");
-        noDU.value = true;
-    }
-    setTimeout(() => {
+        if (actionForm.value.ids.length === 0) {
+            notifyWarning("No hay registros seleccionados");
+            return;
+        }
+
+        for (const id of actionForm.value.ids) {
+            const record = props.search || filterMode.value
+                ? dataToRender.value.find(item => item.id === id)
+                : dataToRender.value.data.find(item => item.id === id);
+
+            if (record?.state === 'Devuelto') {
+                notifyWarning('Uno o más registros ya están devueltos, por lo que no se puede actualizar la información');
+                return;
+            }
+        }
+
+        const hasInProjectState = actionForm.value.ids.some(id => {
+            const record = props.search || filterMode.value
+                ? dataToRender.value.find(item => item.id === id)
+                : dataToRender.value.data.find(item => item.id === id);
+            return record?.state === 'En Proyecto';
+        });
+
+        if (hasInProjectState) {
+            notifyWarning("Algunos registros están en proyecto, por lo que no se puede modificar la DU");
+            noDU.value = true;
+            setTimeout(() => {
+                showOpNuDatModal.value = true;
+            }, 2000);
+            return;
+        }
         showOpNuDatModal.value = true;
-    }, 2000);
-};
+    };
 
 const closeOpNuDatModal = () => {
     isFetching.value = false;

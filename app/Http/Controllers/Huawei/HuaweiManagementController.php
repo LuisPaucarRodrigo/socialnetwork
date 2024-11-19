@@ -799,6 +799,13 @@ class HuaweiManagementController extends Controller
             return !is_null($value);
         });
 
+        $entries = HuaweiEntryDetail::whereIn('id', $data['ids']);
+        foreach ($entries as $entry){
+            if ($entry->state == 'Devuelto'){
+                abort(403, 'Acción no permitida');
+            }
+        }
+
         if (empty($updateData)) {
             return response()->json(['message' => 'No fields to update'], 400);
         }

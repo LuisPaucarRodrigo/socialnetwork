@@ -8,34 +8,8 @@
         <div class="flex flex-col gap-4 justify-center sm:flex-row sm:justify-between rounded-lg items-center text-center sm:text-left">
     <div class="flex flex-col sm:flex-row gap-4 w-full justify-between items-center">
         <div class="flex gap-4 items-center justify-center sm:justify-start">
-            <!-- Botones grandes visibles solo en pantallas sm y superiores -->
-            <Link :href="route('huawei.inventory.create')" type="button"
-                class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
-                + Agregar
-            </Link>
-            <div v-if="props.equipment" class="hidden sm:block">
-                <Link :href="route('huawei.inventory.show', { warehouse: props.warehouse })" type="button"
-                    class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-                    Materiales
-                </Link>
-            </div>
-            <div v-else class="hidden sm:block">
-                <Link :href="route('huawei.inventory.show', { warehouse: props.warehouse, equipment: 1 })" type="button"
-                    class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-                    Equipos
-                </Link>
-            </div>
-            <Link :href="route('huawei.inventory.refunds', {warehouse: 'Claro'})" type="button"
-                class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-                Devoluciones
-            </Link>
-            <a :href="route('huawei.inventory.general.equipments', {prefix: 'Claro'})" type="button"
-                class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-                General
-            </a>
-
             <!-- Menú desplegable visible en pantallas pequeñas -->
-            <div class="sm:hidden">
+            <div>
                 <dropdown align="left">
                     <template #trigger>
                         <button @click="dropdownOpen = !dropdownOpen"
@@ -89,6 +63,14 @@
                                         class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                         General
                                     </a>
+                                </div>
+                            </div>
+                            <div class="dropdown">
+                                <div class="dropdown-menu">
+                                    <Link :href="route('huawei.inventory.pendingorders')" type="button"
+                                        class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                        Pedidos Pendientes
+                                    </Link>
                                 </div>
                             </div>
                         </div>
