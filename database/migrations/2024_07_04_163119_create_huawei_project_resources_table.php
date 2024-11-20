@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('huawei_project_id')->constrained('huawei_projects')->onDelete('cascade');
             $table->foreignId('huawei_entry_detail_id')->constrained('huawei_entry_details')->onDelete('cascade');
+            $table->date('output_date');
             $table->integer('quantity');
             $table->timestamps();
         });

@@ -134,6 +134,9 @@
                         Fecha de Pedido
                       </th>
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                        DU Asignada
+                      </th>
+                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                         Observación
                       </th>
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
@@ -149,6 +152,7 @@
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.unit }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.order_number }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.order_date) }}</td>
+                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.assigned_diu }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.observation }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                         <div class="flex items-center">
@@ -280,7 +284,13 @@
         <input id="order_date" type="date" v-model="materialForm.order_date" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
       </div>
 
-      <div class="col-span-1 md:col-span-2">
+      <div class="col-span-1">
+            <InputLabel class="mb-1" for="assigned_diu">DU Asignada</InputLabel>
+            <input type="text" v-model="materialForm.assigned_diu" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+        </div>
+
+
+      <div class="col-span-1">
         <InputLabel class="mb-1" for="observation">Observación</InputLabel>
         <textarea v-model="materialForm.observation" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600"></textarea>
       </div>
@@ -610,7 +620,8 @@
       unit: '',
       observation: '',
       order_number: '',
-      order_date: ''
+      order_date: '',
+      assigned_diu: ''
     });
 
     const equipmentForm = useForm({
@@ -635,7 +646,7 @@
             }, 2000)
             return;
         }
-        if (newSerie.value.trim() === '') {
+        if (newSerie.value.trim() === '' || !equipmentForm.name) {
             return; // No se permite serie vacía
         }
 
@@ -721,7 +732,7 @@
 
     const add_material = () => {
 
-      if (!materialForm.name || !materialForm.quantity || !materialForm.unit){
+      if (!materialForm.name || !materialForm.quantity || !materialForm.unit || !materialForm.claro_code){
         emptyModal.value = true;
         setTimeout(() => {
           emptyModal.value = false;
@@ -744,8 +755,9 @@
             observation: materialForm.observation,
             unit: materialForm.unit,
             order_number: materialForm.order_number ? materialForm.order_number : form.order_number,
-            order_date: materialForm.order_date ? materialForm.order_date : form.order_date
-            });
+            order_date: materialForm.order_date ? materialForm.order_date : form.order_date,
+            assigned_diu: materialForm.assigned_diu
+        });
 
             materialForm.reset();
             autoCompletement.value = false;

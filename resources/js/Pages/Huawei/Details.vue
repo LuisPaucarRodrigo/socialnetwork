@@ -16,7 +16,7 @@
                         Todos
                     </Link>
                 </div>
-                <div>
+                <div v-if="props.equipment">
                     <dropdown align="left">
                         <template #trigger>
                             <button
@@ -375,7 +375,9 @@
                                         <th
                                             class="border-b-2 border-gray-200 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
                                         </th>
-
+                                        <th
+                                            class="border-b-2 border-gray-200 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        </th>
                                         <th
                                             class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                                             {{  project_resource.huawei_project_liquidation ? project_resource.huawei_project_liquidation.liquidated_quantity : project_resource.quantity }}
