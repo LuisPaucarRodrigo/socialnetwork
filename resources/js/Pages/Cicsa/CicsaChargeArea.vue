@@ -387,14 +387,14 @@
                                 <div class="mt-2 flex gap-4">
                                     <label class="flex gap-2 items-center">
                                         Sí
-                                        <input type="radio" v-model="form.state_detraction"
-                                            id="state_detraction" :value="true"
+                                        <input type="radio" v-model="form.state_detraction" id="state_detraction"
+                                            :value="true"
                                             class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-gray-500 focus:ring-0" />
                                     </label>
                                     <label class="flex gap-2 items-center">
                                         No
-                                        <input type="radio" v-model="form.state_detraction"
-                                            id="state_detraction" :value="false"
+                                        <input type="radio" v-model="form.state_detraction" id="state_detraction"
+                                            :value="false"
                                             class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-gray-500 focus:ring-0" />
                                     </label>
                                     <InputError :message="form.errors.state_detraction" />
@@ -542,12 +542,14 @@ function openEditModal(item) {
     doc_invoice.value = item.cicsa_purchase_order?.cicsa_service_order?.document_invoice
     service_order_id.value = item.cicsa_purchase_order?.cicsa_service_order?.id
     invoice_number.value = item?.invoice_number
+    item.state_detraction = Boolean(item.state_detraction)
     form.defaults({ ...item, user_name: auth.user.name, user_id: auth.user.id })
     form.reset()
     showAddEditModal.value = true
 }
 
 async function submit() {
+    console.log('formyy',form)
     if (sum()) {
         let url = route('cicsa.charge_areas.update', { cicsa_charge_area_id: form.id });
         try {
@@ -560,6 +562,7 @@ async function submit() {
                 confirmUpdateAssignation.value = false
             }, 1500)
         } catch (error) {
+            console.log(error)
             if (error.response) {
                 if (error.response.data.errors) {
                     setAxiosErrors(error.response.data.errors, form)

@@ -788,7 +788,7 @@ class CicsaController extends Controller
             ],
             'document' => 'nullable',
             'amount' => 'required',
-            'state_detraction' => 'required|booelan',
+            'state_detraction' => 'required|string',
             'transaction_number_current' => 'nullable',
             'checking_account_amount' => 'nullable|string',
             'deposit_date_bank' => 'nullable|date',
@@ -800,7 +800,9 @@ class CicsaController extends Controller
 
         DB::beginTransaction();
         try {
+            $validateData['state_detraction'] = $validateData['state_detraction'] === 'true' ? 1 : 0;
             $validateData['amount'] = floatval($validateData['amount']);
+            $validateData['checking_account_amount'] = floatval($validateData['checking_account_amount']);
             $validateData['amount_bank'] = floatval($validateData['amount_bank']);
             if ($request->hasFile('document')) {
                 $document = $request->file('document');
