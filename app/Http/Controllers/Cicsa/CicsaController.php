@@ -788,6 +788,7 @@ class CicsaController extends Controller
             ],
             'document' => 'nullable',
             'amount' => 'required',
+            'state_detraction' => 'required|booelan',
             'transaction_number_current' => 'nullable',
             'checking_account_amount' => 'nullable|string',
             'deposit_date_bank' => 'nullable|date',

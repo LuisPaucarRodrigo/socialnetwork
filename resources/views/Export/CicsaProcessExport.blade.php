@@ -13,10 +13,15 @@ $serviceOrderFields = [
 'purchase_order', 'pdf_invoice', 'zip_invoice', 'user_name'
 ];
 
-$chargeAreaFields = ['cicsa_purchase_order.oc_number',
+$chargeAreaFieldsOCNumber = ['cicsa_purchase_order.oc_number'];
+
+$chargeAreaFields = [
 'invoice_number', 'invoice_date', 'credit_to',
 'deposit_date', 'amount', 'user_name'
 ];
+
+$mergeOC = $stages === 'Cobranza' ? array_merge($chargeAreaFieldsOCNumber,$chargeAreaFields) : $chargeAreaFields           
+
 @endphp
 <table>
     <thead>
@@ -92,8 +97,9 @@ $chargeAreaFields = ['cicsa_purchase_order.oc_number',
             </td>
             @endforeach
             @endif
-            @if($stages === 'Cobranza' || $stages === 'Todos')          
-            @foreach($chargeAreaFields as $field)
+
+            @if($stages === 'Cobranza' || $stages === 'Todos')
+            @foreach($mergeOC as $field)
             <td>
                 @foreach($item->cicsa_charge_area as $chargeArea)
                 <p>{{ data_get($chargeArea, $field, '--') }}</p>

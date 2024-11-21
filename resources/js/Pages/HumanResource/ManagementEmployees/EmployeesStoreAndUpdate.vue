@@ -127,7 +127,7 @@
                             <InputLabel for="discount_remuneration">
                                 ¿Tiene Descuento sobre remuneración?
                             </InputLabel>
-                            <div class="mt-2 class flex gap-4">
+                            <div class="mt-2 flex gap-4">
                                 <label class="flex gap-2 items-center">
                                     Sí
                                     <input type="radio" v-model="form.discount_remuneration" id="discount_remuneration"

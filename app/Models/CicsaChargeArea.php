@@ -17,6 +17,7 @@ class CicsaChargeArea extends Model
         'invoice_date',
         'credit_to',
         'amount',
+        'state_detraction',
 
         'deposit_date',
         'transaction_number_current',
