@@ -6,23 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ProviderRequest\UpdateProviderRequest;
 use App\Http\Requests\ProviderRequest\CreateProviderRequest;
 use App\Models\Provider;
-use App\Models\ProviderCategory;
-use App\Models\ProviderSegment;
+use App\Models\Category;
+use App\Models\Segment;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
-use App\Providers\GlobalFunctionsServiceProvider;
-use Exception;
 
 class ProviderController extends Controller
 {
     public function index()
-    {
+    {   
+        $provider = Provider::with('segments','category')->paginate();
         return Inertia::render(
             'ShoppingArea/ProviderManagement/Provider',
             [
-                'providers' => Provider::paginate(),
-                'category' => ProviderCategory::all(),
+                'providers' => $provider,
+                'category' => Category::all(),
             ]
         );
     }
@@ -32,8 +30,8 @@ class ProviderController extends Controller
         return Inertia::render(
             'ShoppingArea/ProviderManagement/ProviderCreateAndUpdate',
             [
-                'category' => ProviderCategory::all(),
-                'segment' => ProviderSegment::all(),
+                'category' => Category::all(),
+                'segments' => Segment::all(),
             ]
         );
     }
@@ -41,25 +39,29 @@ class ProviderController extends Controller
     public function store(CreateProviderRequest $request)
     {
         $validatedData = $request->validated();
-        Provider::create($validatedData);
+        $provider = Provider::create($validatedData);
+        $provider->segments()->attach($validatedData['segments']);
+        $provider->load('segments','category');
+        return response()->json($provider,200);
     }
 
     public function edit($id)
     {
         return Inertia::render('ShoppingArea/ProviderManagement/ProviderCreateAndUpdate', [
             'providers' => Provider::find($id),
-            'category' => ProviderCategory::all(),
-            'segment' => ProviderSegment::all(),
+            'category' => Category::all(),
+            'segment' => Segment::all(),
         ]);
     }
 
     public function update(UpdateProviderRequest $request, $id)
     {
-        $provider = Provider::findOrFail($id);
         $validatedData = $request->validated();
+        $provider = Provider::findOrFail($id);
         $provider->update($validatedData);
-
-        return to_route('providersmanagement.index');
+        $provider->segments()->sync($validatedData['segments']);
+        $provider->load('segments','category');
+        return response()->json($provider,200);
     }
 
     public function destroy($id)
@@ -70,25 +72,25 @@ class ProviderController extends Controller
     public function category_provider(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required'
+            'name' => 'required|string'
         ]);
-        $new = ProviderCategory::create($data);
+        $new = Category::create($data);
         return response()->json(['new' => $new], 200);
     }
 
     public function segment_provider(Request $request)
     {
         $data = $request->validate([
-            'provider_category_id' => 'required',
+            'category_id' => 'required',
             'name' => 'required'
         ]);
-        $new = ProviderSegment::create($data);
-        return response()->json(['new' => $new], 200);
+        Segment::create($data);
+        return response()->json([], 200);
     }
 
     public function segment_list($category_id)
     {
-        $segments = ProviderSegment::where('provider_category_id', $category_id)->get();
+        $segments = Segment::where('category_id', $category_id)->get();
         return response()->json($segments, 200);
     }
 

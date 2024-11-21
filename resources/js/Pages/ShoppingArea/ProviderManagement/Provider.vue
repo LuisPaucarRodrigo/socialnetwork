@@ -8,7 +8,7 @@
 
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <div class="flex justify-between items-center gap-4">
-                <button v-if="hasPermission('PurchasingManager')" @click="add_information" type="button"
+                <button v-if="hasPermission('PurchasingManager')" @click="add_information(initialStateForm)" type="button"
                     class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                     + Agregar
                 </button>
@@ -32,7 +32,7 @@
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full whitespace-no-wrap">
+                <table class="w-full whitespace-nowrap">
                     <thead>
                         <tr
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -53,7 +53,7 @@
                                 zona
                             </th>
                             <th
-                                class="w-64 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Direccion
                             </th>
                             <th
@@ -81,37 +81,38 @@
                         <tr v-for="provider in (props.search ? providers : providers.data)" :key="provider.id"
                             class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-3 py-2">
-                                <p class="text-gray-900 whitespace-no-wrap text-xs">{{ provider.ruc }}</p>
+                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ provider.ruc }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-3 py-2">
-                                <p class="text-gray-900 whitespace-no-wrap text-xs">{{ provider.company_name }}</p>
+                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ provider.company_name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-3 py-2">
-                                <p class="text-gray-900 whitespace-no-wrap text-xs">{{ provider.contact_name }}</p>
+                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ provider.contact_name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-3 py-2">
-                                <p class="text-gray-900 whitespace-no-wrap text-xs">{{ provider.zone }}</p>
+                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ provider.zone }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-3 py-2">
-                                <p class="text-gray-900 whitespace-no-wrap text-xs w-64">{{ provider.address }}</p>
+                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ provider.address }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-3 py-2">
-                                <p class="text-gray-900 whitespace-no-wrap text-xs">{{ provider.phone1 }} {{
+                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ provider.phone1 }} {{
                                     provider.phone2 }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-3 py-2">
-                                <p class="text-gray-900 whitespace-no-wrap text-xs">{{ provider.email }}</p>
+                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ provider.email }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-3 py-2">
-                                <p class="text-gray-900 whitespace-no-wrap text-xs">{{ provider.category }}</p>
+                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ provider.category.name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-3 py-2">
-                                <p class="text-gray-900 whitespace-no-wrap text-xs">{{ provider.segment }}</p>
+                                <p v-for="item in provider.segments" class="text-gray-900 whitespace-nowrap text-xs">{{
+                                    item.name }}</p>
                             </td>
                             <td v-if="auth.user.role_id == 1" class="border-b border-gray-200 bg-white px-3 py-2">
                                 <div class="flex space-x-3 justify-center">
-                                    <!-- <Link class="text-blue-900 whitespace-no-wrap"
+                                    <!-- <Link class="text-blue-900 whitespace-nowrap"
                                         :href="route('providersmanagement.edit', { id: provider.id })">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
@@ -120,15 +121,15 @@
                                     </svg>
                                     </Link> -->
                                     <button type="button" @click="add_information(provider)"
-                                        class="text-blue-900 whitespace-no-wrap">
+                                        class="text-blue-900 whitespace-nowrap">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                    </svg>
+                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                        </svg>
                                     </button>
                                     <button type="button" @click="confirmProviderDeletion(provider)"
-                                        class="text-blue-900 whitespace-no-wrap">
+                                        class="text-blue-900 whitespace-nowrap">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -147,8 +148,210 @@
                 <pagination :links="providers.links" />
             </div>
         </div>
-        <ProviderCreateAndUpdate :showModalStoreOrUpdate="showModalStoreOrUpdate" :provider="form" :categories="category"  @submit="submitCategoryOrSegment"
-        @close="closeModalStoreOrUpdate"/>
+        <Modal :show="showModalStoreOrUpdate">
+            <div class="p-6">
+                <h2 class="text-base font-semibold leading-7 text-gray-900">Informacion</h2>
+
+                <form @submit.prevent="submit">
+                    <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
+                        <div class="sm:col-span-2">
+                            <InputLabel for="ruc" class="font-medium leading-6 text-gray-900">RUC</InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="text" v-model="form.ruc" id="ruc" pattern="\d*" autocomplete="off"
+                                    maxlength="11"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.ruc" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <InputLabel for="company_name" class="font-medium leading-6 text-gray-900">Compañia
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="text" v-model="form.company_name" id="company_name"
+                                    :to-uppercase="true" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.company_name" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <InputLabel for="contact_name" class="font-medium leading-6 text-gray-900">Nombre de
+                                Contacto
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="text" v-model="form.contact_name" id="contact_name"
+                                    :to-uppercase="true" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.contact_name" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-3">
+                            <InputLabel for="zone" class="font-medium leading-6 text-gray-900">Zona
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="text" v-model="form.zone" id="zone" :to-uppercase="true"
+                                    autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.zone" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-3">
+                            <InputLabel for="address" class="font-medium leading-6 text-gray-900">Direccion
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="text" v-model="form.address" id="address" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.address" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <InputLabel for="email" class="font-medium leading-6 text-gray-900">Email</InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="email" v-model="form.email" id="email"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.email" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <InputLabel for="phone1" class="font-medium leading-6 text-gray-900">Telefono 1
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="text" v-model="form.phone1" id="phone1" maxlength="9"
+                                    autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.phone1" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <InputLabel for="phone2" class="font-medium leading-6 text-gray-900">Telefono 2
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="text" v-model="form.phone2" id="phone2" maxlength="9"
+                                    autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.phone2" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-3 sm:col-start-1">
+                            <div class="flex items-center gap-2">
+                                <InputLabel for="category" class="font-medium leading-6 text-gray-900">Categoria
+                                </InputLabel>
+                                <button type="button" @click="createCategory">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="mt-2">
+                                <select required v-model="form.category_id" id="category"
+                                    class="block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
+                                    <option disabled value="">Seleccione</option>
+                                    <option v-for="item in category" :key="item.id" :value="item.id">
+                                        {{ item.name }}
+                                    </option>
+                                </select>
+                                <InputError :message="form.errors.category_id" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-3">
+                            <div class="flex items-center gap-2">
+                                <InputLabel for="segment" class="font-medium leading-6 text-gray-900">Segmento
+                                </InputLabel>
+                                <button type="button" @click="createSegment">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <div class="mt-2">
+                                <select multiple size="4" v-model="form.segments" id="segment"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option disabled>
+                                        Selecciona uno o varios
+                                    </option>
+                                    <option v-for="item in segments" :key="item.id" :value="item.id"
+                                        :selected="form.segments.includes(item.id)">
+                                        {{ item.name }}
+                                    </option>
+                                </select>
+                                <InputError :message="form.errors.segments" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex items-center justify-end gap-x-3">
+                        <SecondaryButton type="button" @click="closeModalStoreOrUpdate"> Cerrar </SecondaryButton>
+                        <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }"
+                            :disabled="form.processing">
+                            {{ form.id ? "Actualizar" : "Crear" }}
+                        </PrimaryButton>
+                    </div>
+                </form>
+            </div>
+        </Modal>
+        <Modal :show="showModalAddCategory">
+            <form class="p-6" @submit.prevent="submitCategoryOrSegment">
+                <h2 class="text-lg font-medium text-gray-900">
+                    Nueva Categoria
+                </h2>
+                <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
+                    <div class="sm:col-span-6">
+                        <InputLabel for="name" class="font-medium leading-6 text-gray-900">Nombre</InputLabel>
+                        <div class="mt-2">
+                            <TextInput id="name" :to-uppercase="true" required
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                v-model="formCategory.name" />
+                            <InputError :message="formCategory.errors.name" />
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 flex gap-3 justify-end">
+                    <SecondaryButton type="button" @click="closeAddModal"> Cerrar </SecondaryButton>
+                    <PrimaryButton type="submit" :class="{ 'opacity-25': formCategory.processing }"
+                        :disabled="formCategory.processing">
+                        Agregar
+                    </PrimaryButton>
+                </div>
+            </form>
+        </Modal>
+        <Modal :show="showModalAddSegment">
+            <form class="p-6" @submit.prevent="submitCategoryOrSegment">
+                <h2 class="text-lg font-medium text-gray-900">
+                    Nuevo Segmento
+                </h2>
+                <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2 mt-2">
+                    <div>
+                        <InputLabel for="name" class="font-medium leading-6 text-gray-900">Categoria</InputLabel>
+                        <select v-model="formSegment.category_id" id="segment"
+                            class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300">
+                            <option disabled value="">Seleccione Categoria</option>
+                            <option v-for="item in category" :key="item.id" :value="item.id">
+                                {{ item.name }}
+                            </option>
+                        </select>
+                    </div>
+                    <div>
+                        <InputLabel for="name" class="font-medium leading-6 text-gray-900">Nombre</InputLabel>
+                        <div class="mt-2">
+                            <TextInput id="name" :to-uppercase="true" required
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                v-model="formSegment.name" />
+                            <InputError :message="formSegment.errors.name" />
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 flex gap-3 justify-end">
+                    <SecondaryButton type="button" @click="closeAddModal"> Cerrar </SecondaryButton>
+                    <PrimaryButton type="submit"> Agregar </PrimaryButton>
+                </div>
+            </form>
+        </Modal>
+        <!-- <ProviderCreateAndUpdate :showModalStoreOrUpdate="showModalStoreOrUpdate" :provider="form" :categories="category"  @submit="submitCategoryOrSegment"
+        @close="closeModalStoreOrUpdate"/> -->
         <ConfirmDeleteModal :confirmingDeletion="confirmingProviderDeletion" itemType="proveedor" :nameText="name"
             :deleteFunction="deleteProvider" @closeModal="closeModal" />
     </AuthenticatedLayout>
@@ -158,7 +361,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import { Head, router, Link, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import ProviderCreateAndUpdate from './ProviderCreateAndUpdate.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
@@ -168,13 +371,15 @@ import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
+import { setAxiosErrors } from '@/utils/utils';
+import { notify } from '@/Components/Notification';
 
 const props = defineProps({
     providers: Object,
     auth: Object,
     search: String,
     userPermissions: Array,
-    category:Object
+    category: Object
 });
 
 const hasPermission = (permission) => {
@@ -185,20 +390,25 @@ const confirmingProviderDeletion = ref(false);
 const provider = ref(null);
 const name = ref(null);
 const showModalStoreOrUpdate = ref(false)
+const categoryAndSegment = ref(false);
+const segments = ref([]);
+const showModalAddCategory = ref(false);
+const showModalAddSegment = ref(false);
 
-const form = useForm({
+const initialStateForm = {
     company_name: '',
     contact_name: '',
     address: '',
     phone1: '',
     phone2: '',
     email: '',
-    category: '',
-    segment: '',
+    category_id: '',
+    segments: [],
     zone: '',
     ruc: '',
     id: null,
-});
+}
+const form = useForm({ ...initialStateForm });
 
 const confirmProviderDeletion = (provider_fun) => {
     provider.value = provider_fun;
@@ -220,8 +430,9 @@ const closeModal = () => {
 };
 
 const add_information = (item) => {
-    showModalStoreOrUpdate.value = !showModalStoreOrUpdate.value
+    item.segments = item.segments.map(item => item.id)
     Object.assign(form,item)
+    showModalStoreOrUpdate.value = !showModalStoreOrUpdate.value
 };
 
 const searchForm = useForm({
@@ -237,26 +448,136 @@ const search = () => {
 
 }
 
-const submit = () => {
-    let url = showModalStoreOrUpdate.value
-    if (provider) {
-        form.id = provider.id
-        form.put(route('providersmanagement.update', provider.id), form)
-    } else {
-        form.post(route('providersmanagement.store'), {
-            onSuccess: () => {
-                showModal.value = true;
-                setTimeout(() => {
-                    showModal.value = false;
-                    router.visit(route('providersmanagement.index'))
-                }, 2000);
-            },
-        })
+async function submit() {
+    let url = form.id ? route('providersmanagement.update', { id: form.id }) : route('providersmanagement.store')
+    try {
+        let response = await axios.post(url, form)
+
+        updateProvider(response.data)
+    } catch (error) {
+        console.log(error)
+        if (error.response) {
+            setAxiosErrors(error.response.data.errors, form)
+        } else {
+            console.error('Error desconocido:', error);
+        }
     }
 };
 
 function closeModalStoreOrUpdate() {
     showModalStoreOrUpdate.value = false
+    // Object.assign(form,initialStateForm)
 }
 
+const formCategory = useForm({
+    name: ''
+})
+
+const formSegment = useForm({
+    category_id: '',
+    name: ''
+})
+
+function createCategory() {
+    showModalAddCategory.value = true
+    categoryAndSegment.value = false
+}
+
+function createSegment() {
+    showModalAddSegment.value = true
+    categoryAndSegment.value = true
+}
+
+function closeAddModal() {
+    if (categoryAndSegment.value) {
+        showModalAddSegment.value = false
+        formCategory.clearErrors()
+        formCategory.defaults({ name: '' })
+        formCategory.reset()
+    } else {
+        showModalAddCategory.value = false
+        formSegment.clearErrors()
+        formSegment.defaults({
+            category_id: '',
+            name: ''
+        })
+        formSegment.reset()
+    }
+}
+
+watch(() => form.category_id, (newValue) => {
+    handleCategoryChange(form.category_id)
+});
+
+async function handleCategoryChange(category_id) {
+    let url = route('provider.segments.list', { category_id: category_id });
+    try {
+        let response = await axios.get(url)
+        segments.value = response.data
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+async function submitCategoryOrSegment() {
+    let url = categoryAndSegment.value == false ? route('provider.category.post') : route('provider.segment.post')
+    let selectedForm = categoryAndSegment.value == false ? formCategory : formSegment
+    try {
+        let response = await axios.post(url, selectedForm)
+        let cs = categoryAndSegment.value == false ? 'Category' : 'Segment'
+        updateCategoryOrSegment(response.data, cs)
+        closeAddModal()
+    } catch (error) {
+        if (error.response) {
+            setAxiosErrors(error.response.data.errors, selectedForm)
+        } else {
+            console.error('Error desconocido:', error);
+        }
+    }
+    // axios.post(url, { ...formSegment.data() })
+    //     .then(response => {
+    //         if (response.status === 200) {
+    //             let newItem = response.data.new
+    //             categoryAndSegment.value == false
+    //                 ? category.push({ ...newItem })
+    //                 : segments.value.push({ ...newItem })
+    //             closeAddModal()
+    //             addSuccess.value = true
+    //             setTimeout(() => {
+    //                 addSuccess.value = false
+    //             }, 600)
+    //             formSegment.reset()
+    //         } else {
+    //             throw new Error('Fallo en el servidor con status ' + response.status)
+    //         }
+    //     })
+    //     .catch(error => {
+    //         console.error(error)
+    //     })
+};
+
+function updateCategoryOrSegment(item, cs) {
+    if (cs === 'Category') {
+        props.category.push(item.new)
+        notify('Categoria Creada')
+    } else if (cs === 'Segment') {
+        notify('Segmento Creado')
+    }
+}
+
+function updateProvider(provider) {
+    const validations = props.providers.data;
+    const index = validations.findIndex(item => item.id === provider.id)
+    if(index !== -1) {
+        validations[index] = provider
+        notify('Proveedor Actualizado')
+    } else {
+        validations.push(provider);
+        notify('Proveedor Creado')
+    }
+
+    if (validations.length > props.providers.per_page) {
+        validations.pop();
+    }
+}
 </script>
