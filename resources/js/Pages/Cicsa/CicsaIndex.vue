@@ -646,8 +646,10 @@
                             </th>
                             <th v-if="checkVisibility('Cobranza')"
                                 class="border-b-2border-gray-300 bg-gray-100 px-2 py-1 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
-                                <div class="flex justify-center">
-                                    <p class="title" v-html="reverseWordsWithBreaks('Estado de Pago')"> </p>
+                                <div class="w-[120px]">
+                                    <TableHeaderCicsaFilter label="Estado de Pago" labelClass="title text-gray-600"
+                                        :reverse="true" :options="[...state_charge_area]" v-model="filterForm.state_charge_area" />
+                                    <!-- <p class="title" v-html="reverseWordsWithBreaks('Estado de Pago')"> </p> -->
                                 </div>
                             </th>
                             <th v-if="checkVisibility('Cobranza')"
@@ -1968,12 +1970,15 @@ function getTotalAmount(objArray) {
 const stages = ["", "Proyecto", "Administracion", "Cobranza"];
 const stats = ["Pendiente", "En Proceso", "Completado"];
 const cost_center = ["Mantto Pext Claro", "Instalaciones GTD", "Mantto Pext GTD", "Densificacion", "Adicionales", "Instalaciones Claro", "TSS"];
+const state_charge_area = ["A tiempo", "Pagado", "Con deuda", "En Proceso"];
+
 const initSearch = {
     typeStages: "Todos",
     cost_center: [...cost_center],
     project_status: [...stats],
     administration_status: [...stats],
     charge_status: [...stats],
+    state_charge_area: [ ...state_charge_area],
     opStartDate: "",
     opEndDate: "",
     opNoDate: "",
@@ -1988,6 +1993,7 @@ watch(
         filterForm.value.project_status,
         filterForm.value.administration_status,
         filterForm.value.charge_status,
+        filterForm.value.state_charge_area,
         filterForm.value.opStartDate,
         filterForm.value.opEndDate,
         filterForm.value.opNoDate,
@@ -2035,8 +2041,12 @@ watch(dataToRender, async () => {
 });
 
 async function search_advance($data) {
-    let res = await axios.post(route("cicsa.advance.search"), $data);
+    try {
+        let res = await axios.post(route("cicsa.advance.search"), $data);
     dataToRender.value = res.data;
+    } catch (error) {
+        console.error(error)
+    }
 }
 
 const childRef = ref(null);
