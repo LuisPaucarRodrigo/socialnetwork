@@ -1126,7 +1126,7 @@ class HuaweiProjectController extends Controller
                 $query->whereNull('huawei_material_id');
             })
             ->with('huawei_entry_detail.huawei_equipment_serie.huawei_equipment')
-            ->paginate(10);
+            ->get();
 
         foreach ($equipments as $resource){
             $resource->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($resource->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name);
@@ -1139,7 +1139,7 @@ class HuaweiProjectController extends Controller
                 $query->whereNull('huawei_equipment_serie_id');
             })
             ->with('huawei_entry_detail.huawei_material')
-            ->paginate(10);
+            ->get();
 
         foreach ($materials as $resource){
             $resource->huawei_entry_detail->huawei_material->name = $this->sanitizeText2($resource->huawei_entry_detail->huawei_material->name);

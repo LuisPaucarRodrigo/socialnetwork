@@ -583,13 +583,17 @@ class HuaweiManagementController extends Controller
                 });
             })
             ->with('huawei_entry', 'huawei_pending_order', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
+            ->orderBy('created_at', 'desc')
             ->paginate(10);
 
             foreach ($entries as $entry){
                 $entry->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($entry->huawei_equipment_serie->huawei_equipment->name);
             }
         } else {
-            $entries = HuaweiEntryDetail::where('huawei_material_id', $id)->with('huawei_entry', 'huawei_pending_order', 'huawei_material', 'huawei_project_resources.huawei_project', 'huawei_project_resources.huawei_project_liquidation')->paginate(10);
+            $entries = HuaweiEntryDetail::where('huawei_material_id', $id)->with('huawei_entry', 'huawei_pending_order', 'huawei_material', 'huawei_project_resources.huawei_project', 'huawei_project_resources.huawei_project_liquidation')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
             foreach ($entries as $entry){
                 $entry->huawei_material->name = $this->sanitizeText2($entry->huawei_material->name);
             }
@@ -894,18 +898,22 @@ class HuaweiManagementController extends Controller
 
             // Combinar ambos conjuntos de resultados
             $mergedResults = $query->with('huawei_entry', 'huawei_pending_order', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
-                                   ->get()
+                                    ->orderBy('created_at', 'desc')
+                                    ->get()
                                    ->merge($queryByCode)
                                    ->unique('id');
         } else {
             // Filtrar por material
             $query->whereHas('huawei_material', function ($materialQuery) use ($id) {
                 $materialQuery->where('id', $id);
-            })->whereHas('huawei_entry', function ($entryQuery) use ($searchTerm) {
+            })
+            ->whereRaw('LOWER(order_number) LIKE ?', ["%{$searchTerm}%"])
+            ->orWhereHas('huawei_entry', function ($entryQuery) use ($searchTerm) {
                 $entryQuery->whereRaw('LOWER(guide_number) LIKE ?', ["%{$searchTerm}%"]);
             });
 
-            $mergedResults = $query->with('huawei_entry', 'huawei_pending_order', 'huawei_material')->get();
+            $mergedResults = $query->with('huawei_entry', 'huawei_pending_order', 'huawei_material')            ->orderBy('created_at', 'desc')
+            ->get();
         }
 
         return Inertia::render('Huawei/Details', [
@@ -1040,6 +1048,9 @@ class HuaweiManagementController extends Controller
                 })
                 ->orWhereHas('huawei_entry_detail.huawei_entry', function ($query) use ($searchTerm) {
                     $query->whereRaw('LOWER(guide_number) LIKE ?', ["%{$searchTerm}%"]);
+                })
+                ->orWhereHas('huawei_entry_detail', function ($query) use ($searchTerm){
+                    $query->whereRaw('LOWER(order_number) LIKE ?', ["%{$searchTerm}%"]);
                 });
             });
         }else{
@@ -1055,6 +1066,9 @@ class HuaweiManagementController extends Controller
                 })
                 ->orWhereHas('huawei_entry_detail.huawei_entry', function ($query) use ($searchTerm){
                     $query->whereRaw('LOWER(guide_number) LIKE ?', ["%{$searchTerm}%"]);
+                })
+                ->orWhereHas('huawei_entry_detail', function ($query) use ($searchTerm){
+                    $query->whereRaw('LOWER(order_number) LIKE ?', ["%{$searchTerm}%"]);
                 });
             });
         }

@@ -3,7 +3,7 @@
       <Head title="Gestion de Sites" />
       <AuthenticatedLayout>
         <template #header>
-          Gestión Sites de huawei
+          Gestión de Sites Huawei
         </template>
         <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
             <div class="flex gap-4 justify-between rounded-lg">

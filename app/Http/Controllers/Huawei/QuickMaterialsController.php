@@ -285,6 +285,8 @@ class QuickMaterialsController extends Controller
 
                 $materialData = [];
                 $cells->next();
+
+                $materialData['codsap'] = $cells->current()->getValue();
                 $cells->next();
 
                 //columna C
@@ -320,7 +322,7 @@ class QuickMaterialsController extends Controller
 
             $lastGuide = HuaweiInternalGuide::latest('id')->first();
             $newId = $lastGuide ? $lastGuide->id + 1 : 1;
-            $code = 'N° ' . str_pad($newId + 456, 5, '0', STR_PAD_LEFT);
+            $code = 'N° ' . str_pad($newId + 457, 5, '0', STR_PAD_LEFT);
             $fileName = time() . '_internal_guide.pdf';
 
             $internal_guide = HuaweiInternalGuide::create([

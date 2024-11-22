@@ -4,6 +4,8 @@
       <template #header>
         Recursos del Proyecto {{ props.project_name }}
       </template>
+      <Toaster richColors />
+
       <div class="min-w-full rounded-lg shadow">
         <div class="flex gap-4 items-center justify-between">
             <Link :href="route('huawei.projects.liquidations.history', {huawei_project: props.huawei_project})" type="button" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
@@ -12,11 +14,33 @@
         </div>
         <div>
     <div>
-        <h2 class="text-lg font-medium leading-7 text-gray-900 m-5">Equipos</h2>
+        <div class="flex">
+            <h2 class="text-lg font-medium leading-7 text-gray-900 m-5">Equipos</h2>
+            <div class="flex gap-4 items-center justify-between">
+                <button type="button" @click="openNuUpdateModal(true)" class="px-2 py-2 text-center font-black text-blue-700 hover:underline">
+                    Liquidación Masiva
+                </button>
+            </div>
+        </div>
         <div class="overflow-x-auto mt-3">
             <table class="w-full whitespace-no-wrap">
                 <thead>
                     <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                        <th
+                            class="sticky left-0 z-10 border-b-2 border-r border-gray-200 bg-gray-100 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 w-12"                            >
+                            <label
+                                :for="`check-all`"
+                                class="flex gap-3 justify-center w-full px-2 py-1"
+                            >
+                                <input
+                                    @change="handleCheckAllEquipments"
+                                    :id="`check-all-1`"
+                                    :checked="equipmentForm.ids.length > 0"
+                                    type="checkbox"
+                                />
+                                {{ equipmentForm.ids.length ?? "" }}
+                            </label>
+                        </th>
                         <th class="w-1/4 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                             Descripción del Equipo
                         </th>
@@ -31,7 +55,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in equipments.data" :key="item.id" class="text-gray-700">
+                    <tr v-for="item in props.equipments" :key="item.id" class="text-gray-700">
+                        <td
+                            class="sticky left-0 z-10 border-b border-r border-gray-200 bg-amber-100 text-center text-[13px] whitespace-nowrap tabular-nums"
+                        >
+                            <label
+                                :for="`check-${item.id}`"                                    class="block w-full px-2 py-1"
+                            >
+                                <input
+                                    v-model="equipmentForm.ids"
+                                    :value="item.id"
+                                    :id="`check-${item.id}`"
+                                    type="checkbox"
+                                />
+                            </label>
+                        </td>
                         <td class="w-1/4 border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.huawei_equipment_serie.huawei_equipment.name }}</td>
                         <td class="w-1/4 border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.huawei_equipment_serie.serie_number }}</td>
                         <td class="w-1/4 border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.unit_price ? 'S/. ' + item.huawei_entry_detail.unit_price.toFixed(2) : '-'}}</td>
@@ -46,17 +84,35 @@
                 </tbody>
             </table>
         </div>
-        <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-            <pagination :links="props.equipments.links" />
-        </div>
     </div>
 
     <div>
-        <h2 class="text-lg font-medium leading-7 text-gray-900 m-5">Materiales</h2>
-        <div class="overflow-x-auto mt-3">
+        <div class="flex">
+            <h2 class="text-lg font-medium leading-7 text-gray-900 m-5">Materiales</h2>
+            <div class="flex gap-4 items-center justify-between">
+                <button type="button" @click="openNuUpdateModal(false)" class="px-2 py-2 text-center font-black text-blue-700 hover:underline">
+                    Liquidación Masiva
+                </button>
+            </div>
+        </div>        <div class="overflow-x-auto mt-3">
             <table class="w-full whitespace-no-wrap">
                 <thead>
                     <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                        <th
+                            class="sticky left-0 z-10 border-b-2 border-r border-gray-200 bg-gray-100 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 w-12"                            >
+                            <label
+                                :for="`check-all`"
+                                class="flex gap-3 justify-center w-full px-2 py-1"
+                            >
+                                <input
+                                    @change="handleCheckAllMaterials"
+                                    :id="`check-all-2`"
+                                    :checked="materialForm.ids.length > 0"
+                                    type="checkbox"
+                                />
+                                {{ materialForm.ids.length ?? "" }}
+                            </label>
+                        </th>
                         <th class="w-1/4 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                             Descripción del Material
                         </th>
@@ -71,7 +127,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in materials.data" :key="item.id" class="text-gray-700">
+                    <tr v-for="item in props.materials" :key="item.id" class="text-gray-700">
+                        <td
+                            class="sticky left-0 z-10 border-b border-r border-gray-200 bg-amber-100 text-center text-[13px] whitespace-nowrap tabular-nums"
+                        >
+                            <label
+                                :for="`check-${item.id}`"                                    class="block w-full px-2 py-1"
+                            >
+                                <input
+                                    v-model="materialForm.ids"
+                                    :value="item.id"
+                                    :id="`check-${item.id}`"
+                                    type="checkbox"
+                                />
+                            </label>
+                        </td>
                         <td class="w-1/4 border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.huawei_material.name }}</td>
                         <td class="w-1/4 border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.quantity }}</td>
                         <td class="w-1/4 border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.unit_price ? 'S/. ' + item.huawei_entry_detail.unit_price.toFixed(2) : '-'}}</td>
@@ -85,9 +155,6 @@
                     </tr>
                 </tbody>
             </table>
-        </div>
-        <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-            <pagination :links="props.materials.links" />
         </div>
     </div>
 </div>
@@ -136,6 +203,65 @@
           </div>
         </Modal>
 
+        <Modal :show="showOpNuDatModal" @close="closeOpNuDatModal">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900">
+                    Actualización Masiva
+                </h2>
+                <form @submit.prevent="submitOpNuDatModal">
+                    <div class="space-y-6">
+                        <div class="inline-flex items-center p-2 mt-4 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300" role="alert">
+                            <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                            </svg>
+                            <span class="sr-only">Info</span>
+                            <div>
+                            <span class="font-small">Los equipos o materiales marcados serán liquidados en su totalidad y no serán devueltos a almacén.</span>
+                            </div>
+                        </div>
+                        <div
+                            class="border-b grid grid-cols-1 gap-6 border-gray-900/10 pb-12"
+                        >
+                            <div>
+                                <InputLabel
+                                    for="entry_date"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >Fecha de Instalación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input
+                                        type="date"
+                                        v-model="opNuDateForm.instalation_date"
+                                        id="entry_date"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                    <InputError
+                                        :message="
+                                            opNuDateForm.errors.instalation_date
+                                        "
+                                    />
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <SecondaryButton @click="closeOpNuDatModal">
+                                Cancelar
+                            </SecondaryButton>
+                            <button
+                                type="submit"
+                                :disabled="isFetching"
+                                :class="{ 'opacity-25': isFetching }"
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                            >
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </Modal>
+
         <SuccessOperationModal :confirming="showModal" :title="`Éxito`"
             :message="`La liquidación del recurso se realizó correctamente.`" />
     </AuthenticatedLayout>
@@ -144,7 +270,6 @@
   <script setup>
 
   import { Head, Link, useForm } from '@inertiajs/vue3';
-  import Pagination from '@/Components/Pagination.vue';
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
   import Modal from '@/Components/Modal.vue';
   import { ref, watch } from 'vue';
@@ -153,6 +278,8 @@
   import SecondaryButton from '@/Components/SecondaryButton.vue';
   import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
   import PrimaryButton from '@/Components/PrimaryButton.vue';
+  import { notify, notifyError, notifyWarning } from "@/Components/Notification";
+  import { Toaster } from "vue-sonner";
 
   const props = defineProps({
     equipments: Object,
@@ -170,6 +297,8 @@
   const liquidate_equipment = ref(false);
   const liquidate_resource_id = ref(null);
   const refund_quantity = ref(null);
+  const isFetching = ref(false);
+  const showOpNuDatModal = ref(false);
 
   const form = useForm({
     liquidated_quantity: '',
@@ -223,4 +352,52 @@
     }
   });
 
-  </script>
+  const materialForm = ref({
+    ids: [],
+  });
+
+  const equipmentForm = ref({
+    ids: [],
+  });
+
+  const handleCheckAllEquipments = (e) => {
+    if (e.target.checked) {
+        equipmentForm.value.ids = props.equipments.map((item) => item.id)
+    } else {
+        equipmentForm.value.ids = [];
+    }
+};
+const handleCheckAllMaterials = (e) => {
+    if (e.target.checked) {
+        materialForm.value.ids = props.materials.map((item) => item.id)
+    } else {
+        materialForm.value.ids = [];
+    }
+};
+
+const opNuDateForm = useForm({
+    instalation_date: '',
+});
+
+const openNuUpdateModal = (equipment) => {
+    if (equipment){
+        if (equipmentForm.value.ids.length === 0) {
+            notifyWarning("No hay registros seleccionados");
+            return;
+        }
+    }else{
+        if (materialForm.value.ids.length === 0) {
+            notifyWarning("No hay registros seleccionados");
+            return;
+        }
+    }
+    showOpNuDatModal.value = true;
+}
+
+const closeOpNuDatModal = () => {
+    isFetching.value = false;
+    showOpNuDatModal.value = false;
+    opNuDateForm.reset();
+};
+
+</script>
