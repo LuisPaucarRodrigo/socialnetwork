@@ -252,10 +252,8 @@ const submit = async () => {
             } else {
                 close_add_code();
                 form.reset();
-                showModal.value = true;
                 openPreviewDocumentModal(res.data.guide_id);
                 setTimeout(() => {
-                    showModal.value = false;
                     router.visit(route("huawei.internalguides"));
                 }, 2000);
             }

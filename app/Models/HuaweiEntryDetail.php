@@ -14,6 +14,8 @@ class HuaweiEntryDetail extends Model
 
     protected $fillable = [
         'huawei_entry_id',
+        'huawei_order_id',
+        'order_date',
         'huawei_material_id',
         'huawei_equipment_serie_id',
         'quantity',
@@ -38,6 +40,11 @@ class HuaweiEntryDetail extends Model
     public function huawei_entry()
     {
         return $this->belongsTo(HuaweiEntry::class, 'huawei_entry_id');
+    }
+
+    public function huawei_pending_order ()
+    {
+        return $this->belongsTo(HuaweiPendingOrder::class, 'huawei_order_id');
     }
 
     public function huawei_material()
@@ -141,7 +148,7 @@ class HuaweiEntryDetail extends Model
         if ($this->state == 'En Proyecto' || $this->state == 'Devuelto'){
             return 'none';
         }
-        $entryDate = Carbon::parse($this->entry_date ? $this->entry_date : $this->huawei_entry->entry_date);
+        $entryDate = Carbon::parse($this->entry_date ? $this->entry_date : ($this->huawei_entry ? $this->huawei_entry->entry_date : $this->huawei_pending_order->order_date));
 
         // Obtener la fecha actual
         $now = Carbon::now();

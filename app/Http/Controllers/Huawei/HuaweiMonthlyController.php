@@ -127,8 +127,8 @@ class HuaweiMonthlyController extends Controller
     {
         $expenses = HuaweiMonthlyExpense::where('huawei_monthly_project_id', $project->id);
         $employeeCount = $project->huawei_monthly_employees()->count();
-        if (!empty($request->selectedZones)) {  // Filtrar solo si hay valor
-            $expenses->where('zone', $request->selectedZones);
+        if (count($request->selectedZones) < 17) {  // Filtrar solo si hay valor
+            $expenses->whereIn('zone', $request->selectedZones);
         }
         if (count($request->selectedExpenseTypes) < 9){
             $expenses->whereIn('expense_type', $request->selectedExpenseTypes);
@@ -138,6 +138,24 @@ class HuaweiMonthlyController extends Controller
         }
         if (count($request->selectedEmployees) < $employeeCount){
             $expenses->whereIn('employee', $request->selectedEmployees);
+        }
+        if($request->exStartDate){
+            $expenses->where('expense_date', '>=', $request->exStartDate);
+        }
+        if($request->exEndDate){
+            $expenses->where('expense_date', '<=', $request->exEndDate);
+        }
+        if($request->exNoDate){
+            $expenses->where('expense_date', null);
+        }
+        if($request->opStartDate){
+            $expenses->where('ec_expense_date', '>=', $request->opStartDate);
+        }
+        if($request->opEndDate){
+            $expenses->where('ec_expense_date', '<=', $request->opEndDate);
+        }
+        if($request->opNoDate){
+            $expenses->where('ec_expense_date', null);
         }
         $expenses = $expenses->orderBy('created_at', 'desc')->get(); // Asegúrate de asignar el resultado
         return response()->json(["expenses" => $expenses], 200);

@@ -351,7 +351,8 @@
 
 <table style="width: 100%; font-size: 9px;">
     <tr>
-        <td style="width: 50%; border: none; padding: 0;">Material</td>
+        <td style="width: 10%; border: none; padding: 0;">CODSAP</td>
+        <td style="width: 40%; border: none; padding: 0;">Material</td>
         <td style="width: 30%; border: none; padding: 0;">Serie</td>
         <td style="width: 10%; text-align: center; border: none; padding: 0;">Cantidad</td>
         <td style="width: 10%; text-align: center; border: none; padding: 0;">Unidad</td>
@@ -373,7 +374,8 @@
     <table style="width: 100%; font-size: 9px;">
         @foreach ($data as $index => $item)
             <tr>
-                <td style="width: 50%; border: none; padding: 0;">{{ $item['name'] }}</td>
+                <td style="width: 10%; border: none; padding: 0;">{{ $item['codsap'] ? $item['codsap'] : '' }}</td>
+                <td style="width: 40%; border: none; padding: 0;">{{ $item['name'] }}</td>
                 <td style="width: 30%; border: none; padding: 0;">{{ $item['serie'] ? $item['serie'] : 'NO APLICA' }}</td>
                 <td style="width: 10%; text-align: center; border: none; padding: 0;">{{ $item['quantity'] }}</td>
                 <td style="width: 10%; text-align: center; border: none; padding: 0;">{{ $item['unit'] ? $item['unit'] : 'NIU' }}</td>
