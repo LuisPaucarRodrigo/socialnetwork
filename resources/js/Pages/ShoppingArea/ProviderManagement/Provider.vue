@@ -8,26 +8,14 @@
 
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <div class="flex justify-between items-center gap-4">
-                <button v-if="hasPermission('PurchasingManager')" @click="add_information(initialStateForm)" type="button"
+                <button v-if="hasPermission('PurchasingManager')" @click="add_information(initialStateForm)"
+                    type="button"
                     class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                     + Agregar
                 </button>
                 <div class="flex items-center">
-                    <form @submit.prevent="search" class="flex items-center">
-
-                        <input type="text" placeholder="Buscar..."
-                            class="block w-full ml-2 rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            v-model="searchForm.searchTerm" />
-                        <button type="submit" :class="{ 'opacity-25': searchForm.processing }"
-                            class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                            <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
-                                    stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </button>
-                    </form>
+                    <TextInput type="text" placeholder="Buscar..." @input="search($event.target.value)"
+                        class="block w-full ml-2 rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
                 </div>
             </div>
 
@@ -78,49 +66,41 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="provider in (props.search ? providers : providers.data)" :key="provider.id"
-                            class="text-gray-700">
+                        <tr v-for="item in providers.data ?? providers" :key="item.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-3 py-2">
-                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ provider.ruc }}</p>
+                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ item.ruc }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-3 py-2">
-                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ provider.company_name }}</p>
+                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ item.company_name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-3 py-2">
-                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ provider.contact_name }}</p>
+                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ item.contact_name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-3 py-2">
-                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ provider.zone }}</p>
+                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ item.zone }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-3 py-2">
-                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ provider.address }}</p>
+                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ item.address }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-3 py-2">
-                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ provider.phone1 }} {{
-                                    provider.phone2 }}
+                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ item.phone1 }} {{
+                                    item.phone2 }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-3 py-2">
-                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ provider.email }}</p>
+                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ item.email }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-3 py-2">
-                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ provider.category.name }}</p>
+                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ item.category.name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-3 py-2">
-                                <p v-for="item in provider.segments" class="text-gray-900 whitespace-nowrap text-xs">{{
-                                    item.name }}</p>
+                                <p v-for="i in item.segments" class="text-gray-900 whitespace-nowrap text-xs">
+                                    {{ i.name }}
+                                </p>
                             </td>
                             <td v-if="auth.user.role_id == 1" class="border-b border-gray-200 bg-white px-3 py-2">
                                 <div class="flex space-x-3 justify-center">
-                                    <!-- <Link class="text-blue-900 whitespace-nowrap"
-                                        :href="route('providersmanagement.edit', { id: provider.id })">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                    </svg>
-                                    </Link> -->
-                                    <button type="button" @click="add_information(provider)"
+                                    <button type="button" @click="add_information(item)"
                                         class="text-blue-900 whitespace-nowrap">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
@@ -128,7 +108,7 @@
                                                 d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                         </svg>
                                     </button>
-                                    <button type="button" @click="confirmProviderDeletion(provider)"
+                                    <button type="button" @click="confirmProviderDeletion(item)"
                                         class="text-blue-900 whitespace-nowrap">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
@@ -143,11 +123,12 @@
                 </table>
             </div>
 
-            <div v-if="props.search === undefined"
+            <div v-if="providers.data"
                 class="flex flex-col items-center border-t bg-white px-3 py-2 xs:flex-row xs:justify-between">
                 <pagination :links="providers.links" />
             </div>
         </div>
+
         <Modal :show="showModalStoreOrUpdate">
             <div class="p-6">
                 <h2 class="text-base font-semibold leading-7 text-gray-900">Informacion</h2>
@@ -273,7 +254,7 @@
                                     <option disabled>
                                         Selecciona uno o varios
                                     </option>
-                                    <option v-for="item in segments" :key="item.id" :value="item.id"
+                                    <option v-for="item in segmentsList" :key="item.id" :value="item.id"
                                         :selected="form.segments.includes(item.id)">
                                         {{ item.name }}
                                     </option>
@@ -310,7 +291,7 @@
                     </div>
                 </div>
                 <div class="mt-6 flex gap-3 justify-end">
-                    <SecondaryButton type="button" @click="closeAddModal"> Cerrar </SecondaryButton>
+                    <SecondaryButton type="button" @click="closeAddModal()"> Cerrar </SecondaryButton>
                     <PrimaryButton type="submit" :class="{ 'opacity-25': formCategory.processing }"
                         :disabled="formCategory.processing">
                         Agregar
@@ -345,7 +326,7 @@
                     </div>
                 </div>
                 <div class="mt-6 flex gap-3 justify-end">
-                    <SecondaryButton type="button" @click="closeAddModal"> Cerrar </SecondaryButton>
+                    <SecondaryButton type="button" @click="closeAddModal()"> Cerrar </SecondaryButton>
                     <PrimaryButton type="submit"> Agregar </PrimaryButton>
                 </div>
             </form>
@@ -362,9 +343,6 @@ import Pagination from '@/Components/Pagination.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import { Head, router, Link, useForm } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
-import ProviderCreateAndUpdate from './ProviderCreateAndUpdate.vue';
-import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
-import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import InputError from '@/Components/InputError.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
@@ -372,26 +350,27 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import { setAxiosErrors } from '@/utils/utils';
-import { notify } from '@/Components/Notification';
+import { notify, notifyError } from '@/Components/Notification';
 
-const props = defineProps({
-    providers: Object,
+const { provider, auth, userPermissions, category } = defineProps({
+    provider: Object,
     auth: Object,
-    search: String,
     userPermissions: Array,
     category: Object
 });
 
+const providers = ref(provider)
+
 const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
+    return userPermissions.includes(permission);
 }
 
 const confirmingProviderDeletion = ref(false);
-const provider = ref(null);
+const provider_id = ref(null);
 const name = ref(null);
 const showModalStoreOrUpdate = ref(false)
 const categoryAndSegment = ref(false);
-const segments = ref([]);
+const segmentsList = ref([]);
 const showModalAddCategory = ref(false);
 const showModalAddSegment = ref(false);
 
@@ -406,22 +385,25 @@ const initialStateForm = {
     segments: [],
     zone: '',
     ruc: '',
-    id: null,
+    id: '',
 }
+
 const form = useForm({ ...initialStateForm });
 
 const confirmProviderDeletion = (provider_fun) => {
-    provider.value = provider_fun;
+    provider_id.value = provider_fun.id;
     name.value = provider_fun.contact_name;
     confirmingProviderDeletion.value = true;
 };
 
-const deleteProvider = () => {
-    const providerId = provider.value.id;
-    if (providerId) {
-        router.delete(route('providersmanagement.destroy', { id: providerId }), {
-            onSuccess: () => closeModal()
-        });
+async function deleteProvider() {
+    let url = route('providersmanagement.destroy', { id: provider_id.value });
+    try {
+        await axios.delete(url)
+        updateProvider(provider_id.value, 'delete')
+        closeModal()
+    } catch (error) {
+        notifyError(error)
     }
 };
 
@@ -430,52 +412,61 @@ const closeModal = () => {
 };
 
 const add_information = (item) => {
-    item.segments = item.segments.map(item => item.id)
-    Object.assign(form,item)
-    showModalStoreOrUpdate.value = !showModalStoreOrUpdate.value
+    form.defaults({ ...item, segments: item.segments.map(item => item.id) })
+    form.reset()
+    showModalStoreOrUpdate.value = true
 };
 
-const searchForm = useForm({
-    searchTerm: props.search ? props.search : '',
-})
-
-const search = () => {
-    if (searchForm.searchTerm == '') {
-        router.visit(route('providersmanagement.index'));
-    } else {
-        router.visit(route('providersmanagement.search', { request: searchForm.searchTerm }));
+async function search($search) {
+    let url = route('providersmanagement.index')
+    try {
+        let response = await axios.post(url, { searchQuery: $search })
+        providers.value = response.data
+    } catch (error) {
+        notifyError(error)
     }
-
 }
 
 async function submit() {
     let url = form.id ? route('providersmanagement.update', { id: form.id }) : route('providersmanagement.store')
     try {
-        let response = await axios.post(url, form)
-
-        updateProvider(response.data)
+        let response = await axios.post(url, form);
+        let operation = form.id ? 'update' : 'store'
+        closeModalStoreOrUpdate();
+        updateProvider(response.data, operation)
     } catch (error) {
-        console.log(error)
         if (error.response) {
-            setAxiosErrors(error.response.data.errors, form)
+            if (error.response.data.errors) {
+                setAxiosErrors(error.response.data.errors, form)
+            } else {
+                console.error("Server error:", error.response.data)
+            }
         } else {
-            console.error('Error desconocido:', error);
+            notifyError("Server Error");
         }
     }
 };
 
 function closeModalStoreOrUpdate() {
+    form.clearErrors()
+    form.defaults({ ...initialStateForm })
+    form.reset()
     showModalStoreOrUpdate.value = false
-    // Object.assign(form,initialStateForm)
 }
 
-const formCategory = useForm({
+const initialStateFormCategory = {
     name: ''
-})
+}
 
-const formSegment = useForm({
+const formCategory = useForm({ ...initialStateFormCategory })
+
+const initialStateFormSegment = {
     category_id: '',
     name: ''
+}
+
+const formSegment = useForm({
+    ...initialStateFormSegment
 })
 
 function createCategory() {
@@ -491,17 +482,12 @@ function createSegment() {
 function closeAddModal() {
     if (categoryAndSegment.value) {
         showModalAddSegment.value = false
-        formCategory.clearErrors()
-        formCategory.defaults({ name: '' })
-        formCategory.reset()
+        formSegment.clearErrors()
+        Object.assign(formSegment, initialStateFormSegment)
     } else {
         showModalAddCategory.value = false
-        formSegment.clearErrors()
-        formSegment.defaults({
-            category_id: '',
-            name: ''
-        })
-        formSegment.reset()
+        formCategory.clearErrors()
+        Object.assign(formCategory, initialStateFormCategory)
     }
 }
 
@@ -513,7 +499,7 @@ async function handleCategoryChange(category_id) {
     let url = route('provider.segments.list', { category_id: category_id });
     try {
         let response = await axios.get(url)
-        segments.value = response.data
+        segmentsList.value = response.data
     } catch (error) {
         console.error(error)
     }
@@ -525,7 +511,7 @@ async function submitCategoryOrSegment() {
     try {
         let response = await axios.post(url, selectedForm)
         let cs = categoryAndSegment.value == false ? 'Category' : 'Segment'
-        updateCategoryOrSegment(response.data, cs)
+        updateCategoryOrSegment(response.data, cs);
         closeAddModal()
     } catch (error) {
         if (error.response) {
@@ -534,50 +520,34 @@ async function submitCategoryOrSegment() {
             console.error('Error desconocido:', error);
         }
     }
-    // axios.post(url, { ...formSegment.data() })
-    //     .then(response => {
-    //         if (response.status === 200) {
-    //             let newItem = response.data.new
-    //             categoryAndSegment.value == false
-    //                 ? category.push({ ...newItem })
-    //                 : segments.value.push({ ...newItem })
-    //             closeAddModal()
-    //             addSuccess.value = true
-    //             setTimeout(() => {
-    //                 addSuccess.value = false
-    //             }, 600)
-    //             formSegment.reset()
-    //         } else {
-    //             throw new Error('Fallo en el servidor con status ' + response.status)
-    //         }
-    //     })
-    //     .catch(error => {
-    //         console.error(error)
-    //     })
 };
 
 function updateCategoryOrSegment(item, cs) {
     if (cs === 'Category') {
-        props.category.push(item.new)
+        category.push(item.new)
         notify('Categoria Creada')
     } else if (cs === 'Segment') {
         notify('Segmento Creado')
     }
 }
 
-function updateProvider(provider) {
-    const validations = props.providers.data;
-    const index = validations.findIndex(item => item.id === provider.id)
-    if(index !== -1) {
+function updateProvider(provider, operation) {
+    const validations = providers.value.data || providers.value;
+    const index = validations.findIndex(item => item.id = provider.id ?? provider)
+    if (operation === 'update') {
         validations[index] = provider
         notify('Proveedor Actualizado')
-    } else {
+    } else if (operation === 'store') {
         validations.push(provider);
         notify('Proveedor Creado')
+    } else if (operation === 'delete') {
+        validations.splice(index, 1)
+        notify('Proveedor Eliminado')
     }
 
-    if (validations.length > props.providers.per_page) {
+    if (validations.length > validations.value.per_page) {
         validations.pop();
     }
 }
+
 </script>

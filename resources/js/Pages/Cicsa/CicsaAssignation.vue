@@ -30,7 +30,7 @@
             </div>
             <br>
             <div class="overflow-x-auto h-[70vh]">
-                <table class="w-full whitespace-no-wrap">
+                <table class="w-full whitespace-nowrap">
                     <thead>
                         <tr
                             class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -331,6 +331,7 @@ function openAddAssignationModal() {
 
 function closeAddAssignationModal() {
     showAddEditModal.value = false
+    form.clearErrors()
     form.defaults({ ...initialState })
     form.reset()
 }
