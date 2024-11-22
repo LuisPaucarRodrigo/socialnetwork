@@ -13,8 +13,13 @@
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 </div>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE,OC" />
+                    <TextInput type="text" @input="search($event.target.value)" placeholder="Buscar ..." />
                     <SelectCicsaComponent currentSelect="Orden de Compra" />
+                    <div id="search_fields" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Nombre,Codigo,CPE,OC,Observaciones
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                 </div>
             </div>
             <br>
@@ -313,9 +318,13 @@ import axios from 'axios';
 import InputFile from '@/Components/InputFile.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 
-const { purchaseOrder, auth } = defineProps({
+const { purchaseOrder, auth, searchCondition } = defineProps({
     purchaseOrder: Object,
-    auth: Object
+    auth: Object,
+    searchCondition: {
+        type: String,
+        Required: false
+    }
 })
 
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
@@ -442,5 +451,9 @@ function updatePurchaseOrder(item, purchaseOrder) {
         const indexMaterial = validations[index].cicsa_purchase_order.findIndex(item => item.id === purchaseOrder.id);
         validations[index].cicsa_purchase_order[indexMaterial] = purchaseOrder
     }
+}
+
+if (searchCondition) {
+    search(searchCondition)
 }
 </script>

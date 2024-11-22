@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('report');
             $table->date('shipping_report_date')->nullable();
             $table->string('coordinator');
+            $table->text('observation')->nullable();
             $table->string('user_name');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('cicsa_assignation_id')->constrained('cicsa_assignations')->onDelete('cascade');

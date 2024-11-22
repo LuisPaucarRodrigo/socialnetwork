@@ -97,7 +97,12 @@
                     }
                         " v-model="filterForm.month"
                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                    <TextInput type="text" placeholder="Buscar..." v-model="filterForm.search" />
+                    <TextInput data-tooltip-target="search_fields" type="text" placeholder="Buscar..." v-model="filterForm.search" />
+                    <div id="search_fields" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Numero de Operación,Fecha de Operación,Descripción,cargo,Abono,Saldo Contable
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -173,8 +178,14 @@
                             </label>
                         </th>
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Fecha de Operación
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 w-46">
+                            <TableDateFilter 
+                                labelClass="text-[11px]" 
+                                label="Fecha de Operación"
+                                v-model:startDate="filterForm.opStartDate" 
+                                v-model:endDate="filterForm.opEndDate"
+                                v-model:noDate="filterForm.opNoDate" 
+                                width="w-full" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
@@ -204,6 +215,15 @@
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Saldo Contable
                         </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-[11px] font-semibold uppercase tracking-wider text-gray-600 w-40">
+                            <TableHeaderFilter 
+                                labelClass="text-[11px]" 
+                                label="Estado" 
+                                :options="stateOptions"
+                                v-model="filterForm.stateOptions" 
+                                width="w-full" />
+                        </th>
                         <th v-if="auth.user.role_id === 1"
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Acciones
@@ -218,9 +238,10 @@
                         <tr class="text-gray-700 bg-white hover:bg-slate-200">
                             <td class="w-2 border-b border-gray-200 text-center text-[13px] whitespace-nowrap tabular-nums"
                                 :class="[
-                                    item.state === 'No aplica' && 'bg-gray-400',
-                                    item.state === 'Validado' && 'bg-green-400',
-                                    item.state === 'No validado' && 'bg-red-400',
+                                    item.state === 'Abono' && 'bg-gray-500',
+                                    item.state === 'Validado' && 'bg-green-500',
+                                    item.state === 'Por validar' && 'bg-yellow-400',
+                                    item.state === 'No validado' && 'bg-red-500',
                                 ]"></td>
                             <td
                                 class="border-b border-r border-gray-200 text-center text-[13px] whitespace-nowrap tabular-nums">
@@ -258,6 +279,17 @@
                                 class="border-b border-gray-200 px-2 py-1 text-right text-[13px] tabular-nums whitespace-nowrap">
                                 S/. {{ item.balance.toFixed(2) }}
                             </td>
+                            <td
+                                class="border-b border-gray-200 px-2 py-1 text-right text-[13px] tabular-nums whitespace-nowrap"
+                                :class="[
+                                    item.state === 'Abono' && 'text-gray-500',
+                                    item.state === 'Validado' && 'text-green-500',
+                                    item.state === 'Por validar' && 'text-yellow-400',
+                                    item.state === 'No validado' && 'text-red-500',
+                                ]"
+                                >
+                                {{ item.state }}
+                            </td>
                             <td v-if="auth.user.role_id === 1"
                                 class="border-b border-gray-200 px-2 py-1 text-right text-[13px]">
                                 <div class="flex items-center justify-end">
@@ -289,13 +321,13 @@
                         </tr>
                         <template v-if="row == item.id">
                             <tr class="bg-white h-16">
-                                <td colspan="10" class="py-1 px-2">
+                                <td colspan="11" class="py-1 px-2">
                                     <table class="w-full">
                                         <thead>
                                             <tr
                                                 class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                                                 <th
-                                                    class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600">
+                                                    class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9dsdpx] font-semibold uppercase tracking-wider text-gray-600">
                                                     Zona
                                                 </th>
                                                 <th
@@ -307,7 +339,7 @@
                                                     Ubicación
                                                 </th>
                                                 <th
-                                                    class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600">
+                                                    class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-right text-[9px] font-semibold uppercase tracking-wider text-gray-600 ">
                                                     Monto
                                                 </th>
                                             </tr>
@@ -329,7 +361,7 @@
                                                     {{ item.project.name }}
                                                 </td>
                                                 <td
-                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px] tabular-nums">
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-right text-[12px] tabular-nums">
                                                     S/. {{ item.amount }}
                                                 </td>
                                             </tr>
@@ -349,7 +381,7 @@
                                                     {{ item.project.name }}
                                                 </td>
                                                 <td
-                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px] tabular-nums">
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-right text-[12px] tabular-nums">
                                                     S/. {{ item.amount }}
                                                 </td>
                                             </tr>
@@ -372,8 +404,29 @@
                                                     }}
                                                 </td>
                                                 <td
-                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px] tabular-nums">
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-right text-[12px] tabular-nums">
                                                     S/. {{ item.amount }}
+                                                </td>
+                                            </tr>
+                                            <tr class="text-gray-700">
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
+                                                    Total:
+                                                </td>
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
+                                                </td>
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
+                                                </td>
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-[12px] tabular-nums text-right font-medium">
+                                                    S/. {{ 
+                                                    
+                                                        (costsFounded.scData.reduce((a,b)=>a+b.amount, 0)
+                                                        + costsFounded.acData.reduce((a,b)=>a+b.amount, 0)
+                                                        + costsFounded.peData.reduce((a,b)=>a+b.amount, 0)).toFixed(2)
+                                                    }}
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -642,6 +695,8 @@ import { Head, useForm } from "@inertiajs/vue3";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import DeleteOperationModal from "@/Components/DeleteOperationModal.vue";
+import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
+import TableDateFilter from "@/Components/TableDateFilter.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import InputFile from "@/Components/InputFile.vue";
@@ -691,7 +746,12 @@ const initStateCostsFounded = {
     scData: [],
     peData: [],
 };
-
+const stateOptions = [
+    'Abono',
+    'Validado',
+    'Por validar',
+    'No validado',
+]
 const dataToRender = ref({
     accountStatements,
     previousBalance,
@@ -704,7 +764,12 @@ const costsFounded = ref(initStateCostsFounded);
 const initialFilterFormState = {
     month: defaultMonth,
     search: "",
+    stateOptions: stateOptions,
+    opStartDate : '',
+    opEndDate : '',
+    opNoDate : false,
 }
+
 const filterForm = ref({ ...initialFilterFormState });
 const form = useForm({
     id: null,
@@ -819,7 +884,28 @@ function handleSearchClient() {
                         ? item.balance.toString().toLowerCase().includes(search)
                         : false));
         }
-        //add filter 1 date
+        if (filterForm.value.stateOptions) {
+            let stateOptions = filterForm.value.stateOptions
+            condition = condition && stateOptions.includes(item.state)
+        }
+        if(filterForm.value.opNoDate){
+            condition = condition && (item.operation_date === null || item.operation_date === undefined)
+        }
+        if (!filterForm.value.opNoDate && item.operation_date) {
+            const itemOpDate = new Date(item.operation_date);
+            let startDate = filterForm.value.opStartDate
+            let endDate = filterForm.value.opEndDate
+            if (startDate){
+                const start = new Date(startDate);
+                condition = condition && (itemOpDate >= start)
+            }
+            if (endDate) {
+                const end = new Date(endDate);
+                condition = condition &&  (itemOpDate <= end)
+            }
+        }
+
+        //add filter another one
         return condition;
     });
     dataToShow.value = filterData;
@@ -1014,7 +1100,13 @@ watch(
 
 //to handle change in filterform.values except month
 watch(
-    () => filterForm.value.search,
+    () => [
+        filterForm.value.search, 
+        filterForm.value.stateOptions,
+        filterForm.value.opStartDate,
+        filterForm.value.opEndDate,
+        filterForm.value.opNoDate,
+    ],
     () => {
         handleSearchClient();
         notifyWarning(`Registros Encontrados ${dataToShow.value.length}`);

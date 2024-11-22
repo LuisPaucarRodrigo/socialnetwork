@@ -11,8 +11,13 @@
                 <a :href="route('cicsa.purchase_orders.validation.export') + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE,OC" />
+                    <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)" placeholder="Buscar ..." />
                     <SelectCicsaComponent currentSelect="Validación de OC" />
+                    <div id="search_fields" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Nombre,Codigo,CPE,OC,Observaciones
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                 </div>
             </div>
             <br>
@@ -376,9 +381,13 @@ import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate, setAxiosErrors } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 
-const { purchase_validation, auth } = defineProps({
+const { purchase_validation, auth,searchCondition } = defineProps({
     purchase_validation: Object,
-    auth: Object
+    auth: Object,
+    searchCondition: {
+        type: String,
+        Required: false
+    }
 })
 
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
@@ -468,5 +477,9 @@ function updatePurchaseOrderValidation(OCValidation) {
     const index = validations.findIndex(item => item.id === OCValidation.cicsa_assignation_id)
     const indexOCValidation = validations[index].cicsa_purchase_order_validation.findIndex(item => item.id === OCValidation.id)
     validations[index].cicsa_purchase_order_validation[indexOCValidation] = OCValidation
+}
+
+if (searchCondition) {
+    search(searchCondition)
 }
 </script>

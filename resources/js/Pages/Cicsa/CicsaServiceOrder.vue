@@ -11,8 +11,14 @@
                 <a :href="route('cicsa.service_orders.export') + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE,OC" />
+                    <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
+                        placeholder="Buscar ..." />
                     <SelectCicsaComponent currentSelect="Orden de Servicio" />
+                    <div id="search_fields" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Nombre,Cod,CPE,OC,Observaciones
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                 </div>
             </div>
             <br>
@@ -21,7 +27,7 @@
                     <thead>
                         <tr
                             class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                            <th colspan="2"
+                            <th colspan="3"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Nombre de Proyecto
                             </th>
@@ -45,7 +51,7 @@
                     <tbody>
                         <template v-for="item in service_orders.data ?? service_orders" :key="item.id">
                             <tr class="text-gray-700">
-                                <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <td colspan="3" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <p class="text-gray-900 text-center">
                                         {{ item.project_name }}
                                     </p>
@@ -103,6 +109,10 @@
                                     </th>
                                     <th
                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Doc OS
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                         Hoja de Estimación
                                     </th>
                                     <th
@@ -119,7 +129,7 @@
                                     </th>
                                     <th
                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Documento
+                                        Doc Fac
                                     </th>
                                     <th
                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -147,6 +157,12 @@
                                             {{ materialDetail?.service_order }}
                                         </p>
                                     </td>
+                                    <td class="border-b text-center border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <button v-if="materialDetail?.document" type="button"
+                                            @click="openPDF(materialDetail?.id, 'OS')">
+                                            <EyeIcon class="w-5 h-5 text-green-600" />
+                                        </button>
+                                    </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 text-center">
                                             {{ materialDetail?.estimate_sheet }}
@@ -168,8 +184,8 @@
                                         </p>
                                     </td>
                                     <td class="border-b text-center border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <button v-if="materialDetail?.document" type="button"
-                                            @click="openPDF(materialDetail?.id)">
+                                        <button v-if="materialDetail?.document_invoice" type="button"
+                                            @click="openPDF(materialDetail?.id, 'invoice')">
                                             <EyeIcon class="w-5 h-5 text-green-600" />
                                         </button>
                                     </td>
@@ -232,7 +248,13 @@
                                 <InputError :message="form.errors.service_order" />
                             </div>
                         </div>
-
+                        <div class="sm:col-span-1">
+                            <InputLabel for="document">Documento OS</InputLabel>
+                            <div>
+                                <InputFile type="file" v-model="form.document" id="document" accept=".pdf" />
+                                <InputError :message="form.errors.document" />
+                            </div>
+                        </div>
                         <div class="sm:col-span-1">
                             <InputLabel for="estimate_sheet">Hoja de Estimación</InputLabel>
                             <div class="mt-2">
@@ -289,10 +311,10 @@
                             </div>
                         </div>
                         <div class="sm:col-span-1">
-                            <InputLabel for="document">Documento</InputLabel>
+                            <InputLabel for="document">Documento Fac</InputLabel>
                             <div>
-                                <InputFile type="file" v-model="form.document" id="document" accept=".pdf" />
-                                <InputError :message="form.errors.document" />
+                                <InputFile type="file" v-model="form.document_invoice" id="document" accept=".pdf" />
+                                <InputError :message="form.errors.document_invoice" />
                             </div>
                         </div>
                     </div>
@@ -332,9 +354,13 @@ import TextInput from '@/Components/TextInput.vue';
 import InputFile from '@/Components/InputFile.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 
-const { service_order, auth } = defineProps({
+const { service_order, auth,searchCondition } = defineProps({
     service_order: Object,
-    auth: Object
+    auth: Object,
+    searchCondition: {
+        type: String,
+        Required: false
+    }
 })
 
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
@@ -352,6 +378,7 @@ const initialState = {
     pdf_invoice: 'Pendiente',
     zip_invoice: 'Pendiente',
     document: '',
+    document_invoice: '',
     user_name: '',
     cicsa_assignation_id: '',
     cicsa_purchase_order_id: '',
@@ -422,9 +449,9 @@ const toggleDetails = (cicsa_service_order) => {
     }
 }
 
-async function openPDF(serviceOrderId) {
+async function openPDF(serviceOrderId, doc) {
     if (serviceOrderId) {
-        const url = route('cicsa.service_orders.showDocument', { serviceOrder: serviceOrderId });
+        const url = route('cicsa.service_orders.showDocument', { serviceOrder: serviceOrderId, doc: doc });
         await axios.get(url)
             .then(response => {
                 const imageUrl = response.data.url;
@@ -443,5 +470,9 @@ function updateServiceOrder(serviceOrder) {
     const index = validations.findIndex(item => item.id === serviceOrder.cicsa_assignation_id)
     const indexServiceOrder = validations[index].cicsa_service_order.findIndex(item => item.id === serviceOrder.id)
     validations[index].cicsa_service_order[indexServiceOrder] = serviceOrder
+}
+
+if (searchCondition) {
+    search(searchCondition)
 }
 </script>

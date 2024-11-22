@@ -73,7 +73,7 @@ Route::middleware('permission:ProjectManager')->group(function () {
 
     //Pext Project
     Route::post('/projectPext/storeOrUpdate/{pext_id?}', [PextController::class, 'storeOrUpdate'])->name('projectmanagement.pext.storeOrUpdate');
-    Route::get('/projectPext/requestCicsa/{name_cicsa}', [PextController::class, 'requestCicsa'])->name('projectmanagement.pext.requestCicsa');
+    Route::get('/projectPext/requestCicsa/{zone?}', [PextController::class, 'requestCicsa'])->name('projectmanagement.pext.requestCicsa');
 
 
     Route::post('/projectPext/expenses/storeOrUpdate/{expense_id?}', [PextController::class, 'expenses_storeOrUpdate'])->name('pext.expenses.storeOrUpdate');

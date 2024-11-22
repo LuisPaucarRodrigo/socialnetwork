@@ -13,16 +13,22 @@ use Inertia\Inertia;
 use App\Models\Project;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Log;
+use App\Constants\PintConstants;
 use ZipArchive;
 
 class StaticCostsController extends Controller
 {
-    public function index(Request $request, Project $project_id)
+    public function index(Project $project_id)
     {
+        $expenseTypes = PintConstants::scExpenseTypes();
+        $docTypes = PintConstants::scDocTypes();
+        $zones = PintConstants::scZones();
+        $stateTypes = PintConstants::scStatesTypes();
+
         $additional_costs = StaticCost::where('project_id', $project_id->id)->with('project', 'provider')->orderBy('updated_at', 'desc')->paginate(20);
         $additional_costs->getCollection()->transform(function ($item) {
             $item->project->setAppends([]);
-            $item->setAppends(['real_amount']);
+            $item->setAppends(['real_amount', 'real_state']);
             return $item;
         });
         $searchQuery = '';
@@ -31,7 +37,11 @@ class StaticCostsController extends Controller
             'additional_costs' => $additional_costs,
             'project_id' => $project_id,
             'providers' => $providers,
-            'searchQuery' => $searchQuery
+            'searchQuery' => $searchQuery,
+            'zones' => $zones,
+            'expenseTypes' => $expenseTypes,
+            'docTypes' => $docTypes,
+            'stateTypes' => $stateTypes,
         ]);
     }
 
@@ -67,21 +77,26 @@ class StaticCostsController extends Controller
         if ($request->opEndDate) {
             $result->where('operation_date', '<=', $request->opEndDate);
         }
-        if (count($request->selectedZones) < 6) {
+        if (count($request->selectedZones) < PintConstants::countScZones()) {
             $result = $result->whereIn('zone', $request->selectedZones);
         }
-        if (count($request->selectedExpenseTypes) < 9) {
+        if (count($request->selectedExpenseTypes) < PintConstants::countScExpenseTypes()) {
             $result = $result->whereIn('expense_type', $request->selectedExpenseTypes);
         }
-        if (count($request->selectedDocTypes) < 5) {
+        if (count($request->selectedDocTypes) < PintConstants::countScDocTypes()) {
             $result = $result->whereIn('type_doc', $request->selectedDocTypes);
         }
         $result = $result->orderBy('doc_date')->get();
         $result->transform(function ($item) {
             $item->project->setAppends([]);
-            $item->setAppends(['real_amount']);
+            $item->setAppends(['real_amount', 'real_state']);
             return $item;
         });
+        if (count($request->selectedStateTypes) < PintConstants::countScStatesTypes()) {
+            $result = $result->filter(function($item) use ($request) {
+                return in_array($item->real_state, $request->selectedStateTypes);
+            })->values()->all();
+        } 
         return response()->json($result, 200);
     }
 
@@ -102,7 +117,7 @@ class StaticCostsController extends Controller
         $item = StaticCost::create($data);
         $item->load('project', 'provider:id,company_name');
         $item->project->setAppends([]);
-        $item->setAppends(['real_amount']);
+        $item->setAppends(['real_amount', 'real_state']);
         return response()->json($item, 200);
     }
 
@@ -167,7 +182,7 @@ class StaticCostsController extends Controller
         $additional_cost->update($data);
         $additional_cost->load('project', 'provider:id,company_name');
         $additional_cost->project->setAppends([]);
-        $additional_cost->setAppends(['real_amount']);
+        $additional_cost->setAppends(['real_amount', 'real_state']);
         return response()->json($additional_cost, 200);
     }
 
@@ -193,7 +208,7 @@ class StaticCostsController extends Controller
         ->get();
         $updatedCosts->each(function ($cost) {
         $cost->project->setAppends([]);
-        $cost->setAppends(['real_amount']);
+        $cost->setAppends(['real_amount', 'real_state']);
         });
         return response()->json($updatedCosts, 200);
     }

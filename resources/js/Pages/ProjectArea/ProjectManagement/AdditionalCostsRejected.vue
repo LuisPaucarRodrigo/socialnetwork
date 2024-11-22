@@ -177,7 +177,9 @@
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
-                            {{ item?.provider?.company_name }}
+                        <p class="line-clamp-2 hover:line-clamp-none">
+                                {{ item?.provider?.company_name }}
+                                </p>
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
@@ -226,9 +228,8 @@
                         >
                             <div class="flex items-center gap-3 w-full">
                                 <button
-                                data-tooltip-target="tooltip-up-ac"
                                     @click="
-                                        () => validateRegister(item.id, true)
+                                        () => openAcceptModal(item)
                                     "
                                     class="flex items-center rounded-xl text-blue-700 hover:bg-green-200"
                                 >
@@ -1016,6 +1017,49 @@
                 </form>
             </div>
         </Modal>
+        <Modal :show="showAcceptModal" @close="closeAcceptModal">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900 mb-2">
+                    Ejecutar Levantamiento
+                </h2>
+                <form @submit.prevent="submitAcceptModal">
+                    <div class="space-y-12">
+                        <div class="border-b grid grid-cols-1 gap-6 border-gray-900/10 pb-12">
+                            <div>
+                                <InputLabel for="operation_number" class="font-medium leading-6 text-gray-900">Numero de
+                                    Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="text" v-model="opNuDateForm.operation_number" id="operation_number"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="opNuDateForm.errors.operation_number" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="operation_date" class="font-medium leading-6 text-gray-900">Fecha de
+                                    Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="date" v-model="opNuDateForm.operation_date" id="operation_date"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="opNuDateForm.errors.operation_date" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <SecondaryButton @click="closeAcceptModal">
+                                Cancelar
+                            </SecondaryButton>
+                            <button type="submit" :disabled="isFetching" :class="{ 'opacity-25': isFetching }"
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </Modal>
 
         <ConfirmDeleteModal
             :confirmingDeletion="confirmingDocDeletion"
@@ -1059,17 +1103,13 @@ import { ref, watch } from "vue";
 import { Head, useForm, router } from "@inertiajs/vue3";
 import { TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { formattedDate } from "@/utils/utils";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputFile from "@/Components/InputFile.vue";
-import Pagination from "@/Components/Pagination.vue";
 import { EyeIcon } from "@heroicons/vue/24/outline";
 import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
 import axios from "axios";
 import TextInput from "@/Components/TextInput.vue";
-import Dropdown from "@/Components/Dropdown.vue";
-import DropdownLink from "@/Components/DropdownLink.vue";
 import { setAxiosErrors, toFormData } from "@/utils/utils";
-import { notify, notifyError, notifyWarning } from "@/Components/Notification";
+import { notify, notifyError } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 
 
@@ -1082,7 +1122,7 @@ const props = defineProps({
     searchQuery: String,
     state: String,
 });
-
+console.log(props.additional_costs)
 const dataToRender = ref(props.additional_costs);
 const filterMode = ref(false);
 
@@ -1398,4 +1438,49 @@ async function validateRegister(ac_id, is_accepted) {
         console.log(e);
     }
 }
+
+
+
+const opNuDateForm = useForm({
+    operation_date: '',
+    operation_number: '',
+})
+const showAcceptModal = ref(false)
+const itemToAccept = ref(null)
+const closeAcceptModal = () => {
+    showAcceptModal.value = false
+    isFetching.value = false
+    itemToAccept.value = null
+    opNuDateForm.reset()
+    opNuDateForm.clearErrors()
+}
+const openAcceptModal = (item) => {
+    itemToAccept.value = item
+    showAcceptModal.value = true
+}
+async function submitAcceptModal () {
+    isFetching.value = true;
+    const res = await axios.post(
+            route("projectmanagement.validateAdditionalCost", { ac_id: itemToAccept.value.id }),
+            { is_accepted:1, ...opNuDateForm.data() }
+        )
+        .catch((e) => {
+            isFetching.value = false;
+            if (e.response?.data?.errors) {
+                setAxiosErrors(e.response.data.errors, opNuDateForm);
+            } else {
+                notifyError("Server Error");
+            }
+        });
+    let index = dataToRender.value.findIndex((item) => item.id == res.data.additional_cost.id);
+    dataToRender.value.splice(index, 1);
+    closeAcceptModal();
+    confirmValidation.value = true;
+    setTimeout(() => {
+        confirmValidation.value = false;
+    }, 1000);
+}
+
+
+
 </script>

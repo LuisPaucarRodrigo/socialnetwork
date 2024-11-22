@@ -14,6 +14,7 @@ class CicsaInstallationMaterial extends Model
     protected $fillable = [
         'name',
         'unit',
+        'total_quantity',
         'quantity',
         'type',
         'used_quantity',

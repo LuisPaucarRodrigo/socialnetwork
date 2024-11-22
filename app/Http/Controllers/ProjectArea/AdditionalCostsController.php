@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ProjectArea;
 
+use App\Constants\PintConstants;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CostsRequest\AdditionalCostsRequest;
 use App\Imports\CostsImport;
@@ -24,20 +25,23 @@ class AdditionalCostsController extends Controller
 {
     public function index(Project $project_id)
     {
+        $expenseTypes = PintConstants::acExpenseTypes();
+        $docTypes = PintConstants::acDocTypes();
+        $zones = PintConstants::acZones();
+        $stateTypes = PintConstants::acStatesPenAccep();
+
         $additional_costs = AdditionalCost::where('project_id', $project_id->id)
             ->where(function ($query) {
                 $query->where('is_accepted', 1)
                     ->orWhere('is_accepted', null);
             })
-
-
             ->with(['project', 'provider'])
             ->orderBy('updated_at', 'desc')
             ->paginate(20);
 
         $additional_costs->getCollection()->transform(function ($item) {
             $item->project->setAppends([]);
-            $item->setAppends(['real_amount']);
+            $item->setAppends(['real_amount', 'real_state']);
             return $item;
         });
 
@@ -47,6 +51,10 @@ class AdditionalCostsController extends Controller
             'additional_costs' => $additional_costs,
             'project_id' => $project_id,
             'providers' => $providers,
+            'zones' => $zones,
+            'expenseTypes' => $expenseTypes,
+            'docTypes' => $docTypes,
+            'stateTypes' => $stateTypes,
         ]);
     }
     public function indexRejected(Project $project_id)
@@ -58,7 +66,7 @@ class AdditionalCostsController extends Controller
             ->get();
         $additional_costs->transform(function ($item) {
             $item->project->setAppends([]);
-            $item->setAppends(['real_amount']);
+            $item->setAppends(['real_amount', 'real_state']);
             return $item;
         });
         $providers = Provider::all();
@@ -71,6 +79,8 @@ class AdditionalCostsController extends Controller
 
     public function search_costs(Request $request, $project_id)
     {
+        
+
         $result = AdditionalCost::where('project_id', $project_id)->with([
             'project:id,description',
             'provider'
@@ -90,23 +100,10 @@ class AdditionalCostsController extends Controller
         if ($request->state === false) {
             $result->where('is_accepted', 0);
         } else {
-            if (count($request->selectedStateTypes) < 2) {
-                $newSS = array_values(array_map(function ($item) {
-                    if ($item === 'Aceptado') return '1';
-                    if ($item === 'Pendiente') return null;
-                }, $request->selectedStateTypes));
-                $acceptedValues = array_filter($newSS, fn($value) => $value !== null);
-                $result = $result->when(
-                    in_array(null, $newSS, true),
-                    fn($query) => $query->whereNull('is_accepted'),
-                    fn($query) => $query->whereIn('is_accepted', $acceptedValues)
-                );
-            } else {
-                $result->where(function ($query) {
-                    $query->where('is_accepted', 1)
-                        ->orWhere('is_accepted', null);
-                });
-            }
+            $result->where(function ($query) {
+                $query->where('is_accepted', 1)
+                    ->orWhere('is_accepted', null);
+            });
         }
 
         if ($request->docNoDate) {
@@ -127,22 +124,28 @@ class AdditionalCostsController extends Controller
         if ($request->opEndDate) {
             $result->where('operation_date', '<=', $request->opEndDate);
         }
-        if (count($request->selectedZones) < 6) {
+        if (count($request->selectedZones) < PintConstants::countAcZones()) {
             $result = $result->whereIn('zone', $request->selectedZones);
         }
-        if (count($request->selectedExpenseTypes) < 14) {
+        if (count($request->selectedExpenseTypes) < PintConstants::countAcExpenseTypes()) {
             $result = $result->whereIn('expense_type', $request->selectedExpenseTypes);
         }
-        if (count($request->selectedDocTypes) < 5) {
+        if (count($request->selectedDocTypes) < PintConstants::countAcDocTypes()) {
             $result = $result->whereIn('type_doc', $request->selectedDocTypes);
         }
         $result = $result->orderBy('doc_date')->get();
 
         $result->transform(function ($item) {
             $item->project->setAppends([]);
-            $item->setAppends(['real_amount']);
+            $item->setAppends(['real_amount', 'real_state']);
             return $item;
         });
+        
+        if ($request->state !== false && count($request->selectedStateTypes) < count(PintConstants::acStatesPenAccep())) {
+            $result = $result->filter(function($item) use ($request) {
+                return in_array($item->real_state, $request->selectedStateTypes);
+            })->values()->all();
+        } 
 
         return response()->json($result, 200);
     }
@@ -164,7 +167,7 @@ class AdditionalCostsController extends Controller
         $item = AdditionalCost::create($data);
         $item->load('project', 'provider:id,company_name');
         $item->project->setAppends([]);
-        $item->setAppends(['real_amount']);
+        $item->setAppends(['real_amount', 'real_state']);
         return response()->json($item, 200);
     }
 
@@ -204,6 +207,9 @@ class AdditionalCostsController extends Controller
             $as = AccountStatement::where('operation_date', $data['operation_date'])
                 ->where('operation_number', $on)->first();
             $data['account_statement_id'] = $as?->id;
+            $data['is_accepted'] = 1;
+        } else {
+            $data['is_accepted'] = null;
         }
 
         if ($request->hasFile('photo')) {
@@ -229,7 +235,7 @@ class AdditionalCostsController extends Controller
         $additional_cost->update($data);
         $additional_cost->load('project', 'provider:id,company_name');
         $additional_cost->project->setAppends([]);
-        $additional_cost->setAppends(['real_amount']);
+        $additional_cost->setAppends(['real_amount', 'real_state']);
         return response()->json($additional_cost, 200);
     }
 
@@ -249,13 +255,14 @@ class AdditionalCostsController extends Controller
             'operation_date' => $data['operation_date'],
             'operation_number' => $data['operation_number'],
             'account_statement_id' => $data['account_statement_id'],
+            'is_accepted' => 1
         ]);
         $updatedCosts = AdditionalCost::whereIn('id', $data['ids'])
         ->with(['project', 'provider:id,company_name'])
         ->get();
         $updatedCosts->each(function ($cost) {
         $cost->project->setAppends([]);
-        $cost->setAppends(['real_amount']);
+        $cost->setAppends(['real_amount', 'real_state']);
         });
         return response()->json($updatedCosts, 200);
     }
@@ -298,11 +305,18 @@ class AdditionalCostsController extends Controller
 
     public function validateRegister(Request $request, $ac_id)
     {
+        if($request->is_accepted === 1){
+            $data = $request->validate([
+                'operation_date' => 'required|date',
+                'operation_number' => 'required|min:6',
+                'is_accepted' => 'required'
+            ]);
+        } else {
+            $data = ['is_accepted' => $request->is_accepted];
+        }
         $ac = AdditionalCost::with('project', 'provider')
             ->find($ac_id);
-        $ac->update([
-            'is_accepted' => $request->is_accepted
-        ]);
+        $ac->update($data);
         return response()->json(['additional_cost' => $ac], 200);
     }
 

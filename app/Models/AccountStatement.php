@@ -31,7 +31,7 @@ class AccountStatement extends Model
 
     public function getStateAttribute () {
         if ($this->payment) {
-            return 'No aplica';
+            return 'Abono';
         }
         if ($this->charge) {
             $totalAC = $this->additional_costs()->get()->sum('amount');
@@ -40,6 +40,8 @@ class AccountStatement extends Model
             $total = $totalAC + $totalSC + $totalPE;
             if ($total >= $this->charge){
                 return 'Validado';
+            } else if ( $total > 0) {
+                return 'Por validar';
             } else {
                 return 'No validado';
             }

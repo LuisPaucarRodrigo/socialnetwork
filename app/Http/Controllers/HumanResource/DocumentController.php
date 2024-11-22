@@ -16,6 +16,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
 use ZipArchive;
 use Carbon\Carbon;
+use Exception;
 
 class DocumentController extends Controller
 {
@@ -201,49 +202,53 @@ class DocumentController extends Controller
     public function create(DocumentCreateRequest $request)
     {
         $data = $request->validated();
-        // dd($data);
-        if ($request->hasFile('document')) {
-            $document = $request->file('document');
-            $data['title'] = time() . '_' . $document->getClientOriginalName();
-            $document->move(public_path('documents/documents/'), $data['title']);
-        }
-        $docItem = Document::create($data);
-        $docReg = $docItem->employee_id
-            ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
-                ->where('employee_id', $docItem->employee_id)
-                ->first()
-            : ($docItem->e_employee_id
-                ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
-                    ->where('e_employee_id', $docItem->e_employee_id)
-                    ->first()
-                : null
-            );
-
-        if ($docReg) {
-            $dataDocReg['document_id'] = $docItem->id;
-            if ($docReg->exp_date === null) {
-                $dataDocReg['exp_date'] = $docItem->exp_date;
+        try{
+            if ($request->hasFile('document')) {
+                $document = $request->file('document');
+                $data['title'] = time() . '_' . $document->getClientOriginalName();
+                $document->move(public_path('documents/documents/'), $data['title']);
             }
-            if (isset($data['exp_date']) && $docReg->exp_date) {
-                $newExpDate = Carbon::parse($data['exp_date']);
-                $pastExpDate = Carbon::parse($docReg->exp_date);
-                if ($newExpDate >= $pastExpDate) {
+            $docItem = Document::create($data);
+            $docReg = $docItem->employee_id
+                ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
+                    ->where('employee_id', $docItem->employee_id)
+                    ->first()
+                : ($docItem->e_employee_id
+                    ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
+                        ->where('e_employee_id', $docItem->e_employee_id)
+                        ->first()
+                    : null
+                );
+    
+            if ($docReg) {
+                $dataDocReg['document_id'] = $docItem->id;
+                if ($docReg->exp_date === null) {
                     $dataDocReg['exp_date'] = $docItem->exp_date;
                 }
+                if (isset($data['exp_date']) && $docReg->exp_date) {
+                    $newExpDate = Carbon::parse($data['exp_date']);
+                    $pastExpDate = Carbon::parse($docReg->exp_date);
+                    if ($newExpDate >= $pastExpDate) {
+                        $dataDocReg['exp_date'] = $docItem->exp_date;
+                    }
+                }
+                $docReg->update($dataDocReg);
+            } else {
+                DocumentRegister::create([
+                    'subdivision_id' => $docItem->subdivision_id,
+                    'document_id' => $docItem->id,
+                    'employee_id' => $docItem->employee_id,
+                    'e_employee_id' => $docItem->exp_de_employee_idate,
+                    'exp_date' => $docItem->exp_date,
+                    'state' => 'Completado',
+                ]);
             }
-            $docReg->update($dataDocReg);
-        } else {
-            DocumentRegister::create([
-                'subdivision_id' => $docItem->subdivision_id,
-                'document_id' => $docItem->id,
-                'employee_id' => $docItem->employee_id,
-                'e_employee_id' => $docItem->exp_de_employee_idate,
-                'exp_date' => $docItem->exp_date,
-                'state' => 'Completado',
-            ]);
-        }
+    
+            return redirect()->back();
+        }catch(Exception $e){
+            return redirect()->back()->with('error', 'Ocurrió un error: ' . $e->getMessage());
 
-        return redirect()->back();
+        }
     }
 
     public function update(DocumentUpdateRequest $request, $id)

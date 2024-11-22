@@ -9,8 +9,14 @@
                 <a :href="route('cicsa.installation.export') + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <TextInput type="text" @input="search($event.target.value)" placeholder="Nombre,Codigo,CPE" />
+                    <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
+                        placeholder="Buscar ..." />
                     <SelectCicsaComponent currentSelect="Instalación PINT y PEXT" />
+                    <div id="search_fields" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Nombre,Codigo,CPE
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                 </div>
             </div>
             <br />
@@ -66,6 +72,10 @@
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Monto Proyectado sin IGV
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Observaciones
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -173,6 +183,11 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
+                                    {{ item.cicsa_installation?.observation }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                <p class="text-gray-900 text-center">
                                     {{ item.cicsa_installation?.coordinator }}
                                 </p>
                             </td>
@@ -186,6 +201,8 @@
                                     <button class="text-blue-900" @click="
                                         openEditFeasibilityModal(
                                             item.id,
+                                            item.project_name,
+                                            item.cpe,
                                             item.cicsa_installation,
                                             item.total_materials,
                                             item?.cicsa_installation
@@ -221,7 +238,9 @@
         <Modal :show="showAddEditModal" @close="closeAddAssignationModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    {{ form.id ? "Editar Instalación" : "Nueva Instalación" }}
+                    {{ form.id ? "Editar Instalación" : "Nueva Instalación" }} {{ ': ' + dateModal.project_name
+                        + ' - '
+                        + dateModal.cpe }}
                 </h2>
                 <br />
                 <form @submit.prevent="submit">
@@ -229,7 +248,13 @@
                         <div class="sm:col-span-1">
                             <InputLabel for="coordinator">Coordinador</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.coordinator" autocomplete="off" id="coordinator" />
+                                <select id="coordinator" v-model="form.coordinator" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="" disabled>Seleccionar Coordinador</option>
+                                    <option>Valery Joana</option>
+                                    <option>Maria Moscoso</option>
+                                    <option>Angela Mayela</option>
+                                </select>
                                 <InputError :message="form.errors.coordinator" />
                             </div>
                         </div>
@@ -290,6 +315,14 @@
                                 <InputError :message="form.errors.shipping_report_date" />
                             </div>
                         </div>
+                        <div class="sm:col-span-1">
+                            <InputLabel for="observation">Observaciones</InputLabel>
+                            <div class="mt-2">
+                                <textarea v-model="form.observation" id="observation"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.observation" />
+                            </div>
+                        </div>
                     </div>
                     <br />
                     <br />
@@ -309,6 +342,10 @@
                                             </th>
                                             <th
                                                 class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                                Cantidad Total
+                                            </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
                                                 Recibidos
                                             </th>
                                             <th
@@ -319,6 +356,10 @@
                                                 class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
                                                 Resto
                                             </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                                Cantidad de Materiales Conproco
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -327,6 +368,9 @@
                                             ) in pintList" :key="i" class="text-gray-700 bg-white text-sm">
                                             <td class="border-b border-slate-300 px-2 py-4">
                                                 {{ item?.name }}
+                                            </td>
+                                            <td class="border-b border-slate-300 text-center px-2 py-4">
+                                                {{ item?.total_quantity }}
                                             </td>
                                             <td class="border-b border-slate-300 text-center px-2 py-4">
                                                 {{ item?.quantity }}
@@ -343,6 +387,11 @@
                                                     item?.quantity -
                                                     item.used_quantity
                                                 }}
+                                            </td>
+                                            <td class="border-b border-slate-300 text-center px-2 py-4">
+                                                {{ item.total_quantity && item.quantity === item.used_quantity
+                                                    ? Math.max(0, item.total_quantity - item.quantity)
+                                                    : 0 }}
                                             </td>
                                         </tr>
                                     </tbody>
@@ -366,6 +415,10 @@
                                             </th>
                                             <th
                                                 class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                                Cantidad Total
+                                            </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
                                                 Recibidos
                                             </th>
                                             <th
@@ -376,14 +429,20 @@
                                                 class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
                                                 Resto
                                             </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                                Cantidad de Materiales Conproco
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="(
-                                                item, i
-                                            ) in pextList" :key="i" class="text-gray-700 bg-white text-sm">
+                                        <tr v-for="(item, i) in pextList" :key="i"
+                                            class="text-gray-700 bg-white text-sm">
                                             <td class="border-b border-slate-300 px-2 py-4">
                                                 {{ item?.name }}
+                                            </td>
+                                            <td class="border-b border-slate-300 text-center px-2 py-4">
+                                                {{ item?.total_quantity }}
                                             </td>
                                             <td class="border-b border-slate-300 text-center px-2 py-4">
                                                 {{ item?.quantity }}
@@ -400,6 +459,11 @@
                                                     item?.quantity -
                                                     item.used_quantity
                                                 }}
+                                            </td>
+                                            <td class="border-b border-slate-300 text-center px-2 py-4">
+                                                {{ item.total_quantity && item.quantity === item.used_quantity
+                                                    ? Math.max(0, item.total_quantity - item.quantity)
+                                                    : 0 }}
                                             </td>
                                         </tr>
                                     </tbody>
@@ -486,6 +550,9 @@
                                         Tipo
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                        Cantidad Total
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
                                         Cantidad
                                     </th>
                                 </tr>
@@ -503,6 +570,9 @@
                                     </td>
                                     <td class="border-b border-slate-300  px-4 py-4">
                                         {{ item?.type }}
+                                    </td>
+                                    <td class="border-b border-slate-300 px-4 py-4">
+                                        {{ item?.total_quantity }}
                                     </td>
                                     <td class="border-b border-slate-300 px-4 py-4">
                                         {{ item?.quantity }}
@@ -609,9 +679,13 @@ import { setAxiosErrors } from "@/utils/utils";
 import { ref, watch } from "vue";
 
 
-const { installation, auth } = defineProps({
+const { installation, auth, searchCondition } = defineProps({
     installation: Object,
     auth: Object,
+    searchCondition: {
+        type: String,
+        required: false
+    }
 });
 
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
@@ -623,6 +697,7 @@ const initialState = {
     user_id: auth.user.id,
     user_name: auth.user.name,
     coordinator: '',
+    observation: '',
     cicsa_assignation_id: '',
     pext_date: '',
     pint_date: '',
@@ -645,6 +720,7 @@ const mateiralObject = ref({
 const showAddEditModal = ref(false);
 const confirmAssignation = ref(false);
 const showModalMaterial = ref(false);
+const dateModal = ref({})
 
 function modalMaterial() {
     showModalMaterial.value = !showModalMaterial.value;
@@ -661,10 +737,14 @@ const confirmUpdateAssignation = ref(false);
 
 function openEditFeasibilityModal(
     ca_id,
+    project_name,
+    cpe,
     item,
     total_materials,
     cicsa_installation_materials
 ) {
+    dateModal.value = { 'project_name': project_name, 'cpe': cpe }
+
     total_materials =
         cicsa_installation_materials?.length > 0
             ? cicsa_installation_materials
@@ -776,5 +856,9 @@ function updateInstallations(cicsa_assignation_id, installation) {
     const validations = installations.value.data || installations.value;
     const index = validations.findIndex(item => item.id === cicsa_assignation_id);
     validations[index].cicsa_installation = installation
+}
+
+if (searchCondition) {
+    search(searchCondition)
 }
 </script>

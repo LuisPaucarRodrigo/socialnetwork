@@ -32,7 +32,7 @@ class StaticCostsRequest extends FormRequest
             "operation_number" => 'nullable|min:6',
             "operation_date" => 'nullable|date',
             'doc_number' => 'nullable|string',
-            'doc_date' => 'required|date',
+            'doc_date' => 'nullable|date',
             'amount' => [
                 'required',
                 'numeric',

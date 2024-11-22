@@ -10,9 +10,14 @@
                 <a :href="route('cicsa.charge_areas.export') + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <TextInput type="text" @input="search($event.target.value)"
-                        placeholder="Nombre,Codigo,CPE,OC,Numero de Factura" />
+                    <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
+                        placeholder="Buscar ..." />
                     <SelectCicsaComponent currentSelect="Cobranza" />
+                    <div id="search_fields" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Nombre,Codigo,CPE,OC,Numero de Factura
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                 </div>
             </div>
             <br>
@@ -104,10 +109,6 @@
                                     </th>
                                     <th
                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Documento
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                         Crédito a
                                     </th>
                                     <th
@@ -152,6 +153,10 @@
                                     </th>
                                     <th
                                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Doc Detraccion
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                         Encargado
                                     </th>
                                     <th
@@ -177,12 +182,7 @@
                                             {{ formattedDate(materialDetail?.invoice_date) }}
                                         </p>
                                     </td>
-                                    <td class="border-b text-center border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <button v-if="materialDetail?.document" type="button"
-                                            @click="openPDF(materialDetail?.id)">
-                                            <EyeIcon class="w-5 h-5 text-green-600" />
-                                        </button>
-                                    </td>
+
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 text-center">
                                             {{ materialDetail?.credit_to ? materialDetail?.credit_to + 'día(s)'
@@ -252,6 +252,12 @@
                                             }}
                                         </p>
                                     </td>
+                                    <td class="border-b text-center border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <button v-if="materialDetail?.document" type="button"
+                                            @click="openPDF(materialDetail?.id)">
+                                            <EyeIcon class="w-5 h-5 text-green-600" />
+                                        </button>
+                                    </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 text-center">
                                             {{ materialDetail?.user_name }}
@@ -279,137 +285,173 @@
             </div>
         </div>
 
-        <Modal :show="showAddEditModal" @close="closeAddAssignationModal">
-            <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                    {{ form.id ? 'Editar Cobranza' : 'Nueva Cobranza' }} {{ invoice_number ? ": " + invoice_number : ""
-                    }}
-                </h2>
-                <br>
-                <form @submit.prevent="submit">
-                    <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
-                        <div class="sm:col-span-1">
-                            <InputLabel for="invoice_number">Número de Factura</InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="text" v-model="form.invoice_number" autocomplete="off"
-                                    id="invoice_number" />
-                                <InputError :message="form.errors.invoice_number" />
+        <Modal :show="showAddEditModal" @close="closeAddAssignationModal" :maxWidth="showPdfPreview ? '6xl' : '2xl'">
+            <div class="p-6 flex gap-6">
+                <div :class="showPdfPreview ? 'w-1/2' : 'w-full'">
+                    <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
+                        {{ form.id ? 'Editar Cobranza' : 'Nueva Cobranza' }} {{ invoice_number ? ": " + invoice_number :
+                            ""
+                        }}
+                    </h2>
+                    <br>
+                    <form @submit.prevent="submit">
+                        <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
+                            <div class="sm:col-span-1">
+                                <InputLabel for="invoice_number">Número de Factura</InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="text" v-model="form.invoice_number" autocomplete="off"
+                                        id="invoice_number" />
+                                    <InputError :message="form.errors.invoice_number" />
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-1">
+                                <InputLabel for="invoice_date">Fecha de Factura</InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="date" v-model="form.invoice_date" autocomplete="off"
+                                        id="invoice_date" />
+                                    <InputError :message="form.errors.invoice_date" />
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-1">
+                                <InputLabel for="credit_to">Crédito a</InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="number" v-model="form.credit_to" autocomplete="off"
+                                        id="invoice_date" />
+                                    <InputError :message="form.errors.credit_to" />
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-1">
+                                <InputLabel for="payment_date">Fecha de Pago</InputLabel>
+                                <div class="mt-2">
+                                    <TextInput disabled readonly type="date" v-model="form.payment_date"
+                                        autocomplete="off" id="payment_date" />
+                                    <InputError :message="form.errors.payment_date" />
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-1">
+                                <InputLabel for="amount">Monto Total de Factura</InputLabel>
+                                <div class="mt-2">
+                                    <input type="number" v-model="form.amount" id="amount" autocomplete="off"
+                                        step="0.01"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.amount" />
+                                </div>
+                            </div>
+                            <div v-if="doc_invoice" class="sm:col-span-1">
+                                <InputLabel for="doc_invoice">Doc Factura</InputLabel>
+                                <div class="mt-2">
+                                    <button class="flex justify-center py-1.5" type="button" @click="togglePdfPreview">
+                                        <EyeIcon class="w-5 h-5 text-green-600" />
+                                    </button>
+                                </div>
+                            </div>
+                            <h2 class="sm:col-span-full text-lg font-medium text-gray-800 border-b-2 border-gray-100">
+                                Pagos
+                            </h2>
+                            <div class="sm:col-span-1 sm:col-start-1">
+                                <InputLabel for="deposit_date">Fecha de Abono a cuenta corriente</InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="date" v-model="form.deposit_date" autocomplete="off"
+                                        id="deposit_date" />
+                                    <InputError :message="form.errors.deposit_date" />
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-1">
+                                <InputLabel for="transaction_number_current">Número de Transacción de cuenta corriente
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="text" v-model="form.transaction_number_current" autocomplete="off"
+                                        id="transaction_number_current" />
+                                    <InputError :message="form.errors.transaction_number_current" />
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-1">
+                                <InputLabel for="checking_account_amount">Monto de cuenta corriente</InputLabel>
+                                <div class="mt-2">
+                                    <input type="number" v-model="form.checking_account_amount"
+                                        id="checking_account_amount" autocomplete="off" min="0"
+                                        :max="form.checking_account_amount" step="0.01"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.checking_account_amount" />
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-1">
+                                <InputLabel for="state_detraction">Tiene Detracción?</InputLabel>
+                                <div class="mt-2 flex gap-4">
+                                    <label class="flex gap-2 items-center">
+                                        Sí
+                                        <input type="radio" v-model="form.state_detraction" id="state_detraction"
+                                            :value="true"
+                                            class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-gray-500 focus:ring-0" />
+                                    </label>
+                                    <label class="flex gap-2 items-center">
+                                        No
+                                        <input type="radio" v-model="form.state_detraction" id="state_detraction"
+                                            :value="false"
+                                            class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-gray-500 focus:ring-0" />
+                                    </label>
+                                    <InputError :message="form.errors.state_detraction" />
+                                </div>
+                            </div>
+
+                            <div v-if="form.state_detraction" class="sm:col-span-1 sm:col-start-1">
+                                <InputLabel for="deposit_date_bank">Fecha de Abono a cuenta de la detraccion
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="date" v-model="form.deposit_date_bank" autocomplete="off"
+                                        id="deposit_date_bank" />
+                                    <InputError :message="form.errors.deposit_date_bank" />
+                                </div>
+                            </div>
+
+                            <div v-if="form.state_detraction" class="sm:col-span-1">
+                                <InputLabel for="transaction_number_bank">Número de Transacción de la detraccion
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="text" v-model="form.transaction_number_bank" autocomplete="off"
+                                        id="transaction_number_bank" />
+                                    <InputError :message="form.errors.transaction_number_bank" />
+                                </div>
+                            </div>
+
+                            <div v-if="form.state_detraction" class="sm:col-span-1">
+                                <InputLabel for="amount_bank">Monto de la detraccion</InputLabel>
+                                <div class="mt-2">
+                                    <input type="number" v-model="form.amount_bank" id="amount_bank" autocomplete="off"
+                                        min="0" :max="form.amount_bank" step="0.01"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.amount_bank" />
+                                </div>
+                            </div>
+                            <div v-if="form.state_detraction" class="sm:col-span-1">
+                                <InputLabel for="document">Documento de Detraccion</InputLabel>
+                                <div>
+                                    <InputFile type="file" v-model="form.document" id="document" accept=".pdf" />
+                                    <InputError :message="form.errors.document" />
+                                </div>
                             </div>
                         </div>
 
-                        <div class="sm:col-span-1">
-                            <InputLabel for="invoice_date">Fecha de Factura</InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="date" v-model="form.invoice_date" autocomplete="off"
-                                    id="invoice_date" />
-                                <InputError :message="form.errors.invoice_date" />
-                            </div>
+                        <div class="mt-6 flex justify-end">
+                            <SecondaryButton type="button" @click="closeAddAssignationModal"> Cancelar
+                            </SecondaryButton>
+                            <PrimaryButton class="ml-3 tracking-widest uppercase text-xs"
+                                :class="{ 'opacity-25': form.processing }" :disabled="form.processing" type="submit">
+                                Guardar
+                            </PrimaryButton>
                         </div>
-
-                        <div class="sm:col-span-1">
-                            <InputLabel for="credit_to">Crédito a</InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="number" v-model="form.credit_to" autocomplete="off"
-                                    id="invoice_date" />
-                                <InputError :message="form.errors.credit_to" />
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-1">
-                            <InputLabel for="payment_date">Fecha de Pago</InputLabel>
-                            <div class="mt-2">
-                                <TextInput disabled readonly type="date" v-model="form.payment_date" autocomplete="off"
-                                    id="payment_date" />
-                                <InputError :message="form.errors.payment_date" />
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-1">
-                            <InputLabel for="document">Documento</InputLabel>
-                            <div>
-                                <InputFile type="file" v-model="form.document" id="document" accept=".pdf" />
-                                <InputError :message="form.errors.document" />
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-1">
-                            <InputLabel for="amount">Monto Total de Factura</InputLabel>
-                            <div class="mt-2">
-                                <input type="number" v-model="form.amount" id="amount" autocomplete="off" step="0.01"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.amount" />
-                            </div>
-                        </div>
-                        <h2 class="sm:col-span-full text-lg font-medium text-gray-800 border-b-2 border-gray-100">
-                            Pagos
-                        </h2>
-                        <div class="sm:col-span-1 sm:col-start-1">
-                            <InputLabel for="deposit_date">Fecha de Abono a cuenta corriente</InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="date" v-model="form.deposit_date" autocomplete="off"
-                                    id="deposit_date" />
-                                <InputError :message="form.errors.deposit_date" />
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-1">
-                            <InputLabel for="transaction_number_current">Número de Transacción de cuenta corriente
-                            </InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="text" v-model="form.transaction_number_current" autocomplete="off"
-                                    id="transaction_number_current" />
-                                <InputError :message="form.errors.transaction_number_current" />
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-1">
-                            <InputLabel for="checking_account_amount">Monto de cuenta corriente</InputLabel>
-                            <div class="mt-2">
-                                <input type="number" v-model="form.checking_account_amount" id="checking_account_amount"
-                                    autocomplete="off" min="0" :max="form.checking_account_amount" step="0.01"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.checking_account_amount" />
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-1 sm:col-start-1">
-                            <InputLabel for="deposit_date_bank">Fecha de Abono a cuenta de la detraccion</InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="date" v-model="form.deposit_date_bank" autocomplete="off"
-                                    id="deposit_date_bank" />
-                                <InputError :message="form.errors.deposit_date_bank" />
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-1">
-                            <InputLabel for="transaction_number_bank">Número de Transacción de la detraccion
-                            </InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="text" v-model="form.transaction_number_bank" autocomplete="off"
-                                    id="transaction_number_bank" />
-                                <InputError :message="form.errors.transaction_number_bank" />
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-1">
-                            <InputLabel for="amount_bank">Monto de la detraccion</InputLabel>
-                            <div class="mt-2">
-                                <input type="number" v-model="form.amount_bank" id="amount_bank" autocomplete="off"
-                                    min="0" :max="form.amount_bank" step="0.01"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.amount_bank" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-6 flex justify-end">
-                        <SecondaryButton type="button" @click="closeAddAssignationModal"> Cancelar </SecondaryButton>
-                        <PrimaryButton class="ml-3 tracking-widest uppercase text-xs"
-                            :class="{ 'opacity-25': form.processing }" :disabled="form.processing" type="submit">
-                            Guardar
-                        </PrimaryButton>
-                    </div>
-                </form>
+                    </form>
+                </div>
+                <div v-if="showPdfPreview" class="w-1/2 bg-gray-100 rounded-lg p-4 overflow-y-auto">
+                    <iframe :src="pdfUrl" class="w-full h-full " style="min-height: auto; max-height: auto;"></iframe>
+                </div>
             </div>
         </Modal>
         <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Cobranza Actualizada'"
@@ -439,9 +481,13 @@ import { EyeIcon } from '@heroicons/vue/24/outline';
 import InputFile from '@/Components/InputFile.vue';
 
 
-const { charge_area, auth } = defineProps({
+const { charge_area, auth, searchCondition } = defineProps({
     charge_area: Object,
-    auth: Object
+    auth: Object,
+    searchCondition: {
+        type: String,
+        Required: false
+    }
 })
 
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
@@ -449,6 +495,10 @@ const charge_areas = ref(charge_area)
 const invoice_number = ref(null)
 const errorAmount = ref(false)
 const charge_area_row = ref(0)
+const showPdfPreview = ref(false)
+const pdfUrl = ref(null)
+const service_order_id = ref(null)
+const doc_invoice = ref(null)
 
 const initialState = {
     id: null,
@@ -458,7 +508,7 @@ const initialState = {
     credit_to: '',
     payment_date: '',
     document: '',
-    amount: '',
+    amount: null,
     deposit_date: '',
     transaction_number_current: '',
     checking_account_amount: null,
@@ -468,16 +518,19 @@ const initialState = {
     user_name: '',
     cicsa_assignation_id: '',
     cicsa_purchase_order_id: '',
+    state_detraction: true,
 }
 
 const form = useForm(
     { ...initialState }
 );
 
-
 const showAddEditModal = ref(false);
 
 function closeAddAssignationModal() {
+    doc_invoice.value = null
+    service_order_id.value = null
+    showPdfPreview.value = false
     showAddEditModal.value = false
     form.defaults({ ...initialState })
     form.reset()
@@ -486,7 +539,10 @@ function closeAddAssignationModal() {
 const confirmUpdateAssignation = ref(false);
 
 function openEditModal(item) {
+    doc_invoice.value = item.cicsa_purchase_order?.cicsa_service_order?.document_invoice
+    service_order_id.value = item.cicsa_purchase_order?.cicsa_service_order?.id
     invoice_number.value = item?.invoice_number
+    item.state_detraction = Boolean(item.state_detraction)
     form.defaults({ ...item, user_name: auth.user.name, user_id: auth.user.id })
     form.reset()
     showAddEditModal.value = true
@@ -505,6 +561,7 @@ async function submit() {
                 confirmUpdateAssignation.value = false
             }, 1500)
         } catch (error) {
+            console.log(error)
             if (error.response) {
                 if (error.response.data.errors) {
                     setAxiosErrors(error.response.data.errors, form)
@@ -525,9 +582,9 @@ async function submit() {
 
 function sum() {
     if (form.checking_account_amount && form.amount_bank) {
-        const checking_account_amount = parseFloat(form.checking_account_amount) || 0;
-        const amount_bank = parseFloat(form.amount_bank) || 0;
-        if ((checking_account_amount + amount_bank) !== parseFloat(form.amount)) {
+        const checking_account_amount = form.checking_account_amount || 0;
+        const amount_bank = form.amount_bank || 0;
+        if (((checking_account_amount + amount_bank).toFixed(2)) !== form.amount.toFixed(2)) {
             return false
         }
         return true
@@ -580,9 +637,9 @@ const toggleDetails = (cicsa_charge_area) => {
     }
 }
 
-async function openPDF(purchaseOrderId) {
-    if (purchaseOrderId) {
-        const url = route('cicsa.charge_areas.showDocument', { purchaseOrder: purchaseOrderId });
+async function openPDF(chargeAreaId) {
+    if (chargeAreaId) {
+        const url = route('cicsa.charge_areas.showDocument', { chargeAreaOrder: chargeAreaId });
         await axios.get(url)
             .then(response => {
                 const imageUrl = response.data.url;
@@ -596,10 +653,25 @@ async function openPDF(purchaseOrderId) {
     }
 }
 
+async function togglePdfPreview() {
+    const url = route('cicsa.service_orders.showDocument', { serviceOrder: service_order_id.value, doc: 'invoiceCharge' });
+    try {
+        let response = await axios.get(url)
+        pdfUrl.value = response.data.url;
+        showPdfPreview.value = !showPdfPreview.value
+    } catch (error) {
+        console.error(error.message)
+    }
+}
+
 function updateChargeArea(chargeArea) {
     const validations = charge_areas.value.data || charge_areas.value;
     const index = validations.findIndex(item => item.id === chargeArea.cicsa_assignation_id)
     const indexChargeArea = validations[index].cicsa_charge_area.findIndex(item => item.id === chargeArea.id)
     validations[index].cicsa_charge_area[indexChargeArea] = chargeArea
+}
+
+if (searchCondition) {
+    search(searchCondition)
 }
 </script>

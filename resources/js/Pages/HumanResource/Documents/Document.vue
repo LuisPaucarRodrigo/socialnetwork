@@ -346,8 +346,14 @@ const closeEditModal = () => {
   update_document.value = false;
 };
 
-const submit = () => {
-  form.post(route('documents.create'), {
+function submit () {
+  let url = route('documents.create')
+  // try{
+  //   let response = await axios.post(url,form) 
+  // }catch(){
+
+  // }
+  form.post(url, {
     onSuccess: () => {
       closeEditModal();
       showModal.value = true

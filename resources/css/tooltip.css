@@ -1,0 +1,12 @@
+#project_name {
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    top: -25px;
+}
+
+/* Mostrar tooltip al pasar el cursor */
+[data-tooltip-target="project_name"]:hover+#project_name {
+    visibility: visible;
+    opacity: 1;
+}
