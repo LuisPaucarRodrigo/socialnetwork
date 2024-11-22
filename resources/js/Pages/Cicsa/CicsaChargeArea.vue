@@ -508,7 +508,7 @@ const initialState = {
     credit_to: '',
     payment_date: '',
     document: '',
-    amount: '',
+    amount: null,
     deposit_date: '',
     transaction_number_current: '',
     checking_account_amount: null,
@@ -549,7 +549,6 @@ function openEditModal(item) {
 }
 
 async function submit() {
-    console.log('formyy',form)
     if (sum()) {
         let url = route('cicsa.charge_areas.update', { cicsa_charge_area_id: form.id });
         try {
@@ -583,9 +582,9 @@ async function submit() {
 
 function sum() {
     if (form.checking_account_amount && form.amount_bank) {
-        const checking_account_amount = parseFloat(form.checking_account_amount) || 0;
-        const amount_bank = parseFloat(form.amount_bank) || 0;
-        if ((checking_account_amount + amount_bank) !== parseFloat(form.amount)) {
+        const checking_account_amount = form.checking_account_amount || 0;
+        const amount_bank = form.amount_bank || 0;
+        if (((checking_account_amount + amount_bank).toFixed(2)) !== form.amount.toFixed(2)) {
             return false
         }
         return true
