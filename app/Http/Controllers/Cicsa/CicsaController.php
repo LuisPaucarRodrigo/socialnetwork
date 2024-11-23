@@ -152,7 +152,14 @@ class CicsaController extends Controller
             });
         }
 
-
+        if (count($request->state_charge_area) < 4) {
+            $selectedPS = $request->state_charge_area;
+            $projectsCicsa = $projectsCicsa->filter(function ($project) use ($selectedPS) {
+                return $project->cicsa_charge_area->contains(function ($chargeArea) use ($selectedPS) {
+                    return in_array($chargeArea->state, $selectedPS);
+                });
+            });
+        }
 
         if (count($request->project_status) < 3) {
             $selectedPS = $request->project_status;
