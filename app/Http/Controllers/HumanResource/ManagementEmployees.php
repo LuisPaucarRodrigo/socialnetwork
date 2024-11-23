@@ -67,7 +67,10 @@ class ManagementEmployees extends Controller
             $query->where('name', 'like', '%' . $searchTerm . '%')
                 ->orWhere('lastname', 'like', '%' . $searchTerm . '%')
                 ->orWhere('phone1', 'like', '%' . $searchTerm . '%')
-                ->orWhere('dni', 'like', '%' . $searchTerm . '%');
+                ->orWhere('dni', 'like', '%' . $searchTerm . '%')
+                ->orWhereHas('contract', function ($item) use ($searchTerm) {
+                    $item->where('expense_line', $searchTerm);
+                });
         })
             ->get();
         $employees->each(function ($employee) {
