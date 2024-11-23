@@ -382,7 +382,26 @@
                                 </div>
                             </div>
 
-                            <div class="sm:col-span-1 sm:col-start-1">
+                            <div class="sm:col-span-1">
+                                <InputLabel for="state_detraction">Tiene Detracción?</InputLabel>
+                                <div class="mt-2 flex gap-4">
+                                    <label class="flex gap-2 items-center">
+                                        Sí
+                                        <input type="radio" v-model="form.state_detraction" id="state_detraction"
+                                            :value="true"
+                                            class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-gray-500 focus:ring-0" />
+                                    </label>
+                                    <label class="flex gap-2 items-center">
+                                        No
+                                        <input type="radio" v-model="form.state_detraction" id="state_detraction"
+                                            :value="false"
+                                            class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-gray-500 focus:ring-0" />
+                                    </label>
+                                    <InputError :message="form.errors.state_detraction" />
+                                </div>
+                            </div>
+
+                            <div v-if="form.state_detraction" class="sm:col-span-1 sm:col-start-1">
                                 <InputLabel for="deposit_date_bank">Fecha de Abono a cuenta de la detraccion
                                 </InputLabel>
                                 <div class="mt-2">
@@ -392,7 +411,7 @@
                                 </div>
                             </div>
 
-                            <div class="sm:col-span-1">
+                            <div v-if="form.state_detraction" class="sm:col-span-1">
                                 <InputLabel for="transaction_number_bank">Número de Transacción de la detraccion
                                 </InputLabel>
                                 <div class="mt-2">
@@ -402,7 +421,7 @@
                                 </div>
                             </div>
 
-                            <div class="sm:col-span-1">
+                            <div v-if="form.state_detraction" class="sm:col-span-1">
                                 <InputLabel for="amount_bank">Monto de la detraccion</InputLabel>
                                 <div class="mt-2">
                                     <input type="number" v-model="form.amount_bank" id="amount_bank" autocomplete="off"
@@ -411,7 +430,7 @@
                                     <InputError :message="form.errors.amount_bank" />
                                 </div>
                             </div>
-                            <div class="sm:col-span-1">
+                            <div v-if="form.state_detraction" class="sm:col-span-1">
                                 <InputLabel for="document">Documento de Detraccion</InputLabel>
                                 <div>
                                     <InputFile type="file" v-model="form.document" id="document" accept=".pdf" />
@@ -431,8 +450,7 @@
                     </form>
                 </div>
                 <div v-if="showPdfPreview" class="w-1/2 bg-gray-100 rounded-lg p-4 overflow-y-auto">
-                    <iframe :src="pdfUrl" class="w-full h-full " style="min-height: auto; max-height: auto;"
-                        ></iframe>
+                    <iframe :src="pdfUrl" class="w-full h-full " style="min-height: auto; max-height: auto;"></iframe>
                 </div>
             </div>
         </Modal>
@@ -490,7 +508,7 @@ const initialState = {
     credit_to: '',
     payment_date: '',
     document: '',
-    amount: '',
+    amount: null,
     deposit_date: '',
     transaction_number_current: '',
     checking_account_amount: null,
@@ -500,7 +518,7 @@ const initialState = {
     user_name: '',
     cicsa_assignation_id: '',
     cicsa_purchase_order_id: '',
-    
+    state_detraction: true,
 }
 
 const form = useForm(
@@ -512,7 +530,7 @@ const showAddEditModal = ref(false);
 function closeAddAssignationModal() {
     doc_invoice.value = null
     service_order_id.value = null
-    showPdfPreview.value  = false
+    showPdfPreview.value = false
     showAddEditModal.value = false
     form.defaults({ ...initialState })
     form.reset()
@@ -524,6 +542,7 @@ function openEditModal(item) {
     doc_invoice.value = item.cicsa_purchase_order?.cicsa_service_order?.document_invoice
     service_order_id.value = item.cicsa_purchase_order?.cicsa_service_order?.id
     invoice_number.value = item?.invoice_number
+    item.state_detraction = Boolean(item.state_detraction)
     form.defaults({ ...item, user_name: auth.user.name, user_id: auth.user.id })
     form.reset()
     showAddEditModal.value = true
@@ -542,6 +561,7 @@ async function submit() {
                 confirmUpdateAssignation.value = false
             }, 1500)
         } catch (error) {
+            console.log(error)
             if (error.response) {
                 if (error.response.data.errors) {
                     setAxiosErrors(error.response.data.errors, form)
@@ -562,9 +582,9 @@ async function submit() {
 
 function sum() {
     if (form.checking_account_amount && form.amount_bank) {
-        const checking_account_amount = parseFloat(form.checking_account_amount) || 0;
-        const amount_bank = parseFloat(form.amount_bank) || 0;
-        if ((checking_account_amount + amount_bank) !== parseFloat(form.amount)) {
+        const checking_account_amount = form.checking_account_amount || 0;
+        const amount_bank = form.amount_bank || 0;
+        if (((checking_account_amount + amount_bank).toFixed(2)) !== form.amount.toFixed(2)) {
             return false
         }
         return true

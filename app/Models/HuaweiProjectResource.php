@@ -14,6 +14,7 @@ class HuaweiProjectResource extends Model
     protected $fillable = [
         'huawei_project_id',
         'huawei_entry_detail_id',
+        'output_date',
         'quantity'
     ];
 

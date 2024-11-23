@@ -400,16 +400,29 @@ class CicsaAssignation extends Model
             'invoice_number',
             'invoice_date',
             'credit_to',
-            'document',
+            'deposit_date',
+            'transaction_number_current',
+            'checking_account_amount',
+        ];
+        $fieldsToCheckTrue = [
+            'amount',
+            'invoice_number',
+            'invoice_date',
+            'credit_to',
             'deposit_date',
             'transaction_number_current',
             'checking_account_amount',
             'deposit_date_bank',
             'transaction_number_bank',
+            'amount_bank',
+            'document',
         ];
-
+        $stateList = $fieldsToCheckTrue;
         foreach ($chargeAreas as $chargeArea) {
-            foreach ($fieldsToCheck as $field) {
+            if($chargeArea->state_detraction === 0){
+                $stateList = $fieldsToCheck;
+            }
+            foreach ($stateList as $field) {
                 if (is_null($chargeArea->amount)) {
                     return "Pendiente";
                 }

@@ -86,7 +86,7 @@
 
                                     <div class="">
                                         <button
-                                            @click="openOpNuDaModal"
+                                            @click="openNuUpdateModal"
                                             class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                                         >
                                             Actualizar Operación
@@ -226,7 +226,7 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                            <TableHeaderFilter
+                            <TableAutocompleteFilter
                                 labelClass="text-[11px]"
                                 label="Tipo de Gasto"
                                 :options="expenseTypes"
@@ -248,29 +248,30 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                            <TableHeaderFilter
+                            <TableAutocompleteFilter
                                 labelClass="text-[11px]"
                                 label="Empleado"
                                 :options="employees"
                                 v-model="filterForm.selectedEmployees"
-                                width="w-32"
+                                width="w-40"
                             />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                            <TableHeaderFilter
+                            <TableAutocompleteFilter
                                 labelClass="text-[11px]"
                                 label="Comprobante de Pago"
                                 :options="cdp_types"
                                 v-model="filterForm.selectedCDPTypes"
-                                width="w-32"
+                                width="w-48"
                             />
                         </th>
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
-                        >
-                            Fecha de Gasto
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            <TableDateFilter labelClass="text-[11px]" label="Fecha de Gasto"
+                                v-model:startDate="filterForm.exStartDate" v-model:endDate="filterForm.exEndDate"
+                                v-model:noDate="filterForm.exNoDate" width="w-40" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
@@ -313,9 +314,10 @@
                             Imagen 3
                         </th>
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
-                        >
-                            Fecha de Depósito E.C.
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            <TableDateFilter labelClass="text-[11px]" label="Fecha de Depósito E.C."
+                                v-model:startDate="filterForm.opStartDate" v-model:endDate="filterForm.opEndDate"
+                                v-model:noDate="filterForm.opNoDate" width="w-40" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
@@ -591,7 +593,7 @@
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
-                            colspan="9"
+                            colspan="10"
                         ></td>
                         <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap"
@@ -619,7 +621,7 @@
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
-                            colspan="4"
+                            colspan="3"
                         ></td>
                     </tr>
                 </tbody>
@@ -1112,7 +1114,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputFile from "@/Components/InputFile.vue";
 import Pagination from "@/Components/Pagination.vue";
 import { EyeIcon } from "@heroicons/vue/24/outline";
-import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
+import TableDateFilter from "@/Components/TableDateFilter.vue";
 import TableAutocompleteFilter from "@/Components/TableAutocompleteFilter.vue";
 import axios from "axios";
 import TextInput from "@/Components/TextInput.vue";
@@ -1317,6 +1319,12 @@ const filterForm = ref({
     selectedZones: zones,
     selectedExpenseTypes: expenseTypes,
     selectedCDPTypes: cdp_types,
+    exStartDate: '',
+    exEndDate: '',
+    exNoDate: false,
+    opStartDate: '',
+    opEndDate: '',
+    opNoDate: false
 });
 
 watch(
@@ -1326,6 +1334,12 @@ watch(
         filterForm.value.selectedZones,
         filterForm.value.selectedExpenseTypes,
         filterForm.value.selectedCDPTypes,
+        filterForm.value.exStartDate,
+        filterForm.value.exEndDate,
+        filterForm.value.exNoDate,
+        filterForm.value.opStartDate,
+        filterForm.value.opEndDate,
+        filterForm.value.opNoDate
     ],
     () => {
         (filterMode.value = true), search_advance(filterForm.value);

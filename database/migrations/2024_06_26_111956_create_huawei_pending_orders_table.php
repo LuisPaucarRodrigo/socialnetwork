@@ -11,15 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('imagespreprojects', function (Blueprint $table) {
+        Schema::create('huawei_pending_orders', function (Blueprint $table) {
             $table->id();
-            $table->text('description');
+            $table->string('order_number');
+            $table->date('order_date');
             $table->string('observation')->nullable();
-            $table->boolean('state')->nullable();
-            $table->string('image')->unique();
-            $table->string('lat');
-            $table->string('lon');
-            $table->foreignId('preproject_code_id')->onDelete('cascade');
+            $table->boolean('status')->default(0);
             $table->timestamps();
         });
     }
@@ -29,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('imagespreprojects');
+        Schema::dropIfExists('huawei_pending_orders');
     }
 };

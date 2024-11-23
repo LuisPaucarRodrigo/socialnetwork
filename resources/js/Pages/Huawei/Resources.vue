@@ -202,10 +202,17 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-span-1" v-if="!props.equipment">
                         <InputLabel class="mb-1" for="quantity">Cantidad</InputLabel>
                         <input type="number" min="1" v-model="form.quantity" class="mt-3 block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
                         <InputError :message="form.errors.quantity" />
+                    </div>
+
+                    <div :class="{'col-span-2': props.equipment, 'col-span-1' : !props.equipment}">
+                        <InputLabel class="mb-1" for="output_date">Fecha de Salida</InputLabel>
+                        <input type="date" v-model="form.output_date" class="mt-3 block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+                        <InputError :message="form.errors.output_date" />
                     </div>
                 </div>
 
