@@ -18,7 +18,7 @@
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="sticky z-20 top-0">
                 <tr>
-                  <th scope="col" :colspan="principalData.length + 1 +2"
+                  <th scope="col" :colspan="principalData.length + 2"
                     class="px-6 py-3 bg-gray-50 text-center text-xs shadow-header-gray-300 font-medium text-gray-600 uppercase tracking-wider">
                     Datos
                   </th>
