@@ -83,6 +83,10 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Linea de Gasto
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Nombre
                             </th>
                             <th
@@ -121,6 +125,9 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <img :src="employee.cropped_image" alt="Empleado" class="w-12 h-13 rounded-full">
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm w-auto">
+                                <p class="text-gray-900 whitespace-no-wrap">{{ employee.contract?.expense_line }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm w-auto">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ employee.name }}</p>
