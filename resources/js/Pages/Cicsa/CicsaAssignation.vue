@@ -193,7 +193,7 @@
                         <div class="">
                             <InputLabel for="cost_center">Centro de Costos</InputLabel>
                             <div class="mt-2">
-                                <select id="report" v-model="form.cost_center"
+                                <select id="cost_center" v-model="form.cost_center"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option value="">Seleccionar Centro de Costo</option>
                                     <option v-if="form.customer === 'CICSA'">Mantto Pext Claro</option>
@@ -418,4 +418,3 @@ if (searchCondition) {
 }
 
 </script>
-

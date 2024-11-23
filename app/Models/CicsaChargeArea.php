@@ -26,7 +26,7 @@ class CicsaChargeArea extends Model
         'transaction_number_bank',
         'amount_bank',
         'document',
-        
+
         'user_name',
         'user_id',
         'cicsa_assignation_id',
@@ -49,7 +49,7 @@ class CicsaChargeArea extends Model
         return $this->belongsTo(CicsaAssignation::class, 'cicsa_assignation_id');
     }
 
-    public function cicsa_purchase_order ()
+    public function cicsa_purchase_order()
     {
         return $this->belongsTo(CicsaPurchaseOrder::class, 'cicsa_purchase_order_id');
     }
@@ -69,7 +69,7 @@ class CicsaChargeArea extends Model
     {
         if (!empty($this->deposit_date) && !empty($this->payment_date)) {
             $deposit_date = Carbon::parse($this->deposit_date);
-			$payment_date = Carbon::parse($this->payment_date);
+            $payment_date = Carbon::parse($this->payment_date);
             $daysLate = $payment_date->diffInDays($deposit_date, false);
             return $daysLate > 0 ? $daysLate : 0;
         } elseif ($this->payment_date) {
@@ -83,6 +83,10 @@ class CicsaChargeArea extends Model
 
     public function getStateAttribute()
     {
+        if ($this->state_detraction == 0 && $this->checking_account_amount) {
+            return 'Pagado';
+        }
+
         if (!$this->deposit_date && Carbon::now() < $this->payment_date) {
             return 'A tiempo';
         }
@@ -95,7 +99,6 @@ class CicsaChargeArea extends Model
             return 'Con deuda';
         }
 
-        
         return 'En Proceso';
     }
 
