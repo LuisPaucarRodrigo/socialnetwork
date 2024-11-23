@@ -28,11 +28,15 @@ class DocumentSpreedSheetController extends Controller
                 'lastname',
                 'phone1',
                 'email',
+                'email_company',
                 'dni',
                 'l_policy',
                 'sctr_exp_date',
                 'policy_exp_date',
             )
+            ->whereHas('contract', function ($query) {
+                $query->where('state', 'Active');
+            })
             ->orderBy('lastname')
             ->get()
             ->map(function ($emp) {
@@ -67,6 +71,7 @@ class DocumentSpreedSheetController extends Controller
                 'lastname',
                 'phone1',
                 'email',
+                'email_company',
                 'dni',
                 'sctr',
                 'l_policy',
@@ -108,6 +113,60 @@ class DocumentSpreedSheetController extends Controller
             ]
         );
     }
+
+
+    public function employee_document_alarms ($emp_id) {
+        $employee = Employee::with([
+            'document_registers',
+            'contract:id,state,employee_id,hire_date,discount_sctr,pension_id',
+        ])
+        ->select(
+            'id',
+            'name',
+            'lastname',
+            'phone1',
+            'email',
+            'email_company',
+            'dni',
+            'l_policy',
+            'sctr_exp_date',
+            'policy_exp_date',
+        )
+        ->find($emp_id);
+    
+    if ($employee) {
+        $formattedDr = $employee->document_registers->mapWithKeys(function ($dr) {
+            return [
+                $dr->subdivision_id => [
+                    'id' => $dr->id,
+                    'document_id' => $dr->document_id,
+                    'employee_id' => $dr->employee_id,
+                    'e_employee_id' => $dr->e_employee_id,
+                    'exp_date' => $dr->exp_date,
+                    'state' => $dr->state,
+                    'observations' => $dr->observations,
+                    'sync_status' => $dr->sync_status,
+                    'display' => $dr->display,
+                ],
+            ];
+        });
+    
+        $employee->setRelation('document_registers', $formattedDr);
+    }
+    return Inertia::render('HumanResource/DocumentSpreedSheet/EmployeeDocumentAlarms', ['employee'=>$employee]);
+    
+
+
+
+
+
+
+
+        
+    }
+
+
+
 
     public function store(DocumentRegisterRequest $request, $dr_id=null) {
         $data = $request->validated();
