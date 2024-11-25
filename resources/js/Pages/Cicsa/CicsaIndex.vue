@@ -757,7 +757,7 @@
                             </td>
                             <td v-if="checkVisibility('Asignación')"
                                 class="bg-white border-b border-r-2 border-gray-200 px-2 py-1 text-[11px] whitespace-nowrap">
-                                <button @click="router.get(route('assignation.index', { searchCondition: item.cpe }))">
+                                <button @click="openBlank(route('assignation.index', { searchCondition: item.cpe }))">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -836,7 +836,7 @@
                             <td v-if="checkVisibility('Factibilidad PINT y PEXT')"
                                 class="bg-white border-b border-r-2 border-gray-200 px-2 py-1 text-[11px] whitespace-nowrap">
                                 <button
-                                    @click="router.get(route('feasibilities.index', { searchCondition: item.cpe }))">
+                                    @click="openBlank(route('feasibilities.index', { searchCondition: item.cpe }))">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -904,7 +904,7 @@
                             </td>
                             <td v-if="checkVisibility('Materiales')"
                                 class="bg-white border-b border-r-2 border-gray-200 px-2 py-1 text-[11px] whitespace-nowrap">
-                                <button @click="router.get(route('material.index', { searchCondition: item.cpe }))">
+                                <button @click="openBlank(route('material.index', { searchCondition: item.cpe }))">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -1037,7 +1037,7 @@
                             <td v-if="checkVisibility('Instalación PINT y PEXT')"
                                 class="bg-white border-b border-r-2 border-gray-200 px-2 py-1 text-[11px] whitespace-nowrap">
                                 <button
-                                    @click="router.get(route('cicsa.installation.index', { searchCondition: item.cpe }))">
+                                    @click="openBlank(route('cicsa.installation.index', { searchCondition: item.cpe }))">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -1131,7 +1131,7 @@
                                 class="bg-white border-b border-r-2 border-gray-200 px-2 py-1 text-[11px] whitespace-nowrap">
                                 <div v-for="order in item?.cicsa_purchase_order">
                                     <button
-                                        @click="router.get(route('purchase.order.index', { searchCondition: order.oc_number }))">
+                                        @click="openBlank(route('purchase.order.index', { searchCondition: order.oc_number }))">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -1250,7 +1250,7 @@
                                 class="bg-white border-b border-r-2 border-gray-200 px-2 py-1 text-[11px] whitespace-nowrap">
                                 <div v-for="order in item?.cicsa_purchase_order">
                                     <button
-                                        @click="router.get(route('cicsa.purchase_orders.validation', { searchCondition: order.oc_number }))">
+                                        @click="openBlank(route('cicsa.purchase_orders.validation', { searchCondition: order.oc_number }))">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -1363,7 +1363,7 @@
                                 class="bg-white border-b border-r-2 border-gray-200 px-2 py-1 text-[11px] whitespace-nowrap">
                                 <div v-for="order in item?.cicsa_purchase_order">
                                     <button
-                                        @click="router.get(route('cicsa.service_orders', { searchCondition: order.oc_number }))">
+                                        @click="openBlank(route('cicsa.service_orders', { searchCondition: order.oc_number }))">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -1600,7 +1600,7 @@
                                 class="bg-white border-b border-r-2 border-gray-200 px-2 py-1 text-[11px] whitespace-nowrap">
                                 <div v-for="order in item?.cicsa_purchase_order">
                                     <button
-                                        @click="router.get(route('cicsa.charge_areas', { searchCondition: order.oc_number }))">
+                                        @click="openBlank(route('cicsa.charge_areas', { searchCondition: order.oc_number }))">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -2179,6 +2179,9 @@ function openExportExcel() {
     window.location.href = url;
 }
 
+function openBlank(url) {
+    window.open(url, '_blank')
+}
 </script>
 <style>
 .title {

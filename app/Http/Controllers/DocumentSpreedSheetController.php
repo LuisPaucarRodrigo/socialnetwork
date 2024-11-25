@@ -16,52 +16,73 @@ use Inertia\Inertia;
 
 class DocumentSpreedSheetController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $employees = Employee::with([
-            'document_registers',
-            'contract:id,state,employee_id,hire_date,discount_sctr,pension_id',
-        ])
-            ->select(
-                'id',
-                'name',
-                'lastname',
-                'phone1',
-                'email',
-                'email_company',
-                'dni',
-                'l_policy',
-                'sctr_exp_date',
-                'policy_exp_date',
-            )
-            ->whereHas('contract', function ($query) {
-                $query->where('state', 'Active');
-            })
-            ->orderBy('lastname')
-            ->get()
-            ->map(function ($emp) {
-                $formattedDr = $emp->document_registers->mapWithKeys(
-                    function ($dr) {
-                        $itemDr = [
-                            $dr->subdivision_id => [
-                                'id' => $dr->id,
-                                'document_id' => $dr->document_id,
-                                'employee_id' => $dr->employee_id,
-                                'e_employee_id' => $dr->e_employee_id,
-                                'exp_date' => $dr->exp_date,
-                                'state' => $dr->state,
-                                'observations' => $dr->observations,
-                                'sync_status' => $dr->sync_status,
-                                'display' => $dr->display,
+        if ($request->isMethod('get')) {
+            $employees = Employee::with([
+                'document_registers',
+                'contract:id,state,employee_id,hire_date,discount_sctr,pension_id',
+            ])
+                ->select(
+                    'id',
+                    'name',
+                    'lastname',
+                    'phone1',
+                    'email',
+                    'dni',
+                    'l_policy',
+                    'sctr_exp_date',
+                    'policy_exp_date',
+                )
+                ->orderBy('lastname')
+                ->get();
+        } elseif ($request->isMethod('post')) {
+            $searchquery = $request->searchquery;
+            $employees = Employee::with([
+                'document_registers',
+                'contract:id,state,employee_id,hire_date,discount_sctr,pension_id,expense_line',
+            ])
+                ->select(
+                    'id',
+                    'name',
+                    'lastname',
+                    'phone1',
+                    'email',
+                    'dni',
+                    'l_policy',
+                    'sctr_exp_date',
+                    'policy_exp_date',
+                )
+                ->whereHas('contract', function ($query) use ($searchquery) {
+                    $query->where('expense_line', 'like', "%$searchquery%");
+                })
+                ->orderBy('lastname')
+                ->get();
+        }
 
-                            ]
-                        ];
-                        return $itemDr;
-                    }
-                );
-                $emp->setRelation('document_registers', $formattedDr);
-                return $emp;
-            });
+        $employees->map(function ($emp) {
+            $formattedDr = $emp->document_registers->mapWithKeys(
+                function ($dr) {
+                    $itemDr = [
+                        $dr->subdivision_id => [
+                            'id' => $dr->id,
+                            'document_id' => $dr->document_id,
+                            'employee_id' => $dr->employee_id,
+                            'e_employee_id' => $dr->e_employee_id,
+                            'exp_date' => $dr->exp_date,
+                            'state' => $dr->state,
+                            'observations' => $dr->observations,
+                            'sync_status' => $dr->sync_status,
+                            'display' => $dr->display,
+
+                        ]
+                    ];
+                    return $itemDr;
+                }
+            );
+            $emp->setRelation('document_registers', $formattedDr);
+            return $emp;
+        });
         $e_employees = ExternalEmployee::with([
             'document_registers',
         ])
@@ -104,14 +125,18 @@ class DocumentSpreedSheetController extends Controller
                 return $emp;
             });
         $sections = DocumentSection::with('subdivisions')->where('id', '<=', 10)->get();
-        return Inertia::render(
-            'HumanResource/DocumentSpreedSheet/Index',
-            [
-                'employees' => $employees,
-                'e_employees' => $e_employees,
-                'sections' => $sections,
-            ]
-        );
+        if ($request->isMethod('get')) {
+            return Inertia::render(
+                'HumanResource/DocumentSpreedSheet/Index',
+                [
+                    'employees' => $employees,
+                    'e_employees' => $e_employees,
+                    'sections' => $sections,
+                ]
+            );
+        } elseif ($request->isMethod('post')) {
+            return response()->json($employees, 200);
+        }
     }
 
 
