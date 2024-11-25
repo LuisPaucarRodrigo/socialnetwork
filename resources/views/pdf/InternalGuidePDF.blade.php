@@ -37,75 +37,8 @@
             border: 1px solid #000;
             padding: 5px;
         }
-        .watermarked-section {
-            position: relative;
-            z-index: 1; /* Asegura que los contenidos estén sobre el fondo */
-
-            /* Configuración del fondo */
-            background-image: url('image/projectimage/logo_ccip.jpeg'); /* Ruta de la imagen */
-            background-position: center; /* Centrar la imagen */
-            background-repeat: no-repeat; /* No repetir la imagen */
-            background-size: contain; /* Ajustar el tamaño de la imagen al contenedor */
-            opacity: 1; /* Transparencia del fondo */
-            width: 600px;
-        }
-
-        .watermarked-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 80px;
-            right: 0;
-            bottom: 500px;
-            background-image: url('image/projectimage/logo_ccip.jpeg'); /* Ruta de la marca de agua */
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: contain; /* La imagen se ajusta al tamaño del contenedor */
-            opacity: 0.1; /* Ajusta la opacidad de la marca de agua */
-            z-index: -1; /* Asegura que la marca de agua esté detrás del contenido */
-        }
-
         .table-container {
-            max-height: 550px; /* Altura máxima de la tabla */
-            overflow: hidden; /* Oculta las filas que exceden la altura */
-        }
-
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 150px; /* Ajusta la altura del footer */
-            z-index: -1; /* Mantén el footer detrás del contenido */
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: contain;
-            opacity: 1; /* Sin opacidad para la imagen */
-            text-align: right;
-        }
-
-        .footer::before {
-            content: '';
-            position: absolute;
-            top: 550px;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: contain;
-            opacity: 0.1; /* Ajusta la opacidad de la marca de agua */
-            z-index: -2; /* Asegura que la marca de agua esté detrás del contenido */
-        }
-
-        .footer hr {
-            margin-top: 120px;
-        }
-
-        .footer p {
-            color: red;
-            font-size: 12px;
-            margin-right: 30px;
+            min-height: 550px;
         }
 
     </style>
@@ -361,14 +294,6 @@
 
 <hr style="border: none; border-top: 1.5px dotted black; width: 100%;">
 
-<div class="watermarked-section">
-
-</div>
-
-<div class="footer">
-    <hr>
-    <p>DESTINATARIO</p>
-</div>
 
 <div class="table-container">
     <table style="width: 100%; font-size: 9px;">
