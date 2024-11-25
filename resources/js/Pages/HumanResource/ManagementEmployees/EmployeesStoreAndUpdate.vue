@@ -122,12 +122,26 @@
                 <div class="border-b border-gray-900/10 pb-12">
                     <h2 class="text-base font-semibold leading-7 text-gray-900">Informacion de Contrato</h2>
                     <div class="mt-3 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-
+                        <div class="sm:col-span-2">
+                            <InputLabel for="expense_line">
+                                Linea de Gasto
+                            </InputLabel>
+                            <div class="mt-2">
+                                <select v-model="form.expense_line" id="expense_line" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option disabled value="">Seleccionar Linea de Gastos</option>
+                                    <option>Pint</option>
+                                    <option>Pext</option>
+                                    <option>Huawei</option>
+                                </select>
+                                <InputError :message="form.errors.expense_line" />
+                            </div>
+                        </div>
                         <div class="mt-3 sm:col-span-2">
                             <InputLabel for="discount_remuneration">
                                 ¿Tiene Descuento sobre remuneración?
                             </InputLabel>
-                            <div class="mt-2 class flex gap-4">
+                            <div class="mt-2 flex gap-4">
                                 <label class="flex gap-2 items-center">
                                     Sí
                                     <input type="radio" v-model="form.discount_remuneration" id="discount_remuneration"
@@ -162,6 +176,25 @@
                             </div>
                         </div>
 
+                        <div class="mt-3 sm:col-span-1">
+                            <InputLabel for="state_travel_expenses">
+                                ¿Tiene Refrigerio?
+                            </InputLabel>
+                            <div class="mt-2 class flex gap-4">
+                                <label class="flex gap-2 items-center">
+                                    Sí
+                                    <input type="radio" v-model="form.state_travel_expenses" id="state_travel_expenses" :value="true"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                </label>
+                                <label class="flex gap-2 items-center">
+                                    No
+                                    <input type="radio" v-model="form.state_travel_expenses" id="state_travel_expenses" :value="false"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                </label>
+                                <InputError :message="form.errors.state_travel_expenses" />
+                            </div>
+                        </div>
+
                         <div class="sm:col-span-2 sm:col-start-1">
                             <InputLabel for="pension_system">Regimen
                                 Pensionario
@@ -179,12 +212,37 @@
                         </div>
 
                         <div class="sm:col-span-2">
+                            <InputLabel for="type_contract">
+                                Tipo de Contrato
+                            </InputLabel>
+                            <div class="mt-2">
+                                <select v-model="form.type_contract" id="type_contract" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option disabled value="">Seleccionar Tipo de Contrato</option>
+                                    <option>No Fiscalizado</option>
+                                    <option>Administrativo</option>
+                                </select>
+                                <InputError :message="form.errors.type_contract" />
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-2">
                             <InputLabel for="basic_salary">Salario Basico
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="number" v-model="form.basic_salary" id="basic_salary"
                                     autocomplete="off" />
                                 <InputError :message="form.errors.basic_salary" />
+                            </div>
+                        </div>
+
+                        <div v-if="form.state_travel_expenses" class="sm:col-span-2">
+                            <InputLabel for="amount_travel_expenses">Monto de Viaticos
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="number" v-model="form.amount_travel_expenses" id="amount_travel_expenses"
+                                    autocomplete="off" />
+                                <InputError :message="form.errors.amount_travel_expenses" />
                             </div>
                         </div>
 
@@ -618,10 +676,14 @@ const form = useForm({
     email_company: '',
     phone1: '',
     phone2: '',
+    expense_line: '',
+    type_contract: '',
+    state_travel_expenses: true,
     discount_remuneration: '',
     discount_sctr: '',
     pension_system: '',
     basic_salary: '',
+    amount_travel_expenses: '',
     life_ley: '',
     hire_date: '',
     education_level: '',
@@ -659,10 +721,14 @@ if (props.employees) {
     form.email_company = props.employees.email_company;
     form.phone1 = props.employees.phone1;
     form.phone2 = props.employees.phone2;
+    form.expense_line = props.employees.contract.expense_line;
+    form.type_contract = props.employees.contract.type_contract;
+    form.state_travel_expenses = props.employees.contract.state_travel_expenses == 1 ? true : false;
     form.discount_remuneration = props.employees.contract.discount_remuneration == 1 ? true : false;
     form.discount_sctr = props.employees.contract.discount_sctr == 1 ? true : false;
     form.pension_system = props.employees.contract.pension.id;
     form.basic_salary = props.employees.contract.basic_salary;
+    form.amount_travel_expenses = props.employees.contract.amount_travel_expenses;
     form.life_ley = props.employees.contract.life_ley;
     form.hire_date = props.employees.contract.hire_date;
     form.education_level = props.employees.education.education_level;

@@ -4,15 +4,70 @@
         <template #header>
             Detalles
         </template>
+        <Toaster richColors />
+
         <div class="min-w-full rounded-lg shadow">
-            <div class="flex items-center justify-between p-4"> <!-- justify-between para separar los elementos -->
+            <div class="flex gap-2 items-center justify-between p-4"> <!-- justify-between para separar los elementos -->
                 <div v-if="props.equipment">
                     <Link v-if="!props.nodiu" :href="route('huawei.inventory.show.details.withoutdiu', {id: props.id})" type="button" class="rounded-md whitespace-nowrap bg-indigo-600 px-2 py-2 text-center text-sm text-white hover:bg-indigo-500">
-                        Sin DIU
+                        Sin DU
                     </Link>
                     <Link v-else :href="route('huawei.inventory.show.details', {id: props.id, equipment: 1})" type="button" class="rounded-md whitespace-nowrap bg-indigo-600 px-2 py-2 text-center text-sm text-white hover:bg-indigo-500">
                         Todos
                     </Link>
+                </div>
+                <div v-if="props.equipment">
+                    <dropdown align="left">
+                        <template #trigger>
+                            <button
+                                data-tooltip-target="action_button_tooltip"
+                                @click="dropdownOpen = !dropdownOpen"
+                                class="relative block overflow-hidden rounded-md text-white hover:bg-indigo-400 text-center text-sm bg-indigo-600 p-2"
+                            >
+                                <svg
+                                    width="20px"
+                                    height="20px"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M4 6H20M4 12H20M4 18H20"
+                                        stroke="#ffffff"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
+                                </svg>
+                            </button>
+                            <div
+                                id="action_button_tooltip"
+                                role="tooltip"
+                                class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700 whitespace-nowrap"
+                            >
+                                Acciones
+                                <div
+                                    class="tooltip-arrow"
+                                    data-popper-arrow
+                                ></div>
+                            </div>
+                        </template>
+
+                        <template #content class="origin-left">
+                            <div>
+                                <!-- Alineación a la derecha -->
+
+                                <div class="">
+                                    <button
+                                        @click="openNuUpdateModal"
+                                        class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                                    >
+                                        Actualizar Datos
+                                    </button>
+                                </div>
+                            </div>
+                        </template>
+                    </dropdown>
                 </div>
                 <form @submit.prevent="search" class="flex items-center ml-auto"> <!-- ml-auto para mover el formulario a la derecha -->
                     <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" class="mr-2" /> <!-- mr-2 para separación del botón -->
@@ -32,6 +87,22 @@
                         <table class="w-full whitespace-no-wrap">
                             <thead>
                                 <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                    <th
+                                        class="sticky left-0 z-10 border-b-2 border-r border-gray-200 bg-gray-100 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 w-12"
+                                    >
+                                        <label
+                                            :for="`check-all`"
+                                            class="flex gap-3 justify-center w-full px-2 py-1"
+                                        >
+                                            <input
+                                                @change="handleCheckAll"
+                                                :id="`check-all`"
+                                                :checked="actionForm.ids.length > 0"
+                                                type="checkbox"
+                                            />
+                                            {{ actionForm.ids.length ?? "" }}
+                                        </label>
+                                    </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center min-w-[200px]">
                                         Descripción del Equipo
                                     </th>
@@ -45,7 +116,7 @@
                                         OT del Proyecto
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                                        DIU Asignada
+                                        DU Asignada
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                                         Número de Guía de Entrada
@@ -58,6 +129,9 @@
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                                         N° de Pedido
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                                        Fecha de Pedido
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                                         N° Serie Ingresada
@@ -73,7 +147,22 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="item in (props.search || props.nodiu  ? props.entries : entries.data)" :key="item.id" class="text-gray-700">
+                                <tr v-for="item in (props.search || props.nodiu  ? dataToRender : dataToRender.data)" :key="item.id" class="text-gray-700">
+                                    <td
+                                        class="sticky left-0 z-10 border-b border-r border-gray-200 bg-amber-100 text-center text-[13px] whitespace-nowrap tabular-nums"
+                                    >
+                                        <label
+                                            :for="`check-${item.id}`"
+                                            class="block w-full px-2 py-1"
+                                        >
+                                            <input
+                                                v-model="actionForm.ids"
+                                                :value="item.id"
+                                                :id="`check-${item.id}`"
+                                                type="checkbox"
+                                            />
+                                        </label>
+                                    </td>
                                     <td class="border-b border-gray-200 px-5 py-5 text-sm text-center"
                                      :class="{
                                         'bg-green-400': item.antiquation_state === 'Green',
@@ -102,13 +191,14 @@
                                         <span>-</span>
                                         </template>
                                     </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"><button v-if="item.state === 'Disponible'" @click.prevent="openAssignModal(item.id)" class="font-black hover:underline" :class="{'text-blue-600': item.assigned_diu, 'text-red-600': !item.assigned_diu}">{{ item.assigned_diu ? item.assigned_diu : 'Asignar DIU' }}</button><p v-else>{{ item.assigned_diu }}</p></td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry.guide_number }}</td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"><button @click.prevent="openEditDate(item.id)" class="text-blue-600 hover:underline font-black text-sm">{{ formattedDate(item.entry_date ? item.entry_date : item.huawei_entry.entry_date) }}</button></td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.assigned_diu }}</td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry?.guide_number }}</td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.huawei_entry ? item.huawei_entry.entry_date : item.order_date) }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : '-' }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.order_number }}</td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.order_date) }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_equipment_serie.serie_number }}</td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry.observation }}</td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry? item.huawei_entry.observation : item.huawei_pending_order.observation }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.observation }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                                         <div v-if="item.state == 'Disponible'" class="flex items-center">
@@ -163,6 +253,9 @@
                                         N° de Pedido
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
+                                        Fecha de Pedido
+                                    </th>
+                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                                         Observaciones del Material
                                     </th>
                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
@@ -181,12 +274,13 @@
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.refund_quantity }}</td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.project_quantity }}</td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.available_quantity }}</td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry.guide_number }}</td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.huawei_entry.entry_date) }}</td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry?.guide_number }}</td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.huawei_entry?.entry_date) }}</td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : '-' }}</td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.order_number }}</td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.order_date) }}</td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.observation }}</td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry.observation }}</td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry? item.huawei_entry.observation : item.huawei_pending_order.observation }}</td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                                             <div class="flex items-center">
                                                 <div v-if="item.available_quantity !== 0">
@@ -237,6 +331,9 @@
                                             class="border-b-2 border-gray-200 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
                                         </th>
                                         <th
+                                            class="border-b-2 border-gray-200 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        </th>
+                                        <th
                                             class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                                             Cantidad en Proyecto
                                         </th>
@@ -250,7 +347,7 @@
                                         </th>
                                         <th
                                             class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                                            DIU del Proyecto
+                                            DU del Proyecto
                                         </th>
                                         <th
                                             class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
@@ -278,7 +375,9 @@
                                         <th
                                             class="border-b-2 border-gray-200 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
                                         </th>
-
+                                        <th
+                                            class="border-b-2 border-gray-200 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                        </th>
                                         <th
                                             class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                                             {{  project_resource.huawei_project_liquidation ? project_resource.huawei_project_liquidation.liquidated_quantity : project_resource.quantity }}
@@ -342,58 +441,100 @@
           </div>
         </Modal>
 
-        <Modal :show="assignModal">
-          <div class="p-6">
-            <h2 class="text-base font-medium leading-7 text-gray-900">Asignar DIU</h2>
-            <form @submit.prevent="assignDiu" class="grid grid-cols-2 gap-3">
+        <Modal :show="showOpNuDatModal" @close="closeOpNuDatModal">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900">
+                    Actualización Masiva
+                </h2>
+                <form @submit.prevent="submitOpNuDatModal">
+                    <div class="space-y-12">
+                        <div
+                            class="border-b grid grid-cols-1 gap-6 border-gray-900/10 pb-12"
+                        >
+                            <div>
+                                <InputLabel
+                                    for="entry_date"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >Fecha de Entrada
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input
+                                        type="date"
+                                        v-model="opNuDateForm.entry_date"
+                                        id="entry_date"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                    <InputError
+                                        :message="
+                                            opNuDateForm.errors.entry_date
+                                        "
+                                    />
+                                </div>
+                            </div>
 
-              <!-- Tercera Fila -->
-              <div class="col-span-2 grid grid-cols-2 gap-3">
-                <div class="col-span-2">
-                    <InputLabel class="mb-1" for="quantity">DIU</InputLabel>
-                    <input type="text" v-model="assignForm.assigned_diu" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
-                    <InputError :message="assignForm.errors.assigned_diu" />
-                </div>
-              </div>
+                            <div>
+                                <InputLabel
+                                    for="new_site"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >Nuevo Site
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input
+                                        type="text"
+                                        v-model="opNuDateForm.new_site"
+                                        id="new_site"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                    <InputError
+                                        :message="opNuDateForm.errors.new_site"
+                                    />
+                                </div>
+                            </div>
 
-              <!-- Botones de Acción -->
-              <div class="col-span-2 mt-6 flex items-center justify-end gap-x-6">
-                <SecondaryButton @click="closeAssignModal">Cancelar</SecondaryButton>
-                <PrimaryButton type="submit" :class="{ 'opacity-25': assignForm.processing }">Asignar</PrimaryButton>
-              </div>
-            </form>
-          </div>
+                            <div v-if="!noDU">
+                                <InputLabel
+                                    for="assigned_diu"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >Nueva DU
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input
+                                        type="text"
+                                        v-model="opNuDateForm.assigned_diu"
+                                        id="assigned_diu"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                    <InputError
+                                        :message="
+                                            opNuDateForm.errors.assigned_diu
+                                        "
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <SecondaryButton @click="closeOpNuDatModal">
+                                Cancelar
+                            </SecondaryButton>
+                            <button
+                                type="submit"
+                                :disabled="isFetching"
+                                :class="{ 'opacity-25': isFetching }"
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                            >
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </Modal>
 
-        <Modal :show="updateDateModal">
-          <div class="p-6">
-            <h2 class="text-base font-medium leading-7 text-gray-900">Actualizar Fecha</h2>
-            <form @submit.prevent="updateDate" class="grid grid-cols-2 gap-3">
-
-              <!-- Tercera Fila -->
-              <div class="col-span-2 grid grid-cols-2 gap-3">
-
-                <div class="col-span-2">
-                    <InputLabel class="mb-1" for="observation">Fecha</InputLabel>
-                    <input type="date" v-model="updateDateForm.entry_date" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
-                    <InputError :message="updateDateForm.errors.entry_date" />
-                  </div>
-
-              </div>
-
-              <!-- Botones de Acción -->
-              <div class="col-span-2 mt-6 flex items-center justify-end gap-x-6">
-                <SecondaryButton @click="closeEditDate">Cancelar</SecondaryButton>
-                <PrimaryButton type="submit" :class="{ 'opacity-25': updateDateForm.processing }">Guardar</PrimaryButton>
-              </div>
-            </form>
-          </div>
-        </Modal>
 
 
         <SuccessOperationModal :confirming="showRefundConfirm" title="Éxito" message="La devolución se registró correctamente." />
         <ErrorOperationModal :showError="showErrorModal" :title="'Error'" :message="'La cantidad solicitada para devolución excede a la disponible.'" />
-        <SuccessOperationModal :confirming="confirmAssign" title="Éxito" message="Se asignó la DIU correctamente." />
+        <SuccessOperationModal :confirming="confirmAssign" title="Éxito" message="Se asignó la DU correctamente." />
         <SuccessOperationModal :confirming="confirmUpdateModal" title="Éxito" message="Se actualizó la fecha correctamente." />
 
     </AuthenticatedLayout>
@@ -413,6 +554,9 @@
     import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
     import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
     import InputError from '@/Components/InputError.vue';
+    import Dropdown from "@/Components/Dropdown.vue";
+    import { Toaster } from "vue-sonner";
+    import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 
     const props = defineProps({
         entries: Object,
@@ -430,6 +574,11 @@
     const confirmAssign = ref(false);
     const updateDateModal = ref (false);
     const confirmUpdateModal = ref(false);
+    const dataToRender = ref(props.entries);
+    const isFetching = ref(false);
+    const showOpNuDatModal = ref(false);
+    const noDU = ref(false);
+    const filterMode = ref(false);
 
     const updateDateForm = useForm({
         id: '',
@@ -551,4 +700,97 @@
             }
         })
     }
+
+    const openNuUpdateModal = () => {
+        if (actionForm.value.ids.length === 0) {
+            notifyWarning("No hay registros seleccionados");
+            return;
+        }
+
+        for (const id of actionForm.value.ids) {
+            const record = props.search || filterMode.value
+                ? dataToRender.value.find(item => item.id === id)
+                : dataToRender.value.data.find(item => item.id === id);
+
+            if (record?.state === 'Devuelto') {
+                notifyWarning('Uno o más registros ya están devueltos, por lo que no se puede actualizar la información');
+                return;
+            }
+        }
+
+        const hasInProjectState = actionForm.value.ids.some(id => {
+            const record = props.search || filterMode.value
+                ? dataToRender.value.find(item => item.id === id)
+                : dataToRender.value.data.find(item => item.id === id);
+            return record?.state === 'En Proyecto';
+        });
+
+        if (hasInProjectState) {
+            notifyWarning("Algunos registros están en proyecto, por lo que no se puede modificar la DU");
+            noDU.value = true;
+            setTimeout(() => {
+                showOpNuDatModal.value = true;
+            }, 2000);
+            return;
+        }
+        showOpNuDatModal.value = true;
+    };
+
+    const closeOpNuDatModal = () => {
+        isFetching.value = false;
+        noDU.value = false;
+        showOpNuDatModal.value = false;
+        opNuDateForm.reset();
+    };
+
+    const actionForm = ref({
+        ids: [],
+    });
+
+    const opNuDateForm = useForm({
+        entry_date: "",
+        new_site: "",
+        assigned_diu: "",
+    });
+
+    const handleCheckAll = (e) => {
+        if (e.target.checked) {
+            actionForm.value.ids =
+                props.search
+                    ? dataToRender.value.map((item) => item.id)
+                    : dataToRender.value.data.map((item) => item.id);
+        } else {
+            actionForm.value.ids = [];
+        }
+    };
+
+    const submitOpNuDatModal = async () => {
+    isFetching.value = true;
+    const res = await axios
+        .post(route("huawei.inventory.general.equipments.massiveupdate"), {
+            ...opNuDateForm.data(),
+            ...actionForm.value,
+        })
+        .catch((e) => {
+            isFetching.value = false;
+            if (e.response?.data?.errors) {
+                setAxiosErrors(e.response.data.errors, opNuDateForm);
+            } else {
+                notifyError("Server Error");
+            }
+        });
+
+    const originalMap = new Map(
+        dataToRender.value.data.map((item) => [item.id, item])
+    );
+    res.data.forEach((update) => {
+        if (originalMap.has(update.id)) {
+            originalMap.set(update.id, update);
+        }
+    });
+    const updatedArray = Array.from(originalMap.values());
+    dataToRender.value.data = updatedArray;
+    closeOpNuDatModal();
+    notify("Registros Seleccionados Actualizados");
+};
 </script>

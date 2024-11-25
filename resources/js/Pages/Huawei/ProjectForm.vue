@@ -134,7 +134,7 @@
                             </div>
 
                             <div class="sm:col-span-3">
-                                <InputLabel for="assigned_diu" class="font-medium leading-6 text-gray-900">DIU del Proyecto
+                                <InputLabel for="assigned_diu" class="font-medium leading-6 text-gray-900">DU del Proyecto
                                 </InputLabel>
                                 <div class="mt-2">
                                     <TextInput type="text" v-model="form.assigned_diu" id="assigned_diu"

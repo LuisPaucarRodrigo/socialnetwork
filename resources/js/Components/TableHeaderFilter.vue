@@ -1,6 +1,6 @@
 <template>
     <div :class="['relative flex justify-center items-center gap-x-3', widthClass]" ref="popup">
-        <p :class="labelClass">{{ label }}</p>
+        <p :class="labelClass" v-html="reverse ? reverseWordsWithBreaks(label) : label" ></p>
         <button @click="togglePopup">
             <BarsArrowDownIcon class="h-5 w-5" />
         </button>
@@ -58,6 +58,7 @@ const selectedOptions = ref([...props.modelValue]);
 const selectAll = ref(true);
 const popup = ref(null);
 
+
 const widthClass = computed(() => props.width);
 
 const togglePopup = () => {
@@ -79,13 +80,20 @@ const toggleAll = () => {
 };
 
 watch(selectedOptions, (newSelectedOptions) => {
-    emit('update:modelValue', newSelectedOptions);
+    //si viene del padre newSelectedOptions es igual a newVal misma referencia
+    emit('update:modelValue', selectedOptions.value);
     if (newSelectedOptions.length === props.options.length) {
         selectAll.value = true;
     } else {
         selectAll.value = false;
     }
 });
+
+watch(()=>props.modelValue, (newVal) => {
+    //si viene del hijo el newVal es lo mismo que el newSelectedOptions
+    selectedOptions.value = props.modelValue
+});
+
 
 onMounted(() => {
     document.addEventListener('click', closePopup);
@@ -94,4 +102,5 @@ onMounted(() => {
 onUnmounted(() => {
     document.removeEventListener('click', closePopup);
 });
+
 </script>

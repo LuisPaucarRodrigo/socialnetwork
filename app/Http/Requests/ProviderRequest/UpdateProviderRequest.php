@@ -23,7 +23,7 @@ class UpdateProviderRequest extends FormRequest
     public function rules(): array
     {
 
-        $providerId = $this->input('provider_id');
+        $providerId = $this->input('id');
 
         return [
             'company_name' => 'required|string|max:255',

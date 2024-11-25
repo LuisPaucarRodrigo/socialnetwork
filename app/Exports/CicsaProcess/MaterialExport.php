@@ -18,18 +18,13 @@ class MaterialExport implements FromView, WithColumnWidths
                 'Nombre de Proyecto',
                 'Codigo de Proyecto',
                 'CPE',
-                'Orden de Compra',
-                'Fecha validada',
-                'Control de Materiales',
-                'Supervisor',
-                'Almacen',
-                'Jefe',
-                'Liquidador',
-                'SuperIntendente',
-                'Encargado'
+                'Centro de Costo',
+                'Fecha de recojo',
+                'Numero de Guia',
+                'Encargado CCIP',
             ],
-            'cicsa_purchase_order_validations' => CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe')
-            ->with('cicsa_purchase_order_validation')
+            'assignations' => CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe','cost_center')
+            ->with('cicsa_materials')
             ->get()
         ]);
     }

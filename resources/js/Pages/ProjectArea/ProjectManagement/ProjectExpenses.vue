@@ -81,7 +81,7 @@
           </div>
         </div>
       </div>
-      <div v-if="staticCosts>0" class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
+      <div class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
         <div class="w-full lg:w-1/2">
           <div class="overflow-x-auto ring-1 ring-gray-200">
             <table class="w-full whitespace-no-wrap">
@@ -99,7 +99,9 @@
                 <tr v-for="(item, i) in scExpensesAmounts" class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">
                     <div class="flex gap-3 justify-between">
-                      <p>
+                      <p :class="[
+                        {'text-red-700': scExpensesThatDontCount.includes(item.expense_type)}
+                      ]">
                         {{ item.expense_type }}
                       </p>
                       <button @click="prevOpenModal({ 
@@ -124,7 +126,7 @@
           </div>
         </div>
       </div>
-      <div v-if="additionalCosts>0" class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
+      <div class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
         <div class="w-full lg:w-1/2">
           <div class="overflow-x-auto ring-1 ring-gray-200">
             <table class="w-full whitespace-no-wrap">
@@ -224,6 +226,7 @@ const {
   staticCosts: Number,
   acExpensesAmounts: Array,
   scExpensesAmounts: Array,
+  scExpensesThatDontCount:Array
 });
 
 

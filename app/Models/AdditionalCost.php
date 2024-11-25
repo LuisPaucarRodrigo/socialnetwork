@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Constants\PintConstants;
 
 class AdditionalCost extends Model
 {
@@ -35,7 +36,8 @@ class AdditionalCost extends Model
     ];
 
     protected $appends = [
-        'real_amount'
+        'real_amount',
+        'real_state'
     ];
 
     public function project()
@@ -55,5 +57,18 @@ class AdditionalCost extends Model
 
     public function getRealAmountAttribute() {
         return $this->amount/(1+$this->igv/100);
+    }
+
+    public function getRealStateAttribute() {
+        if ($this->is_accepted === 0) {
+            return PintConstants::RECHAZADO;
+        } 
+        if ($this->is_accepted && $this->account_statement_id) {
+            return PintConstants::ACEPTADO_VALIDADO;
+        }
+        if ($this->is_accepted) {
+            return PintConstants::ACEPTADO;
+        }
+        return PintConstants::PENDIENTE;
     }
 }

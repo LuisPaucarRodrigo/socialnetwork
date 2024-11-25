@@ -5,6 +5,9 @@ namespace App\Http\Controllers\HumanResource;
 use App\Exports\Payroll\PayrollExport;
 use App\Http\Controllers\Controller;
 use App\Models\Contract;
+use App\Models\Employee;
+use App\Models\Payroll;
+use App\Models\PayrollDetail;
 use App\Models\Pension;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -13,7 +16,30 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class SpreadsheetsController extends Controller
 {
-    public function index(Request $request, $reentry = false)
+    public function index()
+    {
+        $payroll = Payroll::all();
+        return Inertia::render('HumanResource/Payroll/Spreadsheets', [
+            'payroll' => $payroll
+        ]);
+    }
+
+    public function store_payroll(Request $request)
+    {
+        $validateDate = $request->validate();
+        $payroll = Payroll::create($validateDate);
+        $pension_system = Pension::create
+        $employees = Employee::select('id')->get();
+        foreach ($employees as $employee) {
+            PayrollDetail::create([
+                'payroll_id' => $payroll->id,
+                'employee_id' => $employee->id,
+                'pension_id' => 1
+            ]);
+        }
+    }
+
+    public function index_payroll(Request $request, $reentry = false)
     {
         if ($reentry == false) {
             $spreadsheet = Contract::with('pension', 'employee')->where('state', 'Active');
@@ -99,7 +125,7 @@ class SpreadsheetsController extends Controller
     }
 
     public function update_number_people(Request $request)
-    {   
+    {
         $data = json_decode(File::get(config_path('custom.json')), true);
         $data['number_people'] = $request->number_people;
         File::put(config_path('custom.json'), json_encode($data));

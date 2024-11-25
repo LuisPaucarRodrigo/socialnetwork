@@ -4,8 +4,9 @@ use App\Http\Controllers\Cicsa\CicsaController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/cicsa_process', [CicsaController::class, 'index'])->name('cicsa.index');
+Route::get('/cicsa_process/index', [CicsaController::class, 'index'])->name('cicsa.index');
 Route::any('/cicsa_approve', [CicsaController::class, 'chargeCicsa'])->name('cicsa.charge');
+Route::get('/cicsa_process/export/{stages?}', [CicsaController::class, 'exportCiscaProcess'])->name('cicsa.export');
 
 Route::any('/cicsa_assignation/{searchCondition?}', [CicsaController::class, 'indexAssignation'])->name('assignation.index');
 Route::delete('/cicsa_assignation/destroy/{ca_id}', [CicsaController::class, 'destroy'])->name('cicsa.assignation.destroy');

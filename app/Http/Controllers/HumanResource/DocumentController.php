@@ -111,7 +111,12 @@ class DocumentController extends Controller
     public function search($section, $subdivision, $request)
     {
         $searchTerm = strtolower($request);
-        $query = Document::with('subdivision.section')->whereRaw('LOWER(title) LIKE ?', ["%{$searchTerm}%"]);
+        $query = Document::with('subdivision.section', 'employee')
+            ->whereRaw('LOWER(title) LIKE ?', ["%{$searchTerm}%"])
+            ->orWhereHas('employee', function ($query) use ($searchTerm){
+                $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"])
+                      ->orWhereRaw('LOWER(lastname) LIKE ?', ["%{$searchTerm}%"]);
+            });
 
         if ($section !== 'no') {
             $query->whereHas('subdivision', function ($query) use ($section) {
@@ -310,7 +315,7 @@ class DocumentController extends Controller
         $filePath = "documents/documents/$fileName";
         $path = public_path($filePath);
         if (file_exists($path)) {unlink($path);}
-            
+
             $docReg = $id->employee_id ? DocumentRegister::where('subdivision_id', $id->subdivision_id)
                 ->where('employee_id', $id->employee_id)->first(): (
                     $id->e_employee_id ? DocumentRegister::where('subdivision_id', $id->subdivision_id)

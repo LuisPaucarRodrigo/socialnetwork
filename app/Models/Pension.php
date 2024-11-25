@@ -12,9 +12,16 @@ class Pension extends Model
         'type',
         'values',
         'values_seg',
+        'payroll_id',
     ];
+
     public function contracts()
     {
         return $this->hasMany(Contract::class);
+    }
+
+    public function payroll()
+    {
+        return $this->belongsTo(Payroll::class);
     }
 }

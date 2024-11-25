@@ -23,6 +23,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Constants\PintConstants;
 
 class ProjectManagementController extends Controller
 {
@@ -315,7 +316,7 @@ class ProjectManagementController extends Controller
             ];
         })->toArray();
 
-        $staticCosts =  $project_id->staticCosts()->where('expense_type', '!=', 'Combustible GEP')->get()
+        $staticCosts =  $project_id->staticCosts()->whereNotIn('expense_type', PintConstants::scExpensesThatDontCount())->get()
         ->sum('real_amount');
         $scArr = $project_id->staticCosts()
             ->select('expense_type', DB::raw('SUM(amount/(1+igv/100)) as total_amount'))
@@ -343,6 +344,7 @@ class ProjectManagementController extends Controller
             'acExpensesAmounts' => $acExpensesAmounts,
             'scExpensesAmounts' => $scExpensesAmounts,
             'staticCosts' => $staticCosts,
+            'scExpensesThatDontCount'=> PintConstants::scExpensesThatDontCount(),
         ]);
     }
 
