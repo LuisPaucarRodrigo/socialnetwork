@@ -261,7 +261,6 @@ class HuaweiManagementController extends Controller
                             'observation' => $material['observation'],
                             'order_number' => $material['order_number'],
                             'order_date' => $material['order_date'],
-                            'assigned_diu' => $material['assigned_diu']
                         ]);
                     } else {
                         $new_material = HuaweiMaterial::create([
@@ -279,7 +278,6 @@ class HuaweiManagementController extends Controller
                             'observation' => $material['observation'],
                             'order_number' => $material['order_number'],
                             'order_date' => $material['order_date'],
-                            'assigned_diu' => $material['assigned_diu']
                         ]);
                     }
                 }
@@ -430,7 +428,6 @@ class HuaweiManagementController extends Controller
                             'observation' => $material['observation'],
                             'order_number' => $material['order_number'],
                             'order_date' => $material['order_date'],
-                            'assigned_diu' => $material['assigned_diu']
                         ]);
                     } else {
                         $new_material = HuaweiMaterial::create([
@@ -448,7 +445,6 @@ class HuaweiManagementController extends Controller
                             'observation' => $material['observation'],
                             'order_number' => $material['order_number'],
                             'order_date' => $material['order_date'],
-                            'assigned_diu' => $material['assigned_diu']
                         ]);
                     }
                 }

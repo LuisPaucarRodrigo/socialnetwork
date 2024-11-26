@@ -284,13 +284,7 @@
         <input id="order_date" type="date" v-model="materialForm.order_date" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
       </div>
 
-      <div class="col-span-1">
-            <InputLabel class="mb-1" for="assigned_diu">DU Asignada</InputLabel>
-            <input type="text" v-model="materialForm.assigned_diu" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
-        </div>
-
-
-      <div class="col-span-1">
+      <div class="col-span-1 md:col-span-2">
         <InputLabel class="mb-1" for="observation">Observación</InputLabel>
         <textarea v-model="materialForm.observation" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600"></textarea>
       </div>
@@ -621,7 +615,6 @@
       observation: '',
       order_number: '',
       order_date: '',
-      assigned_diu: ''
     });
 
     const equipmentForm = useForm({
@@ -756,7 +749,6 @@
             unit: materialForm.unit,
             order_number: materialForm.order_number ? materialForm.order_number : form.order_number,
             order_date: materialForm.order_date ? materialForm.order_date : form.order_date,
-            assigned_diu: materialForm.assigned_diu
         });
 
             materialForm.reset();

@@ -184,7 +184,7 @@
                                         :size="entryDetails.length + 1" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" multiple>
                                     <option disabled value="">Seleccionar Entrada</option>
                                     <option v-for="item in entryDetails" :key="item.id" :value="item.id">
-                                        {{ (item.serie_number  + ' - ' + (item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : 'No hay precio registrado')) }}
+                                        {{ (item.serie_number  + ' - ' + item.order_number) }}
                                     </option>
                                 </select>
                             </div>
@@ -196,7 +196,7 @@
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Entrada</option>
                                     <option v-for="item in entryDetails" :key="item.id" :value="item.id">
-                                        {{ ( foundItem.name + ' - ' + item.available_quantity + ' - ' + (item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : 'No hay precio registrado')) }}
+                                        {{ ( foundItem.name + ' - ' + item.available_quantity + ' - ' + item.order_number) }}
                                     </option>
                                 </select>
                             </div>

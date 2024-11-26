@@ -187,7 +187,7 @@
                                     <div v-for="(member, index) in form.employees" :key="index"
                                         class="grid grid-cols-8 items-center my-2">
                                         <p class=" text-sm col-span-7 line-clamp-2">{{ member.employee.name }} {{
-                                            member.employee.lastname }}: {{ member.charge }} </p>
+                                            member.employee.lastname }}: {{ member.charge + ' - ' + member.cost}} </p>
                                         <button type="button" @click="delete_employee(index)"
                                             class="col-span-1 flex justify-end">
                                             <TrashIcon class=" text-red-500 h-4 w-4 " />
@@ -391,7 +391,7 @@ const submit = () => {
 }
 
 const showModalMember = ref(false);
-const empInitState = { employee: '', charge: '' }
+const empInitState = { employee: '', charge: '', cost: '' }
 const employeeToAdd = ref(JSON.parse(JSON.stringify(empInitState)))
 const edit_employee_modal = ref(false);
 const showPersonalAddModal = ref(false);
