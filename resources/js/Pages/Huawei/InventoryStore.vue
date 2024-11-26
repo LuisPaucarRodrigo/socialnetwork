@@ -134,9 +134,6 @@
                         Fecha de Pedido
                       </th>
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                        DU Asignada
-                      </th>
-                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                         Observación
                       </th>
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
@@ -152,7 +149,6 @@
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.unit }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.order_number }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.order_date) }}</td>
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.assigned_diu }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.observation }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                         <div class="flex items-center">

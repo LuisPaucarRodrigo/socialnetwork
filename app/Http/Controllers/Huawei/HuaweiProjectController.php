@@ -1170,10 +1170,6 @@ class HuaweiProjectController extends Controller
                 'output_date' => 'required'
             ]);
 
-            if ($entry_detail->assigned_diu != $found_project->assigned_diu){
-                abort(403, 'Acción no permitida');
-            }
-
             HuaweiProjectResource::create([
                 'huawei_project_id' => $huawei_project,
                 'huawei_entry_detail_id' => $request->huawei_entry_detail_id,

@@ -248,7 +248,7 @@
                                 label="Empleado"
                                 :options="employees"
                                 v-model="filterForm.selectedEmployees"
-                                width="w-40"
+                                width="w-48"
                             />
                         </th>
                         <th

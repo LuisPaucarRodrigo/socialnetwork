@@ -69,7 +69,7 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.huawei_equipment_serie.huawei_equipment.name }}</td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.state }}</td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.huawei_equipment_serie.serie_number }}</td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.created_at) }}</td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.output_date) }}</td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.huawei_entry_detail.unit_price ? 'S/. ' + item.huawei_entry_detail.unit_price.toFixed(2) : '-'}}</td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                                 <div v-if="item.quantity !== 0 && !item.liquidated_quantity" class="flex items-center">
@@ -122,7 +122,7 @@
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.state }}</td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.quantity }}</td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_project_liquidation ? item.huawei_project_liquidation.liquidated_quantity : '-'}}</td>
-                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.created_at) }}</td>
+                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.output_date) }}</td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.huawei_entry_detail.unit_price ? 'S/. ' + item.huawei_entry_detail.unit_price.toFixed(2) : '-'}}</td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                                     <div v-if="item.quantity !== 0 && !item.liquidated_quantity" class="flex items-center">
@@ -308,7 +308,8 @@
     resource: '',
     huawei_entry_detail_id: '',
     huawei_entry_detail_ids: [],
-    quantity: ''
+    output_date: '',
+    quantity: '',
   });
 
   const open_create = () => {
