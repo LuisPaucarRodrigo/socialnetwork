@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('type');
             $table->string('archive_type')->nullable();
             $table->boolean('state')->default(true);
+            $table->string('user_name');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('upper_folder_id')->nullable()->constrained('folders')->onDelete('cascade');
        

@@ -18,6 +18,7 @@ use App\Models\Project;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class ChecklistsController extends Controller
@@ -94,7 +95,7 @@ class ChecklistsController extends Controller
             $data['frontRightTire'] = $this->storeBase64Image($data['frontRightTire'], 'image/checklist/checklistcar', 'frontRightTire');
             $data['frontLeftTire'] = $this->storeBase64Image($data['frontLeftTire'], 'image/checklist/checklistcar', 'frontLeftTire');
             $data['user_id'] = Auth::user()->id;
-
+            $data['user_name'] = Auth::user()->name;
             ChecklistCar::create($data);
             return response()->json([], 201);
         } catch (Exception $e) {
@@ -116,6 +117,7 @@ class ChecklistsController extends Controller
                 $data['goodTools'] = $this->storeBase64Image($data['goodTools'], 'image/checklist/checklisttoolkit', 'goodTools');
             }
             $data['user_id'] = Auth::user()->id;
+            $data['user_name'] = Auth::user()->name;
             ChecklistToolkit::create($data);
             return response()->json([], 201);
         } catch (Exception $e) {
@@ -129,11 +131,15 @@ class ChecklistsController extends Controller
     public function dailytoolkit_store(ChecklistDailytoolkitRequest $request)
     {
         $data = $request->validated();
+        DB::beginTransaction();
         try {
             $data['user_id'] = Auth::user()->id;
+            $data['user_name'] = Auth::user()->name;
             ChecklistDailytoolkit::create($data);
+            DB::commit();
             return response()->json([], 201);
         } catch (Exception $e) {
+            DB::rollback();
             return response()->json([
                 'error' => 'Ocurrió un error al procesar la solicitud',
                 'message' => $e->getMessage()
@@ -175,6 +181,7 @@ class ChecklistsController extends Controller
     public function epp_store(ChecklistEppRequest $request){
         $data = $request->validated();
         $data['user_id'] = Auth::user()->id;
+        $data['user_name'] = Auth::user()->name;
         ChecklistEpp::create($data);
         return response()->json([], 201);
     }

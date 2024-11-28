@@ -484,23 +484,6 @@ class ApiController extends Controller
         return response()->download($filePath);
     }
 
-    public function dailytoolkit_store(ChecklistDailytoolkitRequest $request)
-    {
-        $data = $request->validated();
-        DB::beginTransaction();
-        try {
-            $data['user_id'] = Auth::user()->id;
-            ChecklistDailytoolkit::create($data);
-            DB::commit();
-            return response()->json([], 201);
-        } catch (Exception $e) {
-            return response()->json([
-                'error' => 'Ocurrió un error al procesar la solicitud',
-                'message' => $e->getMessage()
-            ], 500);
-        }
-    }
-
     public function cicsaProcess($zone)
     {
         $cicsaProcess = CicsaAssignation::select('id', 'project_name', 'zone', 'zone2')
@@ -542,13 +525,14 @@ class ApiController extends Controller
             if (($validateData['zone'] !== 'MDD') && $validateData['type_doc'] === 'Factura') {
                 $validateData['igv'] = 18;
             }
-            $newDesc = Auth::user()->name . ", " . $validateData['description'];
+            $user = Auth::user();
+            $newDesc = $user->name . ", " . $validateData['description'];
             $validateData['description'] = $newDesc;
             if ($validateData['photo']) {
                 $validateData['photo'] = $this->storeBase64Image($validateData['photo'], 'documents/expensesPext', 'Gasto Pext');
             }
-            $validateData['user_id'] = Auth::user()->id;
-
+            
+            $validateData['user_id'] = $user->id;
             PextProjectExpense::create($validateData);
             return response()->noContent();
         } catch (Exception $e) {

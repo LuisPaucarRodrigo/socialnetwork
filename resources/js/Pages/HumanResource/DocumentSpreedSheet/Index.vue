@@ -23,7 +23,7 @@
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="sticky z-20 top-0">
               <tr>
-                <th scope="col" :colspan="principalData.length + 1"
+                <th scope="col" :colspan="principalData.length + 2"
                   class="px-6 py-3 bg-gray-50 text-center text-xs shadow-header-gray-300 font-medium text-gray-600 uppercase tracking-wider">
                   Datos
                 </th>
@@ -43,6 +43,10 @@
                 <th scope="col"
                   class="px-1 py-3 bg-gray-50 text-center text-xs shadow-header-gray-300 font-medium text-gray-600 uppercase tracking-wider">
                   Item
+                </th>
+                <th scope="col"
+                  class="px-1 py-3 bg-gray-50 text-center text-xs shadow-header-gray-300 font-medium text-gray-600 uppercase tracking-wider">
+                  Detalles
                 </th>
                 <th v-for="(da, i) in principalData" :key="i" scope="col"
                   :class="['px-6 py-3 bg-gray-50 text-center text-xs shadow-header-gray-300 font-medium text-gray-600 uppercase tracking-wider', da.titleClass]">
@@ -105,6 +109,12 @@
                   <div class="">
                     {{ index + 1 }}
                   </div>
+                </td>
+                <td class="px-2 py-2 text-center">
+                  <a :href="route('employee.document.rrhh.status', { emp_id: emp.id })"
+                    class="text-green-700 hover:underline hover:text-green-500 cursor-pointer">
+                    Ver detalles
+                  </a>
                 </td>
                 <!-- principalData -->
                 <td v-for="da, i in principalData" :key="i" :class="['px-2 py-2', da.propClass]">
