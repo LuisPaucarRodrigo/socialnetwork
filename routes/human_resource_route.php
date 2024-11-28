@@ -118,8 +118,10 @@ Route::middleware('permission:HumanResourceManager|HumanResource')->group(functi
     Route::get('/management_employees/happy_birthday', [ManagementEmployees::class, 'happy_birthday'])->name('management.employees.happy.birthday');
 
     //Nomina
-    Route::get('/management_employees/spreadsheets/{reentry?}', [SpreadsheetsController::class, 'index'])->name('spreadsheets.index');
-    Route::get('/management_employees/spreadsheets/payroll/export', [SpreadsheetsController::class, 'export'])->name('spreadsheets.payroll.export');
+    Route::get('/management_employees/payroll/{reentry?}', [SpreadsheetsController::class, 'index'])->name('payroll.index');
+    Route::post('/management_employees/payroll/store', [SpreadsheetsController::class, 'store_payroll'])->name('payroll.store');
+    Route::get('/management_employees//spreadsheets/{payroll_id}', [SpreadsheetsController::class, 'index_payroll'])->name('spreadsheets.index');
+    Route::get('/management_employees/spreadsheets/payroll/export/{payroll_id}', [SpreadsheetsController::class, 'export'])->name('spreadsheets.payroll.export');
 
     //Formation and Development
     Route::get('/management_employees/formation_development', [FormationDevelopment::class, 'index'])->name('management.employees.formation_development');

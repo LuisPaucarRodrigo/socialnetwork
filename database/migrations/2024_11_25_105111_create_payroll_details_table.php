@@ -15,6 +15,15 @@ return new class extends Migration
             $table->id();
             $table->foreignId('payroll_id')->constrained();
             $table->foreignId('employee_id')->constrained();
+            $table->float('basic_salary');
+            $table->float('amount_travel_expenses')->nullable();
+            $table->float('life_ley');
+            $table->string('state')->default('Active');
+            $table->boolean('discount_remuneration');
+            $table->boolean('discount_sctr');
+            $table->integer('days_taken')->default(0);  
+            $table->date('hire_date');
+            $table->date('fired_date')->nullable();
             $table->foreignId('pension_id')->constrained();
             $table->timestamps();
         });

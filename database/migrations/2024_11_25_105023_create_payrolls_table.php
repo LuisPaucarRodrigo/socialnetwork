@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('payrolls', function (Blueprint $table) {
             $table->id();
             $table->string('month')->unique();
-            $table->boolean('state');
+            $table->boolean('state')->default(false);
             $table->timestamps();
         });
     }

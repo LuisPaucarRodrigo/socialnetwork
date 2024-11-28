@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('type');
             $table->decimal('values', 10, 4);
             $table->decimal('values_seg', 10, 4);
+            $table->foreignId('payroll_id')->constrained();
             $table->timestamps();
         });
     }

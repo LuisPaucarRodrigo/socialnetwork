@@ -718,11 +718,13 @@ function submitImportExcel() {
     })
         .then(response => {
             if (response.status === 200) {
+                console.log(response.data)
                 form.cicsa_material_items = response.data;
                 modalImportMaterial();
             }
         })
         .catch(error => {
+            console.log(error)
             if (error.response.status === 400) {
                 formImport.errors.document = error.response.data.errorMessage
             } else {

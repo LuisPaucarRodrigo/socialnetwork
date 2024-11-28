@@ -36,7 +36,9 @@ class ManagementEmployees extends Controller
                 $query->where('state', 'Inactive');
             })->paginate();
         }
+        
         $employees->each(function ($employee) {
+            $employee = $employee->setAppends([]);
             $employee->cropped_image = url($employee->cropped_image ? '/image/profile/' . $employee->cropped_image : '/image/projectimage/DefaultUser.png');
         });
 
@@ -88,7 +90,7 @@ class ManagementEmployees extends Controller
 
     public function create()
     {
-        $pension = Pension::all();
+        $pension = ['Habitad','Prima','Integra'];
         return Inertia::render('HumanResource/ManagementEmployees/EmployeesStoreAndUpdate', ['pensions' => $pension]);
     }
 
@@ -139,7 +141,7 @@ class ManagementEmployees extends Controller
                 'discount_sctr' => $request->discount_sctr,
                 'hire_date' => $request->hire_date,
                 'employee_id' => $employeeId,
-                'pension_id' => $request->pension_system,
+                'pension_type' => $request->pension_type,
             ]);
 
             Education::create([
@@ -257,7 +259,7 @@ class ManagementEmployees extends Controller
                 'discount_remuneration' => $request->discount_remuneration,
                 'discount_sctr' => $request->discount_sctr,
                 'hire_date' => $request->hire_date,
-                'pension_id' => $request->pension_system,
+                'pension_type' => $request->pension_type,
             ]);
 
             $employee->education->update([

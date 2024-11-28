@@ -24,9 +24,9 @@ return new class extends Migration
             $table->string('expense_line');
             $table->boolean('state_travel_expenses')->default(false);
             $table->string('type_contract');
+            $table->string('pension_type');
             $table->float('amount_travel_expenses')->nullable();
             $table->foreignId('employee_id')->constrained()->onDelete('cascade');
-            $table->foreignId('pension_id')->constrained('pensions');
             $table->timestamps();
         });
     }

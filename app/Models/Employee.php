@@ -87,14 +87,25 @@ class Employee extends Model
     {
         return $this->belongsToMany(Project::class, 'project_employee')->withPivot('charge');
     }
+
     public function project_employees()
     {
         return $this->hasOne(ProjectEmployee::class);
     }
-
+    
     public function payroll_details()
     {
-        return $this->hasOne(PayrollDetail::class);
+        return $this->hasMany(PayrollDetail::class, 'employee_id', 'id');
+    }
+
+    public function payrolls()
+    {
+        return $this->belongsToMany(Payroll::class, 'payroll_details');
+    }
+
+    public function pensions()
+    {
+        return $this->belongsToMany(Pension::class, 'payroll_details');
     }
 
     public function salaryPerDay($days)

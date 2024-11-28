@@ -26,6 +26,7 @@ class CicsaMaterialImport implements ToCollection, WithStartRow
 
     public function startRow(): int
     {
+        return 2;
     }
 
     public function __construct()
@@ -36,7 +37,13 @@ class CicsaMaterialImport implements ToCollection, WithStartRow
     public function collection(Collection $collection)
     {
         foreach ($collection as $row) {
-
+            $this->data->push([
+                'code_ax' => $row[0],
+                'name' => $row[1],
+                'unit' => $row[2],
+                'type' => $row[3],
+                'quantity' => $row[4],
+            ]);
         }
     }
 

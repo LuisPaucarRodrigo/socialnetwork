@@ -9,7 +9,9 @@ use App\Models\Employee;
 use App\Models\Payroll;
 use App\Models\PayrollDetail;
 use App\Models\Pension;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
@@ -18,49 +20,84 @@ class SpreadsheetsController extends Controller
 {
     public function index()
     {
-        $payroll = Payroll::all();
-        return Inertia::render('HumanResource/Payroll/Spreadsheets', [
+        $payroll = Payroll::orderBy('month', 'desc')->paginate();
+        return Inertia::render('HumanResource/Payroll/Index', [
             'payroll' => $payroll
         ]);
     }
 
     public function store_payroll(Request $request)
     {
-        $validateDate = $request->validate();
-        $payroll = Payroll::create($validateDate);
-        $pension_system = Pension::create
-        $employees = Employee::select('id')->get();
-        foreach ($employees as $employee) {
-            PayrollDetail::create([
-                'payroll_id' => $payroll->id,
-                'employee_id' => $employee->id,
-                'pension_id' => 1
+        $validateData = $request->validate([
+            'month' => 'required|unique:payrolls,month',
+            'state' => 'required',
+            'pension_system.*.type' => 'required',
+            'pension_system.*.values' => 'required',
+            'pension_system.*.values_seg' => 'required',
+        ]);
+        DB::beginTransaction();
+        try {
+            $payroll = Payroll::create([
+                'month' => $validateData['month'],
+                'state' => $validateData['state'],
             ]);
+            foreach ($validateData['pension_system'] as $pension) {
+                Pension::create([
+                    'type' => $pension['type'],
+                    'values' => $pension['values'],
+                    'values_seg' => $pension['values_seg'],
+                    'payroll_id' => $payroll->id
+                ]);
+            }
+
+            $listPension = $payroll->load('pension');
+            $employees = Employee::select('id')->with('contract')->get();
+            foreach ($employees as $employee) {
+                PayrollDetail::create([
+                    'payroll_id' => $payroll->id,
+                    'employee_id' => $employee->id,
+                    'basic_salary' => $employee->contract->basic_salary,
+                    'amount_travel_expenses' => $employee->contract->amount_travel_expenses,
+                    'life_ley' => $employee->contract->life_ley,
+                    'discount_remuneration' => $employee->contract->discount_remuneration,
+                    'discount_sctr' => $employee->contract->discount_sctr,
+                    'hire_date' => $employee->contract->hire_date,
+                    'fired_date' => $employee->contract->fired_date,
+                    'days_taken' => $employee->contract->days_taken,
+                    'pension_id' => $listPension->pension->firstWhere('type', $employee->contract->pension_type)->id
+                ]);
+            }
+            DB::commit();
+            return response()->json($payroll, 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json($e->getMessage(), 500);
         }
     }
 
-    public function index_payroll(Request $request, $reentry = false)
+    public function index_payroll(Request $request, $payroll_id)
     {
-        if ($reentry == false) {
-            $spreadsheet = Contract::with('pension', 'employee')->where('state', 'Active');
-        } else {
-            $spreadsheet = Contract::with('pension', 'employee')->where('state', 'Inactive');
-        }
-        $searchTerm = strtolower($request->query('searchTerm'));
-        if ($searchTerm !== '') {
-            $spreadsheet = $spreadsheet->where(function ($query) use ($searchTerm) {
-                $query->whereHas('pension', function ($subQuery) use ($searchTerm) {
-                    $subQuery->where('type', 'like', '%' . $searchTerm . '%');
-                })
-                    ->orWhereHas('employee', function ($subQuery) use ($searchTerm) {
-                        $subQuery->where('name', 'like', '%' . $searchTerm . '%')
-                            ->orWhere('lastname', 'like', '%' . $searchTerm . '%');
-                    });
-            })->get();
-        } else {
-            $spreadsheet = $spreadsheet->get();
-        }
-
+        // if ($reentry == false) {
+        //     $spreadsheet = Payroll::with('pension', 'employee')->where('state', 'Active');
+        // } else {
+        //     $spreadsheet = Payroll::with('pension', 'employee')->where('state', 'Inactive');
+        // }
+        // $searchTerm = strtolower($request->query('searchTerm'));
+        // if ($searchTerm !== '') {
+        //     $spreadsheet = $spreadsheet->where(function ($query) use ($searchTerm) {
+        //         $query->whereHas('pension', function ($subQuery) use ($searchTerm) {
+        //             $subQuery->where('type', 'like', '%' . $searchTerm . '%');
+        //         })
+        //             ->orWhereHas('employee', function ($subQuery) use ($searchTerm) {
+        //                 $subQuery->where('name', 'like', '%' . $searchTerm . '%')
+        //                     ->orWhere('lastname', 'like', '%' . $searchTerm . '%');
+        //             });
+        //     })->get();
+        // } else {
+        //     $spreadsheet = $spreadsheet->get();
+        // }
+        $payroll = Payroll::find($payroll_id);
+        $spreadsheet = PayrollDetail::with('payroll', 'employee', 'pension')->where('payroll_id', $payroll_id)->get();
         $total = [
             'sum_salary' => $spreadsheet->sum('basic_salary'),
             'sum_truncated_vacations' => $spreadsheet->sum('truncated_vacations'),
@@ -79,13 +116,14 @@ class SpreadsheetsController extends Controller
             'sum_sctr_s' => $spreadsheet->sum('sctr_s'),
             'sum_total_contribution' => $spreadsheet->sum('total_contribution'),
         ];
-        $data = json_decode(File::get(config_path('custom.json')), true);
+        // dd($spreadsheet);
+        // $data = json_decode(File::get(config_path('custom.json')), true);
         return Inertia::render('HumanResource/Payroll/Spreadsheets', [
             'spreadsheets' => $spreadsheet,
-            'search' => $searchTerm,
-            'boolean' => boolval($reentry),
+            'payroll' => $payroll,
+            // 'boolean' => boolval($reentry),
             'total' => $total,
-            'number_people' => $data['number_people'],
+            // 'number_people' => $data['number_people'],
         ]);
     }
 
@@ -131,9 +169,9 @@ class SpreadsheetsController extends Controller
         File::put(config_path('custom.json'), json_encode($data));
     }
 
-    public function export()
+    public function export($payroll_id)
     {
-        return Excel::download(new PayrollExport, 'Planilla ' . date('m-Y') . '.xlsx');
+        return Excel::download(new PayrollExport($payroll_id), 'Planilla ' . date('m-Y') . '.xlsx');
     }
 
     public function update_sctr_p(Request $request)

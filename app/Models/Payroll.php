@@ -15,11 +15,18 @@ class Payroll extends Model
         'state'
     ];
 
-    public function payroll_details(){
-        return $this->hasOne(PayrollDetail::class);
+    public function employees()
+    {
+        return $this->belongsToMany(Employee::class, 'payroll_details');
     }
 
-    public function pension() {
+    public function pension()
+    {
         return $this->hasMany(Pension::class);
+    }
+
+    public function payroll_details()
+    {
+        return $this->hasMany(PayrollDetail::class);
     }
 }
