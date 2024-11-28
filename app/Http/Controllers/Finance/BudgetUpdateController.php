@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Finance;
 
 use App\Http\Controllers\Controller;
 use App\Models\BudgetUpdate;
+use App\Models\CostLine;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\User;
@@ -65,8 +66,10 @@ class BudgetUpdateController extends Controller
 
     public function selectProject()
     {
+
         return Inertia::render('Finance/Budget/SelectProject', [
-            'projects' => Project::all()
+            'projects' => Project::all(),
+            'costLines' => CostLine::all(),
         ]);
     }
 

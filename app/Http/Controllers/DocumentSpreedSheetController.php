@@ -22,7 +22,9 @@ class DocumentSpreedSheetController extends Controller
             $employees = Employee::with([
                 'document_registers',
                 'contract:id,state,employee_id,hire_date,discount_sctr,pension_id',
-            ])
+            ])->whereHas('contract', function($query){
+                $query->where('state', 'Active');
+            })
                 ->select(
                     'id',
                     'name',
@@ -42,6 +44,9 @@ class DocumentSpreedSheetController extends Controller
                 'document_registers',
                 'contract:id,state,employee_id,hire_date,discount_sctr,pension_id,expense_line',
             ])
+            ->whereHas('contract', function($query){
+                $query->where('state', 'Active');
+            })
                 ->select(
                     'id',
                     'name',
@@ -240,7 +245,9 @@ class DocumentSpreedSheetController extends Controller
 
     public function employeesDocumentAlarms()
     {
-        $employees = Employee::where('state', 'Active')->orderBy('lastname')->get()->filter(function ($item) {
+        $employees = Employee::whereHas('contract', function($query){
+            $query->where('state', 'Active');
+        })->orderBy('lastname')->get()->filter(function ($item) {
             return $item->documents_about_to_expire > 0;
         })->values()->all();
         $e_employees = ExternalEmployee::orderBy('lastname')->get()->filter(function ($item) {

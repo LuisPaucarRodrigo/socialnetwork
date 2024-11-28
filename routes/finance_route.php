@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Finance\AccountStatementController;
 use App\Http\Controllers\Finance\BudgetUpdateController;
+use App\Http\Controllers\Finance\CostLineController;
 use App\Http\Controllers\Finance\DepositController;
 use App\Http\Controllers\Finance\ExpenseManagementController;
 use App\Http\Controllers\Finance\PaymentController;
@@ -28,6 +29,19 @@ Route::middleware('permission:FinanceManager')->group(function () {
     Route::post('/finance/account_statement_import', [AccountStatementController::class, 'importExcel'])->name('finance.account_statement.import');
     Route::get('/finance/account_statement_costs/{as_id}', [AccountStatementController::class, 'searchStatementsCosts'])->name('finance.account_statement.costs');
     Route::post('/finance/account_statement_massive_delete', [AccountStatementController::class, 'masiveDestroy'])->name('finance.account_statement.masivedelete');
+
+
+    //Costs Lines
+    Route::post('/cost_lines/store/{cl_id?}', [CostLineController::class,'cost_line_store'])->name('finance.cost_line.store');
+    Route::delete('/cost_lines/destroy/{cl_id?}', [CostLineController::class,'cost_line_destroy'])->name('finance.cost_line.destroy');
+    //CostsCenters
+    Route::get('/cost_center/index/{cl_id}', [CostLineController::class,'cost_centers_index'])->name('finance.cost_centers.index');
+    Route::post('/cost_center/store/{cc_id?}', [CostLineController::class,'cost_center_store'])->name('finance.cost_center.store');
+    Route::delete('/cost_center/destroy/{cc_id?}', [CostLineController::class,'cost_center_destroy'])->name('finance.cost_center.destroy');
+
+
+
+
 });
 
 Route::middleware('permission:FinanceManager|Finance')->group(function () {
