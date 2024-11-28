@@ -12,6 +12,7 @@ class ChecklistCar extends Model
     protected $fillable = [
         'reason',
         'user_id',
+        'user_name',
         'additionalEmployees',
         'zone',
         'km',

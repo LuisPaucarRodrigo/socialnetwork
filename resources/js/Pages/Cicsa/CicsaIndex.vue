@@ -46,14 +46,6 @@
                     </div>
                 </div>
                 <div class="flex space-x-4">
-                    <!-- <Link :href="route('cicsa.charge_areas.accepted')"
-                        class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-                    Completados
-                    </Link>
-                    <Link :href="route('cicsa.charge')"
-                        class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
-                    Por Cobrar
-                    </Link> -->
                     <TextInput data-tooltip-target="search_fields" type="text" v-model="filterForm.search"
                         placeholder="Buscar ..." />
                     <div id="search_fields" role="tooltip"

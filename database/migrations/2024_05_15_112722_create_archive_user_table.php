@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('archive_id')->constrained('archives')->onDelete('cascade');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->string('user_name');
             $table->string('state')->default('Pendiente');
             $table->boolean('status')->default(true);
             $table->text('observation')->nullable();

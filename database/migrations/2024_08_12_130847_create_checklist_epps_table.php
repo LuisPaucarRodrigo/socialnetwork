@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
-            
+            $table->string('user_name');
             $table->string('helmet');
             $table->string('chin_strap');
             $table->string('windbreaker');
