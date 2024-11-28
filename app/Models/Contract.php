@@ -11,15 +11,20 @@ class Contract extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'basic_salary', 
-        'life_ley', 
-        'discount_remuneration', 
-        'discount_sctr', 
-        'state', 
-        'days_taken', 
-        'hire_date', 
-        'fired_date', 
-        'employee_id', 
+        'expense_line',
+        'state_travel_expenses',
+        'type_contract',
+        'amount_travel_expenses',
+
+        'basic_salary',
+        'life_ley',
+        'discount_remuneration',
+        'discount_sctr',
+        'state',
+        'days_taken',
+        'hire_date',
+        'fired_date',
+        'employee_id',
         'pension_id'
     ];
 

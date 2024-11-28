@@ -128,6 +128,11 @@ class ManagementEmployees extends Controller
             $employeeId = $employee->id;
 
             Contract::create([
+                'expense_line' => $request->expense_line,
+                'state_travel_expenses' => $request->state_travel_expenses,
+                'type_contract' => $request->type_contract,
+                'amount_travel_expenses' => $request->amount_travel_expenses,
+
                 'basic_salary' => $request->basic_salary,
                 'life_ley' => $request->life_ley,
                 'discount_remuneration' => $request->discount_remuneration,
@@ -242,6 +247,11 @@ class ManagementEmployees extends Controller
             ]);
 
             $employee->contract->update([
+                'expense_line' => $request->expense_line,
+                'state_travel_expenses' => $request->state_travel_expenses,
+                'type_contract' => $request->type_contract,
+                'amount_travel_expenses' => $request->amount_travel_expenses,
+
                 'basic_salary' => $request->basic_salary,
                 'life_ley' => $request->life_ley,
                 'discount_remuneration' => $request->discount_remuneration,

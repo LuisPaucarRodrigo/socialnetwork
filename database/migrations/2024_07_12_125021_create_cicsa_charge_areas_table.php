@@ -17,7 +17,7 @@ return new class extends Migration
             $table->date('invoice_date')->nullable();
             $table->integer('credit_to')->nullable();
             $table->double('amount')->nullable();
-            $table->boolean('state_detraction');
+            $table->boolean('state_detraction')->default(true);
 
             $table->date('deposit_date')->nullable();
             $table->string('transaction_number_current')->nullable();
