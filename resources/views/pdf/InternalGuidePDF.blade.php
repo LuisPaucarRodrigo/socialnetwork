@@ -301,7 +301,7 @@
             <tr>
                 <td style="width: 10%; border: none; padding: 0;">{{ $item['codsap'] ? $item['codsap'] : '' }}</td>
                 <td style="width: 40%; border: none; padding: 0;">{{ $item['name'] }}</td>
-                <td style="width: 30%; border: none; padding: 0;">{{ $item['serie'] ? $item['serie'] : 'NO APLICA' }}</td>
+                <td style="width: 30%; border: none; padding: 0;">{{ $item['serie'] ? $item['serie'] : '' }}</td>
                 <td style="width: 10%; text-align: center; border: none; padding: 0;">{{ $item['quantity'] }}</td>
                 <td style="width: 10%; text-align: center; border: none; padding: 0;">{{ $item['unit'] ? $item['unit'] : 'NIU' }}</td>
             </tr>

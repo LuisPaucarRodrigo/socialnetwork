@@ -275,7 +275,7 @@
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.project_quantity }}</td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.available_quantity }}</td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry?.guide_number }}</td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.huawei_entry?.entry_date) }}</td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.huawei_entry ? item.huawei_entry.entry_date : item.order_date) }}</td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : '-' }}</td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.order_number }}</td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.order_date) }}</td>
@@ -565,6 +565,8 @@
         id: String,
         nodiu: [Number, null]
     });
+
+    console.log(props)
 
     const refundModal = ref(false);
     const showRefundConfirm = ref(false);

@@ -42,7 +42,7 @@ class HuaweiManagementController extends Controller
         }
 
         if ($equipment){
-            $equipments = HuaweiEquipment::with('huawei_equipment_series', 'brand_model.brand')->where('prefix', $prefix)->paginate(10);
+            $equipments = HuaweiEquipment::select('id','name','claro_code','model_id')->with('brand_model.brand')->where('prefix', $prefix)->paginate(10);
             foreach ($equipments as $item) {
                 $item->name = $this->sanitizeText2($item->name);
             }
@@ -55,7 +55,8 @@ class HuaweiManagementController extends Controller
                 'warehouse' => $warehouse
             ]);
         } else {
-            $materials = HuaweiMaterial::with('brand_model.brand')->where('prefix', $prefix)->paginate(10);
+            $materials = HuaweiMaterial::select('id', 'name', 'claro_code','model_id')->with('brand_model.brand')->where('prefix', $prefix)->paginate(10);
+            $materials->getCollection()->makeHidden(['huawei_entry_details']);
             foreach ($materials as $material) {
                 $material->name = $this->sanitizeText2($material->name);
             }
@@ -92,7 +93,7 @@ class HuaweiManagementController extends Controller
             $equipmentsQuery = HuaweiEquipment::query();
 
             // Aplicar filtros de búsqueda para equipos
-            $equipmentsQuery->where('prefix', $prefix)->where(function ($query) use ($searchTerm) {
+            $equipmentsQuery->select('id', 'name', 'claro_code','model_id')->where('prefix', $prefix)->where(function ($query) use ($searchTerm) {
                 $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"])
                     ->orWhereRaw('LOWER(claro_code) LIKE ?', ["%{$searchTerm}%"])
                     ->orWhereHas('brand_model.brand', function ($query) use ($searchTerm) {
@@ -104,7 +105,7 @@ class HuaweiManagementController extends Controller
             });
 
             // Obtener los resultados de equipos
-            $equipments = $equipmentsQuery->with('huawei_equipment_series', 'brand_model.brand')->get()
+            $equipments = $equipmentsQuery->with('brand_model.brand')->get()
                 ->map(function ($equipment){
                     $equipment->name = $this->sanitizeText2($equipment->name);
                     return $equipment;
@@ -123,7 +124,7 @@ class HuaweiManagementController extends Controller
             $materialsQuery = HuaweiMaterial::query();
 
             // Aplicar filtros de búsqueda para materiales
-            $materialsQuery->where('prefix', $prefix)->where(function ($query) use ($searchTerm) {
+            $materialsQuery->select('id', 'name', 'claro_code','model_id')->where('prefix', $prefix)->where(function ($query) use ($searchTerm) {
                 $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"])
                     ->orWhereRaw('LOWER(claro_code) LIKE ?', ["%{$searchTerm}%"]);
             });
@@ -134,6 +135,8 @@ class HuaweiManagementController extends Controller
                     $material->name = $this->sanitizeText2($material->name);
                     return $material;
                 });
+
+            $materials->makeHidden(['huawei_entry_details']);
 
             // Retornar la vista para materiales
             return Inertia::render('Huawei/Materials', [
@@ -545,8 +548,6 @@ class HuaweiManagementController extends Controller
         return response()->json(['message' => 'notfound'], 200);
     }
 
-
-
     public function storeBrand (Request $request)
     {
         $data = $request->validate([
@@ -573,25 +574,77 @@ class HuaweiManagementController extends Controller
     public function showDetails($id, $equipment = null)
     {
         if ($equipment) {
-            $entries = HuaweiEntryDetail::whereHas('huawei_equipment_serie', function ($query) use ($id) {
-                $query->whereHas('huawei_equipment', function ($query) use ($id) {
+            $entries = HuaweiEntryDetail::select(
+                    'id', 'new_site', 'assigned_diu', 'order_number', 'order_date', 'entry_date',
+                    'unit_price', 'huawei_order_id', 'huawei_entry_id', 'quantity', 'observation', 'huawei_equipment_serie_id'
+                )
+                ->whereNull('huawei_material_id') // Excluir registros con huawei_material_id no nulo
+                ->whereHas('huawei_equipment_serie.huawei_equipment', function ($query) use ($id){
                     $query->where('id', $id);
-                });
-            })
-            ->with('huawei_entry', 'huawei_pending_order', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+                })
+                ->with([
+                    'huawei_entry:id,guide_number,observation,entry_date',
+                    'huawei_pending_order:id,order_number,order_date,observation',
+                    'huawei_equipment_serie.huawei_equipment:id,name',
+                    'latest_huawei_project_resource.huawei_project:id,name,assigned_diu,ot'
+                ])
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
+
+            // Ocultar atributos en relaciones
+            $entries->getCollection()->each(function ($equipment) {
+                $equipment->makeHidden(['huawei_project_resources', 'project_quantity', 'refund_quantity', 'available_quantity']);
+                $equipment->latest_huawei_project_resource?->huawei_project->makeHidden([
+                    'state',
+                    'additional_cost_total',
+                    'static_cost_total',
+                    'materials_in_project',
+                    'equipments_in_project',
+                    'materials_liquidated',
+                    'equipments_liquidated',
+                    'total_earnings',
+                    'total_real_earnings',
+                    'total_real_earnings_without_deposit',
+                    'total_project_cost',
+                    'total_employee_costs',
+                    'total_essalud_employee_cost'
+                ]);
+                $equipment->huawei_equipment_serie->huawei_equipment->makeHidden(['huawei_entry_details']);
+            });
 
             foreach ($entries as $entry){
                 $entry->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($entry->huawei_equipment_serie->huawei_equipment->name);
             }
         } else {
-            $entries = HuaweiEntryDetail::where('huawei_material_id', $id)->with('huawei_entry', 'huawei_pending_order', 'huawei_material', 'huawei_project_resources.huawei_project', 'huawei_project_resources.huawei_project_liquidation')
+            $entries = HuaweiEntryDetail::select('id','new_site','assigned_diu','order_number','order_date','entry_date','unit_price','huawei_order_id','huawei_entry_id','quantity','observation','huawei_material_id')->where('huawei_material_id', $id)
+            ->with('huawei_entry:id,guide_number,observation,entry_date', 'huawei_pending_order:id,order_number,order_date,observation', 'huawei_material:id,name', 'huawei_project_resources.huawei_project:id,name,assigned_diu,ot', 'huawei_project_resources.huawei_project_liquidation')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
+            $entries->getCollection()->each(function ($material){
+                $material->huawei_material->makeHidden(['quantity','huawei_entry_details','available_quantity']);
+            });
+
             foreach ($entries as $entry){
                 $entry->huawei_material->name = $this->sanitizeText2($entry->huawei_material->name);
+                $entry->makeHidden(['latest_huawei_project_resource']);
+                foreach($entry->huawei_project_resources as $resource){
+                    $resource->huawei_project->makeHidden([
+                        'state',
+                        'additional_cost_total',
+                        'static_cost_total',
+                        'materials_in_project',
+                        'equipments_in_project',
+                        'materials_liquidated',
+                        'equipments_liquidated',
+                        'total_earnings',
+                        'total_real_earnings',
+                        'total_real_earnings_without_deposit',
+                        'total_project_cost',
+                        'total_employee_costs',
+                        'total_essalud_employee_cost'
+                    ]);
+                }
             }
         }
 
@@ -604,17 +657,31 @@ class HuaweiManagementController extends Controller
 
     public function getGeneralEquipments($prefix)
     {
-        $equipments = HuaweiEntryDetail::whereNull('huawei_material_id')
+        $equipments = HuaweiEntryDetail::select('id','assigned_diu','new_site','order_date','entry_date','order_number','unit_price','huawei_order_id','huawei_entry_id','huawei_equipment_serie_id','observation')->whereNull('huawei_material_id')
         ->whereHas('huawei_equipment_serie.huawei_equipment', function ($query) use ($prefix) {
             $query->where('prefix', $prefix);
         })
         ->with([
             'huawei_entry',
-            'huawei_equipment_serie.huawei_equipment',  // Relación ya filtrada
-            'latest_huawei_project_resource.huawei_project'
+            'huawei_equipment_serie.huawei_equipment:id,name,claro_code,prefix',  // Relación ya filtrada
+            'latest_huawei_project_resource'
         ])
         ->orderBy('created_at', 'desc')
         ->paginate(20);
+
+        $equipments->getCollection()->makeHidden([
+            'available_quantity',
+            'huawei_project_resources',
+            'project_quantity',
+            'refund_quantity'
+        ]);
+
+        $equipments->getCollection()->each(function ($equipment) {
+            $equipment->huawei_equipment_serie->huawei_equipment->makeHidden(['available_quantity', 'quantity']);
+            if ($equipment->latest_huawei_project_resource){
+                $equipment->latest_huawei_project_resource->makeHidden(['liquidated_quantity']);
+            }
+        });
 
         $data = [
             'order_numbers' => $equipments->pluck('order_number')->filter()->unique()->values()->toArray(),
@@ -643,7 +710,7 @@ class HuaweiManagementController extends Controller
         $searchTerm = strtolower($request);
 
         // Consulta principal, incluyendo filtro de `prefix` y campos de búsqueda especificados
-        $equipments = HuaweiEntryDetail::whereNull('huawei_material_id')
+        $equipments = HuaweiEntryDetail::select('id','assigned_diu','new_site','order_date','entry_date','order_number','unit_price','huawei_order_id','huawei_entry_id','huawei_equipment_serie_id','observation')->whereNull('huawei_material_id')
             ->whereHas('huawei_equipment_serie.huawei_equipment', function ($query) use ($prefix) {
                 $query->where('prefix', $prefix);
             })
@@ -666,21 +733,21 @@ class HuaweiManagementController extends Controller
             })
             ->with([
                 'huawei_entry',
-                'huawei_equipment_serie.huawei_equipment',
-                'latest_huawei_project_resource.huawei_project'
+                'huawei_equipment_serie.huawei_equipment:id,name,claro_code,prefix',
+                'latest_huawei_project_resource'
             ])
             ->orderBy('created_at', 'desc')
             ->get();
 
         // Consulta adicional para los filtros por campos calculados
-        $equipmentsToFilter = HuaweiEntryDetail::whereNull('huawei_material_id')
+        $equipmentsToFilter = HuaweiEntryDetail::select('id','assigned_diu','new_site','order_date','entry_date','order_number','unit_price','huawei_order_id','huawei_entry_id','huawei_equipment_serie_id','observation')->whereNull('huawei_material_id')
             ->whereHas('huawei_equipment_serie.huawei_equipment', function ($query) use ($prefix) {
                 $query->where('prefix', $prefix);
             })
             ->with([
                 'huawei_entry',
-                'huawei_equipment_serie.huawei_equipment',
-                'latest_huawei_project_resource.huawei_project'
+                'huawei_equipment_serie.huawei_equipment:id,name,claro_code,prefix',
+                'latest_huawei_project_resource'
             ])->orderBy('created_at', 'desc')->get();
 
         // Filtro por `state` y `instalation_state`
@@ -706,6 +773,20 @@ class HuaweiManagementController extends Controller
             }
         }
 
+        $finalEquipments->makeHidden([
+            'available_quantity',
+            'huawei_project_resources',
+            'project_quantity',
+            'refund_quantity'
+        ]);
+
+        $finalEquipments->each(function ($equipment) {
+            $equipment->huawei_equipment_serie->huawei_equipment->makeHidden(['available_quantity', 'quantity']);
+            if ($equipment->latest_huawei_project_resource){
+                $equipment->latest_huawei_project_resource->makeHidden(['liquidated_quantity']);
+            }
+        });
+
         $data = [
             'order_numbers' => $equipments->pluck('order_number')->filter()->unique()->values()->toArray(),
             'guide_numbers' => $equipments->pluck('huawei_entry.guide_number')->filter()->unique()->values()->toArray(),
@@ -728,18 +809,34 @@ class HuaweiManagementController extends Controller
     public function searchGeneralAdvance($prefix, Request $request)
     {
         // Construimos la consulta base
-        $query = HuaweiEntryDetail::whereNull('huawei_material_id')
+        $query = HuaweiEntryDetail::select('id','assigned_diu','new_site','order_date','entry_date','order_number','unit_price','huawei_order_id','huawei_entry_id','huawei_equipment_serie_id','observation')->whereNull('huawei_material_id')
             ->whereHas('huawei_equipment_serie.huawei_equipment', function ($query) use ($prefix) {
                 $query->where('prefix', $prefix);
             })
             ->with([
                 'huawei_entry',
-                'huawei_equipment_serie.huawei_equipment',
-                'latest_huawei_project_resource.huawei_project'
+                'huawei_equipment_serie.huawei_equipment:id,name,claro_code,prefix',
+                'latest_huawei_project_resource'
             ]);
 
         // Contar los elementos en bruto
         $equipmentsForCounts = $query->get();
+
+
+        $equipmentsForCounts->makeHidden([
+            'available_quantity',
+            'huawei_project_resources',
+            'project_quantity',
+            'refund_quantity'
+        ]);
+
+        $equipmentsForCounts->each(function ($equipment) {
+            $equipment->huawei_equipment_serie->huawei_equipment->makeHidden(['available_quantity', 'quantity']);
+            if ($equipment->latest_huawei_project_resource){
+                $equipment->latest_huawei_project_resource->makeHidden(['liquidated_quantity']);
+            }
+        });
+
         $data = [
             'order_numbers' => $equipmentsForCounts->pluck('order_number')->filter()->unique()->count(),
             'guide_numbers' => $equipmentsForCounts->pluck('huawei_entry.guide_number')->filter()->unique()->count(),
@@ -777,6 +874,22 @@ class HuaweiManagementController extends Controller
 
         // Obtener los datos finales con los filtros aplicados
         $equipments = $query->orderBy('created_at', 'desc')->get();
+
+
+        $equipments->makeHidden([
+            'available_quantity',
+            'huawei_project_resources',
+            'project_quantity',
+            'refund_quantity'
+        ]);
+
+        $equipments->each(function ($equipment) {
+            $equipment->huawei_equipment_serie->huawei_equipment->makeHidden(['available_quantity', 'quantity']);
+            if ($equipment->latest_huawei_project_resource){
+                $equipment->latest_huawei_project_resource->makeHidden(['liquidated_quantity']);
+            }
+        });
+
         foreach ($equipments as $equipment) {
             if ($equipment->huawei_equipment_serie && $equipment->huawei_equipment_serie->huawei_equipment) {
                 $equipment->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($equipment->huawei_equipment_serie->huawei_equipment->name);
@@ -828,14 +941,43 @@ class HuaweiManagementController extends Controller
 
     public function detailsWithoutDiu ($id)
     {
-        $entries = HuaweiEntryDetail::whereNull('assigned_diu')
+        $entries = HuaweiEntryDetail::select(
+                'id', 'new_site', 'assigned_diu', 'order_number', 'order_date', 'entry_date',
+                'unit_price', 'huawei_order_id', 'huawei_entry_id', 'quantity', 'observation', 'huawei_equipment_serie_id'
+            )
+            ->whereNull('assigned_diu')
             ->whereHas('huawei_equipment_serie', function ($query) use ($id) {
             $query->whereHas('huawei_equipment', function ($query) use ($id) {
                 $query->where('id', $id);
             });
         })
-        ->with('huawei_entry', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
+        ->with([
+            'huawei_entry:id,guide_number,observation,entry_date',
+            'huawei_pending_order:id,order_number,order_date,observation',
+            'huawei_equipment_serie.huawei_equipment:id,name',
+            'latest_huawei_project_resource.huawei_project:id,name,assigned_diu,ot'
+        ])
         ->get();
+
+        $entries->each(function ($equipment) {
+            $equipment->makeHidden(['huawei_project_resources', 'project_quantity', 'refund_quantity', 'available_quantity']);
+            $equipment->latest_huawei_project_resource?->huawei_project->makeHidden([
+                'state',
+                'additional_cost_total',
+                'static_cost_total',
+                'materials_in_project',
+                'equipments_in_project',
+                'materials_liquidated',
+                'equipments_liquidated',
+                'total_earnings',
+                'total_real_earnings',
+                'total_real_earnings_without_deposit',
+                'total_project_cost',
+                'total_employee_costs',
+                'total_essalud_employee_cost'
+            ]);
+            $equipment->huawei_equipment_serie->huawei_equipment->makeHidden(['huawei_entry_details']);
+        });
 
         foreach ($entries as $entry){
             $entry->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($entry->huawei_equipment_serie->huawei_equipment->name);
@@ -893,23 +1035,97 @@ class HuaweiManagementController extends Controller
                 });
 
             // Combinar ambos conjuntos de resultados
-            $mergedResults = $query->with('huawei_entry', 'huawei_pending_order', 'huawei_equipment_serie.huawei_equipment', 'latest_huawei_project_resource.huawei_project')
-                                    ->orderBy('created_at', 'desc')
-                                    ->get()
-                                   ->merge($queryByCode)
-                                   ->unique('id');
+            $mergedResults = $query
+                ->select(
+                    'id', 'new_site', 'assigned_diu', 'order_number', 'order_date', 'entry_date',
+                    'unit_price', 'huawei_order_id', 'huawei_entry_id', 'quantity', 'observation', 'huawei_equipment_serie_id'
+                )
+                ->with([
+                    'huawei_entry:id,guide_number,observation,entry_date',
+                    'huawei_pending_order:id,order_number,order_date,observation',
+                    'huawei_equipment_serie.huawei_equipment:id,name',
+                    'latest_huawei_project_resource.huawei_project:id,name,assigned_diu,ot'
+                ])
+                ->orderBy('created_at', 'desc')
+                ->get()
+                ->merge($queryByCode)
+                ->unique('id');
+
+                $mergedResults->each(function ($equipment) {
+                    $equipment->makeHidden(['huawei_project_resources', 'project_quantity', 'refund_quantity', 'available_quantity']);
+                    $equipment->latest_huawei_project_resource?->huawei_project->makeHidden([
+                        'state',
+                        'additional_cost_total',
+                        'static_cost_total',
+                        'materials_in_project',
+                        'equipments_in_project',
+                        'materials_liquidated',
+                        'equipments_liquidated',
+                        'total_earnings',
+                        'total_real_earnings',
+                        'total_real_earnings_without_deposit',
+                        'total_project_cost',
+                        'total_employee_costs',
+                        'total_essalud_employee_cost'
+                    ]);
+                    $equipment->huawei_equipment_serie->huawei_equipment->makeHidden(['huawei_entry_details']);
+                });
+                foreach ($mergedResults as $entry){
+                    $entry->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($entry->huawei_equipment_serie->huawei_equipment->name);
+                }
+
         } else {
             // Filtrar por material
-            $query->whereHas('huawei_material', function ($materialQuery) use ($id) {
-                $materialQuery->where('id', $id);
-            })
-            ->whereRaw('LOWER(order_number) LIKE ?', ["%{$searchTerm}%"])
-            ->orWhereHas('huawei_entry', function ($entryQuery) use ($searchTerm) {
-                $entryQuery->whereRaw('LOWER(guide_number) LIKE ?', ["%{$searchTerm}%"]);
+            $query = HuaweiEntryDetail::select(
+                    'id', 'new_site', 'assigned_diu', 'order_number', 'order_date', 'entry_date',
+                    'unit_price', 'huawei_order_id', 'huawei_entry_id', 'quantity', 'observation', 'huawei_material_id'
+                )
+                ->whereNull('huawei_equipment_serie_id') // Asegura que no tengan relación con huawei_equipment_serie
+                ->where('huawei_material_id', $id) // Filtra por el ID de huawei_material
+                ->where(function ($query) use ($searchTerm) {
+                    $query->whereRaw('LOWER(order_number) LIKE ?', ["%{$searchTerm}%"]) // Búsqueda por order_number
+                        ->orWhereHas('huawei_entry', function ($entryQuery) use ($searchTerm) {
+                            $entryQuery->whereRaw('LOWER(guide_number) LIKE ?', ["%{$searchTerm}%"]); // Búsqueda por guide_number
+                        });
+                });
+
+            // Carga de relaciones
+            $mergedResults = $query->with([
+                    'huawei_entry:id,guide_number,observation,entry_date',
+                    'huawei_pending_order:id,order_number,order_date,observation',
+                    'huawei_material:id,name',
+                    'huawei_project_resources.huawei_project:id,name,assigned_diu,ot',
+                    'huawei_project_resources.huawei_project_liquidation'
+                ])
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+
+            $mergedResults->each(function($material){
+                $material->huawei_material->makeHidden(['quantity','huawei_entry_details','available_quantity']);
             });
 
-            $mergedResults = $query->with('huawei_entry', 'huawei_pending_order', 'huawei_material')            ->orderBy('created_at', 'desc')
-            ->get();
+            foreach ($mergedResults as $entry){
+                $entry->huawei_material->name = $this->sanitizeText2($entry->huawei_material->name);
+                $entry->makeHidden(['latest_huawei_project_resource']);
+                foreach($entry->huawei_project_resources as $resource){
+                    $resource->huawei_project->makeHidden([
+                        'state',
+                        'additional_cost_total',
+                        'static_cost_total',
+                        'materials_in_project',
+                        'equipments_in_project',
+                        'materials_liquidated',
+                        'equipments_liquidated',
+                        'total_earnings',
+                        'total_real_earnings',
+                        'total_real_earnings_without_deposit',
+                        'total_project_cost',
+                        'total_employee_costs',
+                        'total_essalud_employee_cost'
+                    ]);
+                }
+            }
         }
 
         return Inertia::render('Huawei/Details', [
