@@ -853,10 +853,19 @@ class HuaweiManagementController extends Controller
             $query->whereIn('order_number', $request->selectedOrderNumbers);
         }
 
-        if (count($request->selectedGuideNumbers) < $data['guide_numbers']){
+        if (count($request->selectedGuideNumbers) < $data['guide_numbers']+1) {
             $guide_numbers = $request->selectedGuideNumbers;
-            $query->whereHas('huawei_entry', function ($subQuery) use ($guide_numbers){
-                $subQuery->whereIn('guide_number', $guide_numbers);
+
+            $query->where(function ($query) use ($guide_numbers) {
+                if (!in_array('(vacio)', $guide_numbers)) {
+                    $query->whereNotNull('huawei_entry_id')->whereHas('huawei_entry', function ($subQuery) use ($guide_numbers) {
+                        $subQuery->whereIn('guide_number', $guide_numbers);
+                    });
+                } else {
+                    $query->whereHas('huawei_entry', function ($subQuery) use ($guide_numbers) {
+                        $subQuery->whereIn('guide_number', $guide_numbers);
+                    })->orWhereNull('huawei_entry_id');
+                }
             });
         }
 
