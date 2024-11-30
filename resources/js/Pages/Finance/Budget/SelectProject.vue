@@ -76,10 +76,10 @@
                                     Centros de Costos
                                 </Link>
                                 <Link
-                                    :href="'#'"
+                                    :href="route('finance.cost_line.employees', {cl_id:item.id})"
                                     class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600"
                                 >
-                                    Empleados
+                                    Colaboradores
                                 </Link>
                                 <Link
                                     :href="'#'"

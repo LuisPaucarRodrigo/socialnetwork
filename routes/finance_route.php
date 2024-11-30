@@ -34,6 +34,11 @@ Route::middleware('permission:FinanceManager')->group(function () {
     //Costs Lines
     Route::post('/cost_lines/store/{cl_id?}', [CostLineController::class,'cost_line_store'])->name('finance.cost_line.store');
     Route::delete('/cost_lines/destroy/{cl_id?}', [CostLineController::class,'cost_line_destroy'])->name('finance.cost_line.destroy');
+    Route::get('/cost_lines/employees/{cl_id}', [CostLineController::class, 'cost_line_employee'])->name('finance.cost_line.employees');
+    Route::post('/cost_lines/employees_store', [CostLineController::class, 'cost_line_employee_store'])->name('finance.cost_line.employee.store');
+    Route::delete('/cost_lines/employees/destroy/{emp_id}', [CostLineController::class, 'cost_line_employee_destroy'])->name('finance.cost_line.employee.destroy');
+    Route::get('/cost_lines/employees_nocl', [CostLineController::class, 'searchNoCostLineEmployees'])->name('finance.cost_line.employee.nocl');
+
     //CostsCenters
     Route::get('/cost_center/index/{cl_id}', [CostLineController::class,'cost_centers_index'])->name('finance.cost_centers.index');
     Route::post('/cost_center/store/{cc_id?}', [CostLineController::class,'cost_center_store'])->name('finance.cost_center.store');

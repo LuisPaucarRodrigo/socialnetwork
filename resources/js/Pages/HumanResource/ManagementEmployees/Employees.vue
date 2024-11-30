@@ -127,7 +127,7 @@
                                 <img :src="employee.cropped_image" alt="Empleado" class="w-12 h-13 rounded-full">
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm w-auto">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ employee.contract?.cost_line.name }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ employee.contract?.cost_line?.name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm w-auto">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ employee.name }}</p>
