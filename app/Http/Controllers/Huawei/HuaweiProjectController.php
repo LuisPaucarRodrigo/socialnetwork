@@ -7,6 +7,7 @@ use App\Exports\HuaweiProjectEarningsExport;
 use App\Exports\HuaweiProjectRealEarningsExport;
 use App\Exports\HuaweiStaticCostExport;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Huawei\HuaweiAdditionalRequest;
 use App\Models\Employee;
 use App\Models\HuaweiProject;
 use App\Models\HuaweiProjectEmployee;
@@ -486,14 +487,14 @@ class HuaweiProjectController extends Controller
 
     public function getAdditionalCosts (HuaweiProject $huawei_project)
     {
-        $additional_costs = HuaweiAdditionalCost::where('huawei_project_id', $huawei_project->id)->paginate(10);
+        $additional_costs = HuaweiAdditionalCost::where('huawei_project_id', $huawei_project->id)->orderBy('created_at', 'desc')->paginate(10);
         return Inertia::render('Huawei/AdditionalCosts', [
-            'additional_costs' => $additional_costs,
-            'huawei_project' => $huawei_project
+            'expense' => $additional_costs,
+            'project' => $huawei_project
         ]);
     }
 
-    public function storeAdditionalCosts ($huawei_project, Request $request)
+    public function storeAdditionalCosts ($huawei_project, HuaweiAdditionalRequest $request)
     {
         $found_project = HuaweiProject::find($huawei_project);
 
@@ -501,58 +502,122 @@ class HuaweiProjectController extends Controller
             abort(403, 'Acción no permitida');
         }
 
-        $data = $request->validate([
-            'expense_type' => 'required',
-            'zone' => 'required',
-            'cost_date' => 'required',
-            'amount' => 'required',
-        ]);
-
+        $data = $request->validated();
         $data['huawei_project_id'] = $huawei_project;
+        $expense = HuaweiAdditionalCost::create($data);
 
-        HuaweiAdditionalCost::create($data);
+        $expenseDirectory = 'documents/huawei/additional_costs/';
+        $imageFields = ['image1', 'image2', 'image3'];
+        $imageUpdates = [];
+
+        foreach ($imageFields as $index => $field) {
+            if ($request->hasFile($field)) {
+                $image = $request->file($field);
+                $filename = "expense_{$expense->id}_" . ($index + 1) . '_' . time() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path($expenseDirectory), $filename);
+                $imageUpdates[$field] = $filename;
+            } else {
+                $imageUpdates[$field] = null;
+            }
+        }
+
+        $expense->update($imageUpdates);
 
         return redirect()->back();
     }
 
-    public function updateAdditionalCosts ($huawei_project, HuaweiAdditionalCost $huawei_additional_cost, Request $request)
+    public function updateAdditionalCosts ($huawei_project, HuaweiAdditionalCost $huawei_additional_cost, HuaweiAdditionalRequest $request)
     {
-        $found_project = HuaweiProject::find($huawei_project);
+        $data = $request->validated();
 
-        if (!$found_project->status){
-            abort(403, 'Acción no permitida');
+        $expenseDirectory = 'documents/huawei/additional_costs/';
+
+        $imageFields = ['image1', 'image2', 'image3'];
+
+        foreach ($imageFields as $index => $field) {
+            if ($request->hasFile($field)) {
+                if ($huawei_additional_cost->$field) {
+                    $oldPath = public_path($expenseDirectory . $huawei_additional_cost->$field);
+                    if (file_exists($oldPath)) {
+                        unlink($oldPath);
+                    }
+                }
+
+                $imageFile = $request->file($field);
+                $filename = "expense_{$huawei_additional_cost->id}_" . ($index + 1) . '_' . time() . '.' . $imageFile->getClientOriginalExtension();
+                $imageFile->move(public_path('documents/huawei/additional_costs/'), $filename);
+                $data[$field] = $filename;
+            } else {
+                $data[$field] = $huawei_additional_cost->$field;
+            }
         }
-        $data = $request->validate([
-            'expense_type' => 'required',
-            'zone' => 'required',
-            'cost_date' => 'required',
-            'amount' => 'required',
-        ]);
-
-        $data['huawei_project_id'] = $huawei_project;
 
         $huawei_additional_cost->update($data);
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Gasto actualizado correctamente y archivos procesados.');
     }
+
+
+    public function showImage (HuaweiAdditionalCost $expense, $image)
+    {
+        $field = 'image' . $image;
+        $imageToShow = $expense->$field;
+        $path = public_path("documents/huawei/additional_costs/$imageToShow");
+        if (file_exists($path)){
+            ob_end_clean();
+            return response()->file($path);
+        }
+        abort(403, 'Imagen no encontrada');
+    }
+
+    public function validateExpense (Request $request, HuaweiAdditionalCost $expense)
+    {
+        $validatedData = $request->validate([
+            'is_accepted' => 'required|boolean'
+        ]);
+
+        $expense->update($validatedData);
+
+        return response()->noContent();
+    }
+
 
     public function search_costs (Request $request, $huawei_project)
     {
-        $result = HuaweiAdditionalCost::where('huawei_project_id', $huawei_project);
+        $expenses = HuaweiAdditionalCost::where('huawei_project_id', $huawei_project);
 
-        if (count($request->selectedExpenseTypes) < 5) {
-            $result = $result->whereIn('expense_type', $request->selectedExpenseTypes);
+        if (count($request->selectedZones) < 17) {  // Filtrar solo si hay valor
+            $expenses->whereIn('zone', $request->selectedZones);
         }
-
-        if ($request->search) {
-            $searchTerms = $request->input('search');
-            $result = $result->where(function($query) use ($searchTerms){
-                $query->where('cost_date', 'like', "%$searchTerms%")
-                ->orWhere('amount', 'like', "%$searchTerms%");
-            });
+        if (count($request->selectedExpenseTypes) < 9){
+            $expenses->whereIn('expense_type', $request->selectedExpenseTypes);
         }
-        $result = $result->get();
-        return response()->json($result, 200);
+        if (count($request->selectedCDPTypes) < 7){
+            $expenses->whereIn('cdp_type', $request->selectedCDPTypes);
+        }
+        if (count($request->selectedEmployees) < 15){
+            $expenses->whereIn('employee', $request->selectedEmployees);
+        }
+        if($request->exStartDate){
+            $expenses->where('expense_date', '>=', $request->exStartDate);
+        }
+        if($request->exEndDate){
+            $expenses->where('expense_date', '<=', $request->exEndDate);
+        }
+        if($request->exNoDate){
+            $expenses->where('expense_date', null);
+        }
+        if($request->opStartDate){
+            $expenses->where('ec_expense_date', '>=', $request->opStartDate);
+        }
+        if($request->opEndDate){
+            $expenses->where('ec_expense_date', '<=', $request->opEndDate);
+        }
+        if($request->opNoDate){
+            $expenses->where('ec_expense_date', null);
+        }
+        $expenses = $expenses->orderBy('created_at', 'desc')->get(); // Asegúrate de asignar el resultado
+        return response()->json(["expenses" => $expenses], 200);
     }
 
     public function deleteAdditionalCost ($huawei_project, HuaweiAdditionalCost $huawei_additional_cost)
@@ -562,24 +627,65 @@ class HuaweiProjectController extends Controller
         if (!$found_project->status){
             abort(403, 'Acción no permitida');
         }
+        $expenseDirectory = 'documents/huawei/additional_costs/';
+        $imageFields = ['image1', 'image2', 'image3'];
+
+        foreach ($imageFields as $index => $field) {
+            if ($huawei_additional_cost->$field) {
+                $oldPath = public_path($expenseDirectory . $huawei_additional_cost->$field);
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                }
+            }
+        }
 
         $huawei_additional_cost->delete();
         return redirect()->back();
+    }
+
+    public function massiveUpdate (Request $request)
+    {
+        $data = $request->validate([
+            'ids' => 'required | array | min:1',
+            'ids.*' => 'integer',
+            'ec_expense_date' => 'required|date',
+            'ec_op_number' => 'required|min:6',
+        ]);
+
+
+        HuaweiAdditionalCost::whereIn('id', $data['ids'])->update([
+            'ec_expense_date' => $data['ec_expense_date'],
+            'ec_op_number' => $data['ec_op_number'],
+        ]);
+
+        $updatedCosts = HuaweiAdditionalCost::whereIn('id', $data['ids'])
+            ->get();
+
+        return response()->json($updatedCosts, 200);
     }
 
     public function searchAdditionalCosts (HuaweiProject $huawei_project, $request)
     {
         $searchTerm = strtolower($request);
 
-        $query = HuaweiAdditionalCost::query();
-        $query->where('huawei_project_id', $huawei_project->id)->where(function ($query) use ($searchTerm) {
-            $query->where('expense_type', 'like', '%' . $searchTerm . '%')
-                  ->orWhere('zone', 'like', '%' . $searchTerm . '%');
-        });
-        $filteredAdditionalCosts = $query->get();
+        $expensesQuery = HuaweiAdditionalCost::query()
+            ->where('huawei_project_id', $huawei_project->id)
+            ->where(function ($query) use ($searchTerm) {
+                $query->whereRaw('LOWER(expense_type) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(zone) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(employee) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(cdp_type) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(doc_number) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(op_number) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(ruc) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(description) LIKE ?', ["%{$searchTerm}%"]);
+            });
+
+        $expenses = $expensesQuery->orderBy('created_at', 'desc')->get();
+
         return Inertia::render('Huawei/AdditionalCosts', [
-            'additional_costs' => $filteredAdditionalCosts,
-            'huawei_project' => $huawei_project,
+            'expense' => $expenses,
+            'project' => $huawei_project,
             'search' => $request
         ]);
     }
@@ -862,9 +968,6 @@ class HuaweiProjectController extends Controller
             }
 
             $materials =  HuaweiMaterial::where('prefix', $found_project->prefix)
-                ->with(['huawei_entry_details' => function ($subQuery) use ($found_project){
-                    $subQuery->where('assigned_diu', $found_project->assigned_diu);
-                }])
                 ->get()
                 ->filter(function ($material) {
                     return $material->available_quantity > 0;
@@ -902,19 +1005,18 @@ class HuaweiProjectController extends Controller
                     return [
                         'id' => $detail->id,
                         'serie_number' => $detail->huawei_equipment_serie->serie_number,
-                        'unit_price' => $detail->unit_price
+                        'order_number' => $detail->order_number
                     ];
                 });
         }else{
             $entry_details = HuaweiEntryDetail::whereNull('huawei_equipment_serie_id')->where('huawei_material_id', $id)
-                ->where('assigned_diu', $huawei_project->assigned_diu)
                 ->get()
                 ->filter(function ($detail){
                     return $detail->state == 'Disponible';
                 })->map(function ($detail){
                     return [
                         'id' => $detail->id,
-                        'unit_price' => $detail->unit_price,
+                        'order_number' => $detail->order_number,
                         'available_quantity' => $detail->available_quantity
                     ];
                 });
@@ -1068,10 +1170,6 @@ class HuaweiProjectController extends Controller
                 'output_date' => 'required'
             ]);
 
-            if ($entry_detail->assigned_diu != $found_project->assigned_diu){
-                abort(403, 'Acción no permitida');
-            }
-
             HuaweiProjectResource::create([
                 'huawei_project_id' => $huawei_project,
                 'huawei_entry_detail_id' => $request->huawei_entry_detail_id,
@@ -1115,6 +1213,7 @@ class HuaweiProjectController extends Controller
         return redirect()->back();
     }
 
+    //liquidations
     public function geResourcesToLiquidate ($huawei_project)
     {
         $project = HuaweiProject::find($huawei_project);
@@ -1128,10 +1227,6 @@ class HuaweiProjectController extends Controller
             ->with('huawei_entry_detail.huawei_equipment_serie.huawei_equipment')
             ->get();
 
-        foreach ($equipments as $resource){
-            $resource->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($resource->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name);
-        }
-
         $materials = HuaweiProjectResource::where('huawei_project_id', $huawei_project)
             ->where('quantity', '!=', 0)
             ->whereDoesntHave('huawei_project_liquidation')
@@ -1140,6 +1235,22 @@ class HuaweiProjectController extends Controller
             })
             ->with('huawei_entry_detail.huawei_material')
             ->get();
+
+        $data = [
+            'series' => $equipments->map(function ($resource) {
+                return $resource->huawei_entry_detail->huawei_equipment_serie->serie_number ?? null;
+            })->filter()->unique()->values(),
+            'material_order_numbers' => $materials->map(function ($resource) {
+                return $resource->huawei_entry_detail->order_number ?? null;
+            })->filter()->unique()->values(),
+            'equipment_order_numbers' => $equipments->map(function ($resource) {
+                return $resource->huawei_entry_detail->order_number ?? null;
+            })->filter()->unique()->values(),
+        ];
+
+        foreach ($equipments as $resource){
+            $resource->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($resource->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name);
+        }
 
         foreach ($materials as $resource){
             $resource->huawei_entry_detail->huawei_material->name = $this->sanitizeText2($resource->huawei_entry_detail->huawei_material->name);
@@ -1150,8 +1261,75 @@ class HuaweiProjectController extends Controller
             'materials' => $materials,
             'huawei_project' => $huawei_project,
             'project_name' => $project_name,
-            'projectState' => $project->status
+            'projectState' => $project->status,
+            'data' => $data
         ]);
+    }
+
+    public function search_advance_liquidate ($huawei_project, Request $request)
+    {
+        $equipments = HuaweiProjectResource::where('huawei_project_id', $huawei_project)
+            ->where('quantity', '!=', 0)
+            ->whereDoesntHave('huawei_project_liquidation')
+            ->whereHas('huawei_entry_detail', function ($query) {
+                $query->whereNull('huawei_material_id');
+            })
+            ->with('huawei_entry_detail.huawei_equipment_serie.huawei_equipment');
+
+        $materials = HuaweiProjectResource::where('huawei_project_id', $huawei_project)
+            ->where('quantity', '!=', 0)
+            ->whereDoesntHave('huawei_project_liquidation')
+            ->whereHas('huawei_entry_detail', function ($query) {
+                $query->whereNull('huawei_equipment_serie_id');
+            })
+            ->with('huawei_entry_detail.huawei_material');
+
+        $equipmentsForCount = $equipments->get();
+        $materialsForCount = $materials->get();
+
+        $data = [
+            'series' => $equipmentsForCount->map(function ($resource) {
+                return $resource->huawei_entry_detail->huawei_equipment_serie->serie_number ?? null;
+            })->filter()->unique()->values()->count(),
+            'material_order_numbers' => $materialsForCount->map(function ($resource) {
+                return $resource->huawei_entry_detail->order_number ?? null;
+            })->filter()->unique()->values()->count(),
+            'equipment_order_numbers' => $equipmentsForCount->map(function ($resource) {
+                return $resource->huawei_entry_detail->order_number ?? null;
+            })->filter()->unique()->values()->count(),
+        ];
+
+        if (count($request->selectedSeries) < $data['series']){
+            $series = $request->selectedSeries;
+            $equipments->whereHas('huawei_entry_detail.huawei_equipment_serie', function($subQuery) use ($series){
+                $subQuery->whereIn('serie_number', $series);
+            });
+        }
+        if (count($request->selectedEquipmentOrderNumbers) < $data['equipment_order_numbers']){
+            $equipment_order_numbers = $request->selectedEquipmentOrderNumbers;
+            $equipments->whereHas('huawei_entry_detail', function ($subQuery) use ($equipment_order_numbers){
+                $subQuery->whereIn('order_number', $equipment_order_numbers);
+            });
+        }
+        if (count($request->selectedMaterialOrderNumbers) < $data['material_order_numbers']){
+            $material_order_numbers = $request->selectedMaterialOrderNumbers;
+            $materials->whereHas('huawei_entry_detail', function ($subQuery) use ($material_order_numbers){
+                $subQuery->whereIn('order_number', $material_order_numbers);
+            });
+        }
+
+        $equipments = $equipments->get();
+        $materials = $materials->get();
+
+        foreach ($equipments as $equipment) {
+            $equipment->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($equipment->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name);
+        }
+
+        foreach ($materials as $material){
+            $material->huawei_entry_detail->huawei_material->name = $this->sanitizeText2($material->huawei_entry_detail->huawei_material->name);
+        }
+
+        return response()->json(['materials' => $materials, 'equipments' => $equipments], 200);
     }
 
     public function liquidate (HuaweiProject $huawei_project, Request $request, $equipment = null) {
@@ -1192,6 +1370,36 @@ class HuaweiProjectController extends Controller
                 'liquidated_quantity' => $request->liquidated_quantity
             ]);
         }
+    }
+
+    public function massiveLiquidation (Request $request, $equipment = null)
+    {
+        $data = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer',
+            'instalation_date' => 'required|date',
+        ]);
+
+        foreach ($data['ids'] as $item){
+            $huawei_project_resource = HuaweiProjectResource::with('huawei_project_liquidation')->find($item);
+            if (!$huawei_project_resource || $huawei_project_resource->quantity <= 0 || $huawei_project_resource->huawei_project_liquidation !== null) {
+                abort(403, 'No se puede liquidar este recurso debido a restricciones.');
+            }
+            if ($equipment){
+                HuaweiProjectLiquidation::create([
+                    'huawei_project_resource_id' => $item,
+                    'instalation_date' => $request->instalation_date,
+                    'liquidated_quantity' => 1
+                ]);
+            }else{
+                HuaweiProjectLiquidation::create([
+                    'huawei_project_resource_id' => $item,
+                    'instalation_date' => $request->instalation_date,
+                    'liquidated_quantity' => $huawei_project_resource->quantity
+                ]);
+            }
+        }
+        return redirect()->back();
     }
 
     public function liquidationsHistory ($huawei_project, $equipment = null)

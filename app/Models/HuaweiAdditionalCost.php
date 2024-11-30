@@ -14,8 +14,22 @@ class HuaweiAdditionalCost extends Model
     protected $fillable = [
         'expense_type',
         'zone',
-        'cost_date',
+        'employee',
+        'expense_date',
+        'cdp_type',
+        'doc_number',
+        'op_number',
+        'ruc',
+        'description',
         'amount',
+        'image1',
+        'image2',
+        'image3',
+        'is_accepted',
+        'refund_status',
+        'ec_expense_date',
+        'ec_op_number',
+        'ec_amount',
         'huawei_project_id',
     ];
 
