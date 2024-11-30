@@ -282,7 +282,7 @@
                                     <template
                                         v-if="!payrolls.state && spreadsheet.amount_travel_expenses && permissions('HumanResourceManager')">
                                         <button
-                                            v-if="spreadsheet.payroll_detail_expense.operation_number && spreadsheet.payroll_detail_expense.operation_date"
+                                            v-if="spreadsheet.payroll_detail_expense[1].operation_number && spreadsheet.payroll_detail_expense[1].operation_date"
                                             @click="openPaymentTravelExpenseModal(spreadsheet.payroll_detail_expense[1])">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-teal-500">
