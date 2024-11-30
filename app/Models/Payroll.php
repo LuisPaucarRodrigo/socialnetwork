@@ -29,4 +29,11 @@ class Payroll extends Model
     {
         return $this->hasMany(PayrollDetail::class);
     }
+
+    public function getTotalAmountAttribute()
+    {
+        return $this->payroll_details->sum(function ($detail) {
+            return $detail->net_pay;
+        });
+    }
 }

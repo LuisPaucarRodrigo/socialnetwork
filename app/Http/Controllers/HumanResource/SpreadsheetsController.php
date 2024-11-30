@@ -21,9 +21,21 @@ class SpreadsheetsController extends Controller
     public function index()
     {
         $payroll = Payroll::orderBy('month', 'desc')->paginate();
+        foreach ($payroll as $item) {
+            $item->setAppends(['total_amount']);
+        }
         return Inertia::render('HumanResource/Payroll/Index', [
             'payroll' => $payroll
         ]);
+    }
+
+    public function update_payroll_state($payroll_id)
+    {
+        $payroll = Payroll::find($payroll_id);
+        $payroll->update([
+            'state' => true
+        ]);
+        return response()->json($payroll, 200);
     }
 
     public function store_payroll(Request $request)
@@ -77,28 +89,38 @@ class SpreadsheetsController extends Controller
 
     public function index_payroll(Request $request, $payroll_id)
     {
-        // if ($reentry == false) {
-        //     $spreadsheet = Payroll::with('pension', 'employee')->where('state', 'Active');
-        // } else {
-        //     $spreadsheet = Payroll::with('pension', 'employee')->where('state', 'Inactive');
-        // }
-        // $searchTerm = strtolower($request->query('searchTerm'));
-        // if ($searchTerm !== '') {
-        //     $spreadsheet = $spreadsheet->where(function ($query) use ($searchTerm) {
-        //         $query->whereHas('pension', function ($subQuery) use ($searchTerm) {
-        //             $subQuery->where('type', 'like', '%' . $searchTerm . '%');
-        //         })
-        //             ->orWhereHas('employee', function ($subQuery) use ($searchTerm) {
-        //                 $subQuery->where('name', 'like', '%' . $searchTerm . '%')
-        //                     ->orWhere('lastname', 'like', '%' . $searchTerm . '%');
-        //             });
-        //     })->get();
-        // } else {
-        //     $spreadsheet = $spreadsheet->get();
-        // }
-        $payroll = Payroll::find($payroll_id);
-        $spreadsheet = PayrollDetail::with('payroll', 'employee', 'pension')->where('payroll_id', $payroll_id)->get();
-        $total = [
+        if ($request->isMethod('get')) {
+            $payroll = Payroll::find($payroll_id);
+            $spreadsheet = PayrollDetail::with('payroll', 'employee', 'pension')->where('payroll_id', $payroll_id)->get();
+            $total = $this->calculateTotal($spreadsheet);
+            return Inertia::render('HumanResource/Payroll/Spreadsheets', [
+                'spreadsheet' => $spreadsheet,
+                'payroll' => $payroll,
+                'total' => $total,
+            ]);
+        } elseif ($request->isMethod('post')) {
+            $searchQuery = $request->searchQuery;
+            $spreadsheet = PayrollDetail::with('payroll', 'employee', 'pension')
+                ->where('payroll_id', $request->payroll_id)
+                ->whereHas('employee', function ($query) use ($searchQuery) {
+                    $query->where('name', 'like', "%$searchQuery%")
+                        ->orWhere('lastname', 'like', "%$searchQuery%");
+                })
+                ->get();
+            $total = $this->calculateTotal($spreadsheet);
+            return response()->json(
+                [
+                    'spreadsheet' => $spreadsheet,
+                    'total' => $total,
+                ],
+                200
+            );
+        }
+    }
+
+    private function calculateTotal($spreadsheet)
+    {
+        return [
             'sum_salary' => $spreadsheet->sum('basic_salary'),
             'sum_truncated_vacations' => $spreadsheet->sum('truncated_vacations'),
             'sum_total_income' => $spreadsheet->sum('total_income'),
@@ -109,6 +131,7 @@ class SpreadsheetsController extends Controller
             'sum_insurance_premium' => $spreadsheet->sum('insurance_premium'),
             'sum_mandatory_contribution_amount' => $spreadsheet->sum('mandatory_contribution_amount'),
             'sum_total_discount' => $spreadsheet->sum('total_discount'),
+            'sum_amount_travel_expenses' => $spreadsheet->sum('amount_travel_expenses'),
             'sum_net_pay' => $spreadsheet->sum('net_pay'),
             'sum_health' => $spreadsheet->sum('healths'),
             'sum_life_ley' => $spreadsheet->sum('life_ley'),
@@ -116,15 +139,36 @@ class SpreadsheetsController extends Controller
             'sum_sctr_s' => $spreadsheet->sum('sctr_s'),
             'sum_total_contribution' => $spreadsheet->sum('total_contribution'),
         ];
-        // dd($spreadsheet);
-        // $data = json_decode(File::get(config_path('custom.json')), true);
-        return Inertia::render('HumanResource/Payroll/Spreadsheets', [
-            'spreadsheets' => $spreadsheet,
-            'payroll' => $payroll,
-            // 'boolean' => boolval($reentry),
-            'total' => $total,
-            // 'number_people' => $data['number_people'],
+    }
+
+    public function update_payroll_salary(Request $request, $payroll_details_id)
+    {
+        $validateData = $request->validate([
+            'operation_date' => 'required',
+            'operation_number' => 'required',
         ]);
+        $payrollDetail = PayrollDetail::find($payroll_details_id);
+        $payrollDetail->update([
+            'salary_operation_date' => $validateData['operation_date'],
+            'salary_operation_number' => $validateData['operation_number'],
+        ]);
+        $payrollDetail->load('payroll', 'employee', 'pension');
+        return response()->json($payrollDetail, 200);
+    }
+
+    public function update_payroll_travelExpense(Request $request, $payroll_details_id)
+    {
+        $validateData = $request->validate([
+            'operation_date' => 'required',
+            'operation_number' => 'required',
+        ]);
+        $payrollDetail = PayrollDetail::find($payroll_details_id);
+        $payrollDetail->update([
+            'travel_expenses_operation_date' => $validateData['operation_date'],
+            'travel_expenses_operation_number' => $validateData['operation_number'],
+        ]);
+        $payrollDetail->load('payroll', 'employee', 'pension');
+        return response()->json($payrollDetail, 200);
     }
 
     public function edit()

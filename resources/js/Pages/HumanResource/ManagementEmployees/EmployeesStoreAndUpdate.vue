@@ -652,7 +652,7 @@ import TextInput from '@/Components/TextInput.vue';
 import InputFile from '@/Components/InputFile.vue';
 import InputError from '@/Components/InputError.vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const showModal = ref(false);
@@ -755,6 +755,9 @@ if (props.employees) {
     form.vaccinations = props.employees.health.vaccinations;
 }
 
+watch(form.state_travel_expenses,(newVal) => {
+    form.amount_travel_expenses = ''
+})
 const addDependent = () => {
     form.familyDependents.push({
         family_dni: '',

@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\File;
 
 class PayrollDetail extends Model
 {
@@ -15,13 +16,22 @@ class PayrollDetail extends Model
         'pension_id',
 
         'basic_salary',
+        'salary_operation_date',
+        'salary_operation_number',
+
+
         'amount_travel_expenses',
+        'travel_expenses_operation_date',
+        'travel_expenses_operation_number',
+
         'life_ley',
         'discount_remuneration',
         'discount_sctr',
         'hire_date',
         'fired_date',
-        'days_taken'
+        'days_taken',
+
+        'account_statement_id',
     ];
 
     protected $appends = [
@@ -176,7 +186,7 @@ class PayrollDetail extends Model
     // Relación con Payroll
     public function payroll()
     {
-        return $this->belongsTo(Payroll::class,'payroll_id');
+        return $this->belongsTo(Payroll::class, 'payroll_id');
     }
 
     // Relación con Employee
@@ -190,6 +200,4 @@ class PayrollDetail extends Model
     {
         return $this->belongsTo(Pension::class);
     }
-
-    
 }

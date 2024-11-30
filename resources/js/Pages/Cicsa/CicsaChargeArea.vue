@@ -561,7 +561,6 @@ async function submit() {
                 confirmUpdateAssignation.value = false
             }, 1500)
         } catch (error) {
-            console.log(error)
             if (error.response) {
                 if (error.response.data.errors) {
                     setAxiosErrors(error.response.data.errors, form)

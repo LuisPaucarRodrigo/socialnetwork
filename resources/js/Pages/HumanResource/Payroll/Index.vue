@@ -16,20 +16,19 @@
                 <!-- <input type="text" @input="search($event.target.value)" placeholder="Buscar..."> -->
             </div>
             <br>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-6 gap-3">
                 <div v-for="item in payrolls.data || payrolls" :key="item.id"
                     class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
-                    <div>
-                        <h2 class="text-sm font-semibold mb-3">
-                            {{ item.month }}
-                        </h2>
-                    </div>
-                    <div class="grid grid-cols-1 gap-y-1">
-                        <Link :href="route('spreadsheets.index', { payroll_id: item.id })"
-                            class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
-                        Nomina
-                        </Link>
-                    </div>
+                    <p class="text-sm mb-3">
+                        Mes: {{ item.month }}
+                    </p>
+                    <p class="text-sm mb-3">
+                        Monto Total: S/ {{ item.total_amount.toFixed(2) }}
+                    </p>
+                    <Link :href="route('spreadsheets.index', { payroll_id: item.id })"
+                        class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                    Nomina
+                    </Link>
                 </div>
             </div>
             <br>
@@ -83,7 +82,8 @@
                         <div class="col-span-3">
                             <p class="text-red-600">
                                 Aviso Importante:<br>
-                                Los Datos de los Empleados no se podran actualizar despues de crear la nomina.
+                                Los Datos de los Empleados y el Sistema de Pensiones no se podran actualizar despues de crear la nomina.
+                                
                             </p>
                         </div>
                     </div>

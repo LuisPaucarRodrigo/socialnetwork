@@ -27,7 +27,7 @@ Route::middleware('permission:HumanResourceManager')->group(function () {
 
     //Control of Employees
     Route::any('/management_employees/control_employees/index', [ControlEmployees::class, 'control_employees_index'])->name('controlEmployees.index');
-    
+
     Route::any('/management_employees/fixed_documentation/index', [ControlEmployees::class, 'fixed_documentation_index'])->name('controlEmployees.fixed.documentation.index');
     Route::post('/management_employees/fixed_documentation/storeOrUpdate/{fixed_documentation_id?}', [ControlEmployees::class, 'fixed_documentation_storeOrUpdate'])->name('controlEmployees.fixed.documentation.store');
 
@@ -49,6 +49,12 @@ Route::middleware('permission:HumanResourceManager')->group(function () {
     Route::get('/management_employees/pension_system/edit', [SpreadsheetsController::class, 'edit'])->name('pension_system.edit');
     Route::put('/management_employees/pension_system/update/{id}', [SpreadsheetsController::class, 'update'])->name('pension_system.update');
     Route::put('/management_employees/pension_system/update_seg/{id}', [SpreadsheetsController::class, 'update_seg'])->name('pension_system_seg.update');
+
+    Route::post('/management_employees/payroll/store', [SpreadsheetsController::class, 'store_payroll'])->name('payroll.store');
+    Route::get('/management_employees/payroll/state/{payroll_id}', [SpreadsheetsController::class, 'update_payroll_state'])->name('payroll.state.update');
+    Route::put('/management_employees/payroll/salary/{payroll_details_id}/update', [SpreadsheetsController::class, 'update_payroll_salary'])->name('payroll.payment.salary.store');
+    Route::put('/management_employees/payroll/travelExpense/{payroll_details_id}/update', [SpreadsheetsController::class, 'update_payroll_travelExpense'])->name('payroll.payment.travelExpense.store');
+    Route::get('/management_employees/spreadsheets/payroll/export/{payroll_id}', [SpreadsheetsController::class, 'export'])->name('spreadsheets.payroll.export');
 
     //Sctr
     Route::post('/management_employees/sctr_p/update', [SpreadsheetsController::class, 'update_sctr_p'])->name('sctr_p.update');
@@ -118,10 +124,8 @@ Route::middleware('permission:HumanResourceManager|HumanResource')->group(functi
     Route::get('/management_employees/happy_birthday', [ManagementEmployees::class, 'happy_birthday'])->name('management.employees.happy.birthday');
 
     //Nomina
-    Route::get('/management_employees/payroll/{reentry?}', [SpreadsheetsController::class, 'index'])->name('payroll.index');
-    Route::post('/management_employees/payroll/store', [SpreadsheetsController::class, 'store_payroll'])->name('payroll.store');
-    Route::get('/management_employees//spreadsheets/{payroll_id}', [SpreadsheetsController::class, 'index_payroll'])->name('spreadsheets.index');
-    Route::get('/management_employees/spreadsheets/payroll/export/{payroll_id}', [SpreadsheetsController::class, 'export'])->name('spreadsheets.payroll.export');
+    Route::get('/management_employees/payroll', [SpreadsheetsController::class, 'index'])->name('payroll.index');
+    Route::any('/management_employees/spreadsheets/{payroll_id}', [SpreadsheetsController::class, 'index_payroll'])->name('spreadsheets.index');
 
     //Formation and Development
     Route::get('/management_employees/formation_development', [FormationDevelopment::class, 'index'])->name('management.employees.formation_development');
