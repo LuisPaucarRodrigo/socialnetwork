@@ -282,7 +282,7 @@
                                     <template
                                         v-if="!payrolls.state && spreadsheet.amount_travel_expenses && permissions('HumanResourceManager')">
                                         <button
-                                            v-if="spreadsheet.travel_expenses_operation_number && spreadsheet.travel_expenses_operation_date"
+                                            v-if="spreadsheet.payroll_detail_expense.operation_number && spreadsheet.payroll_detail_expense.operation_date"
                                             @click="openPaymentTravelExpenseModal(spreadsheet.payroll_detail_expense[1])">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-teal-500">
@@ -308,10 +308,9 @@
                                     <p class="text-gray-900 whitespace-nowrap">
                                         S/ {{ spreadsheet.net_pay.toFixed(2) }}
                                     </p>
-                                    <template
-                                        v-if="!payrolls.state && spreadsheet.amount_travel_expenses && permissions('HumanResourceManager')">
+                                    <template v-if="!payrolls.state && permissions('HumanResourceManager')">
                                         <button
-                                            v-if="!payrolls.state && permissions('HumanResourceManager') && spreadsheet.salary_operation_number && spreadsheet.salary_operation_date"
+                                            v-if="!payrolls.state && permissions('HumanResourceManager') && spreadsheet.payroll_detail_expense[0].operation_number && spreadsheet.payroll_detail_expense[0].operation_date"
                                             @click="openPaymentSalaryModal(spreadsheet.payroll_detail_expense[0])">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-teal-500">
