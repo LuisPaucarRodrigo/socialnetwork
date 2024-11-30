@@ -138,21 +138,16 @@
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import Pagination from '@/Components/Pagination.vue';
-import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
-import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import InputFile from '@/Components/InputFile.vue';
-import InputError from '@/Components/InputError.vue';
-import Modal from '@/Components/Modal.vue';
 import { TrashIcon, PencilIcon } from '@heroicons/vue/24/outline';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Head, router, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { setAxiosErrors } from '@/utils/utils';
 import { notify, notifyError } from '@/Components/Notification';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import InputError from '@/Components/InputError.vue';
+import { Head, useForm } from '@inertiajs/vue3';
+import { setAxiosErrors } from '@/utils/utils';
+import Modal from '@/Components/Modal.vue';
+import { ref } from 'vue';
 
 
 const { costCenters, cost_line } = defineProps({
