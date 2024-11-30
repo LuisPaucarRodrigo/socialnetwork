@@ -79,6 +79,7 @@ class SpreadsheetsController extends Controller
                     'pension_id' => $listPension->pension->firstWhere('type', $employee->contract->pension_type)->id
                 ]);
             }
+            $payroll->setAppends(['total_amount']);
             DB::commit();
             return response()->json($payroll, 200);
         } catch (Exception $e) {

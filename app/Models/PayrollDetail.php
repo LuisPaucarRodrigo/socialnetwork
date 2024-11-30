@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\File;
 class PayrollDetail extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'payroll_id',
         'employee_id',
