@@ -8,6 +8,7 @@ use App\Models\Contract;
 use App\Models\Employee;
 use App\Models\Payroll;
 use App\Models\PayrollDetail;
+use App\Models\PayrollDetailExpense;
 use App\Models\Pension;
 use Exception;
 use Illuminate\Http\Request;
@@ -53,6 +54,7 @@ class SpreadsheetsController extends Controller
                 'month' => $validateData['month'],
                 'state' => $validateData['state'],
             ]);
+            $payroll->setAppends(['total_amount']);
             foreach ($validateData['pension_system'] as $pension) {
                 Pension::create([
                     'type' => $pension['type'],
@@ -65,7 +67,7 @@ class SpreadsheetsController extends Controller
             $listPension = $payroll->load('pension');
             $employees = Employee::select('id')->with('contract')->get();
             foreach ($employees as $employee) {
-                PayrollDetail::create([
+                $payrollDetail = PayrollDetail::create([
                     'payroll_id' => $payroll->id,
                     'employee_id' => $employee->id,
                     'basic_salary' => $employee->contract->basic_salary,
@@ -77,6 +79,13 @@ class SpreadsheetsController extends Controller
                     'fired_date' => $employee->contract->fired_date,
                     'days_taken' => $employee->contract->days_taken,
                     'pension_id' => $listPension->pension->firstWhere('type', $employee->contract->pension_type)->id
+                ]);
+            }
+            $listType = ['Salary', 'Travel'];
+            foreach ($listType as $item) {
+                PayrollDetailExpense::create([
+                    'payroll_detail_id' => $payrollDetail->id,
+                    'type' => $item
                 ]);
             }
             DB::commit();
@@ -91,7 +100,7 @@ class SpreadsheetsController extends Controller
     {
         if ($request->isMethod('get')) {
             $payroll = Payroll::find($payroll_id);
-            $spreadsheet = PayrollDetail::with('payroll', 'employee', 'pension')->where('payroll_id', $payroll_id)->get();
+            $spreadsheet = PayrollDetail::with('payroll', 'payroll_detail_expense', 'employee', 'pension')->where('payroll_id', $payroll_id)->get();
             $total = $this->calculateTotal($spreadsheet);
             return Inertia::render('HumanResource/Payroll/Spreadsheets', [
                 'spreadsheet' => $spreadsheet,
@@ -100,7 +109,7 @@ class SpreadsheetsController extends Controller
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->searchQuery;
-            $spreadsheet = PayrollDetail::with('payroll', 'employee', 'pension')
+            $spreadsheet = PayrollDetail::with('payroll', 'payroll_detail_expense', 'employee', 'pension')
                 ->where('payroll_id', $request->payroll_id)
                 ->whereHas('employee', function ($query) use ($searchQuery) {
                     $query->where('name', 'like', "%$searchQuery%")
@@ -147,13 +156,15 @@ class SpreadsheetsController extends Controller
             'operation_date' => 'required',
             'operation_number' => 'required',
         ]);
-        $payrollDetail = PayrollDetail::find($payroll_details_id);
-        $payrollDetail->update([
-            'salary_operation_date' => $validateData['operation_date'],
-            'salary_operation_number' => $validateData['operation_number'],
+        $payrollDetailExpense = PayrollDetailExpense::where('payroll_detail_id', $payroll_details_id)
+            ->where('type', 'Salary')
+            ->first();
+        $payrollDetailExpense->update([
+            'operation_date' => $validateData['operation_date'],
+            'operation_number' => $validateData['operation_number'],
         ]);
-        $payrollDetail->load('payroll', 'employee', 'pension');
-        return response()->json($payrollDetail, 200);
+        $payrollExpense = PayrollDetailExpense::where('payroll_detail_id', $payroll_details_id)->get();
+        return response()->json($payrollExpense, 200);
     }
 
     public function update_payroll_travelExpense(Request $request, $payroll_details_id)
@@ -162,13 +173,15 @@ class SpreadsheetsController extends Controller
             'operation_date' => 'required',
             'operation_number' => 'required',
         ]);
-        $payrollDetail = PayrollDetail::find($payroll_details_id);
-        $payrollDetail->update([
-            'travel_expenses_operation_date' => $validateData['operation_date'],
-            'travel_expenses_operation_number' => $validateData['operation_number'],
+        $payrollDetailExpense = PayrollDetailExpense::where('payroll_detail_id', $payroll_details_id)
+            ->where('type', 'Travel')
+            ->first();
+        $payrollDetailExpense->update([
+            'operation_date' => $validateData['operation_date'],
+            'operation_number' => $validateData['operation_number'],
         ]);
-        $payrollDetail->load('payroll', 'employee', 'pension');
-        return response()->json($payrollDetail, 200);
+        $payrollExpense = PayrollDetailExpense::where('payroll_detail_id', $payroll_details_id)->get();
+        return response()->json($payrollExpense, 200);
     }
 
     public function edit()

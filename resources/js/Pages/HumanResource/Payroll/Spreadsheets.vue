@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Nomina" />
     <AuthenticatedLayout :redirectRoute="'payroll.index'">
         <template #header>
@@ -282,7 +283,7 @@
                                         v-if="!payrolls.state && spreadsheet.amount_travel_expenses && permissions('HumanResourceManager')">
                                         <button
                                             v-if="spreadsheet.travel_expenses_operation_number && spreadsheet.travel_expenses_operation_date"
-                                            @click="openPaymentTravelExpenseModal(spreadsheet)">
+                                            @click="openPaymentTravelExpenseModal(spreadsheet.payroll_detail_expense[1])">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-teal-500">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -291,7 +292,8 @@
                                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                             </svg>
                                         </button>
-                                        <button v-else @click="openPaymentTravelExpenseModal(spreadsheet)">
+                                        <button v-else
+                                            @click="openPaymentTravelExpenseModal(spreadsheet.payroll_detail_expense[1])">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-amber-400">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -310,7 +312,7 @@
                                         v-if="!payrolls.state && spreadsheet.amount_travel_expenses && permissions('HumanResourceManager')">
                                         <button
                                             v-if="!payrolls.state && permissions('HumanResourceManager') && spreadsheet.salary_operation_number && spreadsheet.salary_operation_date"
-                                            @click="openPaymentSalaryModal(spreadsheet)">
+                                            @click="openPaymentSalaryModal(spreadsheet.payroll_detail_expense[0])">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-teal-500">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -319,7 +321,8 @@
                                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                             </svg>
                                         </button>
-                                        <button v-else @click="openPaymentSalaryModal(spreadsheet)">
+                                        <button v-else
+                                            @click="openPaymentSalaryModal(spreadsheet.payroll_detail_expense[0])">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-amber-400">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -456,7 +459,7 @@
         <Modal :show="showPaymentModal">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
-                    {{ travelOrSalary ? 'Pago de salario ' : 'Pago de Viatico ' }} del Empleado
+                    {{ travelOrSalary ? 'Pago de Viatico ' : 'Pago de salario ' }} del Empleado
                 </h2>
                 <form @submit.prevent="submit">
                     <div class="border-b border-gray-900/10">
@@ -464,7 +467,8 @@
                             <InputLabel for="operation_number">Numero de Operación
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" id="operation_number" v-model="formPayment.operation_number" />
+                                <TextInput type="text" id="operation_number" v-model="formPayment.operation_number"
+                                    maxlength="6" />
                                 <InputError :message="formPayment.errors.operation_number" />
                             </div>
                         </div>
@@ -516,10 +520,11 @@ const { spreadsheet, payroll, total, userPermissions } = defineProps({
     userPermissions: Array
 })
 
+
 const spreadsheets = ref(spreadsheet)
 const payrolls = ref(payroll)
 const totals = ref(total)
-
+console.log(spreadsheet)
 const showPaymentModal = ref(false)
 const travelOrSalary = ref(false)
 const showPayrollModal = ref(false)
@@ -538,14 +543,14 @@ function permissions(permission) {
     return userPermissions.includes(permission)
 }
 function openPaymentSalaryModal(payroll_detail) {
-    formPayment.defaults({ id: payroll_detail.id, operation_date: payroll_detail.salary_operation_date, operation_number: payroll_detail.salary_operation_number })
+    formPayment.defaults({ id: payroll_detail.payroll_detail_id, operation_date: payroll_detail.operation_date, operation_number: payroll_detail.operation_number })
     formPayment.reset()
     showPaymentModal.value = true
     travelOrSalary.value = false
 }
 
 function openPaymentTravelExpenseModal(payroll_detail) {
-    formPayment.defaults({ id: payroll_detail.id, operation_date: payroll_detail.travel_expenses_operation_date, operation_number: payroll_detail.travel_expenses_operation_number })
+    formPayment.defaults({ id: payroll_detail.payroll_detail_id, operation_date: payroll_detail.operation_date, operation_number: payroll_detail.operation_number })
     formPayment.reset()
     showPaymentModal.value = true
     travelOrSalary.value = true
@@ -562,10 +567,10 @@ async function submit() {
     let url = travelOrSalary.value ? route('payroll.payment.travelExpense.store', { payroll_details_id: formPayment.id }) : route('payroll.payment.salary.store', { payroll_details_id: formPayment.id })
     try {
         let response = await axios.put(url, formPayment)
+        console.log('dasd', response.data)
         closePaymentModal()
         updatePayrollDetails(response.data)
     } catch (error) {
-        console.log(error)
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, formPayment)
@@ -580,9 +585,9 @@ async function submit() {
 
 function updatePayrollDetails(payrollDetail) {
     const validations = spreadsheets.value
-    let index = validations.findIndex(item => item.id === payrollDetail.id)
+    let index = validations.findIndex(item => item.id === payrollDetail[0].payroll_detail_id)
     if (index !== -1) {
-        validations[index] = payrollDetail;
+        validations[index].payroll_detail_expense = payrollDetail;
         notify('El pago se Registro')
     } else {
         notifyWarning(`No se encontró un elemento con id: ${payrollDetail.id}`);
