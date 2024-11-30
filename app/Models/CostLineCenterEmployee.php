@@ -13,4 +13,10 @@ class CostLineCenterEmployee extends Model
         'cost_center_id',
         'employee_id',
     ];
+
+    public function employee() {
+        return $this->belongsTo(Employee::class, 'employee_id');
+    }
+
+    
 }

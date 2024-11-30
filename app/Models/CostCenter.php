@@ -14,4 +14,10 @@ class CostCenter extends Model
         'cost_line_id',
         'percentage',
     ];
+
+    public function clc_employees(){
+        return $this->hasMany(CostLineCenterEmployee::class, 'cost_center_id');
+    }
+
+    
 }

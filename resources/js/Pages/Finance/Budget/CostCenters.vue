@@ -1,6 +1,6 @@
 <template>
 
-    <Head title="Clientes" />
+    <Head title="CentroDeCostos" />
 
     <AuthenticatedLayout :redirectRoute="'selectproject.index'">
         <template #header>
@@ -50,21 +50,15 @@
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
                             <div class="flex justify-center space-x-3">
-                                <button @click="">
+                                <!-- <button @click="">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-500">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                     </svg>
-                                </button>
-                                <button @click="">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-blue-500">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    </svg>
+                                </button> -->
+                                <button @click="assignUser(item.id, item.clc_employees)">
+                                    <UserGroupIcon class="w-6 h-6 text-indigo-700"/>
                                 </button>
                                 <button type="button" @click="openCostCenterModal(item)"
                                     class="text-yellow-600 whitespace-no-wrap">
@@ -124,6 +118,49 @@
             </div>
         </Modal>
 
+
+
+
+        <Modal :show="assignUserModal">
+            <form class="p-6" @submit.prevent="submitAssignUser">
+                <h2 class="text-lg font-medium text-gray-900">
+                    Agregar Colaboradores
+                </h2>
+                <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
+                    <div class="sm:col-span-3">
+                        <InputLabel for="users" class="font-medium leading-6 text-gray-900">Colaboradores</InputLabel>
+                        <div class="mt-2">
+                            <select multiple v-model="assignUserForm.employees" id="users"
+                                size="20"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option v-for="item in selectEmployees" :key="item.id" :value="item.id" >
+                                    {{ item.name }} {{ item.lastname }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="sm:col-span-3">
+                        <InputLabel for="users" class="font-medium leading-6 text-gray-900">
+                            Colaboradores en Centro de costos
+                        </InputLabel>
+                        <div class="mt-2">
+                                <p v-for="item in assignUserForm.employeesArray" :key="user"  class="text-sm">
+                                    - {{ item?.name }} {{ item?.lastname }}
+                                </p>
+                        </div>
+                    </div>
+                </div>
+                <InputError :message="assignUserForm.errors.employees" class="mt-2" />
+                <div class="mt-6 flex gap-3 justify-end">
+                    <SecondaryButton type="button" @click="closeAssignUser">Cerrar</SecondaryButton>
+                    <button type="submit" :disabled="isFetching" :class="{ 'opacity-25': isFetching }"
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </Modal>
+
         <ConfirmDeleteModal 
             :confirmingDeletion="confirmCostCenterDestroy" 
             itemType="Centro de Costos"
@@ -139,7 +176,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
-import { TrashIcon, PencilIcon } from '@heroicons/vue/24/outline';
+import { TrashIcon, PencilIcon, UserGroupIcon } from '@heroicons/vue/24/outline';
 import { notify, notifyError } from '@/Components/Notification';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -147,15 +184,17 @@ import InputError from '@/Components/InputError.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { setAxiosErrors } from '@/utils/utils';
 import Modal from '@/Components/Modal.vue';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 
-const { costCenters, cost_line } = defineProps({
+const { costCenters, cost_line, employees } = defineProps({
     costCenters: Array,
     cost_line: Object,
+    employees: Array,
 })
 const dataToRender = ref(costCenters)
-
+const selectEmployees = ref(employees)
 
 
 //Create and Update
@@ -223,6 +262,45 @@ const deleteCostCenter = () => {
         });
 }
 
+//assign users
+
+const initUsersFormState = {employees:[], employeesArray:[], cost_center_id: '' }
+const assignUserModal = ref(false)
+const assignUserForm = useForm({...initUsersFormState})
+const assignUser = (id, clce) => {
+    let usersIds = clce.map(item=>item.employee.id)
+    assignUserModal.value = true;
+    assignUserForm.employees = [...usersIds];
+    assignUserForm.cost_center_id = id
+}
+const closeAssignUser = () => {
+    assignUserForm.reset();
+    assignUserModal.value = false;
+}
+
+const submitAssignUser = () => {
+    axios.post(route("finance.cost_center.employee.store"), {...assignUserForm.data()})
+        .then((res)=>{
+            const index = dataToRender.value.findIndex((item) => item.id == assignUserForm.cost_center_id);
+            dataToRender.value[index] = res.data
+            closeAssignUser();
+            notify("Asignación de colaboradores al Centro de Costos");
+        })
+        .catch(e=>{
+            if (e.response?.data?.errors) {setAxiosErrors(e.response.data.errors, form);} 
+            else {notifyError("Server Error");}
+        })
+        .finally(()=>{
+            isFetching.value = false;
+        });
+}
+
+watch(()=>assignUserForm.employees, (newVal)=>{
+    assignUserForm.employeesArray = newVal.map(id=>{
+        console.log(selectEmployees.value)
+        return selectEmployees.value.find(item=>item.id == id)
+    })
+})
 
 
 </script>

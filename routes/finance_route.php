@@ -37,13 +37,13 @@ Route::middleware('permission:FinanceManager')->group(function () {
     Route::get('/cost_lines/employees/{cl_id}', [CostLineController::class, 'cost_line_employee'])->name('finance.cost_line.employees');
     Route::post('/cost_lines/employees_store', [CostLineController::class, 'cost_line_employee_store'])->name('finance.cost_line.employee.store');
     Route::delete('/cost_lines/employees/destroy/{emp_id}', [CostLineController::class, 'cost_line_employee_destroy'])->name('finance.cost_line.employee.destroy');
-    Route::get('/cost_lines/employees_nocl', [CostLineController::class, 'searchNoCostLineEmployees'])->name('finance.cost_line.employee.nocl');
+    Route::get('/cost_lines/employees_search/{cl_id?}', [CostLineController::class, 'searchCostLineEmployees'])->name('finance.cost_line.employee.search');
 
     //CostsCenters
     Route::get('/cost_center/index/{cl_id}', [CostLineController::class,'cost_centers_index'])->name('finance.cost_centers.index');
     Route::post('/cost_center/store/{cc_id?}', [CostLineController::class,'cost_center_store'])->name('finance.cost_center.store');
     Route::delete('/cost_center/destroy/{cc_id?}', [CostLineController::class,'cost_center_destroy'])->name('finance.cost_center.destroy');
-
+    Route::post('/cost_center/employees_store', [CostLineController::class, 'cost_centers_employee_store'])->name('finance.cost_center.employee.store');
 
 
 

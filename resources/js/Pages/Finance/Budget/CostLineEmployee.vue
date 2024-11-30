@@ -1,6 +1,6 @@
 <template>
 
-    <Head title="Clientes" />
+    <Head title="ColaboradoresLineaDeGastos" />
 
     <AuthenticatedLayout :redirectRoute="'selectproject.index'">
         <template #header>
@@ -120,9 +120,6 @@
             </div>
         </Modal>
 
-  
-
-
     </AuthenticatedLayout>
 </template>
 
@@ -159,6 +156,9 @@ const openCostCenterModal = (item=null) => {
 }
 const closeCostCenterModal = () => {
     showCostCenterModal.value = false;
+    closeNextActions()
+}
+const closeNextActions = () =>{
     form.clearErrors()
     form.defaults({...initState})
     form.reset()
@@ -170,7 +170,7 @@ const submitCostCenterModal = () => {
     axios.post(route("finance.cost_line.employee.store"),form.data())
         .then((res)=>{
            dataToRender.value.push(res.data)
-            closeCostCenterModal();
+            closeNextActions();
             notify("Colaborador añadido a la Línea de Gasto");
             reloadSelectEmployee()
         })
@@ -205,7 +205,7 @@ const deleteEmployee = (item) => {
 
 //reload select
 const reloadSelectEmployee = () => {
-    axios.get(route("finance.cost_line.employee.nocl"))
+    axios.get(route("finance.cost_line.employee.search"))
         .then(res=>{
             selectEmployees.value = res.data
         })
