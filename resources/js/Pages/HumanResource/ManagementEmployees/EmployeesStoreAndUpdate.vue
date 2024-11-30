@@ -123,18 +123,16 @@
                     <h2 class="text-base font-semibold leading-7 text-gray-900">Informacion de Contrato</h2>
                     <div class="mt-3 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div class="sm:col-span-2">
-                            <InputLabel for="expense_line">
+                            <InputLabel for="cost_line_id">
                                 Linea de Gasto
                             </InputLabel>
                             <div class="mt-2">
-                                <select v-model="form.expense_line" id="expense_line" autocomplete="off"
+                                <select v-model="form.cost_line_id" id="cost_line_id" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Linea de Gastos</option>
-                                    <option>Pint</option>
-                                    <option>Pext</option>
-                                    <option>Huawei</option>
+                                    <option v-for="item,i in costLines" :key="i" :value="item.id">{{ item.name }}</option>
                                 </select>
-                                <InputError :message="form.errors.expense_line" />
+                                <InputError :message="form.errors.cost_line_id" />
                             </div>
                         </div>
                         <div class="mt-3 sm:col-span-2">
@@ -663,6 +661,7 @@ const props = defineProps({
         type: Object,
         requerid: false
     },
+    costLines: Array
 })
 
 const form = useForm({
@@ -678,7 +677,7 @@ const form = useForm({
     email_company: '',
     phone1: '',
     phone2: '',
-    expense_line: '',
+    cost_line_id: '',
     type_contract: '',
     state_travel_expenses: true,
     discount_remuneration: '',
@@ -723,7 +722,7 @@ if (props.employees) {
     form.email_company = props.employees.email_company;
     form.phone1 = props.employees.phone1;
     form.phone2 = props.employees.phone2;
-    form.expense_line = props.employees.contract.expense_line;
+    form.cost_line_id = props.employees.contract.cost_line_id;
     form.type_contract = props.employees.contract.type_contract;
     form.state_travel_expenses = props.employees.contract.state_travel_expenses == 1 ? true : false;
     form.discount_remuneration = props.employees.contract.discount_remuneration == 1 ? true : false;

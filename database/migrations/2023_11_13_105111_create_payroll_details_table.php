@@ -16,11 +16,7 @@ return new class extends Migration
             $table->foreignId('payroll_id')->constrained();
             $table->foreignId('employee_id')->constrained();
             $table->float('basic_salary');
-            $table->string('salary_operation_number')->nullable();
-            $table->date('salary_operation_date')->nullable();
             $table->float('amount_travel_expenses')->nullable();
-            $table->string('travel_expenses_operation_number')->nullable();
-            $table->date('travel_expenses_operation_date')->nullable();
             $table->float('life_ley');
             $table->string('state')->default('Active');
             $table->boolean('discount_remuneration');
@@ -29,9 +25,6 @@ return new class extends Migration
             $table->date('hire_date');
             $table->date('fired_date')->nullable();
             $table->foreignId('pension_id')->constrained();
-            $table->foreignId('account_statement_id')->nullable()
-                ->constrained('account_statements')
-                ->onDelete('set null');
             $table->timestamps();
         });
     }

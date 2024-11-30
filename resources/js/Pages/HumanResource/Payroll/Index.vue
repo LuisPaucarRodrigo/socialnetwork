@@ -202,6 +202,7 @@ async function submit() {
         const response = await axios.post(url, form)
         updatePayroll(response.data, 'create')
     } catch (error) {
+        console.log(error)
         if (error.response) {
             setAxiosErrors(error.response.data.errors, form)
         } else {

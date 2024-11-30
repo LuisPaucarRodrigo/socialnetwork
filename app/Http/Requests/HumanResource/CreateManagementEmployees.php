@@ -37,7 +37,7 @@ class CreateManagementEmployees extends FormRequest
             'phone1' => 'required|numeric|digits:9|unique:' . Employee::class,
             'phone2' => 'nullable|numeric|digits:9|unique:' . Employee::class,
 
-            'expense_line' => 'required|string',
+            'cost_line_id' => 'required|numeric',
             'type_contract' => 'required|string',
             'state_travel_expenses' => 'required|boolean',
             'amount_travel_expenses' => 'required_if:state_travel_expenses,true|nullable|numeric',

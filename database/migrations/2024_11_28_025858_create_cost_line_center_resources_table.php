@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('cost_line_center_resources', function (Blueprint $table) {
             $table->id();
             $table->foreignId('cost_center_id')->constrained('cost_centers')->cascadeOnDelete();
-            $table->foreignId('clr_id')->constrained('cost_line_resources')->cascadeOnDelete();
+            $table->foreignId('resource_entry_id')->constrained('resource_entries')->cascadeOnDelete();
             $table->timestamps();
         });
     }

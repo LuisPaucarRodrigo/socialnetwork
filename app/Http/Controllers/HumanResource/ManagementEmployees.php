@@ -10,6 +10,7 @@ use App\Http\Requests\HumanResource\StoreOrUpdateEmployeesExternal;
 use App\Http\Requests\HumanResource\UpdateManagementEmployees;
 use App\Models\Address;
 use App\Models\Contract;
+use App\Models\CostLine;
 use App\Models\Education;
 use App\Models\Emergency;
 use App\Models\Employee;
@@ -28,11 +29,11 @@ class ManagementEmployees extends Controller
     public function index($reentry = false)
     {
         if ($reentry == false) {
-            $employees = Employee::with('contract')->whereHas('contract', function ($query) {
+            $employees = Employee::with('contract.cost_line')->whereHas('contract', function ($query) {
                 $query->where('state', 'Active');
             })->paginate();
         } else {
-            $employees = Employee::with('contract')->whereHas('contract', function ($query) {
+            $employees = Employee::with('contract.cost_line')->whereHas('contract', function ($query) {
                 $query->where('state', 'Inactive');
             })->paginate();
         }
@@ -55,12 +56,12 @@ class ManagementEmployees extends Controller
         $isActive = $request->query('isActive');
 
         if ($isActive) {
-            $employees = Employee::with('contract')
+            $employees = Employee::with('contract.cost_line')
                 ->whereHas('contract', function ($query) {
                     $query->where('state', 'Active');
                 });
         } else {
-            $employees = Employee::with('contract')
+            $employees = Employee::with('contract.cost_line')
                 ->whereHas('contract', function ($query) {
                     $query->where('state', 'Inactive');
                 });
@@ -71,7 +72,9 @@ class ManagementEmployees extends Controller
                 ->orWhere('phone1', 'like', '%' . $searchTerm . '%')
                 ->orWhere('dni', 'like', '%' . $searchTerm . '%')
                 ->orWhereHas('contract', function ($item) use ($searchTerm) {
-                    $item->where('expense_line', $searchTerm);
+                    $item->whereHas('cost_line', function($subitem) use ($searchTerm){
+                        $subitem->where('name', 'like', '%' . $searchTerm . '%');
+                    });
                 });
         })
             ->get();
@@ -91,7 +94,8 @@ class ManagementEmployees extends Controller
     public function create()
     {
         $pension = ['Habitad', 'Integra', 'Prima','Profuturo', 'HabitadMX', 'IntegraMX', 'PrimaMX','ProfuturoMX','ONP'];
-        return Inertia::render('HumanResource/ManagementEmployees/EmployeesStoreAndUpdate', ['pensions' => $pension]);
+        $costLines = CostLine::all();
+        return Inertia::render('HumanResource/ManagementEmployees/EmployeesStoreAndUpdate', ['pensions' => $pension, 'costLines'=>$costLines]);
     }
 
     public function store(CreateManagementEmployees $request)
@@ -130,7 +134,7 @@ class ManagementEmployees extends Controller
             $employeeId = $employee->id;
 
             Contract::create([
-                'expense_line' => $request->expense_line,
+                'cost_line_id' => $request->cost_line_id,
                 'state_travel_expenses' => $request->state_travel_expenses,
                 'type_contract' => $request->type_contract,
                 'amount_travel_expenses' => $request->amount_travel_expenses,
@@ -210,7 +214,8 @@ class ManagementEmployees extends Controller
     {   
         $pension = ['Habitad', 'Integra', 'Prima','Profuturo', 'HabitadMX', 'IntegraMX', 'PrimaMX','ProfuturoMX','ONP'];
         $employeesedit = Employee::with('contract', 'education', 'address', 'emergency', 'family', 'health')->find($id);
-        return Inertia::render('HumanResource/ManagementEmployees/EmployeesStoreAndUpdate', ['employees' => $employeesedit, 'pensions' => $pension]);
+        $costLines = CostLine::all();
+        return Inertia::render('HumanResource/ManagementEmployees/EmployeesStoreAndUpdate', ['employees' => $employeesedit, 'pensions' => $pension, 'costLines'=>$costLines]);
     }
 
     public function update(UpdateManagementEmployees $request, $id)
@@ -250,7 +255,7 @@ class ManagementEmployees extends Controller
             ]);
 
             $employee->contract->update([
-                'expense_line' => $request->expense_line,
+                'cost_line_id' => $request->cost_line_id,
                 'state_travel_expenses' => $request->state_travel_expenses,
                 'type_contract' => $request->type_contract,
                 'amount_travel_expenses' => $request->amount_travel_expenses,
@@ -345,7 +350,7 @@ class ManagementEmployees extends Controller
 
     public function details($id)
     {
-        $details = Employee::with('contract', 'contract.pension', 'education', 'address', 'emergency', 'family', 'health')->find($id);
+        $details = Employee::with('contract.cost_line', 'contract.pension', 'education', 'address', 'emergency', 'family', 'health')->find($id);
         return Inertia::render('HumanResource/ManagementEmployees/EmployeesDetails', ['details' => $details]);
     }
 

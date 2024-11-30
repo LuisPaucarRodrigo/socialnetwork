@@ -17,6 +17,7 @@ class BudgetUpdateController extends Controller
     public function store(Request $request, Project $project)
     {
         $user_id = Auth::id();
+        $user = Auth::user();
         $request->validate([
             'new_budget' => 'required',
             'project_id' => 'required',
@@ -30,6 +31,7 @@ class BudgetUpdateController extends Controller
             'project_id' => $request->project_id,
             'reason' => $request->reason,
             'user_id' => $user_id,
+            'user_name'=> $user->name.' '.$user->lastname
         ]);
 
         return to_route('initialbudget.index', ['project' => $project->id]);

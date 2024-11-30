@@ -17,19 +17,28 @@ class AccountStatement extends Model
         'payment',
     ];
 
-    public function additional_costs () {
+    public function additional_costs()
+    {
         return $this->hasMany(AdditionalCost::class, 'account_statement_id');
     }
 
-    public function static_costs () {
+    public function static_costs()
+    {
         return $this->hasMany(StaticCost::class, 'account_statement_id');
     }
 
-    public function pext_project_expenses () {
+    public function pext_project_expenses()
+    {
         return $this->hasMany(PextProjectExpense::class, 'account_statement_id');
     }
 
-    public function getStateAttribute () {
+    public function payroll_details_expenses()
+    {
+        return $this->hasMany(PayrollDetailExpense::class, 'account_statement_id');
+    }
+
+    public function getStateAttribute()
+    {
         if ($this->payment) {
             return 'Abono';
         }
@@ -37,10 +46,23 @@ class AccountStatement extends Model
             $totalAC = $this->additional_costs()->get()->sum('amount');
             $totalSC = $this->static_costs()->get()->sum('amount');
             $totalPE = $this->pext_project_expenses()->get()->sum('amount');
-            $total = $totalAC + $totalSC + $totalPE;
-            if ($total >= $this->charge){
+
+            $totalSP = $this->payroll_details_expenses()
+                ->with('payroll_detail')
+                ->get()
+                ->sum(function ($sp) {
+                    if ($sp->type === 'Salary') {
+                        return $sp->payroll_detail->net_pay;
+                    }
+                    if ($sp->type === 'Travel') {
+                        return $sp->payroll_detail->amount_travel_expenses;
+                    }
+                    return 0;
+                });
+            $total = $totalAC + $totalSC + $totalPE + $totalSP;
+            if ($total >= $this->charge) {
                 return 'Validado';
-            } else if ( $total > 0) {
+            } else if ($total > 0) {
                 return 'Por validar';
             } else {
                 return 'No validado';

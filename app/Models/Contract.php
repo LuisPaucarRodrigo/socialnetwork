@@ -11,7 +11,7 @@ class Contract extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'expense_line',
+        'cost_line_id',
         'state_travel_expenses',
         'type_contract',
         'amount_travel_expenses',
@@ -33,6 +33,10 @@ class Contract extends Model
     public function employee()
     {
         return $this->belongsTo(Employee::class, 'employee_id');
+    }
+    public function cost_line()
+    {
+        return $this->belongsTo(CostLine::class, 'cost_line_id');
     }
 
     //CALCULATED

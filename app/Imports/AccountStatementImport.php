@@ -5,6 +5,7 @@ namespace App\Imports;
 use App\Models\AccountStatement;
 use App\Models\AdditionalCost;
 use App\Models\PextProjectExpense;
+use App\Models\PayrollDetail;
 use App\Models\StaticCost;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -103,6 +104,10 @@ class AccountStatementImport implements ToModel
                 ->update(['account_statement_id' => $accountStatementId]);
 
             PextProjectExpense::where('operation_date', $od)
+                ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
+                ->update(['account_statement_id' => $accountStatementId]);
+
+            PayrollDetail::where('operation_date', $od)
                 ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
                 ->update(['account_statement_id' => $accountStatementId]);
         }

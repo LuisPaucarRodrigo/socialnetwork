@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\File;
 
 class PayrollDetail extends Model
@@ -15,27 +16,19 @@ class PayrollDetail extends Model
         'payroll_id',
         'employee_id',
         'pension_id',
-
         'basic_salary',
-        'salary_operation_date',
-        'salary_operation_number',
-
-
         'amount_travel_expenses',
-        'travel_expenses_operation_date',
-        'travel_expenses_operation_number',
-
         'life_ley',
         'discount_remuneration',
         'discount_sctr',
         'hire_date',
         'fired_date',
         'days_taken',
-
-        'account_statement_id',
     ];
 
     protected $appends = [
+        'employee_name',
+
         'total_income',
         'total_pension_base',
         'truncated_month',
@@ -58,6 +51,11 @@ class PayrollDetail extends Model
         'sctr_s',
         'total_contribution'
     ];
+
+    public function getEmployeeNameAttribute () {
+        return $this->employee->name.' '. $this->employee->lastname;
+    }
+
 
     public function getTruncatedMonthAttribute()
     {
@@ -200,5 +198,10 @@ class PayrollDetail extends Model
     public function pension()
     {
         return $this->belongsTo(Pension::class);
+    }
+
+    public function payroll_detail_expense(): HasMany
+    {
+        return $this->hasMany(PayrollDetailExpense::class);
     }
 }

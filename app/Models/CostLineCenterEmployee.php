@@ -11,6 +11,6 @@ class CostLineCenterEmployee extends Model
     protected $table = 'cost_line_center_employees';
     protected $fillable = [
         'cost_center_id',
-        'cle_id',
+        'employee_id',
     ];
 }

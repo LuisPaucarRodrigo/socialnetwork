@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('cost_line_center_employees', function (Blueprint $table) {
             $table->id();
             $table->foreignId('cost_center_id')->constrained('cost_centers')->cascadeOnDelete();
-            $table->foreignId('cle_id')->constrained('cost_line_employees')->cascadeOnDelete();
+            $table->foreignId('employee_id')->constrained('employees')->cascadeOnDelete();
             $table->timestamps();
         });
     }

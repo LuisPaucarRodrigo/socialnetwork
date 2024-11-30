@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\HumanResource\DocumentRegisterRequest;
 use App\Http\Requests\HumanResource\InsuranceExpDateRequest;
+use App\Models\CostLine;
 use App\Models\Document;
 use App\Models\DocumentRegister;
 use App\Models\DocumentSection;
@@ -21,7 +22,7 @@ class DocumentSpreedSheetController extends Controller
         if ($request->isMethod('get')) {
             $employees = Employee::with([
                 'document_registers',
-                'contract:id,state,employee_id,hire_date,discount_sctr,pension_id',
+                'contract:id,state,employee_id,hire_date,discount_sctr',
             ])->whereHas('contract', function($query){
                 $query->where('state', 'Active');
             })
@@ -42,7 +43,8 @@ class DocumentSpreedSheetController extends Controller
             $searchquery = $request->searchquery;
             $employees = Employee::with([
                 'document_registers',
-                'contract:id,state,employee_id,hire_date,discount_sctr,pension_id,expense_line',
+                'contract:id,state,employee_id,hire_date,discount_sctr,cost_line_id',
+                'contract.cost_line:id,name'
             ])
             ->whereHas('contract', function($query){
                 $query->where('state', 'Active');
@@ -59,7 +61,9 @@ class DocumentSpreedSheetController extends Controller
                     'policy_exp_date',
                 )
                 ->whereHas('contract', function ($query) use ($searchquery) {
-                    $query->where('expense_line', 'like', "%$searchquery%");
+                    $query->whereHas('cost_line', function($subquery) use ($searchquery){
+                        $subquery->where('name', 'like', '%' . $searchquery . '%');
+                    });
                 })
                 ->orderBy('lastname')
                 ->get();
@@ -130,6 +134,7 @@ class DocumentSpreedSheetController extends Controller
                 return $emp;
             });
         $sections = DocumentSection::with('subdivisions')->where('id', '<=', 10)->get();
+        $costLines = CostLine::all();
         if ($request->isMethod('get')) {
             return Inertia::render(
                 'HumanResource/DocumentSpreedSheet/Index',
@@ -137,6 +142,7 @@ class DocumentSpreedSheetController extends Controller
                     'employees' => $employees,
                     'e_employees' => $e_employees,
                     'sections' => $sections,
+                    'costLines' => $costLines,
                 ]
             );
         } elseif ($request->isMethod('post')) {
@@ -149,7 +155,7 @@ class DocumentSpreedSheetController extends Controller
     {
         $employee = Employee::with([
             'document_registers',
-            'contract:id,state,employee_id,hire_date,discount_sctr,pension_id',
+            'contract:id,state,employee_id,hire_date,discount_sctr',
         ])
             ->select(
                 'id',

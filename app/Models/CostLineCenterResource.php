@@ -11,6 +11,6 @@ class CostLineCenterResource extends Model
     protected $table = 'cost_line_center_resources';
     protected $fillable = [
         'cost_center_id',
-        'clr_id',
+        'resource_entry_id',
     ];
 }
