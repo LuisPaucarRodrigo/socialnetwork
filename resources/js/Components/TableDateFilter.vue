@@ -1,39 +1,21 @@
 <template>
-    <div
-        :class="['relative flex justify-center items-center gap-x-3', widthClass]"
-        ref="popup"
-    >
-        <p :class="labelClass" v-html="reverse ? reverseWordsWithBreaks(label) : label" ></p>
+    <div :class="['relative flex justify-center items-center gap-x-3', widthClass]" ref="popup">
+        <p :class="labelClass" v-html="reverse ? reverseWordsWithBreaks(label) : label"></p>
         <button @click="togglePopup" class="cursor-pointer">
             <BarsArrowDownIcon class="h-5 w-5" />
         </button>
-        <div
-            v-if="showPopup"
-            :class="[
-                'absolute z-40 top-8 right-0 mt-0 bg-white border border-gray-300 shadow-lg p-4 rounded-md',
-                widthClass,
-            ]"
-        >
+        <div v-if="showPopup" :class="[
+            'absolute z-40 top-8 right-0 mt-0 bg-white border border-gray-300 shadow-lg p-4 rounded-md',
+            widthClass,
+        ]">
             <div class="font-normal items-center flex flex-col gap-4">
-                <input
-                    type="date"
-                    v-model="localStartDate"
-                    @input="handleDateInput('start')"
-                    class="text-sm border border-gray-300 rounded px-1 py-1"
-                />
-                <input
-                    type="date"
-                    v-model="localEndDate"
-                    @input="handleDateInput('end')"
-                    class="text-sm border border-gray-300 rounded px-1 py-1"
-                />
+                <input type="date" v-model="localStartDate" @input="handleDateInput('start')"
+                    class="text-sm border border-gray-300 rounded px-1 py-1" />
+                <input type="date" v-model="localEndDate" @input="handleDateInput('end')"
+                    class="text-sm border border-gray-300 rounded px-1 py-1" />
                 <label class="flex gap-2 items-center">
-                    <input
-                        type="checkbox"
-                        v-model="localNoDate"
-                        @change="handleNoDate"
-                        class="focus:ring-0 outline-none"
-                    />
+                    <input type="checkbox" v-model="localNoDate" @change="handleNoDate"
+                        class="focus:ring-0 outline-none" />
                     Sin Fecha
                 </label>
             </div>

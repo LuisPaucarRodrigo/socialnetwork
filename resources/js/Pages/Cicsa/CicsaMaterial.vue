@@ -613,9 +613,13 @@ async function submit() {
             }, 1500)
         } catch (error) {
             if (error.response) {
-                setAxiosErrors(error.response.data.errors, form)
+                if (error.response.data.errors) {
+                    setAxiosErrors(error.response.data.errors, form)
+                } else {
+                    console.error("Server error:", error.response.data)
+                }
             } else {
-                console.error(error)
+                console.error("Network or other error:", error)
             }
         }
     }
@@ -634,7 +638,7 @@ const material_item = ref({
     unit: '',
     type: '',
     quantity: 0,
-    total_quantity:null
+    total_quantity: null
 });
 
 function addFeasibility() {
@@ -707,7 +711,6 @@ function modalImportMaterial() {
 }
 
 function submitImportExcel() {
-
     axios.post(route('material.import'), formImport, {
         headers: {
             'Content-Type': 'multipart/form-data',
@@ -715,11 +718,13 @@ function submitImportExcel() {
     })
         .then(response => {
             if (response.status === 200) {
+                console.log(response.data)
                 form.cicsa_material_items = response.data;
                 modalImportMaterial();
             }
         })
         .catch(error => {
+            console.log(error)
             if (error.response.status === 400) {
                 formImport.errors.document = error.response.data.errorMessage
             } else {

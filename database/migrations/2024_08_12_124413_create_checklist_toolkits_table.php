@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->text('reason');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->string('user_name');
             $table->string('additionalEmployees')->nullable();
             $table->string('zone');
             //KIT TOOLS

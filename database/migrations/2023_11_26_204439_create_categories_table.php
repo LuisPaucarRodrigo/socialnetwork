@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pensions', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string('type');
-            $table->decimal('values', 10, 4);
-            $table->decimal('values_seg', 10, 4);
-            $table->foreignId('payroll_id')->constrained();
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -26,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pensions');
+        Schema::dropIfExists('categories');
     }
 };

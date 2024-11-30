@@ -38,13 +38,13 @@ class CreateManagementEmployees extends FormRequest
             'phone2' => 'nullable|numeric|digits:9|unique:' . Employee::class,
 
             'expense_line' => 'required|string',
-            'state_travel_expenses' => 'required|boolean',
             'type_contract' => 'required|string',
-            'amount_travel_expenses' => 'nullable|numeric',
+            'state_travel_expenses' => 'required|boolean',
+            'amount_travel_expenses' => 'required_if:state_travel_expenses,true|nullable|numeric',
 
             'discount_remuneration' => 'required|boolean',
             'discount_sctr' => 'required|boolean',
-            'pension_system' => 'required|numeric',
+            'pension_type' => 'required|string',
             'basic_salary' => 'required|numeric',
             'life_ley' => 'required|numeric',
             'hire_date' => 'required|date',

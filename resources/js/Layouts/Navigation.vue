@@ -99,7 +99,7 @@ Usuarios
                     <Link class="w-full" :href="route('controlEmployees.index')">Control de Empleados</Link>
                 </MyTransition> -->
                 <MyTransition :transitiondemonstration="showingHumanResource">
-                    <Link class="w-full" :href="route('spreadsheets.index')">Nomina</Link>
+                    <Link class="w-full" :href="route('payroll.index')">Nomina</Link>
                 </MyTransition>
 
                 <MyTransition :transitiondemonstration="showingHumanResource">

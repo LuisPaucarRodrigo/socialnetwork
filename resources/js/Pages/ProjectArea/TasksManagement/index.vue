@@ -112,7 +112,7 @@
 
                                             <div v-else-if="task.status === 'proceso' || task.status === 'detenido'">
                                                 <!-- Botones en proceso o detenido -->
-                                                <button @click="statustask(task.id, 'stop')"
+                                                <!-- <button @click="statustask(task.id, 'stop')"
                                                     v-if="task.status === 'proceso'"
                                                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                                     <PauseIcon class="text-white-900 h-4 w-4" style="stroke-width:4;" />
@@ -121,19 +121,19 @@
                                                     class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
                                                     <PlayPauseIcon class="text-white-900 h-4 w-4"
                                                         style="stroke-width:3;" />
-                                                </button>
+                                                </button> -->
                                                 <button @click="openModalComplete(task)"
                                                     class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
                                                     <CheckIcon class="text-white-900 h-4 w-4" style="stroke-width:4;" />
                                                 </button>
                                             </div>
-                                            <p v-else class="text-red-500 font-bold py-2 px-4 rounded">
+                                            <p v-else class="text-green-500 font-bold py-2 px-4 rounded">
                                                 Completado
                                             </p>
                                         </template>
 
                                         <template class="flex space-x-3 justify-center">
-                                            <Link :href="route('tasks.show', { taskId: task.id })">
+                                            <!-- <Link :href="route('tasks.show', { taskId: task.id })">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-teal-500">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -141,7 +141,7 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                             </svg>
-                                            </Link>
+                                            </Link> -->
                                             <template v-if="hasPermission('ProjectManager')">
                                                 <button v-if="task.status === 'pendiente'"
                                                     @click="showModalDate(task.id)">

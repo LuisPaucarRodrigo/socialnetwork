@@ -14,6 +14,7 @@ class Archive extends Model
         "name",
         "path",
         "user_id",
+        "user_name",
         "version",
         "folder_id",
         "comment"

@@ -36,7 +36,9 @@ class ManagementEmployees extends Controller
                 $query->where('state', 'Inactive');
             })->paginate();
         }
+
         $employees->each(function ($employee) {
+            $employee = $employee->setAppends([]);
             $employee->cropped_image = url($employee->cropped_image ? '/image/profile/' . $employee->cropped_image : '/image/projectimage/DefaultUser.png');
         });
 
@@ -88,7 +90,7 @@ class ManagementEmployees extends Controller
 
     public function create()
     {
-        $pension = Pension::all();
+        $pension = ['Habitad', 'Integra', 'Prima','Profuturo', 'HabitadMX', 'IntegraMX', 'PrimaMX','ProfuturoMX','ONP'];
         return Inertia::render('HumanResource/ManagementEmployees/EmployeesStoreAndUpdate', ['pensions' => $pension]);
     }
 
@@ -139,7 +141,7 @@ class ManagementEmployees extends Controller
                 'discount_sctr' => $request->discount_sctr,
                 'hire_date' => $request->hire_date,
                 'employee_id' => $employeeId,
-                'pension_id' => $request->pension_system,
+                'pension_type' => $request->pension_type,
             ]);
 
             Education::create([
@@ -205,9 +207,10 @@ class ManagementEmployees extends Controller
     }
 
     public function edit($id)
-    {
-        $employeesedit = Employee::with('contract', 'contract.pension', 'education', 'address', 'emergency', 'family', 'health')->find($id);
-        return Inertia::render('HumanResource/ManagementEmployees/EmployeesStoreAndUpdate', ['employees' => $employeesedit, 'pensions' => Pension::all()]);
+    {   
+        $pension = ['Habitad', 'Integra', 'Prima','Profuturo', 'HabitadMX', 'IntegraMX', 'PrimaMX','ProfuturoMX','ONP'];
+        $employeesedit = Employee::with('contract', 'education', 'address', 'emergency', 'family', 'health')->find($id);
+        return Inertia::render('HumanResource/ManagementEmployees/EmployeesStoreAndUpdate', ['employees' => $employeesedit, 'pensions' => $pension]);
     }
 
     public function update(UpdateManagementEmployees $request, $id)
@@ -257,7 +260,7 @@ class ManagementEmployees extends Controller
                 'discount_remuneration' => $request->discount_remuneration,
                 'discount_sctr' => $request->discount_sctr,
                 'hire_date' => $request->hire_date,
-                'pension_id' => $request->pension_system,
+                'pension_type' => $request->pension_type,
             ]);
 
             $employee->education->update([

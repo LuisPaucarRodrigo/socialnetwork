@@ -137,56 +137,6 @@ class DatabaseSeeder extends Seeder
             'area_id' => 1
         ]);
 
-        $data = [
-            [
-                'type' => 'HABITAT',
-                'values' => 0.0147,
-                'values_seg' => 0.0184,
-            ],
-            [
-                'type' => 'INTEGRA',
-                'values' => 0.0155,
-                'values_seg' => 0.0184,
-            ],
-            [
-                'type' => 'PRIMA',
-                'values' => 0.0160,
-                'values_seg' => 0.0184,
-            ],
-            [
-                'type' => 'PROFUTURO',
-                'values' => 0.0169,
-                'values_seg' => 0.0184,
-            ],
-            [
-                'type' => 'HABITATMX',
-                'values' => 0,
-                'values_seg' => 0.0184,
-            ],
-            [
-                'type' => 'INTEGRAMX',
-                'values' => 0,
-                'values_seg' => 0.0184,
-            ],
-            [
-                'type' => 'PRIMAMX',
-                'values' => 0,
-                'values_seg' => 0.0184,
-            ],
-            [
-                'type' => 'PROFUTUROMX',
-                'values' => 0,
-                'values_seg' => 0.0184,
-            ],
-            [
-                'type' => 'ONP',
-                'values' => 0.13,
-                'values_seg' => 0.0,
-            ],
-        ];
-        Pension::insert($data);
-
-
         $customersData = [
             ['id' => 1, 'ruc' => 20512780114, 'business_name' => 'CICSA PERU SAC', 'category' => 'Especial', 'address' => 'CALLE AMADOR MERINO REINA 267 OFC 501 LIMA LIMA SAN ISIDRO'],
             ['id' => 2, 'ruc' => 2, 'business_name' => 'GTD CICSA', 'category' => 'Especial', 'address' => '-'],

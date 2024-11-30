@@ -33,21 +33,21 @@
           <dropdown-link :href="route('profile.edit')">
             Perfil
           </dropdown-link>
-          <div class="dropdown">
+          <!-- <div class="dropdown">
             <div class="dropdown-menu">
               <button @click="openScheduleModal"
                 class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                 Horario
               </button>
             </div>
-          </div>
+          </div> -->
           <dropdown-link class="w-full text-left" :href="route('logout')" method="post" as="button">
             Cerrar sesión
           </dropdown-link>
         </template>
       </dropdown>
     </div>
-    <Modal :show="showModalSchedule">
+    <!-- <Modal :show="showModalSchedule">
       <div class="p-8">
         <h2 class="text-lg font-medium leading-7 text-gray-900 mb-3">
           Horario
@@ -69,15 +69,15 @@
           </div>
         </div>
       </div>
-    </Modal>
+    </Modal> -->
   </header>
 </template>
 <script setup>
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
-import { ref } from 'vue'
-import Modal from '@/Components/Modal.vue';
-import axios from 'axios';
+// import { ref } from 'vue'
+// import Modal from '@/Components/Modal.vue';
+// import axios from 'axios';
 import { router } from '@inertiajs/vue3';
 
 const props = defineProps({
@@ -92,38 +92,38 @@ const getRoute = () => {
   }
 };
 
-const showModalSchedule = ref(false);
-const excelData = ref(null);
-const fileExists = ref(null);
-const documentUrl = ref(null);
-const documentId = ref(null);
+// const showModalSchedule = ref(false);
+// const excelData = ref(null);
+// const fileExists = ref(null);
+// const documentUrl = ref(null);
+// const documentId = ref(null);
 
-const closeScheduleModal = () => {
-  showModalSchedule.value = false;
-};
+// const closeScheduleModal = () => {
+//   showModalSchedule.value = false;
+// };
 
-const openScheduleModal = async () => {
-  showModalSchedule.value = true;
-  const routeToShow = route('management.employees.schedule.latest');
-  try {
-    const response = await axios.get(routeToShow);
-    if (response.data.hasSchedule) {
-      fileExists.value = true;
-      documentUrl.value = route('management.employees.schedule.preview', { schedule: response.data.schedule.id });
-      documentId.value = response.data.schedule.id;
-    } else {
-      fileExists.value = false;
-      documentUrl.value = '';
-    }
-  } catch (error) {
-    console.error('Error al obtener el último horario:', error);
-  }
-};
+// const openScheduleModal = async () => {
+//   showModalSchedule.value = true;
+//   const routeToShow = route('management.employees.schedule.latest');
+//   try {
+//     const response = await axios.get(routeToShow);
+//     if (response.data.hasSchedule) {
+//       fileExists.value = true;
+//       documentUrl.value = route('management.employees.schedule.preview', { schedule: response.data.schedule.id });
+//       documentId.value = response.data.schedule.id;
+//     } else {
+//       fileExists.value = false;
+//       documentUrl.value = '';
+//     }
+//   } catch (error) {
+//     console.error('Error al obtener el último horario:', error);
+//   }
+// };
 
-function download() {
-  const backendDocumentUrl = route('management.employees.schedule.download', { schedule: documentId.value });
-  window.open(backendDocumentUrl, '_blank');
-};
+// function download() {
+//   const backendDocumentUrl = route('management.employees.schedule.download', { schedule: documentId.value });
+//   window.open(backendDocumentUrl, '_blank');
+// };
 
 </script>
   

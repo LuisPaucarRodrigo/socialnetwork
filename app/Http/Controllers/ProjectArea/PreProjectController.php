@@ -79,7 +79,6 @@ class PreProjectController extends Controller
         ]);
     }
 
-
     public function getCode($date, $code)
     {
         $year = date('Y', strtotime($date));
@@ -100,7 +99,7 @@ class PreProjectController extends Controller
                 foreach ($data['reportStages'] as $report) {
                     $dataCode = TitleCode::where('title_id', $report['title_id'])->get();
                     $preprojectTitle = PreprojectTitle::create([
-                        'type' => $report['name'],
+                        'type' => $report['type'],
                         'preproject_id' => $preproject->id,
                     ]);
                     foreach ($dataCode as $codes) {

@@ -16,6 +16,7 @@ class Folder extends Model
         "archive_type",
         "state",
         "user_id",
+        "user_name",
         "upper_folder_id"
     ];
 

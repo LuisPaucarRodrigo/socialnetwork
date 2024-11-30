@@ -10,6 +10,7 @@ class ChecklistDailytoolkit extends Model
     use HasFactory;
     protected $fillable = [
         'user_id',
+        'user_name',
         'personal_2',
         'zone',
         'power_meter',
