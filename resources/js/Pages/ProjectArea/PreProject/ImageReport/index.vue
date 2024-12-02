@@ -6,45 +6,43 @@
             Imagenes para Reporte
         </template>
         <div class="min-w-full overflow-hidden rounded-lg">
-
-            <!-- <GoogleMaps :mapVisible="mapVisible" :origin="origin" :destination="destination" :waypoints="waypoints" /> -->
+            <button class="ml-2" data-tooltip-target="add_stages" @click="openModalAddedStages">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-6 h-6 text-green-500 hover:bg-green-400">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+            </button>
+            <div id="add_stages" role="tooltip"
+                class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                Agregar Etapas
+                <div class="tooltip-arrow" data-popper-arrow></div>
+            </div>
             <div v-for="preprojectImage in preprojectImages" :key="preprojectImage.id">
-                <div class="mt-6 flex items-center justify-start gap-x-3">
-                    <h2 class="text-md font-bold text-gray-700 line-clamp-1 m-5">
-                        {{ preprojectImage.type }}
-                    </h2>
-                    <PrimaryButton @click="approveTitle(preprojectImage.id)" data-tooltip-target="enable_and_disabled"
-                        :customColor="[preprojectImage.state ? 'bg-red-600 hover:bg-red-500' : 'bg-green-600 hover:bg-green-500']">
-                        <svg v-if="preprojectImage.state" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
-                        </svg>
-                        <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                        </svg>
-                    </PrimaryButton>
-                    <div id="enable_and_disabled" role="tooltip"
-                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                        {{ preprojectImage.state ? 'Desabilitar' : 'Habilitar' }}
-                        <div class="tooltip-arrow" data-popper-arrow></div>
+                <div class="mt-6 flex items-center justify-between">
+                    <div class="flex items-center justify-between gap-x-3">
+                        <h2 class="text-md font-bold text-gray-700 line-clamp-1 ml-2 mt-5 mr-5 mb-5">
+                            {{ preprojectImage.type }}
+                        </h2>
+                        <button @click="openModalDelete(preprojectImage.id)">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5 text-red-500">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                            </svg>
+                        </button>
                     </div>
-                    <a :href="`${route('preprojects.report.download', { preproject_title_id: preprojectImage.id })}?t=${Date.now()}`"
-                        target="_blank" data-tooltip-target="export_image_report"
-                        class="rounded-md bg-green-500 px-4 py-2 text-center text-sm text-white hover:bg-green-400">
-                        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-                            stroke-width="1.5">
-                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                d="M9.29289 1.29289C9.48043 1.10536 9.73478 1 10 1H18C19.6569 1 21 2.34315 21 4V9C21 9.55228 20.5523 10 20 10C19.4477 10 19 9.55228 19 9V4C19 3.44772 18.5523 3 18 3H11V8C11 8.55228 10.5523 9 10 9H5V20C5 20.5523 5.44772 21 6 21H7C7.55228 21 8 21.4477 8 22C8 22.5523 7.55228 23 7 23H6C4.34315 23 3 21.6569 3 20V8C3 7.73478 3.10536 7.48043 3.29289 7.29289L9.29289 1.29289ZM6.41421 7H9V4.41421L6.41421 7ZM19 12C19.5523 12 20 12.4477 20 13V19H23C23.5523 19 24 19.4477 24 20C24 20.5523 23.5523 21 23 21H19C18.4477 21 18 20.5523 18 20V13C18 12.4477 18.4477 12 19 12ZM11.8137 12.4188C11.4927 11.9693 10.8682 11.8653 10.4188 12.1863C9.96935 12.5073 9.86526 13.1318 10.1863 13.5812L12.2711 16.5L10.1863 19.4188C9.86526 19.8682 9.96935 20.4927 10.4188 20.8137C10.8682 21.1347 11.4927 21.0307 11.8137 20.5812L13.5 18.2205L15.1863 20.5812C15.5073 21.0307 16.1318 21.1347 16.5812 20.8137C17.0307 20.4927 17.1347 19.8682 16.8137 19.4188L14.7289 16.5L16.8137 13.5812C17.1347 13.1318 17.0307 12.5073 16.5812 12.1863C16.1318 11.8653 15.5073 11.9693 15.1863 12.4188L13.5 14.7795L11.8137 12.4188Z"
-                                fill="#ffffff" />
-                        </svg>
-                    </a>
-                    <div id="export_image_report" role="tooltip"
-                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                        Exportar
-                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    <div class="flex items-center justify-between gap-x-3">
+                        <PrimaryButton @click="approveTitle(preprojectImage.id)"
+                            :customColor="[preprojectImage.state ? 'bg-red-600 hover:bg-red-500' : 'bg-green-600 hover:bg-green-500']">
+                            {{ preprojectImage.state ? 'Desabilitar' : 'Habilitar' }}
+
+                        </PrimaryButton>
+                        <a :href="`${route('preprojects.report.download', { preproject_title_id: preprojectImage.id })}?t=${Date.now()}`"
+                            target="_blank"
+                            class="rounded-md bg-green-500 px-4 py-2 text-center text-sm text-white hover:bg-green-400">
+                            Exportar
+                        </a>
                     </div>
                 </div>
                 <div v-for="imageCode in preprojectImage.preproject_codes" :key="imageCode.id" class="border">
@@ -56,32 +54,13 @@
                         </div>
                         <template v-if="hasPermission('ProjectManager')">
                             <div class="sm:col-span-2 space-x-3 text-right" v-if="!imageCode.status">
-                                <PrimaryButton data-tooltip-target="approve_images" @click="approveImages(imageCode.id)"
-                                    type="button">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0 1 18 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3 1.5 1.5 3-3.75" />
-                                    </svg>
-                                </PrimaryButton>
-                                <div id="approve_images" role="tooltip"
-                                    class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                                <PrimaryButton @click="approveImages(imageCode.id)" type="button">
                                     Aprobar Imagenes
-                                    <div class="tooltip-arrow" data-popper-arrow></div>
-                                </div>
-                                <PrimaryButton data-tooltip-target="approve_codes"
-                                    @click="verifyApproveModal(preprojectImage.id, imageCode.id)" type="button">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 0 1 9 9v.375M10.125 2.25A3.375 3.375 0 0 1 13.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 0 1 3.375 3.375M9 15l2.25 2.25L15 12" />
-                                    </svg>
                                 </PrimaryButton>
-                                <div id="approve_codes" role="tooltip"
-                                    class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                                <PrimaryButton @click="verifyApproveModal(preprojectImage.id, imageCode.id)"
+                                    type="button">
                                     Aprobar Codigo
-                                    <div class="tooltip-arrow" data-popper-arrow></div>
-                                </div>
+                                </PrimaryButton>
                             </div>
                             <span v-if="imageCode.status" class="text-green-600">Aprobado</span>
                         </template>
@@ -167,6 +146,60 @@
                 </form>
             </div>
         </Modal>
+        <Modal :show="showOpenAddedStages">
+            <div class="p-6">
+                <div class="flex space-x-3 justify-start sm:col-span-2">
+                    <h2 class="text-base font-semibold leading-7 text-gray-900 items-center">
+                        Agregar etapas de reporte
+                    </h2>
+                    <button type="button" @click="addReportStage"
+                        class="font-medium text-indigo-600 hover:text-indigo-500 self-start sm:self-end items-center">Agregar
+                        etapas</button>
+                </div>
+                <form @submit.prevent="submitStages">
+                    <div v-for="(reportStage, index) in formStages.reportStages" :key="index">
+                        <div class="flex justify-end mt-5">
+                            <button type="button" @click="removeReportStage(index)"
+                                class="font-medium text-red-600 hover:text-indigo-500">Eliminar</button>
+                        </div>
+
+                        <InputLabel for="stage">
+                            Etapas
+                        </InputLabel>
+                        <div class="mt-2">
+                            <select v-model="reportStage.type" id="stage"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option value="">Selecciona etapa</option>
+                                <option v-for="stage in stages" :key="stage.id" :value="stage.name">
+                                    {{ stage.name }}
+                                </option>
+                            </select>
+                            <InputError :message="formStages.errors['reportStages.' + index + '.type']" />
+                        </div>
+
+                        <InputLabel for="emergency_lastname">
+                            Titulo
+                        </InputLabel>
+                        <div class="mt-2">
+                            <select v-model="reportStage.title_id" id="title_id"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option value="">Selecciona un título</option>
+                                <option v-for="title in titles" :key="title.id" :value="title.id">
+                                    {{ title.title }}
+                                </option>
+                            </select>
+                            <InputError :message="formStages.errors['reportStages.' + index + '.title_id']" />
+                        </div>
+                    </div>
+                    <InputError :message="formStages.errors.reportStages" />
+                    <div class="mt-6 flex items-center justify-end gap-x-3">
+                        <SecondaryButton @click="openModalAddedStages">Cerrar</SecondaryButton>
+                        <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">Agregar
+                        </PrimaryButton>
+                    </div>
+                </form>
+            </div>
+        </Modal>
         <ConfirmateModal :showConfirm="showApproveCode" tittle="Aprobacion de Codigo"
             text="Las fotos asociadas a este código serán eliminadas si no han sido aprobadas. ¿Desea continuar con la aprobación?"
             :actionFunction="approveCode" @closeModal="verifyApproveModal" />
@@ -174,6 +207,8 @@
             :message="messageSuccessImage" />
         <ConfirmDeleteModal :confirmingDeletion="confirmingImageDeletion" itemType="imagen"
             :deleteFunction="deleteImage" @closeModal="closeModalImage" />
+        <ConfirmDeleteModal :confirmingDeletion="showModalDelete" itemType="etapa" nameText="la etapa"
+            :deleteFunction="deleteStages" @closeModal="openModalDelete" />
     </AuthenticatedLayout>
 </template>
 
@@ -191,21 +226,24 @@ import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-// import GoogleMaps from '@/Components/GoogleMaps.vue';
-
+import { notifyError, notifyWarning } from '@/Components/Notification';
+import { setAxiosErrors } from '@/utils/utils';
 
 const showApproveCode = ref(false);
 const title_code_id = ref(null);
 const preproject_image_id = ref(null);
 const imageCodeId = ref('');
+const showOpenAddedStages = ref(false)
 const props = defineProps({
     // codesWithStatus: Object,
     preprojectImage: Object,
     imagesCode: Object,
     preproject: Object,
-    userPermissions: Array
+    userPermissions: Array,
+    stages: Object,
+    titles: Object
 });
-
+console.log(props.preprojectImage)
 const preprojectImages = ref(props.preprojectImage)
 
 const hasPermission = (permission) => {
@@ -221,37 +259,20 @@ let backUrl = (props.preproject?.status === undefined || props.preproject?.statu
 const confirmingImageDeletion = ref(false);
 const approve_reject_Image = ref(false);
 const imageToDelete = ref(null);
-// const photoCode = ref(props.imagesCode);
 const showRejectModal = ref(false)
-
-// const codes = ref(props.codesWithStatus);
-// const mapVisible = ref(false);
-
-// const filteredImages = ref(Object.values(props.imagesCode).filter(image => image.state == true));
-
-// const origin = {
-//     lat: Number(filteredImages.value[0]?.lat),
-//     lng: Number(filteredImages.value[0]?.lon)
-// };
-
-// const destination = {
-//     lat: Number(filteredImages.value[filteredImages.value.length - 1]?.lat),
-//     lng: Number(filteredImages.value[filteredImages.value.length - 1]?.lon)
-// };
-// const waypoints = filteredImages.value.slice(1, -1).map(item => ({
-//     location: {
-//         lat: Number(item?.lat),
-//         lng: Number(item?.lon)
-//     },
-//     stopover: true
-// }));
 const titleSuccessImage = ref('')
 const messageSuccessImage = ref('')
+const showModalDelete = ref(false)
+const title_id = ref(null)
 
 const form = useForm({
     'id': '',
     'state': '',
     'observation': ''
+})
+
+const formStages = useForm({
+    'reportStages': []
 })
 
 const confirmDeleteImagen = (imagenId) => {
@@ -352,25 +373,65 @@ async function submitRejectImage() {
     } catch (error) {
         console.error(error);
     }
-
-    // form.state = false
-    // form.put(route('preprojects.imagereport.approveReject', { preproject_image_id: imageCodeId.value }), {
-    //     onSuccess: () => {
-    //         showRejectModal.value = false
-    //         titleSuccessImage.value = "Imagen Rechazada"
-    //         messageSuccessImage.value = "La imagen se rechazo correctamente"
-    //         approve_reject_Image.value = true
-    //         setTimeout(() => {
-    //             approve_reject_Image.value = false
-    //             router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
-    //         }, 2000)
-    //     },
-    //     onError: (e) => {
-    //         console.log(e)
-    //     }
-    // })
 }
 
+function openModalDelete(stages_id) {
+    title_id.value = stages_id
+    showModalDelete.value = !showModalDelete.value
+}
+
+async function deleteStages() {
+    let url = route('preprojects.stages.delete', { title_id: title_id.value })
+    try {
+        await axios.delete(url)
+        updateStages(title_id.value, 'delete')
+        openModalDelete()
+    } catch (error) {
+        if (error.response.data) {
+            notifyError('Server Error: ', error.response.data)
+        } else {
+            notifyError(error)
+        }
+    }
+}
+
+async function submitStages() {
+    let url = route('preprojects.stages.store', { preproject_id: props.preproject.id })
+    try {
+        let response = await axios.put(url, formStages)
+        updateStages(response.data, 'added')
+        openModalAddedStages()
+    } catch (error) {
+        if (error.response) {
+            if (error.response.data.errors) {
+                setAxiosErrors(error.response.data.errors, formStages)
+            } else {
+                console.error("Server error:", error.response.data)
+            }
+        } else {
+            notifyError("Network or other error:", error)
+        }
+    }
+}
+
+function openModalAddedStages() {
+    showOpenAddedStages.value = !showOpenAddedStages.value
+    formStages.clearErrors()
+    formStages.defaults({ ... { 'reportStages': [] } })
+    formStages.reset()
+}
+
+function updateStages(stages, action) {
+    let validations = preprojectImages.value
+    if (action === 'delete') {
+        let index = validations.findIndex(item => item.id === stages)
+        validations.splice(index, 1)
+    } else if (action === 'added') {
+        stages.forEach(element => {
+            validations.push(element)
+        });
+    }
+}
 // function requestPhotos($e) {
 //     if ($e === '0') {
 //         router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
@@ -485,4 +546,14 @@ function updateStateStage(preproject_stage_id) {
     preprojectImages.value[index].state = !preprojectImages.value[index].state;
 }
 
+const addReportStage = () => {
+    formStages.reportStages.push({
+        type: '',
+        title_id: '',
+    });
+}
+
+const removeReportStage = (index) => {
+    formStages.reportStages.splice(index, 1);
+}
 </script>

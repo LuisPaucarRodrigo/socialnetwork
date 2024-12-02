@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('preproject_codes', function (Blueprint $table) {
             $table->id();
             $table->string('status')->nullable();
-            $table->foreignId('preproject_title_id')->constrained()->onDelete('cascade');
-            $table->foreignId('code_id')->constrained()->onDelete('restrict');
+            $table->foreignId('preproject_title_id')->constrained('preproject_titles')->onDelete('cascade');
+            $table->foreignId('code_id')->constrained('codes');
             $table->timestamps();
         });
     }
