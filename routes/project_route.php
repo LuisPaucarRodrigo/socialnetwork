@@ -38,6 +38,8 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::post('/preprojects/assignUser', [PreProjectController::class, 'preproject_users'])->name('preprojects.assign.users');
 
     //Preproject images
+    Route::post('/preprojects/report/stages/store/{preproject_id}', [PreProjectController::class, 'stages_store'])->name('preprojects.stages.store');
+    Route::delete('/preprojects/report/stages/{title_id}/delete', [PreProjectController::class, 'delete_stages'])->name('preprojects.stages.delete');
     Route::put('/preprojects/{preproject_image_id}/report/image', [PreProjectController::class, 'approve_reject_image'])->name('preprojects.imagereport.approveReject');
     Route::get('/preprojects/{preproject_code_id}/codereport', [PreProjectController::class, 'approve_code'])->name('preprojects.codereport.approveCode');
     Route::get('/preprojects/{preproject_title_id}/titlereport', [PreProjectController::class, 'approve_title'])->name('preprojects.codereport.approveTitle');
@@ -236,7 +238,7 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     Route::any('/projectPext/expenses/index/{pext_project_id}', [PextController::class, 'index_expenses'])->name('projectmanagement.pext.expenses.index');
     Route::get('/projectPext/expenses/showImage/{expense_id}', [PextController::class, 'expense_show_image'])->name('projectmanagement.pext.expenses.image.show');
     Route::get('/projectPext/expenses/export/{pext_project_id}', [PextController::class, 'expense_export'])->name('projectmanagement.pext.expenses.export');
-    
+
 
 
 

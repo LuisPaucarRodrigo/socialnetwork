@@ -693,6 +693,34 @@ class PreProjectController extends Controller
     //     return response()->json(['images' => $data, 'codes' => $codesWithStatus]);
     // }
 
+    public function stages_store(Request $request, $preproject_id)
+    {
+        $data = $request->validate([
+            'reportStages' => 'required|array',
+        ]);
+        if (isset($data['reportStages'])) {
+            foreach ($data['reportStages'] as $report) {
+                $dataCode = TitleCode::where('title_id', $report['title_id'])->get();
+                $preprojectTitle = PreprojectTitle::create([
+                    'type' => $report['name'],
+                    'preproject_id' => $preproject_id,
+                ]);
+                foreach ($dataCode as $codes) {
+                    PreprojectCode::create([
+                        'preproject_title_id' => $preprojectTitle->id,
+                        'code_id' => $codes->code_id
+                    ]);
+                }
+            }
+        }
+    }
+
+    public function delete_stages($title_id)
+    {
+        PreprojectTitle::destroy($title_id);
+        return response()->noContent();
+    }
+
     public function approve_reject_image(Request $request, $id)
     {
         try {
