@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('type');
             $table->boolean('state')->nullable();
-            $table->foreignId('preproject_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('preproject_id')->nullable()->constrained('preprojects')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -156,42 +156,48 @@
                         class="font-medium text-indigo-600 hover:text-indigo-500 self-start sm:self-end items-center">Agregar
                         etapas</button>
                 </div>
+                <form @submit.prevent="submitStages">
+                    <div v-for="(reportStage, index) in formStages.reportStages" :key="index">
+                        <div class="flex justify-end mt-5">
+                            <button type="button" @click="removeReportStage(index)"
+                                class="font-medium text-red-600 hover:text-indigo-500">Eliminar</button>
+                        </div>
 
-                <div v-for="(reportStage, index) in form.reportStages" :key="index">
-                    <div class="flex justify-end mt-5">
-                        <button type="button" @click="removeReportStage(index)"
-                            class="font-medium text-red-600 hover:text-indigo-500">Eliminar</button>
-                    </div>
+                        <InputLabel for="stage">
+                            Etapas
+                        </InputLabel>
+                        <div class="mt-2">
+                            <select v-model="reportStage.type" id="stage"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option value="">Selecciona etapa</option>
+                                <option v-for="stage in stages" :key="stage.id" :value="stage.name">
+                                    {{ stage.name }}
+                                </option>
+                            </select>
+                            <InputError :message="formStages.errors['reportStages.' + index + '.type']" />
+                        </div>
 
-                    <InputLabel for="stage">
-                        Etapas
-                    </InputLabel>
-                    <div class="mt-2">
-                        <select v-model="reportStage.name" id="stage"
-                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                            <option value="">Selecciona etapa</option>
-                            <option v-for="stage in stages" :key="stage.id" :value="stage.name">
-                                {{ stage.name }}
-                            </option>
-                        </select>
-                        <InputError :message="form.errors['reportStages.' + index + '.name']" />
+                        <InputLabel for="emergency_lastname">
+                            Titulo
+                        </InputLabel>
+                        <div class="mt-2">
+                            <select v-model="reportStage.title_id" id="title_id"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option value="">Selecciona un título</option>
+                                <option v-for="title in titles" :key="title.id" :value="title.id">
+                                    {{ title.title }}
+                                </option>
+                            </select>
+                            <InputError :message="formStages.errors['reportStages.' + index + '.title_id']" />
+                        </div>
                     </div>
-
-                    <InputLabel for="emergency_lastname">
-                        Titulo
-                    </InputLabel>
-                    <div class="mt-2">
-                        <select v-model="reportStage.title_id" id="title_id"
-                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                            <option value="">Selecciona un título</option>
-                            <option v-for="title in titles" :key="title.id" :value="title.id">
-                                {{ title.title }}
-                            </option>
-                        </select>
-                        <InputError :message="form.errors['reportStages.' + index + '.title_id']" />
+                    <InputError :message="formStages.errors.reportStages" />
+                    <div class="mt-6 flex items-center justify-end gap-x-3">
+                        <SecondaryButton @click="openModalAddedStages">Cerrar</SecondaryButton>
+                        <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">Agregar
+                        </PrimaryButton>
                     </div>
-                </div>
-                <InputError :message="form.errors.reportStages" />
+                </form>
             </div>
         </Modal>
         <ConfirmateModal :showConfirm="showApproveCode" tittle="Aprobacion de Codigo"
@@ -201,7 +207,7 @@
             :message="messageSuccessImage" />
         <ConfirmDeleteModal :confirmingDeletion="confirmingImageDeletion" itemType="imagen"
             :deleteFunction="deleteImage" @closeModal="closeModalImage" />
-        <ConfirmDeleteModal :showModalDelete="showModalDelete" itemType="etapa" nameText="la etapa"
+        <ConfirmDeleteModal :confirmingDeletion="showModalDelete" itemType="etapa" nameText="la etapa"
             :deleteFunction="deleteStages" @closeModal="openModalDelete" />
     </AuthenticatedLayout>
 </template>
@@ -233,7 +239,9 @@ const props = defineProps({
     preprojectImage: Object,
     imagesCode: Object,
     preproject: Object,
-    userPermissions: Array
+    userPermissions: Array,
+    stages: Object,
+    titles: Object
 });
 console.log(props.preprojectImage)
 const preprojectImages = ref(props.preprojectImage)
@@ -387,16 +395,16 @@ async function deleteStages() {
     }
 }
 
-async function addedStages() {
-    let url = route()
+async function submitStages() {
+    let url = route('preprojects.stages.store', { preproject_id: props.preproject.id })
     try {
-        let response = await axios.post(url)
+        let response = await axios.put(url, formStages)
         updateStages(response.data, 'added')
-        openModalAddedStages
+        openModalAddedStages()
     } catch (error) {
         if (error.response) {
             if (error.response.data.errors) {
-                setAxiosErrors(error.response.data.errors, form)
+                setAxiosErrors(error.response.data.errors, formStages)
             } else {
                 console.error("Server error:", error.response.data)
             }
@@ -408,15 +416,20 @@ async function addedStages() {
 
 function openModalAddedStages() {
     showOpenAddedStages.value = !showOpenAddedStages.value
+    formStages.clearErrors()
+    formStages.defaults({ ... { 'reportStages': [] } })
+    formStages.reset()
 }
 
 function updateStages(stages, action) {
     let validations = preprojectImages.value
-    let index = validations.findIndex(item => item.id === stages.id ?? stages)
     if (action === 'delete') {
+        let index = validations.findIndex(item => item.id === stages)
         validations.splice(index, 1)
     } else if (action === 'added') {
-        validations.unshift(id)
+        stages.forEach(element => {
+            validations.push(element)
+        });
     }
 }
 // function requestPhotos($e) {
@@ -533,4 +546,14 @@ function updateStateStage(preproject_stage_id) {
     preprojectImages.value[index].state = !preprojectImages.value[index].state;
 }
 
+const addReportStage = () => {
+    formStages.reportStages.push({
+        type: '',
+        title_id: '',
+    });
+}
+
+const removeReportStage = (index) => {
+    formStages.reportStages.splice(index, 1);
+}
 </script>
