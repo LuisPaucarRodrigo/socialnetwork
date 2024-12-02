@@ -51,6 +51,16 @@
                             </div>
                             <div class="sm:col-span-3">
                                 <InputLabel class="font-medium leading-6 text-gray-900">
+                                    Macroproyecto
+                                </InputLabel>
+                                <div class="mt-2">
+                                <InputLabel class="font-medium leading-6 text-gray-200">
+                                    {{ props.huawei_project.macro_project }}
+                                </InputLabel>
+                                </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel class="font-medium leading-6 text-gray-900">
                                     Código
                                 </InputLabel>
                                 <div class="mt-2">
@@ -95,7 +105,22 @@
                                         <option>Entel</option>
                                     </select>
                                 </div>
-                                <InputError :message="form.errors.huawei_site_id" />
+                                <InputError :message="form.errors.prefix" />
+                            </div>
+
+                            <div v-if="!props.huawei_project" class="sm:col-span-3">
+                                <InputLabel for="prefix" class="font-medium leading-6 text-gray-900">Macroproyecto
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <select required id="prefix" v-model="form.macro_project"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option disabled value="">Seleccione uno</option>
+                                        <option>DWDM</option>
+                                        <option>IP</option>
+                                        <option>FTTH</option>
+                                    </select>
+                                </div>
+                                <InputError :message="form.errors.macro_project" />
                             </div>
 
                             <div v-if="!props.huawei_project" class="sm:col-span-3">
@@ -143,7 +168,7 @@
                                 </div>
                             </div>
 
-                            <div :class="props.huawei_project ? 'sm:col-span-6' : 'sm:col-span-3'">
+                            <div :class="props.huawei_project ? 'sm:col-span-6' : 'md:col-span-6 sm:col-span-3'">
                                 <InputLabel for="name" class="font-medium leading-6 text-gray-900">Descripción
                                 </InputLabel>
                                 <div class="mt-2">
@@ -329,8 +354,6 @@ const props = defineProps({
     userPermissions: Array
 })
 
-
-
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
 }
@@ -344,7 +367,8 @@ const initialState = {
     pre_report: null,
     employees: [],
     initial_amount: '',
-    assigned_diu: ''
+    assigned_diu: '',
+    macro_project: ''
 }
 
 const form = useForm(

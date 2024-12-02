@@ -21,6 +21,7 @@ return new class extends Migration
             $table->double('initial_amount')->nullable();
             $table->string('assigned_diu');
             $table->string('prefix');
+            $table->string('macro_project');
             $table->boolean('status')->nullable()->default(true);
             $table->timestamps();
         });
