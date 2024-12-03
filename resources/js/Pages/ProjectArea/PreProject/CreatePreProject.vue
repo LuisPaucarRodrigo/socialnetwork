@@ -208,8 +208,8 @@
                                         <select v-model="reportStage.type" id="stage"
                                             class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                             <option value="">Selecciona etapa</option>
-                                            <option v-for="stage in stages" :key="stage.id" :value="stage.type">
-                                                {{ stage.type }}
+                                            <option v-for="stage in stages" :key="stage.id" :value="stage.name">
+                                                {{ stage.name }}
                                             </option>
                                         </select>
                                         <InputError :message="form.errors['reportStages.' + index + '.type']" />
@@ -296,6 +296,7 @@ const { preproject, customers, titles, stages } = defineProps({
     titles: Object,
     stages: Object
 })
+
 let backUrls = (preproject?.status === undefined || preproject?.status === null)
     ? 'preprojects.index'
     : preproject?.status == true

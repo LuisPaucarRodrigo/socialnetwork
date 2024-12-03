@@ -18,6 +18,7 @@ class PayrollDetail extends Model
         'basic_salary',
         'amount_travel_expenses',
         'life_ley',
+        'discount',
         'discount_remuneration',
         'discount_sctr',
         'hire_date',
@@ -28,9 +29,6 @@ class PayrollDetail extends Model
     protected $appends = [
         'total_income',
         'total_pension_base',
-        'truncated_month',
-        'truncated_days',
-        'salary',
 
         'truncated_vacations',
         'snp',
@@ -42,6 +40,7 @@ class PayrollDetail extends Model
         'mandatory_contribution',
         'mandatory_contribution_amount',
         'total_discount',
+        'payment_until_today',
         'net_pay',
         'healths',
         'sctr_p',
@@ -74,16 +73,23 @@ class PayrollDetail extends Model
             : 0;
     }
 
+    public function getPaymentUntilTodayAttribute()
+    {
+        $dayOfMonth = Carbon::now()->day;
+        $dailySalary = $this->basic_salary / 30;
+        return round($dailySalary * $dayOfMonth, 2);
+    }
+
     public function getTotalIncomeAttribute()
     {
         $truncatedVacations = $this->truncated_vacations;
-        return $this->basic_salary + $truncatedVacations;
+        return $this->payment_until_today - $this->discount + $truncatedVacations;
     }
 
     public function getTotalPensionBaseAttribute()
     {
         $truncatedVacations = $this->truncated_vacations;
-        return $this->basic_salary + $truncatedVacations;
+        return $this->payment_until_today - $this->discount + $truncatedVacations;
     }
 
     public function getSnpAttribute()
@@ -149,11 +155,16 @@ class PayrollDetail extends Model
         return $this->total_income * 0.09;
     }
 
+    public function getEmployeesSctrAttribute()
+    {
+        return $this->where('discount_sctr', 1)->count();
+    }
+
     public function getSctrPAttribute()
     {
         if ($this->discount_sctr) {
-            $data = json_decode(File::get(config_path('custom.json')), true);
-            return ($data['sctr_p'] / $data['number_people']) / 90;
+            $data = $this->payroll;
+            return ($data->sctr_p / 3) / $this->employees_sctr;
         } else {
             return 0;
         }
@@ -162,8 +173,8 @@ class PayrollDetail extends Model
     public function getSctrSAttribute()
     {
         if ($this->discount_sctr) {
-            $data = json_decode(File::get(config_path('custom.json')), true);
-            return ($data['sctr_s'] / $data['number_people']) / 90;
+            $data = $this->payroll;
+            return ($data->sctr_s / 3) / $this->employees_sctr;
         } else {
             return 0;
         }

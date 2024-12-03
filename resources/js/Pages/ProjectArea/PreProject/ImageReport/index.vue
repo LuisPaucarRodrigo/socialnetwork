@@ -417,7 +417,7 @@ async function submitStages() {
 function openModalAddedStages() {
     showOpenAddedStages.value = !showOpenAddedStages.value
     formStages.clearErrors()
-    formStages.defaults({ ... { 'reportStages': [] } })
+    formStages.defaults({ ... { reportStages: [] } })
     formStages.reset()
 }
 

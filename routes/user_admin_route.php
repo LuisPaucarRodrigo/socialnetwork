@@ -13,7 +13,6 @@ use App\Http\Controllers\HumanResource\FormationDevelopment;
 use App\Http\Controllers\ProjectArea\TaskManagementController;
 use App\Http\Controllers\HumanResource\VacationController;
 use App\Http\Controllers\HumanResource\DocumentController;
-use App\Http\Controllers\HumanResource\SectionController;
 use App\Http\Controllers\Inventory\PurchaseProductsController;
 use App\Http\Controllers\ProjectArea\CicsaSectionController;
 use App\Http\Controllers\Inventory\SpecialWarehouseController;
