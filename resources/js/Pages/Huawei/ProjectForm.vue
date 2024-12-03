@@ -117,7 +117,10 @@
                                         <option disabled value="">Seleccione uno</option>
                                         <option>DWDM</option>
                                         <option>IP</option>
+                                        <option>IPRAN24</option>
+                                        <option>IPRAN22</option>
                                         <option>FTTH</option>
+                                        <option>NAZCANEWPECOM</option>
                                     </select>
                                 </div>
                                 <InputError :message="form.errors.macro_project" />

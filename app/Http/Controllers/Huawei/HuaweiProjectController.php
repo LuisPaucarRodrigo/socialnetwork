@@ -151,7 +151,7 @@ class HuaweiProjectController extends Controller
     public function create ()
     {
         return Inertia::render('Huawei/ProjectForm', [
-            'huawei_sites' => HuaweiSite::all(),
+            'huawei_sites' => HuaweiSite::orderBy('name')->get(),
             'employees' => Employee::all()
         ]);
     }
@@ -197,7 +197,7 @@ class HuaweiProjectController extends Controller
 
         return Inertia::render('Huawei/ProjectForm', [
             'huawei_project' => $huawei_project,
-            'huawei_sites' => HuaweiSite::all(),
+            'huawei_sites' => HuaweiSite::orderBy('name')->get(),
             'employees' => Employee::all()
         ]);
     }
@@ -264,7 +264,7 @@ class HuaweiProjectController extends Controller
             'pre_report' => 'nullable',
             'employees' => 'nullable',
             'initial_amount' => 'nullable',
-            'assigned_diu' => 'required'
+            'assigned_diu' => 'required|unique:huawei_projects,assigned_diu'
         ]);
 
         if ($request->hasFile('pre_report')){
@@ -436,7 +436,7 @@ class HuaweiProjectController extends Controller
     public function getSites ()
     {
         return Inertia::render('Huawei/Sites', [
-            'sites' => HuaweiSite::select('id','name')->orderBy('updated_at', 'desc')->paginate(10)
+            'sites' => HuaweiSite::select('id','name')->orderBy('name')->paginate(10)
         ]);
     }
 
@@ -449,7 +449,7 @@ class HuaweiProjectController extends Controller
         $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
 
         return Inertia::render('Huawei/Sites', [
-            'sites' => $query->select('id','name')->orderBy('updated_at', 'desc')->get(),
+            'sites' => $query->select('id','name')->orderBy('name')->get(),
             'search' => $request
         ]);
     }
