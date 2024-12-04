@@ -561,7 +561,11 @@ import { Toaster } from "vue-sonner";
 
 const props = defineProps({
     expense: Object,
-    pext_project_id: String,
+    pext_project_id: {
+        type: 'String',
+        default: null,
+        required: false
+    },
     providers: Object,
     auth: Object,
     userPermissions: Array,
@@ -819,12 +823,12 @@ async function validateRegister(expense_id, is_accepted) {
     const url = route("projectmanagement.pext.expenses.validate", { 'expense_id': expense_id })
     try {
         await axios.put(url, { 'is_accepted': is_accepted });
-        if(filterForm.value.rejected){
+        if (filterForm.value.rejected) {
             updateExpense(expense_id, "validate", is_accepted)
         } else {
             updateExpense(expense_id, "rejectedValidate")
         }
-        
+
         // confirmValidation.value = true;
         // setTimeout(() => {
         //     confirmValidation.value = false;
@@ -859,12 +863,12 @@ function updateExpense(expense, action, state) {
         let index = expenses.value.data.findIndex(item => item.id == expense)
         expenses.value.data.splice(index, 1);
         notify('El gasto paso a ser aceptado')
-    } 
+    }
 }
 
 async function rejectedExpenses() {
     console.log(filterForm.value.rejected)
     filterForm.value.rejected = !filterForm.value.rejected
-    
+
 }
 </script>

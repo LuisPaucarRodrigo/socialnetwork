@@ -26,6 +26,7 @@ class StoreOrUpdateEmployeesExternal extends FormRequest
         $rules =  [
             'name' => 'required|string',
             'lastname' => 'required|string',
+            'expense_line' => 'required|string',
             'cropped_image' => 'nullable',
             'gender' => 'required|in:Masculino,Femenino',
             'address' => 'required|string',

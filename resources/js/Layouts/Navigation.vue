@@ -374,7 +374,7 @@ Usuarios
                     <Link class="w-full" :href="route('preprojects.index')">Anteproyectos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
-                    <Link class="w-full" :href="route('projectmanagement.index')">Proyectos</Link>
+                    <Link class="w-full" :href="route('projectmanagement.index')">Proyectos Pint</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
                     <Link class="w-full" :href="route('projectmanagement.pext.index')">Proyectos Pext</Link>
@@ -549,7 +549,7 @@ Usuarios
             </template>
 
 
-            <template v-if="hasPermission('DocumentGestion')">
+            <!-- <template v-if="hasPermission('DocumentGestion')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#" @click="showDocs = !showDocs">
                     <svg v-if="archiveAlarms.length + archiveAlarms7.length > 0" xmlns="http://www.w3.org/2000/svg"
                         fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" class="w-6 h-6 text-white">
@@ -613,11 +613,11 @@ Usuarios
                         <Link class="w-full" :href="route('local.drive.index', { root: 1 })">Local Drive</Link>
                     </div>
                 </MyTransition>
-                <!-- <MyTransition v-if="currentAuth.user.role_id === 1" :transitiondemonstration="showDocs">
+                <MyTransition v-if="currentAuth.user.role_id === 1" :transitiondemonstration="showDocs">
                     <Link class="w-full" :href="route('documment.management.folders.validation')">Aprobación</Link>
-                </MyTransition> -->
+                </MyTransition>
 
-            </template>
+            </template> -->
 
 
             <template v-if="true">
@@ -632,32 +632,6 @@ Usuarios
                 </a>
                 <MyTransition :transitiondemonstration="showCicsa">
                     <Link class="w-full" :href="route('cicsa.index')">Pext</Link>
-                </MyTransition>
-            </template>
-
-
-
-
-
-
-
-
-
-
-
-            <template v-if="hasPermission('SocialNetwork')">
-                <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
-                    @click="showSocialNetworkSot = !showSocialNetworkSot">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z" />
-                    </svg>
-
-                    <span class="mx-3">Social Network</span>
-                </a>
-                <MyTransition :transitiondemonstration="showSocialNetworkSot">
-                    <Link class="w-full" :href="route('socialnetwork.sot')">SOT</Link>
                 </MyTransition>
             </template>
 
@@ -778,8 +752,8 @@ export default {
             shoppingPurchases: [],
             shoppingPurchases7: [],
 
-            archiveAlarms: [],
-            archiveAlarms7: [],
+            // archiveAlarms: [],
+            // archiveAlarms7: [],
 
             pending_orders: [],
         };
@@ -818,7 +792,7 @@ export default {
 
         let showDocs = ref(false)
         let showCicsa = ref(false)
-        let showSocialNetworkSot = ref(false)
+        
         let showHuawei = ref(false);
 
         let showPendingOrders = ref(false);
@@ -846,7 +820,6 @@ export default {
             showDocumentsToExpireAlarms,
             showDocs,
             showCicsa,
-            showSocialNetworkSot,
             showHuawei,
             showPendingOrders,
         }
@@ -957,15 +930,15 @@ export default {
             }
         },
 
-        async fetchArchiveRequest() {
-            try {
-                const response = await axios.get(route('archives.alarms'));
-                this.archiveAlarms = Object.values(response.data.alarms3);
-                this.archiveAlarms7 = Object.values(response.data.alarms7);
-            } catch (error) {
-                console.error('Error al obtener el contador de archivos:', error);
-            }
-        },
+        // async fetchArchiveRequest() {
+        //     try {
+        //         const response = await axios.get(route('archives.alarms'));
+        //         this.archiveAlarms = Object.values(response.data.alarms3);
+        //         this.archiveAlarms7 = Object.values(response.data.alarms7);
+        //     } catch (error) {
+        //         console.error('Error al obtener el contador de archivos:', error);
+        //     }
+        // },
 
         async fetchPendingOrders() {
             try {
@@ -1032,9 +1005,9 @@ export default {
             this.fetchFinancePurchases();
             this.fetchPaymentsAlarm();
         }
-        if (this.hasPermission('DocumentGestion')) {
-            this.fetchArchiveRequest();
-        }
+        // if (this.hasPermission('DocumentGestion')) {
+        //     this.fetchArchiveRequest();
+        // }
         if (this.hasPermission('HuaweiManager')) {
             this.fetchPendingOrders();
         }
@@ -1058,9 +1031,9 @@ export default {
                 this.fetchFinancePurchases();
                 this.fetchPaymentsAlarm();
             }
-            if (this.hasPermission('DocumentGestion')) {
-                this.fetchArchiveRequest();
-            }
+            // if (this.hasPermission('DocumentGestion')) {
+            //     this.fetchArchiveRequest();
+            // }
             if (this.hasPermission('HuaweiManager')) {
                 this.fetchPendingOrders();
             }

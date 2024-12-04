@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('zone2')->nullable();
             $table->string('manager');
             $table->string('user_name');
+            $table->foreignId('business_line_id')->constrained('business_lines');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
         });

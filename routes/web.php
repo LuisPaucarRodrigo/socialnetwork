@@ -41,10 +41,6 @@ Route::middleware(['auth', 'permission:DocumentGestion', 'checkPlatformWeb'])->g
     include_once 'documentgestion_route.php';
 });
 
-Route::middleware(['auth', 'permission:SocialNetwork', 'checkPlatformWeb'])->group(function () {
-    include_once 'snsot_route.php';
-});
-
 // Route::get('/huaweiproject/{project}', [FileDataController::class, 'render'])->name('huawei.show');
 // Route::post('/huawei_prices', [HuaweiController::class, 'store'])->name('huawei.post');
 // Route::post('/huaweiproject/{project}/filter', [FileDataController::class, 'filter'])->name('huawei.filter');

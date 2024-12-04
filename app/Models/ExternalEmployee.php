@@ -12,6 +12,7 @@ class ExternalEmployee extends Model
     protected $fillable = [
         'name',
         'lastname',
+        'expense_line',
         'cropped_image',
         'gender',
         'address',
@@ -33,25 +34,28 @@ class ExternalEmployee extends Model
         'policy_about_to_expire',
     ];
 
-    public function document_registers () {
+    public function document_registers()
+    {
         return $this->hasMany(DocumentRegister::class, 'e_employee_id');
     }
 
-    public function getSctrAboutToExpireAttribute () {
-        if ($this->sctr && $this->sctr_exp_date){
+    public function getSctrAboutToExpireAttribute()
+    {
+        if ($this->sctr && $this->sctr_exp_date) {
             $actual = Carbon::now()->addDays(7);
             $exp_date = Carbon::parse($this->sctr_exp_date);
             return $actual >= $exp_date;
-        }  
+        }
         return null;
     }
 
-    public function getPolicyAboutToExpireAttribute () {
-        if ($this->l_policy && $this->policy_exp_date){
+    public function getPolicyAboutToExpireAttribute()
+    {
+        if ($this->l_policy && $this->policy_exp_date) {
             $actual = Carbon::now()->addDays(7);
             $exp_date = Carbon::parse($this->policy_exp_date);
             return $actual >= $exp_date;
-        }  
+        }
         return null;
     }
 
@@ -69,6 +73,4 @@ class ExternalEmployee extends Model
         }
         return $total;
     }
-    
-
 }

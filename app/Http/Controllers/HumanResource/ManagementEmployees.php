@@ -407,9 +407,7 @@ class ManagementEmployees extends Controller
 
     public function storeorupdate(StoreOrUpdateEmployeesExternal $request, $external_id = null)
     {
-
         $data = $request->validated();
-
         try {
             $employeesExternal = $external_id ? ExternalEmployee::findOrFail($external_id) : null;
             if ($request->hasFile('curriculum_vitae')) {

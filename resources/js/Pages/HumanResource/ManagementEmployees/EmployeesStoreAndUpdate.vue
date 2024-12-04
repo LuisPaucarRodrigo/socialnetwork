@@ -124,12 +124,12 @@
                     <div class="mt-3 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div class="sm:col-span-2">
                             <InputLabel for="expense_line">
-                                Linea de Gasto
+                                Linea de Negocio
                             </InputLabel>
                             <div class="mt-2">
                                 <select v-model="form.expense_line" id="expense_line" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option disabled value="">Seleccionar Linea de Gastos</option>
+                                    <option disabled value="">Seleccionar Linea de Negocio</option>
                                     <option>Pint</option>
                                     <option>Pext</option>
                                     <option>Huawei</option>

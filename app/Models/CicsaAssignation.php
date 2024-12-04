@@ -25,7 +25,8 @@ class CicsaAssignation extends Model
         'zone2',
         'manager',
         'user_name',
-        'user_id'
+        'user_id',
+        'business_line_id'
     ];
 
     protected $appends = [
@@ -78,7 +79,10 @@ class CicsaAssignation extends Model
         return $this->hasMany(CicsaChargeArea::class, 'cicsa_assignation_id');
     }
 
-
+    public function business_line()
+    {
+        return $this->belongsTo(BusinessLine::class, 'business_line_id');
+    }
 
 
 
@@ -419,7 +423,7 @@ class CicsaAssignation extends Model
         ];
         $stateList = $fieldsToCheckTrue;
         foreach ($chargeAreas as $chargeArea) {
-            if($chargeArea->state_detraction === 0){
+            if ($chargeArea->state_detraction === 0) {
                 $stateList = $fieldsToCheck;
             }
             foreach ($stateList as $field) {

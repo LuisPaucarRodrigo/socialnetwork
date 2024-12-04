@@ -33,6 +33,7 @@ class StoreOrUpdateAssigantionRequest extends FormRequest
             'manager' => 'required|string',
             'user_name' => 'required|string',
             'user_id' => 'required|numeric',
+            'business_line_id' => 'required|numeric'
         ];
     }
 }
