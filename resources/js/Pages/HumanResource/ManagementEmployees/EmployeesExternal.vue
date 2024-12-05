@@ -27,6 +27,10 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Linea de Negocio
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Nombre
                             </th>
                             <th
@@ -76,6 +80,9 @@
                         <tr v-for="employee in employees" :key="employee.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <img :src="employee.profile" alt="Empleado" class="w-12 h-13 rounded-full">
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm w-auto">
+                                <p class="text-gray-900 whitespace-no-wrap">{{ employee.cost_line.name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm w-auto">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ employee.name }}</p>
@@ -185,18 +192,16 @@
                                 </div>
                             </div>
                             <div class="sm:col-span-3">
-                                <InputLabel for="expense_line">
+                                <InputLabel for="cost_line_id">
                                     Linea de Negocio
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <select v-model="form.expense_line" id="expense_line" autocomplete="off"
+                                    <select v-model="form.cost_line_id" id="cost_line_id" autocomplete="off"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         <option disabled value="">Seleccionar Linea de Negocio</option>
-                                        <option>Pint</option>
-                                        <option>Pext</option>
-                                        <option>Huawei</option>
+                                        <option v-for="item,i in costLines" :key="item.id" :value="item.id">{{ item .name}}</option>
                                     </select>
-                                    <InputError :message="form.errors.expense_line" />
+                                    <InputError :message="form.errors.cost_line_id" />
                                 </div>
                             </div>
                             <div class="sm:col-span-3">
@@ -321,9 +326,11 @@ const confirmingUserDeletion = ref(false);
 const employeeToDelete = ref(null);
 const show_m_employee = ref(false);
 const showModalCreate = ref(false);
+
 const props = defineProps({
     employees: Object,
     userPermissions: Array,
+    costLines: Object,
 })
 
 
@@ -335,7 +342,7 @@ const initialState = {
     id: null,
     name: '',
     lastname: '',
-    expense_line: '',
+    cost_line_id: '',
     gender: '',
     address: '',
     birthdate: '',

@@ -16,7 +16,8 @@
                     </PrimaryButton>
                     <div>
                         <button data-tooltip-target="all_register_tooltip" type="button" @click="() => {
-                            filterForm = { month: '', search: '' }
+                            isFetchingAll = true
+                            filterForm = { ...initialFilterFormState,month: '', search: '' }
                             handleSearch(null, true);
                         }
                             " class="p-2 bg-gray-100 ring-1 ring-slate-400 rounded-md text-slate-900 hover:bg-white">
@@ -327,7 +328,7 @@
                                             <tr
                                                 class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                                                 <th
-                                                    class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9dsdpx] font-semibold uppercase tracking-wider text-gray-600">
+                                                    class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600">
                                                     Zona
                                                 </th>
                                                 <th
@@ -408,6 +409,31 @@
                                                     S/. {{ item.amount }}
                                                 </td>
                                             </tr>
+                                            <tr class="text-gray-700" v-for="(
+                                                    item, i
+                                                ) in costsFounded.spData" :key="i">
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
+                                                    {{ 'Nómina' }}
+                                                </td>
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
+                                                    {{ item.type === 'Salary' 
+                                                        ? 'Sueldo' 
+                                                        : item.type === 'Travel' 
+                                                            ? 'Travel' 
+                                                            : '' 
+                                                    }}
+                                                </td>
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
+                                                    {{ item.payroll_detail.employee_name }}
+                                                </td>
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-right text-[12px] tabular-nums">
+                                                    S/. {{ item.amount }}
+                                                </td>
+                                            </tr>
                                             <tr class="text-gray-700">
                                                 <td
                                                     class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
@@ -425,7 +451,9 @@
                                                     
                                                         (costsFounded.scData.reduce((a,b)=>a+b.amount, 0)
                                                         + costsFounded.acData.reduce((a,b)=>a+b.amount, 0)
-                                                        + costsFounded.peData.reduce((a,b)=>a+b.amount, 0)).toFixed(2)
+                                                        + costsFounded.peData.reduce((a,b)=>a+b.amount, 0)
+                                                        + costsFounded.spData.reduce((a,b)=>a+b.amount, 0)
+                                                    ).toFixed(2)
                                                     }}
                                                 </td>
                                             </tr>
@@ -476,6 +504,7 @@
                                 <div v-if="
                                     costsFounded.acData.length +
                                     costsFounded.scData.length +
+                                    costsFounded.spData.length +
                                     costsFounded.peData.length >
                                     0
                                 ">
@@ -483,6 +512,7 @@
                                         Registros coincidentes ({{
                                             costsFounded.acData.length +
                                             costsFounded.scData.length +
+                                            costsFounded.spData.length +
                                             costsFounded.peData.length
                                         }})
                                     </p>
@@ -544,6 +574,31 @@
                                                     <td
                                                         class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
                                                         {{ item.project.name }}
+                                                    </td>
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px] tabular-nums">
+                                                        S/. {{ item.amount }}
+                                                    </td>
+                                                </tr>
+                                                <tr class="text-gray-700" v-for="(
+                                                        item, i
+                                                    ) in costsFounded.spData" :key="i">
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
+                                                        {{ 'Nómina' }}
+                                                    </td>
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
+                                                        {{ item.type === 'Salary' 
+                                                        ? 'Sueldo' 
+                                                        : item.type === 'Travel' 
+                                                            ? 'Travel' 
+                                                            : '' 
+                                                        }}
+                                                    </td>
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
+                                                        {{ item.payroll_detail.employee_name }}
                                                     </td>
                                                     <td
                                                         class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px] tabular-nums">
@@ -744,6 +799,7 @@ const hasPermission = (per) => {
 const initStateCostsFounded = {
     acData: [],
     scData: [],
+    spData: [],
     peData: [],
 };
 const stateOptions = [
@@ -769,7 +825,7 @@ const initialFilterFormState = {
     opEndDate : '',
     opNoDate : false,
 }
-
+const isFetchingAll = ref(false)
 const filterForm = ref({ ...initialFilterFormState });
 const form = useForm({
     id: null,
@@ -780,6 +836,7 @@ const form = useForm({
     payment: "",
     acData: [],
     scData: [],
+    spData: [],
     peData: [],
 });
 const importForm = useForm({
@@ -989,6 +1046,7 @@ const toggleDetails = async (id) => {
     if (
         row.value === costsFounded.value?.acData[0]?.account_statement_id ||
         row.value === costsFounded.value?.scData[0]?.account_statement_id ||
+        row.value === costsFounded.value?.spData[0]?.account_statement_id ||
         row.value === costsFounded.value?.peData[0]?.account_statement_id
     ) {
         row.value = 0
@@ -999,6 +1057,9 @@ const toggleDetails = async (id) => {
         }
         if (costsFounded.value?.scData.length > 0) {
             row.value = costsFounded.value?.scData[0].account_statement_id;
+        }
+        if (costsFounded.value?.spData.length > 0) {
+            row.value = costsFounded.value?.spData[0].account_statement_id;
         }
         if (costsFounded.value?.peData.length > 0) {
             row.value = costsFounded.value?.peData[0].account_statement_id;
@@ -1014,8 +1075,10 @@ const handleExpansible = async (id) => {
         });
     costsFounded.value = res.data;
     notifyWarning(
-        `Gastos Encontrados ${costsFounded.value.acData.length +
+        `Gastos Encontrados ${
+        costsFounded.value.acData.length +
         costsFounded.value.scData.length +
+        costsFounded.value.spData.length +
         costsFounded.value.peData.length
         }`
     );
@@ -1076,6 +1139,7 @@ watch([() => form.operation_number, () => form.operation_date], async () => {
         costsFounded.value = res;
         form.acData = res.acData.map((val) => val?.id);
         form.scData = res.scData.map((val) => val?.id);
+        form.spData = res.spData.map((val) => val?.id);
         form.peData = res.peData.map((val) => val?.id);
     }
 });
@@ -1108,8 +1172,12 @@ watch(
         filterForm.value.opNoDate,
     ],
     () => {
-        handleSearchClient();
-        notifyWarning(`Registros Encontrados ${dataToShow.value.length}`);
+        if(!isFetchingAll.value){
+            handleSearchClient();
+            notifyWarning(`Registros Encontrados ${dataToShow.value.length}`);
+        } else {
+            isFetchingAll.value = false
+        }
     }
 );
 watch(

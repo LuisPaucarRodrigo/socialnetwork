@@ -167,19 +167,13 @@
                         <div class="">
                             <InputLabel for="cost_center">Centro de Costos</InputLabel>
                             <div class="mt-2">
-                                <select id="cost_center" v-model="form.cost_center"
+                                <select id="cost_center" v-model="form.cost_center_id"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option value="">Seleccionar Centro de Costo</option>
-                                    <option v-if="form.customer === 'CICSA'">Mantto Pext Claro</option>
-                                    <option v-if="form.customer === 'CICSA'">Instalaciones GTD</option>
-                                    <option v-if="form.customer === 'CICSA'">Mantto Pext GTD</option>
-                                    <option v-if="form.customer === 'CICSA'">Densificacion</option>
-                                    <option v-if="form.customer === 'CICSA'">Adicionales</option>
-                                    <option v-if="form.customer === 'CICSA'">Instalaciones Claro</option>
-
-                                    <option v-if="form.customer === 'STL'">TSS</option>
+                                    <option v-for="item in cost_line.cost_center" :key="item.id" :value="item.id">{{ item.name }}
+                                    </option>
                                 </select>
-                                <InputError :message="form.errors.cost_center" />
+                                <InputError :message="form.errors.cost_center_id" />
                             </div>
                         </div>
                         <div class="">
@@ -298,10 +292,11 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import { formattedDate, setAxiosErrors } from '@/utils/utils';
 
-const { project, auth, userPermissions } = defineProps({
+const { project, auth, userPermissions, cost_line } = defineProps({
     project: Object,
     userPermissions: Array,
     auth: Object,
+    cost_line: Object
 })
 
 const initialState = {
@@ -309,14 +304,14 @@ const initialState = {
     user_id: auth.user.id,
     assignation_date: '',
     project_name: '',
-    cost_center: '',
+    cost_line_id: cost_line.id,
+    cost_center_id: '',
     customer: '',
     project_code: '',
     cpe: '',
     zone: '',
     zone2: '',
     manager: '',
-    business_line_id: 1,
     user_name: auth.user.name,
 }
 
@@ -376,13 +371,13 @@ const search = async ($search) => {
 };
 
 async function submit() {
-
     let url = route('projectmanagement.pext.additional.store', { 'cicsa_assignation_id': form.id ?? null })
     try {
         let response = await axios.post(url, form)
         let action = form.id ? 'update' : 'create'
         updatePext(response.data, action)
     } catch (error) {
+        console.log(error)
         if (error.response) {
             setAxiosErrors(error.response.data.errors, form)
         } else {

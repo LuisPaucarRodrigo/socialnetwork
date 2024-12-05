@@ -37,6 +37,10 @@ return new class extends Migration
                 ->constrained()
                 ->onDelete('cascade');
             $table->integer('igv')->default('0');
+            $table->foreignId('account_statement_id')
+                ->nullable()
+                ->constrained('account_statements')
+                ->onDelete('set null');
             $table->timestamps();
             $table->unique(['ruc', 'doc_number']);
         });

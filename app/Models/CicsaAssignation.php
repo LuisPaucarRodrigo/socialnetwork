@@ -17,7 +17,6 @@ class CicsaAssignation extends Model
     protected $fillable = [
         'assignation_date',
         'project_name',
-        'cost_center',
         'customer',
         'project_code',
         'cpe',
@@ -26,7 +25,7 @@ class CicsaAssignation extends Model
         'manager',
         'user_name',
         'user_id',
-        'business_line_id'
+        'project_id',
     ];
 
     protected $appends = [
@@ -79,11 +78,15 @@ class CicsaAssignation extends Model
         return $this->hasMany(CicsaChargeArea::class, 'cicsa_assignation_id');
     }
 
-    public function business_line()
+    public function project()
     {
-        return $this->belongsTo(BusinessLine::class, 'business_line_id');
+        return $this->belongsTo(Project::class, 'project_id');
     }
 
+    public function cost_center()
+    {
+        return $this->belongsTo(CostCenter::class, 'cost_center_id');
+    }
 
 
     public function checkAssignation()

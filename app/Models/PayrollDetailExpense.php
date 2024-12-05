@@ -17,8 +17,22 @@ class PayrollDetailExpense extends Model
         'account_statement_id',
     ];
 
+    protected $appends = [
+        'amount'
+    ];
+
     public function payroll_detail(): BelongsTo
     {
         return $this->belongsTo(PayrollDetail::class, 'payroll_detail_id');
+    }
+
+    public function getAmountAttribute () {
+        if($this->type==='Salary'){
+            return $this->payroll_detail->net_pay;
+        }
+        if($this->type==='Travel'){
+            return $this->payroll_detail->amount_travel_expenses;
+        }
+        return 0;
     }
 }

@@ -182,7 +182,7 @@
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap">
-                            {{ item.cicsa_assignation?.cost_center }}
+                            {{ item.pext_project.project.cost_center.name }}
                         </td>
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                             {{ item.zone }}
@@ -561,15 +561,12 @@ import { Toaster } from "vue-sonner";
 
 const props = defineProps({
     expense: Object,
-    pext_project_id: {
-        type: 'String',
-        default: null,
-        required: false
-    },
+    pext_project_id: String,
     providers: Object,
     auth: Object,
     userPermissions: Array,
     state: String,
+    cost_center: Object
 });
 
 const expenses = ref(props.expense);
@@ -694,9 +691,7 @@ async function searchSubCostCenter() {
 function handleProjectNameAutocomplete(e) {
     subCostCenter.value = subCostCenterZone.value.filter(item => item.project_name.includes(e));
     const cicsaAssignation = subCostCenter.value
-    console.log("cicsaAssignation ", cicsaAssignation)
     let cicsa_assignation = cicsaAssignation.find(item => item.project_name === e);
-    console.log("cicsa_assignation ", cicsa_assignation)
     if (cicsa_assignation) {
         form.cicsa_assignation_id = cicsa_assignation.id;
     } else {
@@ -714,15 +709,7 @@ function handlerPreview(id) {
     );
 }
 
-const costCenter = [
-    "Planta Externa Claro",
-    "Instalaciones GTD",
-    "Planta Externa GTD-Averias",
-    "STL",
-    "Densificacion",
-    "Adicionales",
-    "Instalaciones Claro"
-]
+const costCenter = props.cost_center.map(item => item.name)
 
 const zones = [
     "Arequipa",

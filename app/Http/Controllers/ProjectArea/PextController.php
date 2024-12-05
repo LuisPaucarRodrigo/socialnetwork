@@ -8,8 +8,10 @@ use App\Http\Requests\Cicsa\StoreOrUpdateAssigantionRequest;
 use App\Http\Requests\PextProjectRequest\StoreOrUpdateRequest;
 use App\Models\AccountStatement;
 use App\Models\CicsaAssignation;
+use App\Models\CostLine;
 use App\Models\PextProject;
 use App\Models\PextProjectExpense;
+use App\Models\Project;
 use App\Models\Provider;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -20,10 +22,14 @@ class PextController extends Controller
     public function index(Request $request)
     {
         if ($request->isMethod('get')) {
+            $cost_line = CostLine::where('name', 'PEXT')->with('cost_center')->first();
             $project = PextProject::orderBy('created_at', 'desc')->paginate();
             return Inertia::render(
                 'ProjectArea/ProjectManagement/PextProject',
-                ['project' => $project]
+                [
+                    'project' => $project,
+                    'cost_line' => $cost_line
+                ]
             );
         } else {
             $search = $request->searchQuery;
@@ -54,13 +60,22 @@ class PextController extends Controller
     {
         $validatedData = $request->validate([
             'date' => 'required|date',
-            'description' => 'required|string'
+            'description' => 'required|string',
+            'cost_line_id' => 'required|numeric',
+            'cost_center_id' => 'required|numeric',
         ]);
-        $project = PextProject::updateOrCreate(
+        $project = Project::create([
+            'priority' => 'Alta',
+            'description' => $validatedData['description'],
+            'cost_line_id' => $validatedData['cost_line_id'],
+            'cost_center_id' => $validatedData['cost_center_id'],
+        ]);
+        $validatedData['project_id'] = $project->id;
+        $projectPext = PextProject::updateOrCreate(
             ['id' => $pext_id],
             $validatedData
         );
-        return response()->json($project, 200);
+        return response()->json($projectPext, 200);
     }
 
     public function delete(PextProject $pext)
@@ -79,7 +94,7 @@ class PextController extends Controller
     public function index_expenses(Request $request, $pext_project_id)
     {
         if ($request->isMethod('get')) {
-            $expense = PextProjectExpense::with(['provider:id,company_name', 'cicsa_assignation:id,project_name,cost_center'])
+            $expense = PextProjectExpense::with(['provider:id,company_name', 'cicsa_assignation:id,project_name', 'pext_project.project.cost_center'])
                 ->where('pext_project_id', $pext_project_id)
                 ->where('is_accepted', 1)
                 ->orWhere('is_accepted', null)
@@ -90,17 +105,19 @@ class PextController extends Controller
                 $exp->state = 1 ? true : false;
             }
             $providers = Provider::select('id', 'ruc', 'company_name')->get();
+            $cost_line = CostLine::where('name', 'PEXT')->with('cost_center')->first();
             return Inertia::render(
                 'ProjectArea/ProjectManagement/PextExpenses',
                 [
                     'expense' => $expense,
                     'providers' => $providers,
-                    'pext_project_id' => $pext_project_id
+                    'pext_project_id' => $pext_project_id,
+                    'cost_center' => $cost_line->cost_center
                 ]
             );
         } else {
             $rejected = $request->rejected;
-            $expense = PextProjectExpense::with(['provider:id,company_name', 'cicsa_assignation:id,project_name,cost_center'])
+            $expense = PextProjectExpense::with(['provider:id,company_name', 'cicsa_assignation:id,project_name', 'pext_project.project.cost_center'])
                 ->where('pext_project_id', $pext_project_id)
                 ->orderBy('created_at', 'desc');
             $expense = $request->state === false ? $expense->where('is_accepted', 0)
@@ -123,8 +140,8 @@ class PextController extends Controller
             }
             if (count($request->selectedCostCenter) < 6) {
                 $costCenter = $request->selectedCostCenter;
-                $expense = $expense->whereHas('cicsa_assignation', function ($query) use ($costCenter) {
-                    $query->whereIn('cost_center', $costCenter);
+                $expense = $expense->whereHas('pext_project.project.cost_center', function ($query) use ($costCenter) {
+                    $query->whereIn('name', $costCenter);
                 });
             }
 
@@ -174,7 +191,7 @@ class PextController extends Controller
             $validatedData
         );
         // $expense->with(['cicsa_assignation:id,project_name,customer']);
-        $expense->load('cicsa_assignation');
+        $expense->load('cicsa_assignation.project.cost_center');
         $expense->setAppends(['real_amount']);
         return response()->json($expense, 200);
     }
@@ -217,8 +234,10 @@ class PextController extends Controller
     {
         if ($request->isMethod('get')) {
             $project = CicsaAssignation::orderBy('created_at', 'desc')->paginate();
+            $cost_line = CostLine::where('name', 'Pext')->with('cost_center')->first();
             return Inertia::render('ProjectArea/ProjectManagement/PextProjectAdditional', [
-                'project' => $project
+                'project' => $project,
+                'cost_line' => $cost_line
             ]);
         } elseif ($request->isMethod('post')) {
             $project = CicsaAssignation::orWhere('project_name', 'like', "%$request->searchQuery%")
@@ -232,6 +251,13 @@ class PextController extends Controller
     public function updateOrStoreAdditional(StoreOrUpdateAssigantionRequest $request, $cicsa_assignation_id = null)
     {
         $validateData = $request->validated();
+        $project = Project::create([
+            'priority' => 'Alta',
+            'description' => $validateData['project_name'],
+            'cost_line_id' => $validateData['cost_line_id'],
+            'cost_center_id' => $validateData['cost_center_id']
+        ]);
+        $validateData['project_id'] = $project->id;
         $cicsa_assignation = CicsaAssignation::updateOrCreate(
             ['id' => $cicsa_assignation_id],
             $validateData
@@ -242,7 +268,7 @@ class PextController extends Controller
     public function additional_expense_index(Request $request, $cicsa_assignation_id)
     {
         if ($request->isMethod('get')) {
-            $expense = PextProjectExpense::with(['provider:id,company_name', 'cicsa_assignation:id,project_name,cost_center'])
+            $expense = PextProjectExpense::with(['provider:id,company_name', 'cicsa_assignation.project.cost_center'])
                 ->where('cicsa_assignation_id', $cicsa_assignation_id)
                 ->where('is_accepted', 1)
                 ->orWhere('is_accepted', null)
@@ -253,17 +279,19 @@ class PextController extends Controller
                 $exp->state = 1 ? true : false;
             }
             $providers = Provider::select('id', 'ruc', 'company_name')->get();
+            $cost_line = CostLine::where('name', 'PEXT')->with('cost_center')->first();
             return Inertia::render(
-                'ProjectArea/ProjectManagement/PextExpenses',
+                'ProjectArea/ProjectManagement/PextProjectAdditionalExpenses',
                 [
                     'expense' => $expense,
                     'providers' => $providers,
-                    'cicsa_assignation_id' => $cicsa_assignation_id
+                    'cicsa_assignation_id' => $cicsa_assignation_id,
+                    'cost_center' => $cost_line->cost_center
                 ]
             );
         } else {
             $rejected = $request->rejected;
-            $expense = PextProjectExpense::with(['provider:id,company_name', 'cicsa_assignation:id,project_name,cost_center'])
+            $expense = PextProjectExpense::with(['provider:id,company_name', 'cicsa_assignation.project.cost_center'])
                 ->where('cicsa_assignation_id', $cicsa_assignation_id)
                 ->orderBy('created_at', 'desc');
             $expense = $request->state === false ? $expense->where('is_accepted', 0)
@@ -286,8 +314,8 @@ class PextController extends Controller
             }
             if (count($request->selectedCostCenter) < 6) {
                 $costCenter = $request->selectedCostCenter;
-                $expense = $expense->whereHas('cicsa_assignation', function ($query) use ($costCenter) {
-                    $query->whereIn('cost_center', $costCenter);
+                $expense = $expense->whereHas('cicsa_assignation.project.cost_center', function ($query) use ($costCenter) {
+                    $query->whereIn('name', $costCenter);
                 });
             }
 

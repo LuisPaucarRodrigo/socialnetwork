@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string("name");
             $table->string("lastname");
-            $table->string("expense_line");
             $table->string("dni", 8)->unique();
             $table->date("birthdate");
             $table->string("cropped_image")->nullable();
@@ -31,6 +30,8 @@ return new class extends Migration
             $table->boolean('l_policy')->nullable();
             $table->date('sctr_exp_date')->nullable();
             $table->date('policy_exp_date')->nullable();
+
+            $table->foreignId("cost_line_id")->constrained('cost_lines');
             $table->timestamps();
         });
     }

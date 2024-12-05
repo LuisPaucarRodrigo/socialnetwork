@@ -24,7 +24,6 @@ class StoreOrUpdateAssigantionRequest extends FormRequest
         return [
             'assignation_date' => 'nullable|date',
             'project_name' => 'required|string',
-            'cost_center' => 'required|string',
             'customer' => 'nullable|string',
             'project_code' => 'nullable|string',
             'cpe' => 'nullable|string',
@@ -33,7 +32,8 @@ class StoreOrUpdateAssigantionRequest extends FormRequest
             'manager' => 'required|string',
             'user_name' => 'required|string',
             'user_id' => 'required|numeric',
-            'business_line_id' => 'required|numeric'
+            'cost_line_id' => 'required|numeric',
+            'cost_center_id' => 'required|numeric'
         ];
     }
 }

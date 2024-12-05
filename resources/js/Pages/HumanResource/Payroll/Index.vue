@@ -23,7 +23,7 @@
                         Mes: {{ item.month }}
                     </p>
                     <p class="text-sm mb-3">
-                        Monto Total: S/ {{ item.total_amount.toFixed(2) }}
+                        Monto Total: S/ {{ Number(item.total_amount).toFixed(2) }}
                     </p>
                     <Link :href="route('spreadsheets.index', { payroll_id: item.id })"
                         class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
@@ -141,6 +141,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import { setAxiosErrors } from '@/utils/utils';
+import { stringify } from 'postcss';
 
 const { payroll, userPermissions } = defineProps({
     payroll: Object,

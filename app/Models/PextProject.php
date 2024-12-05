@@ -12,11 +12,17 @@ class PextProject extends Model
 
     protected $fillable = [
         'date',
-        'description'
+        'description',
+        'project_id'
     ];
 
     public function pext_project_expenses()
     {
         return $this->hasMany(PextProjectExpense::class);
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class, 'project_id');
     }
 }

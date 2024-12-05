@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('minute_materials', function (Blueprint $table) {
+        Schema::create('additional_project_expenses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('snsotop_id')
-                  ->constrained('sn_sot_operation')
-                  ->onDelete('cascade');
-            $table->string('material');
-            $table->string('quantity');
+            $table->string('expense_type');
+            $table->string('doc_type');
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('minute_materials');
+        Schema::dropIfExists('additional_project_expenses');
     }
 };

@@ -27,6 +27,7 @@ class PextProjectExpense extends Model
         'igv',
         'user_id',
         'cicsa_assignation_id',
+        'account_statement_id'
     ];
 
     public function pext_project(){

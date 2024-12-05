@@ -11,9 +11,7 @@
         <select @change="filterExpenseLine($event.target.value)"
           class="block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
           <option value="">Todos</option>
-          <option>Pint</option>
-          <option>Pext</option>
-          <option>Huawei</option>
+          <option v-for="item, i in costLines" :key="i">{{ item.name }}</option>
         </select>
       </div>
       <br>
@@ -210,6 +208,11 @@
                   <div class="">
                     {{ index + employeesData.length + 1 }}
                   </div>
+                </td>
+                <td class="px-2 py-2 text-center">
+                  <a :href="'#'" class="text-green-700 hover:underline hover:text-green-500 cursor-pointer">
+
+                  </a>
                 </td>
                 <!-- principalData -->
                 <td v-for="da, i in principalData" :key="i"
@@ -413,10 +416,11 @@ import { Toaster } from 'vue-sonner';
 import { notify, notifyError } from '@/Components/Notification';
 import FilterProcess from '@/Components/FilterProcess.vue';
 
-const { employees, e_employees, sections } = defineProps({
+const { employees, e_employees, sections, costLines } = defineProps({
   employees: Object,
   e_employees: Object,
   sections: Object,
+  costLines: Array,
 });
 
 
@@ -585,11 +589,11 @@ async function submitInsurance() {
 }
 
 async function filterExpenseLine(search) {
-  console.log(search)
   let url = route('document.rrhh.status')
   try {
     let response = await axios.post(url, { searchquery: search })
-    employeesData.value = response.data
+    employeesData.value = response.data.employees
+    e_employeesData.value = response.data.e_employees
   } catch (error) {
     notifyError(error)
   }

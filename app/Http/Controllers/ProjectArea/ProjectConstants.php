@@ -8,7 +8,6 @@ use App\Models\Service;
 
 class ProjectConstants
 {
-
     public function generateTemplate($data)
     {
         $template = null;

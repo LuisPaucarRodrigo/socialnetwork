@@ -224,15 +224,7 @@ Usuarios
 
                     </div>
                 </template>
-
-
-
-
-
-
-
             </template>
-
             <template v-if="hasPermission('InventoryManager') || hasPermission('Inventory')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingInventory = !showingInventory">

@@ -8,6 +8,7 @@ use App\Http\Requests\AccountStatement\AccountStatementRequest;
 use App\Imports\AccountStatementImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Log;
+use App\Models\PayrollDetailExpense;
 use App\Models\AccountStatement;
 use App\Models\AdditionalCost;
 use App\Models\PextProjectExpense;
@@ -32,10 +33,12 @@ class AccountStatementController extends Controller
         $scIds = $data["scData"];
         $acIds = $data["acData"];
         $peIds = $data["peData"];
+        $spIds = $data["spData"];
         $rg = AccountStatement::updateOrCreate(['id' => $as_id], $data);
         $this->syncOneToMany($rg, 'AdditionalCost', $acIds, 'account_statement_id');
         $this->syncOneToMany($rg, 'StaticCost', $scIds, 'account_statement_id');
         $this->syncOneToMany($rg, 'PextProjectExpense', $peIds, 'account_statement_id');
+        $this->syncOneToMany($rg, 'PayrollDetailExpense', $spIds, 'account_statement_id');
         $operationDate = Carbon::parse($data['operation_date']);
         $month = $operationDate->format('Y-m');
         $data = $this->getAccountVariables($request->month, $request->all);
@@ -121,6 +124,7 @@ class AccountStatementController extends Controller
             return $item;
         });
 
+
         $peData = PextProjectExpense::select('id', 'expense_type', 'zone', 'amount', 'cicsa_assignation_id')
             ->with([
                 'cicsa_assignation' => function ($query) {
@@ -135,11 +139,24 @@ class AccountStatementController extends Controller
             $item->setAppends([]);
             return $item;
         });
+        
+        $spData = PayrollDetailExpense::select('id', 'type', 'payroll_detail_id')
+            ->with('payroll_detail')
+            ->where('operation_date', $od)
+            ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
+            ->get();
+        // TO DO xd
+        // $spData->transform(function ($item) {
+        //     $item->cicsa_assignation->setAppends([]);
+        //     $item->setAppends([]);
+        //     return $item;
+        // });
 
         return response()->json([
             'acData' => $acData,
             'scData' => $scData,
             'peData' => $peData,
+            'spData' => $spData,
         ]);
     }
 
@@ -187,10 +204,16 @@ class AccountStatementController extends Controller
             return $item;
         });
 
+        $spData = PayrollDetailExpense::select('id', 'type', 'payroll_detail_id', 'account_statement_id')
+            ->with('payroll_detail')
+            ->where('account_statement_id', $as_id)
+            ->get();
+
         return response()->json([
             'acData' => $acData,
             'scData' => $scData,
             'peData' => $peData,
+            'spData' => $spData,
         ]);
     }
 

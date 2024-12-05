@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Models\AccountStatement;
 
 class SpreadsheetsController extends Controller
 {
@@ -84,6 +85,8 @@ class SpreadsheetsController extends Controller
                     'pension_id' => $listPension->pension->firstWhere('type', $employee->contract->pension_type)->id
                 ]);
             }
+
+
             $listType = ['Salary', 'Travel'];
             foreach ($listType as $item) {
                 PayrollDetailExpense::create([
@@ -164,10 +167,21 @@ class SpreadsheetsController extends Controller
         $payrollDetailExpense = PayrollDetailExpense::where('payroll_detail_id', $payroll_details_id)
             ->where('type', 'Salary')
             ->first();
-        $payrollDetailExpense->update([
+        $data = [
             'operation_date' => $validateData['operation_date'],
             'operation_number' => $validateData['operation_number'],
-        ]);
+        ];
+        $data['account_statement_id'] = null;
+        if(isset($data['operation_number']) && isset($data['operation_date'])){
+            $on = substr($data['operation_number'], -6);
+            $as = AccountStatement::where('operation_date', $data['operation_date'])
+                ->where('operation_number', $on)->first();
+            $data['account_statement_id'] = $as?->id;
+        }
+        
+        $payrollDetailExpense->update($data);
+
+
         $payrollExpense = PayrollDetailExpense::where('payroll_detail_id', $payroll_details_id)->get();
         return response()->json($payrollExpense, 200);
     }
@@ -181,10 +195,18 @@ class SpreadsheetsController extends Controller
         $payrollDetailExpense = PayrollDetailExpense::where('payroll_detail_id', $payroll_details_id)
             ->where('type', 'Travel')
             ->first();
-        $payrollDetailExpense->update([
+        $data = [
             'operation_date' => $validateData['operation_date'],
             'operation_number' => $validateData['operation_number'],
-        ]);
+        ];
+        $data['account_statement_id'] = null;
+        if(isset($data['operation_number']) && isset($data['operation_date'])){
+            $on = substr($data['operation_number'], -6);
+            $as = AccountStatement::where('operation_date', $data['operation_date'])
+                ->where('operation_number', $on)->first();
+            $data['account_statement_id'] = $as?->id;
+        }
+        $payrollDetailExpense->update($data);
         $payrollExpense = PayrollDetailExpense::where('payroll_detail_id', $payroll_details_id)->get();
         return response()->json($payrollExpense, 200);
     }

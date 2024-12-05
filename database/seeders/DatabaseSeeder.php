@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\CostLine;
 use App\Models\Pension;
 use App\Models\Permission;
 use App\Models\Role;
@@ -114,6 +115,13 @@ class DatabaseSeeder extends Seeder
             ['id' => 6, 'customer_id' => 2, 'warehouse_id' => 4],
         ];
 
+        $costLinesData = [
+            ["name" => "PINT"],
+            ["name" => "PEXT"],
+            ["name" => "HUAWEI"],
+        ];
+
+        CostLine::insert($costLinesData);
         Customer::insert($customersData);
         Customers_contact::insert($customersContactData);
         Warehouse::insert($warehousesData);

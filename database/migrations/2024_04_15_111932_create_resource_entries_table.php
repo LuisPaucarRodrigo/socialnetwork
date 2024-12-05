@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('condition')->nullable();
             $table->text('description')->nullable();
             $table->foreignId('purchase_product_id');
+            $table->foreignId('cost_line_id')->nullable()->constrained('cost_lines')->nullOnDelete();
             $table->timestamps();
         });
     }

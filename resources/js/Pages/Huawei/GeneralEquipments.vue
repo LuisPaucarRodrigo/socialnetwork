@@ -713,6 +713,7 @@ watch(
 );
 
 async function search_advance($data) {
+    actionForm.value.ids = [];
     let url = route("huawei.inventory.general.equipments.searchadvance", {
         prefix: selectedWarehouse.value,
     });

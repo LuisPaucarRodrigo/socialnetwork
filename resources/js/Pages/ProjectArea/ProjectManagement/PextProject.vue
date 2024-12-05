@@ -79,11 +79,11 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 <div v-for="item in projects.data || projects" :key="item.id"
                     class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
-                    <div class="grid grid-cols-2">
+                    <div class="grid grid-cols-1">
                         <h2 class="text-sm font-semibold mb-3">
-                            Fecha {{ item.date }}
+                            Mes: {{ item.date }}
                         </h2>
-                        <div v-if="hasPermission('ProjectManager')" class="inline-flex justify-end items-start gap-x-2">
+                        <!-- <div v-if="hasPermission('ProjectManager')" class="inline-flex justify-end items-start gap-x-2">
                             <button type="button" class="text-blue-900 whitespace-no-wrap" @click="editProject(item)">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
@@ -91,7 +91,7 @@
                                         d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                 </svg>
                             </button>
-                        </div>
+                        </div> -->
                     </div>
                     <h3 class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
                         {{ item.description }}
@@ -125,6 +125,19 @@
                                 <div class="mt-2">
                                     <TextInput type="month" v-model="form.date" id="date" />
                                     <InputError :message="form.errors.date" />
+                                </div>
+                            </div>
+                            <div>
+                                <InputLabel for="cost_center">Centro de Costos</InputLabel>
+                                <div class="mt-2">
+                                    <select id="cost_center" v-model="form.cost_center_id"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option value="">Seleccionar Centro de Costo</option>
+                                        <option v-for="item in cost_line.cost_center" :key="item.id" :value="item.id">
+                                            {{ item.name }}
+                                        </option>
+                                    </select>
+                                    <InputError :message="form.errors.cost_center_id" />
                                 </div>
                             </div>
                             <div>
@@ -207,15 +220,19 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import { setAxiosErrors } from '@/utils/utils';
+import { notifyError } from '@/Components/Notification';
 
-const { project, userPermissions } = defineProps({
+const { project, userPermissions, cost_line } = defineProps({
     project: Object,
-    userPermissions: Array
+    userPermissions: Array,
+    cost_line: Object
 })
 
 const initialState = {
     id: "",
     date: "",
+    cost_line_id: cost_line.id,
+    cost_center_id: "",
     description: ""
 }
 
@@ -279,10 +296,15 @@ async function submit() {
         const action = form.id ? 'update' : 'create'
         updatePext(response.data, action)
     } catch (error) {
+        console.log(error)
         if (error.response) {
-            setAxiosErrors(error.response.data.errors, form)
+            if (error.response.data.errors) {
+                setAxiosErrors(error.response.data.errors, form)
+            } else {
+                notifyError("Server error:", error.response.data)
+            }
         } else {
-            console.error(error)
+            notifyError(error)
         }
     }
 }

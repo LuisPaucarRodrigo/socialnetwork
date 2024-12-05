@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\File;
 class PayrollDetail extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'payroll_id',
         'employee_id',
@@ -27,6 +28,8 @@ class PayrollDetail extends Model
     ];
 
     protected $appends = [
+        'employee_name',
+
         'total_income',
         'total_pension_base',
 
@@ -47,6 +50,11 @@ class PayrollDetail extends Model
         'sctr_s',
         'total_contribution'
     ];
+
+    public function getEmployeeNameAttribute () {
+        return $this->employee->name.' '. $this->employee->lastname;
+    }
+
 
     public function getTruncatedMonthAttribute()
     {

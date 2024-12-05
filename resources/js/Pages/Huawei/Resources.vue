@@ -69,7 +69,7 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.huawei_equipment_serie.huawei_equipment.name }}</td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.state }}</td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry_detail.huawei_equipment_serie.serie_number }}</td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.created_at) }}</td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.output_date) }}</td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.huawei_entry_detail.unit_price ? 'S/. ' + item.huawei_entry_detail.unit_price.toFixed(2) : '-'}}</td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                                 <div v-if="item.quantity !== 0 && !item.liquidated_quantity" class="flex items-center">
@@ -122,7 +122,7 @@
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.state }}</td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.quantity }}</td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_project_liquidation ? item.huawei_project_liquidation.liquidated_quantity : '-'}}</td>
-                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.created_at) }}</td>
+                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.output_date) }}</td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.huawei_entry_detail.unit_price ? 'S/. ' + item.huawei_entry_detail.unit_price.toFixed(2) : '-'}}</td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                                     <div v-if="item.quantity !== 0 && !item.liquidated_quantity" class="flex items-center">
@@ -184,7 +184,7 @@
                                         :size="entryDetails.length + 1" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" multiple>
                                     <option disabled value="">Seleccionar Entrada</option>
                                     <option v-for="item in entryDetails" :key="item.id" :value="item.id">
-                                        {{ (item.serie_number  + ' - ' + (item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : 'No hay precio registrado')) }}
+                                        {{ (item.serie_number  + ' - ' + item.order_number) }}
                                     </option>
                                 </select>
                             </div>
@@ -196,7 +196,7 @@
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Entrada</option>
                                     <option v-for="item in entryDetails" :key="item.id" :value="item.id">
-                                        {{ ( foundItem.name + ' - ' + item.available_quantity + ' - ' + (item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : 'No hay precio registrado')) }}
+                                        {{ ( foundItem.name + ' - ' + item.available_quantity + ' - ' + item.order_number) }}
                                     </option>
                                 </select>
                             </div>
@@ -308,7 +308,8 @@
     resource: '',
     huawei_entry_detail_id: '',
     huawei_entry_detail_ids: [],
-    quantity: ''
+    output_date: '',
+    quantity: '',
   });
 
   const open_create = () => {

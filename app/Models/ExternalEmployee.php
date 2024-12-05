@@ -12,7 +12,7 @@ class ExternalEmployee extends Model
     protected $fillable = [
         'name',
         'lastname',
-        'expense_line',
+        'cost_line_id',
         'cropped_image',
         'gender',
         'address',
@@ -72,5 +72,10 @@ class ExternalEmployee extends Model
             $total += 1;
         }
         return $total;
+    }
+
+    public function cost_line()
+    {
+        return $this->belongsTo(CostLine::class, 'cost_line_id');
     }
 }

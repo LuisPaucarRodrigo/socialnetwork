@@ -5,13 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MinuteMaterial extends Model
+class CostLineCenterResource extends Model
 {
     use HasFactory;
-    protected $table = 'minute_materials';
+    protected $table = 'cost_line_center_resources';
     protected $fillable = [
-        'snsotop_id',
-        'material',
-        'quantity',
+        'cost_center_id',
+        'resource_entry_id',
     ];
 }

@@ -18,7 +18,7 @@ class HuaweiAdditionalCostExport implements FromView
     public function view():View
     {
         return view('Export/HuaweiAdditionalCostsExport', [
-            'additional_costs' => HuaweiAdditionalCost::where('huawei_project_id', $this->project_id)->get()
+            'additional_costs' => HuaweiAdditionalCost::where('huawei_project_id', $this->project_id)->where('is_accepted', 1)->get()
         ]);
     }
 }
