@@ -8,6 +8,7 @@ use App\Http\Requests\Huawei\HuaweiMonthlyExpenseRequest;
 use App\Models\Employee;
 use App\Models\HuaweiMonthlyExpense;
 use App\Models\HuaweiMonthlyProject;
+use App\Models\HuaweiProject;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
@@ -88,9 +89,19 @@ class HuaweiMonthlyController extends Controller
         $project->load(['huawei_monthly_employees' => function ($query) {
             $query->select('employees.id', 'employees.name', 'employees.lastname'); // Selecciona solo los campos necesarios
         }]);
+
+        $expenseForData = $expenses->getCollection();
+
+        $data = [
+            'macro_projects' => $expenseForData->pluck('macro_project')->filter()->unique()->values()->toArray(),
+            'sites' => $expenseForData->pluck('site')->filter()->unique()->values()->toArray(),
+            'dus' => $expenseForData->pluck('du')->filter()->unique()->values()->toArray(),
+        ];
+
         return Inertia::render('Huawei/MonthlyExpenses', [
             'expense' => $expenses,
-            'project' => $project
+            'project' => $project,
+            'data' => $data
         ]);
     }
 
@@ -116,20 +127,47 @@ class HuaweiMonthlyController extends Controller
         $project->load(['huawei_monthly_employees' => function ($query) {
             $query->select('employees.id', 'employees.name', 'employees.lastname'); // Selecciona solo los campos necesarios
         }]);
+
+        $data = [
+            'macro_projects' => $expenses->pluck('macro_project')->filter()->unique()->values()->toArray(),
+            'sites' => $expenses->pluck('site')->filter()->unique()->values()->toArray(),
+            'dus' => $expenses->pluck('du')->filter()->unique()->values()->toArray(),
+        ];
+
         return Inertia::render('Huawei/MonthlyExpenses', [
             'expense' => $expenses,
             'project' => $project,
-            'search' => $request
+            'search' => $request,
+            'data' => $data
         ]);
     }
 
     public function searchAdvance (HuaweiMonthlyProject $project, Request $request)
     {
         $expenses = HuaweiMonthlyExpense::where('huawei_monthly_project_id', $project->id);
+
+        $expenseForData = $expenses->get();
+
+        $data = [
+            'macro_projects' => $expenseForData->pluck('macro_project')->filter()->unique()->count(),
+            'sites' => $expenseForData->pluck('site')->filter()->unique()->count(),
+            'dus' => $expenseForData->pluck('du')->filter()->unique()->count(),
+        ];
+
         $employeeCount = $project->huawei_monthly_employees()->count();
-        if (count($request->selectedZones) < 17) {  // Filtrar solo si hay valor
-            $expenses->whereIn('zone', $request->selectedZones);
+
+        if (count($request->selectedMacroProjects) < $data['macro_projects']){
+            $expenses->whereIn('macro_project', $request->selectedMacroProjects);
         }
+
+        if (count($request->selectedSites) < $data['sites']){
+            $expenses->whereIn('site', $request->selectedSites);
+        }
+
+        if (count($request->selectedDUs) < $data['dus']){
+            $expenses->whereIn('du', $request->selectedDUs);
+        }
+
         if (count($request->selectedExpenseTypes) < 9){
             $expenses->whereIn('expense_type', $request->selectedExpenseTypes);
         }
@@ -189,6 +227,10 @@ class HuaweiMonthlyController extends Controller
     public function updateExpense(HuaweiMonthlyExpense $expense, HuaweiMonthlyExpenseRequest $request)
     {
         $data = $request->validated();
+
+        if (!$data['macro_project'] || !$data['site'] || !$data['du']){
+            return back()->withErrors(['custom_error' => 'Debe completar toda la información del proyecto']);
+        }
 
         $expenseDirectory = 'documents/huawei/monthly_expenses/';
 
@@ -284,5 +326,47 @@ class HuaweiMonthlyController extends Controller
             ->get();
 
         return response()->json($updatedCosts, 200);
+    }
+
+    public function fetchSites($project)
+    {
+        $huawei_projects = HuaweiProject::where('macro_project', $project)->with('huawei_site')->get();
+
+        $sites = $huawei_projects->map(function ($project) {
+            if ($project->huawei_site) {
+                return [
+                    'id' => $project->huawei_site->id,
+                    'name' => $project->huawei_site->name,
+                ];
+            }
+            return null;
+        })->filter()->unique('id');
+
+        return response()->json($sites->sortBy('name')->values(), 200);
+    }
+
+    public function fetchDUs($project, $site_id)
+    {
+        $dus = HuaweiProject::select('id','name','assigned_diu')
+            ->where('huawei_site_id', $site_id)
+            ->where('macro_project', $project)
+            ->get()
+            ->makeHidden([
+                'code',
+                'state',
+                'additional_cost_total',
+                'static_cost_total',
+                'materials_in_project',
+                'equipments_in_project',
+                'materials_liquidated',
+                'equipments_liquidated',
+                'total_earnings',
+                'total_real_earnings',
+                'total_real_earnings_without_deposit',
+                'total_project_cost',
+                'total_employee_costs',
+                'total_essalud_employee_cost',
+            ]);
+        return response()->json($dus, 200);
     }
 }

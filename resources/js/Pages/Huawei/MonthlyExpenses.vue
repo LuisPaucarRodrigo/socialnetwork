@@ -221,7 +221,35 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                            Proyecto
+                            <TableAutocompleteFilter
+                                labelClass="text-[11px]"
+                                label="Proyecto"
+                                :options="props.data.macro_projects"
+                                v-model="filterForm.selectedMacroProjects"
+                                width="w-48"
+                            />
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                        >
+                            <TableAutocompleteFilter
+                                labelClass="text-[11px]"
+                                label="Site"
+                                :options="props.data.sites"
+                                v-model="filterForm.selectedSites"
+                                width="w-48"
+                            />
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                        >
+                            <TableAutocompleteFilter
+                                labelClass="text-[11px]"
+                                label="DU"
+                                :options="props.data.dus"
+                                v-model="filterForm.selectedDUs"
+                                width="w-72"
+                            />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
@@ -231,17 +259,6 @@
                                 label="Tipo de Gasto"
                                 :options="expenseTypes"
                                 v-model="filterForm.selectedExpenseTypes"
-                                width="w-48"
-                            />
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
-                        >
-                            <TableAutocompleteFilter
-                                labelClass="text-[11px]"
-                                label="Zona"
-                                :options="zones"
-                                v-model="filterForm.selectedZones"
                                 width="w-48"
                             />
                         </th>
@@ -268,10 +285,16 @@
                             />
                         </th>
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <TableDateFilter labelClass="text-[11px]" label="Fecha de Gasto"
-                                v-model:startDate="filterForm.exStartDate" v-model:endDate="filterForm.exEndDate"
-                                v-model:noDate="filterForm.exNoDate" width="w-40" />
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                        >
+                            <TableDateFilter
+                                labelClass="text-[11px]"
+                                label="Fecha de Gasto"
+                                v-model:startDate="filterForm.exStartDate"
+                                v-model:endDate="filterForm.exEndDate"
+                                v-model:noDate="filterForm.exNoDate"
+                                width="w-40"
+                            />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
@@ -314,10 +337,16 @@
                             Imagen 3
                         </th>
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <TableDateFilter labelClass="text-[11px]" label="Fecha de Depósito E.C."
-                                v-model:startDate="filterForm.opStartDate" v-model:endDate="filterForm.opEndDate"
-                                v-model:noDate="filterForm.opNoDate" width="w-40" />
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                        >
+                            <TableDateFilter
+                                labelClass="text-[11px]"
+                                label="Fecha de Depósito E.C."
+                                v-model:startDate="filterForm.opStartDate"
+                                v-model:endDate="filterForm.opEndDate"
+                                v-model:noDate="filterForm.opNoDate"
+                                width="w-40"
+                            />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
@@ -380,7 +409,17 @@
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
-                            {{ props.project.description }}
+                            {{ item.macro_project }}
+                        </td>
+                        <td
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                        >
+                            {{ item.site }}
+                        </td>
+                        <td
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                        >
+                            {{ item.du }}
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
@@ -388,11 +427,6 @@
                             <p class="w-48 break-words">
                                 {{ item.expense_type }}
                             </p>
-                        </td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
-                        >
-                            {{ item.zone }}
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
@@ -593,7 +627,7 @@
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
-                            colspan="10"
+                            colspan="11"
                         ></td>
                         <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap"
@@ -642,6 +676,110 @@
                 <form @submit.prevent="form.id ? submit(true) : submit(false)">
                     <div class="space-y-12 mt-4">
                         <div class="grid sm:grid-cols-2 gap-6 pb-6">
+                            <div
+                                class="md:col-span-2 col-span-1 rounded-md border border-gray-300 p-4"
+                            >
+                                <!-- Elementos dentro, cada uno ocupa 1 columna -->
+                                <div
+                                    class="grid grid-cols-1 sm:grid-cols-2 gap-4"
+                                >
+                                    <!-- Primer elemento: Proyecto -->
+                                    <div class="col-span-1">
+                                        <InputLabel
+                                            for="macro_project"
+                                            class="font-medium leading-6 text-gray-900"
+                                        >
+                                            Proyecto
+                                        </InputLabel>
+                                        <div class="mt-2">
+                                            <select
+                                                v-model="form.macro_project"
+                                                @change="fetchSites"
+                                                id="macro_project"
+                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            >
+                                                <option disabled value="">
+                                                    Seleccionar Proyecto
+                                                </option>
+                                                <option>IPRAN24</option>
+                                                <option>DWDM</option>
+                                                <option>FTTH</option>
+                                                <option>NAZCANEWPECOM</option>
+                                            </select>
+                                            <InputError
+                                                :message="
+                                                    form.errors.macro_project
+                                                "
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <!-- Segundo elemento: Site -->
+                                    <div class="col-span-1" v-if="sites">
+                                        <InputLabel
+                                            for="site"
+                                            class="font-medium leading-6 text-gray-900"
+                                        >
+                                            Site
+                                        </InputLabel>
+                                        <div class="mt-2">
+                                            <select
+                                                v-model="form.site"
+                                                id="site"
+                                                @change="fetchDUs"
+                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            >
+                                                <option disabled value="">
+                                                    Seleccionar Site
+                                                </option>
+                                                <option
+                                                    v-for="site in sites"
+                                                    :key="site.id"
+                                                    :value="site.id"
+                                                >
+                                                    {{ site.name }}
+                                                </option>
+                                            </select>
+                                            <InputError
+                                                :message="form.errors.site"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-span-2" v-if="dus">
+                                        <InputLabel
+                                            for="site"
+                                            class="font-medium leading-6 text-gray-900"
+                                        >
+                                            DU
+                                        </InputLabel>
+                                        <div class="mt-2">
+                                            <select
+                                                v-model="form.du"
+                                                id="site"
+                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            >
+                                                <option disabled value="">
+                                                    Seleccionar DU
+                                                </option>
+                                                <option
+                                                    v-for="du in dus"
+                                                    :key="du.id"
+                                                    :value="du.assigned_diu"
+                                                >
+                                                    {{ du.assigned_diu }}
+                                                </option>
+                                            </select>
+                                            <InputError
+                                                :message="form.errors.du"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <InputError
+                                :message="form.errors.custom_error"
+                            />
                             <div>
                                 <InputLabel
                                     for="expense_type"
@@ -666,36 +804,6 @@
                                     />
                                 </div>
                             </div>
-                            <div>
-                                <InputLabel
-                                    for="zone"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >Zona</InputLabel
-                                >
-                                <div class="mt-2">
-                                    <input
-                                        type="text"
-                                        v-model="form.zone"
-                                        list="zonesList"
-                                        placeholder="Seleccionar Zona"
-                                        id="zone"
-                                        autocomplete="off"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <datalist id="zonesList">
-                                        <option
-                                            v-for="(zone, index) in zones"
-                                            :key="index"
-                                            :value="zone"
-                                        >
-                                            {{ zone }}
-                                        </option>
-                                    </datalist>
-
-                                    <InputError :message="form.errors.zone" />
-                                </div>
-                            </div>
-
                             <div>
                                 <InputLabel
                                     for="employee"
@@ -1126,6 +1234,7 @@ const props = defineProps({
     expense: Object,
     project: Object,
     search: String,
+    data: Object
 });
 
 const expenses = ref(props.expense);
@@ -1134,11 +1243,12 @@ const showSuccessModal = ref(false);
 const successMessage = ref("");
 const showOpNuDatModal = ref(false);
 const isFetching = ref(false);
+const sites = ref(null);
+const dus = ref(null);
 
 const form = useForm({
     id: "",
     expense_type: "",
-    zone: "",
     employee: "",
     expense_date: "",
     cdp_type: "",
@@ -1154,6 +1264,9 @@ const form = useForm({
     ec_expense_date: "",
     ec_op_number: "",
     ec_amount: "",
+    macro_project: '',
+    site: '',
+    du: '',
     huawei_monthly_project_id: props.project.id,
 });
 
@@ -1165,12 +1278,29 @@ const openCreateAdditionalModal = () => {
     create_additional.value = true;
 };
 
-const openEditAdditionalModal = (additional) => {
+const openEditAdditionalModal = async (additional) => {
     Object.assign(form, additional);
+    const response1 = await axios.post(
+        route("huawei.monthlyexpenses.expenses.fetchsites", {
+            project: additional.macro_project,
+        })
+    );
+    sites.value = response1.data
+    const tempSite = sites.value.find(item => item.name == additional.site)?.id || '';
+    form.site = tempSite;
+    const response2 = await axios.post(
+        route('huawei.monthlyexpenses.expenses.fetchdus', {
+            project: additional.macro_project,
+            site_id: tempSite
+        })
+    );
+    dus.value = response2.data
     create_additional.value = true;
 };
 
 const closeModal = () => {
+    sites.value = null;
+    dus.value = null;
     form.clearErrors();
     form.reset();
     isFetching.value = false;
@@ -1178,6 +1308,7 @@ const closeModal = () => {
 };
 
 function submit(update) {
+    form.site = sites.value.find(item => item.id === form.site)?.name || '';
     if (!update) {
         isFetching.value = true;
         const url = route("huawei.monthlyexpenses.expenses.store");
@@ -1271,26 +1402,6 @@ const employees = props.project.huawei_monthly_employees.map((employee) => {
     return `${employee.name} ${employee.lastname}`; // Combina nombre y apellido
 });
 
-const zones = [
-    "DESAGUADERO",
-    "HUAWEI",
-    "HUAWEI-AQP",
-    "HUAWEI-PUNO",
-    "HUAWEI-TACNA",
-    "HUAWEI-CHALA",
-    "HUAWEI-CUSCO",
-    "HUAWEI-ILO",
-    "HUAWEI-JULIACA",
-    "HUAWEI-LA PUNTA",
-    "HUAWEI-ORCOPAMPA",
-    "HUAWEI-ABANCAY",
-    "HUAWEI-BANOSPAMPA",
-    "HUAWEI-EL PALOMAR",
-    "IP HUAWEI",
-    "PDI AQP",
-    "PERAL",
-];
-
 const expenseTypes = [
     "Combustible",
     "Consumibles",
@@ -1315,23 +1426,27 @@ const cdp_types = [
 
 const filterForm = ref({
     search: "",
+    selectedMacroProjects: props.data.macro_projects,
+    selectedSites: props.data.sites,
+    selectedDUs: props.data.dus,
     selectedEmployees: employees,
-    selectedZones: zones,
     selectedExpenseTypes: expenseTypes,
     selectedCDPTypes: cdp_types,
-    exStartDate: '',
-    exEndDate: '',
+    exStartDate: "",
+    exEndDate: "",
     exNoDate: false,
-    opStartDate: '',
-    opEndDate: '',
-    opNoDate: false
+    opStartDate: "",
+    opEndDate: "",
+    opNoDate: false,
 });
 
 watch(
     () => [
         filterForm.value.search,
+        filterForm.value.selectedMacroProjects,
+        filterForm.value.selectedSites,
+        filterForm.value.selectedDUs,
         filterForm.value.selectedEmployees,
-        filterForm.value.selectedZones,
         filterForm.value.selectedExpenseTypes,
         filterForm.value.selectedCDPTypes,
         filterForm.value.exStartDate,
@@ -1339,7 +1454,7 @@ watch(
         filterForm.value.exNoDate,
         filterForm.value.opStartDate,
         filterForm.value.opEndDate,
-        filterForm.value.opNoDate
+        filterForm.value.opNoDate,
     ],
     () => {
         (filterMode.value = true), search_advance(filterForm.value);
@@ -1493,4 +1608,32 @@ const submitOpNuDatModal = async () => {
     closeOpNuDatModal();
     notify("Registros Seleccionados Actualizados");
 };
+
+const fetchSites = async (e) => {
+    sites.value = null;
+    dus.value = null;
+    form.site = '';
+    form.du = '';
+    const project = e.target.value;
+    const response = await axios.post(
+        route("huawei.monthlyexpenses.expenses.fetchsites", {
+            project: project,
+        })
+    );
+    sites.value = response.data;
+};
+
+const fetchDUs = async (e) => {
+    dus.value = null;
+    form.du = '';
+    const site = e.target.value;
+    const response = await axios.post(
+        route('huawei.monthlyexpenses.expenses.fetchdus', {
+            project: form.macro_project,
+            site_id: site
+        })
+    );
+    dus.value = response.data;
+}
+
 </script>

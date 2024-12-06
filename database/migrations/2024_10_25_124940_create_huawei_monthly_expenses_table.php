@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('huawei_monthly_expenses', function (Blueprint $table) {
             $table->id();
             $table->string('expense_type');
-            $table->string('zone');
             $table->string('employee');
             $table->date('expense_date');
             $table->string('cdp_type')->nullable();
@@ -31,6 +30,9 @@ return new class extends Migration
             $table->date('ec_expense_date')->nullable();
             $table->string('ec_op_number')->nullable();
             $table->double('ec_amount')->nullable();
+            $table->string('macro_project');
+            $table->string('site');
+            $table->string('du');
             $table->foreignId('huawei_monthly_project_id')->constrained('huawei_monthly_projects')->onDelete('cascade');
             $table->timestamps();
         });
