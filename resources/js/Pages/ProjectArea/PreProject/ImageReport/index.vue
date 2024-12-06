@@ -54,32 +54,13 @@
                         </div>
                         <template v-if="hasPermission('ProjectManager')">
                             <div class="sm:col-span-2 space-x-3 text-right" v-if="!imageCode.status">
-                                <PrimaryButton data-tooltip-target="approve_images" @click="approveImages(imageCode.id)"
-                                    type="button">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0 1 18 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3 1.5 1.5 3-3.75" />
-                                    </svg>
-                                </PrimaryButton>
-                                <div id="approve_images" role="tooltip"
-                                    class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                                <PrimaryButton @click="approveImages(imageCode.id)" type="button">
                                     Aprobar Imagenes
-                                    <div class="tooltip-arrow" data-popper-arrow></div>
-                                </div>
-                                <PrimaryButton data-tooltip-target="approve_codes"
-                                    @click="verifyApproveModal(preprojectImage.id, imageCode.id)" type="button">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 0 1 9 9v.375M10.125 2.25A3.375 3.375 0 0 1 13.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 0 1 3.375 3.375M9 15l2.25 2.25L15 12" />
-                                    </svg>
                                 </PrimaryButton>
-                                <div id="approve_codes" role="tooltip"
-                                    class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                                <PrimaryButton @click="verifyApproveModal(preprojectImage.id, imageCode.id)"
+                                    type="button">
                                     Aprobar Codigo
-                                    <div class="tooltip-arrow" data-popper-arrow></div>
-                                </div>
+                                </PrimaryButton>
                             </div>
                             <span v-if="imageCode.status" class="text-green-600">Aprobado</span>
                         </template>
@@ -436,7 +417,7 @@ async function submitStages() {
 function openModalAddedStages() {
     showOpenAddedStages.value = !showOpenAddedStages.value
     formStages.clearErrors()
-    formStages.defaults({ ... { 'reportStages': [] } })
+    formStages.defaults({ ... { reportStages: [] } })
     formStages.reset()
 }
 

@@ -28,7 +28,7 @@ import Header from '@/Layouts/Header.vue';
 import Navigation from '@/Layouts/Navigation.vue';
 
 const props = defineProps({
-    redirectRoute: [String, Object],
+    redirectRoute: [String, ],
 })
 import { onMounted } from 'vue'
 import { initFlowbite } from 'flowbite'

@@ -3,7 +3,7 @@
     <Head title="Proyectos" />
     <AuthenticatedLayout :redirectRoute="'projectmanagement.pext.index'">
         <template #header>
-            Proyectos Pext
+            Proyectos Adicionales
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="mt-6 flex items-center justify-between gap-x-6">
@@ -18,10 +18,10 @@
                     </PrimaryButton>
                     <div id="add_monthly_project" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                        + Agregar Proyecto Mensual
+                        + Agregar Proyecto
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
-                    <PrimaryButton data-tooltip-target="export" type="button"
+                    <!-- <PrimaryButton data-tooltip-target="export" type="button"
                         customColor="bg-green-600 hover:bg-green-500" @click="modalExportExcel">
                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd"
@@ -33,11 +33,7 @@
                         class="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Exportar Excel
                         <div class="tooltip-arrow" data-popper-arrow></div>
-                    </div>
-                    <Link :href="route('projectmanagement.pext.additional.index')"
-                        class="bg-indigo-600 hover:bg-indigo-500 rounded-md px-4 py-2 text-center text-sm text-white">
-                    P. Adicionales
-                    </Link>
+                    </div> -->
                 </div>
 
                 <div class="sm:hidden">
@@ -73,17 +69,17 @@
                         </template>
                     </dropdown>
                 </div>
-                <input type="text" class="rounded-md" @input="search($event.target.value)" placeholder="Buscar..." />
+                <input type="text" @input="search($event.target.value)" placeholder="Buscar...">
             </div>
             <br>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 <div v-for="item in projects.data || projects" :key="item.id"
                     class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
-                    <div class="grid grid-cols-1">
-                        <h2 class="text-sm font-semibold mb-3">
-                            Mes: {{ item.date }}
-                        </h2>
-                        <!-- <div v-if="hasPermission('ProjectManager')" class="inline-flex justify-end items-start gap-x-2">
+                    <div class="grid grid-cols-2">
+                        <p class="text-sm font-semibold mb-3">
+                            Proyecto: {{ item.project_name }}
+                        </p>
+                        <div v-if="hasPermission('ProjectManager')" class="inline-flex justify-end items-start gap-x-2">
                             <button type="button" class="text-blue-900 whitespace-no-wrap" @click="editProject(item)">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
@@ -91,13 +87,25 @@
                                         d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                 </svg>
                             </button>
-                        </div> -->
+                        </div>
                     </div>
-                    <h3 class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
-                        {{ item.description }}
-                    </h3>
+                    <p class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
+                        Fecha: {{ formattedDate(item.assignation_date) }}
+                    </p>
+                    <p class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
+                        Cliente: {{ item.customer }}
+                    </p>
+                    <p class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
+                        Centro de Costos: {{ item.cost_center }}
+                    </p>
+                    <p class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
+                        Codigo: {{ item.project_code }}
+                    </p>
+                    <p class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
+                        CPE: {{ item.cpe }}
+                    </p>
                     <div class="grid grid-cols-1 gap-y-1">
-                        <Link :href="route('projectmanagement.pext.expenses.index', { pext_project_id: item.id })"
+                        <Link :href="route('pext.additional.expense.index', { cicsa_assignation_id: item.id })"
                             class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Gastos
                         </Link>
                     </div>
@@ -112,57 +120,123 @@
 
         <Modal :show="showModal">
             <div class="p-6">
-                <h2 class="text-base font-medium leading-7 text-gray-900">
-                    {{ form.id ? 'Actualizar Proyecto' : 'Crear Proyecto' }}
+                <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
+                    {{ form.id ? 'Editar Asignación' : 'Nueva Asignación' }}
                 </h2>
+                <br>
                 <form @submit.prevent="submit">
-                    <div class="space-y-12 mt-4">
-                        <div class="grid sm:grid-cols-2 gap-6">
-                            <div>
-                                <InputLabel for="date" class="font-medium leading-6 text-gray-900">
-                                    Fecha de Proyecto
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <TextInput type="month" v-model="form.date" id="date" />
-                                    <InputError :message="form.errors.date" />
-                                </div>
-                            </div>
-                            <div>
-                                <InputLabel for="cost_center">Centro de Costos</InputLabel>
-                                <div class="mt-2">
-                                    <select id="cost_center" v-model="form.cost_center_id"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                        <option value="">Seleccionar Centro de Costo</option>
-                                        <option v-for="item in cost_line.cost_center" :key="item.id" :value="item.id">
-                                            {{ item.name }}
-                                        </option>
-                                    </select>
-                                    <InputError :message="form.errors.cost_center_id" />
-                                </div>
-                            </div>
-                            <div>
-                                <InputLabel for="description" class="font-medium leading-6 text-gray-900">Descripción
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <TextInput type="text" step="0.0001" v-model="form.description" id="description" />
-                                    <InputError :message="form.errors.description" />
-                                </div>
+                    <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
+                        <div class="">
+                            <InputLabel for="manager">Gestor</InputLabel>
+                            <div class="mt-2">
+                                <input type="text" v-model="form.manager" autocomplete="off" id="manager"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.manager" />
                             </div>
                         </div>
-                        <div class="mt-6 flex items-center justify-end gap-x-3">
-                            <SecondaryButton @click="createOrEditModal">
-                                Cancelar
-                            </SecondaryButton>
-                            <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }"
-                                :disabled="form.processing">
-                                Guardar
-                            </PrimaryButton>
+                        <div class="">
+                            <InputLabel for="assignation_date">Fecha de Asignación</InputLabel>
+                            <div class="mt-2">
+                                <input type="date" v-model="form.assignation_date" autocomplete="off"
+                                    id="assignation_date"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.assignation_date" />
+                            </div>
                         </div>
+
+                        <div class="">
+                            <InputLabel for="project_name">Nombre del Proyecto</InputLabel>
+                            <div class="mt-2">
+                                <input type="text" v-model="form.project_name" autocomplete="off" id="project_name"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.project_name" />
+                            </div>
+                        </div>
+                        <div class="">
+                            <InputLabel for="customer">Cliente</InputLabel>
+                            <div class="mt-2">
+                                <select id="customer" v-model="form.customer"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="">Seleccionar Cliente</option>
+                                    <option>CICSA</option>
+                                    <option>STL</option>
+                                </select>
+                                <InputError :message="form.errors.customer" />
+                            </div>
+                        </div>
+                        <div class="">
+                            <InputLabel for="cost_center">Centro de Costos</InputLabel>
+                            <div class="mt-2">
+                                <select id="cost_center" v-model="form.cost_center_id"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="">Seleccionar Centro de Costo</option>
+                                    <option v-for="item in cost_line.cost_center" :key="item.id" :value="item.id">{{ item.name }}
+                                    </option>
+                                </select>
+                                <InputError :message="form.errors.cost_center_id" />
+                            </div>
+                        </div>
+                        <div class="">
+                            <InputLabel for="project_code">Codigo de Proyecto</InputLabel>
+                            <div class="mt-2">
+                                <input type="text" v-model="form.project_code" autocomplete="off" id="project_code"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.project_code" />
+                            </div>
+                        </div>
+                        <div class="">
+                            <InputLabel for="cpe">CPE</InputLabel>
+                            <div class="mt-2">
+                                <input type="text" v-model="form.cpe" autocomplete="off" id="cpe"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.cpe" />
+                            </div>
+                        </div>
+                        <div class="">
+                            <InputLabel for="zone">Zona</InputLabel>
+                            <div class="mt-2">
+                                <select id="zone" v-model="form.zone" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="">Seleccionar Zona</option>
+                                    <option>Arequipa</option>
+                                    <option>Moquegua</option>
+                                    <option>Tacna</option>
+                                    <option>Cuzco</option>
+                                    <option>Puno</option>
+                                    <option>MDD</option>
+                                </select>
+                                <InputError :message="form.errors.zone" />
+                            </div>
+                        </div>
+                        <div class="">
+                            <InputLabel for="zone2">Zona2 (Opcional)</InputLabel>
+                            <div class="mt-2">
+                                <select id="zone2" v-model="form.zone2" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="">Seleccionar Zona</option>
+                                    <option>Arequipa</option>
+                                    <option>Moquegua</option>
+                                    <option>Tacna</option>
+                                    <option>Cuzco</option>
+                                    <option>Puno</option>
+                                    <option>MDD</option>
+                                </select>
+                                <InputError :message="form.errors.zone2" />
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="mt-6 flex justify-end">
+                        <SecondaryButton type="button" @click="createOrEditModal"> Cancelar </SecondaryButton>
+                        <PrimaryButton class="ml-3 tracking-widest uppercase text-xs"
+                            :class="{ 'opacity-25': form.processing }" :disabled="form.processing" type="submit">
+                            Guardar
+                        </PrimaryButton>
                     </div>
                 </form>
             </div>
         </Modal>
-        <Modal :show="modalExport">
+        <!-- <Modal :show="modalExport">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
                     Exportar Excel
@@ -200,48 +274,53 @@
                     </div>
                 </form>
             </div>
-        </Modal>
+        </Modal> -->
     </AuthenticatedLayout>
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
 import Pagination from '@/Components/Pagination.vue'
 import Dropdown from '@/Components/Dropdown.vue';
 import axios from 'axios';
 import { ref } from 'vue';
 import { Head, router, Link, useForm } from '@inertiajs/vue3';
-import { QueueListIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
-import { setAxiosErrors } from '@/utils/utils';
-import { notifyError } from '@/Components/Notification';
+import { formattedDate, setAxiosErrors } from '@/utils/utils';
 
-const { project, userPermissions, cost_line } = defineProps({
+const { project, auth, userPermissions, cost_line } = defineProps({
     project: Object,
     userPermissions: Array,
+    auth: Object,
     cost_line: Object
 })
 
 const initialState = {
-    id: "",
-    date: "",
+    id: null,
+    user_id: auth.user.id,
+    assignation_date: '',
+    project_name: '',
     cost_line_id: cost_line.id,
-    cost_center_id: "",
-    description: ""
+    cost_center_id: '',
+    customer: '',
+    project_code: '',
+    cpe: '',
+    zone: '',
+    zone2: '',
+    manager: '',
+    user_name: auth.user.name,
 }
 
 const form = useForm({ ...initialState })
-const formExport = ref({
-    startDate: "",
-    endDate: ""
-})
-const modalExport = ref(false)
+// const formExport = ref({
+//     startDate: "",
+//     endDate: ""
+// })
+// const modalExport = ref(false)
 
 const hasPermission = (permission) => {
     return userPermissions.includes(permission);
@@ -255,6 +334,7 @@ const projects = ref(project);
 function editProject(pext) {
     Object.assign(form, pext);
     createOrEditModal()
+    console.log(form)
 }
 
 // const delete_project = () => {
@@ -278,11 +358,12 @@ const createOrEditModal = () => {
         form.reset()
     }
     showModal.value = !showModal.value
+
 };
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('projectmanagement.pext.index'), { searchQuery: $search });
+        const response = await axios.post(route('projectmanagement.pext.additional.index'), { searchQuery: $search });
         projects.value = response.data;
     } catch (error) {
         console.error('Error searching:', error);
@@ -290,21 +371,17 @@ const search = async ($search) => {
 };
 
 async function submit() {
+    let url = route('projectmanagement.pext.additional.store', { 'cicsa_assignation_id': form.id ?? null })
     try {
-        const url = route('projectmanagement.pext.storeOrUpdate', { 'pext_id': form.id ?? null })
-        const response = await axios.post(url, form)
-        const action = form.id ? 'update' : 'create'
+        let response = await axios.post(url, form)
+        let action = form.id ? 'update' : 'create'
         updatePext(response.data, action)
     } catch (error) {
         console.log(error)
         if (error.response) {
-            if (error.response.data.errors) {
-                setAxiosErrors(error.response.data.errors, form)
-            } else {
-                notifyError("Server error:", error.response.data)
-            }
+            setAxiosErrors(error.response.data.errors, form)
         } else {
-            notifyError(error)
+            console.error(error)
         }
     }
 }
@@ -327,16 +404,16 @@ function updatePext(pext, action) {
     }
 }
 
-function modalExportExcel() {
-    modalExport.value = !modalExport.value
-}
+// function modalExportExcel() {
+//     modalExport.value = !modalExport.value
+// }
 
-async function exportExcel() {
-    const uniqueParam = `timestamp=${new Date().getTime()}`;
-    let url =
-        route("projectmanagement.pext.export.expenses") +
-        `?start_date=${encodeURIComponent(formExport.startDate)}&end_date=${encodeURIComponent(formExport.endDate)}&${uniqueParam}`;
-    window.location.href = url;
-    modalExportExcel()
-}
+// async function exportExcel() {
+//     const uniqueParam = `timestamp=${new Date().getTime()}`;
+//     let url =
+//         route("projectmanagement.pext.export.expenses") +
+//         `?start_date=${encodeURIComponent(formExport.startDate)}&end_date=${encodeURIComponent(formExport.endDate)}&${uniqueParam}`;
+//     window.location.href = url;
+//     modalExportExcel()
+// }
 </script>

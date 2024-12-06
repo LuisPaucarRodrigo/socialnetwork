@@ -210,9 +210,8 @@
                   </div>
                 </td>
                 <td class="px-2 py-2 text-center">
-                  <a :href="'#'"
-                    class="text-green-700 hover:underline hover:text-green-500 cursor-pointer">
-                    
+                  <a :href="'#'" class="text-green-700 hover:underline hover:text-green-500 cursor-pointer">
+
                   </a>
                 </td>
                 <!-- principalData -->
@@ -590,11 +589,11 @@ async function submitInsurance() {
 }
 
 async function filterExpenseLine(search) {
-  console.log(search)
   let url = route('document.rrhh.status')
   try {
     let response = await axios.post(url, { searchquery: search })
-    employeesData.value = response.data
+    employeesData.value = response.data.employees
+    e_employeesData.value = response.data.e_employees
   } catch (error) {
     notifyError(error)
   }

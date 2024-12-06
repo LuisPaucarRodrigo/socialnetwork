@@ -72,7 +72,7 @@ class ManagementEmployees extends Controller
                 ->orWhere('phone1', 'like', '%' . $searchTerm . '%')
                 ->orWhere('dni', 'like', '%' . $searchTerm . '%')
                 ->orWhereHas('contract', function ($item) use ($searchTerm) {
-                    $item->whereHas('cost_line', function($subitem) use ($searchTerm){
+                    $item->whereHas('cost_line', function ($subitem) use ($searchTerm) {
                         $subitem->where('name', 'like', '%' . $searchTerm . '%');
                     });
                 });
@@ -93,9 +93,9 @@ class ManagementEmployees extends Controller
 
     public function create()
     {
-        $pension = ['Habitad', 'Integra', 'Prima','Profuturo', 'HabitadMX', 'IntegraMX', 'PrimaMX','ProfuturoMX','ONP'];
+        $pension = ['Habitad', 'Integra', 'Prima', 'Profuturo', 'HabitadMX', 'IntegraMX', 'PrimaMX', 'ProfuturoMX', 'ONP'];
         $costLines = CostLine::all();
-        return Inertia::render('HumanResource/ManagementEmployees/EmployeesStoreAndUpdate', ['pensions' => $pension, 'costLines'=>$costLines]);
+        return Inertia::render('HumanResource/ManagementEmployees/EmployeesStoreAndUpdate', ['pensions' => $pension, 'costLines' => $costLines]);
     }
 
     public function store(CreateManagementEmployees $request)
@@ -211,11 +211,11 @@ class ManagementEmployees extends Controller
     }
 
     public function edit($id)
-    {   
-        $pension = ['Habitad', 'Integra', 'Prima','Profuturo', 'HabitadMX', 'IntegraMX', 'PrimaMX','ProfuturoMX','ONP'];
+    {
+        $pension = ['Habitad', 'Integra', 'Prima', 'Profuturo', 'HabitadMX', 'IntegraMX', 'PrimaMX', 'ProfuturoMX', 'ONP'];
         $employeesedit = Employee::with('contract', 'education', 'address', 'emergency', 'family', 'health')->find($id);
         $costLines = CostLine::all();
-        return Inertia::render('HumanResource/ManagementEmployees/EmployeesStoreAndUpdate', ['employees' => $employeesedit, 'pensions' => $pension, 'costLines'=>$costLines]);
+        return Inertia::render('HumanResource/ManagementEmployees/EmployeesStoreAndUpdate', ['employees' => $employeesedit, 'pensions' => $pension, 'costLines' => $costLines]);
     }
 
     public function update(UpdateManagementEmployees $request, $id)
@@ -401,20 +401,20 @@ class ManagementEmployees extends Controller
 
     public function external_index()
     {
-        $employees = ExternalEmployee::all();
+        $employees = ExternalEmployee::with('cost_line')->get();
+        $costLines = CostLine::all();
         $employees->each(function ($employee) {
             $employee->profile = url($employee->cropped_image ? '/image/profile/' . $employee->cropped_image : '/image/projectimage/DefaultUser.png');
         });
         return Inertia::render('HumanResource/ManagementEmployees/EmployeesExternal', [
-            'employees' => $employees
+            'employees' => $employees,
+            'costLines' => $costLines
         ]);
     }
 
     public function storeorupdate(StoreOrUpdateEmployeesExternal $request, $external_id = null)
     {
-
         $data = $request->validated();
-
         try {
             $employeesExternal = $external_id ? ExternalEmployee::findOrFail($external_id) : null;
             if ($request->hasFile('curriculum_vitae')) {

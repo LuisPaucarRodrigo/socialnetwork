@@ -12,7 +12,9 @@ class Payroll extends Model
 
     protected $fillable = [
         'month',
-        'state'
+        'state',
+        'sctr_p',
+        'sctr_s'
     ];
 
     public function employees()

@@ -17,7 +17,9 @@ return new class extends Migration
             $table->text('description');
             $table->string('status')->nullable();
             $table->double('initial_budget', 8, 2)->default(0);
-            $table->foreignId('preproject_id')->constrained()->nullable()->onDelete('cascade');
+            $table->foreignId('preproject_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('cost_center_id')->constrained('cost_centers');
+            $table->foreignId('cost_line_id')->constrained('cost_lines');
             $table->timestamps();
         });
     }

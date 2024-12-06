@@ -53,7 +53,7 @@ class StoreOrUpdateRequest extends FormRequest
             'photo' => 'nullable',
             'state' => 'required|string',
             'igv' => 'required',
-            'pext_project_id' => 'required',
+            'pext_project_id' => 'nullable',
             'cicsa_assignation_id' => 'required'
         ];
     }

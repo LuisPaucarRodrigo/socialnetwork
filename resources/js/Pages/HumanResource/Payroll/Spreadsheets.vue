@@ -9,10 +9,6 @@
             <div class="mt-6 flex flex-col sm:flex-row sm:items-center justify-between sm:gap-x-3 gap-y-4">
                 <div class="flex items-center justify-between gap-x-6 w-full">
                     <div class="hidden sm:flex sm:items-center sm:space-x-2 pl-3">
-                        <!-- <PrimaryButton v-if="hasPermission('HumanResourceManager')" @click="click_sctr()" type="button"
-                            class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
-                            SCTR
-                        </PrimaryButton> -->
                         <button v-if="!payrolls.state" @click="openPayrollApprove()"
                             class="rounded-md px-1 py-2 text-center text-sm text-white hover:bg-green-400">
                             <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -69,10 +65,6 @@
                     <thead>
                         <tr
                             class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                            <!-- <th
-                                class="w-100 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                Estado
-                            </th> -->
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 DNI
@@ -94,11 +86,19 @@
                                 Sueldo
                             </th>
                             <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-9 mx-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
+                                Pago por dias
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-9 mx-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
+                                Descuento
+                            </th>
+                            <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 Vac. Truncas
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
                                 Ingreso
                                 Total
                             </th>
@@ -179,9 +179,6 @@
                     </thead>
                     <tbody>
                         <tr v-for="spreadsheet in spreadsheets" :key="spreadsheet.id" class="text-gray-700">
-                            <!-- <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-nowrap"></p>
-                            </td> -->
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-nowrap">{{ spreadsheet.employee.dni }}</p>
                             </td>
@@ -205,6 +202,26 @@
                                 <p class="text-gray-900 whitespace-nowrap">
                                     S/ {{ spreadsheet.basic_salary.toFixed(2) }}
                                 </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900 whitespace-nowrap">
+                                    S/ {{ spreadsheet.payment_until_today.toFixed(2) }}
+                                </p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <div class="flex gap-x-3">
+                                    <p class="text-gray-900 whitespace-nowrap">
+                                        S/ {{ spreadsheet.discount.toFixed(2) }}
+                                    </p>
+                                    <button @click="openDiscountModal(spreadsheet.id)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-amber-400">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                        </svg>
+                                    </button>
+                                </div>
+
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-nowrap">
@@ -282,7 +299,7 @@
                                     <template
                                         v-if="!payrolls.state && spreadsheet.amount_travel_expenses && permissions('HumanResourceManager')">
                                         <button
-                                            v-if="spreadsheet.travel_expenses_operation_number && spreadsheet.travel_expenses_operation_date"
+                                            v-if="spreadsheet.payroll_detail_expense[1].operation_number && spreadsheet.payroll_detail_expense[1].operation_date"
                                             @click="openPaymentTravelExpenseModal(spreadsheet.payroll_detail_expense[1])">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-teal-500">
@@ -308,10 +325,9 @@
                                     <p class="text-gray-900 whitespace-nowrap">
                                         S/ {{ spreadsheet.net_pay.toFixed(2) }}
                                     </p>
-                                    <template
-                                        v-if="!payrolls.state && spreadsheet.amount_travel_expenses && permissions('HumanResourceManager')">
+                                    <template v-if="!payrolls.state && permissions('HumanResourceManager')">
                                         <button
-                                            v-if="!payrolls.state && permissions('HumanResourceManager') && spreadsheet.salary_operation_number && spreadsheet.salary_operation_date"
+                                            v-if="!payrolls.state && permissions('HumanResourceManager') && spreadsheet.payroll_detail_expense[0].operation_number && spreadsheet.payroll_detail_expense[0].operation_date"
                                             @click="openPaymentSalaryModal(spreadsheet.payroll_detail_expense[0])">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-teal-500">
@@ -374,6 +390,12 @@
                                 S/ {{ totals.sum_salary.toFixed(2) }}
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
+                                S/ {{ totals.sum_payment_until_today.toFixed(2) }}
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
+                                S/ {{ totals.sum_discount.toFixed(2) }}
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
                                 S/ {{ totals.sum_truncated_vacations.toFixed(2) }}
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
@@ -431,31 +453,6 @@
                 </table>
             </div>
         </div>
-        <!-- <Modal :show="showSctr">
-            <div class="p-6">
-                <h2 class="text-base font-medium leading-7 text-gray-900">
-                    Sctr
-                </h2>
-                <form @submit.prevent="submit">
-                    <div class="border-b border-gray-900/10 pb-12">
-                        <div class="mt-2">
-                            <InputLabel for="number_people">Cantidad de Empleados:
-                            </InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="number" id="number_people" v-model="form.number_people" />
-                                <InputError :message="form.errors.number_people" />
-                            </div>
-                        </div>
-                        <div class="mt-6 flex items-center justify-end gap-x-3">
-                            <SecondaryButton @click="click_sctr"> Cancelar </SecondaryButton>
-                            <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
-                                Guardar
-                            </PrimaryButton>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </Modal> -->
         <Modal :show="showPaymentModal">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
@@ -490,6 +487,31 @@
                 </form>
             </div>
         </Modal>
+        <Modal :show="showDiscountModal" :maxWidth="'md'">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900">
+                    Descuento de Empleado
+                </h2>
+                <form @submit.prevent="submitDiscount">
+                    <div class="border-b border-gray-900/10">
+                        <div class="mt-2">
+                            <InputLabel for="discount">Monto
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="number" id="discount" v-model="formDiscount.discount" maxlength="6" />
+                                <InputError :message="formDiscount.errors.discount" />
+                            </div>
+                        </div>
+                        <div class="mt-6 flex items-center justify-end gap-x-3">
+                            <SecondaryButton @click="openDiscountModal"> Cancelar </SecondaryButton>
+                            <PrimaryButton type="submit" :class="{ 'opacity-25': formDiscount.processing }">
+                                Guardar
+                            </PrimaryButton>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </Modal>
         <ConfirmateModal :showConfirm="showPayrollModal" tittle="Aprobación de la Nómina"
             text="Una vez que la nómina sea aprobada, no se podrán realizar modificaciones ni acciones posteriores. Por favor, asegúrate de revisar toda la información antes de proceder con la aprobación final."
             @closeModal="openPayrollApprove" :actionFunction="payrollApprove" />
@@ -515,8 +537,6 @@ const { spreadsheet, payroll, total, userPermissions } = defineProps({
     spreadsheet: Object,
     payroll: Object,
     total: Object,
-    // search: String,
-    // number_people: String,
     userPermissions: Array
 })
 
@@ -524,10 +544,10 @@ const { spreadsheet, payroll, total, userPermissions } = defineProps({
 const spreadsheets = ref(spreadsheet)
 const payrolls = ref(payroll)
 const totals = ref(total)
-console.log(spreadsheet)
 const showPaymentModal = ref(false)
 const travelOrSalary = ref(false)
 const showPayrollModal = ref(false)
+const showDiscountModal = ref(false)
 
 const initialStament = {
     id: '',
@@ -539,9 +559,15 @@ const formPayment = useForm({
     ...initialStament
 })
 
+const formDiscount = useForm({
+    id: '',
+    discount: ''
+})
+
 function permissions(permission) {
     return userPermissions.includes(permission)
 }
+
 function openPaymentSalaryModal(payroll_detail) {
     formPayment.defaults({ id: payroll_detail.payroll_detail_id, operation_date: payroll_detail.operation_date, operation_number: payroll_detail.operation_number })
     formPayment.reset()
@@ -567,9 +593,8 @@ async function submit() {
     let url = travelOrSalary.value ? route('payroll.payment.travelExpense.store', { payroll_details_id: formPayment.id }) : route('payroll.payment.salary.store', { payroll_details_id: formPayment.id })
     try {
         let response = await axios.put(url, formPayment)
-        console.log('dasd', response.data)
         closePaymentModal()
-        updatePayrollDetails(response.data)
+        updatePayrollDetails(response.data, 'register')
     } catch (error) {
         if (error.response) {
             if (error.response.data.errors) {
@@ -580,17 +605,6 @@ async function submit() {
         } else {
             notifyError("Network or other error:", error)
         }
-    }
-}
-
-function updatePayrollDetails(payrollDetail) {
-    const validations = spreadsheets.value
-    let index = validations.findIndex(item => item.id === payrollDetail[0].payroll_detail_id)
-    if (index !== -1) {
-        validations[index].payroll_detail_expense = payrollDetail;
-        notify('El pago se Registro')
-    } else {
-        notifyWarning(`No se encontró un elemento con id: ${payrollDetail.id}`);
     }
 }
 
@@ -624,54 +638,49 @@ async function search(employee) {
         notifyError(error)
     }
 }
-// const reentrystate = ref(props.boolean);
-// const showSctr = ref(false);
 
-// const form = useForm({
-//     number_people:props.number_people,
-// })
+function openDiscountModal(employee_id) {
 
-// const management_pension = () => {
-//     router.get(route('pension_system.edit'));
-// };
+    showDiscountModal.value = !showDiscountModal.value
+    formDiscount.clearErrors()
+    formDiscount.defaults({
+        ...{
+            id: '',
+            discount: ''
+        }
+    })
+    formDiscount.reset()
+    formDiscount.id = employee_id
+}
 
-// const reentry = () => {
-//     if (props.boolean == true) {
-//         reentrystate.value = false
-//         router.get(route('spreadsheets.index'))
-//     } else {
-//         reentrystate.value = true
-//         router.get(route('spreadsheets.index', { reentry: reentrystate.value }))
-//     }
-// };
+async function submitDiscount() {
+    let url = route('payroll.discount', { payroll_id: formDiscount.id })
+    try {
+        let response = await axios.put(url, formDiscount)
+        openDiscountModal()
+        updatePayrollDetails(response.data, 'discount')
+    } catch (error) {
+        if (error.response) {
+            if (error.response.data.errors) {
+                setAxiosErrors(error.response.data.errors, formDiscount)
+            } else {
+                console.error("Server error:", error.response.data)
+            }
+        } else {
+            console.error("Network or other error:", error)
+        }
+    }
+}
 
-// const searchForm = useForm({
-//     searchTerm: props.search,
-// })
-
-// const search = () => {
-//     let data = { searchTerm: searchForm.searchTerm }
-//     if (!props.boolean == true) {
-//         reentrystate.value = false
-//         router.get(route('spreadsheets.index'), data)
-//     } else {
-//         reentrystate.value = true
-//         router.get(route('spreadsheets.index', { reentry: reentrystate.value }), data)
-//     }
-
-// }
-
-// function click_sctr() {
-//     showSctr.value = !showSctr.value
-//     form.reset()
-// }
-
-// function submit() {
-//     form.post(route('management.employees.schedule.update_number_people'),{
-//         onSuccess:() => {
-//             router.get(route('spreadsheets.index'));
-//         }
-//     });
-// }
-
+function updatePayrollDetails(payrollDetail, action) {
+    const validations = spreadsheets.value
+    if (action === 'register') {
+        let index = validations.findIndex(item => item.id === payrollDetail[0].payroll_detail_id)
+        validations[index].payroll_detail_expense = payrollDetail;
+        notify('El pago se Registro')
+    } else if (action === 'discount') {
+        let index = validations.findIndex(item => item.id === payrollDetail.id)
+        validations[index] = payrollDetail
+    }
+}
 </script>

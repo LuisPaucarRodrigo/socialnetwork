@@ -15,21 +15,23 @@ return new class extends Migration
             $table->id();
             $table->string("name");
             $table->string("lastname");
-            $table->string("dni",8)->unique();
+            $table->string("dni", 8)->unique();
             $table->date("birthdate");
             $table->string("cropped_image")->nullable();
             $table->string("gender");
             $table->string("address");
-            $table->string("phone1",9)->unique();
+            $table->string("phone1", 9)->unique();
             $table->string("email")->unique();
             $table->string("email_company")->unique()->nullable();
             $table->string("salary");
             $table->boolean("sctr");
             $table->string('curriculum_vitae')->nullable();
-            
+
             $table->boolean('l_policy')->nullable();
             $table->date('sctr_exp_date')->nullable();
             $table->date('policy_exp_date')->nullable();
+
+            $table->foreignId("cost_line_id")->constrained('cost_lines');
             $table->timestamps();
         });
     }

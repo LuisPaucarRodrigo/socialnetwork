@@ -19,6 +19,7 @@ return new class extends Migration
             $table->float('amount_travel_expenses')->nullable();
             $table->float('life_ley');
             $table->string('state')->default('Active');
+            $table->float('discount')->default(0.00);
             $table->boolean('discount_remuneration');
             $table->boolean('discount_sctr');
             $table->integer('days_taken')->default(0);

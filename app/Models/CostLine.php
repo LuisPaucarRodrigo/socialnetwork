@@ -11,6 +11,10 @@ class CostLine extends Model
     protected $table = 'cost_lines';
     protected $fillable = [
         'name',
-        'cost_line_id',
     ];
+
+    public function cost_center()
+    {
+        return $this->hasMany(CostCenter::class);
+    }
 }

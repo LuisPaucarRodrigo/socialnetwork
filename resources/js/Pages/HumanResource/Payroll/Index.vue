@@ -44,7 +44,7 @@
                     Crear Nomina
                 </h2>
                 <form @submit.prevent="submit">
-                    <div class="grid sm:grid-cols-3 gap-6 pb-12">
+                    <div class="grid sm:grid-cols-3 gap-3 pb-6">
                         <div class="col-span-1">
                             <InputLabel for="month" class="font-medium leading-6 text-gray-900">
                                 Mes de Nomina
@@ -52,6 +52,24 @@
                             <div class="mt-2">
                                 <TextInput type="month" v-model="form.month" id="month" />
                                 <InputError :message="form.errors.month" />
+                            </div>
+                        </div>
+                        <div class="col-start-1 col-span-1">
+                            <InputLabel for="sctr_p" class="font-medium leading-6 text-gray-900">
+                                SCTR P
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="number" v-model="form.sctr_p" id="sctr_p" />
+                                <InputError :message="form.errors.sctr_p" />
+                            </div>
+                        </div>
+                        <div class="col-span-1">
+                            <InputLabel for="sctr_s" class="font-medium leading-6 text-gray-900">
+                                SCTR S
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="number" v-model="form.sctr_s" id="sctr_s" />
+                                <InputError :message="form.errors.sctr_s" />
                             </div>
                         </div>
                         <div class="col-span-3">
@@ -82,8 +100,10 @@
                         <div class="col-span-3">
                             <p class="text-red-600">
                                 Aviso Importante:<br>
-                                Los Datos de los Empleados y el Sistema de Pensiones no se podran actualizar despues de crear la nomina.
-                                
+                                Los Datos de los Empleados y el Sistema de Pensiones no se podran actualizar despues de
+                                crear la
+                                nomina.
+
                             </p>
                         </div>
                     </div>
@@ -146,6 +166,8 @@ const initialState = {
         { type: "Primamx", values: "", values_seg: "" },
         { type: "ONP", values: "", values_seg: "" },
     ],
+    sctr_p: '',
+    sctr_s: ''
 }
 
 const form = useForm({ ...initialState })

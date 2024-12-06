@@ -23,7 +23,7 @@ class DocumentSpreedSheetController extends Controller
             $employees = Employee::with([
                 'document_registers',
                 'contract:id,state,employee_id,hire_date,discount_sctr',
-            ])->whereHas('contract', function($query){
+            ])->whereHas('contract', function ($query) {
                 $query->where('state', 'Active');
             })
                 ->select(
@@ -39,6 +39,24 @@ class DocumentSpreedSheetController extends Controller
                 )
                 ->orderBy('lastname')
                 ->get();
+            $e_employees = ExternalEmployee::with([
+                'document_registers',
+            ])
+                ->select(
+                    'id',
+                    'name',
+                    'lastname',
+                    'phone1',
+                    'email',
+                    'email_company',
+                    'dni',
+                    'sctr',
+                    'l_policy',
+                    'sctr_exp_date',
+                    'policy_exp_date',
+                )
+
+                ->get();
         } elseif ($request->isMethod('post')) {
             $searchquery = $request->searchquery;
             $employees = Employee::with([
@@ -46,9 +64,9 @@ class DocumentSpreedSheetController extends Controller
                 'contract:id,state,employee_id,hire_date,discount_sctr,cost_line_id',
                 'contract.cost_line:id,name'
             ])
-            ->whereHas('contract', function($query){
-                $query->where('state', 'Active');
-            })
+                ->whereHas('contract', function ($query) {
+                    $query->where('state', 'Active');
+                })
                 ->select(
                     'id',
                     'name',
@@ -61,11 +79,32 @@ class DocumentSpreedSheetController extends Controller
                     'policy_exp_date',
                 )
                 ->whereHas('contract', function ($query) use ($searchquery) {
-                    $query->whereHas('cost_line', function($subquery) use ($searchquery){
+                    $query->whereHas('cost_line', function ($subquery) use ($searchquery) {
                         $subquery->where('name', 'like', '%' . $searchquery . '%');
                     });
                 })
                 ->orderBy('lastname')
+                ->get();
+
+            $e_employees = ExternalEmployee::with([
+                'document_registers',
+            ])
+                ->select(
+                    'id',
+                    'name',
+                    'lastname',
+                    'phone1',
+                    'email',
+                    'email_company',
+                    'dni',
+                    'sctr',
+                    'l_policy',
+                    'sctr_exp_date',
+                    'policy_exp_date',
+                )
+                ->whereHas('cost_line', function ($query) use ($searchquery) {
+                    $query->where('name', 'like', '%' . $searchquery . '%');
+                })
                 ->get();
         }
 
@@ -92,47 +131,31 @@ class DocumentSpreedSheetController extends Controller
             $emp->setRelation('document_registers', $formattedDr);
             return $emp;
         });
-        $e_employees = ExternalEmployee::with([
-            'document_registers',
-        ])
-            ->select(
-                'id',
-                'name',
-                'lastname',
-                'phone1',
-                'email',
-                'email_company',
-                'dni',
-                'sctr',
-                'l_policy',
-                'sctr_exp_date',
-                'policy_exp_date',
-            )
-            ->get()
-            ->map(function ($emp) {
-                $formattedDr = (object) [];
-                $formattedDr = $emp->document_registers->mapWithKeys(
-                    function ($dr) {
-                        return [
-                            $dr->subdivision_id => [
-                                'id' => $dr->id,
-                                'document_id' => $dr->document_id,
-                                'employee_id' => $dr->employee_id,
-                                'e_employee_id' => $dr->e_employee_id,
-                                'exp_date' => $dr->exp_date,
-                                'state' => $dr->state,
-                                'observations' => $dr->observations,
-                                'sync_status' => $dr->sync_status,
-                                'display' => $dr->display,
 
-                            ]
-                        ];
-                    }
-                );
-                $emp->contract = ['state' => 'External'];
-                $emp->setRelation('document_registers', $formattedDr);
-                return $emp;
-            });
+        $e_employees->map(function ($emp) {
+            $formattedDr = (object) [];
+            $formattedDr = $emp->document_registers->mapWithKeys(
+                function ($dr) {
+                    return [
+                        $dr->subdivision_id => [
+                            'id' => $dr->id,
+                            'document_id' => $dr->document_id,
+                            'employee_id' => $dr->employee_id,
+                            'e_employee_id' => $dr->e_employee_id,
+                            'exp_date' => $dr->exp_date,
+                            'state' => $dr->state,
+                            'observations' => $dr->observations,
+                            'sync_status' => $dr->sync_status,
+                            'display' => $dr->display,
+
+                        ]
+                    ];
+                }
+            );
+            $emp->contract = ['state' => 'External'];
+            $emp->setRelation('document_registers', $formattedDr);
+            return $emp;
+        });
         $sections = DocumentSection::with('subdivisions')->where('id', '<=', 10)->get();
         $costLines = CostLine::all();
         if ($request->isMethod('get')) {
@@ -146,12 +169,15 @@ class DocumentSpreedSheetController extends Controller
                 ]
             );
         } elseif ($request->isMethod('post')) {
-            return response()->json($employees, 200);
+            return response()->json([
+                'employees' => $employees,
+                'e_employees' => $e_employees,
+            ], 200);
         }
     }
 
 
-    public function employee_document_alarms($emp_id) 
+    public function employee_document_alarms($emp_id)
     {
         $employee = Employee::with([
             'document_registers',
@@ -251,7 +277,7 @@ class DocumentSpreedSheetController extends Controller
 
     public function employeesDocumentAlarms()
     {
-        $employees = Employee::whereHas('contract', function($query){
+        $employees = Employee::whereHas('contract', function ($query) {
             $query->where('state', 'Active');
         })->orderBy('lastname')->get()->filter(function ($item) {
             return $item->documents_about_to_expire > 0;

@@ -6,7 +6,6 @@ use App\Http\Controllers\HumanResource\DocumentController;
 use App\Http\Controllers\HumanResource\FormationDevelopment;
 use App\Http\Controllers\HumanResource\ManagementEmployees;
 use App\Http\Controllers\HumanResource\ScheduleController;
-use App\Http\Controllers\HumanResource\SectionController;
 use App\Http\Controllers\HumanResource\SpreadsheetsController;
 use App\Http\Controllers\HumanResource\VacationController;
 use Illuminate\Routing\Route as RoutingRoute;
@@ -43,22 +42,15 @@ Route::middleware('permission:HumanResourceManager')->group(function () {
     Route::get('/management_employees/schedule/preview/{schedule}', [ScheduleController::class, 'preview'])->name('management.employees.schedule.preview');
     Route::get('/management_employees/schedule/latest', [ScheduleController::class, 'latest'])->name('management.employees.schedule.latest');
     Route::get('/management_employees/schedule/download/{schedule}', [ScheduleController::class, 'download'])->name('management.employees.schedule.download');
-    Route::post('/management_employees/schedule/update_number_people', [SpreadsheetsController::class, 'update_number_people'])->name('management.employees.schedule.update_number_people');
 
     //Nomina
-    Route::get('/management_employees/pension_system/edit', [SpreadsheetsController::class, 'edit'])->name('pension_system.edit');
-    Route::put('/management_employees/pension_system/update/{id}', [SpreadsheetsController::class, 'update'])->name('pension_system.update');
-    Route::put('/management_employees/pension_system/update_seg/{id}', [SpreadsheetsController::class, 'update_seg'])->name('pension_system_seg.update');
-
     Route::post('/management_employees/payroll/store', [SpreadsheetsController::class, 'store_payroll'])->name('payroll.store');
     Route::get('/management_employees/payroll/state/{payroll_id}', [SpreadsheetsController::class, 'update_payroll_state'])->name('payroll.state.update');
     Route::put('/management_employees/payroll/salary/{payroll_details_id}/update', [SpreadsheetsController::class, 'update_payroll_salary'])->name('payroll.payment.salary.store');
     Route::put('/management_employees/payroll/travelExpense/{payroll_details_id}/update', [SpreadsheetsController::class, 'update_payroll_travelExpense'])->name('payroll.payment.travelExpense.store');
     Route::get('/management_employees/spreadsheets/payroll/export/{payroll_id}', [SpreadsheetsController::class, 'export'])->name('spreadsheets.payroll.export');
+    Route::put('/management_employees/payroll/discount/{payroll_id}', [SpreadsheetsController::class, 'discount_employee'])->name('payroll.discount');
 
-    //Sctr
-    Route::post('/management_employees/sctr_p/update', [SpreadsheetsController::class, 'update_sctr_p'])->name('sctr_p.update');
-    Route::post('/management_employees/sctr_s/update', [SpreadsheetsController::class, 'update_sctr_s'])->name('sctr_s.update');
 
     //Trainings
     Route::get('/management_employees/formation_development/trainings/create/{id?}', [FormationDevelopment::class, 'trainings_create'])->name('management.employees.formation_development.trainings.create');
@@ -100,15 +92,6 @@ Route::middleware('permission:HumanResourceManager')->group(function () {
     Route::delete('/document_sections/{section}/subdivisions/{subdivision}/delete', [DocumentController::class, 'destroySubdivision'])->name('documents.destroySubdivision');
     Route::get('/document_sections/{section}/subdivisions/{subdivisionId}/zipdownload', [DocumentController::class, 'downloadSubdivisionDocumentsZip'])->name('documents.zipSubdivision');
     //Route::delete('/document_sections/{section}/subdivisions/{subdivisionId}/zipdelete', [DocumentController::class, 'deleteZip'])->name('documents.deleteZipSubdivision');
-
-    //SubSections
-    Route::post('/subSections', [SectionController::class, 'storeSubSection'])->name('sections.storeSubSection');
-
-    //Sections
-    Route::get('/sections', [SectionController::class, 'showSections'])->name('sections.sections');
-    Route::post('/sections', [SectionController::class, 'storeSection'])->name('sections.storeSection');
-    Route::delete('/sections/{section}', [SectionController::class, 'destroySection'])->name('sections.destroySection');
-
 
     Route::post('/document_rrhh_status/store/{dr_id?}', [DocumentSpreedSheetController::class, 'store'])->name('document.rrhh.status.store');
     Route::delete('/document_rrhh_status/destroy/{dr_id}', [DocumentSpreedSheetController::class, 'destroy'])->name('document.rrhh.status.destroy');
@@ -154,15 +137,6 @@ Route::middleware('permission:HumanResourceManager|HumanResource')->group(functi
     Route::get('/documents/filter/{section}/section/{request?}', [DocumentController::class, 'sectionFilter'])->name('documents.filter.section');
     Route::get('/documents/filter/{section}/section/{subdivision}/subdivision/{request?}', [DocumentController::class, 'subdivisionFilter'])->name('documents.filter.subdivision');
     Route::get('/documents/search/{section}/{subdivision}/{request}/get', [DocumentController::class, 'search'])->name('documents.search');
-    //SubSections
-    Route::get('/subSections', [SectionController::class, 'showSubSections'])->name('sections.subSections');
-    Route::get('/subSections/show/{subSection}', [SectionController::class, 'showSubSection'])->name('sections.subSection');
-    Route::get('/calendar_alarm', [SectionController::class, 'calendarAlarm'])->name('sections.calendar');
-
-    //Member Alarm
-    Route::get('/doTask', [SectionController::class, 'doTask'])->name('sections.alarm');
-
-
 
     //Document Spreed Sheet
     Route::any('/documents_rrhh_status', [DocumentSpreedSheetController::class, 'index'])->name('document.rrhh.status');

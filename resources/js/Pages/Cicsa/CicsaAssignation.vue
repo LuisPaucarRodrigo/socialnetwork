@@ -9,9 +9,9 @@
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <PrimaryButton @click="openAddAssignationModal" type="button">
+                    <!-- <PrimaryButton @click="openAddAssignationModal" type="button">
                         + Agregar
-                    </PrimaryButton>
+                    </PrimaryButton> -->
                     <a :href="route('assignation.export') + '?' + uniqueParam"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 </div>
@@ -144,7 +144,7 @@
             </div>
         </div>
 
-        <Modal :show="showAddEditModal" @close="closeAddAssignationModal">
+        <!-- <Modal :show="showAddEditModal" @close="closeAddAssignationModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
                     {{ form.id ? 'Editar Asignación' : 'Nueva Asignación' }}
@@ -267,7 +267,7 @@
                     </div>
                 </form>
             </div>
-        </Modal>
+        </Modal> -->
         <SuccessOperationModal :confirming="confirmAssignation" :title="'Nueva Asignacion creada'"
             :message="'La Asignacion fue creada con éxito'" />
         <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Asignacion Actualizada'"
@@ -325,39 +325,39 @@ const form = useForm(
 const showAddEditModal = ref(false);
 const confirmAssignation = ref(false);
 
-function openAddAssignationModal() {
-    showAddEditModal.value = true
-}
+// function openAddAssignationModal() {
+//     showAddEditModal.value = true
+// }
 
-function closeAddAssignationModal() {
-    showAddEditModal.value = false
-    form.clearErrors()
-    form.defaults({ ...initialState })
-    form.reset()
-}
+// function closeAddAssignationModal() {
+//     showAddEditModal.value = false
+//     form.clearErrors()
+//     form.defaults({ ...initialState })
+//     form.reset()
+// }
 
-async function submitStore() {
-    let url = route('assignation.storeOrUpdate');
-    try {
-        const response = await axios.put(url, form)
-        updateAssignation(null, response.data)
-        closeAddAssignationModal()
-        confirmAssignation.value = true
-        setTimeout(() => {
-            confirmAssignation.value = false
-        }, 1500)
-    } catch (error) {
-        if (error.response) {
-            if (error.response.data.errors) {
-                setAxiosErrors(error.response.data.errors, form)
-            } else {
-                console.error("Server error:", error.response.data)
-            }
-        } else {
-            console.error("Network or other error:", error)
-        }
-    }
-}
+// async function submitStore() {
+//     let url = route('assignation.storeOrUpdate');
+//     try {
+//         const response = await axios.put(url, form)
+//         updateAssignation(null, response.data)
+//         closeAddAssignationModal()
+//         confirmAssignation.value = true
+//         setTimeout(() => {
+//             confirmAssignation.value = false
+//         }, 1500)
+//     } catch (error) {
+//         if (error.response) {
+//             if (error.response.data.errors) {
+//                 setAxiosErrors(error.response.data.errors, form)
+//             } else {
+//                 console.error("Server error:", error.response.data)
+//             }
+//         } else {
+//             console.error("Network or other error:", error)
+//         }
+//     }
+// }
 
 const confirmUpdateAssignation = ref(false);
 
@@ -367,28 +367,28 @@ function openEditSotModal(item) {
     showAddEditModal.value = true
 }
 
-async function submitUpdate() {
-    let url = route('assignation.storeOrUpdate', { cicsa_assignation_id: form.id })
-    try {
-        const response = await axios.put(url, form)
-        updateAssignation(form.id, response.data)
-        closeAddAssignationModal()
-        confirmUpdateAssignation.value = true
-        setTimeout(() => {
-            confirmUpdateAssignation.value = false
-        }, 1500)
-    } catch (error) {
-        if (error.response) {
-            setAxiosErrors(error.response.data.errors, form)
-        } else {
-            console.error('Error desconocido:', error);
-        }
-    }
-}
+// async function submitUpdate() {
+//     let url = route('assignation.storeOrUpdate', { cicsa_assignation_id: form.id })
+//     try {
+//         const response = await axios.put(url, form)
+//         updateAssignation(form.id, response.data)
+//         closeAddAssignationModal()
+//         confirmUpdateAssignation.value = true
+//         setTimeout(() => {
+//             confirmUpdateAssignation.value = false
+//         }, 1500)
+//     } catch (error) {
+//         if (error.response) {
+//             setAxiosErrors(error.response.data.errors, form)
+//         } else {
+//             console.error('Error desconocido:', error);
+//         }
+//     }
+// }
 
-function submit() {
-    form.id ? submitUpdate() : submitStore()
-}
+// function submit() {
+//     form.id ? submitUpdate() : submitStore()
+// }
 
 const search = async ($search) => {
     try {
@@ -400,19 +400,19 @@ const search = async ($search) => {
     }
 };
 
-function updateAssignation(cicsa_assignation_id, assignation) {
-    const validations = assignations.value.data || assignations.value;
-    const index = validations.findIndex(item => item.id === cicsa_assignation_id)
-    if (cicsa_assignation_id) {
-        validations[index] = assignation
-    } else {
-        validations.unshift(assignation);
-    }
+// function updateAssignation(cicsa_assignation_id, assignation) {
+//     const validations = assignations.value.data || assignations.value;
+//     const index = validations.findIndex(item => item.id === cicsa_assignation_id)
+//     if (cicsa_assignation_id) {
+//         validations[index] = assignation
+//     } else {
+//         validations.unshift(assignation);
+//     }
 
-    if (validations.length > assignations.value.per_page) {
-        validations.pop();
-    }
-}
+//     if (validations.length > assignations.value.per_page) {
+//         validations.pop();
+//     }
+// }
 
 if (searchCondition) {
     search(searchCondition)

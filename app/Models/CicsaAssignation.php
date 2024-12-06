@@ -17,7 +17,6 @@ class CicsaAssignation extends Model
     protected $fillable = [
         'assignation_date',
         'project_name',
-        'cost_center',
         'customer',
         'project_code',
         'cpe',
@@ -25,7 +24,8 @@ class CicsaAssignation extends Model
         'zone2',
         'manager',
         'user_name',
-        'user_id'
+        'user_id',
+        'project_id',
     ];
 
     protected $appends = [
@@ -78,8 +78,15 @@ class CicsaAssignation extends Model
         return $this->hasMany(CicsaChargeArea::class, 'cicsa_assignation_id');
     }
 
+    public function project()
+    {
+        return $this->belongsTo(Project::class, 'project_id');
+    }
 
-
+    public function cost_center()
+    {
+        return $this->belongsTo(CostCenter::class, 'cost_center_id');
+    }
 
 
     public function checkAssignation()
@@ -419,7 +426,7 @@ class CicsaAssignation extends Model
         ];
         $stateList = $fieldsToCheckTrue;
         foreach ($chargeAreas as $chargeArea) {
-            if($chargeArea->state_detraction === 0){
+            if ($chargeArea->state_detraction === 0) {
                 $stateList = $fieldsToCheck;
             }
             foreach ($stateList as $field) {

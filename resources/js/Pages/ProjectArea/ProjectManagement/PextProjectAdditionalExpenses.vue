@@ -1,9 +1,9 @@
 <template>
 
     <Head title="Gestion de Costos Adicionales" />
-    <AuthenticatedLayout redirectRoute="projectmanagement.pext.index">
+    <AuthenticatedLayout redirectRoute="projectmanagement.pext.additional.index">
         <template #header>
-            Gastos del Proyecto
+            Gastos del Proyecto Adicional
         </template>
         <br />
         <Toaster richColors />
@@ -182,7 +182,7 @@
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap">
-                            {{ item.pext_project.project.cost_center.name }}
+                            {{ item.cicsa_assignation.project.cost_center.name }}
                         </td>
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                             {{ item.zone }}
@@ -333,23 +333,6 @@
                                         <option v-for="op in zones">{{ op }}</option>
                                     </select>
                                     <InputError :message="form.errors.zone" />
-                                </div>
-                            </div>
-                            <div>
-                                <InputLabel for="subCostCenter" class="font-medium leading-6 text-gray-900">Sub
-                                    Centro de Costos
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input type="text" id="subCostCenter" v-model="form.pext_project_name"
-                                        @input="handleProjectNameAutocomplete($event.target.value)" autocomplete="off"
-                                        list="project_name"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <datalist id="project_name">
-                                        <option v-for="item in subCostCenter" :value="item.project_name">
-                                            {{ item.project_name }} {{ item.customer }}
-                                        </option>
-                                    </datalist>
-                                    <InputError :message="form.errors.cicsa_assignation_id" />
                                 </div>
                             </div>
                             <div>
@@ -561,18 +544,18 @@ import { Toaster } from "vue-sonner";
 
 const props = defineProps({
     expense: Object,
-    pext_project_id: String,
     providers: Object,
     auth: Object,
     userPermissions: Array,
     state: String,
-    cost_center: Object
+    cost_center: Object,
+    cicsa_assignation_id: String
 });
-
+console.log(props.cicsa_assignation_id)
 const expenses = ref(props.expense);
 const filterMode = ref(false);
-const subCostCenterZone = ref(null);
-const subCostCenter = ref(null)
+// const subCostCenterZone = ref(null);
+// const subCostCenter = ref(null)
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
 };
@@ -583,9 +566,7 @@ const form = useForm({
     ruc: "",
     zone: "",
     provider_id: "",
-    cicsa_assignation_id: "",
-    pext_project_name: "",
-    pext_project_id: props.pext_project_id,
+    cicsa_assignation_id: props.cicsa_assignation_id,
     type_doc: "",
     operation_number: "",
     operation_date: "",
@@ -610,7 +591,6 @@ const openCreateAdditionalModal = () => {
 const openEditAdditionalModal = (additional) => {
     Object.assign(form, additional)
     pext_project_zone.value = additional.zone
-    form.pext_project_name = additional.cicsa_assignation?.project_name
     create_additional.value = true;
 };
 
@@ -621,6 +601,7 @@ const closeModal = () => {
 };
 
 async function submit() {
+    console.log(form)
     const url = route('pext.expenses.storeOrUpdate', { 'expense_id': form.id ?? null })
     try {
         const formData = toFormData(form)
@@ -629,6 +610,7 @@ async function submit() {
         updateExpense(response.data, action)
         closeModal();
     } catch (error) {
+        console.log(error.response)
         if (error.response) {
             setAxiosErrors(error.response.data.errors, form)
         } else {
@@ -669,35 +651,6 @@ const handleRucDniAutocomplete = (e) => {
         form.provider_id = "";
     }
 };
-
-watch(() => form.zone, (newVal) => {
-    if (pext_project_zone.value != form.zone) {
-        form.pext_project_name = ""
-        form.cicsa_assignation_id = ""
-    }
-    searchSubCostCenter()
-});
-
-async function searchSubCostCenter() {
-    let url = route('projectmanagement.pext.requestCicsa', { 'zone': form.zone })
-    try {
-        const response = await axios.get(url)
-        subCostCenterZone.value = response.data
-    } catch (error) {
-        console.error(error)
-    }
-}
-
-function handleProjectNameAutocomplete(e) {
-    subCostCenter.value = subCostCenterZone.value.filter(item => item.project_name.includes(e));
-    const cicsaAssignation = subCostCenter.value
-    let cicsa_assignation = cicsaAssignation.find(item => item.project_name === e);
-    if (cicsa_assignation) {
-        form.cicsa_assignation_id = cicsa_assignation.id;
-    } else {
-        form.cicsa_assignation_id = "";
-    }
-}
 
 function handlerPreview(id) {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
@@ -770,8 +723,8 @@ watch(() => [
 );
 
 async function search_advance(data) {
-    let url = route("projectmanagement.pext.expenses.index", {
-        pext_project_id: props.pext_project_id,
+    let url = route("pext.additional.expense.index", {
+        cicsa_assignation_id: props.cicsa_assignation_id,
     })
     try {
         let response = await axios.post(url, data);
@@ -782,16 +735,16 @@ async function search_advance(data) {
 }
 
 
-function openExportExcel() {
-    const uniqueParam = `timestamp=${new Date().getTime()}`;
-    const url =
-        route("projectmanagement.pext.expenses.export", {
-            pext_project_id: props.pext_project_id,
-        }) +
-        "?" +
-        uniqueParam;
-    window.location.href = url;
-}
+// function openExportExcel() {
+//     const uniqueParam = `timestamp=${new Date().getTime()}`;
+//     const url =
+//         route("projectmanagement.pext.expenses.export", {
+//             pext_project_id: props.pext_project_id,
+//         }) +
+//         "?" +
+//         uniqueParam;
+//     window.location.href = url;
+// }
 
 watch([() => form.type_doc, () => form.zone], () => {
     if (
@@ -815,11 +768,6 @@ async function validateRegister(expense_id, is_accepted) {
         } else {
             updateExpense(expense_id, "rejectedValidate")
         }
-
-        // confirmValidation.value = true;
-        // setTimeout(() => {
-        //     confirmValidation.value = false;
-        // }, 1000);
     } catch (e) {
         console.log(e);
     }

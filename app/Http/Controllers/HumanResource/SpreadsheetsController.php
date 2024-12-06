@@ -13,7 +13,6 @@ use App\Models\Pension;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\AccountStatement;
@@ -45,6 +44,8 @@ class SpreadsheetsController extends Controller
         $validateData = $request->validate([
             'month' => 'required|unique:payrolls,month',
             'state' => 'required',
+            'sctr_p' => 'required|numeric',
+            'sctr_s' => 'required|numeric',
             'pension_system.*.type' => 'required',
             'pension_system.*.values' => 'required',
             'pension_system.*.values_seg' => 'required',
@@ -54,6 +55,8 @@ class SpreadsheetsController extends Controller
             $payroll = Payroll::create([
                 'month' => $validateData['month'],
                 'state' => $validateData['state'],
+                'sctr_p' => $validateData['sctr_p'],
+                'sctr_s' => $validateData['sctr_s'],
             ]);
             $payroll->setAppends(['total_amount']);
             foreach ($validateData['pension_system'] as $pension) {
@@ -134,6 +137,8 @@ class SpreadsheetsController extends Controller
     {
         return [
             'sum_salary' => $spreadsheet->sum('basic_salary'),
+            'sum_payment_until_today' => $spreadsheet->sum('payment_until_today'),
+            'sum_discount' => $spreadsheet->sum('discount'),
             'sum_truncated_vacations' => $spreadsheet->sum('truncated_vacations'),
             'sum_total_income' => $spreadsheet->sum('total_income'),
             'sum_snp' => $spreadsheet->sum('snp'),
@@ -206,66 +211,27 @@ class SpreadsheetsController extends Controller
         return response()->json($payrollExpense, 200);
     }
 
-    public function edit()
-    {
-        $pensions = Pension::all();
-        $data = json_decode(File::get(config_path('custom.json')), true);
-        $sctrs = ['sctr_p' => $data['sctr_p'], 'sctr_s' => $data['sctr_s']];
-        return Inertia::render('HumanResource/Payroll/PensionSystem', [
-            'pensions' => $pensions,
-            'sctrs' => [$sctrs]
-        ]);
-    }
-
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'value' => 'required'
-        ]);
-        $pension_system = Pension::find($id);
-        $pension_system->update([
-            'values' => $request->value
-        ]);
-        return to_route('pension_system.edit');
-    }
-
-    public function update_seg(Request $request, $id)
-    {
-        $request->validate([
-            'value' => 'required'
-        ]);
-        $pension_system = Pension::find($id);
-        $pension_system->update([
-            'values_seg' => $request->value
-        ]);
-        return to_route('pension_system.edit');
-    }
-
-    public function update_number_people(Request $request)
-    {
-        $data = json_decode(File::get(config_path('custom.json')), true);
-        $data['number_people'] = $request->number_people;
-        File::put(config_path('custom.json'), json_encode($data));
-    }
-
     public function export($payroll_id)
     {
         return Excel::download(new PayrollExport($payroll_id), 'Planilla ' . date('m-Y') . '.xlsx');
     }
 
-    public function update_sctr_p(Request $request)
+    public function discount_employee(Request $request, $employee_id)
     {
-        $data = json_decode(File::get(config_path('custom.json')), true);
-        $data['sctr_p'] = $request->value;
-        File::put(config_path('custom.json'), json_encode($data));
-        return to_route('pension_system.edit');
-    }
-
-    public function update_sctr_s(Request $request)
-    {
-        $data = json_decode(File::get(config_path('custom.json')), true);
-        $data['sctr_s'] = $request->value;
-        File::put(config_path('custom.json'), json_encode($data));
-        return to_route('pension_system.edit');
+        $validateData = $request->validate([
+            'discount' => 'required|numeric'
+        ]);
+        try {
+            $validateData['discount'] = floatval($validateData['discount']);
+            $payrollDetail = PayrollDetail::where('employee_id', $employee_id)
+                ->first();
+            $payrollDetail->update([
+                'discount' => $validateData['discount']
+            ]);
+            $payrollDetail->load('employee', 'payroll_detail_expense');
+            return response()->json($payrollDetail, 200);
+        } catch (Exception $e) {
+            return response()->json($e->getMessage(), 500);
+        }
     }
 }

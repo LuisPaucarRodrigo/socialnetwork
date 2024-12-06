@@ -124,12 +124,12 @@
                     <div class="mt-3 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div class="sm:col-span-2">
                             <InputLabel for="cost_line_id">
-                                Linea de Gasto
+                                Linea de Negocio
                             </InputLabel>
                             <div class="mt-2">
                                 <select v-model="form.cost_line_id" id="cost_line_id" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option disabled value="">Seleccionar Linea de Gastos</option>
+                                    <option disabled value="">Seleccionar Linea de Negocio</option>
                                     <option v-for="item,i in costLines" :key="i" :value="item.id">{{ item.name }}</option>
                                 </select>
                                 <InputError :message="form.errors.cost_line_id" />

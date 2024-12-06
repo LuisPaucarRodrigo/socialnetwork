@@ -57,7 +57,8 @@
                 </div>
                 <div class="flex items-center mt-4 sm:mt-0">
                     <form @submit.prevent="search" class="flex items-center w-full sm:w-auto">
-                        <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" />
+                        <TextInput data-tooltip-target="search_fields" type="text" placeholder="Buscar..."
+                            v-model="searchForm.searchTerm" />
                         <button type="submit" :class="{ 'opacity-25': searchForm.processing }"
                             class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                             <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none"
@@ -67,6 +68,11 @@
                                     stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                         </button>
+                        <div id="search_fields" role="tooltip"
+                            class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                            Nombre,Apellido,Telefono,Dni,Linea de Negocio
+                            <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -83,7 +89,7 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Linea de Gasto
+                                Linea de Negocio
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -117,8 +123,8 @@
                                 <p class="inline-block text-gray-900 whitespace-nowrap text-center w-[22px]">
                                     {{ props.search === undefined ?
                                         realNumeration(employees.per_page, employees.current_page, i)
-                                    :
-                                    i + 1
+                                        :
+                                        i + 1
 
                                     }}
                                 </p>

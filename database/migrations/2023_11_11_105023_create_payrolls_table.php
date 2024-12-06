@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('month')->unique();
             $table->boolean('state')->default(false);
+            $table->float('sctr_p');
+            $table->float('sctr_s');
             $table->timestamps();
         });
     }

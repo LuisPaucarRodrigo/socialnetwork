@@ -13,12 +13,8 @@ return new class extends Migration
     {
         Schema::create('additional_project_expenses', function (Blueprint $table) {
             $table->id();
-
             $table->string('expense_type');
             $table->string('doc_type');
-            $table->
-
-
             $table->timestamps();
         });
     }
