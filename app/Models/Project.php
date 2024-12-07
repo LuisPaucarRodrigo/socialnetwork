@@ -19,7 +19,8 @@ class Project extends Model
         'preproject_id',
         'cost_center_id',
         'cost_line_id',
-        'initial_budget'
+        'initial_budget',
+        'type',
     ];
 
     protected $appends = [

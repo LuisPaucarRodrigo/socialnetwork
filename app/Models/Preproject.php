@@ -17,7 +17,8 @@ class Preproject extends Model
         'cpe',
         'observation',
         'status',
-        'title_id'
+        'title_id',
+        'type',
     ];
 
     protected $appends = [
