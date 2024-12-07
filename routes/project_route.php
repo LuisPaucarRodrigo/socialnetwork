@@ -121,7 +121,9 @@ Route::middleware('permission:ProjectManager')->group(function () {
 
     //massive costs actions
     Route::post('/project/additional_costs_massive_update/', [AdditionalCostsController::class, 'masiveUpdate'])->name('projectmanagement.additionalCosts.massiveUpdate');
+    Route::post('/project/static_costs_massive_swap/', [AdditionalCostsController::class, 'swapCosts'])->name('projectmanagement.additionalCosts.swapCosts');
     Route::post('/project/static_costs_massive_update/', [StaticCostsController::class, 'masiveUpdate'])->name('projectmanagement.staticCosts.massiveUpdate');
+
 
 
 

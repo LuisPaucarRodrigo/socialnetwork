@@ -114,7 +114,7 @@
                                             class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                             Actualizar Operación
                                         </button>
-                                        <button @click=""
+                                        <button @click="openSwapCostsModal"
                                             class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                             Swap
                                         </button>
@@ -1036,6 +1036,11 @@
             :message="'Los datos fueron importados con éxito'" />
         <SuccessOperationModal :confirming="confirmValidation" :title="'Validación'"
             :message="'La validación del gasto fue exitosa.'" />
+        
+        <ConfirmateModal :showConfirm="showSwapCostsModal" tittle="Cambio de gastos adicionales a fijos"
+            text="La siguiente acción ya no se podrá revertir, ¿Desea continuar?"
+            :actionFunction="swapCosts" @closeModal="closeSwapCostsModal" />
+
     </AuthenticatedLayout>
 </template>
 
@@ -1043,6 +1048,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
+import ConfirmateModal from "@/Components/ConfirmateModal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
@@ -1420,21 +1426,18 @@ watch(
     { deep: true }
 );
 
-
+//operation number
 const opNuDateForm = useForm({
     operation_date: '',
     operation_number: '',
 })
-
 const showOpNuDatModal = ref(false)
-
 const closeOpNuDatModal = () => {
     showOpNuDatModal.value = false
     isFetching.value = false
     opNuDateForm.reset()
     opNuDateForm.clearErrors()
 }
-
 const openOpNuDaModal = () => {
     if (actionForm.value.ids.length === 0) {
         notifyWarning("No hay registros selccionados");
@@ -1442,7 +1445,6 @@ const openOpNuDaModal = () => {
     }
     showOpNuDatModal.value = true
 }
-
 const submitOpNuDatModal = async () => {
     isFetching.value = true;
     const res = await axios
@@ -1509,6 +1511,39 @@ async function submitAcceptModal () {
 }
 
 
+//swap
+// showSwapCostsModal
+// swapCosts
+// closeSwapCostsModal
+const showSwapCostsModal = ref(false)
+const closeSwapCostsModal = () => {
+    showSwapCostsModal.value = false
+    isFetching.value = false
+}
+const openSwapCostsModal = () => {
+    if (actionForm.value.ids.length === 0) {
+        notifyWarning("No hay registros selccionados");
+        return;
+    }
+    showSwapCostsModal.value = true
+}
+const swapCosts = async () => {
+    isFetching.value = true;
+    const res = await axios
+        .post(route("projectmanagement.additionalCosts.swapCosts"), {
+            ...actionForm.value
+        })
+        .catch((e) => {
+            isFetching.value = false;
+            notifyError("Server Error");
+        });
+    dataToRender.value = dataToRender.value.filter(
+            (item) => !actionForm.value.ids.includes(item.id)
+        );
+    actionForm.value.ids = []
+    closeSwapCostsModal();
+    notify("Registros Movidos con éxito");
+}
 
 
 
@@ -1522,6 +1557,9 @@ function sortValue() {
     }
     stateCreateAtSort.value = !stateCreateAtSort.value;
 }
+
+
+
 
 
 </script>
