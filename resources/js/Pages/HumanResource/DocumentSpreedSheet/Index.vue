@@ -592,6 +592,7 @@ async function filterExpenseLine(search) {
   let url = route('document.rrhh.status')
   try {
     let response = await axios.post(url, { searchquery: search })
+    console.log(response.data)
     employeesData.value = response.data.employees
     e_employeesData.value = response.data.e_employees
   } catch (error) {

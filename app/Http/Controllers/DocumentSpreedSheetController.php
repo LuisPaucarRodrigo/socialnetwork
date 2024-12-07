@@ -58,6 +58,7 @@ class DocumentSpreedSheetController extends Controller
 
                 ->get();
         } elseif ($request->isMethod('post')) {
+
             $searchquery = $request->searchquery;
             $employees = Employee::with([
                 'document_registers',
@@ -79,9 +80,13 @@ class DocumentSpreedSheetController extends Controller
                     'policy_exp_date',
                 )
                 ->whereHas('contract', function ($query) use ($searchquery) {
-                    $query->whereHas('cost_line', function ($subquery) use ($searchquery) {
-                        $subquery->where('name', 'like', '%' . $searchquery . '%');
-                    });
+                    if($searchquery){
+                        $query->whereHas('cost_line', function ($subquery) use ($searchquery) {
+                            $subquery->where('name', 'like', '%' . $searchquery . '%');
+                        });
+                    } else {
+                        return ;
+                    }
                 })
                 ->orderBy('lastname')
                 ->get();
@@ -101,11 +106,16 @@ class DocumentSpreedSheetController extends Controller
                     'l_policy',
                     'sctr_exp_date',
                     'policy_exp_date',
-                )
-                ->whereHas('cost_line', function ($query) use ($searchquery) {
-                    $query->where('name', 'like', '%' . $searchquery . '%');
-                })
-                ->get();
+                    'cost_line_id'
+                );
+                if($searchquery){
+                    $e_employees = $e_employees->whereHas('cost_line', function ($query) use ($searchquery) {
+                            $query->where('name', 'like', '%' . $searchquery . '%');
+                    })->get();    
+                } else {
+                    $e_employees = $e_employees->get();
+                }
+                
         }
 
         $employees->map(function ($emp) {
