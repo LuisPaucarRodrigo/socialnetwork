@@ -29,4 +29,17 @@ class ProjectConstants
            
         ];
     }
+
+    public static function pintProjectTypes(): array {
+        return [
+            self::PINT_MANTTO => 'Pint Mantenimiento',
+            self::PINT_ADDITIONAL => 'Pint Adicional',
+        ];
+    }
+    public static function pextProjectTypes(): array {
+        return [
+            self::PEXT_MANTTO => 'Pext Mantenimiento',
+            self::PEXT_ADDITIONAL => 'Pext Adicional',
+        ];
+    }
 }

@@ -31,7 +31,7 @@ return new class extends Migration
             $table->date('sctr_exp_date')->nullable();
             $table->date('policy_exp_date')->nullable();
 
-            $table->foreignId("cost_line_id")->constrained('cost_lines');
+            $table->foreignId("cost_line_id")->nullable()->constrained('cost_lines')->nullOnDelete();
             $table->timestamps();
         });
     }

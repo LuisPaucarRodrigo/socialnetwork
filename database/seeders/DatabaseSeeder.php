@@ -122,9 +122,9 @@ class DatabaseSeeder extends Seeder
         ];
 
         CostLine::insert($costLinesData);
-        Customer::insert($customersData);
-        Customers_contact::insert($customersContactData);
-        Warehouse::insert($warehousesData);
-        CustomerWarehouse::insert($warehousesCustomerData);
+        // Customer::insert($customersData);
+        // Customers_contact::insert($customersContactData);
+        // Warehouse::insert($warehousesData);
+        // CustomerWarehouse::insert($warehousesCustomerData);
     }
 }

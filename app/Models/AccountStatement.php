@@ -39,6 +39,9 @@ class AccountStatement extends Model
 
     public function getStateAttribute()
     {
+        if ($this->operation_number === null) {
+            return 'Validado';
+        }
         if ($this->payment) {
             return 'Abono';
         }

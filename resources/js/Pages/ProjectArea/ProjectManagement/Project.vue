@@ -1,9 +1,9 @@
 <template>
 
-    <Head title="Proyectos" />
+    <Head title="Proyectos Pint" />
     <AuthenticatedLayout :redirectRoute="'projectmanagement.index'">
         <template #header>
-            Proyectos
+            Proyectos Pint
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="mt-6 flex items-center justify-between gap-x-6">
