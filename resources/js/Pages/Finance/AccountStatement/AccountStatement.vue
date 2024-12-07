@@ -92,6 +92,15 @@
                 </div>
 
                 <div class="flex flex-col sm:flex-row gap-4 items-center w-full sm:w-auto">
+                    <div class="flex gap-4 bg-white rounded-md border border-gray-300 h-full ">
+                        <div
+                            class="bg-gray-50 rounded-md border-b border-gray-200 text-[11px] font-semibold uppercase tracking-wider text-gray-600 flex items-center justify-center px-3">
+                            <p class="text-center whitespace-nowrap">Comisiones Bancarias</p>
+                        </div>
+                        <div class="flex items-center justify-center text-[13px] whitespace-nowrap tabular-nums px-3">
+                            S/. {{ dataToRender.totalITFM.toFixed(2) }}
+                        </div>
+                    </div>
                     <input type="month" @input="(e) => {
                         filterForm.search = ''
                         handleSearch(e.target.value);
@@ -363,7 +372,7 @@
                                                 </td>
                                                 <td
                                                     class="border-b border-gray-200 bg-white px-1 py-1 text-right text-[12px] tabular-nums">
-                                                    S/. {{ item.amount }}
+                                                    S/. {{ item.amount.toFixed(2) }}
                                                 </td>
                                             </tr>
                                             <tr class="text-gray-700" v-for="(
@@ -383,7 +392,7 @@
                                                 </td>
                                                 <td
                                                     class="border-b border-gray-200 bg-white px-1 py-1 text-right text-[12px] tabular-nums">
-                                                    S/. {{ item.amount }}
+                                                    S/. {{ item.amount.toFixed(2) }}
                                                 </td>
                                             </tr>
                                             <tr class="text-gray-700" v-for="(
@@ -406,7 +415,7 @@
                                                 </td>
                                                 <td
                                                     class="border-b border-gray-200 bg-white px-1 py-1 text-right text-[12px] tabular-nums">
-                                                    S/. {{ item.amount }}
+                                                    S/. {{ item.amount.toFixed(2) }}
                                                 </td>
                                             </tr>
                                             <tr class="text-gray-700" v-for="(
@@ -421,7 +430,7 @@
                                                     {{ item.type === 'Salary' 
                                                         ? 'Sueldo' 
                                                         : item.type === 'Travel' 
-                                                            ? 'Travel' 
+                                                            ? 'Viáticos' 
                                                             : '' 
                                                     }}
                                                 </td>
@@ -431,7 +440,7 @@
                                                 </td>
                                                 <td
                                                     class="border-b border-gray-200 bg-white px-1 py-1 text-right text-[12px] tabular-nums">
-                                                    S/. {{ item.amount }}
+                                                    S/. {{ item.amount.toFixed(2) }}
                                                 </td>
                                             </tr>
                                             <tr class="text-gray-700">
@@ -776,6 +785,7 @@ const {
     previousBalance,
     currentBalance,
     totalCharge,
+    totalITFM,
     totalPayment,
     balanceMedia,
     auth,
@@ -787,6 +797,7 @@ const {
     balanceMedia: Number,
     totalCharge: Number,
     totalPayment: Number,
+    totalITFM: Number,
     auth: Object,
     userPermissions: Array,
 });
@@ -815,6 +826,7 @@ const dataToRender = ref({
     balanceMedia,
     totalCharge,
     totalPayment,
+    totalITFM,
 });
 const costsFounded = ref(initStateCostsFounded);
 const initialFilterFormState = {
