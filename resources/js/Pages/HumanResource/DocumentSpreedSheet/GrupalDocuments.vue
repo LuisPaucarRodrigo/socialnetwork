@@ -2,9 +2,9 @@
 
     <Head title="CentroDeCostos" />
 
-    <AuthenticatedLayout :redirectRoute="'selectproject.index'">
+    <AuthenticatedLayout :redirectRoute="'document.rrhh.status'">
         <template #header>
-            {{ cost_line.name }} - Centro de Costos
+            Documentos Grupales
         </template>
         <Toaster richColors />
         <div class="mt-3 flex items-center justify-between gap-x-6">
@@ -29,7 +29,15 @@
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            Porcentaje
+                            Archivo
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            Fecha de Documento
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            Observaciones
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -42,10 +50,24 @@
                             <p class="text-gray-900 whitespace-no-wrap">{{ i+1 }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ item.name }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ item.type }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ item.percentage }}%</p>
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                <button @click="downloadDocument(item.id)" class="flex items-center text-blue-600 hover:underline">
+                                    <ArrowDownIcon class="h-4 w-4 ml-1" />
+                                </button>
+                            </p>
+                        </td>
+                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                {{ formattedDate(item.date) }}
+                            </p>
+                        </td>
+                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
+                            <p class="text-gray-900 whitespace-no-wrap">
+                                {{ item.observation }}
+                            </p>
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
@@ -57,9 +79,9 @@
                                             d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                     </svg>
                                 </button> -->
-                                <button @click="assignUser(item.id, item.clc_employees)">
+                                <!-- <button @click="assignUser(item.id, item.clc_employees)">
                                     <UserGroupIcon class="w-6 h-6 text-indigo-700"/>
-                                </button>
+                                </button> -->
                                 <button type="button" @click="openCostCenterModal(item)"
                                     class="text-yellow-600 whitespace-no-wrap">
                                     <PencilIcon class="h-5 w-5 ml-1" />
@@ -74,33 +96,64 @@
                 </tbody>
             </table>
         </div>
+        <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between"
+        >
+            <pagination :links="grupal_documents.links" />
+        </div>
 
         <Modal :show="showCostCenterModal" @close="closeCostCenterModal">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900 mb-2">
-                    {{ form.id ? "Editar" : "Agregar" }} Centro de Costo
+                    {{ form.id ? "Editar" : "Agregar" }} Documento Grupal
                 </h2>
                 <form @submit.prevent="submitCostCenterModal">
                     <div class="space-y-12">
                         <div class="border-b grid grid-cols-1 gap-6 border-gray-900/10 pb-12">
                             <div>
-                                <InputLabel for="name" class="font-medium leading-6 text-gray-900">
+                                <InputLabel for="type" class="font-medium leading-6 text-gray-900">
                                     Nombre
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="text" v-model="form.name" id="name"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors.name" />
+                                    <select v-model="form.type" id="type"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option disabled value="">
+                                            Selecciona
+                                        </option>
+                                        <option v-for="op in types">
+                                            {{ op }}
+                                        </option>
+                                    </select>
+                                    <InputError :message="form.errors.type" />
                                 </div>
                             </div>
                             <div>
-                                <InputLabel for="percentage" class="font-medium leading-6 text-gray-900">
-                                    Porcentaje
+                                <InputLabel for="date" class="font-medium leading-6 text-gray-900">
+                                    Fecha de Documento
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="number" v-model="form.percentage" id="percentage" max="100" min="1"
+                                    <input type="date" v-model="form.date" id="date"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors.percentage" />
+                                    <InputError :message="form.errors.date" />
+                                </div>
+                            </div>
+                            <div>
+                                <InputLabel for="observation" class="font-medium leading-6 text-gray-900">
+                                    Observaciones
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <textarea type="text" v-model="form.observation" id="observation"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.observation" />
+                                </div>
+                            </div>
+                            <div>
+                                <InputLabel for="archive" class="font-medium leading-6 text-gray-900">
+                                    Archivo
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <InputFile type="file" v-model="form.archive" accept=".pdf, .xls, .xlsx"
+                                        class="block w-full h-24 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.archive" />
                                 </div>
                             </div>
                         </div>
@@ -121,49 +174,9 @@
 
 
 
-        <Modal :show="assignUserModal">
-            <form class="p-6" @submit.prevent="submitAssignUser">
-                <h2 class="text-lg font-medium text-gray-900">
-                    Agregar Colaboradores
-                </h2>
-                <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
-                    <div class="sm:col-span-3">
-                        <InputLabel for="users" class="font-medium leading-6 text-gray-900">Colaboradores</InputLabel>
-                        <div class="mt-2">
-                            <select multiple v-model="assignUserForm.employees" id="users"
-                                size="20"
-                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                <option v-for="item in selectEmployees" :key="item.id" :value="item.id" >
-                                    {{ item.name }} {{ item.lastname }}
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="sm:col-span-3">
-                        <InputLabel for="users" class="font-medium leading-6 text-gray-900">
-                            Colaboradores en Centro de costos
-                        </InputLabel>
-                        <div class="mt-2">
-                                <p v-for="item in assignUserForm.employeesArray" :key="user"  class="text-sm">
-                                    - {{ item?.name }} {{ item?.lastname }}
-                                </p>
-                        </div>
-                    </div>
-                </div>
-                <InputError :message="assignUserForm.errors.employees" class="mt-2" />
-                <div class="mt-6 flex gap-3 justify-end">
-                    <SecondaryButton type="button" @click="closeAssignUser">Cerrar</SecondaryButton>
-                    <button type="submit" :disabled="isFetching" :class="{ 'opacity-25': isFetching }"
-                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                        Guardar
-                    </button>
-                </div>
-            </form>
-        </Modal>
-
         <ConfirmDeleteModal 
             :confirmingDeletion="confirmCostCenterDestroy" 
-            itemType="Centro de Costos"
+            itemType="Documento"
             :deleteFunction="deleteCostCenter" 
             @closeModal="closeCostCenterDestroyModal" 
             :processing="isFetching"
@@ -176,26 +189,27 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
-import { TrashIcon, PencilIcon, UserGroupIcon } from '@heroicons/vue/24/outline';
+import { TrashIcon, PencilIcon, UserGroupIcon, ArrowDownIcon } from '@heroicons/vue/24/outline';
 import { notify, notifyError } from '@/Components/Notification';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import { Head, useForm } from '@inertiajs/vue3';
-import { setAxiosErrors } from '@/utils/utils';
+import { formattedDate, setAxiosErrors, toFormData } from '@/utils/utils';
 import Modal from '@/Components/Modal.vue';
 import { ref, watch } from 'vue';
+import Pagination from "@/Components/Pagination.vue";
+import InputFile from '@/Components/InputFile.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { Toaster } from 'vue-sonner';
 
 
-const { costCenters, cost_line, employees } = defineProps({
-    costCenters: Array,
-    cost_line: Object,
-    employees: Array,
+
+const { grupal_documents, types } = defineProps({
+    grupal_documents: Object,
+    types: Array,
 })
-const dataToRender = ref(costCenters)
-const selectEmployees = ref(employees)
+const dataToRender = ref(grupal_documents.data)
 
 
 //Create and Update
@@ -211,18 +225,27 @@ const closeCostCenterModal = () => {
     form.defaults({...initState})
     form.reset()
 }
-const initState = {name:'', percentage: '', id:'', cost_line_id: cost_line.id}
+const initState = {
+    type: '',
+    archive: undefined,
+    date: '',
+    observation: '',
+}
 const form = useForm({...initState})
 const submitCostCenterModal = () => {
     isFetching.value = true
-    axios.post(route("finance.cost_center.store", {cc_id: form.id,}),form.data())
+    const formToSend = toFormData(form.data());
+    let url = form.id 
+        ? route("document.grupal_documents.update", {gd_id: form.id,}) 
+        : route("document.grupal_documents.store") 
+    axios.post(url,formToSend)
         .then((res)=>{
             if (form.id) {
                 const index = dataToRender.value.findIndex((item) => item.id == form.id);
                 dataToRender.value[index] = res.data
             } else {dataToRender.value.push(res.data);}
             closeCostCenterModal();
-            notify("Centro de Costo Guardado");
+            notify("Documento Guardado");
         })
         .catch(e=>{
             if (e.response?.data?.errors) {setAxiosErrors(e.response.data.errors, form);} 
@@ -247,12 +270,12 @@ const closeCostCenterDestroyModal = () => {
 }
 const deleteCostCenter = () => {
     isFetching.value = true
-    axios.delete(route("finance.cost_center.destroy", {cc_id: CostCenterToDelete.value.id}))
+    axios.delete(route("document.grupal_documents.destroy", {gd_id: CostCenterToDelete.value.id}))
         .then((res)=>{
             const index = dataToRender.value.findIndex((item) => item.id == CostCenterToDelete.value.id);
             dataToRender.value.splice(index, 1);
             closeCostCenterDestroyModal();
-            notify("Centro de Costo Eliminado");
+            notify("Documento Grupal Eliminado");
         })
         .catch(e=>{
             if (e.response?.data?.errors) {setAxiosErrors(e.response.data.errors, form);} 
@@ -263,45 +286,13 @@ const deleteCostCenter = () => {
         });
 }
 
-//assign users
-
-const initUsersFormState = {employees:[], employeesArray:[], cost_center_id: '' }
-const assignUserModal = ref(false)
-const assignUserForm = useForm({...initUsersFormState})
-const assignUser = (id, clce) => {
-    let usersIds = clce.map(item=>item.employee.id)
-    assignUserModal.value = true;
-    assignUserForm.employees = [...usersIds];
-    assignUserForm.cost_center_id = id
-}
-const closeAssignUser = () => {
-    assignUserForm.reset();
-    assignUserModal.value = false;
-}
-
-const submitAssignUser = () => {
-    axios.post(route("finance.cost_center.employee.store"), {...assignUserForm.data()})
-        .then((res)=>{
-            const index = dataToRender.value.findIndex((item) => item.id == assignUserForm.cost_center_id);
-            dataToRender.value[index] = res.data
-            closeAssignUser();
-            notify("Asignación de colaboradores al Centro de Costos");
-        })
-        .catch(e=>{
-            if (e.response?.data?.errors) {setAxiosErrors(e.response.data.errors, form);} 
-            else {notifyError("Server Error");}
-        })
-        .finally(()=>{
-            isFetching.value = false;
-        });
-}
-
-watch(()=>assignUserForm.employees, (newVal)=>{
-    assignUserForm.employeesArray = newVal.map(id=>{
-        console.log(selectEmployees.value)
-        return selectEmployees.value.find(item=>item.id == id)
-    })
-})
+function downloadDocument(id) {
+    const uniqueParam = `timestamp=${new Date().getTime()}`;
+    const url = route("document.grupal_documents.download", { gd_id: id }) +
+        "?" +
+        uniqueParam;
+    window.location.href = url;
+};
 
 
 </script>

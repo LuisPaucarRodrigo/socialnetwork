@@ -13,6 +13,12 @@
           <option value="">Todos</option>
           <option v-for="item, i in costLines" :key="i">{{ item.name }}</option>
         </select>
+        <PrimaryButton
+          type="button"
+          @click="()=>router.visit(route('document.grupal_documents.index'))"
+        >
+          Documentos Grupales 
+        </PrimaryButton>
       </div>
       <br>
       <Toaster richColors class="z-1000" />
@@ -405,7 +411,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
