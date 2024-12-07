@@ -80,7 +80,7 @@
                                     class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
                                 >
                                     <p class="text-gray-900 whitespace-no-wrap">
-                                        {{ item.user.name }}
+                                        {{ item.user_name }}
                                     </p>
                                 </td>
                                 <td

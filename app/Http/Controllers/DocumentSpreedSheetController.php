@@ -37,7 +37,7 @@ class DocumentSpreedSheetController extends Controller
                     'sctr_exp_date',
                     'policy_exp_date',
                 )
-                ->orderBy('lastname')
+                ->orderBy('name')
                 ->get();
             $e_employees = ExternalEmployee::with([
                 'document_registers',
@@ -88,7 +88,7 @@ class DocumentSpreedSheetController extends Controller
                         return ;
                     }
                 })
-                ->orderBy('lastname')
+                ->orderBy('name')
                 ->get();
 
             $e_employees = ExternalEmployee::with([
@@ -289,7 +289,7 @@ class DocumentSpreedSheetController extends Controller
     {
         $employees = Employee::whereHas('contract', function ($query) {
             $query->where('state', 'Active');
-        })->orderBy('lastname')->get()->filter(function ($item) {
+        })->orderBy('name')->get()->filter(function ($item) {
             return $item->documents_about_to_expire > 0;
         })->values()->all();
         $e_employees = ExternalEmployee::orderBy('lastname')->get()->filter(function ($item) {
