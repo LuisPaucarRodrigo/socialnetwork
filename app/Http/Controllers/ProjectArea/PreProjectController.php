@@ -43,23 +43,32 @@ use ZipArchive;
 
 class PreProjectController extends Controller
 {
-    public function index(Request $request)
+
+    public function index(Request $request, $type, $preprojects_status=null)
     {
+        $viewTemplate = '';
+        if($type == "1" ){ $viewTemplate = 'PreProjectsPint'; }
+        if($type == "2" ){ $viewTemplate = 'PreProjectsPext';}
+        if($type!=="1" && $type!=="2") {abort(404);}
         if ($request->isMethod('get')) {
-            $preprojects_status = $request->input('preprojects_status');
-            return Inertia::render('ProjectArea/PreProject/PreProjects', [
+            return Inertia::render('ProjectArea/PreProject/'.$viewTemplate, [
                 'preprojects' => Preproject::with('users')->where('status', $preprojects_status)
+                    ->where('cost_line_id', $type)
                     ->orderBy('created_at', 'desc')
                     ->paginate(12),
                 'preprojects_status' => $preprojects_status,
+                'type' => $type,
                 'users' => User::select('id', 'name')->orderBy('name', 'asc')->get()
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
-            $preprojects_status = $request->input('preprojects_status');
-            $preprojects = Preproject::with('users')->orWhere('code', 'like', "%$searchQuery%")
-                ->orWhere('description', 'like', "%$searchQuery%")
+            $preprojects = Preproject::with('users')
                 ->where('status', $preprojects_status)
+                ->where('cost_line_id', $type)
+                ->where(function ($query) use ($searchQuery){
+                    return $query->orWhere('code', 'like', "%$searchQuery%")
+                    ->orWhere('description', 'like', "%$searchQuery%");
+                })
                 ->orderBy('created_at', 'desc')
                 ->paginate(12);
 
@@ -668,7 +677,7 @@ class PreProjectController extends Controller
         return Inertia::render('ProjectArea/PreProject/ImageReport/index', [
             'preprojectImage' => $preprojectImages,
             'imagesCode' => $imagesCode,
-            'preproject' => Preproject::select('id', 'status')->find($preproject_id),
+            'preproject' => Preproject::select('id', 'status', 'cost_line_id')->find($preproject_id),
             'stages' => ReportStage::select('id', 'name')->get(),
             'titles' => Title::all(),
         ]);

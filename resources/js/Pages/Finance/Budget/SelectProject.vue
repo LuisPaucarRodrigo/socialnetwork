@@ -36,7 +36,7 @@
             <div class="flex flex-col gap-6">
                 <div class="flex gap-4 items-center">
                     <h3 class="text-3xl font-medium text-gray-700">
-                        Líneas de Gastos
+                        Líneas de Negocio
                     </h3>
                     <button type="button" @click="openCostLineModal">
                         <PlusCircleIcon
@@ -200,7 +200,7 @@ const submitCostLineModal = () => {
                 dataToRender.value[index] = res.data
             } else {dataToRender.value.push(res.data);}
             closeCostLineModal();
-            notify("Linea de Costo Guardada");
+            notify("Linea de Negocio Guardada");
         })
         .catch(e=>{
             if (e.response?.data?.errors) {setAxiosErrors(e.response.data.errors, form);} 
@@ -229,7 +229,7 @@ const deleteCostLine = () => {
             const index = dataToRender.value.findIndex((item) => item.id == costLineToDelete.value.id);
             dataToRender.value.splice(index, 1);
             closeCostLineDestroyModal();
-            notify("Linea de Costo Eliminada");
+            notify("Linea de Negocio Eliminada");
         })
         .catch(e=>{
             if (e.response?.data?.errors) {setAxiosErrors(e.response.data.errors, form);} 

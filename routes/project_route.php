@@ -200,9 +200,10 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     Route::get('/preprojects/codes', [PreProjectController::class, 'showCodes'])->name('preprojects.codes');
     Route::get('/preprojects/titles', [PreProjectController::class, 'showTitles'])->name('preprojects.titles');
 
-    //PreProjects
-    Route::get('/preprojects', [PreProjectController::class, 'index'])->name('preprojects.index');
-    Route::post('/preprojects', [PreProjectController::class, 'index'])->name('preprojects.index');
+    //PreProjects PEXT
+    Route::get('/preprojects_index/{type}/{preprojects_status?}', [PreProjectController::class, 'index'])->name('preprojects.index');
+    Route::post('/preprojects_index/{type}/{preprojects_status?}', [PreProjectController::class, 'index'])->name('preprojects.index');
+
 
     //Preproject image
     Route::get('/preprojects/{preproject_id}/report/image', [PreProjectController::class, 'index_image'])->name('preprojects.imagereport.index');

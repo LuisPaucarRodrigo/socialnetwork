@@ -23,7 +23,7 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('employees')
                 ->onDelete('set null');
-            $table->string('charge');
+            $table->string('charge')->nullable();
         });
     }
 

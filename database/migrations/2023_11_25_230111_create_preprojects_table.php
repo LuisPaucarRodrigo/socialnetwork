@@ -22,7 +22,8 @@ return new class extends Migration
             $table->date('date');
             $table->text('observation')->nullable();
             $table->boolean('status')->nullable();
-            $table->enum('type', ProjectConstants::projectTypes())->nullable();
+            $table->foreignId('cost_center_id')->nullable()->constrained('cost_centers')->nullOnDelete();
+            $table->foreignId('cost_line_id')->nullable()->constrained('cost_lines')->nullOnDelete();
             $table->foreignId('title_id')->nullable()->constrained('titles')->onDelete('set null');
             $table->timestamps();
         });

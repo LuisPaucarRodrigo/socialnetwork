@@ -1,9 +1,9 @@
 <template>
 
     <Head title="AnteProyectos" />
-    <AuthenticatedLayout :redirectRoute="'preprojects.index'">
+    <AuthenticatedLayout :redirectRoute="{route: 'preprojects.index', params: {type}}">
         <template #header>
-            Anteproyectos {{ preprojects_status !== null
+            Anteproyectos PINT {{ preprojects_status !== null
         ? preprojects_status === '1' ? 'Aprobados'
             : 'Anulados'
         : '' }}
@@ -30,12 +30,12 @@
                 </div>
                 <div class="flex gap-4">
                     <PrimaryButton v-if="preprojects_status === null" @click="() => {
-        router.get(route('preprojects.index', { preprojects_status: '1' }))
+        router.get(route('preprojects.index', { type ,preprojects_status: '1' }))
     }" type="button">
                         Aprobados
                     </PrimaryButton>
                     <PrimaryButton v-if="preprojects_status === null" @click="() => {
-        router.get(route('preprojects.index', { preprojects_status: '0' }))
+        router.get(route('preprojects.index', { type, preprojects_status: '0' }))
     }" type="button">
                         Anulados
                     </PrimaryButton>
@@ -195,7 +195,8 @@ const props = defineProps({
     auth: Object,
     preprojects_status: String,
     users: Object,
-    userPermissions: Array
+    userPermissions: Array,
+    type: String
 })
 
 const hasPermission = (permission) => {
@@ -210,6 +211,7 @@ const indexToSplice = ref('');
 const showModal = ref(false);
 const showModalEdit = ref(false);
 const preprojects = ref(props.preprojects)
+
 
 const assignUser = (id,users) => {
     assignUserModal.value = true;
@@ -267,13 +269,16 @@ const closeModal = () => {
 
 const search = async ($search) => {
     if ($search === '') {
-        router.visit(route('preprojects.index', {
-            preprojects_status: JSON.parse(props.preprojects_status)
+        router.visit(route('preprojects.index', { type: props.type,
+            preprojects_status: props.preprojects_status
         }))
         return
     }
     try {
-        const response = await axios.post(route('preprojects.index'), { searchQuery: $search, preprojects_status: props.preprojects });
+        const response = await axios.post(
+            route('preprojects.index', { type: props.type,
+            preprojects_status: props.preprojects_status
+        }), { searchQuery: $search});
         preprojects.value = response.data.preprojects;
     } catch (error) {
         console.error('Error searching:', error);

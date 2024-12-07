@@ -135,6 +135,7 @@ class ManagementEmployees extends Controller
 
             Contract::create([
                 'cost_line_id' => $request->cost_line_id,
+                'personal_segment' => $request->personal_segment,
                 'state_travel_expenses' => $request->state_travel_expenses,
                 'type_contract' => $request->type_contract,
                 'amount_travel_expenses' => $request->amount_travel_expenses,
@@ -220,7 +221,6 @@ class ManagementEmployees extends Controller
 
     public function update(UpdateManagementEmployees $request, $id)
     {
-
         DB::beginTransaction();
         try {
 
@@ -256,6 +256,7 @@ class ManagementEmployees extends Controller
 
             $employee->contract->update([
                 'cost_line_id' => $request->cost_line_id,
+                'personal_segment' => $request->personal_segment,
                 'state_travel_expenses' => $request->state_travel_expenses,
                 'type_contract' => $request->type_contract,
                 'amount_travel_expenses' => $request->amount_travel_expenses,

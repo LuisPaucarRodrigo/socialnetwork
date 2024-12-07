@@ -3,7 +3,7 @@
     <Head title="Anteproyectos" />
     <AuthenticatedLayout :redirectRoute="'preprojects.index'">
         <template #header>
-            Anteproyecto y Proyecto PINT CLARO CICSA
+            Anteproyecto y Proyecto CLARO CICSA
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
             <form @submit.prevent="submit">

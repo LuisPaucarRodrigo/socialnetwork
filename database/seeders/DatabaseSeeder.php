@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\CostLine;
+use App\Models\CostCenter;
 use App\Models\Pension;
 use App\Models\Permission;
 use App\Models\Role;
@@ -19,7 +20,7 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Crear el rol "admin"
+        //Crear el rol "admin"
         $adminRole = Role::create([
             'name' => 'admin',
             'description' => 'Rol de administrador con todos los permisos de gerente'
@@ -120,11 +121,23 @@ class DatabaseSeeder extends Seeder
             ["name" => "PEXT"],
             ["name" => "HUAWEI"],
         ];
+        $costCenterData = [
+            ["name" => "Mantto pint CLARO", "cost_line_id" => 1, "percentage"=> "20"],
+            ["name" => "Combustible pint CLARO", "cost_line_id" => 1, "percentage"=> "40"] ,
+            ["name" => "Adicionales pint CLARO", "cost_line_id" => 1, "percentage"=> "40"],
+            ["name" => "Mantto pext CLARO", "cost_line_id" => 2, "percentage"=> "10"],
+            ["name" => "Mantto pext GTD", "cost_line_id" => 2, "percentage"=> "10"],
+            ["name" => "Instalaciones CLARO", "cost_line_id" => 2, "percentage"=> "30"],
+            ["name" => "Instalaciones GTD", "cost_line_id" => 2, "percentage"=> "20"],
+            ["name" => "Densificaion", "cost_line_id" => 2, "percentage"=> "20"],
+            ["name" => "Adicionales", "cost_line_id" => 2, "percentage"=> "10"],
+        ];
 
         CostLine::insert($costLinesData);
-        // Customer::insert($customersData);
-        // Customers_contact::insert($customersContactData);
-        // Warehouse::insert($warehousesData);
-        // CustomerWarehouse::insert($warehousesCustomerData);
+        CostCenter::insert($costCenterData);
+        Customer::insert($customersData);
+        Customers_contact::insert($customersContactData);
+        Warehouse::insert($warehousesData);
+        CustomerWarehouse::insert($warehousesCustomerData);
     }
 }
