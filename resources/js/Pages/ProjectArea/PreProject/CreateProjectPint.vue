@@ -19,17 +19,17 @@
 
                             <div>
                                 <InputLabel for="customer" class="font-medium leading-6 text-gray-900">
-                                    Plantilla de Proyecto
+                                    Centro de Costos
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <select v-model="form.template"
+                                    <select v-model="form.cost_center_id"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                        <option value="">Selecciona una plantilla</option>
-                                        <option v-for="item, i in templates" :key="i">
-                                            {{ item }}
+                                        <option value="">Selecciona un centro de costos</option>
+                                        <option v-for="item, i in cost_centers" :value="item.id" :key="i">
+                                            {{ item.name }}
                                         </option>
                                     </select>
-                                    <InputError :message="form.errors.template" />
+                                    <InputError :message="form.errors.cost_center_id" />
                                 </div>
                             </div>
 
@@ -241,10 +241,11 @@ const showModal = ref(false)
 const showModalUpdate = ref(false)
 const showErrorContact = ref(false)
 
-const { contacts_cicsa, employees, services, currentProducts } = defineProps({
+const { contacts_cicsa, employees, services, currentProducts, cost_centers } = defineProps({
     contacts_cicsa: Object,
     services: Object,
     employees: Object,
+    cost_centers: Array,
 })
 
 
@@ -257,13 +258,9 @@ const handleProductCPE = async (cpe) => {
 
 
 
-const templates = [
-    'Mantenimiento',
-    'Instalación'
-]
 
 const initial_state = {
-    template: '',
+    cost_center_id: '',
     date: '',
     cpe: '',
     contacts: contacts_cicsa,
@@ -280,8 +277,16 @@ const initial_state = {
         }
         return item
     }),
-    employees: employees,
+    employees: [],
 }
+
+const getEmployees = async ($cc_id) => {
+    const res = axios.get('project.auto.pint.getEmployees', {$cc_id})
+    form.employees = res.data
+}
+watch(()=>form.cost_center_id, ()=>{
+    getEmployees()
+})
 
 
 const form = useForm({

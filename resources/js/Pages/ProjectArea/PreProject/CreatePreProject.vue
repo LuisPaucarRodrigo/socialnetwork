@@ -290,18 +290,19 @@ const showModal = ref(false)
 const showModalUpdate = ref(false)
 const showErrorContact = ref(false)
 
-const { preproject, customers, titles, stages } = defineProps({
+const { preproject, customers, titles, stages, type } = defineProps({
     preproject: Object,
     customers: Object,
     titles: Object,
-    stages: Object
+    stages: Object,
+    type: String,
 })
 
 let backUrls = (preproject?.status === undefined || preproject?.status === null)
-    ? 'preprojects.index'
+    ? { route: 'preprojects.index', params: { type } }
     : preproject?.status == true
-        ? { route: 'preprojects.index', params: { preprojects_status: 1 } }
-        : { route: 'preprojects.index', params: { preprojects_status: 0 } }
+        ? { route: 'preprojects.index', params: { type, preprojects_status: 1 } }
+        : { route: 'preprojects.index', params: { type, preprojects_status: 0 } }
 
 
 const initial_state = {

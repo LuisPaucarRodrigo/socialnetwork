@@ -12,7 +12,7 @@
             <div class="mt-6 flex items-center justify-between gap-x-6">
                 <div class="flex space-x-2">
                     <Link v-if="preprojects_status === null && hasPermission('ProjectManager')"
-                        :href="route('preprojects.create')"
+                        :href="route('preprojects.create', {type:type})"
                         class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-500 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                     + Agregar
                     </Link>
@@ -53,7 +53,7 @@
                             N° {{ i }} {{ item.code }}
                         </h2>
                         <div v-if="auth.user.role_id === 1" class="inline-flex justify-end gap-x-2 m:col-span-1">
-                            <Link :href="route('preprojects.create', { preproject_id: item.id })"
+                            <Link :href="route('preprojects.create', { type,preproject_id: item.id })"
                                 class="text-green-600 hover:underline mb-4 flex items-start">
                             <PencilIcon class="h-4 w-4" />
                             </Link>

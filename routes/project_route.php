@@ -31,7 +31,7 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::delete('/customers/{customer}/contacts/{customer_contact}/destroy', [CustomersController::class, 'destroy_contact'])->name('customers.contacts.destroy');
 
     //Preproject
-    Route::get('/preprojects/create/{preproject_id?}', [PreProjectController::class, 'create'])->name('preprojects.create');
+    Route::get('/preprojects/create/{type}/{preproject_id?}', [PreProjectController::class, 'create'])->name('preprojects.create');
     Route::post('/preprojects/store', [PreProjectController::class, 'store'])->name('preprojects.store');
 
     //Assign users
@@ -298,6 +298,7 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
 
     //pint auto
     Route::get('/preproject/auto-create/pint', [ProjectPintController::class, 'pint_create_project'])->name('project.auto.pint');
+    Route::get('/preproject/auto-create/search_employees/{cc_id}', [ProjectPintController::class, 'getEmployees'])->name('project.auto.pint.getEmployees');
     Route::post('/preproject/auto-store/pint', [ProjectPintController::class, 'pint_store_project'])->name('project.auto_store.pint');
     Route::post('/product-CPE', [ProjectPintController::class, 'sameCPEProducts'])->name('pint_project.products.cpe');
 

@@ -17,6 +17,7 @@ class ProjectConstants
                 'preproject' => [
                     'date'=>$data['date'],
                     'customer_id' => 1,
+                    'cost_line_id'=>1,
                     'subcustomer_id' => null,
                     'description' => $name,
                     'title' => null,

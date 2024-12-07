@@ -4,6 +4,8 @@ namespace App\Http\Controllers\ProjectArea;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PreprojectRequest\ProjectPintCreateRequest;
+use App\Models\CostCenter;
+use App\Models\CostLineCenterEmployee;
 use App\Models\Customers_contact;
 use App\Models\Employee;
 use App\Models\Preproject;
@@ -21,32 +23,31 @@ class ProjectPintController extends Controller
     public function pint_create_project()
     {
         $ids = [3, 4, 5, 6, 7];
-        $pintEmployees = [9, 20, 15, 10, 8, 25, 6, 29, 28];
         $contacts_cicsa = Customers_contact::where('customer_id', 1)->get();
-        $employees = Employee::whereIn('id', $pintEmployees)->get();
-        $employees = $employees->map(function ($item) {
-            if (in_array($item->id, [9])) {
-                $item->charge = 'Administrativo';
-            }
-            if (in_array($item->id, [20])) {
-                $item->charge = 'MOI - Mano de Obra Indirecta';
-            }
-            if (in_array($item->id, [15, 10, 8, 25, 6, 29, 28])) {
-                $item->charge = 'MOD - Mano de Obra Directa';
-            }
-            return $item;
-        });
-
+        $cost_centers = CostCenter::where('cost_line_id', 1);
         $services = Service::whereIn('id', $ids)->get();
         return Inertia::render(
             'ProjectArea/PreProject/CreateProjectPint',
             [
                 'contacts_cicsa' => $contacts_cicsa,
+                'cost_centers' => $cost_centers,
                 'services' => $services,
-                'employees' => $employees
             ]
         );
     }
+
+    public function getEmployees($cc_id){
+        $costLineEmployee = CostLineCenterEmployee::with('employee.contract')->where('cost_center_id', $cc_id)->get();
+        $employees = $costLineEmployee->map(function ($item) {
+            $item->charge = $item->employee?->contract?->personal_segment;
+            $item->name = $item->employee?->name;
+            $item->id = $item->employee?->id;
+            $item->lastname = $item->employee?->lastname;
+            return $item;
+        });
+        return response()->json($employees);
+    }
+
 
     public function pint_store_project(ProjectPintCreateRequest $request)
     {
