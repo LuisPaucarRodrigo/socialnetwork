@@ -115,8 +115,8 @@
                   </a>
                 </td>
                 <!-- principalData -->
-                <td v-for="da, i in principalData" :key="i" :class="['px-2 py-2', da.propClass]">
-                  <div class="">
+                <td v-for="da, i in principalData" :key="i" :class="['px-2 py-2', { [da.propClass] : da.title == 'Personal' }]">
+                  <div>
                     {{ getProp({ obj: emp, path: da.propName, sep: ', ' }) }}
                   </div>
                 </td>
@@ -216,7 +216,7 @@
                 </td>
                 <!-- principalData -->
                 <td v-for="da, i in principalData" :key="i"
-                  :class="['px-2 py-2 ', da.title == 'Personal' ? da.propClassExternal : da.propClass]">
+                  :class="['px-2 py-2 ', { [da.propClassExternal]: da.title == 'Personal'}]">
                   <div class="">
                     {{ getProp({ obj: emp, path: da.propName, sep: ', ' }) }}
                   </div>
