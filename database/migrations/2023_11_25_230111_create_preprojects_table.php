@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Constants\ProjectConstants;
 
 return new class extends Migration
 {
@@ -21,6 +22,7 @@ return new class extends Migration
             $table->date('date');
             $table->text('observation')->nullable();
             $table->boolean('status')->nullable();
+            $table->enum('type', ProjectConstants::projectTypes())->nullable();
             $table->foreignId('title_id')->nullable()->constrained('titles')->onDelete('set null');
             $table->timestamps();
         });
