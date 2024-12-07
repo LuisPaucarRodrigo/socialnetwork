@@ -91,7 +91,7 @@ class CostLineController extends Controller
 
     public function cost_centers_employee_store (Request $request) {
         $data = $request->validate([
-            'employees' => 'required|array',
+            'employees' => 'nullable',
             'cost_center_id' => 'required',
         ]);
         CostLineCenterEmployee::where('cost_center_id', $data['cost_center_id'])->delete();

@@ -297,7 +297,7 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
 
 
     //pint auto
-    Route::get('/preproject/auto-create/pint', [ProjectPintController::class, 'pint_create_project'])->name('project.auto.pint');
+    Route::get('/preproject/auto-create/pint/{type}', [ProjectPintController::class, 'pint_create_project'])->name('project.auto.pint');
     Route::get('/preproject/auto-create/search_employees/{cc_id}', [ProjectPintController::class, 'getEmployees'])->name('project.auto.pint.getEmployees');
     Route::post('/preproject/auto-store/pint', [ProjectPintController::class, 'pint_store_project'])->name('project.auto_store.pint');
     Route::post('/product-CPE', [ProjectPintController::class, 'sameCPEProducts'])->name('pint_project.products.cpe');

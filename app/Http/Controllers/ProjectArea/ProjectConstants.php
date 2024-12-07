@@ -18,6 +18,7 @@ class ProjectConstants
                     'date'=>$data['date'],
                     'customer_id' => 1,
                     'cost_line_id'=>1,
+                    'cost_center_id'=>$data['cost_center_id'],
                     'subcustomer_id' => null,
                     'description' => $name,
                     'title' => null,
@@ -45,6 +46,8 @@ class ProjectConstants
                 'project' => [
                     'priority'=> 'Alta',
                     'description'=> $name,
+                    'cost_line_id'=>1,
+                    'cost_center_id'=>$data['cost_center_id'],
                     'status'=>null
                 ],
                 'project_employees' => $this->getEmployeesStructured($data['employees'], $data['date']) 

@@ -20,11 +20,11 @@ use Inertia\Inertia;
 class ProjectPintController extends Controller
 {
 
-    public function pint_create_project()
+    public function pint_create_project($type)
     {
         $ids = [3, 4, 5, 6, 7];
         $contacts_cicsa = Customers_contact::where('customer_id', 1)->get();
-        $cost_centers = CostCenter::where('cost_line_id', 1);
+        $cost_centers = CostCenter::where('cost_line_id', 1)->get();
         $services = Service::whereIn('id', $ids)->get();
         return Inertia::render(
             'ProjectArea/PreProject/CreateProjectPint',
@@ -32,6 +32,7 @@ class ProjectPintController extends Controller
                 'contacts_cicsa' => $contacts_cicsa,
                 'cost_centers' => $cost_centers,
                 'services' => $services,
+                'type' => $type,
             ]
         );
     }
@@ -53,6 +54,7 @@ class ProjectPintController extends Controller
     {
         $data = $request->validated();
         $projectConstants = new ProjectConstants();
+        $data['template']= 'Mantenimiento';
         $template = $projectConstants->generateTemplate($data);
 
         //Preproject 

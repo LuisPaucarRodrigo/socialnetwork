@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Anteproyectos" />
-    <AuthenticatedLayout :redirectRoute="'preprojects.index'">
+    <AuthenticatedLayout :redirectRoute="{route:'preprojects.index', params: {type}}">
         <template #header>
             Anteproyecto y Proyecto PINT CLARO CICSA
         </template>
@@ -241,13 +241,13 @@ const showModal = ref(false)
 const showModalUpdate = ref(false)
 const showErrorContact = ref(false)
 
-const { contacts_cicsa, employees, services, currentProducts, cost_centers } = defineProps({
+const { contacts_cicsa, employees, services, currentProducts, cost_centers, type } = defineProps({
     contacts_cicsa: Object,
     services: Object,
     employees: Object,
     cost_centers: Array,
+    type: String,
 })
-
 
 const productsCPE = ref([])
 
@@ -280,19 +280,19 @@ const initial_state = {
     employees: [],
 }
 
-const getEmployees = async ($cc_id) => {
-    const res = axios.get('project.auto.pint.getEmployees', {$cc_id})
-    form.employees = res.data
-}
-watch(()=>form.cost_center_id, ()=>{
-    getEmployees()
-})
 
 
 const form = useForm({
     ...initial_state
 });
 
+const getEmployees = async (cc_id) => {
+    const res = await axios.get(route('project.auto.pint.getEmployees', {cc_id}))
+    form.employees = res.data
+}
+watch(()=>form.cost_center_id, ()=>{
+    getEmployees(form.cost_center_id)
+})
 
 const submit = () => {
     let url = route('project.auto_store.pint')
@@ -301,7 +301,7 @@ const submit = () => {
             showModal.value = true
             setTimeout(() => {
                 showModal.value = false
-                router.visit(route('preprojects.index', { preprojects_status: '1' }))
+                router.visit(route('preprojects.index', { type, preprojects_status: '1' }))
             }, 2000);
         },
         onError: (e) => {
