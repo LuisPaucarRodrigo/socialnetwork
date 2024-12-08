@@ -84,16 +84,16 @@ class SpreadsheetsController extends Controller
                     'days_taken' => $employee->contract->days_taken,
                     'pension_id' => $listPension->pension->firstWhere('type', $employee->contract->pension_type)->id
                 ]);
+                $listType = ['Salary', 'Travel'];
+                foreach ($listType as $item) {
+                    PayrollDetailExpense::create([
+                        'payroll_detail_id' => $payrollDetail->id,
+                        'type' => $item
+                    ]);
+                }
             }
 
 
-            $listType = ['Salary', 'Travel'];
-            foreach ($listType as $item) {
-                PayrollDetailExpense::create([
-                    'payroll_detail_id' => $payrollDetail->id,
-                    'type' => $item
-                ]);
-            }
             DB::commit();
             return response()->json($payroll, 200);
         } catch (Exception $e) {
