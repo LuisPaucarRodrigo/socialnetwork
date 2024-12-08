@@ -47,6 +47,10 @@ const props = defineProps({
     width: {
         type: String,
         default: 'w-full'
+    },
+    reverse: {
+        type: Boolean,
+        default: false
     }
 });
 

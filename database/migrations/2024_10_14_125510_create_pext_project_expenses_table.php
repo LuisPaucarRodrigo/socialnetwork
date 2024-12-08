@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('pext_project_expenses', function (Blueprint $table) {
             $table->id();
+            $table->boolean('fixedOrAdditional');
             $table->string('expense_type');
             $table->string('ruc');
             $table->string('zone');

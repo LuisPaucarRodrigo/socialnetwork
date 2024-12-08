@@ -9,6 +9,7 @@ class PextProjectExpense extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'fixedOrAdditional',
         'expense_type',
         'ruc',
         'type_doc',
@@ -27,24 +28,27 @@ class PextProjectExpense extends Model
         'igv',
         'user_id',
         'cicsa_assignation_id',
-        'account_statement_id'
+        'account_statement_id',
     ];
 
-    public function pext_project(){
-        return $this->belongsTo(PextProject::class,'pext_project_id');
+    public function pext_project()
+    {
+        return $this->belongsTo(PextProject::class, 'pext_project_id');
     }
 
-    public function cicsa_assignation() {
-        return $this->belongsTo(CicsaAssignation::class,'cicsa_assignation_id');
+    public function cicsa_assignation()
+    {
+        return $this->belongsTo(CicsaAssignation::class, 'cicsa_assignation_id');
     }
 
     public function provider()
     {
         return $this->belongsTo(Provider::class, 'provider_id');
     }
-    
-    public function getRealAmountAttribute() {
-        return $this->amount/(1+$this->igv/100);
+
+    public function getRealAmountAttribute()
+    {
+        return $this->amount / (1 + $this->igv / 100);
     }
 
     protected static function booted()

@@ -17,9 +17,9 @@
                 </div>
 
             </div>
-            <div class="overflow-auto">
+            <div class="overflow-auto h-[72vh]">
                 <table class="w-full whitespace-no-wrap">
-                    <thead>
+                    <thead class="sticky top-0 z-20">
                         <tr
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 w-auto">
                             <th
@@ -27,7 +27,10 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Linea de Negocio
+                                <div class="w-[190px]">
+                                    <TableHeaderCicsaFilter label="Linea de Negocio" labelClass="text-gray-600"
+                                        :options="cost_line" v-model="formSearch.cost_line" />
+                                </div>
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -199,7 +202,9 @@
                                     <select v-model="form.cost_line_id" id="cost_line_id" autocomplete="off"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         <option disabled value="">Seleccionar Linea de Negocio</option>
-                                        <option v-for="item,i in costLines" :key="item.id" :value="item.id">{{ item .name}}</option>
+                                        <option v-for="item, i in costLines" :key="item.id" :value="item.id">{{ item
+                                            .name}}
+                                        </option>
                                     </select>
                                     <InputError :message="form.errors.cost_line_id" />
                                 </div>
@@ -318,9 +323,10 @@ import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import TableHeaderCicsaFilter from '@/Components/TableHeaderCicsaFilter.vue';
 
 const confirmingUserDeletion = ref(false);
 const employeeToDelete = ref(null);
@@ -328,15 +334,16 @@ const show_m_employee = ref(false);
 const showModalCreate = ref(false);
 
 const props = defineProps({
-    employees: Object,
+    employee: Object,
     userPermissions: Array,
     costLines: Object,
 })
 
-
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
 }
+const employees = ref(props.employee)
+const cost_line = props.costLines.map(item => item.name)
 
 const initialState = {
     id: null,
@@ -359,6 +366,21 @@ const initialState = {
 
 const form = useForm({ ...initialState })
 
+const initialFormSearch = {
+    cost_line: [...cost_line],
+}
+
+const formSearch = ref({ ...initialFormSearch })
+
+watch(
+    () => [
+        formSearch.value.cost_line,
+    ],
+    () => {
+        search();
+    },
+    { deep: true }
+);
 
 const submit = () => {
     form.post(route('management.external.storeorupdate', { external_id: form.id }), {
@@ -421,4 +443,17 @@ function handlerPreview(id) {
     );
 }
 
+async function search() {
+    let url = route('employees.external.search')
+    try {
+        let response = await axios.post(url, formSearch.value)
+        employees.value = response.data
+    } catch (error) {
+        if (error.response.data) {
+            notifyError('Server error', error.response.data)
+        } else {
+            notifyError("Network or other error:", error)
+        }
+    }
+}
 </script>

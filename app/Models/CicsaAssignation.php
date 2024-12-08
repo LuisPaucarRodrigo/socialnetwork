@@ -83,11 +83,6 @@ class CicsaAssignation extends Model
         return $this->belongsTo(Project::class, 'project_id');
     }
 
-    public function cost_center()
-    {
-        return $this->belongsTo(CostCenter::class, 'cost_center_id');
-    }
-
 
     public function checkAssignation()
     {

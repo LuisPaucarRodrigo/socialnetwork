@@ -78,7 +78,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.cost_center }}
+                                    {{ item.project.cost_center.name }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -342,6 +342,7 @@ import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import axios from 'axios';
 import { setAxiosErrors } from "@/utils/utils";
+import { notifyError } from '@/Components/Notification';
 
 const { feasibility, auth, searchCondition } = defineProps({
     feasibility: Object,
@@ -417,10 +418,10 @@ async function submit() {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, form)
             } else {
-                console.error("Server error:", error.response.data)
+                notifyError("Server error:", error.response.data)
             }
         } else {
-            console.error("Network or other error:", error)
+            notifyError("Network or other error:", error)
         }
     }
 }

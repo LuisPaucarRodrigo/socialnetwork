@@ -52,44 +52,36 @@
                         </dropdown>
                     </div>
                     <PrimaryButton @click="reentry" type="button">
-                        {{ reentrystate == false ? "Inactivos" : "Activos" }}
+                        {{ formSearch.state === 'Inactive' ? "Activos" : "Inactivos" }}
                     </PrimaryButton>
                 </div>
                 <div class="flex items-center mt-4 sm:mt-0">
-                    <form @submit.prevent="search" class="flex items-center w-full sm:w-auto">
-                        <TextInput data-tooltip-target="search_fields" type="text" placeholder="Buscar..."
-                            v-model="searchForm.searchTerm" />
-                        <button type="submit" :class="{ 'opacity-25': searchForm.processing }"
-                            class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                            <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
-                                    stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </button>
-                        <div id="search_fields" role="tooltip"
-                            class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                            Nombre,Apellido,Telefono,Dni,Linea de Negocio
-                            <div class="tooltip-arrow" data-popper-arrow></div>
-                        </div>
-                    </form>
+                    <TextInput data-tooltip-target="search_fields" type="text" placeholder="Buscar..."
+                        v-model="formSearch.search" />
+                    <div id="search_fields" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Nombre,Apellido,Telefono,Dni
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                 </div>
             </div>
-            <div class="overflow-x-auto">
-                <table class="min-w-full table-auto whitespace-no-wrap">
-                    <thead>
+            <div class="overflow-x-auto h-[72vh] rounded-lg shadow">
+                <table class="w-full bg-white">
+                    <thead class="sticky top-0 z-20">
                         <tr
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 w-auto">
+                            <!-- <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            </th> -->
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Linea de Negocio
+                                <div class="w-[190px]">
+                                    <TableHeaderCicsaFilter label="Linea de Negocio" labelClass="text-gray-600"
+                                        :options="cost_line" v-model="formSearch.cost_line" />
+                                </div>
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -117,9 +109,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="employee, i in (props.search === undefined ? employees.data : employees)"
-                            :key="employee.id" class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
+                        <tr v-for="employee, i in employees.data || employees" :key="employee.id" class="text-gray-700">
+                            <!-- <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
                                 <p class="inline-block text-gray-900 whitespace-nowrap text-center w-[22px]">
                                     {{ props.search === undefined ?
                                         realNumeration(employees.per_page, employees.current_page, i)
@@ -128,33 +119,33 @@
 
                                     }}
                                 </p>
-                            </td>
+                            </td> -->
                             <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
                                 <img :src="employee.cropped_image" alt="Empleado" class="w-12 h-13 rounded-full">
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm w-auto">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ employee.contract?.cost_line?.name }}</p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm w-auto">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ employee.name }}</p>
+                            <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
+                                <p class="text-gray-900">{{ employee.contract?.cost_line?.name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ employee.lastname }}</p>
+                                <p class="text-gray-900">{{ employee.name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ employee.dni }}</p>
+                                <p class="text-gray-900">{{ employee.lastname }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ employee.phone1 }}</p>
+                                <p class="text-gray-900">{{ employee.dni }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">
+                                <p class="text-gray-900">{{ employee.phone1 }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
+                                <p class="text-gray-900">
                                     {{ formattedDate(employee.contract.hire_date) }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
                                 <div v-if="employee.contract.fired_date == null" class="flex space-x-3 justify-center">
-                                    <Link class="text-blue-900 whitespace-no-wrap"
+                                    <Link class="text-blue-900"
                                         :href="route('management.employees.show', { id: employee.id })">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-teal-500">
@@ -165,7 +156,7 @@
                                     </svg>
                                     </Link>
                                     <Link v-if="hasPermission('HumanResourceManager')"
-                                        class="text-blue-900 whitespace-no-wrap"
+                                        class="text-blue-900"
                                         :href="route('management.employees.edit', { id: employee.id })">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
@@ -175,7 +166,7 @@
                                     </Link>
                                     <!-- <button v-if="hasPermission('UserManager')" type="button"
                                         @click="confirmUserDeletion(employee.id)"
-                                        class="text-blue-900 whitespace-no-wrap">
+                                        class="text-blue-900">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -183,7 +174,7 @@
                                         </svg>
                                     </button> -->
                                     <button v-if="hasPermission('UserManager')" type="button"
-                                        @click="confirmFired(employee.id)" class="text-blue-900 whitespace-no-wrap">
+                                        @click="confirmFired(employee.id)" class="text-blue-900">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -192,7 +183,7 @@
                                     </button>
                                 </div>
                                 <button v-if="employee.contract.fired_date" type="button"
-                                    @click="employee_fired_date(employee.id)" class="text-blue-900 whitespace-no-wrap">
+                                    @click="employee_fired_date(employee.id)" class="text-blue-900">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -204,7 +195,7 @@
                     </tbody>
                 </table>
             </div>
-            <div v-if="props.search === undefined"
+            <div v-if="employees.data"
                 class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="employees.links" />
             </div>
@@ -287,12 +278,14 @@ import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import InputError from '@/Components/InputError.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import { formattedDate, realNumeration } from '@/utils/utils';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { notifyError } from '@/Components/Notification';
+import TableHeaderCicsaFilter from '@/Components/TableHeaderCicsaFilter.vue';
 
 const confirmingUserDeletion = ref(false);
 const deleteButtonText = 'Eliminar';
@@ -305,26 +298,16 @@ const updateSchedule = ref(false);
 const showModalReentry = ref(false);
 
 const props = defineProps({
-    employees: Object,
+    employee: Object,
     boolean: Boolean,
     userPermissions: Array,
-    search: String
+    costLine: Object
 })
 
+const employees = ref(props.employee)
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
-}
-
-const reentrystate = ref(props.boolean);
-
-const reentry = () => {
-    if (props.boolean == true) {
-        router.get(route('management.employees'))
-    } else {
-        reentrystate.value = true
-        router.get(route('management.employees', { reentry: reentrystate.value }))
-    }
 }
 
 const form = useForm({
@@ -337,25 +320,50 @@ const form1 = useForm({
     reentry_date: '',
 })
 
+const cost_line = props.costLine.map(item => item.name)
 
-const submit = () => {
-    if (employeeReentry.value != null) {
-        router.put(route('management.employees.reentry', { id: employeeReentry.value }), form1, {
-            onSuccess: () => {
-                closeReentryModal();
-                router.visit(route('management.employees'));
-            }
+const initialFormSearch = {
+    state: 'Active',
+    cost_line: [...cost_line],
+    search: ''
+}
 
-        })
+const formSearch = ref({ ...initialFormSearch })
+
+function reentry() {
+    if (formSearch.value.state === 'Active') {
+        formSearch.value.state = 'Inactive'
     } else {
-        router.put(route('management.employees.fired', employeeToFired.value), form, {
-            onSuccess: () => {
-                closeFiredModal();
-                router.visit(route('management.employees'));
-            }
-
-        })
+        formSearch.value.state = 'Active'
     }
+}
+
+watch(
+    () => [
+        formSearch.value.state,
+        formSearch.value.cost_line,
+        formSearch.value.search,
+    ],
+    () => {
+        search();
+    },
+    { deep: true }
+);
+
+function submit() {
+    let url = employeeReentry.value ? route('management.employees.reentry', { id: employeeReentry.value }) : route('management.employees.fired', employeeToFired.value)
+    let formData = employeeReentry.value ? form1 : form
+    router.put(url, formData, {
+        onSuccess: () => {
+            if (employeeReentry.value) {
+                closeReentryModal();
+            } else {
+                closeFiredModal();
+            }
+            closeReentryModal();
+            router.visit(route('management.employees'));
+        }
+    })
 }
 
 const confirmUserDeletion = (employeeId) => {
@@ -398,26 +406,17 @@ const closeReentryModal = () => {
     showModalReentry.value = false;
 };
 
-const searchForm = useForm({
-    searchTerm: props.search ? props.search : '',
-})
-
-const search = () => {
-    if (searchForm.searchTerm == '') {
-        if (!props.boolean == true) {
-            reentrystate.value = false
-            router.get(route('management.employees'))
+async function search() {
+    let url = route('management.employees.search')
+    try {
+        let response = await axios.post(url, formSearch.value)
+        employees.value = response.data
+    } catch (error) {
+        if (error.response.data) {
+            notifyError('Server error', error.response.data)
         } else {
-            reentrystate.value = true
-            router.get(route('management.employees', {
-                reentry: reentrystate.value
-            }))
+            notifyError("Network or other error:", error)
         }
-    } else {
-        router.get(route('management.employees.search'), {
-            searchTerm: searchForm.searchTerm,
-            isActive: !props.boolean
-        });
     }
 }
 

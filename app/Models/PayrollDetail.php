@@ -15,6 +15,7 @@ class PayrollDetail extends Model
     protected $fillable = [
         'payroll_id',
         'employee_id',
+        'state',
         'pension_id',
         'basic_salary',
         'amount_travel_expenses',
@@ -51,10 +52,10 @@ class PayrollDetail extends Model
         'total_contribution'
     ];
 
-    public function getEmployeeNameAttribute () {
-        return $this->employee->name.' '. $this->employee->lastname;
+    public function getEmployeeNameAttribute()
+    {
+        return $this->employee->name . ' ' . $this->employee->lastname;
     }
-
 
     public function getTruncatedMonthAttribute()
     {

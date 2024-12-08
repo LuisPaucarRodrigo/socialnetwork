@@ -19,6 +19,7 @@ Route::middleware('permission:HumanResourceManager')->group(function () {
 
     //Empleados Externos
     Route::get('/management_employees/external/index', [ManagementEmployees::class, 'external_index'])->name('employees.external.index');
+    Route::post('/management_employees/external/search', [ManagementEmployees::class, 'external_search'])->name('employees.external.search');
     Route::post('/management_employees/storeorupdate/{external_id?}', [ManagementEmployees::class, 'storeorupdate'])->name('management.external.storeorupdate');
     Route::delete('/management_employees/external/delete/{id}', [ManagementEmployees::class, 'external_delete'])->name('employees.external.delete');
 
@@ -99,10 +100,10 @@ Route::middleware('permission:HumanResourceManager')->group(function () {
 });
 
 Route::middleware('permission:HumanResourceManager|HumanResource')->group(function () {
-    Route::get('/management_employees/index/{reentry?}', [ManagementEmployees::class, 'index'])->name('management.employees');
+    Route::get('/management_employees/index', [ManagementEmployees::class, 'index'])->name('management.employees');
     Route::get('/management_employees/information_additional/details/{id}', [ManagementEmployees::class, 'details'])->name('management.employees.show');
     Route::get('/management_employees/information_additional/details/download/{id}', [ManagementEmployees::class, 'download'])->name('management.employees.information.details.download');
-    Route::get('/management_employees/index-search', [ManagementEmployees::class, 'search'])->name('management.employees.search');
+    Route::post('/management_employees/index-search', [ManagementEmployees::class, 'search'])->name('management.employees.search');
 
     Route::get('/management_employees/happy_birthday', [ManagementEmployees::class, 'happy_birthday'])->name('management.employees.happy.birthday');
 

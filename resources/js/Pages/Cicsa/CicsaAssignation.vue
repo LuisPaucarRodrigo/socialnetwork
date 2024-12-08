@@ -70,9 +70,9 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Encargado
                             </th>
-                            <th
+                            <!-- <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            </th>
+                            </th> -->
                         </tr>
                     </thead>
                     <tbody>
@@ -95,7 +95,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.cost_center }}
+                                    {{ item.project.cost_center.name }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -123,7 +123,7 @@
                                     {{ item.user_name }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                            <!-- <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <div class="flex space-x-3 justify-center">
                                     <button class="text-blue-900" @click="openEditSotModal(item)">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -133,7 +133,7 @@
                                         </svg>
                                     </button>
                                 </div>
-                            </td>
+                            </td> -->
                         </tr>
                     </tbody>
                 </table>

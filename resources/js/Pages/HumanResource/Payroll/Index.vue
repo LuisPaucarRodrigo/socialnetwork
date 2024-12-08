@@ -235,7 +235,6 @@ async function submit() {
 
 function updatePayroll(payroll, action) {
     const validations = payrolls.value.data || payrolls.value
-    // const index = action === "create" ? null : validations.findIndex(item => item.id === payroll.id)
     if (action === "create") {
         validations.unshift(payroll);
         createOrEditModal()

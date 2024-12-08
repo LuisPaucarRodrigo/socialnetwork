@@ -3,7 +3,7 @@
     <Head title="Gestion de Costos Adicionales" />
     <AuthenticatedLayout redirectRoute="projectmanagement.pext.additional.index">
         <template #header>
-            Gastos del Proyecto Adicional
+            Gastos {{ fixedOrAdditional ? 'Fijos' : 'Adicionales' }}
         </template>
         <br />
         <Toaster richColors />
@@ -40,6 +40,17 @@
                         Rechazados
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
+                    <Link v-if="fixedOrAdditional"
+                        class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
+                        :href="route('pext.additional.expense.index', { cicsa_assignation_id: cicsa_assignation_id })">
+                    G.Adicionales
+                    </Link>
+                    <Link v-else
+                        class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
+                        :href="route('projectmanagement.pext.expenses.fixed', { cicsa_assignation_id: cicsa_assignation_id })">
+                    G.Fijos
+                    </Link>
+
                 </div>
 
                 <div v-if="hasPermission('HumanResourceManager')" class="sm:hidden">
@@ -469,8 +480,8 @@
                                     <InputError :message="form.errors.description" />
                                 </div>
                             </div>
-                            <div>
-                                <InputLabel for="state" class="font-medium leading-6 text-gray-900">¿Es caja chica?
+                            <!-- <div>
+                                <InputLabel for="state" class="font-medium leading-6 text-gray-900">¿Es Adicional?
                                 </InputLabel>
                                 <div class="mt-2 class flex gap-4">
                                     <label class="flex gap-2 items-center">
@@ -485,7 +496,7 @@
                                     </label>
                                     <InputError :message="form.errors.state" />
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="sm:col-span-2">
                                 <InputLabel class="font-medium leading-6 text-gray-900">
                                     Archivo
@@ -527,7 +538,7 @@ import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import Modal from "@/Components/Modal.vue";
 import { ref, watch } from "vue";
-import { Head, useForm, router } from "@inertiajs/vue3";
+import { Head, useForm, router, Link } from "@inertiajs/vue3";
 import { TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { formattedDate } from "@/utils/utils";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
@@ -549,9 +560,10 @@ const props = defineProps({
     userPermissions: Array,
     state: String,
     cost_center: Object,
-    cicsa_assignation_id: String
+    cicsa_assignation_id: String,
+    fixedOrAdditional: Boolean
 });
-console.log(props.cicsa_assignation_id)
+
 const expenses = ref(props.expense);
 const filterMode = ref(false);
 // const subCostCenterZone = ref(null);
@@ -562,6 +574,7 @@ const hasPermission = (permission) => {
 
 const form = useForm({
     id: "",
+    fixedOrAdditional: false,
     expense_type: "",
     ruc: "",
     zone: "",
@@ -574,7 +587,8 @@ const form = useForm({
     doc_date: "",
     description: "",
     photo: "",
-    state: true,
+    state: props.fixedOrAdditional ? true : false,
+    is_accepted: true,
     amount: "",
     igv: 0,
 });
@@ -601,7 +615,6 @@ const closeModal = () => {
 };
 
 async function submit() {
-    console.log(form)
     const url = route('pext.expenses.storeOrUpdate', { 'expense_id': form.id ?? null })
     try {
         const formData = toFormData(form)
@@ -610,11 +623,14 @@ async function submit() {
         updateExpense(response.data, action)
         closeModal();
     } catch (error) {
-        console.log(error.response)
         if (error.response) {
-            setAxiosErrors(error.response.data.errors, form)
+            if (error.response.data.errors) {
+                setAxiosErrors(error.response.data.errors, form)
+            } else {
+                notifyError('Server Error', error.response.data)
+            }
         } else {
-            notifyError('Server Error')
+            notifyError("Network or other error:", error)
         }
     }
 };
@@ -699,6 +715,7 @@ const docTypes = [
 
 
 const filterForm = ref({
+    fixedOrAdditional: props.fixedOrAdditional ? true : false,
     rejected: 1,
     search: "",
     selectedCostCenter: costCenter,
@@ -802,8 +819,8 @@ function updateExpense(expense, action, state) {
 }
 
 async function rejectedExpenses() {
-    console.log(filterForm.value.rejected)
     filterForm.value.rejected = !filterForm.value.rejected
 
 }
+
 </script>

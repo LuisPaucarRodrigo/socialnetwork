@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\HumanResource;
 
-use App\Actions\Jetstream\UpdateTeamName;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\HumanResource\CreateManagementEmployees;
 use App\Http\Requests\HumanResource\FiredContractEmployees;
@@ -17,7 +16,7 @@ use App\Models\Employee;
 use App\Models\ExternalEmployee;
 use App\Models\Family;
 use App\Models\Health;
-use App\Models\Pension;
+use App\Models\PayrollDetail;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -26,70 +25,51 @@ use Inertia\Inertia;
 
 class ManagementEmployees extends Controller
 {
-    public function index($reentry = false)
+    public function index()
     {
-        if ($reentry == false) {
-            $employees = Employee::with('contract.cost_line')->whereHas('contract', function ($query) {
-                $query->where('state', 'Active');
-            })->paginate();
-        } else {
-            $employees = Employee::with('contract.cost_line')->whereHas('contract', function ($query) {
-                $query->where('state', 'Inactive');
-            })->paginate();
-        }
+        $employees = Employee::with('contract.cost_line')->whereHas('contract', function ($query) {
+            $query->where('state', 'Active');
+        })->paginate();
 
         $employees->each(function ($employee) {
             $employee = $employee->setAppends([]);
             $employee->cropped_image = url($employee->cropped_image ? '/image/profile/' . $employee->cropped_image : '/image/projectimage/DefaultUser.png');
         });
-
+        $cost_line = CostLine::all();
         return Inertia::render('HumanResource/ManagementEmployees/Employees', [
-            'employees' => $employees,
-            'boolean' => boolval($reentry)
+            'employee' => $employees,
+            'costLine' => $cost_line
         ]);
     }
 
 
     public function search(Request $request)
     {
-        $searchTerm = strtolower($request->query('searchTerm'));
-        $isActive = $request->query('isActive');
+        $state = $request->state;
+        $employees = Employee::with('contract.cost_line')->whereHas('contract', function ($query) use ($state) {
+            $query->where('state', $state);
+        });
 
-        if ($isActive) {
-            $employees = Employee::with('contract.cost_line')
-                ->whereHas('contract', function ($query) {
-                    $query->where('state', 'Active');
-                });
-        } else {
-            $employees = Employee::with('contract.cost_line')
-                ->whereHas('contract', function ($query) {
-                    $query->where('state', 'Inactive');
-                });
-        }
+        $searchTerm = $request->search;
         $employees = $employees->where(function ($query) use ($searchTerm) {
             $query->where('name', 'like', '%' . $searchTerm . '%')
                 ->orWhere('lastname', 'like', '%' . $searchTerm . '%')
                 ->orWhere('phone1', 'like', '%' . $searchTerm . '%')
-                ->orWhere('dni', 'like', '%' . $searchTerm . '%')
-                ->orWhereHas('contract', function ($item) use ($searchTerm) {
-                    $item->whereHas('cost_line', function ($subitem) use ($searchTerm) {
-                        $subitem->where('name', 'like', '%' . $searchTerm . '%');
-                    });
-                });
-        })
-            ->get();
+                ->orWhere('dni', 'like', '%' . $searchTerm . '%');
+        });
+
+        $costLine = $request->cost_line;
+        $employees = $employees->whereHas('contract.cost_line', function ($item) use ($costLine) {
+            $item->whereIn('name', $costLine);
+        })->get();
+
         $employees->each(function ($employee) {
+            $employee = $employee->setAppends([]);
             $employee->cropped_image = url($employee->cropped_image ? '/image/profile/' . $employee->cropped_image : '/image/projectimage/DefaultUser.png');
         });
 
-        return Inertia::render('HumanResource/ManagementEmployees/Employees', [
-            'employees' => $employees,
-            'search' => $searchTerm,
-            'boolean' => !boolval($isActive)
-        ]);
+        return response()->json($employees, 200);
     }
-
-
 
     public function create()
     {
@@ -346,11 +326,18 @@ class ManagementEmployees extends Controller
         $validateData = $request->validated();
         $contract = Contract::where('employee_id', $id)->first();
         $contract->update($validateData);
+
+        $payroll = PayrollDetail::where('employee_id', $id)
+            ->latest('created_at')
+            ->first();
+        if ($payroll) {
+            $payroll->update($validateData);
+        }
     }
 
     public function details($id)
     {
-        $details = Employee::with('contract.cost_line', 'contract.pension', 'education', 'address', 'emergency', 'family', 'health')->find($id);
+        $details = Employee::with('contract.cost_line', 'contract', 'education', 'address', 'emergency', 'family', 'health')->find($id);
         return Inertia::render('HumanResource/ManagementEmployees/EmployeesDetails', ['details' => $details]);
     }
 
@@ -407,9 +394,23 @@ class ManagementEmployees extends Controller
             $employee->profile = url($employee->cropped_image ? '/image/profile/' . $employee->cropped_image : '/image/projectimage/DefaultUser.png');
         });
         return Inertia::render('HumanResource/ManagementEmployees/EmployeesExternal', [
-            'employees' => $employees,
+            'employee' => $employees,
             'costLines' => $costLines
         ]);
+    }
+
+    public function external_search(Request $request)
+    {
+        $cost_line = $request->cost_line;
+        $employees = ExternalEmployee::with('cost_line')
+            ->whereHas('cost_line', function ($item) use ($cost_line) {
+                $item->whereIn('name', $cost_line);
+            })
+            ->get();
+        $employees->each(function ($employee) {
+            $employee->profile = url($employee->cropped_image ? '/image/profile/' . $employee->cropped_image : '/image/projectimage/DefaultUser.png');
+        });
+        return response()->json($employees, 200);
     }
 
     public function storeorupdate(StoreOrUpdateEmployeesExternal $request, $external_id = null)

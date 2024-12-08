@@ -2,7 +2,6 @@
 
 namespace App\Exports\CicsaProcess;
 
-use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\FromView;
 use Illuminate\Contracts\View\View;
 use App\Models\CicsaAssignation;
@@ -29,6 +28,7 @@ class MaterialsSummary implements FromView
                 return $query->where('cicsa_assignation_id', $this->ca_id);
             })
             ->get();
+            
         $installedMaterials = CicsaInstallationMaterial::whereHas('cicsa_installation', function($query){
             return $query->where('cicsa_assignation_id', $this->ca_id);
         })->get()->values()->all();
@@ -48,17 +48,15 @@ class MaterialsSummary implements FromView
                 if($key_2!==false){
                     $used_quantity = $installedMaterials[$key_2]->used_quantity;
                 }
-
                 array_push($true_materials,[
                     'code_ax'=>$item->code_ax,
+                    'internal_reference' => $item->internal_reference,
                     'name'=> $item->name,
                     $item->cicsa_material_id => $item->quantity,
                     'unit'=>$item->unit,
                     'used_quantity'=>$used_quantity,
                     'total_quantity' => $item->quantity
                 ]);
-
-                
             }
         }
 

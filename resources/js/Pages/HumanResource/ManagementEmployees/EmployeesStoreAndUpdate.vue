@@ -757,6 +757,7 @@ if (props.employees) {
 watch(form.state_travel_expenses,(newVal) => {
     form.amount_travel_expenses = ''
 })
+
 const addDependent = () => {
     form.familyDependents.push({
         family_dni: '',

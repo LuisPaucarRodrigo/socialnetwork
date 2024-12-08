@@ -101,8 +101,7 @@
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <TableHeaderFilter labelClass="text-[11px]" label="Centro de Costos" :options="costCenter"
-                                v-model="filterForm.selectedCostCenter" width="w-48" />
+                            Centro de Costos
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
@@ -182,7 +181,7 @@
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap">
-                            {{ item.pext_project.project.cost_center.name }}
+                            {{ item.project.cost_center.name }}
                         </td>
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                             {{ item.zone }}
@@ -336,23 +335,6 @@
                                 </div>
                             </div>
                             <div>
-                                <InputLabel for="subCostCenter" class="font-medium leading-6 text-gray-900">Sub
-                                    Centro de Costos
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input type="text" id="subCostCenter" v-model="form.pext_project_name"
-                                        @input="handleProjectNameAutocomplete($event.target.value)" autocomplete="off"
-                                        list="project_name"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <datalist id="project_name">
-                                        <option v-for="item in subCostCenter" :value="item.project_name">
-                                            {{ item.project_name }} {{ item.customer }}
-                                        </option>
-                                    </datalist>
-                                    <InputError :message="form.errors.cicsa_assignation_id" />
-                                </div>
-                            </div>
-                            <div>
                                 <InputLabel for="expense_type" class="font-medium leading-6 text-gray-900">Tipo de Gasto
                                 </InputLabel>
                                 <div class="mt-2">
@@ -461,7 +443,6 @@
                                     <InputError :message="form.errors.igv" />
                                 </div>
                             </div>
-
                             <div>
                                 <InputLabel for="amount" class="font-medium leading-6 text-gray-900">Monto sin IGV
                                 </InputLabel>
@@ -476,7 +457,6 @@
                                     }}</InputLabel>
                                 </div>
                             </div>
-
                             <div>
                                 <InputLabel for="description" class="font-medium leading-6 text-gray-900">Descripción
                                 </InputLabel>
@@ -484,23 +464,6 @@
                                     <textarea type="text" v-model="form.description" id="description"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.description" />
-                                </div>
-                            </div>
-                            <div>
-                                <InputLabel for="state" class="font-medium leading-6 text-gray-900">¿Es caja chica?
-                                </InputLabel>
-                                <div class="mt-2 class flex gap-4">
-                                    <label class="flex gap-2 items-center">
-                                        Sí
-                                        <input type="radio" v-model="form.state" id="state" :value="true"
-                                            class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
-                                    </label>
-                                    <label class="flex gap-2 items-center">
-                                        No
-                                        <input type="radio" v-model="form.state" id="state" :value="false"
-                                            class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
-                                    </label>
-                                    <InputError :message="form.errors.state" />
                                 </div>
                             </div>
                             <div class="sm:col-span-2">
@@ -561,31 +524,29 @@ import { Toaster } from "vue-sonner";
 
 const props = defineProps({
     expense: Object,
-    pext_project_id: String,
     providers: Object,
     auth: Object,
     userPermissions: Array,
     state: String,
-    cost_center: Object
+    cicsa_assignation_id: String,
+    fixedOrAdditional: Boolean
 });
 
 const expenses = ref(props.expense);
 const filterMode = ref(false);
 const subCostCenterZone = ref(null);
-const subCostCenter = ref(null)
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
 };
 
 const form = useForm({
     id: "",
+    fixedOrAdditional: true,
     expense_type: "",
     ruc: "",
     zone: "",
     provider_id: "",
-    cicsa_assignation_id: "",
-    pext_project_name: "",
-    pext_project_id: props.pext_project_id,
+    cicsa_assignation_id: props.cicsa_assignation_id,
     type_doc: "",
     operation_number: "",
     operation_date: "",
@@ -593,7 +554,8 @@ const form = useForm({
     doc_date: "",
     description: "",
     photo: "",
-    state: true,
+    state: props.fixedOrAdditional ? true : false,
+    is_accepted: true,
     amount: "",
     igv: 0,
 });
@@ -629,8 +591,13 @@ async function submit() {
         updateExpense(response.data, action)
         closeModal();
     } catch (error) {
+        console.log(error)
         if (error.response) {
-            setAxiosErrors(error.response.data.errors, form)
+            if (error.response.data.errors) {
+                setAxiosErrors(error.response.data.errors, form)
+            } else {
+                notifyError('Server Error', error.response.data)
+            }
         } else {
             notifyError('Server Error')
         }
@@ -673,7 +640,6 @@ const handleRucDniAutocomplete = (e) => {
 watch(() => form.zone, (newVal) => {
     if (pext_project_zone.value != form.zone) {
         form.pext_project_name = ""
-        form.cicsa_assignation_id = ""
     }
     searchSubCostCenter()
 });
@@ -688,17 +654,6 @@ async function searchSubCostCenter() {
     }
 }
 
-function handleProjectNameAutocomplete(e) {
-    subCostCenter.value = subCostCenterZone.value.filter(item => item.project_name.includes(e));
-    const cicsaAssignation = subCostCenter.value
-    let cicsa_assignation = cicsaAssignation.find(item => item.project_name === e);
-    if (cicsa_assignation) {
-        form.cicsa_assignation_id = cicsa_assignation.id;
-    } else {
-        form.cicsa_assignation_id = "";
-    }
-}
-
 function handlerPreview(id) {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
     window.open(
@@ -708,8 +663,6 @@ function handlerPreview(id) {
         "_blank"
     );
 }
-
-const costCenter = props.cost_center.map(item => item.name)
 
 const zones = [
     "Arequipa",
@@ -748,7 +701,6 @@ const docTypes = [
 const filterForm = ref({
     rejected: 1,
     search: "",
-    selectedCostCenter: costCenter,
     selectedZones: zones,
     selectedExpenseTypes: expenseTypes,
     selectedDocTypes: docTypes
@@ -759,7 +711,6 @@ const filterForm = ref({
 watch(() => [
     filterForm.value.rejected,
     filterForm.value.search,
-    filterForm.value.selectedCostCenter,
     filterForm.value.selectedZones,
     filterForm.value.selectedExpenseTypes,
     filterForm.value.selectedDocTypes,

@@ -23,8 +23,12 @@ class StoreOrUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'fixedOrAdditional' => 'required|string',
             'expense_type' => 'required|string',
-            'ruc' => ['required','numeric','digits:11',
+            'ruc' => [
+                'required',
+                'numeric',
+                'digits:11',
                 function ($attribute, $value, $fail) {
                     $expenseId = $this->route('expense_id');
                     if ($this->doc_number) {
@@ -50,10 +54,10 @@ class StoreOrUpdateRequest extends FormRequest
             'zone' => 'required',
             'provider_id' => 'nullable',
             'description' => 'required|string',
-            'photo' => 'nullable',
+            'photo' => 'nullable|max:2048',
+            'is_accepted' => 'required|string',
             'state' => 'required|string',
             'igv' => 'required',
-            'pext_project_id' => 'nullable',
             'cicsa_assignation_id' => 'required'
         ];
     }

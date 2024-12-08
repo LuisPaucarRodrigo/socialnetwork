@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('payroll_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('payroll_id')->constrained();
-            $table->foreignId('employee_id')->constrained();
+            $table->foreignId('payroll_id')->constrained('payrolls');
+            $table->foreignId('employee_id')->constrained('employees');
             $table->float('basic_salary');
             $table->float('amount_travel_expenses')->nullable();
             $table->float('life_ley');
@@ -25,7 +25,7 @@ return new class extends Migration
             $table->integer('days_taken')->default(0);
             $table->date('hire_date');
             $table->date('fired_date')->nullable();
-            $table->foreignId('pension_id')->constrained();
+            $table->foreignId('pension_id')->constrained('pensions');
             $table->timestamps();
         });
     }

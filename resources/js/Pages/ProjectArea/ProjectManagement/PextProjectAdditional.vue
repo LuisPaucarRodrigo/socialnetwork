@@ -1,5 +1,4 @@
 <template>
-
     <Head title="Proyectos" />
     <AuthenticatedLayout :redirectRoute="'projectmanagement.pext.index'">
         <template #header>
@@ -96,7 +95,7 @@
                         Cliente: {{ item.customer }}
                     </p>
                     <p class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
-                        Centro de Costos: {{ item.cost_center }}
+                        Centro de Costos: {{ item.project.cost_center.name }}
                     </p>
                     <p class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
                         Codigo: {{ item.project_code }}
@@ -170,7 +169,9 @@
                                 <select id="cost_center" v-model="form.cost_center_id"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option value="">Seleccionar Centro de Costo</option>
-                                    <option v-for="item in cost_line.cost_center" :key="item.id" :value="item.id">{{ item.name }}
+                                    <option v-for="item in cost_line.cost_center" :key="item.id" :value="item.id">{{
+                                        item.name
+                                    }}
                                     </option>
                                 </select>
                                 <InputError :message="form.errors.cost_center_id" />
@@ -332,9 +333,9 @@ const projects = ref(project);
 // const projectToDelete = ref('');
 
 function editProject(pext) {
-    Object.assign(form, pext);
+    form.defaults({ ...pext, cost_center_id: pext.project.cost_center.id })
+    form.reset()
     createOrEditModal()
-    console.log(form)
 }
 
 // const delete_project = () => {

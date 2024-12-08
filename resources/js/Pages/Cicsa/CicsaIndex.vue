@@ -17,7 +17,7 @@
                 <span class="text-gray-700 font-medium">: Pendiente</span>
             </div>
         </template>
-        <div class="min-w-full ">
+        <div class="min-w-full">
             <div class="flex justify-between">
                 <div class="flex space-x-4">
                     <FilterProcess v-if="filterForm.typeStages === 'Todos'" :options="selectableOptions"
@@ -162,11 +162,8 @@
                                 </div>
                             </th>
 
-                            <th :style="thStickyStyle.pcpe_sticky" :class="[
-                                'border-b-2 border-gray-300 bg-gray-100 px-2 py-1 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600',
-                                checkVisibility('Asignación')
-                                    ? ''
-                                    : 'border-r-2',
+                            <th v-if="checkVisibility('Asignación')" :style="thStickyStyle.pcpe_sticky" :class="[
+                                'border-b-2 border-gray-300 bg-gray-100 px-2 py-1 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600'
                             ]">
                                 <div class="flex justify-center">
                                     <p class="title" v-html="reverseWordsWithBreaks('CPE')"></p>
@@ -178,7 +175,6 @@
                                     <TableHeaderCicsaFilter label="Centro de Costos" labelClass="title text-gray-600"
                                         :reverse="true" :options="[...cost_center]" v-model="filterForm.cost_center" />
                                 </div>
-
                             </th>
                             <th v-if="checkVisibility('Asignación')"
                                 class="border-b-2 border-gray-300 bg-gray-100 px-2 py-1 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
@@ -710,19 +706,19 @@
                                     {{ item.cpe }}
                                 </p>
                             </td>
-                            <td v-if="checkVisibility('Asignación')" :class="stateClass(item.cost_center)"
+                            <td v-if="checkVisibility('Asignación')" :class="stateClass(item.project.cost_center.name)"
                                 class="border-b border-gray-200 px-2 py-1 text-[11px] whitespace-nowrap">
                                 <p class="text-gray-900 text-center" :class="stateClassP(
-                                    item.cost_center
+                                    item.project.cost_center.name
                                 )
                                     ">
-                                    {{ item.cost_center || "--" }}
+                                    {{ item.project.cost_center.name || "--" }}
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Asignación')" :class="stateClass(item.zone)"
                                 class="border-b border-gray-200 px-2 py-1 text-[11px]">
                                 <p class="text-gray-900 text-center" :class="stateClassP(
-                                    item.cost_center
+                                    item.zone
                                 )
                                     ">
                                     {{ item.zone || "--" }} {{ item.zone2 }}
@@ -827,8 +823,7 @@
                             </td>
                             <td v-if="checkVisibility('Factibilidad PINT y PEXT')"
                                 class="bg-white border-b border-r-2 border-gray-200 px-2 py-1 text-[11px] whitespace-nowrap">
-                                <button
-                                    @click="openBlank(route('feasibilities.index', { searchCondition: item.cpe }))">
+                                <button @click="openBlank(route('feasibilities.index', { searchCondition: item.cpe }))">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -1825,9 +1820,10 @@ import { ArrowPathIcon, ServerIcon, EyeIcon } from "@heroicons/vue/24/outline";
 import TextInput from "@/Components/TextInput.vue";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 
-const { auth, projects } = defineProps({
+const { auth, projects, center_list } = defineProps({
     auth: Object,
     projects: Object,
+    center_list: Object
 });
 
 const dataToRender = ref(projects.data);
@@ -1974,7 +1970,7 @@ function getTotalAmount(objArray) {
 //filter
 const stages = ["", "Proyecto", "Administracion", "Cobranza"];
 const stats = ["Pendiente", "En Proceso", "Completado"];
-const cost_center = ["Mantto Pext Claro", "Instalaciones GTD", "Mantto Pext GTD", "Densificacion", "Adicionales", "Instalaciones Claro", "TSS"];
+const cost_center = center_list.map(item => item.name);
 const state_charge_area = ["A tiempo", "Pagado", "Con deuda", "En Proceso"];
 
 const initSearch = {
