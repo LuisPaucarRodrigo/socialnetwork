@@ -17,7 +17,7 @@
                     + Agregar
                     </Link>
                     <Link v-if="preprojects_status === null && hasPermission('ProjectManager')"
-                        :href="route('project.auto.pint')"
+                        :href="'#'"
                         class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs  uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-500 focus:border-indigo-600 focus:outline-none focus:ring-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="white" class="h-5 w-5 hover:text-gray-700">

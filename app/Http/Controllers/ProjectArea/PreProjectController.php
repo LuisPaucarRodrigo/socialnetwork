@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PreprojectRequest;
 use App\Http\Requests\PreprojectRequest\PreprojectQuoteRequest;
 use App\Http\Requests\PurchaseRequest\UpdatePurchaseRequest;
+use App\Models\CostLine;
 use App\Models\Customer;
 use App\Models\PhotoReport;
 use App\Models\Preproject;
@@ -79,13 +80,19 @@ class PreProjectController extends Controller
     }
 
     public function create($type ,$preproject_id = null)
-    {
+    {   
+        $customers = Customer::with('customer_contacts');
+        if($type == "1" ){ $customers = $customers->where('id', '!=', 2); }
+        if($type == "2" ){ $customers = $customers->where('id', '!=', 1); }
+        if($type!=="1" && $type!=="2") { abort(404); }
+        $customers = $customers->get();
         return Inertia::render('ProjectArea/PreProject/CreatePreProject', [
             'preproject' => Preproject::with('project', 'customer', 'contacts')->find($preproject_id),
-            'customers' => Customer::with('customer_contacts')->where('id', '!=', 1)->get(),
+            'customers' => $customers,
             'titles' => Title::all(),
             'stages' => ReportStage::select('id', 'name')->get(),
-            'type' => $type
+            'type' => $type,
+            'cost_line' => CostLine::find($type),
         ]);
     }
 
