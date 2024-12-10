@@ -70,6 +70,7 @@ class SpreadsheetsController extends Controller
 
             $listPension = $payroll->load('pension');
             $employees = Employee::select('id')->with('contract')->get();
+            $listType = ['Salary', 'Travel'];
             foreach ($employees as $employee) {
                 $payrollDetail = PayrollDetail::create([
                     'payroll_id' => $payroll->id,
@@ -84,15 +85,13 @@ class SpreadsheetsController extends Controller
                     'days_taken' => $employee->contract->days_taken,
                     'pension_id' => $listPension->pension->firstWhere('type', $employee->contract->pension_type)->id
                 ]);
-            }
 
-
-            $listType = ['Salary', 'Travel'];
-            foreach ($listType as $item) {
-                PayrollDetailExpense::create([
-                    'payroll_detail_id' => $payrollDetail->id,
-                    'type' => $item
-                ]);
+                foreach ($listType as $item) {
+                    PayrollDetailExpense::create([
+                        'payroll_detail_id' => $payrollDetail->id,
+                        'type' => $item
+                    ]);
+                }
             }
             DB::commit();
             return response()->json($payroll, 200);
@@ -172,13 +171,13 @@ class SpreadsheetsController extends Controller
             'operation_number' => $validateData['operation_number'],
         ];
         $data['account_statement_id'] = null;
-        if(isset($data['operation_number']) && isset($data['operation_date'])){
+        if (isset($data['operation_number']) && isset($data['operation_date'])) {
             $on = substr($data['operation_number'], -6);
             $as = AccountStatement::where('operation_date', $data['operation_date'])
                 ->where('operation_number', $on)->first();
             $data['account_statement_id'] = $as?->id;
         }
-        
+
         $payrollDetailExpense->update($data);
 
 
@@ -200,7 +199,7 @@ class SpreadsheetsController extends Controller
             'operation_number' => $validateData['operation_number'],
         ];
         $data['account_statement_id'] = null;
-        if(isset($data['operation_number']) && isset($data['operation_date'])){
+        if (isset($data['operation_number']) && isset($data['operation_date'])) {
             $on = substr($data['operation_number'], -6);
             $as = AccountStatement::where('operation_date', $data['operation_date'])
                 ->where('operation_number', $on)->first();
