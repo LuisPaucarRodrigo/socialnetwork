@@ -222,7 +222,9 @@
                 </td>
                 <!-- principalData -->
                 <td v-for="da, i in principalData" :key="i"
-                  :class="['px-2 py-2 ', { [da.propClassExternal]: da.title == 'Personal'}]">
+                  :class="['px-2 py-2 ', { 'bg-indigo-100 sticky left-0 z-10': da.title === 'Personal'}]"
+                  
+                  >
                   <div class="">
                     {{ getProp({ obj: emp, path: da.propName, sep: ', ' }) }}
                   </div>
