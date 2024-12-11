@@ -100,7 +100,7 @@
                         Cliente: {{ item.customer }}
                     </p>
                     <p class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
-                        Centro de Costos: {{ item.project.cost_center.name }}
+                        Centro de Costos: {{ item.project?.cost_center?.name }}
                     </p>
                     <p class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
                         Codigo: {{ item.project_code }}

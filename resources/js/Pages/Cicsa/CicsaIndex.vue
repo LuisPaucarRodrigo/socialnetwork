@@ -706,13 +706,13 @@
                                     {{ item.cpe }}
                                 </p>
                             </td>
-                            <td v-if="checkVisibility('Asignación')" :class="stateClass(item.project.cost_center.name)"
+                            <td v-if="checkVisibility('Asignación')" :class="stateClass(item.project?.cost_center.name)"
                                 class="border-b border-gray-200 px-2 py-1 text-[11px] whitespace-nowrap">
                                 <p class="text-gray-900 text-center" :class="stateClassP(
-                                    item.project.cost_center.name
+                                    item.project?.cost_center.name
                                 )
                                     ">
-                                    {{ item.project.cost_center.name || "--" }}
+                                    {{ item.project?.cost_center.name || "--" }}
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Asignación')" :class="stateClass(item.zone)"
@@ -1985,6 +1985,7 @@ const initSearch = {
     opNoDate: "",
     search: "",
 };
+
 const filterForm = ref({ ...initSearch });
 
 watch(

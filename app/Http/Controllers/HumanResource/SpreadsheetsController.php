@@ -69,7 +69,11 @@ class SpreadsheetsController extends Controller
             }
 
             $listPension = $payroll->load('pension');
-            $employees = Employee::select('id')->with('contract')->get();
+            $employees = Employee::select('id')->with('contract')
+                ->whereHas('contract', function ($query) {
+                    $query->where('state', 'Active');
+                })
+                ->get();
             $listType = ['Salary', 'Travel'];
             foreach ($employees as $employee) {
                 $payrollDetail = PayrollDetail::create([

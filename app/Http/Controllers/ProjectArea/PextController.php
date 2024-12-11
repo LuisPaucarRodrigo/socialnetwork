@@ -21,38 +21,27 @@ class PextController extends Controller
 {
     public function index(Request $request)
     {
-        // if ($request->isMethod('get')) {
-        //     $cost_line = CostLine::where('name', 'PEXT')->with('cost_center')->first();
-        //     $project = PextProject::orderBy('created_at', 'desc')->paginate();
-        //     return Inertia::render(
-        //         'ProjectArea/ProjectManagement/PextProject',
-        //         [
-        //             'project' => $project,
-        //             'cost_line' => $cost_line
-        //         ]
-        //     );
-        // } else {
-        //     $search = $request->searchQuery;
-        //     $project = PextProject::where('description', 'like', "%$search%")
-        //         ->orWhere('date', 'like', "%$search%")
-        //         ->get();
-        //     return response()->json($project, 200);
-        // }
-
+        $text = "Mantto";
         if ($request->isMethod('get')) {
-            $project = CicsaAssignation::with('project.cost_center')
-                ->whereHas('project.cost_center', function ($query) {
-                    $query->where('name', 'mantenimiento');
-                })
+            $project = CicsaAssignation::with(['project.cost_center' => function ($query) use ($text) {
+                $query->where('name', 'like', "%$text%");
+            }])
                 ->orderBy('created_at', 'desc')
                 ->paginate();
-            $cost_line = CostLine::where('name', 'Pext')->with('cost_center')->first();
+            $cost_line = CostLine::where('name', 'Pext')
+                ->with(['cost_center' => function ($query) use ($text) {
+                    $query->where('name', 'like', "%$text%");
+                }])
+                ->first();
             return Inertia::render('ProjectArea/ProjectManagement/PextProject', [
                 'project' => $project,
                 'cost_line' => $cost_line
             ]);
         } elseif ($request->isMethod('post')) {
-            $project = CicsaAssignation::with('project.cost_center')->orWhere('project_name', 'like', "%$request->searchQuery%")
+            $project = CicsaAssignation::with(['project.cost_center' => function ($query) use ($text) {
+                $query->where('name', 'like', "%$text%");
+            }])
+                ->orWhere('project_name', 'like', "%$request->searchQuery%")
                 ->orWhere('project_code', 'like', "%$request->searchQuery%")
                 ->orWhere('cpe', 'like', "%$request->searchQuery%")
                 ->get();
@@ -266,15 +255,22 @@ class PextController extends Controller
 
     public function index_additional(Request $request)
     {
+        $text = "Mantto";
         if ($request->isMethod('get')) {
-            $project = CicsaAssignation::with('project.cost_center')->orderBy('created_at', 'desc')->paginate();
+            $project = CicsaAssignation::with(['project.cost_center' => function ($query) use ($text) {
+                $query->where('name', 'not like', "%$text%");
+            }])
+                ->orderBy('created_at', 'desc')->paginate();
             $cost_line = CostLine::where('name', 'Pext')->with('cost_center')->first();
             return Inertia::render('ProjectArea/ProjectManagement/PextProjectAdditional', [
                 'project' => $project,
                 'cost_line' => $cost_line
             ]);
         } elseif ($request->isMethod('post')) {
-            $project = CicsaAssignation::with('project.cost_center')->orWhere('project_name', 'like', "%$request->searchQuery%")
+            $project = CicsaAssignation::with(['project.cost_center' => function ($query) use ($text) {
+                $query->where('name', 'not like', "%$text%");
+            }])
+                ->orWhere('project_name', 'like', "%$request->searchQuery%")
                 ->orWhere('project_code', 'like', "%$request->searchQuery%")
                 ->orWhere('cpe', 'like', "%$request->searchQuery%")
                 ->get();

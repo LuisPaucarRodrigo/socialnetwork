@@ -45,6 +45,10 @@
                                 CPE
                             </th>
                             <th
+                                class="border-b-2 whitespace-nowrap border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Monto sin IGV
+                            </th>
+                            <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
@@ -64,12 +68,18 @@
                                 </td>
                                 <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <p class="text-gray-900 text-center">
-                                        {{ item.project.cost_center.name }}
+                                        {{ item.project?.cost_center.name }}
                                     </p>
                                 </td>
                                 <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <p class="text-gray-900 text-center">
                                         {{ item.cpe }}
+                                    </p>
+                                </td>
+                                <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                    <p class="text-gray-900 text-center">
+                                        {{ item.cicsa_installation?.projected_amount ? 'S/' +
+                                            item.cicsa_installation.projected_amount.toFixed(2) : '' }}
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -113,6 +123,10 @@
                                     </th>
                                     <th
                                         class="border-b-2 border-gray-200 bg-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Monto sin IGV
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                         Formato Maestro
                                     </th>
                                     <th
@@ -151,6 +165,11 @@
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 text-center">
                                             {{ materialDetail?.oc_number }}
+                                        </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <p class="text-gray-900 text-center">
+                                            {{ materialDetail?.amount ?'S/ '+ materialDetail?.amount.toFixed(2) : '' }}
                                         </p>
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -231,6 +250,14 @@
                                 <input type="text" v-model="form.oc_number" autocomplete="off" id="oc_number"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.oc_number" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-1">
+                            <InputLabel for="amount">Monto sin IGV</InputLabel>
+                            <div class="mt-2">
+                                <input type="text" v-model="form.amount" autocomplete="off" id="oc_namountumber"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.amount" />
                             </div>
                         </div>
                         <div class="sm:col-span-1">
@@ -337,6 +364,7 @@ const initialState = {
     user_id: auth.user.id,
     oc_date: '',
     oc_number: '',
+    amount: '',
     master_format: 'Pendiente',
     item3456: 'Pendiente',
     budget: 'Pendiente',

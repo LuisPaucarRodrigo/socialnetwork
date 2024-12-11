@@ -387,7 +387,7 @@ class CicsaController extends Controller
     {
         if ($request->isMethod('get')) {
             $purchase_order = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
-                ->with('cicsa_purchase_order', 'project.cost_center')
+                ->with('cicsa_installation', 'cicsa_purchase_order', 'project.cost_center')
                 // ->whereDoesntHave('cicsa_purchase_order_validation')
                 ->orderBy('assignation_date', 'desc')
                 ->paginate(20);
@@ -398,7 +398,7 @@ class CicsaController extends Controller
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->searchQuery;
             $purchase_order = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
-                ->with('cicsa_purchase_order', 'project.cost_center')
+                ->with('cicsa_installation', 'cicsa_purchase_order', 'project.cost_center')
                 // ->whereDoesntHave('cicsa_purchase_order_validation')
                 ->where(function ($query) use ($searchQuery) {
                     $query->orWhere('project_name', 'like', "%$searchQuery%")
@@ -428,7 +428,7 @@ class CicsaController extends Controller
                 $document = $request->file('document');
                 $validateData['document'] = time() . '._' . $document->getClientOriginalName();
             }
-
+            $validateData['amount'] = floatval($validateData['amount']);
             $purchase_order = CicsaPurchaseOrder::updateOrCreate(
                 ['id' => $cicsa_purchase_order_id],
                 $validateData

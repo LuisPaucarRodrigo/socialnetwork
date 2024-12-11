@@ -104,7 +104,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.project.cost_center.name }}
+                                    {{ item.project?.cost_center.name }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -273,11 +273,27 @@
                                 <InputError :message="form.errors.projected_amount" />
                             </div>
                         </div>
-
                         <div class="sm:col-span-1">
-                            <InputLabel for="projected_amount">Monto Proyectado</InputLabel>
+                            <InputLabel for="pint_amount">Monto Pint</InputLabel>
                             <div class="mt-2">
-                                <input type="number" v-model="form.projected_amount" id="projected_amount" step="0.01"
+                                <input type="number" v-model="form.pint_amount" id="pint_amount" step="0.01"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.pint_amount" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-1">
+                            <InputLabel for="pext_amount">Monto Pext</InputLabel>
+                            <div class="mt-2">
+                                <input type="number" v-model="form.pext_amount" id="pext_amount" step="0.01"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.pext_amount" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-1">
+                            <InputLabel for="projected_amount">Monto Total</InputLabel>
+                            <div class="mt-2">
+                                <input type="number" disabled v-model="form.projected_amount" id="projected_amount"
+                                    step="0.01"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.projected_amount" />
                             </div>
@@ -701,6 +717,8 @@ const initialState = {
     cicsa_assignation_id: '',
     pext_date: '',
     pint_date: '',
+    pext_amount: '',
+    pint_amount: '',
     projected_amount: '',
     conformity: 'Pendiente',
     report: 'Pendiente',
@@ -772,6 +790,12 @@ watch(() => form.total_materials, (newVal) => {
             pextList.value.push(item);
         }
     })
+});
+
+watch(() => [form.pint_amount, form.pext_amount], (newVal) => {
+    if (form.pint_amount || form.pext_amount) {
+        form.projected_amount = form.pint_amount + form.pext_amount
+    }
 });
 
 async function submit() {
@@ -861,4 +885,5 @@ function updateInstallations(cicsa_assignation_id, installation) {
 if (searchCondition) {
     search(searchCondition)
 }
+
 </script>

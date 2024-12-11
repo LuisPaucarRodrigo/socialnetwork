@@ -10,7 +10,7 @@
       <div class="sm:w-1/2 lg:pr-4 sm:mb-0">
         <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt class="text-sm font-medium leading-6 text-gray-900">Linea de Gasto</dt>
-          <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.contract?.cost_line.name }}
+          <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.contract?.cost_line?.name }}
           </dd>
         </div>
         <div v-if="details.contract?.state_travel_expenses == 1" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
