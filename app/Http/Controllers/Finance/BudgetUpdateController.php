@@ -31,7 +31,7 @@ class BudgetUpdateController extends Controller
             'project_id' => $request->project_id,
             'reason' => $request->reason,
             'user_id' => $user_id,
-            'user_name'=> $user->name.' '.$user->lastname
+            'user_name' => $user->name . ' ' . $user->lastname
         ]);
 
         return to_route('initialbudget.index', ['project' => $project->id]);
@@ -68,9 +68,14 @@ class BudgetUpdateController extends Controller
 
     public function selectProject()
     {
-
         return Inertia::render('Finance/Budget/SelectProject', [
-            'projects' => Project::all(),
+            'projects' => Project::where(function ($query) {
+                $query->whereHas('cost_line', function ($query) {
+                    $query->where('name', 'PEXT');
+                })->whereHas('cost_center', function ($query) {
+                    $query->where('name', 'like', '%Mantto%');
+                });
+            })->get(),
             'costLines' => CostLine::all(),
         ]);
     }
@@ -86,5 +91,4 @@ class BudgetUpdateController extends Controller
         ]);
         return to_route('initialbudget.index', ['project' => $project->id]);
     }
-
 }

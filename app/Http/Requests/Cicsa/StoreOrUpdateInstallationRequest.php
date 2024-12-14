@@ -22,9 +22,9 @@ class StoreOrUpdateInstallationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "pext_date" => "nullable",
+            "pext_date" => "required",
             "pint_date" => "nullable",
-            "pint_amount" => "nullable|numeric",
+            "pint_amount" => "required|numeric",
             "pext_amount" => "nullable|numeric",
             "projected_amount" => "nullable|numeric",
             "conformity" => "required",

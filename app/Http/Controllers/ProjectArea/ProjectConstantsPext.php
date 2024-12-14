@@ -6,18 +6,18 @@ use App\Models\Employee;
 use App\Models\Preproject;
 use App\Models\Service;
 
-class ProjectConstants
+class ProjectConstantsPext
 {
     public function generateTemplate($data)
     {
         $template = null;
         if ($data['template'] === 'Mantenimiento') {
-            $name = 'PINT OBRA MRD MANTENIMIENTO INTEGRAL REGION SUR ' . $this->formatDate($data['date']);
+            $name = 'PEXT OBRA MRD MANTENIMIENTO INTEGRAL REGION SUR ' . $this->formatDate($data['date']);
             $template = [
                 'preproject' => [
                     'date'=>$data['date'],
-                    'customer_id' => 1,
-                    'cost_line_id'=>1,
+                    'customer_id' => 2,
+                    'cost_line_id'=>2,
                     'cost_center_id'=>$data['cost_center_id'],
                     'subcustomer_id' => null,
                     'description' => $name,
@@ -46,7 +46,7 @@ class ProjectConstants
                 'project' => [
                     'priority'=> 'Alta',
                     'description'=> $name,
-                    'cost_line_id'=>1,
+                    'cost_line_id'=>2,
                     'cost_center_id'=>$data['cost_center_id'],
                     'status'=>null
                 ],
@@ -58,9 +58,6 @@ class ProjectConstants
         return $template;
 
     }
-
-
-
 
     public function getCode($date, $code)
     {
@@ -91,7 +88,7 @@ class ProjectConstants
         $mes = $meses[$dateTime->format('m')];
         $ano = $dateTime->format('Y');
         return "$mes $ano";
-    }
+    }    
 
     function getDaysInMonth($date) {
         $dateTime = \DateTime::createFromFormat('Y-m-d', $date);
@@ -104,7 +101,6 @@ class ProjectConstants
             return 'Fecha no válida';
         }
     }
-
 
     function getQuoteServicesStructured ($services) {
         $result = [];

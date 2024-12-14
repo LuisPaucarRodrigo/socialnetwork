@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Contract;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,6 +14,15 @@ use Inertia\Response;
 
 class ProfileController extends Controller
 {
+    public function allFine(){
+        $contracts = Contract::all();
+        $pension = ['Habitad', 'Integra', 'Prima', 'Profuturo', 'HabitadMX', 'IntegraMX', 'PrimaMX', 'ProfuturoMX', 'ONP'];
+        foreach($contracts as $con){
+            $con->update(['pension_type'=>$pension[$con->pension_id-1]]);
+        }
+        return response()->json('siuuu');
+    }
+
     /**
      * Display the user's profile form.
      */

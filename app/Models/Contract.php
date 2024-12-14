@@ -25,7 +25,8 @@ class Contract extends Model
         'hire_date',
         'fired_date',
         'employee_id',
-        'pension_type'
+        'pension_type',
+        'personal_segment',
     ];
 
     //RELATIONS

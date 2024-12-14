@@ -363,7 +363,10 @@ Usuarios
                     <Link class="w-full" :href="route('preprojects.titles')">PRO</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
-                    <Link class="w-full" :href="route('preprojects.index')">Anteproyectos</Link>
+                    <Link class="w-full" :href="route('preprojects.index', {type:1})">Anteproyectos Pint</Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showingProyectArea">
+                    <Link class="w-full" :href="route('preprojects.index', {type:2})">Anteproyectos Pext</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
                     <Link class="w-full" :href="route('projectmanagement.index')">Proyectos Pint</Link>

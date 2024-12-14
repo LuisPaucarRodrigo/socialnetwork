@@ -225,6 +225,21 @@
                                 <InputError :message="form.errors.type_contract" />
                             </div>
                         </div>
+                        <div class="sm:col-span-2">
+                            <InputLabel for="personal_segment">
+                                Segmento de Personal
+                            </InputLabel>
+                            <div class="mt-2">
+                                <select v-model="form.personal_segment" required id="personal_segment" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option disabled value="">Seleccionar</option>
+                                    <option>MOD</option>
+                                    <option>MOI</option>
+                                    <option>Administrativo</option>
+                                </select>
+                                <InputError :message="form.errors.personal_segment" />
+                            </div>
+                        </div>
 
                         <div class="sm:col-span-2">
                             <InputLabel for="basic_salary">Salario Basico
@@ -678,6 +693,7 @@ const form = useForm({
     phone1: '',
     phone2: '',
     cost_line_id: '',
+    personal_segment: '',
     type_contract: '',
     state_travel_expenses: true,
     discount_remuneration: '',
@@ -752,6 +768,7 @@ if (props.employees) {
     form.operations = props.employees.health.operations;
     form.accidents = props.employees.health.accidents;
     form.vaccinations = props.employees.health.vaccinations;
+    form.personal_segment = props.employees.contract.personal_segment
 }
 
 watch(form.state_travel_expenses,(newVal) => {
@@ -791,7 +808,15 @@ const handleImagenRecortada = (imagenRecorted) => {
 
 const submit = () => {
     if (props.employees) {
-        form.post(route('management.employees.update', props.employees.id), form)
+        console.log('hola')
+        form.post(
+            route('management.employees.update', props.employees.id),
+        {
+            onError: (e)=>{
+                console.log(e)
+            }
+        }    
+    )
     } else {
         form.post(route('management.employees.store'), {
             onSuccess: () => {

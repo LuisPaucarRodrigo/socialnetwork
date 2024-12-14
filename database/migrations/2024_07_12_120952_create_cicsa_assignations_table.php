@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('zone2')->nullable();
             $table->string('manager');
             $table->string('user_name');
-            $table->foreignId('project_id')->constrained('projects');
+            $table->foreignId('project_id')->nullable()->constrained('projects')->cascadeOnDelete();
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
         });

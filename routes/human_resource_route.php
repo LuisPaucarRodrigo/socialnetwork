@@ -4,6 +4,7 @@ use App\Http\Controllers\DocumentSpreedSheetController;
 use App\Http\Controllers\HumanResource\ControlEmployees;
 use App\Http\Controllers\HumanResource\DocumentController;
 use App\Http\Controllers\HumanResource\FormationDevelopment;
+use App\Http\Controllers\HumanResource\GrupalDocumentController;
 use App\Http\Controllers\HumanResource\ManagementEmployees;
 use App\Http\Controllers\HumanResource\ScheduleController;
 use App\Http\Controllers\HumanResource\SpreadsheetsController;
@@ -143,4 +144,14 @@ Route::middleware('permission:HumanResourceManager|HumanResource')->group(functi
     Route::any('/documents_rrhh_status', [DocumentSpreedSheetController::class, 'index'])->name('document.rrhh.status');
     Route::get('/documents_rrhh_status/{emp_id?}', [DocumentSpreedSheetController::class, 'employee_document_alarms'])->name('employee.document.rrhh.status');
     Route::get('/document_rrhh_status_alarm', [DocumentSpreedSheetController::class, 'employeesDocumentAlarms'])->name('document.rrhh.status.alarms');
+
+
+    Route::get('/documents/grupal_document', [GrupalDocumentController::class, 'index'])->name('document.grupal_documents.index');
+    Route::post('/documents/grupal_document/store', [GrupalDocumentController::class, 'store'])->name('document.grupal_documents.store');
+    Route::post('/documents/grupal_document/update/{gd_id}', [GrupalDocumentController::class, 'update'])->name('document.grupal_documents.update');
+    Route::delete('/documents/grupal_document/destroy/{gd_id}', [GrupalDocumentController::class, 'destroy'])->name('document.grupal_documents.destroy');
+    Route::get('/documents/grupal_document/download/{gd_id}', [GrupalDocumentController::class, 'download'])->name('document.grupal_documents.download');
+
+
+
 });

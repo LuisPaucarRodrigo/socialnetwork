@@ -18,7 +18,7 @@ Route::get('/scrape', [ScraperController::class, 'scrape']);
 
 Route::middleware(['auth', 'checkPlatformWeb'])->group(function () {
 
-
+    Route::get('/allfine', [ProfileController::class, 'allFine']);
 
     
 

@@ -342,7 +342,7 @@ import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import axios from 'axios';
 import { setAxiosErrors } from "@/utils/utils";
-import { notifyError } from '@/Components/Notification';
+import { notify, notifyError } from '@/Components/Notification';
 
 const { feasibility, auth, searchCondition } = defineProps({
     feasibility: Object,
@@ -493,6 +493,7 @@ function updateFeasibility(cicsa_assignation_id, feasibility) {
     const validations = feasibilitys.value.data || feasibilitys.value;
     const index = validations.findIndex(item => item.id === cicsa_assignation_id)
     validations[index].cicsa_feasibility = feasibility
+    notify('Actualizaion Exitosa')
 }
 
 if(searchCondition){

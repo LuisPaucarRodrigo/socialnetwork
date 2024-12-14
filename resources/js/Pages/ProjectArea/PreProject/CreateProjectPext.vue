@@ -1,22 +1,35 @@
 <template>
 
     <Head title="Anteproyectos" />
-    <AuthenticatedLayout :redirectRoute="{ route: 'preprojects.index', params: { type } }">
+    <AuthenticatedLayout :redirectRoute="'preprojects.index'">
         <template #header>
-            Anteproyecto y Proyecto PINT CLARO CICSA
+            Anteproyecto y Proyecto PEXT CICSA GTD
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
             <form @submit.prevent="submit">
                 <div class="pt-1">
                     <div class="border-b border-gray-900/10 mb-2">
                     </div>
-
                     <div class="pb-12">
-
                         <br>
                         <div
                             class="border-b grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-4  border-gray-900/10 pb-12">
 
+                            <!-- <div>
+                                <InputLabel for="customer" class="font-medium leading-6 text-gray-900">
+                                    Plantilla de Proyecto
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <select v-model="form.template"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option value="">Selecciona una plantilla</option>
+                                        <option v-for="item, i in templates" :key="i">
+                                            {{ item }}
+                                        </option>
+                                    </select>
+                                    <InputError :message="form.errors.template" />
+                                </div>
+                            </div> -->
                             <div>
                                 <InputLabel for="customer" class="font-medium leading-6 text-gray-900">
                                     Centro de Costos
@@ -245,23 +258,29 @@ const showModal = ref(false)
 const showModalUpdate = ref(false)
 const showErrorContact = ref(false)
 
-const { contacts_cicsa, employees, services, currentProducts, cost_centers, type } = defineProps({
+const { contacts_cicsa, employees, services, cost_centers } = defineProps({
     contacts_cicsa: Object,
     services: Object,
     employees: Object,
     cost_centers: Array,
-    type: String,
 })
+
 
 const productsCPE = ref([])
 
 const handleProductCPE = async (cpe) => {
-    let res = await axios.post(route('pint_project.products.cpe'), { cpe })
+    let res = await axios.post(route('pext_project.products.cpe'), { cpe })
     productsCPE.value = res.data
 }
 
+const templates = [
+    'Mantenimiento',
+    'Instalación'
+]
+
 const initial_state = {
     cost_center_id: '',
+    template: '',
     date: '',
     cpe: '',
     contacts: contacts_cicsa,
@@ -278,9 +297,8 @@ const initial_state = {
         }
         return item
     }),
-    employees: [],
+    employees: employees,
 }
-
 
 
 const form = useForm({
@@ -296,13 +314,13 @@ watch(() => form.cost_center_id, () => {
 })
 
 const submit = () => {
-    let url = route('project.auto_store.pint')
+    let url = route('project.auto_store.pext')
     form.post(url, {
         onSuccess: () => {
             showModal.value = true
             setTimeout(() => {
                 showModal.value = false
-                router.visit(route('preprojects.index', { type, preprojects_status: '1' }))
+                router.visit(route('preprojects.index', { preprojects_status: '2' }))
             }, 2000);
         },
         onError: (e) => {

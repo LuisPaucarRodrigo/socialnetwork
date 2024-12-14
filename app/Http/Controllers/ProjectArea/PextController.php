@@ -23,27 +23,54 @@ class PextController extends Controller
     {
         $text = "Mantto";
         if ($request->isMethod('get')) {
-            $project = CicsaAssignation::with(['project.cost_center' => function ($query) use ($text) {
-                $query->where('name', 'like', "%$text%");
-            }])
+            // $project = Project::with('cicsa_assignation', 'cost_center')->whereHas('cost_line', function ($query) use ($text) {
+            //     $query->where('name', 'PEXT');
+            // })->whereHas('cost_center', function ($query) use ($text) {
+            //     $query->where('name', 'like', "%$text%");
+            // })->orderBy('created_at', 'desc')->paginate();
+            // $cost_line = CostLine::where('name', 'Pext')
+            //     ->with(['cost_center' => function ($query) use ($text) {
+            //         $query->where('name', 'like', "%$text%");
+            //     }])
+            //     ->first();
+            // return Inertia::render('ProjectArea/ProjectManagement/PextProject', [
+            //     'project' => $project,
+            //     'cost_line' => $cost_line
+            // ]);
+            $cicsa_assignation = CicsaAssignation::with('project.cost_center')
+                ->whereHas('project.cost_center', function ($query) use ($text) {
+                    $query->where('name', 'like', "%$text%");
+                })
                 ->orderBy('created_at', 'desc')
                 ->paginate();
-            $cost_line = CostLine::where('name', 'Pext')
-                ->with(['cost_center' => function ($query) use ($text) {
-                    $query->where('name', 'like', "%$text%");
-                }])
-                ->first();
+            $project = Project::select('id', 'preproject_id')
+                ->with(['preproject:id,code'])
+                ->where('cost_line_id', 2)
+                ->whereDoesntHave('cicsa_assignation')
+                ->get();
+
+            $project->each(function ($item) {
+                $item->setAppends([]);
+                if ($item->preproject) {
+                    $item->preproject->setAppends([]);
+                }
+            });
+
             return Inertia::render('ProjectArea/ProjectManagement/PextProject', [
-                'project' => $project,
-                'cost_line' => $cost_line
+                'cicsa_assignation' => $cicsa_assignation,
+                'project' => $project
             ]);
         } elseif ($request->isMethod('post')) {
-            $project = CicsaAssignation::with(['project.cost_center' => function ($query) use ($text) {
-                $query->where('name', 'like', "%$text%");
-            }])
-                ->orWhere('project_name', 'like', "%$request->searchQuery%")
-                ->orWhere('project_code', 'like', "%$request->searchQuery%")
-                ->orWhere('cpe', 'like', "%$request->searchQuery%")
+            $searchQuery = $request->searchQuery;
+            $project = CicsaAssignation::with('project.cost_center')
+                ->whereHas('project.cost_center', function ($query) use ($text) {
+                    $query->where('name', 'like', "%$text%");
+                })->where(function ($query) use ($searchQuery) {
+                    $query->orWhere('project_name', 'like', "%$searchQuery%")
+                        ->orWhere('project_code', 'like', "%$searchQuery%")
+                        ->orWhere('cpe', 'like', "%$searchQuery%");
+                })
+                ->orderBy('created_at', 'desc')
                 ->get();
             return response()->json($project, 200);
         }
@@ -68,7 +95,6 @@ class PextController extends Controller
     public function storeOrUpdate(Request $request, $cicsa_assignation_id = null)
     {
         $validatedData = $request->validate([
-            'description' => 'required|string',
             'assignation_date' => 'nullable|date',
             'project_name' => 'required|string',
             'customer' => 'nullable|string',
@@ -79,22 +105,20 @@ class PextController extends Controller
             'manager' => 'required|string',
             'user_name' => 'required|string',
             'user_id' => 'required|numeric',
-            'cost_line_id' => 'required|numeric',
-            'cost_center_id' => 'required|numeric',
+            'project_id' => 'required|numeric',
         ]);
-        $project = Project::create([
-            'priority' => 'Alta',
-            'description' => $validatedData['project_name'],
-            'cost_line_id' => $validatedData['cost_line_id'],
-            'cost_center_id' => $validatedData['cost_center_id'],
-        ]);
-        $validatedData['project_id'] = $project->id;
-        $cicsa_assignation = CicsaAssignation::updateOrCreate(
+        // $project = Project::create([
+        //     'priority' => 'Alta',
+        //     'description' => $validatedData['project_name'],
+        //     'cost_line_id' => $validatedData['cost_line_id'],
+        //     'cost_center_id' => $validatedData['cost_center_id'],
+        // ]);
+        $cicsaAssignation = CicsaAssignation::updateOrCreate(
             ['id' => $cicsa_assignation_id],
             $validatedData
         );
-        $cicsa_assignation->load('project.cost_center');
-        return response()->json($cicsa_assignation, 200);
+        $cicsaAssignation->load('project.cost_center');
+        return response()->json($cicsaAssignation, 200);
     }
 
     public function delete(PextProject $pext)
@@ -257,22 +281,31 @@ class PextController extends Controller
     {
         $text = "Mantto";
         if ($request->isMethod('get')) {
-            $project = CicsaAssignation::with(['project.cost_center' => function ($query) use ($text) {
+            $project = CicsaAssignation::with('project.cost_center')
+                ->whereHas('project.cost_center', function ($query) use ($text) {
+                    $query->where('name', 'not like', "%$text%");
+                })
+                ->orderBy('created_at', 'desc')
+                ->paginate();
+            $cost_line = CostLine::where('name', 'Pext')->with(['cost_center' => function ($query) use ($text) {
                 $query->where('name', 'not like', "%$text%");
-            }])
-                ->orderBy('created_at', 'desc')->paginate();
-            $cost_line = CostLine::where('name', 'Pext')->with('cost_center')->first();
+            }])->first();
+
             return Inertia::render('ProjectArea/ProjectManagement/PextProjectAdditional', [
                 'project' => $project,
                 'cost_line' => $cost_line
             ]);
         } elseif ($request->isMethod('post')) {
-            $project = CicsaAssignation::with(['project.cost_center' => function ($query) use ($text) {
-                $query->where('name', 'not like', "%$text%");
-            }])
-                ->orWhere('project_name', 'like', "%$request->searchQuery%")
-                ->orWhere('project_code', 'like', "%$request->searchQuery%")
-                ->orWhere('cpe', 'like', "%$request->searchQuery%")
+            $searchQuery = $request->searchQuery;
+            $project = CicsaAssignation::with('project.cost_center')
+                ->whereHas('project.cost_center', function ($query) use ($text) {
+                    $query->where('name', 'not like', "%$text%");
+                })->where(function ($query) use ($searchQuery) {
+                    $query->orWhere('project_name', 'like', "%$searchQuery%")
+                        ->orWhere('project_code', 'like', "%$searchQuery%")
+                        ->orWhere('cpe', 'like', "%$searchQuery%");
+                })
+                ->orderBy('created_at', 'desc')
                 ->get();
             return response()->json($project, 200);
         }
@@ -288,12 +321,12 @@ class PextController extends Controller
             'cost_center_id' => $validateData['cost_center_id']
         ]);
         $validateData['project_id'] = $project->id;
-        $cicsa_assignation = CicsaAssignation::updateOrCreate(
+        $cicsaAssignation = CicsaAssignation::updateOrCreate(
             ['id' => $cicsa_assignation_id],
             $validateData
         );
-        $cicsa_assignation->load('project.cost_center');
-        return response()->json($cicsa_assignation, 200);
+        $cicsaAssignation->load('project.cost_center');
+        return response()->json($cicsaAssignation, 200);
     }
 
     public function additional_expense_index_fixed(Request $request, $cicsa_assignation_id)

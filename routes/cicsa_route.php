@@ -36,8 +36,8 @@ Route::get('/cicsa_purchase_order/export', [CicsaController::class, 'exportPurch
 
 
 
-Route::any('/cicsa_installation/{searchCondition?}', [CicsaController::class, 'indexInstallation'])->name('cicsa.installation.index');
-Route::post('/cicsa_installation/store/{ci_id?}', [CicsaController::class, 'updateOrStoreInstallation'])->name('cicsa.installation.store');
+Route::any('/cicsa_installation/index/{searchCondition?}', [CicsaController::class, 'indexInstallation'])->name('cicsa.installation.index');
+Route::post('/cicsa_installation/storeOrUpdate/{ci_id?}', [CicsaController::class, 'updateOrStoreInstallation'])->name('cicsa.installation.store');
 Route::get('/cicsa_installation/export', [CicsaController::class, 'exportInstallation'])->name('cicsa.installation.export');
 
 // CicsaPurchaseOrderValidations

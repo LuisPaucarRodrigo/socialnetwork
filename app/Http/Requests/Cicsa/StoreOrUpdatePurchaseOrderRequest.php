@@ -24,7 +24,7 @@ class StoreOrUpdatePurchaseOrderRequest extends FormRequest
         return [
             'cicsa_assignation_id' => 'nullable|numeric',
             'oc_date' => 'nullable|date',
-            'amount' => 'required|string',
+            'amount' => 'required',
             'oc_number' => 'nullable|string',
             'master_format' => 'required|string',
             'item3456' => 'required|string',

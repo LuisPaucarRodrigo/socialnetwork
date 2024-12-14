@@ -39,6 +39,10 @@ class AccountStatement extends Model
 
     public function getStateAttribute()
     {
+        
+        if ($this->operation_number === null) {
+            return 'Validado';
+        }
         if ($this->payment) {
             return 'Abono';
         }
@@ -60,9 +64,13 @@ class AccountStatement extends Model
                     return 0;
                 });
             $total = $totalAC + $totalSC + $totalPE + $totalSP;
-            if ($total >= $this->charge) {
+            $chargeFormatted = number_format($this->charge, 2, '.', '');
+            $totalFormatted = number_format($total, 2, '.', '');
+    
+            // Convertir a float para realizar la comparación
+            if ((float)$totalFormatted >= (float)$chargeFormatted) {
                 return 'Validado';
-            } else if ($total > 0) {
+            } elseif ((float)$totalFormatted > 0) {
                 return 'Por validar';
             } else {
                 return 'No validado';

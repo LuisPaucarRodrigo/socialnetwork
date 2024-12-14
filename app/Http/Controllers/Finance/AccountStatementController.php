@@ -270,6 +270,7 @@ class AccountStatementController extends Controller
         $totalCharge = 0;
         $totalPayment = 0;
         $balanceMedia = 0;
+        $totalITFM = 0;
         $accountStatements = AccountStatement::select(
             'id',
             'operation_date',
@@ -286,12 +287,15 @@ class AccountStatementController extends Controller
             $item->setAppends(['state']);
             return $item;
         });
-        $accountStatements = $accountStatements->map(function ($statement) use (&$currentBalance, &$totalCharge, &$totalPayment, &$balanceMedia) {
+        $accountStatements = $accountStatements->map(function ($statement) use (&$currentBalance, &$totalCharge, &$totalPayment, &$balanceMedia, &$totalITFM) {
                 $totalCharge += $statement->charge;
                 $totalPayment += $statement->payment;
                 $currentBalance += $statement->payment - $statement->charge;
                 $statement->balance = $currentBalance;
                 $balanceMedia += $statement->balance;
+                if($statement->operation_number === null){
+                    $totalITFM += $statement->charge;
+                }
                 return $statement;
             });
         $balanceMedia = $balanceMedia / ($accountStatements->count() ?: 1);
@@ -302,6 +306,7 @@ class AccountStatementController extends Controller
             'totalCharge' => $totalCharge,
             'totalPayment' => $totalPayment,
             'balanceMedia' => $balanceMedia,
+            'totalITFM' => $totalITFM,
         ];
     }
 }

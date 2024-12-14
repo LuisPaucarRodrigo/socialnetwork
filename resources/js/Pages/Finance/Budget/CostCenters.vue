@@ -37,40 +37,126 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item, i in dataToRender" :key="i" class="text-gray-700">
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ i+1 }}</p>
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ item.name }}</p>
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ item.percentage }}%</p>
-                        </td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
-                            <div class="flex justify-center space-x-3">
-                                <!-- <button @click="">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-500">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                    </svg>
-                                </button> -->
-                                <button @click="assignUser(item.id, item.clc_employees)">
-                                    <UserGroupIcon class="w-6 h-6 text-indigo-700"/>
-                                </button>
-                                <button type="button" @click="openCostCenterModal(item)"
-                                    class="text-yellow-600 whitespace-no-wrap">
-                                    <PencilIcon class="h-5 w-5 ml-1" />
-                                </button>
-                                <button type="button" @click="openCostCenterDestroyModal(item)"
-                                    class="text-red-600 whitespace-no-wrap">
-                                    <TrashIcon class="h-5 w-5 ml-1" />
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+                    <template  v-for="item, i in dataToRender" :key="item.id"  class="text-gray-700">
+                        <tr class="text-gray-700">
+                            <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
+                                <p class="text-gray-900 whitespace-no-wrap">{{ i+1 }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
+                                <p class="text-gray-900 whitespace-no-wrap">{{ item.name }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
+                                <p class="text-gray-900 whitespace-no-wrap">{{ item.percentage }}%</p>
+                            </td>
+                            <td
+                                class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
+                                <div class="flex justify-end space-x-3">
+                                    <!-- <button @click="">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-500">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+                                    </button> -->
+                                    <button @click="assignUser(item.id, item.clc_employees)">
+                                        <UserGroupIcon class="w-6 h-6 text-indigo-700"/>
+                                    </button>
+                                    <button type="button" @click="openCostCenterModal(item)"
+                                        class="text-yellow-600 whitespace-no-wrap">
+                                        <PencilIcon class="h-5 w-5 ml-1" />
+                                    </button>
+                                    <button type="button" @click="openCostCenterDestroyModal(item)"
+                                        class="text-red-600 whitespace-no-wrap">
+                                        <TrashIcon class="h-5 w-5 ml-1" />
+                                    </button>
+    
+                                    <td class="border-b border-gray-200 px-2 py-1 text-sm">
+                                    <button type="button" @click="toggleDetails(item.id, item.clc_employees)"
+                                        :class="`flex items-center text-blue-900 rounded-full hover:bg-blue-300`">
+                                        <svg v-if="row !== item.id" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" :class="`w-4 h-4`">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                                        <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </td>
+                                </div>
+                            </td>
+                        </tr>
+                        <template v-if="row == item.id">
+                                <tr class="bg-white">
+                                    <td colspan="5" class="py-1 px-2">
+                                        <table class="w-full">
+                                            <thead>
+                                                <tr
+                                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600">
+                                                        Item
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600">
+                                                        DNI
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600">
+                                                        Nombre
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600">
+                                                        Teléfono
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600">
+                                                        Correo personal
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600">
+                                                        Correo empresa
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="text-gray-700" v-for="(
+                                                        item, i
+                                                    ) in employeesFounded" :key="i">
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
+                                                        {{ i + 1 }}
+                                                    </td>
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
+                                                        {{ item?.employee?.dni }} 
+                                                    </td>
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
+                                                        {{ item?.employee?.name }} {{ item?.employee?.lastname }}
+                                                    </td>
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
+                                                        {{ item?.employee?.phone }} 
+                                                    </td>
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
+                                                        {{ item?.employee?.email }} 
+                                                    </td>
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
+                                                        {{ item?.employee?.email_company }} 
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </template>
+
+                    </template>
                 </tbody>
             </table>
         </div>
@@ -177,7 +263,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import { TrashIcon, PencilIcon, UserGroupIcon } from '@heroicons/vue/24/outline';
-import { notify, notifyError } from '@/Components/Notification';
+import { notify, notifyError, notifyWarning } from '@/Components/Notification';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
@@ -186,6 +272,7 @@ import { setAxiosErrors } from '@/utils/utils';
 import Modal from '@/Components/Modal.vue';
 import { ref, watch } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { Toaster } from 'vue-sonner';
 
 
 const { costCenters, cost_line, employees } = defineProps({
@@ -195,8 +282,6 @@ const { costCenters, cost_line, employees } = defineProps({
 })
 const dataToRender = ref(costCenters)
 const selectEmployees = ref(employees)
-
-
 //Create and Update
 const isFetching = ref(false)
 const showCostCenterModal = ref(false)
@@ -216,6 +301,7 @@ const submitCostCenterModal = () => {
     isFetching.value = true
     axios.post(route("finance.cost_center.store", {cc_id: form.id,}),form.data())
         .then((res)=>{
+            console.log(res)
             if (form.id) {
                 const index = dataToRender.value.findIndex((item) => item.id == form.id);
                 dataToRender.value[index] = res.data
@@ -281,6 +367,7 @@ const closeAssignUser = () => {
 const submitAssignUser = () => {
     axios.post(route("finance.cost_center.employee.store"), {...assignUserForm.data()})
         .then((res)=>{
+            console.log(res)
             const index = dataToRender.value.findIndex((item) => item.id == assignUserForm.cost_center_id);
             dataToRender.value[index] = res.data
             closeAssignUser();
@@ -297,10 +384,33 @@ const submitAssignUser = () => {
 
 watch(()=>assignUserForm.employees, (newVal)=>{
     assignUserForm.employeesArray = newVal.map(id=>{
-        console.log(selectEmployees.value)
         return selectEmployees.value.find(item=>item.id == id)
     })
 })
+console.log(dataToRender.value)
+
+const employeesFounded = ref([])
+
+//toogle
+const row = ref(0);
+const toggleDetails = async (id, clc_employees) => {
+    if (row.value == 0 || row.value != id) handleExpansible(clc_employees);
+    if (row.value === employeesFounded.value[0]?.cost_center_id) {
+        row.value = 0
+    } else {
+        row.value = 0
+        if (employeesFounded.value?.length > 0) {
+            row.value = employeesFounded.value[0]?.cost_center_id;
+        }
+    }
+};
+
+const handleExpansible = (clc_employees) => {
+    employeesFounded.value = clc_employees;
+    notifyWarning(`Trabajadores Encontrados ${clc_employees.length}`);
+};
+
+
 
 
 </script>

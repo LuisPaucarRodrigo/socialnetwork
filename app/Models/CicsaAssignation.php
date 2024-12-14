@@ -86,12 +86,17 @@ class CicsaAssignation extends Model
 
     public function checkAssignation()
     {
-        $campoExcepcion = 'zone2';
+        $campoExcepcion = ['zone2', 'project_id'];
+
         foreach ($this->fillable as $field) {
-            if ($field !== $campoExcepcion && is_null($this->$field)) {
+            if (in_array($field, $campoExcepcion)) {
+                continue;
+            }
+            if (is_null($this->$field)) {
                 return false;
             }
         }
+        
         return true;
     }
 

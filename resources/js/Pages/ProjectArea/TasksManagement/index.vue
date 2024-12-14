@@ -40,8 +40,8 @@
             <div class="w-full bg-gray-200 rounded-full h-6 dark:bg-gray-700 mt-2 pl-0.5">
                 <div class="bg-green-600 h-6 text-md font-bold text-blue-100 p-0.5 leading-none rounded-full flex items-center justify-center"
                     :style="`width: ${project.total_percentage_tasks_completed}%`"> {{
-        project.total_percentage_tasks_completed
-            != 0 ? project.total_percentage_tasks_completed : 0 }}%</div>
+                        project.total_percentage_tasks_completed
+                            != 0 ? project.total_percentage_tasks_completed : 0 }}%</div>
             </div>
         </div>
 
@@ -103,8 +103,7 @@
                                         <template v-if="hasPermission('ProjectManager')">
                                             <div v-if="task.status === 'pendiente'">
                                                 <button @click="openModalStart(task)"
-                                                    v-if="task.start_date && task.end_date"
-                                                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2
+                                                    v-if="task.start_date && task.end_date" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2
                                                     px-4 rounded">
                                                     <PlayIcon class="text-white-900 h-4 w-4" style="stroke-width:4;" />
                                                 </button>
@@ -217,7 +216,7 @@
                         <select v-model="form.project_id_duplicated" id="project_id_duplicated"
                             class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                             <option value="" disabled>Seleccionar Proyecto</option>
-                            <option v-for="item in projects" :key="item.id" :value="item.id">{{ item.name }}
+                            <option v-for="item in projects" :key="item.id" :value="item.id">{{ item.description }}
                             </option>
                         </select>
                         <InputError :message="form.errors.project_id_duplicated" />
@@ -313,11 +312,15 @@ const hasPermission = (permission) => {
     return userPermissions.includes(permission);
 }
 
-let backUrl = project.status === null
+let backUrl = project.cost_line_id === 1 ? project.status === null
     ? 'projectmanagement.index'
     : project.status == true
         ? 'projectmanagement.historial'
-        : 'projectmanagement.index'
+        : 'projectmanagement.index' : project.status === null
+    ? 'projectmanagement.pext.index'
+    : project.status == true
+        ? ''
+        : 'projectmanagement.pext.index'
 
 const taskIdDelete = ref(null);
 

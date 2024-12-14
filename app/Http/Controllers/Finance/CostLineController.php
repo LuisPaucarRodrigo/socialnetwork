@@ -79,8 +79,10 @@ class CostLineController extends Controller
     public function cost_center_store (Request $request, $cc_id = null) {
         $data = $request->validate(['name'=>'required', 'percentage'=>'required', 'cost_line_id'=>'required']);
         $rg = CostCenter::updateOrCreate(['id'=>$cc_id],$data);
+        $rg->load('clc_employees.employee');
         return response()->json($rg);
     }
+
     
     public function cost_center_destroy ($cc_id) {
         CostCenter::findOrFail($cc_id)->delete();
@@ -89,7 +91,7 @@ class CostLineController extends Controller
 
     public function cost_centers_employee_store (Request $request) {
         $data = $request->validate([
-            'employees' => 'required|array',
+            'employees' => 'nullable',
             'cost_center_id' => 'required',
         ]);
         CostLineCenterEmployee::where('cost_center_id', $data['cost_center_id'])->delete();

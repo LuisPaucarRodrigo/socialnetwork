@@ -240,11 +240,13 @@ const hasPermission = (permission) => {
     return userPermissions.includes(permission);
 }
 
-let backUrl = preproject.status === null
-    ? 'preprojects.index'
+let backUrl = (preproject?.status === undefined || preproject?.status === null)
+    ? { route: 'preprojects.index', params: { type: preproject.cost_line_id } }
     : preproject.status == true
-        ? { route: 'preprojects.index', params: { preprojects_status: 1 } }
-        : { route: 'preprojects.index', params: { preprojects_status: 0 } }
+        ? { route: 'preprojects.index', params: { type: preproject.cost_line_id, preprojects_status: 1 } }
+        : { route: 'preprojects.index', params: { type: preproject.cost_line_id,preprojects_status: 0 } }
+
+    
 
 //Modal functions
 const showModal = ref(false);

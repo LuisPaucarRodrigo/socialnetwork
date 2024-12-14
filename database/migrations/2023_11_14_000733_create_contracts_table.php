@@ -27,6 +27,7 @@ return new class extends Migration
             $table->float('amount_travel_expenses')->nullable();
             $table->foreignId('employee_id')->constrained()->onDelete('cascade');
             $table->foreignId('cost_line_id')->nullable()->constrained('cost_lines')->nullOnDelete();
+            $table->string('personal_segment')->nullable();
             $table->timestamps();
         });
     }

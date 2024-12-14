@@ -13,6 +13,12 @@
           <option value="">Todos</option>
           <option v-for="item, i in costLines" :key="i">{{ item.name }}</option>
         </select>
+        <PrimaryButton
+          type="button"
+          @click="()=>router.visit(route('document.grupal_documents.index'))"
+        >
+          Documentos Grupales 
+        </PrimaryButton>
       </div>
       <br>
       <Toaster richColors class="z-1000" />
@@ -115,8 +121,8 @@
                   </a>
                 </td>
                 <!-- principalData -->
-                <td v-for="da, i in principalData" :key="i" :class="['px-2 py-2', da.propClass]">
-                  <div class="">
+                <td v-for="da, i in principalData" :key="i" :class="['px-2 py-2', { [da.propClass] : da.title == 'Personal' }]">
+                  <div>
                     {{ getProp({ obj: emp, path: da.propName, sep: ', ' }) }}
                   </div>
                 </td>
@@ -216,7 +222,9 @@
                 </td>
                 <!-- principalData -->
                 <td v-for="da, i in principalData" :key="i"
-                  :class="['px-2 py-2 ', da.title == 'Personal' ? da.propClassExternal : da.propClass]">
+                  :class="['px-2 py-2 ', { 'bg-indigo-100 sticky left-0 z-10': da.title === 'Personal'}]"
+                  
+                  >
                   <div class="">
                     {{ getProp({ obj: emp, path: da.propName, sep: ', ' }) }}
                   </div>
@@ -405,7 +413,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -592,6 +600,7 @@ async function filterExpenseLine(search) {
   let url = route('document.rrhh.status')
   try {
     let response = await axios.post(url, { searchquery: search })
+    console.log(response.data)
     employeesData.value = response.data.employees
     e_employeesData.value = response.data.e_employees
   } catch (error) {

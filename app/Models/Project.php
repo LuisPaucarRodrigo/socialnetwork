@@ -19,7 +19,7 @@ class Project extends Model
         'preproject_id',
         'cost_center_id',
         'cost_line_id',
-        'initial_budget'
+        'initial_budget',
     ];
 
     protected $appends = [
@@ -41,7 +41,7 @@ class Project extends Model
         'is_liquidable',
         'total_products_cost_claro_cicsa',
     ];
-
+    
     // CALCULATED
 
     public function getTotalSumTaskAttribute()

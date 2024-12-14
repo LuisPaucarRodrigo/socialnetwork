@@ -3,6 +3,7 @@
     <Head title="CICSA Orden de Compra" />
 
     <AuthenticatedLayout :redirectRoute="'cicsa.index'">
+        <Toaster richColors />
         <template #header>
             Orden de Compra
         </template>
@@ -323,7 +324,7 @@
                 </form>
             </div>
         </Modal>
-        <SuccessOperationModal :confirming="confirmPuchaseOrder" :title="title" :message="message" />
+        <!-- <SuccessOperationModal :confirming="confirmPuchaseOrder" :title="title" :message="message" /> -->
     </AuthenticatedLayout>
 </template>
 
@@ -344,6 +345,8 @@ import TextInput from '@/Components/TextInput.vue';
 import axios from 'axios';
 import InputFile from '@/Components/InputFile.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
+import { notify, notifyError } from '@/Components/Notification';
+import { Toaster } from 'vue-sonner';
 
 const { purchaseOrder, auth, searchCondition } = defineProps({
     purchaseOrder: Object,
@@ -378,11 +381,11 @@ const form = useForm(
 );
 
 const showAddEditModal = ref(false);
-const confirmPuchaseOrder = ref(false);
+// const confirmPuchaseOrder = ref(false);
 const cicsa_purchase_order_id = ref(null)
 const purcahse_order_row = ref(0);
-const title = ref('Nueva Orden de Compra creada')
-const message = ref('La Orden de Compra fue creada con éxito')
+// const title = ref('Nueva Orden de Compra creada')
+// const message = ref('La Orden de Compra fue creada con éxito')
 
 function closeAddPuchaseOrderModal() {
     showAddEditModal.value = false
@@ -407,6 +410,7 @@ function openEditModal(item, project_name, cpe) {
 }
 
 async function submit() {
+    console.log(form)
     let url = cicsa_purchase_order_id.value ? route('purchaseOrder.storeOrUpdate', { cicsa_purchase_order_id: cicsa_purchase_order_id.value }) : route('purchaseOrder.storeOrUpdate')
     try {
         let formData = toFormData(form)
@@ -414,25 +418,26 @@ async function submit() {
         closeAddPuchaseOrderModal()
         if (cicsa_purchase_order_id.value) {
             updatePurchaseOrder(false, response.data)
-            title.value = 'Orden de Compra Actualizada'
-            message.value = 'La Orden de Compra fue actualizada'
+            // title.value = 'Orden de Compra Actualizada'
+            // message.value = 'La Orden de Compra fue actualizada'
             cicsa_purchase_order_id.value = null
         } else {
             updatePurchaseOrder(true, response.data)
         }
-        confirmPuchaseOrder.value = true
-        setTimeout(() => {
-            confirmPuchaseOrder.value = false
-        }, 1500)
+        // confirmPuchaseOrder.value = true
+        // setTimeout(() => {
+        //     confirmPuchaseOrder.value = false
+        // }, 1500)
     } catch (error) {
+        console.log(error)
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, form)
             } else {
-                console.error("Server error:", error.response.data)
+                notifyError("Server error:", error.response.data)
             }
         } else {
-            console.error("Network or other error:", error)
+            notifyError("Network or other error:", error)
         }
     }
 }
@@ -442,7 +447,7 @@ const search = async ($search) => {
         const response = await axios.post(route('purchase.order.index'), { searchQuery: $search });
         purchaseOrders.value = response.data.purchaseOrder;
     } catch (error) {
-        console.error('Error searching:', error);
+        notifyError('Error searching:', error);
     }
 };
 
@@ -475,9 +480,11 @@ function updatePurchaseOrder(item, purchaseOrder) {
     const index = validations.findIndex(item => item.id === Number(purchaseOrder.cicsa_assignation_id));
     if (item) {
         validations[index].cicsa_purchase_order.push(purchaseOrder)
+        notify('Se creo Correctamente')
     } else {
         const indexMaterial = validations[index].cicsa_purchase_order.findIndex(item => item.id === purchaseOrder.id);
         validations[index].cicsa_purchase_order[indexMaterial] = purchaseOrder
+        notify('Se Actualizo Correctamente')
     }
 }
 

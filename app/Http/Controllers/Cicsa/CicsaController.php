@@ -140,12 +140,12 @@ class CicsaController extends Controller
                     }
                 });
             }
-            if (count($request->cost_center) < 7) {
-                $costCenter = $request->cost_center;
-                $projectsCicsa = $projectsCicsa->whereHas('project.cost_center', function ($query) use ($costCenter) {
-                    $query->whereIn('name', $costCenter);
-                });
-            }
+            // if (count($request->cost_center) < 7) {
+            //     $costCenter = $request->cost_center;
+            //     $projectsCicsa = $projectsCicsa->whereHas('project.cost_center', function ($query) use ($costCenter) {
+            //         $query->whereIn('name', $costCenter);
+            //     });
+            // }
 
             $projectsCicsa = $projectsCicsa->get();
 
@@ -421,6 +421,7 @@ class CicsaController extends Controller
     public function updateOrStorePurchaseOrder(StoreOrUpdatePurchaseOrderRequest $request, $cicsa_purchase_order_id = null)
     {
         $validateData = $request->validated();
+
         $document = null;
         DB::beginTransaction();
         try {
@@ -503,9 +504,7 @@ class CicsaController extends Controller
                 ->orWhere('project_code', 'like', "%$request->searchQuery%")
                 ->orWhere('cpe', 'like', "%$request->searchQuery%")
                 ->get();
-            return response()->json([
-                'installation' => $installations
-            ]);
+            return response()->json($installations, 200);
         }
     }
 
@@ -513,21 +512,24 @@ class CicsaController extends Controller
     public function updateOrStoreInstallation(StoreOrUpdateInstallationRequest $request, $ci_id = null)
     {
         $validateData = $request->validated();
-        $cicsaInstallation = CicsaInstallation::updateOrCreate(
-            ['id' => $ci_id],
-            $validateData
-        );
-        if ($ci_id) {
-            CicsaInstallationMaterial::where('cicsa_installation_id', $ci_id)->delete();
-        }
-        foreach ($request->total_materials as $material) {
-            $material['cicsa_installation_id'] = $cicsaInstallation->id;
-            CicsaInstallationMaterial::create($material);
-        }
+        try {
+            $cicsaInstallation = CicsaInstallation::updateOrCreate(
+                ['id' => $ci_id],
+                $validateData
+            );
+            if ($ci_id) {
+                CicsaInstallationMaterial::where('cicsa_installation_id', $ci_id)->delete();
+            }
+            foreach ($request->total_materials as $material) {
+                $material['cicsa_installation_id'] = $cicsaInstallation->id;
+                CicsaInstallationMaterial::create($material);
+            }
 
-        $cicsaInstallation->load('cicsa_installation_materials');
-
-        return response()->json($cicsaInstallation, 200);
+            $cicsaInstallation->load('cicsa_installation_materials');
+            return response()->json($cicsaInstallation, 200);
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), 500);
+        }
     }
 
     public function exportInstallation()

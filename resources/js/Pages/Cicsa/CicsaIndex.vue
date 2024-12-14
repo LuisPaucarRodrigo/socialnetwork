@@ -2045,6 +2045,7 @@ watch(dataToRender, async () => {
 async function search_advance($data) {
     try {
         let res = await axios.post(route("cicsa.advance.search"), $data);
+        console.log(res.data)
         dataToRender.value = res.data;
     } catch (error) {
         console.error(error)

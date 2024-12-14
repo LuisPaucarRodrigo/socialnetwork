@@ -3,7 +3,7 @@
     <Head title="Proyectos Pint" />
     <AuthenticatedLayout :redirectRoute="'projectmanagement.index'">
         <template #header>
-            Proyectos Pint
+            Proyectos Pext
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="mt-6 flex items-center justify-between gap-x-6">
@@ -12,14 +12,18 @@
                         class="whitespace-nowrap inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                         + Agregar
                     </button>
-                    <Link :href="route('projectscalendar.index')"
+                    <Link :href="route('projectmanagement.pext.additional.index')"
+                        class="bg-indigo-600 hover:bg-indigo-500 rounded-md px-4 py-2 text-center text-sm text-white">
+                    P. Adicionales
+                    </Link>
+                    <!-- <Link :href="route('projectscalendar.index')"
                         class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                     Calendario
-                    </Link>
-                    <button @click="()=>router.visit(route('projectmanagement.historial'))" type="button"
+                    </Link> -->
+                    <!-- <button @click="()=>router.visit(route('projectmanagement.historial'))" type="button"
                         class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                         Historial
-                    </button>
+                    </button> -->
                 </div>
 
                 <div class="sm:hidden">
@@ -45,7 +49,7 @@
                                         </button>
                                     </div>
                                 </div>
-                                <dropdown-link :href="route('projectscalendar.index')">
+                                <!-- <dropdown-link :href="route('projectscalendar.index')">
                                     Calendario
                                 </dropdown-link>
                                 <div class="dropdown">
@@ -55,7 +59,7 @@
                                             Historial
                                         </button>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </template>
                     </dropdown>
@@ -69,9 +73,10 @@
                     class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
                     <div class="grid grid-cols-2">
                         <h2 class="text-sm font-semibold mb-3">
-                            N° {{ item.code }}
+                            N° Codigo
+                            <!-- {{ item.code }} -->
                         </h2>
-                        <div v-if="auth.user.role_id === 1 || hasPermission('ProjectManager') " class="inline-flex justify-end items-start gap-x-2">
+                        <!-- <div v-if="auth.user.role_id === 1 || hasPermission('ProjectManager') " class="inline-flex justify-end items-start gap-x-2">
                             <button
                                 @click="()=>{router.post(route('projectmanagement.liquidation'),{project_id: item.id}, {
                                     onSuccess: () => router.visit(route('projectmanagement.index'))
@@ -86,57 +91,60 @@
                                 class="flex items-start">
                             <QueueListIcon class="h-6 w-6 text-teal-700" />
                             </Link>
-                        </div>
+                        </div> -->
                     </div>
                     <h3 class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
-                        {{ item.name }}
+                        <!-- {{ item.name }} -->
+                          Nombre de Prueba
                     </h3>
-                    <p v-if="item.initial_budget === 0.00" class="text-red-500 text-sm">
+                    <p v-if="item?.initial_budget === 0.00" class="text-red-500 text-sm">
                         No se definió un presupuesto
                     </p>
+                    <!-- :class="`text-gray-500 text-sm ${item?.initial_budget === 0.00 ? 'opacity-50 pointer-events-none' : ''}`" -->
                     <div
-                        :class="`text-gray-500 text-sm ${item.initial_budget === 0.00 ? 'opacity-50 pointer-events-none' : ''}`">
+                        
+                        >
                         <div class="grid grid-cols-1 gap-y-1">
-                            <Link v-if="item.initial_budget > 0"
+                            <Link v-if="item?.initial_budget > 0"
                                 :href="route('tasks.index', { id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Tareas
                             </Link>
-                            <Link v-if="item.initial_budget > 0"
+                            <Link v-if="item?.initial_budget > 0"
                                 :href="route('projectscalendar.show', { project: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Calendario
                             </Link>
                             <span v-else class="text-gray-400">Calendario</span>
-                            <Link v-if="item.initial_budget > 0"
+                            <!-- <Link v-if="item?.initial_budget > 0"
                                 :href="route('projectmanagement.resources', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Servicios
                             </Link>
-                            <span v-else class="text-gray-400">Servicios</span>
-                            <Link v-if="item.initial_budget > 0"
+                            <span v-else class="text-gray-400">Servicios</span> -->
+                            <Link v-if="item?.initial_budget > 0"
                                 :href="route('projectmanagement.purchases_request.index', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y
                             Gastos</Link>
                             <span v-else class="text-gray-400">Compras y Gastos</span>
 
-                            <Link v-if="item.initial_budget > 0"
+                            <!-- <Link v-if="item?.initial_budget > 0"
                                 :href="route('projectmanagement.products', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                                 Asignar Productos
                             </Link>
-                            <span v-else class="text-gray-400">Asignar Productos</span>
+                            <span v-else class="text-gray-400">Asignar Productos</span> -->
 
 
-                            <Link v-if="item.initial_budget > 0"
+                            <!-- <Link v-if="item?.initial_budget > 0"
                                 :href="route('projectmanagement.liquidate', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                             Liquidaciones
                             </Link>
-                            <span v-else class="text-gray-400">Liquidaciones</span>
-                            <Link v-if="item.initial_budget > 0"
+                            <span v-else class="text-gray-400">Liquidaciones</span> -->
+                            <!-- <Link v-if="item?.initial_budget > 0"
                                 :href="route('project.document.index', {path: `${item.code}_${item.id}`, project_id: item.id})"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                             Archivos
                             </Link>
-                            <span v-else class="text-gray-400">Archivos</span>
+                            <span v-else class="text-gray-400">Archivos</span> -->
                         </div>
                     </div>
                 </div>

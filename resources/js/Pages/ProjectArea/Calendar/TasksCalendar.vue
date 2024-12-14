@@ -44,11 +44,15 @@ const handleDateClick = (arg) => {
   alert('date click! ' + arg.dateStr);
 };
 
-let backUrl = project.status === null 
-                ? 'projectmanagement.index' 
-                : project.status == true 
-                    ? 'projectmanagement.historial'
-                    : 'projectmanagement.index' 
+let backUrl = project.cost_line_id === 1 ? project.status === null
+    ? 'projectmanagement.index'
+    : project.status == true
+        ? 'projectmanagement.historial'
+        : 'projectmanagement.index' : project.status === null
+    ? 'projectmanagement.pext.index'
+    : project.status == true
+        ? ''
+        : 'projectmanagement.pext.index'
 
 
 const handleEventClick = (arg) => {

@@ -670,10 +670,10 @@
                 </div>
             </div>
         </Modal>
-        <SuccessOperationModal :confirming="confirmAssignation" :title="'Nueva Instalación PINT y PEXT creada'"
-            :message="'La Asignacion fue creada con éxito'" />
-        <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Instalación PINT y PEXT Actualizada'"
-            :message="'La Asignacion fue actualizada'" />
+        <!-- <SuccessOperationModal :confirming="confirmAssignation" :title="'Nueva Instalación PINT y PEXT creada'"
+            :message="'La Asignacion fue creada con éxito'" /> -->
+        <!-- <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Instalación PINT y PEXT Actualizada'"
+            :message="'La Asignacion fue actualizada'" /> -->
     </AuthenticatedLayout>
 </template>
 
@@ -693,6 +693,7 @@ import TextInput from "@/Components/TextInput.vue";
 import { EyeIcon } from "@heroicons/vue/24/outline";
 import { setAxiosErrors } from "@/utils/utils";
 import { ref, watch } from "vue";
+import { notify, notifyError } from "@/Components/Notification";
 
 
 const { installation, auth, searchCondition } = defineProps({
@@ -708,7 +709,7 @@ const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
 const installations = ref(installation);
 const pintList = ref([])
 const pextList = ref([])
-
+console.log(installations.value)
 const initialState = {
     user_id: auth.user.id,
     user_name: auth.user.name,
@@ -778,6 +779,7 @@ function openEditFeasibilityModal(
     }
     form.reset();
     showAddEditModal.value = true;
+    console.log(form)
 }
 
 watch(() => form.total_materials, (newVal) => {
@@ -800,24 +802,21 @@ watch(() => [form.pint_amount, form.pext_amount], (newVal) => {
 
 async function submit() {
     form.total_materials = pintList.value.concat(pextList.value);
-    let url = route("cicsa.installation.store", { ci_id: form?.id });
+    let url = route("cicsa.installation.store", { ci_id: form.id ?? null });
     try {
         const response = await axios.post(url, form);
         updateInstallations(form.cicsa_assignation_id, response.data)
         closeAddAssignationModal();
-        confirmUpdateAssignation.value = true;
-        setTimeout(() => {
-            confirmUpdateAssignation.value = false;
-        }, 1500);
     } catch (error) {
+        console.log(error)
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, form)
             } else {
-                console.error("Server error:", error.response.data)
+                notifyError("Server error:", error.response.data)
             }
         } else {
-            console.error("Network or other error:", error)
+            notifyError("Network or other error:", error)
         }
     }
 }
@@ -870,7 +869,7 @@ const search = async ($search) => {
         const response = await axios.post(route("cicsa.installation.index"), {
             searchQuery: $search,
         });
-        installations.value = response.data.installation;
+        installations.value = response.data;
     } catch (error) {
         console.error("Error searching:", error);
     }
@@ -878,8 +877,10 @@ const search = async ($search) => {
 
 function updateInstallations(cicsa_assignation_id, installation) {
     const validations = installations.value.data || installations.value;
+    console.log(validations)
     const index = validations.findIndex(item => item.id === cicsa_assignation_id);
     validations[index].cicsa_installation = installation
+    notify('Se actualizo Correctamente')
 }
 
 if (searchCondition) {

@@ -1,9 +1,11 @@
 <template>
+
     <Head title="Proyectos" />
     <AuthenticatedLayout :redirectRoute="'projectmanagement.pext.index'">
         <template #header>
             Proyectos Adicionales
         </template>
+        <Toaster richColors />
         <div class="min-w-full rounded-lg shadow">
             <div class="mt-6 flex items-center justify-between gap-x-6">
                 <div class="hidden sm:flex sm:items-center sm:space-x-3">
@@ -68,14 +70,22 @@
                         </template>
                     </dropdown>
                 </div>
-                <input type="text" @input="search($event.target.value)" placeholder="Buscar...">
+                <div class="flex items-center mt-4 space-x-3 sm:mt-0">
+                    <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
+                        placeholder="Buscar ..." />
+                </div>
+                <div id="search_fields" role="tooltip"
+                    class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                    Nombre,Codigo,CPE
+                    <div class="tooltip-arrow" data-popper-arrow></div>
+                </div>
             </div>
             <br>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
+            <!-- <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 <div v-for="item in projects.data || projects" :key="item.id"
                     class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
                     <div class="grid grid-cols-2">
-                        <p class="text-sm font-semibold mb-3">
+                        <p class="col-start-1 col-span-2 text-sm font-semibold mb-3">
                             Proyecto: {{ item.project_name }}
                         </p>
                         <div v-if="hasPermission('ProjectManager')" class="inline-flex justify-end items-start gap-x-2">
@@ -95,7 +105,7 @@
                         Cliente: {{ item.customer }}
                     </p>
                     <p class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
-                        Centro de Costos: {{ item.project?.cost_center.name }}
+                        Centro de Costos: {{ item.project?.cost_center?.name }}
                     </p>
                     <p class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
                         Codigo: {{ item.project_code }}
@@ -103,10 +113,110 @@
                     <p class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
                         CPE: {{ item.cpe }}
                     </p>
+                    <p class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
+                        Zonas: {{ item.zone }}
+                    </p>
                     <div class="grid grid-cols-1 gap-y-1">
                         <Link :href="route('pext.additional.expense.index', { cicsa_assignation_id: item.id })"
                             class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Gastos
                         </Link>
+                    </div>
+                </div>
+            </div> -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div v-for="item in projects.data || projects" :key="item.id"
+                    class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
+                    <div class="grid grid-cols-2">
+                        <p class="col-start-1 col-span-1 text-sm font-semibold mb-3">
+                            Nombre: {{ item.project_name }}
+                        </p>
+                        <div v-if="hasPermission('ProjectManager')" class="inline-flex justify-end items-start gap-x-2">
+                            <button type="button" class="text-blue-900 whitespace-no-wrap" @click="editProject(item)">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                </svg>
+                            </button>
+                        </div>
+                        <p class="col-start-1 col-span-2 text-sm font-semibold mb-3">
+                            Fecha: {{ formattedDate(item.assignation_date) }}
+                        </p>
+                        <p class="col-start-1 col-span-2 text-sm font-semibold mb-3">
+                            Cliente: {{ item.customer }}
+                        </p>
+                        <p class="col-start-1 col-span-2 text-sm font-semibold mb-3">
+                            Centro de Costos: {{ item.project?.cost_center?.name }}
+                        </p>
+                        <p class="col-start-1 col-span-2 text-sm font-semibold mb-3">
+                            Codigo: {{ item.project_code }}
+                        </p>
+                        <p class="col-start-1 col-span-2 text-sm font-semibold mb-3">
+                            CPE: {{ item.cpe }}
+                        </p>
+                        <p class="col-start-1 col-span-2 text-sm font-semibold mb-3">
+                            Zonas: {{ item.zone }}
+                        </p>
+                        <!-- <div v-if="auth.user.role_id === 1 || hasPermission('ProjectManager') " class="inline-flex justify-end items-start gap-x-2">
+                            <button
+                                @click="()=>{router.post(route('projectmanagement.liquidation'),{project_id: item.id}, {
+                                    onSuccess: () => router.visit(route('projectmanagement.index'))
+                                })}"
+                                v-if="item.status === null"
+                                :class="`h-6 px-1 rounded-md bg-indigo-700 text-white text-sm  ${item.is_liquidable ? '': 'opacity-60'}`"
+                                :disabled="item.is_liquidable ? false: true"
+                            >
+                                Liquidar
+                            </button>
+                            <Link :href="route('projectmanagement.update', { project_id: item.id })"
+                                class="flex items-start">
+                            <QueueListIcon class="h-6 w-6 text-teal-700" />
+                            </Link>
+                        </div> -->
+                    </div>
+                    <!-- <h3 class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
+                        {{ item.project_name }}
+                    </h3> -->
+                    <!-- :class="`text-gray-500 text-sm ${item?.initial_budget === 0.00 ? 'opacity-50 pointer-events-none' : ''}`" -->
+                    <div>
+                        <div class="grid grid-cols-1 gap-y-1">
+                            <!-- <Link :href="route('tasks.index', { id: item.project.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Tareas
+                            </Link>
+                            <Link :href="route('projectscalendar.show', { project: item.project.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Calendario
+                            </Link> -->
+
+                            <!-- <Link v-if="item?.initial_budget > 0"
+                                :href="route('projectmanagement.resources', { project_id: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Servicios
+                            </Link>
+                            <span v-else class="text-gray-400">Servicios</span> -->
+                            <Link :href="route('pext.additional.expense.index', { cicsa_assignation_id: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y
+                            Gastos</Link>
+
+                            <!-- <Link v-if="item?.initial_budget > 0"
+                                :href="route('projectmanagement.products', { project_id: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                                Asignar Productos
+                            </Link>
+                            <span v-else class="text-gray-400">Asignar Productos</span> -->
+
+
+                            <!-- <Link v-if="item?.initial_budget > 0"
+                                :href="route('projectmanagement.liquidate', { project_id: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                            Liquidaciones
+                            </Link>
+                            <span v-else class="text-gray-400">Liquidaciones</span> -->
+                            <!-- <Link v-if="item?.initial_budget > 0"
+                                :href="route('project.document.index', {path: `${item.code}_${item.id}`, project_id: item.id})"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                            Archivos
+                            </Link>
+                            <span v-else class="text-gray-400">Archivos</span> -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -292,6 +402,8 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import { formattedDate, setAxiosErrors } from '@/utils/utils';
+import { notifyError, notify } from '@/Components/Notification';
+import { Toaster } from 'vue-sonner';
 
 const { project, auth, userPermissions, cost_line } = defineProps({
     project: Object,
@@ -367,7 +479,7 @@ const search = async ($search) => {
         const response = await axios.post(route('projectmanagement.pext.additional.index'), { searchQuery: $search });
         projects.value = response.data;
     } catch (error) {
-        console.error('Error searching:', error);
+        notifyError('Error searching:', error);
     }
 };
 
@@ -378,11 +490,14 @@ async function submit() {
         let action = form.id ? 'update' : 'create'
         updatePext(response.data, action)
     } catch (error) {
-        console.log(error)
         if (error.response) {
-            setAxiosErrors(error.response.data.errors, form)
+            if (error.response.data.errors) {
+                setAxiosErrors(error.response.data.errors, form)
+            } else {
+                notifyError("Server error:", error.response.data)
+            }
         } else {
-            console.error(error)
+            notifyError("Network or other error:", error)
         }
     }
 }
@@ -393,11 +508,14 @@ function updatePext(pext, action) {
     if (action === "create") {
         validations.unshift(pext);
         createOrEditModal()
+        notify('Creacion Exitosa')
     } if (action === "update") {
         validations[index] = pext
         createOrEditModal()
+        notify('Actualización Exitosa')
     } if (action === "delete") {
         validations[index].splice(index, 1)
+        notify('Eliminación Exitosa')
     }
 
     if (validations.length > projects.value.per_page) {

@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Solicitudes del proyecto" />
-    <AuthenticatedLayout :redirect-route="'preprojects.index'">
+    <AuthenticatedLayout :redirect-route="backUrl">
         <template #header>
             Lista de solicitudes de Anteproyecto
         </template>
@@ -141,6 +141,12 @@ const props = defineProps({
     preproject: Object,
     userPermissions:Array
 });
+
+let backUrl = (props.preproject?.status === undefined || props.preproject?.status === null)
+    ? { route: 'preprojects.index', params: { type: props.preproject.cost_line_id } }
+    : props.preproject.status == true
+        ? { route: 'preprojects.index', params: { type: props.preproject.cost_line_id, preprojects_status: 1 } }
+        : { route: 'preprojects.index', params: { type: props.preproject.cost_line_id,preprojects_status: 0 } }
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);

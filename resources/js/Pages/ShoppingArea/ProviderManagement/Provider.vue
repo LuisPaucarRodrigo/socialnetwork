@@ -91,7 +91,7 @@
                                 <p class="text-gray-900 whitespace-nowrap text-xs">{{ item.email }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-3 py-2">
-                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ item.category.name }}</p>
+                                <p class="text-gray-900 whitespace-nowrap text-xs">{{ item.category?.name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-3 py-2">
                                 <p v-for="i in item.segments" class="text-gray-900 whitespace-nowrap text-xs">

@@ -3,10 +3,10 @@
     <Head title="Anteproyectos" />
     <AuthenticatedLayout :redirectRoute="backUrls">
         <template v-if="preproject" #header>
-            Edición de Anteproyecto
+            Edición de Anteproyecto {{ cost_line.name }}
         </template>
         <template v-else #header>
-            Creación de Anteproyecto
+            Creación de Anteproyecto {{ cost_line.name }}
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
             <form @submit.prevent="submit">
@@ -290,19 +290,22 @@ const showModal = ref(false)
 const showModalUpdate = ref(false)
 const showErrorContact = ref(false)
 
-const { preproject, customers, titles, stages } = defineProps({
+const { preproject, customers, titles, stages, type, cost_line } = defineProps({
     preproject: Object,
     customers: Object,
     titles: Object,
-    stages: Object
+    stages: Object,
+    type: String,
+    cost_line: Object,
 })
 
 let backUrls = (preproject?.status === undefined || preproject?.status === null)
-    ? 'preprojects.index'
+    ? { route: 'preprojects.index', params: { type } }
     : preproject?.status == true
-        ? { route: 'preprojects.index', params: { preprojects_status: 1 } }
-        : { route: 'preprojects.index', params: { preprojects_status: 0 } }
+        ? { route: 'preprojects.index', params: { type, preprojects_status: 1 } }
+        : { route: 'preprojects.index', params: { type, preprojects_status: 0 } }
 
+console.log(backUrls)
 
 const initial_state = {
     customer_id: '',
@@ -312,6 +315,7 @@ const initial_state = {
     date: '',
     observation: '',
     reportStages: [],
+    cost_line_id: type,
     // title_factibilidad_id: '',
     // title_implementation_id: '',
     contacts: [],
@@ -378,10 +382,10 @@ const submit = () => {
                 }
                 route('', {})
                 router.visit(preproject?.status === undefined
-                    ? route('preprojects.index')
+                    ? route('preprojects.index', {type})
                     : preproject?.status == true
-                        ? route('preprojects.index', { preprojects_status: 1 })
-                        : route('preprojects.index', { preprojects_status: 0 }))
+                        ? route('preprojects.index', { type, preprojects_status: 1 })
+                        : route('preprojects.index', { type, preprojects_status: 0 }))
             }, 2000);
         },
         onError: (e) => {

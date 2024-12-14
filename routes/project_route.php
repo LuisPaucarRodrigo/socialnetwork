@@ -31,7 +31,7 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::delete('/customers/{customer}/contacts/{customer_contact}/destroy', [CustomersController::class, 'destroy_contact'])->name('customers.contacts.destroy');
 
     //Preproject
-    Route::get('/preprojects/create/{preproject_id?}', [PreProjectController::class, 'create'])->name('preprojects.create');
+    Route::get('/preprojects/create/{type}/{preproject_id?}', [PreProjectController::class, 'create'])->name('preprojects.create');
     Route::post('/preprojects/store', [PreProjectController::class, 'store'])->name('preprojects.store');
 
     //Assign users
@@ -121,7 +121,9 @@ Route::middleware('permission:ProjectManager')->group(function () {
 
     //massive costs actions
     Route::post('/project/additional_costs_massive_update/', [AdditionalCostsController::class, 'masiveUpdate'])->name('projectmanagement.additionalCosts.massiveUpdate');
+    Route::post('/project/static_costs_massive_swap/', [AdditionalCostsController::class, 'swapCosts'])->name('projectmanagement.additionalCosts.swapCosts');
     Route::post('/project/static_costs_massive_update/', [StaticCostsController::class, 'masiveUpdate'])->name('projectmanagement.staticCosts.massiveUpdate');
+
 
 
 
@@ -198,9 +200,10 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     Route::get('/preprojects/codes', [PreProjectController::class, 'showCodes'])->name('preprojects.codes');
     Route::get('/preprojects/titles', [PreProjectController::class, 'showTitles'])->name('preprojects.titles');
 
-    //PreProjects
-    Route::get('/preprojects', [PreProjectController::class, 'index'])->name('preprojects.index');
-    Route::post('/preprojects', [PreProjectController::class, 'index'])->name('preprojects.index');
+    //PreProjects PEXT
+    Route::get('/preprojects_index/{type}/{preprojects_status?}', [PreProjectController::class, 'index'])->name('preprojects.index');
+    Route::post('/preprojects_index/{type}/{preprojects_status?}', [PreProjectController::class, 'index'])->name('preprojects.index');
+
 
     //Preproject image
     Route::get('/preprojects/{preproject_id}/report/image', [PreProjectController::class, 'index_image'])->name('preprojects.imagereport.index');
@@ -232,7 +235,7 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     Route::get('/projectPext/expenses/fixed/{cicsa_assignation_id}', [PextController::class, 'additional_expense_additional_index'])->name('projectmanagement.pext.expenses.fixed');
 
     //Project Pext
-    Route::any('/projectPext/monthly', [PextController::class, 'index'])->name('projectmanagement.pext.index');
+    Route::any('/projectPext/index', [PextController::class, 'index'])->name('projectmanagement.pext.index');
     Route::get('/projectPext/export/expenses', [PextController::class, 'export_expenses'])->name('projectmanagement.pext.export.expenses');
 
     Route::any('/projectPext/expenses/index/{pext_project_id}', [PextController::class, 'index_expenses'])->name('projectmanagement.pext.expenses.index');
@@ -294,10 +297,15 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
 
 
     //pint auto
-    Route::get('/preproject/auto-create/pint', [ProjectPintController::class, 'pint_create_project'])->name('project.auto.pint');
+    Route::get('/preproject/auto-create/pint/{type}', [ProjectPintController::class, 'pint_create_project'])->name('project.auto.pint');
+    Route::get('/preproject/auto-create/search_employees/{cc_id}', [ProjectPintController::class, 'getEmployees'])->name('project.auto.pint.getEmployees');
     Route::post('/preproject/auto-store/pint', [ProjectPintController::class, 'pint_store_project'])->name('project.auto_store.pint');
-    Route::post('/product-CPE', [ProjectPintController::class, 'sameCPEProducts'])->name('pint_project.products.cpe');
+    Route::post('/product-CPE/pint', [ProjectPintController::class, 'sameCPEProducts'])->name('pint_project.products.cpe');
 
+    //pext auto
+    Route::get('/preproject/auto-create/pext/{type}', [ProjectPintController::class, 'pext_create_project'])->name('project.auto.pext');
+    Route::post('/preproject/auto-store/pext', [ProjectPintController::class, 'pext_store_project'])->name('project.auto_store.pext');
+    Route::post('/product-CPE/pext', [ProjectPintController::class, 'sameCPEProductsPext'])->name('pext_project.products.cpe');
 
     //Costs Export
     Route::get('/additionalcost_photo/{additional_cost_id}', [AdditionalCostsController::class, 'download_ac_photo'])->name('additionalcost.archive');

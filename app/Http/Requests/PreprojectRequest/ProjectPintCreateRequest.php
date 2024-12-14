@@ -23,7 +23,7 @@ class ProjectPintCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'template' => 'required',
+            'cost_center_id' => 'required',
             'date' => 'required',
             'cpe' => 'required',
             'contacts' => 'required',
