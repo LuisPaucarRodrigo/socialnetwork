@@ -232,7 +232,7 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     //Project
     Route::any('/project', [ProjectManagementController::class, 'index'])->name('projectmanagement.index');
     Route::any('/project/historial', [ProjectManagementController::class, 'historial'])->name('projectmanagement.historial');
-    Route::get('/projectPext/expenses/fixed/{cicsa_assignation_id}', [PextController::class, 'additional_expense_additional_index'])->name('projectmanagement.pext.expenses.fixed');
+    // Route::get('/projectPext/expenses/fixed/{cicsa_assignation_id}', [PextController::class, 'additional_expense_additional_index'])->name('projectmanagement.pext.expenses.fixed');
 
     //Project Pext
     Route::any('/projectPext/index', [PextController::class, 'index'])->name('projectmanagement.pext.index');
@@ -245,7 +245,8 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     //Project Pext Additional
     Route::any('/projectPext/additional/index', [PextController::class, 'index_additional'])->name('projectmanagement.pext.additional.index');
     Route::post('/projectPext/additional/store/{cicsa_assignation_id?}', [PextController::class, 'updateOrStoreAdditional'])->name('projectmanagement.pext.additional.store');
-    Route::any('/projectPext/{cicsa_assignation_id}/additional/expense/index', [PextController::class, 'additional_expense_index_fixed'])->name('pext.additional.expense.index');
+    Route::get('/projectPext/additionalOrFixed/expenses/{cicsa_assignation_id}/index/{fixedOrAdditional}', [PextController::class, 'additional_expense_index'])->name('pext.additional.expense.index');
+    Route::post('/projectPext/additionalOrFixed/expense/search/{cicsa_assignation_id}', [PextController::class, 'search_advance_additional_expense'])->name('pext.additional.expense.search_advance');
 
     //Project calendar
     Route::get('/calendarProjects', [CalendarController::class, 'index'])->name('projectscalendar.index');

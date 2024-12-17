@@ -3,7 +3,7 @@
     <Head title="Proyectos" />
     <AuthenticatedLayout :redirectRoute="'projectmanagement.pext.index'">
         <template #header>
-            Proyectos Pext
+            Proyectos Mensuales Pext
         </template>
         <Toaster richColors />
         <div class="min-w-full rounded-lg shadow">
@@ -243,7 +243,7 @@
                                             {{ item.preproject.code }}
                                         </option>
                                     </select>
-                                    <InputError :message="form.errors.cost_center_id" />
+                                    <InputError :message="form.errors.project_id" />
                                 </div>
                             </div>
                             <div class="">

@@ -42,12 +42,12 @@
                     </div>
                     <Link v-if="fixedOrAdditional"
                         class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
-                        :href="route('pext.additional.expense.index', { cicsa_assignation_id: cicsa_assignation_id })">
+                        :href="route('pext.additional.expense.index', { cicsa_assignation_id: cicsa_assignation_id, fixedOrAdditional: false })">
                     G.Adicionales
                     </Link>
                     <Link v-else
                         class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
-                        :href="route('projectmanagement.pext.expenses.fixed', { cicsa_assignation_id: cicsa_assignation_id })">
+                        :href="route('pext.additional.expense.index', { cicsa_assignation_id: cicsa_assignation_id, fixedOrAdditional: true })">
                     G.Fijos
                     </Link>
 
@@ -574,7 +574,7 @@ const hasPermission = (permission) => {
 
 const form = useForm({
     id: "",
-    fixedOrAdditional: false,
+    fixedOrAdditional: props.fixedOrAdditional,
     expense_type: "",
     ruc: "",
     zone: "",
@@ -587,7 +587,7 @@ const form = useForm({
     doc_date: "",
     description: "",
     photo: "",
-    state: props.fixedOrAdditional ? true : false,
+    // state: props.fixedOrAdditional ? true : false,
     is_accepted: true,
     amount: "",
     igv: 0,
@@ -715,7 +715,7 @@ const docTypes = [
 
 
 const filterForm = ref({
-    fixedOrAdditional: props.fixedOrAdditional ? true : false,
+    fixedOrAdditional: props.fixedOrAdditional,
     rejected: 1,
     search: "",
     selectedCostCenter: costCenter,
@@ -727,6 +727,7 @@ const filterForm = ref({
 
 
 watch(() => [
+    filterForm.value.fixedOrAdditional,
     filterForm.value.rejected,
     filterForm.value.search,
     filterForm.value.selectedCostCenter,
@@ -740,7 +741,7 @@ watch(() => [
 );
 
 async function search_advance(data) {
-    let url = route("pext.additional.expense.index", {
+    let url = route("pext.additional.expense.search_advance", {
         cicsa_assignation_id: props.cicsa_assignation_id,
     })
     try {
@@ -818,9 +819,8 @@ function updateExpense(expense, action, state) {
     }
 }
 
-async function rejectedExpenses() {
+function rejectedExpenses() {
     filterForm.value.rejected = !filterForm.value.rejected
-
 }
 
 </script>

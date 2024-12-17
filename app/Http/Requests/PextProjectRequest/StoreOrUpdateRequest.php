@@ -56,7 +56,7 @@ class StoreOrUpdateRequest extends FormRequest
             'description' => 'required|string',
             'photo' => 'nullable|max:2048',
             'is_accepted' => 'required|string',
-            'state' => 'required|string',
+            // 'state' => 'required|string',
             'igv' => 'required',
             'cicsa_assignation_id' => 'required'
         ];

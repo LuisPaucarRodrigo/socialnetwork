@@ -192,7 +192,8 @@
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Servicios
                             </Link>
                             <span v-else class="text-gray-400">Servicios</span> -->
-                            <Link :href="route('pext.additional.expense.index', { cicsa_assignation_id: item.id })"
+                            <Link
+                                :href="route('pext.additional.expense.index', { cicsa_assignation_id: item.id, fixedOrAdditional: false })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y
                             Gastos</Link>
 
@@ -281,7 +282,7 @@
                                     <option value="">Seleccionar Centro de Costo</option>
                                     <option v-for="item in cost_line.cost_center" :key="item.id" :value="item.id">{{
                                         item.name
-                                    }}
+                                        }}
                                     </option>
                                 </select>
                                 <InputError :message="form.errors.cost_center_id" />

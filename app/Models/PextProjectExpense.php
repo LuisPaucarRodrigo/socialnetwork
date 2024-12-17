@@ -24,7 +24,7 @@ class PextProjectExpense extends Model
         'provider_id',
         'photo',
         'is_accepted',
-        'state',
+        // 'state',
         'igv',
         'user_id',
         'cicsa_assignation_id',

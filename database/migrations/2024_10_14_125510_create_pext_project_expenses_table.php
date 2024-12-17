@@ -26,17 +26,13 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('photo')->nullable();
             $table->boolean('is_accepted')->nullable();
-            $table->boolean('state')->default(true);
+            // $table->boolean('state')->default(true);
             $table->foreignId('user_id')->nullable()->constrained();
             $table->foreignId('cicsa_assignation_id')->nullable()->constrained();
             $table->foreignId('provider_id')
                 ->nullable()
                 ->constrained('providers')
                 ->onDelete('set null');
-            $table->foreignId('pext_project_id')
-                ->nullable()
-                ->constrained()
-                ->onDelete('cascade');
             $table->integer('igv')->default('0');
             $table->foreignId('account_statement_id')
                 ->nullable()
