@@ -9,34 +9,24 @@ use Maatwebsite\Excel\Concerns\WithColumnWidths;
 
 class PextExpenseExport implements FromView, WithColumnWidths
 {
-    protected $pext_project_id;
-    protected $start_date;
-    protected $end_date;
+    protected $project_id;
+    protected $fixedOrAdditional;
 
-    public function __construct($pext_project_id, $start_date = null, $end_date = null)
+    public function __construct($project_id, $fixedOrAdditional)
     {
-        $this->pext_project_id = $pext_project_id;
-        $this->start_date = $start_date;
-        $this->end_date = $end_date;
+        $this->project_id = $project_id;
+        $this->fixedOrAdditional = $fixedOrAdditional;
     }
 
     public function view(): View
     {
-        if ($this->pext_project_id) {
-            return view('Export/PextExpenseExport', [
-                'expenses' => PextProjectExpense::with(['provider:id,company_name', 'cicsa_assignation:id,project_name,cost_center'])
-                    ->where('pext_project_id', $this->pext_project_id)
-                    ->where('is_accepted', 1)
-                    ->get()
-            ]);
-        } else {
-            return view('Export/PextExpenseExport', [
-                'expenses' => PextProjectExpense::with(['provider:id,company_name', 'cicsa_assignation:id,project_name,cost_center'])
-                    ->whereBetween('operation_date', [$this->start_date, $this->end_date])
-                    ->where('is_accepted', 1)
-                    ->get()
-            ]);
-        }
+        return view('Export/PextExpenseExport', [
+            'expenses' => PextProjectExpense::with(['provider:id,company_name'])
+                ->where('project_id', $this->project_id)
+                ->where('fixedOrAdditional', $this->fixedOrAdditional)
+                ->where('is_accepted', 1)
+                ->get()
+        ]);
     }
 
     public function columnWidths(): array
@@ -53,9 +43,7 @@ class PextExpenseExport implements FromView, WithColumnWidths
             'I' => 17,
             'J' => 17,
             'K' => 17,
-            'L' => 17,
-            'M' => 17,
-            'N' => 30
+            'L' => 30,
         ];
     }
 }

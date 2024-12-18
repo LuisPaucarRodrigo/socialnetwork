@@ -27,18 +27,13 @@ class PextProjectExpense extends Model
         // 'state',
         'igv',
         'user_id',
-        'cicsa_assignation_id',
+        'project_id',
         'account_statement_id',
     ];
 
-    public function pext_project()
+    public function project()
     {
-        return $this->belongsTo(PextProject::class, 'pext_project_id');
-    }
-
-    public function cicsa_assignation()
-    {
-        return $this->belongsTo(CicsaAssignation::class, 'cicsa_assignation_id');
+        return $this->belongsTo(Project::class, 'project_id');
     }
 
     public function provider()

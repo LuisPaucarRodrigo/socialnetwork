@@ -193,7 +193,7 @@
                             </Link>
                             <span v-else class="text-gray-400">Servicios</span> -->
                             <Link
-                                :href="route('pext.additional.expense.index', { cicsa_assignation_id: item.id, fixedOrAdditional: false })"
+                                :href="route('pext.additional.expense.index', { project_id: item.id, fixedOrAdditional: false })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y
                             Gastos</Link>
 
@@ -485,7 +485,7 @@ const search = async ($search) => {
 };
 
 async function submit() {
-    let url = route('projectmanagement.pext.additional.store', { 'cicsa_assignation_id': form.id ?? null })
+    let url = route('projectmanagement.pext.additional.store', { 'project_id': form.id ?? null })
     try {
         let response = await axios.post(url, form)
         let action = form.id ? 'update' : 'create'

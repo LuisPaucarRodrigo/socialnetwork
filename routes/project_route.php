@@ -75,7 +75,7 @@ Route::middleware('permission:ProjectManager')->group(function () {
 
     //Pext Project
     Route::post('/projectPext/storeOrUpdate/{pext_id?}', [PextController::class, 'storeOrUpdate'])->name('projectmanagement.pext.storeOrUpdate');
-    Route::get('/projectPext/requestCicsa/{zone?}', [PextController::class, 'requestCicsa'])->name('projectmanagement.pext.requestCicsa');
+    // Route::get('/projectPext/requestCicsa/{zone?}', [PextController::class, 'requestCicsa'])->name('projectmanagement.pext.requestCicsa');
 
 
     Route::post('/projectPext/expenses/storeOrUpdate/{expense_id?}', [PextController::class, 'expenses_storeOrUpdate'])->name('pext.expenses.storeOrUpdate');
@@ -238,15 +238,15 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     Route::any('/projectPext/index', [PextController::class, 'index'])->name('projectmanagement.pext.index');
     Route::get('/projectPext/export/expenses', [PextController::class, 'export_expenses'])->name('projectmanagement.pext.export.expenses');
 
-    Route::any('/projectPext/expenses/index/{pext_project_id}', [PextController::class, 'index_expenses'])->name('projectmanagement.pext.expenses.index');
+    Route::get('/projectPext/expenses/monthly/{project_id}/index/{fixedOrAdditional}', [PextController::class, 'index_expenses'])->name('projectmanagement.pext.expenses.index');
     Route::get('/projectPext/expenses/showImage/{expense_id}', [PextController::class, 'expense_show_image'])->name('projectmanagement.pext.expenses.image.show');
-    Route::get('/projectPext/expenses/export/{pext_project_id}', [PextController::class, 'expense_export'])->name('projectmanagement.pext.expenses.export');
+    Route::get('/projectPext/expenses/export/{project_id}/{fixedOrAdditional}', [PextController::class, 'expense_export'])->name('projectmanagement.pext.expenses.export');
 
     //Project Pext Additional
     Route::any('/projectPext/additional/index', [PextController::class, 'index_additional'])->name('projectmanagement.pext.additional.index');
-    Route::post('/projectPext/additional/store/{cicsa_assignation_id?}', [PextController::class, 'updateOrStoreAdditional'])->name('projectmanagement.pext.additional.store');
-    Route::get('/projectPext/additionalOrFixed/expenses/{cicsa_assignation_id}/index/{fixedOrAdditional}', [PextController::class, 'additional_expense_index'])->name('pext.additional.expense.index');
-    Route::post('/projectPext/additionalOrFixed/expense/search/{cicsa_assignation_id}', [PextController::class, 'search_advance_additional_expense'])->name('pext.additional.expense.search_advance');
+    Route::post('/projectPext/additional/store/{project_id?}', [PextController::class, 'updateOrStoreAdditional'])->name('projectmanagement.pext.additional.store');
+    Route::get('/projectPext/additionalOrFixed/expenses/{project_id}/index/{fixedOrAdditional}', [PextController::class, 'additional_expense_index'])->name('pext.additional.expense.index');
+    Route::post('/projectPext/additionalOrFixed/expense/search/{project_id}', [PextController::class, 'search_advance_monthly_or_additional_expense'])->name('pext.monthly.additional.expense.search_advance');
 
     //Project calendar
     Route::get('/calendarProjects', [CalendarController::class, 'index'])->name('projectscalendar.index');

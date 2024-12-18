@@ -9,7 +9,6 @@ use App\Http\Requests\PextProjectRequest\StoreOrUpdateRequest;
 use App\Models\AccountStatement;
 use App\Models\CicsaAssignation;
 use App\Models\CostLine;
-use App\Models\PextProject;
 use App\Models\PextProjectExpense;
 use App\Models\Project;
 use App\Models\Provider;
@@ -76,21 +75,21 @@ class PextController extends Controller
         }
     }
 
-    public function requestCicsa($zone = null)
-    {
-        $cicsa = CicsaAssignation::select('id', 'project_name', 'customer')
-            ->where('zone', $zone)
-            ->orWhereHas('cicsa_charge_area', function ($subQuery) {
-                $subQuery->where(function ($subQuery) {
-                    $subQuery->whereNull('invoice_number')
-                        ->orWhereNull('invoice_date')
-                        ->orWhereNull('amount');
-                })
-                    ->whereNull('deposit_date');
-            })
-            ->get();
-        return response()->json($cicsa, 200);
-    }
+    // public function requestCicsa($zone = null)
+    // {
+    //     $cicsa = CicsaAssignation::select('id', 'project_name', 'customer')
+    //         ->where('zone', $zone)
+    //         ->orWhereHas('cicsa_charge_area', function ($subQuery) {
+    //             $subQuery->where(function ($subQuery) {
+    //                 $subQuery->whereNull('invoice_number')
+    //                     ->orWhereNull('invoice_date')
+    //                     ->orWhereNull('amount');
+    //             })
+    //                 ->whereNull('deposit_date');
+    //         })
+    //         ->get();
+    //     return response()->json($cicsa, 200);
+    // }
 
     public function storeOrUpdate(Request $request, $cicsa_assignation_id = null)
     {
@@ -121,96 +120,98 @@ class PextController extends Controller
         return response()->json($cicsaAssignation, 200);
     }
 
-    public function delete(PextProject $pext)
+    // public function delete(PextProject $pext)
+    // {
+    //     $pext->delete();
+    //     return response()->noContent();
+    // }
+
+    // public function export_expenses(Request $request)
+    // {
+    //     $startDate = $request->start_date;
+    //     $endDate = $request->end_date;
+    //     return Excel::download(new PextExpenseExport(null, $startDate, $endDate), 'Gastos_Pext.xlsx');
+    // }
+
+    public function index_expenses($project_id, $fixedOrAdditional)
     {
-        $pext->delete();
-        return response()->noContent();
-    }
-
-    public function export_expenses(Request $request)
-    {
-        $startDate = $request->start_date;
-        $endDate = $request->end_date;
-        return Excel::download(new PextExpenseExport(null, $startDate, $endDate), 'Gastos_Pext.xlsx');
-    }
-
-    public function index_expenses(Request $request, $cicsa_assignation_id)
-    {
-        if ($request->isMethod('get')) {
-            $expense = PextProjectExpense::with(['provider:id,company_name', 'cicsa_assignation.project.cost_center'])
-                ->where('fixedOrAdditional', true)
-                ->where('cicsa_assignation_id', $cicsa_assignation_id)
-                ->where(function ($query) {
-                    $query->where('is_accepted', 1)
-                        ->orWhere('is_accepted', null);
-                })
-                ->orderBy('created_at', 'desc')
-                ->paginate();
-            foreach ($expense as $exp) {
-                $exp->setAppends(['real_amount']);
-                $exp->state = 1 ? true : false;
-            }
-            $providers = Provider::select('id', 'ruc', 'company_name')->get();
-            return Inertia::render(
-                'ProjectArea/ProjectManagement/PextExpenses',
-                [
-                    'expense' => $expense,
-                    'providers' => $providers,
-                    'cicsa_assignation_id' => $cicsa_assignation_id,
-                    'fixedOrAdditional' => false
-                ]
-            );
-        } else {
-            $rejected = $request->rejected;
-            $expense = PextProjectExpense::with(['provider:id,company_name', 'cicsa_assignation.project.cost_center'])
-                ->where('fixedOrAdditional', true)
-                ->where('cicsa_assignation_id', $cicsa_assignation_id)
-                ->orderBy('created_at', 'desc');
-            $expense = $request->state === false ? $expense->where('is_accepted', 0)
-                : $expense->where(function ($query) use ($rejected) {
-                    $query->where('is_accepted', $rejected)
-                        ->orWhere('is_accepted', null);
-                });
-
-            if ($rejected) {
-                $expense->where('is_accepted', $request->rejected);
-            }
-            if ($request->search) {
-                $searchTerms = $request->input('search');
-                $expense = $expense->where(function ($query) use ($searchTerms) {
-                    $query->where('ruc', 'like', "%$searchTerms%")
-                        ->orWhere('doc_date', 'like', "%$searchTerms%")
-                        ->orWhere('description', 'like', "%$searchTerms%")
-                        ->orWhere('amount', 'like', "%$searchTerms%");
-                });
-            }
-            if (count($request->selectedCostCenter) < 6) {
-                $costCenter = $request->selectedCostCenter;
-                $expense = $expense->whereHas('pext_project.project.cost_center', function ($query) use ($costCenter) {
-                    $query->whereIn('name', $costCenter);
-                });
-            }
-
-            if (count($request->selectedZones) < 7) {
-                $expense = $expense->whereIn('zone', $request->selectedZones);
-            }
-            if (count($request->selectedExpenseTypes) < 14) {
-                $expense = $expense->whereIn('expense_type', $request->selectedExpenseTypes);
-            }
-            if (count($request->selectedDocTypes) < 5) {
-                $expense = $expense->whereIn('type_doc', $request->selectedDocTypes);
-            }
-            $expense = $expense->orderBy('doc_date')->get();
-
-            $expense->transform(function ($item) {
-                $item->setAppends(['real_amount']);
-                $item->state = 1 ? true : false;
-                return $item;
-            });
-
-            return response()->json($expense, 200);
+        $expense = PextProjectExpense::with(['provider:id,company_name', 'project.cost_center'])
+            ->where('fixedOrAdditional', json_decode($fixedOrAdditional))
+            ->where('project_id', $project_id)
+            ->where(function ($query) {
+                $query->where('is_accepted', 1)
+                    ->orWhere('is_accepted', null);
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate();
+        foreach ($expense as $exp) {
+            $exp->setAppends(['real_amount']);
+            $exp->state = 1 ? true : false;
         }
+        $providers = Provider::select('id', 'ruc', 'company_name')->get();
+        return Inertia::render(
+            'ProjectArea/ProjectManagement/PextExpenses',
+            [
+                'expense' => $expense,
+                'providers' => $providers,
+                'project_id' => $project_id,
+                'fixedOrAdditional' => json_decode($fixedOrAdditional)
+            ]
+        );
     }
+
+    // public function search_advance_expenses_monthly(Request $request, $project_id)
+    // {
+    //     $rejected = $request->rejected;
+    //     $fixedOrAdditional = $request->fixedOrAdditional;
+    //     $expense = PextProjectExpense::with(['provider:id,company_name', 'project.cost_center'])
+    //         ->where('fixedOrAdditional', $fixedOrAdditional)
+    //         ->where('project_id', $project_id)
+    //         ->orderBy('created_at', 'desc');
+    //     $expense = $request->state === false ? $expense->where('is_accepted', 0)
+    //         : $expense->where(function ($query) use ($rejected) {
+    //             $query->where('is_accepted', $rejected)
+    //                 ->orWhere('is_accepted', null);
+    //         });
+
+    //     if ($rejected) {
+    //         $expense->where('is_accepted', $request->rejected);
+    //     }
+    //     if ($request->search) {
+    //         $searchTerms = $request->input('search');
+    //         $expense = $expense->where(function ($query) use ($searchTerms) {
+    //             $query->where('ruc', 'like', "%$searchTerms%")
+    //                 ->orWhere('doc_date', 'like', "%$searchTerms%")
+    //                 ->orWhere('description', 'like', "%$searchTerms%")
+    //                 ->orWhere('amount', 'like', "%$searchTerms%");
+    //         });
+    //     }
+    //     // if (count($request->selectedCostCenter) < 6) {
+    //     //     $costCenter = $request->selectedCostCenter;
+    //     //     $expense = $expense->whereHas('project.cost_center', function ($query) use ($costCenter) {
+    //     //         $query->whereIn('name', $costCenter);
+    //     //     });
+    //     // }
+
+    //     if (count($request->selectedZones) < 7) {
+    //         $expense = $expense->whereIn('zone', $request->selectedZones);
+    //     }
+    //     if (count($request->selectedExpenseTypes) < 14) {
+    //         $expense = $expense->whereIn('expense_type', $request->selectedExpenseTypes);
+    //     }
+    //     if (count($request->selectedDocTypes) < 5) {
+    //         $expense = $expense->whereIn('type_doc', $request->selectedDocTypes);
+    //     }
+    //     $expense = $expense->orderBy('doc_date')->get();
+
+    //     $expense->transform(function ($item) {
+    //         $item->setAppends(['real_amount']);
+    //         $item->state = 1 ? true : false;
+    //         return $item;
+    //     });
+
+    //     return response()->json($expense, 200);
+    // }
 
     public function expenses_storeOrUpdate(StoreOrUpdateRequest $request, $expense_id = null)
     {
@@ -272,9 +273,11 @@ class PextController extends Controller
         return response()->noContent();
     }
 
-    public function expense_export($pext_project_id)
+    public function expense_export($project_id, $fixedOrAdditional)
     {
-        return Excel::download(new PextExpenseExport($pext_project_id), 'Gastos_Pext.xlsx');
+        $fOrA = json_decode($fixedOrAdditional) ? 'Fijos' : 'Adicionales';
+        $project_name = CicsaAssignation::select('id', 'project_name')->where('project_id', $project_id)->first();
+        return Excel::download(new PextExpenseExport($project_id, json_decode($fixedOrAdditional)), 'Gastos_Pext' . '-' . $project_name->project_name . '-' . $fOrA . '.xlsx');
     }
 
     public function index_additional(Request $request)
@@ -329,11 +332,11 @@ class PextController extends Controller
         return response()->json($cicsaAssignation, 200);
     }
 
-    public function additional_expense_index($cicsa_assignation_id, $fixedOrAdditional)
-    {   
-        $expense = PextProjectExpense::with(['provider:id,company_name', 'cicsa_assignation.project.cost_center'])
+    public function additional_expense_index($project_id, $fixedOrAdditional)
+    {
+        $expense = PextProjectExpense::with(['provider:id,company_name', 'project.cost_center'])
             ->where('fixedOrAdditional', json_decode($fixedOrAdditional))
-            ->where('cicsa_assignation_id', $cicsa_assignation_id)
+            ->where('project_id', $project_id)
             ->where(function ($query) {
                 $query->where('is_accepted', 1)
                     ->orWhere('is_accepted', null);
@@ -351,30 +354,26 @@ class PextController extends Controller
             [
                 'expense' => $expense,
                 'providers' => $providers,
-                'cicsa_assignation_id' => $cicsa_assignation_id,
+                'project_id' => $project_id,
                 'cost_center' => $cost_line->cost_center,
                 'fixedOrAdditional' => json_decode($fixedOrAdditional)
             ]
         );
     }
 
-    public function search_advance_additional_expense(Request $request, $cicsa_assignation_id)
+    public function search_advance_monthly_or_additional_expense(Request $request, $project_id)
     {
         $rejected = $request->rejected;
         $fixedOrAdditional = $request->fixedOrAdditional;
-        $expense = PextProjectExpense::with(['provider:id,company_name', 'cicsa_assignation.project.cost_center'])
+        $expense = PextProjectExpense::with(['provider:id,company_name', 'project.cost_center'])
             ->where('fixedOrAdditional', $fixedOrAdditional)
-            ->where('cicsa_assignation_id', $cicsa_assignation_id)
+            ->where('project_id', $project_id)
             ->orderBy('created_at', 'desc');
-        $expense = $request->state === false ? $expense->where('is_accepted', 0)
-            : $expense->where(function ($query) use ($rejected) {
-                $query->where('is_accepted', $rejected)
+        $expense = !$rejected ? $expense->where('is_accepted', 0)
+            : $expense->where(function ($query) {
+                $query->where('is_accepted', 1)
                     ->orWhere('is_accepted', null);
             });
-
-        if ($rejected) {
-            $expense->where('is_accepted', $request->rejected);
-        }
         if ($request->search) {
             $searchTerms = $request->input('search');
             $expense = $expense->where(function ($query) use ($searchTerms) {
@@ -382,12 +381,6 @@ class PextController extends Controller
                     ->orWhere('doc_date', 'like', "%$searchTerms%")
                     ->orWhere('description', 'like', "%$searchTerms%")
                     ->orWhere('amount', 'like', "%$searchTerms%");
-            });
-        }
-        if (count($request->selectedCostCenter) < 6) {
-            $costCenter = $request->selectedCostCenter;
-            $expense = $expense->whereHas('cicsa_assignation.project.cost_center', function ($query) use ($costCenter) {
-                $query->whereIn('name', $costCenter);
             });
         }
 

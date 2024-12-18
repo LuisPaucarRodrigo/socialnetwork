@@ -42,12 +42,12 @@
                     </div>
                     <Link v-if="fixedOrAdditional"
                         class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
-                        :href="route('pext.additional.expense.index', { cicsa_assignation_id: cicsa_assignation_id, fixedOrAdditional: false })">
+                        :href="route('pext.additional.expense.index', { project_id: project_id, fixedOrAdditional: false })">
                     G.Adicionales
                     </Link>
                     <Link v-else
                         class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
-                        :href="route('pext.additional.expense.index', { cicsa_assignation_id: cicsa_assignation_id, fixedOrAdditional: true })">
+                        :href="route('pext.additional.expense.index', { project_id: project_id, fixedOrAdditional: true })">
                     G.Fijos
                     </Link>
 
@@ -108,17 +108,8 @@
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Proyecto
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <TableHeaderFilter labelClass="text-[11px]" label="Centro de Costos" :options="costCenter"
-                                v-model="filterForm.selectedCostCenter" width="w-48" />
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Zona" :options="zones"
-                                v-model="filterForm.selectedZones" width="w-35" />
+                                v-model="filterForm.selectedZones" width="w-40" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 ">
@@ -186,14 +177,6 @@
                                 'bg-red-500': item.is_accepted == false,
                             },
                         ]">
-                        </td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap">
-                            {{ item.cicsa_assignation?.project_name }}
-                        </td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap">
-                            {{ item.cicsa_assignation.project.cost_center.name }}
                         </td>
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                             {{ item.zone }}
@@ -560,7 +543,7 @@ const props = defineProps({
     userPermissions: Array,
     state: String,
     cost_center: Object,
-    cicsa_assignation_id: String,
+    project_id: String,
     fixedOrAdditional: Boolean
 });
 
@@ -579,7 +562,7 @@ const form = useForm({
     ruc: "",
     zone: "",
     provider_id: "",
-    cicsa_assignation_id: props.cicsa_assignation_id,
+    project_id: props.project_id,
     type_doc: "",
     operation_number: "",
     operation_date: "",
@@ -678,7 +661,7 @@ function handlerPreview(id) {
     );
 }
 
-const costCenter = props.cost_center.map(item => item.name)
+// const costCenter = props.cost_center.map(item => item.name)
 
 const zones = [
     "Arequipa",
@@ -716,9 +699,8 @@ const docTypes = [
 
 const filterForm = ref({
     fixedOrAdditional: props.fixedOrAdditional,
-    rejected: 1,
+    rejected: true,
     search: "",
-    selectedCostCenter: costCenter,
     selectedZones: zones,
     selectedExpenseTypes: expenseTypes,
     selectedDocTypes: docTypes
@@ -730,7 +712,6 @@ watch(() => [
     filterForm.value.fixedOrAdditional,
     filterForm.value.rejected,
     filterForm.value.search,
-    filterForm.value.selectedCostCenter,
     filterForm.value.selectedZones,
     filterForm.value.selectedExpenseTypes,
     filterForm.value.selectedDocTypes,
@@ -741,8 +722,9 @@ watch(() => [
 );
 
 async function search_advance(data) {
-    let url = route("pext.additional.expense.search_advance", {
-        cicsa_assignation_id: props.cicsa_assignation_id,
+    console.log(filterForm.value)
+    let url = route("pext.monthly.additional.expense.search_advance", {
+        project_id: props.project_id,
     })
     try {
         let response = await axios.post(url, data);
@@ -753,16 +735,17 @@ async function search_advance(data) {
 }
 
 
-// function openExportExcel() {
-//     const uniqueParam = `timestamp=${new Date().getTime()}`;
-//     const url =
-//         route("projectmanagement.pext.expenses.export", {
-//             pext_project_id: props.pext_project_id,
-//         }) +
-//         "?" +
-//         uniqueParam;
-//     window.location.href = url;
-// }
+function openExportExcel() {
+    const uniqueParam = `timestamp=${new Date().getTime()}`;
+    const url =
+        route("projectmanagement.pext.expenses.export", {
+            project_id: props.project_id,
+            fixedOrAdditional: filterForm.value.fixedOrAdditional
+        }) +
+        "?" +
+        uniqueParam;
+    window.location.href = url;
+}
 
 watch([() => form.type_doc, () => form.zone], () => {
     if (

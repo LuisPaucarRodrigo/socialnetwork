@@ -189,7 +189,7 @@
                             </Link>
                             <span v-else class="text-gray-400">Servicios</span> -->
                             <Link v-if="item?.project.initial_budget > 0"
-                                :href="route('projectmanagement.pext.expenses.index', { pext_project_id: item.id })"
+                                :href="route('projectmanagement.pext.expenses.index', { project_id: item.id, fixedOrAdditional: false })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y
                             Gastos</Link>
                             <span v-else class="text-gray-400">Compras y Gastos</span>

@@ -40,6 +40,16 @@
                         Rechazados
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
+                    <Link v-if="fixedOrAdditional"
+                        class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
+                        :href="route('projectmanagement.pext.expenses.index', { project_id: project_id, fixedOrAdditional: false })">
+                    G.Adicionales
+                    </Link>
+                    <Link v-else
+                        class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
+                        :href="route('projectmanagement.pext.expenses.index', { project_id: project_id, fixedOrAdditional: true })">
+                    G.Fijos
+                    </Link>
                 </div>
 
                 <div v-if="hasPermission('HumanResourceManager')" class="sm:hidden">
@@ -95,18 +105,18 @@
                         <th class="bg-gray-100 border-b-2 border-gray-20">
                             <div class="w-2"></div>
                         </th>
-                        <th
+                        <!-- <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Proyecto
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Centro de Costos
-                        </th>
+                        </th> -->
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Zona" :options="zones"
-                                v-model="filterForm.selectedZones" width="w-35" />
+                                v-model="filterForm.selectedZones" width="w-40" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 ">
@@ -175,14 +185,14 @@
                             },
                         ]">
                         </td>
-                        <td
+                        <!-- <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap">
                             {{ item.cicsa_assignation?.project_name }}
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap">
                             {{ item.project.cost_center.name }}
-                        </td>
+                        </td> -->
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                             {{ item.zone }}
                         </td>
@@ -507,7 +517,7 @@ import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import Modal from "@/Components/Modal.vue";
 import { ref, watch } from "vue";
-import { Head, useForm, router } from "@inertiajs/vue3";
+import { Head, useForm, router, Link } from "@inertiajs/vue3";
 import { TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { formattedDate } from "@/utils/utils";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
@@ -528,25 +538,25 @@ const props = defineProps({
     auth: Object,
     userPermissions: Array,
     state: String,
-    cicsa_assignation_id: String,
+    project_id: String,
     fixedOrAdditional: Boolean
 });
 
 const expenses = ref(props.expense);
 const filterMode = ref(false);
-const subCostCenterZone = ref(null);
+// const subCostCenterZone = ref(null);
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
 };
 
 const form = useForm({
     id: "",
-    fixedOrAdditional: true,
+    fixedOrAdditional: props.fixedOrAdditional,
     expense_type: "",
     ruc: "",
     zone: "",
     provider_id: "",
-    cicsa_assignation_id: props.cicsa_assignation_id,
+    project_id: props.project_id,
     type_doc: "",
     operation_number: "",
     operation_date: "",
@@ -554,7 +564,7 @@ const form = useForm({
     doc_date: "",
     description: "",
     photo: "",
-    state: props.fixedOrAdditional ? true : false,
+    // state: props.fixedOrAdditional ? true : false,
     is_accepted: true,
     amount: "",
     igv: 0,
@@ -591,7 +601,6 @@ async function submit() {
         updateExpense(response.data, action)
         closeModal();
     } catch (error) {
-        console.log(error)
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, form)
@@ -637,22 +646,22 @@ const handleRucDniAutocomplete = (e) => {
     }
 };
 
-watch(() => form.zone, (newVal) => {
-    if (pext_project_zone.value != form.zone) {
-        form.pext_project_name = ""
-    }
-    searchSubCostCenter()
-});
+// watch(() => form.zone, (newVal) => {
+//     if (pext_project_zone.value != form.zone) {
+//         form.pext_project_name = ""
+//     }
+//     searchSubCostCenter()
+// });
 
-async function searchSubCostCenter() {
-    let url = route('projectmanagement.pext.requestCicsa', { 'zone': form.zone })
-    try {
-        const response = await axios.get(url)
-        subCostCenterZone.value = response.data
-    } catch (error) {
-        console.error(error)
-    }
-}
+// async function searchSubCostCenter() {
+//     let url = route('projectmanagement.pext.requestCicsa', { 'zone': form.zone })
+//     try {
+//         const response = await axios.get(url)
+//         subCostCenterZone.value = response.data
+//     } catch (error) {
+//         console.error(error)
+//     }
+// }
 
 function handlerPreview(id) {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
@@ -699,7 +708,8 @@ const docTypes = [
 
 
 const filterForm = ref({
-    rejected: 1,
+    fixedOrAdditional: props.fixedOrAdditional,
+    rejected: true,
     search: "",
     selectedZones: zones,
     selectedExpenseTypes: expenseTypes,
@@ -709,6 +719,7 @@ const filterForm = ref({
 
 
 watch(() => [
+    filterForm.value.fixedOrAdditional,
     filterForm.value.rejected,
     filterForm.value.search,
     filterForm.value.selectedZones,
@@ -721,8 +732,8 @@ watch(() => [
 );
 
 async function search_advance(data) {
-    let url = route("projectmanagement.pext.expenses.index", {
-        pext_project_id: props.pext_project_id,
+    let url = route("pext.monthly.additional.expense.search_advance", {
+        project_id: props.project_id,
     })
     try {
         let response = await axios.post(url, data);
@@ -737,7 +748,8 @@ function openExportExcel() {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
     const url =
         route("projectmanagement.pext.expenses.export", {
-            pext_project_id: props.pext_project_id,
+            project_id: props.project_id,
+            fixedOrAdditional: filterForm.value.fixedOrAdditional
         }) +
         "?" +
         uniqueParam;
@@ -805,8 +817,6 @@ function updateExpense(expense, action, state) {
 }
 
 async function rejectedExpenses() {
-    console.log(filterForm.value.rejected)
     filterForm.value.rejected = !filterForm.value.rejected
-
 }
 </script>

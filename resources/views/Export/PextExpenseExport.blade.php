@@ -1,8 +1,8 @@
 <table>
     <thead>
         <tr>
-            <th>Proyecto</th>
-            <th>Centro de Costo</th>
+            <!-- <th>Proyecto</th>
+            <th>Centro de Costo</th> -->
             <th>Zona</th>
             <th>Tipo de Gasto</th>
             <th>Tipo de Documento</th>
@@ -20,8 +20,8 @@
     <tbody>
         @foreach($expenses as $item)
         <tr>
-            <td>{{ $item->cicsa_assignation?->project_name }}</td>
-            <td>{{ $item->cicsa_assignation?->cost_center }}</td>
+            <!-- <td>{{ $item->cicsa_assignation?->project_name }}</td>
+            <td>{{ $item->cicsa_assignation?->cost_center }}</td> -->
             <td>{{ $item->zone }}</td>
             <td>{{ $item->expense_type }}</td>
             <td>{{ $item->type_doc }}</td>

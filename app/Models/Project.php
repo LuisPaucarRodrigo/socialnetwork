@@ -296,4 +296,9 @@ class Project extends Model
     {
         return $this->belongsTo(CostCenter::class,'cost_center_id');
     }
+
+    public function pext_project_expenses()
+    {
+        return $this->hasMany(PextProjectExpense::class);
+    }
 }

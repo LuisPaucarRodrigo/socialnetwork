@@ -26,7 +26,7 @@
                 <tr class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Presupuesto actual</td>
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">
-                    S/. {{current_budget.toFixed(2) }}
+                    S/. {{ current_budget.toFixed(2) }}
                   </td>
                 </tr>
                 <tr class="text-gray-700">
@@ -37,11 +37,12 @@
                 <tr class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total gastos en servicios</td>
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
-        project.total_services_cost.toFixed(2) }}</td>
+                    project.total_services_cost.toFixed(2) }}</td>
                 </tr>
                 <tr class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total gastos en productos</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{project.total_products_cost.toFixed(2) }}</td>
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/.
+                    {{ project.total_products_cost.toFixed(2) }}</td>
                 </tr>
                 <tr class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">
@@ -100,21 +101,23 @@
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">
                     <div class="flex gap-3 justify-between">
                       <p :class="[
-                        {'text-red-700': scExpensesThatDontCount.includes(item.expense_type)}
+                        { 'text-red-700': scExpensesThatDontCount.includes(item.expense_type) }
                       ]">
                         {{ item.expense_type }}
                       </p>
-                      <button @click="prevOpenModal({ 
-                          spMod: 'static', 
-                          expType: item.expense_type,
-                          project_id: project.id
-                        })" type="button" class="text-green-500 hover:text-green-300">
+                      <button @click="prevOpenModal({
+                        spMod: 'static',
+                        expType: item.expense_type,
+                        project_id: project.id
+                      })" type="button" class="text-green-500 hover:text-green-300">
                         <InformationCircleIcon class="w-5 h-5 " />
                       </button>
                     </div>
                   </td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">S/. {{
-        item.total_amount.toFixed(2) }}</td>
+                  <td
+                    class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
+                    S/. {{
+                      item.total_amount.toFixed(2) }}</td>
                 </tr>
               </tbody>
             </table>
@@ -147,19 +150,17 @@
                       <p>
                         {{ item.expense_type }}
                       </p>
-                      <button 
-                        @click="prevOpenModal({ 
-                          spMod: 'additional', 
-                          expType: item.expense_type,
-                          project_id: project.id
-                        })" 
-                        type="button" 
-                        class="text-green-500 hover:text-green-300">
+                      <button @click="prevOpenModal({
+                        spMod: 'additional',
+                        expType: item.expense_type,
+                        project_id: project.id
+                      })" type="button" class="text-green-500 hover:text-green-300">
                         <InformationCircleIcon class="w-5 h-5 " />
                       </button>
                     </div>
                   </td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
+                  <td
+                    class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
                     S/. {{ item.total_amount.toFixed(2) }}
                   </td>
                 </tr>
@@ -176,28 +177,29 @@
     </div>
 
     <Modal :show="showDetailsModal" @close="closeDetailsModal">
-        <div class="p-6">
-          <table class="w-full whitespace-nowrap rounded-md shadow-sm">
-              <thead>
-                <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                  <th
-                    class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                    {{ detailsStructure.title  }}
-                  </th>
-                  <th class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-600">
-                    Monto
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(item, i) in detailsStructure.detArray" class="text-gray-700" :key="i">
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">{{ item.spentName }}</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
-                    S/. {{ item.amount.toFixed(2) }}</td>
-                </tr>
-              </tbody>
-            </table>
-        </div>
+      <div class="p-6">
+        <table class="w-full whitespace-nowrap rounded-md shadow-sm">
+          <thead>
+            <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                {{ detailsStructure.title }}
+              </th>
+              <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-600">
+                Monto
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, i) in detailsStructure.detArray" class="text-gray-700" :key="i">
+              <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">{{ item.spentName }}</td>
+              <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
+                S/. {{ item.amount.toFixed(2) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </Modal>
 
 
@@ -212,13 +214,13 @@ import { Head } from '@inertiajs/vue3';
 import { InformationCircleIcon } from "@heroicons/vue/24/outline";
 import Modal from '@/Components/Modal.vue';
 
-const { 
-  project, 
-  current_budget, 
-  additionalCosts, 
-  staticCosts, 
-  acExpensesAmounts, 
-  scExpensesAmounts 
+const {
+  project,
+  current_budget,
+  additionalCosts,
+  staticCosts,
+  acExpensesAmounts,
+  scExpensesAmounts
 } = defineProps({
   project: Object,
   current_budget: Number,
@@ -226,13 +228,13 @@ const {
   staticCosts: Number,
   acExpensesAmounts: Array,
   scExpensesAmounts: Array,
-  scExpensesThatDontCount:Array
+  scExpensesThatDontCount: Array
 });
 
 
 let operativeMod = [
-  { spentName : 'Planilla', amount: project.total_employee_costs.reduce((a, item) => item.total_payroll + a, 0),  },
-  { spentName : 'Essalud', amount: project.total_employee_costs.reduce((a, item) => item.essalud + a, 0) },
+  { spentName: 'Planilla', amount: project.total_employee_costs.reduce((a, item) => item.total_payroll + a, 0), },
+  { spentName: 'Essalud', amount: project.total_employee_costs.reduce((a, item) => item.essalud + a, 0) },
   // { spentName : 'Viáticos', amount: 0 },
 ]
 
@@ -243,26 +245,26 @@ const updateChart = () => {
     chartInstance.value.destroy();
   }
   const dataWithRemainingBudget = [
-    project.remaining_budget < 0 
-      ? 0 
-      : project.remaining_budget, 
-        staticCosts, 
-        additionalCosts, 
-        project.total_products_cost, 
-        project.total_services_cost,
-        operativeMod.reduce((a, b)=>(a + b.amount), 0).toFixed(2)
+    project.remaining_budget < 0
+      ? 0
+      : project.remaining_budget,
+    staticCosts,
+    additionalCosts,
+    project.total_products_cost,
+    project.total_services_cost,
+    operativeMod.reduce((a, b) => (a + b.amount), 0).toFixed(2)
   ];
 
   chartInstance.value = new Chart(ctx, {
     type: 'pie',
     data: {
       labels: [
-        'Presupuesto Restante', 
-        'Costos Fijos' , 
-        'Costos Variables', 
-        'Costos de Productos', 
-        'Costos de Servicios', 
-        'Planilla', 
+        'Presupuesto Restante',
+        'Costos Fijos',
+        'Costos Variables',
+        'Costos de Productos',
+        'Costos de Servicios',
+        'Planilla',
         'Planilla Essalud'
       ],
       datasets: [{
@@ -283,7 +285,7 @@ const updateChart = () => {
           },
         },
       },
-      
+
     },
   });
 };
@@ -296,11 +298,11 @@ const updateChart2 = () => {
   if (chartInstance2.value) {
     chartInstance2.value.destroy();
   }
-  const dataWithRemainingBudget = scExpensesAmounts.map(item=>item.total_amount);
+  const dataWithRemainingBudget = scExpensesAmounts.map(item => item.total_amount);
   chartInstance2.value = new Chart(ctx, {
     type: 'pie',
     data: {
-      labels: scExpensesAmounts.map(item=>item.expense_type),
+      labels: scExpensesAmounts.map(item => item.expense_type),
       datasets: [{
         data: dataWithRemainingBudget,
         backgroundColor: Array(scExpensesAmounts.length).fill().map(() => getRandomColor()),
@@ -319,7 +321,7 @@ const updateChart2 = () => {
           },
         },
       },
-      
+
     },
   });
 };
@@ -331,11 +333,11 @@ const updateChart3 = () => {
   if (chartInstance3.value) {
     chartInstance3.value.destroy();
   }
-  const dataWithRemainingBudget = acExpensesAmounts.map(item=>item.total_amount);
+  const dataWithRemainingBudget = acExpensesAmounts.map(item => item.total_amount);
   chartInstance3.value = new Chart(ctx, {
     type: 'pie',
     data: {
-      labels: acExpensesAmounts.map(item=>item.expense_type),
+      labels: acExpensesAmounts.map(item => item.expense_type),
       datasets: [{
         data: dataWithRemainingBudget,
         backgroundColor: Array(acExpensesAmounts.length).fill().map(() => getRandomColor()),
@@ -354,7 +356,7 @@ const updateChart3 = () => {
           },
         },
       },
-      
+
     },
   });
 };
@@ -362,10 +364,10 @@ const updateChart3 = () => {
 
 onMounted(() => {
   updateChart();
-  if (staticCosts>0){
+  if (staticCosts > 0) {
     updateChart2();
   }
-  if (additionalCosts>0){
+  if (additionalCosts > 0) {
     updateChart3();
   }
 });
@@ -400,15 +402,15 @@ const closeDetailsModal = () => {
 
 const prevOpenModal = async (form) => {
   const det = await fetchExpenseTypeData(form)
-  openDetailsModal({title: form.expType, detArray: det })
+  openDetailsModal({ title: form.expType, detArray: det })
 }
 
 
-async function fetchExpenseTypeData (form) {
-  try{
+async function fetchExpenseTypeData(form) {
+  try {
     const res = await axios.post(route('project.expenses.zones.details'), form)
     return res.data
-  } catch(e){
+  } catch (e) {
     console.log(e)
   }
 }
