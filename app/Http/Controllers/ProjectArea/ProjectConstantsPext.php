@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ProjectArea;
 use App\Models\Employee;
 use App\Models\Preproject;
 use App\Models\Service;
+use Carbon\Carbon;
 
 class ProjectConstantsPext
 {
@@ -15,10 +16,10 @@ class ProjectConstantsPext
             $name = 'PEXT OBRA MRD MANTENIMIENTO INTEGRAL REGION SUR ' . $this->formatDate($data['date']);
             $template = [
                 'preproject' => [
-                    'date'=>$data['date'],
+                    'date' => $data['date'],
                     'customer_id' => 2,
-                    'cost_line_id'=>2,
-                    'cost_center_id'=>$data['cost_center_id'],
+                    'cost_line_id' => 2,
+                    'cost_center_id' => $data['cost_center_id'],
                     'subcustomer_id' => null,
                     'description' => $name,
                     'title' => null,
@@ -41,22 +42,22 @@ class ProjectConstantsPext
                     'observations' => 'A 30 días después de entregada la factura',
                     'state' => true
                 ],
-                
+
                 'quote_services' => $this->getQuoteServicesStructured($data['services']),
                 'project' => [
-                    'priority'=> 'Alta',
-                    'description'=> $name,
-                    'cost_line_id'=>2,
-                    'cost_center_id'=>$data['cost_center_id'],
-                    'status'=>null
+                    'priority' => 'Alta',
+                    'description' => $name,
+                    'cost_line_id' => 2,
+                    'cost_center_id' => $data['cost_center_id'],
+                    'status' => null,
+                    'created_at' => Carbon::parse($data['date']),
                 ],
-                'project_employees' => $this->getEmployeesStructured($data['employees'], $data['date']) 
+                'project_employees' => $this->getEmployeesStructured($data['employees'], $data['date'])
 
 
             ];
         }
         return $template;
-
     }
 
     public function getCode($date, $code)
@@ -69,7 +70,8 @@ class ProjectConstantsPext
 
 
 
-    private function formatDate($date) {
+    private function formatDate($date)
+    {
         $dateTime = \DateTime::createFromFormat('Y-m-d', $date);
         $meses = [
             '01' => 'ENERO',
@@ -88,9 +90,10 @@ class ProjectConstantsPext
         $mes = $meses[$dateTime->format('m')];
         $ano = $dateTime->format('Y');
         return "$mes $ano";
-    }    
+    }
 
-    function getDaysInMonth($date) {
+    function getDaysInMonth($date)
+    {
         $dateTime = \DateTime::createFromFormat('Y-m-d', $date);
         if ($dateTime !== false) {
             $year = $dateTime->format('Y');
@@ -102,32 +105,32 @@ class ProjectConstantsPext
         }
     }
 
-    function getQuoteServicesStructured ($services) {
+    function getQuoteServicesStructured($services)
+    {
         $result = [];
-        foreach($services as $item){
+        foreach ($services as $item) {
             $result[$item['id']] = [
                 'service_id' => $item['id'],
                 'resource_entry_id' => null,
                 'days' => $item['days'],
-                'profit_margin'=> $item['profit_margin'], //variable
-                'rent_price'=> $item['original_price'],
+                'profit_margin' => $item['profit_margin'], //variable
+                'rent_price' => $item['original_price'],
             ];
         }
         return $result;
     }
 
-    function getEmployeesStructured ($employees, $date) {
+    function getEmployeesStructured($employees, $date)
+    {
         $result = [];
         $days = $this->getDaysInMonth($date);
-        foreach($employees as $item){
+        foreach ($employees as $item) {
             $emp = Employee::find($item['id']);
-            $result[
-                $item['id']] = [
-                    'charge' => $item['charge'],
-                    'salary_per_day' => $emp->salaryPerDay($days)
-                ];
+            $result[$item['id']] = [
+                'charge' => $item['charge'],
+                'salary_per_day' => $emp->salaryPerDay($days)
+            ];
         }
         return $result;
     }
-
 }
