@@ -6,6 +6,7 @@
         <template #header>
             Factibilidad PINT y PEXT
         </template>
+        <Toaster richColors />
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
                 <a :href="route('feasibilities.export') + '?' + uniqueParam"
@@ -188,7 +189,7 @@
                             <br>
                         </div>
                         <div class="sm:col-span-2">
-                            <table class="w-full whitespace-no-wrap">
+                            <table class="w-full whitespace-nowrap">
                                 <thead>
                                     <tr
                                         class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -318,11 +319,8 @@
 
 
         </Modal>
-
-        <SuccessOperationModal :confirming="confirmFeasibility" :title="'Nueva Factibilidad creada'"
-            :message="'La Factibilidad fue creada con éxito'" />
-        <SuccessOperationModal :confirming="confirmUpdateFeasibility" :title="'Factibilidad Actualizada'"
-            :message="'La Factibilidad fue actualizada'" />
+        <!-- <SuccessOperationModal :confirming="confirmUpdateFeasibility" :title="'Factibilidad Actualizada'"
+            :message="'La Factibilidad fue actualizada'" /> -->
     </AuthenticatedLayout>
 </template>
 
@@ -337,12 +335,13 @@ import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
-import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
+// import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import axios from 'axios';
 import { setAxiosErrors } from "@/utils/utils";
 import { notify, notifyError } from '@/Components/Notification';
+import { Toaster } from 'vue-sonner';
 
 const { feasibility, auth, searchCondition } = defineProps({
     feasibility: Object,
@@ -377,8 +376,8 @@ const feasibilityObject = ref({
     unit: '',
     quantity: 0,
 });
+
 const showAddEditModal = ref(false);
-const confirmFeasibility = ref(false);
 const showModalFeasibility = ref(false);
 const cicsa_assignation_id = ref(null);
 
@@ -409,10 +408,10 @@ async function submit() {
         const response = await axios.put(url, form);
         updateFeasibility(cicsa_assignation_id.value, response.data)
         closeAddFeasibilityModal()
-        confirmUpdateFeasibility.value = true
-        setTimeout(() => {
-            confirmUpdateFeasibility.value = false
-        }, 1500)
+        // confirmUpdateFeasibility.value = true
+        // setTimeout(() => {
+        //     confirmUpdateFeasibility.value = false
+        // }, 1500)
     } catch (error) {
         if (error.response) {
             if (error.response.data.errors) {
@@ -493,10 +492,10 @@ function updateFeasibility(cicsa_assignation_id, feasibility) {
     const validations = feasibilitys.value.data || feasibilitys.value;
     const index = validations.findIndex(item => item.id === cicsa_assignation_id)
     validations[index].cicsa_feasibility = feasibility
-    notify('Actualizaion Exitosa')
+    notify('Actualización Exitosa')
 }
 
-if(searchCondition){
+if (searchCondition) {
     search(searchCondition)
 }
 </script>

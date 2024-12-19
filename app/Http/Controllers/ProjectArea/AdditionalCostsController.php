@@ -342,7 +342,6 @@ class AdditionalCostsController extends Controller
         return true;
     }
 
-
     public function export($project_id)
     {
         return Excel::download(new AdditionalCostsExport($project_id), 'Gastos_Variables.xlsx');

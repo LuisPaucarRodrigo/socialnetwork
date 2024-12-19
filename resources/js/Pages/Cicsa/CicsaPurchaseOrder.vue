@@ -7,6 +7,7 @@
         <template #header>
             Orden de Compra
         </template>
+        <Toaster richColors />
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
@@ -429,7 +430,6 @@ async function submit() {
         //     confirmPuchaseOrder.value = false
         // }, 1500)
     } catch (error) {
-        console.log(error)
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, form)

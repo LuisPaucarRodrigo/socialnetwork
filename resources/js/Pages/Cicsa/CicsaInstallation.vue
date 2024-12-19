@@ -4,6 +4,7 @@
 
     <AuthenticatedLayout :redirectRoute="'cicsa.index'">
         <template #header> Instalación PINT y PEXT </template>
+        <Toaster richColors />
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between space-x-3">
                 <a :href="route('cicsa.installation.export') + '?' + uniqueParam"
@@ -687,13 +688,14 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import { Head, useForm } from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SelectCicsaComponent from "@/Components/SelectCicsaComponent.vue";
-import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
+// import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
 import { formattedDate } from "@/utils/utils.js";
 import TextInput from "@/Components/TextInput.vue";
 import { EyeIcon } from "@heroicons/vue/24/outline";
 import { setAxiosErrors } from "@/utils/utils";
 import { ref, watch } from "vue";
 import { notify, notifyError } from "@/Components/Notification";
+import { Toaster } from "vue-sonner";
 
 
 const { installation, auth, searchCondition } = defineProps({
@@ -709,7 +711,6 @@ const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
 const installations = ref(installation);
 const pintList = ref([])
 const pextList = ref([])
-console.log(installations.value)
 const initialState = {
     user_id: auth.user.id,
     user_name: auth.user.name,
@@ -808,7 +809,6 @@ async function submit() {
         updateInstallations(form.cicsa_assignation_id, response.data)
         closeAddAssignationModal();
     } catch (error) {
-        console.log(error)
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, form)

@@ -6,6 +6,7 @@
         <template #header>
             Materiales
         </template>
+        <Toaster richColors />
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-end">
                 <!-- <a :href="route('material.export') + '?' + uniqueParam"
@@ -492,10 +493,10 @@
         </Modal>
 
 
-        <SuccessOperationModal :confirming="confirmMaterial" :title="'Nueva Material creada'"
-            :message="'La Material fue creada con éxito'" />
-        <SuccessOperationModal :confirming="confirmUpdateMaterial" :title="'Material Actualizada'"
-            :message="'La Material fue actualizada'" />
+        <!-- <SuccessOperationModal :confirming="confirmMaterial" :title="'Nueva Material creada'"
+            :message="'La Material fue creada con éxito'" /> -->
+        <!-- <SuccessOperationModal :confirming="confirmUpdateMaterial" :title="'Material Actualizada'"
+            :message="'La Material fue actualizada'" /> -->
     </AuthenticatedLayout>
 </template>
 
@@ -511,10 +512,11 @@ import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
-import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate, setAxiosErrors } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
+import { Toaster } from 'vue-sonner';
+import { notify } from '@/Components/Notification';
 
 const { material, auth, searchCondition } = defineProps({
     material: Object,
@@ -562,7 +564,7 @@ function closeAddMaterialModal() {
     form.reset()
 }
 
-const confirmUpdateMaterial = ref(false);
+// const confirmUpdateMaterial = ref(false);
 
 function openEditSotModal(item, feasibility_materials, project_name, cpe) {
     dateModal.value = { 'project_name': project_name, 'cpe': cpe }
@@ -582,45 +584,24 @@ function openEditSotModal(item, feasibility_materials, project_name, cpe) {
 
 async function submit() {
     let url = cicsa_material_id.value ? route('material.update', { cicsa_material_id: cicsa_material_id.value }) : route('material.store')
-    if (cicsa_material_id.value) {
-        try {
-            const response = await axios.put(url, form)
-            updateMaterial(false, response.data)
-            closeAddMaterialModal()
-            confirmUpdateMaterial.value = true
-            setTimeout(() => {
-                confirmUpdateMaterial.value = false
-            }, 1500)
-        } catch (error) {
-            if (error.response) {
-                if (error.response.data.errors) {
-                    setAxiosErrors(error.response.data.errors, form)
-                } else {
-                    console.error("Server error:", error.response.data)
-                }
+    let action = cicsa_material_id.value ? false : true
+    try {
+        const response = await axios.put(url, form)
+        updateMaterial(action, response.data)
+        closeAddMaterialModal()
+        // confirmUpdateMaterial.value = true
+        // setTimeout(() => {
+        //     confirmUpdateMaterial.value = false
+        // }, 1500)
+    } catch (error) {
+        if (error.response) {
+            if (error.response.data.errors) {
+                setAxiosErrors(error.response.data.errors, form)
             } else {
-                console.error("Network or other error:", error)
+                notifyError("Server error:", error.response.data)
             }
-        }
-    } else {
-        try {
-            const response = await axios.post(url, form)
-            updateMaterial(true, response.data)
-            closeAddMaterialModal()
-            confirmUpdateMaterial.value = true
-            setTimeout(() => {
-                confirmUpdateMaterial.value = false
-            }, 1500)
-        } catch (error) {
-            if (error.response) {
-                if (error.response.data.errors) {
-                    setAxiosErrors(error.response.data.errors, form)
-                } else {
-                    console.error("Server error:", error.response.data)
-                }
-            } else {
-                console.error("Network or other error:", error)
-            }
+        } else {
+            notifyError("Network or other error:", error)
         }
     }
 }
@@ -767,9 +748,11 @@ function updateMaterial(item, material) {
     const index = validations.findIndex(item => item.id === material.cicsa_assignation_id);
     if (item) {
         validations[index].cicsa_materials.push(material)
+        notify('Creacion Exitosa')
     } else {
         const indexMaterial = validations[index].cicsa_materials.findIndex(item => item.id === material.id);
         validations[index].cicsa_materials[indexMaterial] = material
+        notify('Actualizacion Exitosa')
     }
 }
 

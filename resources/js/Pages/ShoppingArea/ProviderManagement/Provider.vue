@@ -131,7 +131,9 @@
 
         <Modal :show="showModalStoreOrUpdate">
             <div class="p-6">
-                <h2 class="text-base font-semibold leading-7 text-gray-900">Informacion</h2>
+                <h2 class="text-base font-semibold leading-7 text-gray-900">
+                    {{ form.id ? 'Actualizar ' : 'Crear ' }} Proveedor
+                </h2>
 
                 <form @submit.prevent="submit">
                     <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">

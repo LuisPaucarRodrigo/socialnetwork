@@ -11,8 +11,12 @@ use App\Models\CicsaAssignation;
 use App\Models\CostLine;
 use App\Models\PextProjectExpense;
 use App\Models\Project;
+use App\Models\ProjectQuote;
+use App\Models\ProjectQuoteValuation;
 use App\Models\Provider;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -119,6 +123,7 @@ class PextController extends Controller
         $cicsaAssignation->load('project.cost_center');
         return response()->json($cicsaAssignation, 200);
     }
+
 
     // public function delete(PextProject $pext)
     // {
@@ -284,7 +289,7 @@ class PextController extends Controller
     {
         $text = "Mantto";
         if ($request->isMethod('get')) {
-            $project = CicsaAssignation::with('project.cost_center')
+            $project = CicsaAssignation::with('project.cost_center', 'project.project_quote.project_quote_valuations')
                 ->whereHas('project.cost_center', function ($query) use ($text) {
                     $query->where('name', 'not like', "%$text%");
                 })
@@ -300,7 +305,7 @@ class PextController extends Controller
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->searchQuery;
-            $project = CicsaAssignation::with('project.cost_center')
+            $project = CicsaAssignation::with('project.cost_center', 'project.project_quote.project_quote_valuations')
                 ->whereHas('project.cost_center', function ($query) use ($text) {
                     $query->where('name', 'not like', "%$text%");
                 })->where(function ($query) use ($searchQuery) {
@@ -330,6 +335,56 @@ class PextController extends Controller
         );
         $cicsaAssignation->load('project.cost_center');
         return response()->json($cicsaAssignation, 200);
+    }
+
+    public function store_quote(Request $request, $project_quote_id = null)
+    {
+        $validateData = $request->validate([
+            'project_id' => 'required|numeric',
+            'delivery_place' => 'required|string',
+            'delivery_time' => 'required|numeric',
+            'observations' => 'required|string',
+            'project_quote_valuations' => 'required|array',
+        ]);
+        DB::beginTransaction();
+        try {
+            $project_quote = ProjectQuote::updateOrCreate(
+                ['id' => $project_quote_id],
+                $validateData
+            );
+
+            $valuations = collect($validateData['project_quote_valuations'])->map(function ($item) use ($project_quote) {
+                $item['project_quote_id'] = $project_quote->id;
+                return $item;
+            });
+
+            $receivedIds = $valuations->pluck('id')->filter()->toArray();
+
+            ProjectQuoteValuation::where('project_quote_id', $project_quote->id)
+                ->whereNotIn('id', $receivedIds)
+                ->delete();
+
+            foreach ($valuations as $valuation) {
+                ProjectQuoteValuation::updateOrCreate(
+                    ['id' => $valuation['id'] ?? null],
+                    $valuation
+                );
+            }
+            $project_quote->load('project_quote_valuations');
+            DB::commit();
+            return response()->json($project_quote, 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json($e->getMessage(), 500);
+        }
+    }
+
+    public function export_quote($project_id)
+    {
+        $project = Project::with('project_quote.project_quote_valuations','cicsa_assignation')
+            ->find($project_id);
+        $pdf = Pdf::loadView('pdf.CotizationPDFProject', compact('project'));
+        return $pdf->stream();
     }
 
     public function additional_expense_index($project_id, $fixedOrAdditional)

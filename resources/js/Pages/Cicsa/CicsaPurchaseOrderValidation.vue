@@ -6,6 +6,7 @@
         <template #header>
             Validación de OC
         </template>
+        <Toaster richColors />
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
                 <a :href="route('cicsa.purchase_orders.validation.export') + '?' + uniqueParam"
@@ -361,8 +362,8 @@
             </div>
         </Modal>
 
-        <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Validación Actualizada'"
-            :message="'La Validación fue actualizada'" />
+        <!-- <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Validación Actualizada'"
+            :message="'La Validación fue actualizada'" /> -->
     </AuthenticatedLayout>
 </template>
 
@@ -380,6 +381,8 @@ import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate, setAxiosErrors } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
+import { Toaster } from 'vue-sonner';
+import { notify, notifyError } from '@/Components/Notification';
 
 const { purchase_validation, auth,searchCondition } = defineProps({
     purchase_validation: Object,
@@ -394,7 +397,7 @@ const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
 const purchase_validations = ref(purchase_validation)
 const oc_number = ref(null)
 const validation_purchase_order_row = ref(0);
-const confirmUpdateAssignation = ref(false);
+// const confirmUpdateAssignation = ref(false);
 
 const initialState = {
     id: null,
@@ -438,19 +441,19 @@ async function submit() {
         const response = await axios.put(url, form)
         updatePurchaseOrderValidation(response.data)
         closeAddAssignationModal()
-        confirmUpdateAssignation.value = true
-        setTimeout(() => {
-            confirmUpdateAssignation.value = false
-        }, 1500)
+        // confirmUpdateAssignation.value = true
+        // setTimeout(() => {
+        //     confirmUpdateAssignation.value = false
+        // }, 1500)
     } catch (error) {
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, form)
             } else {
-                console.error("Server error:", error.response.data)
+                notifyError("Server error:", error.response.data)
             }
         } else {
-            console.error("Network or other error:", error)
+            notifyError("Network or other error:", error)
         }
     }
 }
@@ -477,6 +480,7 @@ function updatePurchaseOrderValidation(OCValidation) {
     const index = validations.findIndex(item => item.id === OCValidation.cicsa_assignation_id)
     const indexOCValidation = validations[index].cicsa_purchase_order_validation.findIndex(item => item.id === OCValidation.id)
     validations[index].cicsa_purchase_order_validation[indexOCValidation] = OCValidation
+    notify('Actualización Exitosa')
 }
 
 if (searchCondition) {

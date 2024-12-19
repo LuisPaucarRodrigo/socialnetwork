@@ -40,8 +40,9 @@ class Project extends Model
         'total_sum_task',
         'is_liquidable',
         'total_products_cost_claro_cicsa',
+        'serialized_code'
     ];
-    
+
     // CALCULATED
 
     public function getTotalSumTaskAttribute()
@@ -231,6 +232,13 @@ class Project extends Model
         return $this->preproject?->quote?->deliverable_time ?? null;
     }
 
+    public function getSerializedCodeAttribute()
+    {
+        $currentYear = now()->year;
+        return 'CCIP-PEXT-' . $currentYear . '-' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
+    }
+
+
     //RELATIONS
     public function preproject()
     {
@@ -289,16 +297,21 @@ class Project extends Model
 
     public function cost_line()
     {
-        return $this->belongsTo(CostLine::class,'cost_line_id');
+        return $this->belongsTo(CostLine::class, 'cost_line_id');
     }
 
     public function cost_center()
     {
-        return $this->belongsTo(CostCenter::class,'cost_center_id');
+        return $this->belongsTo(CostCenter::class, 'cost_center_id');
     }
 
     public function pext_project_expenses()
     {
         return $this->hasMany(PextProjectExpense::class);
+    }
+
+    public function project_quote()
+    {
+        return $this->hasOne(ProjectQuote::class);
     }
 }

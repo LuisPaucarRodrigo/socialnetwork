@@ -6,6 +6,7 @@
         <template #header>
             Asignación
         </template>
+        
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
