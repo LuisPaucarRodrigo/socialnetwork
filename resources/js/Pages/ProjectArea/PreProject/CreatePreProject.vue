@@ -305,8 +305,6 @@ let backUrls = (preproject?.status === undefined || preproject?.status === null)
         ? { route: 'preprojects.index', params: { type, preprojects_status: 1 } }
         : { route: 'preprojects.index', params: { type, preprojects_status: 0 } }
 
-console.log(backUrls)
-
 const initial_state = {
     customer_id: '',
     subcustomer_id: '',

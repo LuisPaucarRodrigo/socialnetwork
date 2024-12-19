@@ -1,7 +1,10 @@
 <template>
 
     <Head title="Anteproyectos" />
-    <AuthenticatedLayout :redirectRoute="'preprojects.index'">
+    <AuthenticatedLayout :redirectRoute="{
+        route: 'preprojects.index',
+        params: { type: 2 }
+    }">
         <template #header>
             Anteproyecto y Proyecto PEXT CICSA GTD
         </template>
