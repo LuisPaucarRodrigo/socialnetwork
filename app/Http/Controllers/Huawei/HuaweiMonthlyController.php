@@ -245,7 +245,7 @@ class HuaweiMonthlyController extends Controller
 
         $expense->update($validatedData);
 
-        return response()->noContent();
+        return response()->json([$expense], 200);
     }
 
     public function exportMonthlyExpenses (HuaweiMonthlyProject $project)

@@ -500,11 +500,7 @@
                             class="border-b whitespace-nowrap border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap"
                         >
                             {{
-                                item.is_accepted === 1
-                                    ? "Aceptado"
-                                    : item.is_accepted === null
-                                    ? "Pendiente"
-                                    : "Rechazado"
+                                (item.is_accepted == 1 ? 'Aceptado' : ( item.is_accepted == 0 ? 'Rechazado' : 'Pendiente'))
                             }}
                         </td>
                         <td
@@ -1357,9 +1353,19 @@ async function validateRegister(expense_id, is_accepted) {
         expense: expense_id,
     });
     try {
-        await axios.put(url, { is_accepted: is_accepted });
+        const response = await axios.put(url, { is_accepted: is_accepted });
         updateExpense(expense_id, "validate", is_accepted);
         confirmValidation.value = true;
+        const originalMap = new Map(
+            expenses.value.data.map((item) => [item.id, item])
+        );
+        response.data.forEach((update) => {
+            if (originalMap.has(update.id)) {
+                originalMap.set(update.id, update);
+            }
+        });
+        const updatedArray = Array.from(originalMap.values());
+        expenses.value.data = updatedArray;
         setTimeout(() => {
             confirmValidation.value = false;
         }, 1000);
