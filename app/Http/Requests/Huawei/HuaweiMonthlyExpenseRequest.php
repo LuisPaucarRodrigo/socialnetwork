@@ -17,10 +17,8 @@ class HuaweiMonthlyExpenseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'macro_project' => 'required',
-            'site' => 'required',
-            'du' => 'required',
             'expense_type' => 'required',
+            'zone' => 'required',
             'employee' => 'required',
             'expense_date' => 'required|date',
             'cdp_type' => 'nullable',

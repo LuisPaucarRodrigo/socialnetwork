@@ -101,7 +101,6 @@ class HuaweiMonthlyController extends Controller
         return Inertia::render('Huawei/MonthlyExpenses', [
             'expense' => $expenses,
             'project' => $project,
-            'data' => $data
         ]);
     }
 
@@ -138,7 +137,6 @@ class HuaweiMonthlyController extends Controller
             'expense' => $expenses,
             'project' => $project,
             'search' => $request,
-            'data' => $data
         ]);
     }
 
@@ -148,25 +146,7 @@ class HuaweiMonthlyController extends Controller
 
         $expenseForData = $expenses->get();
 
-        $data = [
-            'macro_projects' => $expenseForData->pluck('macro_project')->filter()->unique()->count(),
-            'sites' => $expenseForData->pluck('site')->filter()->unique()->count(),
-            'dus' => $expenseForData->pluck('du')->filter()->unique()->count(),
-        ];
-
         $employeeCount = $project->huawei_monthly_employees()->count();
-
-        if (count($request->selectedMacroProjects) < $data['macro_projects']){
-            $expenses->whereIn('macro_project', $request->selectedMacroProjects);
-        }
-
-        if (count($request->selectedSites) < $data['sites']){
-            $expenses->whereIn('site', $request->selectedSites);
-        }
-
-        if (count($request->selectedDUs) < $data['dus']){
-            $expenses->whereIn('du', $request->selectedDUs);
-        }
 
         if (count($request->selectedExpenseTypes) < 9){
             $expenses->whereIn('expense_type', $request->selectedExpenseTypes);
@@ -194,6 +174,18 @@ class HuaweiMonthlyController extends Controller
         }
         if($request->opNoDate){
             $expenses->where('ec_expense_date', null);
+        }
+
+        if(count($request->selectedStates) < 3){
+            $states = collect($request->selectedStates)->map(function ($state, $index) {
+                return match ($index) {
+                    0 => 1,
+                    1 => 0,
+                    2 => null,
+                    default => $state,
+                };
+            })->toArray();
+            $expenses->whereIn('is_accepted', $states);
         }
         $expenses = $expenses->orderBy('created_at', 'desc')->get(); // Asegúrate de asignar el resultado
         return response()->json(["expenses" => $expenses], 200);

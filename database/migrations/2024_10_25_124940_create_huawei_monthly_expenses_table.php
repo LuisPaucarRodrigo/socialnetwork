@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('expense_type');
             $table->string('employee');
+            $table->string('zone')->nullable();
             $table->date('expense_date');
             $table->string('cdp_type')->nullable();
             $table->string('doc_number')->nullable();
@@ -22,7 +23,7 @@ return new class extends Migration
             $table->string('ruc')->nullable();
             $table->string('description');
             $table->double('amount');
-            $table->string('image1');
+            $table->string('image1')->nullable();
             $table->string('image2')->nullable();
             $table->string('image3')->nullable();
             $table->boolean('is_accepted')->nullable();
@@ -30,10 +31,8 @@ return new class extends Migration
             $table->date('ec_expense_date')->nullable();
             $table->string('ec_op_number')->nullable();
             $table->double('ec_amount')->nullable();
-            $table->string('macro_project');
-            $table->string('site');
-            $table->string('du');
             $table->foreignId('huawei_monthly_project_id')->constrained('huawei_monthly_projects')->onDelete('cascade');
+            $table->foreignId('account_statement_id')->nullable()->constrained('account_statements')->onDelete('set null');
             $table->timestamps();
         });
     }
