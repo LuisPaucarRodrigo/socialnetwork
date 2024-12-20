@@ -1129,8 +1129,6 @@ const showSuccessModal = ref(false);
 const successMessage = ref("");
 const showOpNuDatModal = ref(false);
 const isFetching = ref(false);
-const sites = ref(null);
-const dus = ref(null);
 
 const form = useForm({
     id: "",
@@ -1168,8 +1166,6 @@ const openEditAdditionalModal = async (additional) => {
 };
 
 const closeModal = () => {
-    sites.value = null;
-    dus.value = null;
     form.clearErrors();
     form.reset();
     isFetching.value = false;
@@ -1177,7 +1173,6 @@ const closeModal = () => {
 };
 
 function submit(update) {
-    form.site = sites.value.find(item => item.id === form.site)?.name || '';
     if (!update) {
         isFetching.value = true;
         const url = route("huawei.monthlyexpenses.expenses.store");
@@ -1267,9 +1262,10 @@ const openPreviewDocumentModal = (expense, img) => {
     window.open(routeToShow, "_blank");
 };
 
-const employees = props.project.huawei_monthly_employees.map((employee) => {
-    return `${employee.name} ${employee.lastname}`; // Combina nombre y apellido
-});
+const employees = [
+    'Eduardo',
+    'Luis'
+]
 
 const expenseTypes = [
     "Combustible",
