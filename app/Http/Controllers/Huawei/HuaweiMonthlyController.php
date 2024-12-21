@@ -10,6 +10,7 @@ use App\Models\HuaweiMonthlyExpense;
 use App\Models\HuaweiMonthlyProject;
 use App\Models\HuaweiProject;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -268,6 +269,33 @@ class HuaweiMonthlyController extends Controller
             'ec_expense_date' => $data['ec_expense_date'],
             'ec_op_number' => $data['ec_op_number'],
         ]);
+
+        $updatedCosts = HuaweiMonthlyExpense::whereIn('id', $data['ids'])
+            ->get();
+
+        return response()->json($updatedCosts, 200);
+    }
+
+    public function massiveValidate (Request $request)
+    {
+        $data = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer',
+            'state' => 'required'
+        ]);
+
+        DB::beginTransaction();
+
+        foreach ($data['ids'] as $item){
+            $expense = HuaweiMonthlyExpense::find($item);
+            if ($expense->is_accepted !== null){
+                DB::rollBack();
+                abort(403, 'Acción no permitida');
+            }
+            $expense->update([
+                'is_accepted' => $data['state']
+            ]);
+        }
 
         $updatedCosts = HuaweiMonthlyExpense::whereIn('id', $data['ids'])
             ->get();

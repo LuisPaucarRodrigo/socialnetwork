@@ -92,6 +92,14 @@
                                             Actualizar Operación
                                         </button>
                                     </div>
+                                    <div class="">
+                                        <button
+                                            @click="openMassiveValidate"
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                                        >
+                                            Aceptar o Rechazar
+                                        </button>
+                                    </div>
                                 </div>
                             </template>
                         </dropdown>
@@ -219,7 +227,6 @@
                             </label>
                         </th>
 
-
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
@@ -244,7 +251,7 @@
                                 label="Empleado"
                                 :options="employees"
                                 v-model="filterForm.selectedEmployees"
-                                width="w-40"
+                                width="w-72"
                             />
                         </th>
                         <th
@@ -343,7 +350,11 @@
                             <TableAutocompleteFilter
                                 labelClass="text-[11px]"
                                 label="Estado"
-                                :options="['Aceptado', 'Rechazado', 'Pendiente']"
+                                :options="[
+                                    'Aceptado',
+                                    'Rechazado',
+                                    'Pendiente',
+                                ]"
                                 v-model="filterForm.selectedStates"
                                 width="w-48"
                             />
@@ -500,7 +511,11 @@
                             class="border-b whitespace-nowrap border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap"
                         >
                             {{
-                                (item.is_accepted == 1 ? 'Aceptado' : ( item.is_accepted == 0 ? 'Rechazado' : 'Pendiente'))
+                                item.is_accepted == 1
+                                    ? "Aceptado"
+                                    : item.is_accepted == 0
+                                    ? "Rechazado"
+                                    : "Pendiente"
                             }}
                         </td>
                         <td
@@ -593,7 +608,7 @@
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
-                            colspan="11"
+                            colspan="9"
                         ></td>
                         <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap"
@@ -642,7 +657,6 @@
                 <form @submit.prevent="form.id ? submit(true) : submit(false)">
                     <div class="space-y-12 mt-4">
                         <div class="grid sm:grid-cols-2 gap-6 pb-6">
-
                             <div>
                                 <InputLabel
                                     for="expense_type"
@@ -681,9 +695,7 @@
                                         id="zone"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     />
-                                    <InputError
-                                        :message="form.errors.zone"
-                                    />
+                                    <InputError :message="form.errors.zone" />
                                 </div>
                             </div>
 
@@ -1070,6 +1082,60 @@
             </div>
         </Modal>
 
+        <Modal :show="showValidateModal" @close="closeMassiveValidate">
+            <div class="p-6">
+                <h2
+                    class="text-base font-medium leading-7 text-gray-900 text-center"
+                >
+                    Aceptar o Rechazar
+                </h2>
+                <form @submit.prevent="massiveValidate">
+                    <div class="mt-6 flex flex-col items-center space-y-4">
+                        <InputLabel
+                            for="operation_decision"
+                            class="font-medium leading-6 text-gray-900 text-center"
+                        >
+                            Seleccione una opción
+                        </InputLabel>
+                        <div class="flex space-x-8">
+                            <label class="flex items-center space-x-2">
+                                <input
+                                    type="radio"
+                                    v-model="validateForm.state"
+                                    :value="1"
+                                    class="h-5 w-5 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                                />
+                                <span class="text-gray-700">Aceptar</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input
+                                    type="radio"
+                                    v-model="validateForm.state"
+                                    :value="0"
+                                    class="h-5 w-5 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                                />
+                                <span class="text-gray-700">Rechazar</span>
+                            </label>
+                        </div>
+                        <InputError :message="validateForm.errors.state" />
+                    </div>
+                    <div class="mt-8 flex justify-center gap-4">
+                        <SecondaryButton @click="closeMassiveValidate">
+                            Cancelar
+                        </SecondaryButton>
+                        <button
+                            type="submit"
+                            :disabled="isFetching"
+                            :class="{ 'opacity-25': isFetching }"
+                            class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        >
+                            Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </Modal>
+
         <ConfirmDeleteModal
             :confirmingDeletion="confirmingDocDeletion"
             itemType="Gasto"
@@ -1151,6 +1217,7 @@ const form = useForm({
 const create_additional = ref(false);
 const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
+const showValidateModal = ref(false);
 
 const openCreateAdditionalModal = () => {
     create_additional.value = true;
@@ -1259,9 +1326,24 @@ const openPreviewDocumentModal = (expense, img) => {
 };
 
 const employees = [
-    'Eduardo',
-    'Luis'
-]
+    "ANGIE NICOLE DURAN VILLACORTA",
+    "CESAR DAVID NINACANSAYA APAZA",
+    "EDUARDO JOHEL HINOJOSA AMUDIO",
+    "ENMANUEL EDUARDO JUAN HANCO TEJADA",
+    "JOSE HUMBERTO QUENTA VILLANUEVA",
+    "PABLO ENRIQUE LAURA FLORES",
+    "REMMILTON CRUZ QUISPE",
+    "VICTOR HUGO CACERES CONDORI",
+    "XAVIER ABDUL CALAPUJA FLORES",
+    "YERSON HENRRY LLERENA CONDORI",
+    "EDWIN RICHARD CRUZ CHALCO",
+    "JORGE DANIEL MONTOYA RODRIGUEZ",
+    "JONATHAN ELISBAN MOLINA YUCRA",
+    "GUSTAVO GIOVANNI FLORES LLERENA",
+    "HANS MENDOZA TRUJILLO",
+    "CLINTON LUIS YUCRA PACCO",
+    "JEAN PAUL HILARION TABOADA",
+];
 
 const expenseTypes = [
     "Combustible",
@@ -1295,7 +1377,7 @@ const filterForm = ref({
     exNoDate: false,
     opStartDate: "",
     opEndDate: "",
-    selectedStates: ['Aceptado', 'Rechazado', 'Pendiente'],
+    selectedStates: ["Aceptado", "Rechazado", "Pendiente"],
     opNoDate: false,
 });
 
@@ -1311,7 +1393,7 @@ watch(
         filterForm.value.opStartDate,
         filterForm.value.opEndDate,
         filterForm.value.opNoDate,
-        filterForm.value.selectedStates
+        filterForm.value.selectedStates,
     ],
     () => {
         (filterMode.value = true), search_advance(filterForm.value);
@@ -1424,6 +1506,10 @@ const opNuDateForm = useForm({
     ec_op_number: "",
 });
 
+const validateForm = useForm({
+    state: "",
+});
+
 const handleCheckAll = (e) => {
     if (e.target.checked) {
         actionForm.value.ids = expenses.value.data.map((item) => item.id);
@@ -1444,6 +1530,31 @@ const closeOpNuDatModal = () => {
     isFetching.value = false;
     showOpNuDatModal.value = false;
     opNuDateForm.reset();
+};
+
+const openMassiveValidate = () => {
+
+    if (actionForm.value.ids.length === 0) {
+        notifyWarning("No hay registros selccionados");
+        return;
+    }
+    const invalidExpense = actionForm.value.ids.find(id => {
+        const expense = expenses.value.data.find(exp => exp.id === id);
+        return expense && expense.is_accepted !== null;
+    });
+
+    if (invalidExpense){
+        notifyWarning('Hay registros ya aceptados o rechazados');
+        return;
+    }
+
+    showValidateModal.value = true;
+};
+
+const closeMassiveValidate = () => {
+    isFetching.value = false;
+    showValidateModal.value = false;
+    validateForm.reset();
 };
 
 const submitOpNuDatModal = async () => {
@@ -1476,4 +1587,33 @@ const submitOpNuDatModal = async () => {
     notify("Registros Seleccionados Actualizados");
 };
 
+const massiveValidate = async () => {
+    isFetching.value = true;
+    const res = await axios
+        .post(route("huawei.monthlyexpenses.expenses.massivevalidate"), {
+            ...validateForm.data(),
+            ...actionForm.value,
+        })
+        .catch((e) => {
+            isFetching.value = false;
+            if (e.response?.data?.errors) {
+                setAxiosErrors(e.response.data.errors, validateForm);
+            } else {
+                notifyError("Server Error");
+            }
+        });
+
+    const originalMap = new Map(
+        expenses.value.data.map((item) => [item.id, item])
+    );
+    res.data.forEach((update) => {
+        if (originalMap.has(update.id)) {
+            originalMap.set(update.id, update);
+        }
+    });
+    const updatedArray = Array.from(originalMap.values());
+    expenses.value.data = updatedArray;
+    closeMassiveValidate();
+    notify("Registros Seleccionados Actualizados");
+};
 </script>
