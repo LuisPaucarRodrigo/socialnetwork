@@ -27,7 +27,6 @@ class AdditionalCost extends Model
         'is_accepted',
         'igv',
         'user_id',
-        'account_statement_id',
         'general_expense_id',
 
     ];

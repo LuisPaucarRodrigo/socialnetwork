@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\AdditionalCost;
+use App\Models\PayrollDetailExpense;
 use App\Models\GeneralExpense;
 use App\Models\Contract;
 use App\Models\StaticCost;
@@ -11,6 +12,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -18,12 +20,15 @@ use Inertia\Response;
 class ProfileController extends Controller
 {
     public function allFine(){
-        $aditionalCostsData = StaticCost::where('general_expense_id', null)->get();
+        $aditionalCostsData = PayrollDetailExpense::with('payroll_detail')->where('general_expense_id', null)->get();
         foreach($aditionalCostsData as $item){
             $ge = GeneralExpense::create([
-                'zone' => $item->zone,
-                'expense_type' => $item->expense_type,
-                'location' => $item?->project?->description ?? 'Sin descripción',
+                'zone' => 'Nómina',
+                'expense_type' => ($item->type === 'Salary' )
+                    ? 'Sueldo' :( $item->type === 'Travel' 
+                        ? 'Viáticos' 
+                        : 'error' ),
+                'location' => $item->payroll_detail()->first()->employee_name ?? 'Sin descripción',
                 'amount' => $item->amount,
                 'operation_number' => $item->operation_number,
                 'operation_date' => $item->operation_date,

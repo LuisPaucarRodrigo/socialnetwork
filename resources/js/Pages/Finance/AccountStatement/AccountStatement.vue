@@ -409,8 +409,7 @@
                                                 <td
                                                     class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
                                                     {{
-                                                        item.cicsa_assignation
-                                                            .project_name
+                                                        item.project.name
                                                     }}
                                                 </td>
                                                 <td
@@ -601,7 +600,7 @@
                                                         {{ item.type === 'Salary' 
                                                         ? 'Sueldo' 
                                                         : item.type === 'Travel' 
-                                                            ? 'Travel' 
+                                                            ? 'Viáticos' 
                                                             : '' 
                                                         }}
                                                     </td>
@@ -628,9 +627,7 @@
                                                     <td
                                                         class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
                                                         {{
-                                                            item
-                                                                .cicsa_assignation
-                                                                .project_name
+                                                            item.project.name
                                                         }}
                                                     </td>
                                                     <td

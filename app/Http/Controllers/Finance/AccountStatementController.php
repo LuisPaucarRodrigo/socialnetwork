@@ -125,17 +125,17 @@ class AccountStatementController extends Controller
         });
 
 
-        $peData = PextProjectExpense::select('id', 'expense_type', 'zone', 'amount', 'cicsa_assignation_id')
+        $peData = PextProjectExpense::select('id', 'expense_type', 'zone', 'amount', 'project_id')
             ->with([
-                'cicsa_assignation' => function ($query) {
-                    $query->select('id', 'project_name');
+                'project' => function ($query) {
+                    $query->select('id', 'preproject_id');
                 }
             ])
             ->where('operation_date', $od)
             ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
             ->get();
         $peData->transform(function ($item) {
-            $item->cicsa_assignation->setAppends([]);
+            $item->project->setAppends(['name']);
             $item->setAppends([]);
             return $item;
         });
@@ -190,16 +190,16 @@ class AccountStatementController extends Controller
             return $item;
         });
 
-        $peData = PextProjectExpense::select('id', 'expense_type', 'zone', 'amount', 'cicsa_assignation_id', 'account_statement_id')
-            ->with([
-                'cicsa_assignation' => function ($query) {
-                    $query->select('id', 'project_name');
-                }
-            ])
+        $peData = PextProjectExpense::select('id', 'expense_type', 'zone', 'amount', 'project_id', 'account_statement_id')
+        ->with([
+            'project' => function ($query) {
+                $query->select('id', 'preproject_id');
+            }
+        ])
             ->where('account_statement_id', $as_id)
             ->get();
         $peData->transform(function ($item) {
-            $item->cicsa_assignation->setAppends([]);
+            $item->project->setAppends(['name']);
             $item->setAppends([]);
             return $item;
         });
