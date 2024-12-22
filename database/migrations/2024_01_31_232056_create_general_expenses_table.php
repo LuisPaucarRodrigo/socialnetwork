@@ -24,6 +24,11 @@ return new class extends Migration
                 ->constrained('account_statements')
                 ->onDelete('set null');
             $table->timestamps();
+
+            // Agregar índices
+            $table->index('operation_number');
+            $table->index('operation_date');
+            $table->index(['operation_number', 'operation_date']);
         });
     }
 

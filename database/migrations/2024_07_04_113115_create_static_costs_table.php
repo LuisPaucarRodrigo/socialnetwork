@@ -32,10 +32,9 @@ return new class extends Migration {
                 ->constrained('projects')
                 ->onDelete('cascade');
             $table->integer('igv')->default('0');
-            $table->foreignId('account_statement_id')
-                ->nullable()
-                ->constrained('account_statements')
-                ->onDelete('set null');
+            $table->foreignId('general_expense_id')
+                ->constrained('general_expenses')
+                ->cascadeOnDelete();
             $table->timestamps();
         });
     }
