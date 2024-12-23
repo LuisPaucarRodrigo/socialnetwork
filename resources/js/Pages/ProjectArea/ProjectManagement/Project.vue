@@ -91,33 +91,33 @@
                     <h3 class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
                         {{ item.name }}
                     </h3>
-                    <p v-if="item.initial_budget === 0.00" class="text-red-500 text-sm">
+                    <p v-if="item.cost_center_id === 1  && item.initial_budget === 0.00" class="text-red-500 text-sm">
                         No se definió un presupuesto
                     </p>
                     <div
-                        :class="`text-gray-500 text-sm ${item.initial_budget === 0.00 ? 'opacity-50 pointer-events-none' : ''}`">
+                        :class="`text-gray-500 text-sm ${item.cost_center_id === 1  && item.initial_budget === 0.00 ? 'opacity-50 pointer-events-none' : ''}`">
                         <div class="grid grid-cols-1 gap-y-1">
-                            <Link v-if="item.initial_budget > 0"
+                            <Link v-if="item.cost_center_id !== 1 || item.initial_budget > 0"
                                 :href="route('tasks.index', { id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Tareas
                             </Link>
-                            <Link v-if="item.initial_budget > 0"
+                            <Link v-if="item.cost_center_id !== 1 || item.initial_budget > 0"
                                 :href="route('projectscalendar.show', { project: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Calendario
                             </Link>
                             <span v-else class="text-gray-400">Calendario</span>
-                            <Link v-if="item.initial_budget > 0"
+                            <Link v-if="item.cost_center_id !== 1 || item.initial_budget > 0"
                                 :href="route('projectmanagement.resources', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Servicios
                             </Link>
                             <span v-else class="text-gray-400">Servicios</span>
-                            <Link v-if="item.initial_budget > 0"
+                            <Link v-if="item.cost_center_id !== 1 || item.initial_budget > 0"
                                 :href="route('projectmanagement.purchases_request.index', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y
                             Gastos</Link>
                             <span v-else class="text-gray-400">Compras y Gastos</span>
 
-                            <Link v-if="item.initial_budget > 0"
+                            <Link v-if="item.cost_center_id !== 1 || item.initial_budget > 0"
                                 :href="route('projectmanagement.products', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                                 Asignar Productos
@@ -125,13 +125,13 @@
                             <span v-else class="text-gray-400">Asignar Productos</span>
 
 
-                            <Link v-if="item.initial_budget > 0"
+                            <Link v-if="item.cost_center_id !== 1 || item.initial_budget > 0"
                                 :href="route('projectmanagement.liquidate', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                             Liquidaciones
                             </Link>
                             <span v-else class="text-gray-400">Liquidaciones</span>
-                            <Link v-if="item.initial_budget > 0"
+                            <Link v-if="item.cost_center_id !== 1 || item.initial_budget > 0"
                                 :href="route('project.document.index', {path: `${item.code}_${item.id}`, project_id: item.id})"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                             Archivos

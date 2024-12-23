@@ -162,6 +162,8 @@ const { projects, costLines } = defineProps({
     costLines: Array
 });
 
+console.log(projects)
+
 const selectedProjectId = ref("");
 const goToBudget = () => {
     if (selectedProjectId.value) {

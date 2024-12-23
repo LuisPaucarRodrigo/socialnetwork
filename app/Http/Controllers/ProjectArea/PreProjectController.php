@@ -55,7 +55,7 @@ class PreProjectController extends Controller
             return Inertia::render('ProjectArea/PreProject/'.$viewTemplate, [
                 'preprojects' => Preproject::with('users')->where('status', $preprojects_status)
                     ->where('cost_line_id', $type)
-                    ->orderBy('created_at', 'desc')
+                    ->orderBy('date', 'desc')
                     ->paginate(12),
                 'preprojects_status' => $preprojects_status,
                 'type' => $type,
@@ -70,7 +70,7 @@ class PreProjectController extends Controller
                     return $query->orWhere('code', 'like', "%$searchQuery%")
                     ->orWhere('description', 'like', "%$searchQuery%");
                 })
-                ->orderBy('created_at', 'desc')
+                ->orderBy('date', 'desc')
                 ->paginate(12);
 
             return response()->json([
