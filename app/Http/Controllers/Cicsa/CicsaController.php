@@ -44,7 +44,6 @@ class CicsaController extends Controller
 {
     public function index($type)
     {
-        // dd('hola');
         $projects = CicsaAssignation::whereHas('project', function ($subQuery) use ($type) {
             $subQuery->where('cost_line_id', $type);
         })
@@ -687,7 +686,7 @@ class CicsaController extends Controller
     }
 
     // CicsaServiceOrder
-    public function indexServiceOrder(Request $request, $searchCondition = null)
+    public function indexServiceOrder(Request $request, $type, $searchCondition = null)
     {
         if ($request->isMethod('get')) {
             $service_orders = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
@@ -697,6 +696,9 @@ class CicsaController extends Controller
                     },
                     'project.cost_center'
                 ])
+                ->whereHas('project', function ($subQuery) use ($type) {
+                    $subQuery->where('cost_line_id', $type);
+                })
                 // ->whereDoesntHave('cicsa_charge_area')
                 // ->whereHas('cicsa_purchase_order_validation',function($query){
                 //     $query->where('file_validation','Completado')
@@ -711,7 +713,8 @@ class CicsaController extends Controller
                 ->paginate(20);
             return Inertia::render('Cicsa/CicsaServiceOrder', [
                 'service_order' => $service_orders,
-                'searchCondition' => $searchCondition
+                'searchCondition' => $searchCondition,
+                'type' => $type
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->searchQuery;
@@ -722,6 +725,9 @@ class CicsaController extends Controller
                     },
                     'project.cost_center'
                 ])
+                ->whereHas('project', function ($subQuery) use ($type) {
+                    $subQuery->where('cost_line_id', $type);
+                })
                 // ->whereDoesntHave('cicsa_charge_area')
                 // ->whereHas('cicsa_purchase_order_validation',function($query){
                 //     $query->where('file_validation','Completado')
@@ -811,13 +817,13 @@ class CicsaController extends Controller
         }
     }
 
-    public function exportServiceOrder()
+    public function exportServiceOrder($type)
     {
-        return Excel::download(new ServiceOrderExport, 'Orden de Servicio ' . date('d-m-Y') . '.xlsx');
+        return Excel::download(new ServiceOrderExport($type), 'Orden de Servicio ' . date('d-m-Y') . '.xlsx');
     }
 
     //CicsaChargeArea
-    public function indexChargeArea(Request $request, $searchCondition = null)
+    public function indexChargeArea(Request $request, $type, $searchCondition = null)
     {
         if ($request->isMethod('get')) {
             $charge_areas = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
@@ -828,11 +834,15 @@ class CicsaController extends Controller
                     },
                     'project.cost_center'
                 ])
+                ->whereHas('project', function ($subQuery) use ($type) {
+                    $subQuery->where('cost_line_id', $type);
+                })
                 ->orderBy('assignation_date', 'desc')
                 ->paginate(20);
             return Inertia::render('Cicsa/CicsaChargeArea', [
                 'charge_area' => $charge_areas,
-                'searchCondition' => $searchCondition
+                'searchCondition' => $searchCondition,
+                'type' => $type
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->searchQuery;
@@ -844,6 +854,9 @@ class CicsaController extends Controller
                     },
                     'project.cost_center'
                 ])
+                ->whereHas('project', function ($subQuery) use ($type) {
+                    $subQuery->where('cost_line_id', $type);
+                })
                 // ->whereHas('cicsa_service_order',function($query){
                 //     $query->where('service_order','Completado')
                 //     ->where('estimate_sheet','Completado')

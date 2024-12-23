@@ -1,7 +1,7 @@
 <template>
 
     <Head title="CICSA Área de Cobranza" />
-    <AuthenticatedLayout :redirectRoute="'cicsa.index'">
+    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
         <template #header>
             Área de Cobranza
         </template>
@@ -12,7 +12,7 @@
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
                         placeholder="Buscar ..." />
-                    <SelectCicsaComponent currentSelect="Cobranza" />
+                    <SelectCicsaComponent currentSelect="Cobranza" :type="type" />
                     <div id="search_fields" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Nombre,Codigo,CPE,OC,Numero de Factura
@@ -481,13 +481,14 @@ import { EyeIcon } from '@heroicons/vue/24/outline';
 import InputFile from '@/Components/InputFile.vue';
 
 
-const { charge_area, auth, searchCondition } = defineProps({
+const { charge_area, auth, searchCondition, type } = defineProps({
     charge_area: Object,
     auth: Object,
     searchCondition: {
         type: String,
         Required: false
-    }
+    },
+    type: Number
 })
 
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
@@ -621,7 +622,7 @@ function formattedDate2(dateString) {
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('cicsa.charge_areas'), { searchQuery: $search });
+        const response = await axios.post(route('cicsa.charge_areas', {type}), { searchQuery: $search });
         charge_areas.value = response.data.charge_area;
     } catch (error) {
         console.error('Error searching:', error);

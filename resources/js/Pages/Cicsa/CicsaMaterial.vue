@@ -2,7 +2,7 @@
 
     <Head title="CICSA Material" />
 
-    <AuthenticatedLayout :redirectRoute="'cicsa.index'">
+    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
         <template #header>
             Materiales
         </template>

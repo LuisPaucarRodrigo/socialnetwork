@@ -2,7 +2,7 @@
 
     <Head title="CICSA Validación" />
 
-    <AuthenticatedLayout :redirectRoute="'cicsa.index'">
+    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
         <template #header>
             Validación de OC
         </template>

@@ -2,7 +2,7 @@
 
     <Head title="CICSA Orden de Compra" />
 
-    <AuthenticatedLayout :redirectRoute="'cicsa.index'">
+    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
         <Toaster richColors />
         <template #header>
             Orden de Compra

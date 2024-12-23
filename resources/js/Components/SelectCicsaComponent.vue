@@ -42,11 +42,11 @@ const SotOptions = [
     },
     {
         optionName: 'Orden de Servicio',
-        route: route('cicsa.service_orders'),
+        route: route('cicsa.service_orders', {type: props.type}),
     },
     {
         optionName: 'Cobranza',
-        route: route('cicsa.charge_areas'),
+        route: route('cicsa.charge_areas', {type: props.type}),
     },
 ]
 

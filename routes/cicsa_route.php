@@ -50,14 +50,14 @@ Route::get('/cicsa_purchase_order_validation/export/{type}', [CicsaController::c
 
 // CicsaServiceOrders
 
-Route::any('/cicsa_service_orders/index/{searchCondition?}', [CicsaController::class, 'indexServiceOrder'])->name('cicsa.service_orders');
+Route::any('/cicsa_service_orders/index/{type}/{searchCondition?}', [CicsaController::class, 'indexServiceOrder'])->name('cicsa.service_orders');
 Route::post('/cicsa_service_orders/update/{cicsa_service_order_id}', [CicsaController::class, 'updateServiceOrder'])->name('cicsa.service_orders.update');
 Route::get('/cicsa_service_orders/showDocument/OS/{serviceOrder}/Fac/{doc}', [CicsaController::class, 'showServiceDocument'])->name('cicsa.service_orders.showDocument');
-Route::get('/cicsa_service_orders/export', [CicsaController::class, 'exportServiceOrder'])->name('cicsa.service_orders.export');
+Route::get('/cicsa_service_orders/export/{type}', [CicsaController::class, 'exportServiceOrder'])->name('cicsa.service_orders.export');
 
 // CicsaChargeArea
 
-Route::any('/cicsa_charge_areas/index/{searchCondition?}', [CicsaController::class, 'indexChargeArea'])->name('cicsa.charge_areas');
+Route::any('/cicsa_charge_areas/index/{type}/{searchCondition?}', [CicsaController::class, 'indexChargeArea'])->name('cicsa.charge_areas');
 Route::post('/cicsa_charge_areas/update/{cicsa_charge_area_id}', [CicsaController::class, 'updateChargeArea'])->name('cicsa.charge_areas.update');
 Route::get('/cicsa_charge_areas/showDocument/{chargeAreaOrder}', [CicsaController::class, 'showChargeAreaDocument'])->name('cicsa.charge_areas.showDocument');
 Route::get('/cicsa_charge_areas/export', [CicsaController::class, 'exportChargeArea'])->name('cicsa.charge_areas.export');

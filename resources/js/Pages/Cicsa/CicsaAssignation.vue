@@ -2,7 +2,7 @@
 
     <Head title="CICSA Asignación" />
 
-    <AuthenticatedLayout :redirectRoute="route('cicsa.index', {type: type})">
+    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
         <template #header>
             Asignación
         </template>

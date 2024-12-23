@@ -2,7 +2,7 @@
 
     <Head title="CICSA Factibilidad" />
 
-    <AuthenticatedLayout :redirectRoute="'cicsa.index'">
+    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
         <template #header>
             Factibilidad PINT y PEXT
         </template>
