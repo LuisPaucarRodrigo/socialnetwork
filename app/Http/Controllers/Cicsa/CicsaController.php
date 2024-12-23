@@ -393,9 +393,9 @@ class CicsaController extends Controller
         ]);
     }
 
-    public function exportMaterial()
+    public function exportMaterial($type)
     {
-        return Excel::download(new MaterialExport, 'Materiales ' . date('d-m-Y') . '.xlsx');
+        return Excel::download(new MaterialExport($type), 'Materiales ' . date('d-m-Y') . '.xlsx');
     }
 
     public function importMaterial(Request $request)
@@ -420,23 +420,30 @@ class CicsaController extends Controller
         }
     }
 
-    public function indexPurchaseOrder(Request $request, $searchCondition = null)
+    public function indexPurchaseOrder(Request $request, $type, $searchCondition = null)
     {
         if ($request->isMethod('get')) {
             $purchase_order = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
                 ->with('cicsa_installation', 'cicsa_purchase_order', 'project.cost_center')
                 // ->whereDoesntHave('cicsa_purchase_order_validation')
+                ->whereHas('project', function ($subQuery) use ($type) {
+                    $subQuery->where('cost_line_id', $type);
+                })
                 ->orderBy('assignation_date', 'desc')
                 ->paginate(20);
             return Inertia::render('Cicsa/CicsaPurchaseOrder', [
                 'purchaseOrder' => $purchase_order,
-                'searchCondition' => $searchCondition
+                'searchCondition' => $searchCondition,
+                'type' => $type
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->searchQuery;
             $purchase_order = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
                 ->with('cicsa_installation', 'cicsa_purchase_order', 'project.cost_center')
                 // ->whereDoesntHave('cicsa_purchase_order_validation')
+                ->whereHas('project', function ($subQuery) use ($type) {
+                    $subQuery->where('cost_line_id', $type);
+                })
                 ->where(function ($query) use ($searchQuery) {
                     $query->orWhere('project_name', 'like', "%$searchQuery%")
                         ->orWhere('project_code', 'like', "%$searchQuery%")

@@ -706,13 +706,13 @@
                                     {{ item.cpe }}
                                 </p>
                             </td>
-                            <td v-if="checkVisibility('Asignación')" :class="stateClass(item.project?.cost_center.name)"
+                            <td v-if="checkVisibility('Asignación')" :class="stateClass(item.project?.cost_center?.name)"
                                 class="border-b border-gray-200 px-2 py-1 text-[11px] whitespace-nowrap">
                                 <p class="text-gray-900 text-center" :class="stateClassP(
-                                    item.project?.cost_center.name
+                                    item.project?.cost_center?.name
                                 )
                                     ">
-                                    {{ item.project?.cost_center.name || "--" }}
+                                    {{ item.project?.cost_center?.name || "--" }}
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Asignación')" :class="stateClass(item.zone)"
@@ -1118,7 +1118,7 @@
                                 class="bg-white border-b border-r-2 border-gray-200 px-2 py-1 text-[11px] whitespace-nowrap">
                                 <div v-for="order in item?.cicsa_purchase_order">
                                     <button
-                                        @click="openBlank(route('purchase.order.index', { searchCondition: order.oc_number }))">
+                                        @click="openBlank(route('purchase.order.index', { searchCondition: order.oc_number, type }))">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
                                             <path stroke-linecap="round" stroke-linejoin="round"

@@ -34,7 +34,7 @@ const SotOptions = [
     },
     {
         optionName: 'Orden de Compra',
-        route: route('purchase.order.index'),
+        route: route('purchase.order.index', { type: props.type}),
     },
     {
         optionName: 'Validación de OC',

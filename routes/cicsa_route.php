@@ -23,12 +23,12 @@ Route::any('/cicsa_material/index/{type}/{searchCondition?}', [CicsaController::
 Route::post('/cicsa_material/store', [CicsaController::class, 'storeMaterial'])->name('material.store');
 Route::put('/cicsa_material/update/{cicsa_material_id}', [CicsaController::class, 'updateMaterial'])->name('material.update');
 Route::post('/cicsa_material/search/material', [CicsaController::class, 'searchMaterial'])->name('material.search.material');
-Route::get('/cicsa_material/export', [CicsaController::class, 'exportMaterial'])->name('material.export');
+Route::get('/cicsa_material/export/{type}', [CicsaController::class, 'exportMaterial'])->name('material.export');
 
 
 Route::post('/cicsa_material/importmaterial', [CicsaController::class, 'importMaterial'])->name('material.import');
 
-Route::any('/cicsa_purchase_order/index/{searchCondition?}', [CicsaController::class, 'indexPurchaseOrder'])->name('purchase.order.index');
+Route::any('/cicsa_purchase_order/index/{type}/{searchCondition?}', [CicsaController::class, 'indexPurchaseOrder'])->name('purchase.order.index');
 Route::post('/cicsa_purchase_order/store/update/{cicsa_purchase_order_id?}', [CicsaController::class, 'updateOrStorePurchaseOrder'])->name('purchaseOrder.storeOrUpdate');
 Route::get('/cicsa_purchase_order/showDocument/{purchaseOrder}', [CicsaController::class, 'showDocument'])->name('purchase.order.showDocument');
 Route::get('/cicsa_purchase_order/export', [CicsaController::class, 'exportPurchaseOrder'])->name('purchase.order.export');
