@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('huawei_additional_costs', function (Blueprint $table) {
             $table->id();
             $table->string('expense_type');
-            $table->string('zone');
             $table->string('employee');
             $table->date('expense_date');
             $table->string('cdp_type')->nullable();

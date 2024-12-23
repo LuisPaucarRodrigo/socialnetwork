@@ -50,6 +50,7 @@ class HuaweiProjectController extends Controller
         }
 
         $projects = HuaweiProject::where('status', $state)
+            ->select('id','name','assigned_diu','description','ot','pre_report','prefix', 'macro_project','huawei_site_id','status')
             ->where('prefix', $prefix)
             ->with('huawei_site') // Incluye la relación deseada
             ->orderBy('created_at', 'desc')
@@ -61,7 +62,19 @@ class HuaweiProjectController extends Controller
                     'huawei_project_earnings',
                     'huawei_project_employees',  // Reemplaza con los nombres de las relaciones que deseas ocultar
                     'huawei_project_resources',
-                    'huawei_static_costs'
+                    'huawei_static_costs',
+                    'additional_cost_total',
+                    'static_cost_total',
+                    'materials_in_project',
+                    'equipments_in_project',
+                    'materials_liquidated',
+                    'equipments_liquidated',
+                    'total_earnings',
+                    'total_real_earnings',
+                    'total_real_earnings_without_deposit',
+                    'total_project_cost',
+                    'total_employee_costs',
+                    'total_essalud_employee_cost'
                 ])->setRelation('huawei_site', $project->huawei_site->makeHidden([
                     'huawei_project',
                 ]));
@@ -92,15 +105,40 @@ class HuaweiProjectController extends Controller
         }
 
         $searchTerm = strtolower($request);
-        $projects = HuaweiProject::where('status', $state)->where('prefix', $prefix)->where(function ($query) use ($searchTerm) {
+        $projects = HuaweiProject::select('id','name','assigned_diu','description','ot','pre_report','prefix', 'macro_project','huawei_site_id','status')->where('status', $state)->where('prefix', $prefix)->where(function ($query) use ($searchTerm) {
             $query->whereRaw('LOWER(name) like ?', ['%'.$searchTerm.'%'])
                   ->orWhereRaw('LOWER(description) like ?', ['%'.$searchTerm.'%'])
                   ->orWhereRaw('LOWER(ot) LIKE ?', ["%{$searchTerm}%"])
                   ->orWhereRaw('LOWER(assigned_diu) LIKE ?', ["%{$searchTerm}%"])
+                  ->orWhereRaw('LOWER(macro_project) LIKE ?', ["%{$searchTerm}%"])
                   ->orWhereHas('huawei_site', function ($query) use ($searchTerm){
                     $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
                   });
-        })->with('huawei_site')->orderBy('created_at', 'desc')->get();
+        })->orderBy('created_at', 'desc')->get();
+
+        $projects->transform(function ($project) {
+            return $project->makeHidden([
+                'huawei_additional_costs',    // Reemplaza con los nombres de los campos que deseas ocultar
+                'huawei_project_earnings',
+                'huawei_project_employees',  // Reemplaza con los nombres de las relaciones que deseas ocultar
+                'huawei_project_resources',
+                'huawei_static_costs',
+                'additional_cost_total',
+                'static_cost_total',
+                'materials_in_project',
+                'equipments_in_project',
+                'materials_liquidated',
+                'equipments_liquidated',
+                'total_earnings',
+                'total_real_earnings',
+                'total_real_earnings_without_deposit',
+                'total_project_cost',
+                'total_employee_costs',
+                'total_essalud_employee_cost'
+            ])->setRelation('huawei_site', $project->huawei_site->makeHidden([
+                'huawei_project',
+            ]));
+        });
 
         return Inertia::render('Huawei/Projects', [
             'projects' => $projects,
@@ -113,19 +151,53 @@ class HuaweiProjectController extends Controller
     public function create ()
     {
         return Inertia::render('Huawei/ProjectForm', [
-            'huawei_sites' => HuaweiSite::all(),
+            'huawei_sites' => HuaweiSite::orderBy('name')->get(),
             'employees' => Employee::all()
         ]);
     }
 
-    public function toUpdate (HuaweiProject $huawei_project)
+    public function toUpdate($huawei_project)
     {
-        if (!$huawei_project->status){
+        $huawei_project = HuaweiProject::select(
+            'id',
+            'name',
+            'huawei_site_id',
+            'description',
+            'ot',
+            'assigned_diu',
+            'pre_report',
+            'status',
+            'initial_amount',
+            'prefix',
+            'macro_project'
+        )->where('id', $huawei_project)
+        ->with([
+            'huawei_site',
+            'huawei_project_employees.employee'  // Asegúrate de que estas relaciones están definidas correctamente en el modelo
+        ])->first()
+        ->makeHidden([
+            'additional_cost_total',
+            'static_cost_total',
+            'materials_in_project',
+            'equipments_in_project',
+            'materials_liquidated',
+            'equipments_liquidated',
+            'total_earnings',
+            'total_real_earnings',
+            'total_real_earnings_without_deposit',
+            'total_project_cost',
+            'total_employee_costs',
+            'total_essalud_employee_cost',
+            'huawei_project_resources'
+        ]);
+
+        if (!$huawei_project->status) {
             abort(403, 'Acción no permitida');
         }
+
         return Inertia::render('Huawei/ProjectForm', [
-            'huawei_project' => $huawei_project->load('huawei_site', 'huawei_project_employees.employee'),
-            'huawei_sites' => HuaweiSite::all(),
+            'huawei_project' => $huawei_project,
+            'huawei_sites' => HuaweiSite::orderBy('name')->get(),
             'employees' => Employee::all()
         ]);
     }
@@ -186,12 +258,13 @@ class HuaweiProjectController extends Controller
             'name' => 'required',
             'huawei_site_id' => 'required',
             'prefix' => 'required',
+            'macro_project' => 'required',
             'description' => 'nullable',
             'ot' => 'nullable',
             'pre_report' => 'nullable',
             'employees' => 'nullable',
             'initial_amount' => 'nullable',
-            'assigned_diu' => 'required'
+            'assigned_diu' => 'required|unique:huawei_projects,assigned_diu'
         ]);
 
         if ($request->hasFile('pre_report')){
@@ -206,6 +279,7 @@ class HuaweiProjectController extends Controller
                 'description' => $request->description,
                 'ot' => $request->ot,
                 'prefix' => $request->prefix,
+                'macro_project' => $request->macro_project,
                 'pre_report' => $documentName,
                 'initial_amount' => $request->initial_amount,
                 'assigned_diu' => $request->assigned_diu
@@ -217,6 +291,7 @@ class HuaweiProjectController extends Controller
                 'description' => $request->description,
                 'ot' => $request->ot,
                 'prefix' => $request->prefix,
+                'macro_project' => $request->macro_project,
                 'initial_amount' => $request->initial_amount,
                 'assigned_diu' => $request->assigned_diu
             ]);
@@ -361,7 +436,7 @@ class HuaweiProjectController extends Controller
     public function getSites ()
     {
         return Inertia::render('Huawei/Sites', [
-            'sites' => HuaweiSite::orderBy('updated_at', 'desc')->paginate(10)
+            'sites' => HuaweiSite::select('id','name')->orderBy('name')->paginate(10)
         ]);
     }
 
@@ -374,7 +449,7 @@ class HuaweiProjectController extends Controller
         $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
 
         return Inertia::render('Huawei/Sites', [
-            'sites' => $query->orderBy('updated_at', 'desc')->get(),
+            'sites' => $query->select('id','name')->orderBy('name')->get(),
             'search' => $request
         ]);
     }
@@ -581,14 +656,10 @@ class HuaweiProjectController extends Controller
         return response()->noContent();
     }
 
-
     public function search_costs (Request $request, $huawei_project)
     {
         $expenses = HuaweiAdditionalCost::where('huawei_project_id', $huawei_project);
 
-        if (count($request->selectedZones) < 17) {  // Filtrar solo si hay valor
-            $expenses->whereIn('zone', $request->selectedZones);
-        }
         if (count($request->selectedExpenseTypes) < 9){
             $expenses->whereIn('expense_type', $request->selectedExpenseTypes);
         }
@@ -672,7 +743,6 @@ class HuaweiProjectController extends Controller
             ->where('huawei_project_id', $huawei_project->id)
             ->where(function ($query) use ($searchTerm) {
                 $query->whereRaw('LOWER(expense_type) LIKE ?', ["%{$searchTerm}%"])
-                    ->orWhereRaw('LOWER(zone) LIKE ?', ["%{$searchTerm}%"])
                     ->orWhereRaw('LOWER(employee) LIKE ?', ["%{$searchTerm}%"])
                     ->orWhereRaw('LOWER(cdp_type) LIKE ?', ["%{$searchTerm}%"])
                     ->orWhereRaw('LOWER(doc_number) LIKE ?', ["%{$searchTerm}%"])
@@ -1000,7 +1070,7 @@ class HuaweiProjectController extends Controller
                     $query->select('id', 'serie_number');
                 }])->get()
                 ->filter(function ($detail){
-                    return $detail->state = 'Disponible';
+                    return $detail->state == 'Disponible';
                 })->map(function ($detail){
                     return [
                         'id' => $detail->id,
@@ -1009,16 +1079,24 @@ class HuaweiProjectController extends Controller
                     ];
                 });
         }else{
-            $entry_details = HuaweiEntryDetail::whereNull('huawei_equipment_serie_id')->where('huawei_material_id', $id)
+            $entry_details = HuaweiEntryDetail::select(
+                    'id',
+                    'huawei_material_id',
+                    'order_number',
+                    'quantity'
+                )
+                ->where('huawei_material_id', $id)
                 ->get()
+                ->makeHidden([
+                    'refund_quantity',
+                    'project_quantity',
+                    'assigned_site',
+                    'antiquation_state',
+                    'instalation_state',
+                    'huawei_project_resources'
+                ])
                 ->filter(function ($detail){
                     return $detail->state == 'Disponible';
-                })->map(function ($detail){
-                    return [
-                        'id' => $detail->id,
-                        'order_number' => $detail->order_number,
-                        'available_quantity' => $detail->available_quantity
-                    ];
                 });
         }
         return response()->json(['details' => $entry_details]);

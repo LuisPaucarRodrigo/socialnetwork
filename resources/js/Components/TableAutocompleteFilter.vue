@@ -21,11 +21,15 @@
                 </label>
 
                 <!-- Lista de opciones con filtro -->
-                <div class='max-h-48 overflow-y-auto'>
+                <div class="max-h-48 overflow-y-auto">
                     <label v-for="option in filteredOptions" :key="option" class="border-b-2 border-gray-100 px-2 py-2 flex space-x-1 items-center">
                         <input type="checkbox" :value="option" v-model="selectedOptions" class="mr-2" />
                         <p class="text-left">{{ option }}</p>
                     </label>
+                    <!-- <label v-if="empty" class="border-b-2 border-gray-100 px-2 py-2 flex space-x-1 items-center">
+                        <input type="checkbox" :value="'(vacio)'" v-model="selectedOptions" class="mr-2" />
+                        <p class="text-left">(vacio)</p>
+                    </label> -->
                 </div>
             </div>
         </div>
@@ -56,11 +60,18 @@ const props = defineProps({
     width: {
         type: String,
         default: 'w-full'
+    },
+    empty: {
+        type: Boolean,
+        default: false
     }
 });
 
-const emit = defineEmits(['update:modelValue']);
+if (props.empty){
+    props.options.push('(vacio)')
+}
 
+const emit = defineEmits(['update:modelValue']);
 const showPopup = ref(false);
 const searchQuery = ref('');
 const selectedOptions = ref([...props.modelValue]);
@@ -70,21 +81,26 @@ const popup = ref(null);
 
 const widthClass = computed(() => props.width);
 
-// Toggle the popup visibility
+// Agregar 'EMPTY_VALUE' por defecto si empty es true
+if (props.empty && !selectedOptions.value.includes('(vacio)')) {
+    selectedOptions.value.push('(vacio)');
+}
+
+// Sincronizar modelo inicial
+emit('update:modelValue', selectedOptions.value);
+
 const togglePopup = () => {
     showPopup.value = !showPopup.value;
 };
 
-// Close the popup if the click is outside
 const closePopup = (event) => {
     if (popup.value && !popup.value.contains(event.target)) {
         showPopup.value = false;
     }
 };
 
-// Watch for changes in the search query
+// Filtrar opciones basadas en la búsqueda
 const filterOptions = () => {
-    // Reset selected options when the search query changes
     selectedOptions.value = [];
 
     // Filter options based on the search query
@@ -92,33 +108,31 @@ const filterOptions = () => {
         option.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
 
-    // Automatically mark the options that match the search query
     if (searchQuery.value === '') {
-        // If the search query is empty, select all options
         selectedOptions.value = [...filteredOptions.value];
     } else {
-        // Mark only the options that match the search query
         selectedOptions.value = filteredOptions.value;
     }
 
-    // Sync the selected options with the parent
     emit('update:modelValue', selectedOptions.value);
 };
 
-// Select/Deselect all options from the filtered list
+// Seleccionar/Deseleccionar todas las opciones
 const toggleAll = () => {
     if (selectAll.value) {
-        selectedOptions.value = [...filteredOptions.value]; // Seleccionar todas las opciones filtradas
+        selectedOptions.value = [...filteredOptions.value];
     } else {
-        selectedOptions.value = []; // Desmarcar todas
+        selectedOptions.value = [];
     }
     emit('update:modelValue', selectedOptions.value);
 };
 
-// Watch for changes in selected options to update the model
+// Watch para sincronizar los cambios en las opciones seleccionadas
 watch(selectedOptions, (newSelectedOptions) => {
     emit('update:modelValue', newSelectedOptions);
-    selectAll.value = newSelectedOptions.length === filteredOptions.value.length;
+
+    const allOptions = filteredOptions.value;
+    selectAll.value = newSelectedOptions.length === allOptions.length;
 });
 
 onMounted(() => {

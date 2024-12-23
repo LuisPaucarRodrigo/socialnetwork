@@ -19,6 +19,7 @@ class HuaweiProject extends Model
         'status',
         'initial_amount',
         'prefix',
+        'macro_project',
         'assigned_diu'
     ];
 
@@ -36,7 +37,7 @@ class HuaweiProject extends Model
         'total_real_earnings_without_deposit',
         'total_project_cost',
         'total_employee_costs',
-        'total_essalud_employee_cost'
+        'total_essalud_employee_cost',
     ];
 
     public function huawei_site ()

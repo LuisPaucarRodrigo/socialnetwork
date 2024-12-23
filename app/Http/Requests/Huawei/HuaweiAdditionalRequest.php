@@ -23,7 +23,6 @@ class HuaweiAdditionalRequest extends FormRequest
     {
         return [
             'expense_type' => 'required',
-            'zone' => 'required',
             'employee' => 'required',
             'expense_date' => 'required|date',
             'cdp_type' => 'nullable',

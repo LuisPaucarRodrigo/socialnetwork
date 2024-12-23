@@ -170,6 +170,7 @@
                                             filterForm.selectedGuideNumbers
                                         "
                                         width="w-48"
+                                        :empty="true"
                                     />
                                 </th>
                                 <th
