@@ -30,7 +30,7 @@ const SotOptions = [
     },
     {
         optionName: 'Instalación PINT y PEXT',
-        route: route('cicsa.installation.index'),
+        route: route('cicsa.installation.index', {type: props.type}),
     },
     {
         optionName: 'Orden de Compra',
@@ -38,7 +38,7 @@ const SotOptions = [
     },
     {
         optionName: 'Validación de OC',
-        route: route('cicsa.purchase_orders.validation'),
+        route: route('cicsa.purchase_orders.validation', {type:props.type}),
     },
     {
         optionName: 'Orden de Servicio',

@@ -516,13 +516,13 @@ class CicsaController extends Controller
         abort(404, 'Imagen no encontrada');
     }
 
-    public function exportPurchaseOrder()
+    public function exportPurchaseOrder($type)
     {
-        return Excel::download(new PurchaseOrderExport, 'Orden de Compra ' . date('d-m-Y') . '.xlsx');
+        return Excel::download(new PurchaseOrderExport($type), 'Orden de Compra ' . date('d-m-Y') . '.xlsx');
     }
 
 
-    public function indexInstallation(Request $request, $searchCondition = null)
+    public function indexInstallation(Request $request,$type, $searchCondition = null)
     {
         if ($request->isMethod('get')) {
             $installations = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
@@ -531,11 +531,15 @@ class CicsaController extends Controller
                     'cicsa_installation.user',
                     'project.cost_center'
                 )
+                ->whereHas('project', function ($subQuery) use ($type) {
+                    $subQuery->where('cost_line_id', $type);
+                })
                 ->orderBy('assignation_date', 'desc')
                 ->paginate();
             return Inertia::render('Cicsa/CicsaInstallation', [
                 'installation' => $installations,
-                'searchCondition' => $searchCondition
+                'searchCondition' => $searchCondition,
+                'type' => $type
             ]);
         } elseif ($request->isMethod('post')) {
             $installations = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
@@ -544,9 +548,14 @@ class CicsaController extends Controller
                     'cicsa_installation.user',
                     'project.cost_center'
                 )
-                ->orWhere('project_name', 'like', "%$request->searchQuery%")
-                ->orWhere('project_code', 'like', "%$request->searchQuery%")
-                ->orWhere('cpe', 'like', "%$request->searchQuery%")
+                ->whereHas('project', function ($subQuery) use ($type) {
+                    $subQuery->where('cost_line_id', $type);
+                })
+                ->where(function ($query) use ($request) {
+                    $query->orWhere('project_name', 'like', "%$request->searchQuery%")
+                    ->orWhere('project_code', 'like', "%$request->searchQuery%")
+                    ->orWhere('cpe', 'like', "%$request->searchQuery%");
+                })
                 ->get();
             return response()->json($installations, 200);
         }
@@ -576,12 +585,12 @@ class CicsaController extends Controller
         }
     }
 
-    public function exportInstallation()
+    public function exportInstallation($type)
     {
-        return Excel::download(new InstallationExport, 'Instalacion ' . date('d-m-Y') . '.xlsx');
+        return Excel::download(new InstallationExport($type), 'Instalacion ' . date('d-m-Y') . '.xlsx');
     }
 
-    public function indexOCValidation(Request $request, $searchCondition = null)
+    public function indexOCValidation(Request $request, $type,  $searchCondition = null)
     {
         if ($request->isMethod('get')) {
             $purchase_validations = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
@@ -591,6 +600,9 @@ class CicsaController extends Controller
                     },
                     'project.cost_center'
                 ])
+                ->whereHas('project', function ($subQuery) use ($type) {
+                    $subQuery->where('cost_line_id', $type);
+                })
                 // ->whereDoesntHave('cicsa_service_order')
                 // ->whereHas('cicsa_purchase_order', function ($query) {
                 //     $query->whereNotNull('oc_date')
@@ -603,7 +615,8 @@ class CicsaController extends Controller
                 ->paginate(20);
             return Inertia::render('Cicsa/CicsaPurchaseOrderValidation', [
                 'purchase_validation' => $purchase_validations,
-                'searchCondition' => $searchCondition
+                'searchCondition' => $searchCondition,
+                'type' => $type
             ]);
         } elseif ($request->isMethod('post')) {
 
@@ -615,6 +628,9 @@ class CicsaController extends Controller
                     },
                     'project.cost_center'
                 ])
+                ->whereHas('project', function ($subQuery) use ($type) {
+                    $subQuery->where('cost_line_id', $type);
+                })
                 // ->whereDoesntHave('cicsa_service_order')
                 // ->whereHas('cicsa_purchase_order', function ($query) {
                 //     $query->whereNotNull('oc_date')
@@ -665,9 +681,9 @@ class CicsaController extends Controller
         return response()->json($validationOc, 200);
     }
 
-    public function exportOCValidation()
+    public function exportOCValidation($type)
     {
-        return Excel::download(new OCValidationExport, 'Validación de OC ' . date('d-m-Y') . '.xlsx');
+        return Excel::download(new OCValidationExport($type), 'Validación de OC ' . date('d-m-Y') . '.xlsx');
     }
 
     // CicsaServiceOrder

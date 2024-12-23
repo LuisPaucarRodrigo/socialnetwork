@@ -11,7 +11,7 @@
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <a :href="route('purchase.order.export') + '?' + uniqueParam"
+                    <a :href="route('purchase.order.export', {type}) + '?' + uniqueParam"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 </div>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">

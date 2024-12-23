@@ -31,20 +31,20 @@ Route::post('/cicsa_material/importmaterial', [CicsaController::class, 'importMa
 Route::any('/cicsa_purchase_order/index/{type}/{searchCondition?}', [CicsaController::class, 'indexPurchaseOrder'])->name('purchase.order.index');
 Route::post('/cicsa_purchase_order/store/update/{cicsa_purchase_order_id?}', [CicsaController::class, 'updateOrStorePurchaseOrder'])->name('purchaseOrder.storeOrUpdate');
 Route::get('/cicsa_purchase_order/showDocument/{purchaseOrder}', [CicsaController::class, 'showDocument'])->name('purchase.order.showDocument');
-Route::get('/cicsa_purchase_order/export', [CicsaController::class, 'exportPurchaseOrder'])->name('purchase.order.export');
+Route::get('/cicsa_purchase_order/export/{type}', [CicsaController::class, 'exportPurchaseOrder'])->name('purchase.order.export');
 
 
 
 
-Route::any('/cicsa_installation/index/{searchCondition?}', [CicsaController::class, 'indexInstallation'])->name('cicsa.installation.index');
+Route::any('/cicsa_installation/index/{type}/{searchCondition?}', [CicsaController::class, 'indexInstallation'])->name('cicsa.installation.index');
 Route::post('/cicsa_installation/storeOrUpdate/{ci_id?}', [CicsaController::class, 'updateOrStoreInstallation'])->name('cicsa.installation.store');
-Route::get('/cicsa_installation/export', [CicsaController::class, 'exportInstallation'])->name('cicsa.installation.export');
+Route::get('/cicsa_installation/export/{type}', [CicsaController::class, 'exportInstallation'])->name('cicsa.installation.export');
 
 // CicsaPurchaseOrderValidations
 
-Route::any('/cicsa_purchase_order_validation/index/{searchCondition?}', [CicsaController::class, 'indexOCValidation'])->name('cicsa.purchase_orders.validation');
+Route::any('/cicsa_purchase_order_validation/index/{type}/{searchCondition?}', [CicsaController::class, 'indexOCValidation'])->name('cicsa.purchase_orders.validation');
 Route::put('/cicsa_purchase_order_validation/store/{cicsa_validation_order_id}', [CicsaController::class, 'storeOrUpdateOCValidation'])->name('cicsa.purchase_orders.validation.update');
-Route::get('/cicsa_purchase_order_validation/export', [CicsaController::class, 'exportOCValidation'])->name('cicsa.purchase_orders.validation.export');
+Route::get('/cicsa_purchase_order_validation/export/{type}', [CicsaController::class, 'exportOCValidation'])->name('cicsa.purchase_orders.validation.export');
 
 // Route::post('/cicsa_purchase_order_validation/store/{cicsa_validation_id}', [CicsaController::class, 'updateOCValidation'])->name('cicsa.purchase_orders.validation.update');
 
