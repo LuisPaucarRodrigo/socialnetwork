@@ -47,6 +47,7 @@ class CicsaProcessExport implements FromView
             'Monto Proyecto',
             'Coordinador',
             'Encargado',
+            'Estado',
         ];
         $titleAdministration = [
             'Fecha de OC',
@@ -74,6 +75,7 @@ class CicsaProcessExport implements FromView
             'PDF Factura',
             'ZIP Factura',
             'Encargado',
+            'Estado'
         ];
         $titleOCNumber = [
             'Numero de OC',
@@ -85,7 +87,8 @@ class CicsaProcessExport implements FromView
             'Credito',
             'Fecha de Deposito',
             'Monto',
-            'Encargado'
+            'Encargado',
+            'Estado'
         ];
         $title = [];
         $stageExport = CicsaAssignation::query();

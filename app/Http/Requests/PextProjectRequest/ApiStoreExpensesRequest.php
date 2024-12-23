@@ -51,7 +51,7 @@ class ApiStoreExpensesRequest extends FormRequest
             'zone' => 'required',
             'description' => 'required|string',
             'photo' => 'nullable',
-            'cicsa_assignation_id' => 'required'
+            'project_id' => 'required'
         ];
     }
 

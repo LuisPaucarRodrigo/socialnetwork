@@ -193,7 +193,7 @@
                             </Link>
                             <span v-else class="text-gray-400">Servicios</span> -->
                             <Link
-                                :href="route('pext.additional.expense.index', { project_id: item.id, fixedOrAdditional: false })"
+                                :href="route('pext.additional.expense.index', { project_id: item.project.id, fixedOrAdditional: false })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                             Compras y Gastos
                             </Link>

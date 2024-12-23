@@ -124,7 +124,7 @@
                                     {{ item.user_name }}
                                 </p>
                             </td>
-                            <!-- <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <div class="flex space-x-3 justify-center">
                                     <button class="text-blue-900" @click="openEditSotModal(item)">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -134,7 +134,7 @@
                                         </svg>
                                     </button>
                                 </div>
-                            </td> -->
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -269,10 +269,10 @@
                 </form>
             </div>
         </Modal> -->
-        <SuccessOperationModal :confirming="confirmAssignation" :title="'Nueva Asignacion creada'"
+        <!-- <SuccessOperationModal :confirming="confirmAssignation" :title="'Nueva Asignacion creada'"
             :message="'La Asignacion fue creada con éxito'" />
         <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Asignacion Actualizada'"
-            :message="'La Asignacion fue actualizada'" />
+            :message="'La Asignacion fue actualizada'" /> -->
     </AuthenticatedLayout>
 </template>
 
@@ -304,27 +304,26 @@ const { assignation, auth, searchCondition } = defineProps({
 const assignations = ref(assignation);
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
 
-const initialState = {
-    id: null,
-    user_id: auth.user.id,
-    assignation_date: '',
-    project_name: '',
-    cost_center: '',
-    customer: '',
-    project_code: '',
-    cpe: '',
-    zone: '',
-    zone2: '',
-    manager: '',
-    user_name: auth.user.name,
-}
+// const initialState = {
+//     id: null,
+//     user_id: auth.user.id,
+//     assignation_date: '',
+//     project_name: '',
+//     customer: '',
+//     project_code: '',
+//     cpe: '',
+//     zone: '',
+//     zone2: '',
+//     manager: '',
+//     user_name: auth.user.name,
+// }
 
-const form = useForm(
-    { ...initialState }
-);
+// const form = useForm(
+//     { ...initialState }
+// );
 
-const showAddEditModal = ref(false);
-const confirmAssignation = ref(false);
+// const showAddEditModal = ref(false);
+// const confirmAssignation = ref(false);
 
 // function openAddAssignationModal() {
 //     showAddEditModal.value = true
@@ -360,13 +359,13 @@ const confirmAssignation = ref(false);
 //     }
 // }
 
-const confirmUpdateAssignation = ref(false);
+// const confirmUpdateAssignation = ref(false);
 
-function openEditSotModal(item) {
-    form.defaults({ ...item })
-    form.reset()
-    showAddEditModal.value = true
-}
+// function openEditSotModal(item) {
+//     form.defaults({ ...item })
+//     form.reset()
+//     showAddEditModal.value = true
+// }
 
 // async function submitUpdate() {
 //     let url = route('assignation.storeOrUpdate', { cicsa_assignation_id: form.id })

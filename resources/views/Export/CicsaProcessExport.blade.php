@@ -68,6 +68,7 @@ $mergeOC = $stages === 'Cobranza' ? array_merge($chargeAreaFieldsOCNumber,$charg
             <td> {{ $item->cicsa_installation?->projected_amount }} </td>
             <td> {{ $item->cicsa_installation?->coordinator }} </td>
             <td> {{ $item->cicsa_installation?->user_name }} </td>
+            <td> {{ $item->cicsa_project_status }} </td>
             @endif
             @if($stages === 'Administracion' || $stages === 'Todos')
             @foreach($OCFields as $field)
@@ -96,6 +97,7 @@ $mergeOC = $stages === 'Cobranza' ? array_merge($chargeAreaFieldsOCNumber,$charg
                 @endforeach
             </td>
             @endforeach
+            <td> {{ $item->cicsa_administration_status }} </td>
             @endif
 
             @if($stages === 'Cobranza' || $stages === 'Todos')
@@ -106,6 +108,7 @@ $mergeOC = $stages === 'Cobranza' ? array_merge($chargeAreaFieldsOCNumber,$charg
                 @endforeach
             </td>
             @endforeach
+            <td> {{ $item->cicsa_charge_status }} </td>
             @endif
         </tr>
         @endforeach

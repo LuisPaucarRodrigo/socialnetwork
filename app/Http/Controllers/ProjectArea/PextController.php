@@ -226,7 +226,7 @@ class PextController extends Controller
         $validatedData['fixedOrAdditional'] = json_decode($validatedData['fixedOrAdditional']);
         // $validatedData['state'] = json_decode($validatedData['state']);
 
-        $validatedData['account_statement_id'] = null;
+        // $validatedData['account_statement_id'] = null;
         if (isset($validatedData['operation_number']) && isset($validatedData['operation_date'])) {
             $on = substr($validatedData['operation_number'], -6);
             $as = AccountStatement::where('operation_date', $validatedData['operation_date'])
@@ -388,7 +388,7 @@ class PextController extends Controller
     }
 
     public function additional_expense_index($project_id, $fixedOrAdditional)
-    {
+    {   
         $expense = PextProjectExpense::with(['provider:id,company_name', 'project.cost_center'])
             ->where('fixedOrAdditional', json_decode($fixedOrAdditional))
             ->where('project_id', $project_id)

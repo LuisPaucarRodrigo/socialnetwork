@@ -540,20 +540,9 @@ class ApiController extends Controller
     {
         $validateData = $request->validated();
         try {
-            $doc_date = Carbon::createFromFormat('d/m/Y', $validateData['doc_date'])->format('Y-m');
-
-            $pextProject = PextProject::where('date', $doc_date)
-                ->select('id')
-                ->first();
-            if (!$pextProject) {
-                return response()->json([
-                    'error' => "No se encontraron proyectos pext al cual asignar su gasto."
-                ], 404);
-            }
-            $validateData['pext_project_id'] = $pextProject->id;
             $docDate = Carbon::createFromFormat('d/m/Y', $validateData['doc_date']);
             $validateData['doc_date'] = $docDate->format('Y-m-d');
-
+            $validateData['fixedOrAdditional'] = 0;
             if (($validateData['zone'] !== 'MDD') && $validateData['type_doc'] === 'Factura') {
                 $validateData['igv'] = 18;
             }

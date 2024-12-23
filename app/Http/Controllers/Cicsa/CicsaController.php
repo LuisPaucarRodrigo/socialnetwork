@@ -140,12 +140,12 @@ class CicsaController extends Controller
                     }
                 });
             }
-            // if (count($request->cost_center) < 7) {
-            //     $costCenter = $request->cost_center;
-            //     $projectsCicsa = $projectsCicsa->whereHas('project.cost_center', function ($query) use ($costCenter) {
-            //         $query->whereIn('name', $costCenter);
-            //     });
-            // }
+            if (count($request->cost_center) < 7) {
+                $costCenter = $request->cost_center;
+                $projectsCicsa = $projectsCicsa->whereHas('project.cost_center', function ($query) use ($costCenter) {
+                    $query->whereIn('name', $costCenter);
+                });
+            }
 
             $projectsCicsa = $projectsCicsa->get();
 

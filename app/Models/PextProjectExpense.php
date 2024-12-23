@@ -20,7 +20,6 @@ class PextProjectExpense extends Model
         'doc_date',
         'description',
         'amount',
-        'pext_project_id',
         'provider_id',
         'photo',
         'is_accepted',
