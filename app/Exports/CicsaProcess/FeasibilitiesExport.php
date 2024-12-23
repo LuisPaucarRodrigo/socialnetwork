@@ -12,6 +12,11 @@ class FeasibilitiesExport implements FromView, WithColumnWidths
     /**
      * @return \Illuminate\Support\Collection
      */
+    protected $type;
+    public function __construct($type)
+    {
+        $this->type = $type;
+    }
     public function view(): View
     {
         return view('Export.FeasibilityExport', [
@@ -25,7 +30,10 @@ class FeasibilitiesExport implements FromView, WithColumnWidths
                 'Coordinador',
                 'Encargado'
             ],
-            'feasibilitys' => CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'cost_center')
+            'feasibilitys' => CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'cost_center', 'project_id')
+                ->whereHas('project', function ($subQuery)  {
+                    $subQuery->where('cost_line_id', $this->type);
+                })
                 ->with('cicsa_feasibility')
                 ->get()
         ]);

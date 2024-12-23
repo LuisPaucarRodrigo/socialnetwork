@@ -1,7 +1,7 @@
 <template>
 
     <Head title="F. Pext" />
-    <AuthenticatedLayout :redirectRoute="'cicsa.index'">
+    <AuthenticatedLayout :redirectRoute="route('cicsa.index', {type})">
         <template #header> Facturación Pext </template>
         <template #header-right>
             <div>
@@ -26,7 +26,7 @@
                         class="p-2 bg-white ring-1 ring-slate-400 rounded-md text-slate-900 hover:text-slate-400">
                         <ServerIcon class="h-5 w-5 font-bold" />
                     </button> -->
-                    <button @click="router.visit(route('cicsa.index'))"
+                    <button @click="router.visit(route('cicsa.index', {type}))"
                         class="p-2 bg-transparent ring-1 ring-slate-300 rounded-md text-slate-900 hover:text-slate-400">
                         <ArrowPathIcon class="h-5 w-5" />
                     </button>
@@ -60,7 +60,7 @@
                             {{ item === "" ? "Todos" : item }}
                         </option>
                     </select>
-                    <SelectCicsaComponent currentSelect="Proceso" />
+                    <SelectCicsaComponent currentSelect="Proceso" :type="type" />
 
                 </div>
             </div>
@@ -745,7 +745,7 @@
                             </td>
                             <td v-if="checkVisibility('Asignación')"
                                 class="bg-white border-b border-r-2 border-gray-200 px-2 py-1 text-[11px] whitespace-nowrap">
-                                <button @click="openBlank(route('assignation.index', { searchCondition: item.cpe }))">
+                                <button @click="openBlank(route('assignation.index', { searchCondition: item.cpe, type }))">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -823,7 +823,7 @@
                             </td>
                             <td v-if="checkVisibility('Factibilidad PINT y PEXT')"
                                 class="bg-white border-b border-r-2 border-gray-200 px-2 py-1 text-[11px] whitespace-nowrap">
-                                <button @click="openBlank(route('feasibilities.index', { searchCondition: item.cpe }))">
+                                <button @click="openBlank(route('feasibilities.index', { searchCondition: item.cpe, type }))">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -1820,10 +1820,11 @@ import { ArrowPathIcon, ServerIcon, EyeIcon } from "@heroicons/vue/24/outline";
 import TextInput from "@/Components/TextInput.vue";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 
-const { auth, projects, center_list } = defineProps({
+const { auth, projects, center_list, type } = defineProps({
     auth: Object,
     projects: Object,
-    center_list: Object
+    center_list: Object,
+    type: Number
 });
 
 const dataToRender = ref(projects.data);
@@ -2044,7 +2045,7 @@ watch(dataToRender, async () => {
 
 async function search_advance($data) {
     try {
-        let res = await axios.post(route("cicsa.advance.search"), $data);
+        let res = await axios.post(route("cicsa.advance.search", {type}), $data);
         console.log(res.data)
         dataToRender.value = res.data;
     } catch (error) {

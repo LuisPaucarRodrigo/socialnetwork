@@ -4,16 +4,16 @@ use App\Http\Controllers\Cicsa\CicsaController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/cicsa_process/index', [CicsaController::class, 'index'])->name('cicsa.index');
-Route::get('/cicsa_process/export/{stages?}', [CicsaController::class, 'exportCiscaProcess'])->name('cicsa.export');
+Route::get('/cicsa_process/index/{type}', [CicsaController::class, 'index'])->name('cicsa.index');
+Route::get('/cicsa_process/export/{type}/{stages?}', [CicsaController::class, 'exportCiscaProcess'])->name('cicsa.export');
 
-Route::any('/cicsa_assignation/{searchCondition?}', [CicsaController::class, 'indexAssignation'])->name('assignation.index');
+Route::any('/cicsa_assignation/{type}/{searchCondition?}', [CicsaController::class, 'indexAssignation'])->name('assignation.index');
 Route::delete('/cicsa_assignation/destroy/{ca_id}', [CicsaController::class, 'destroy'])->name('cicsa.assignation.destroy');
 Route::put('/cicsa_assignation/store/update/{cicsa_assignation_id?}', [CicsaController::class, 'updateOrStoreAssignation'])->name('assignation.storeOrUpdate');
-Route::get('/cicsa_assignation/export', [CicsaController::class, 'exportAssignation'])->name('assignation.export');
+Route::get('/cicsa_assignation/export/{type}', [CicsaController::class, 'exportAssignation'])->name('assignation.export');
 
 
-Route::any('/cicsa_feasibilities/{searchCondition?}', [CicsaController::class, 'indexFeasibilities'])->name('feasibilities.index');
+Route::any('/cicsa_feasibilities/{type}/{searchCondition?}', [CicsaController::class, 'indexFeasibilities'])->name('feasibilities.index');
 Route::put('/cicsa_feasibilities/store/update/{cicsa_assignation_id?}', [CicsaController::class, 'updateOrStoreFeasibilities'])->name('feasibilities.storeOrUpdate');
 Route::get('/cicsa_feasibilities/export', [CicsaController::class, 'exportFeasibilities'])->name('feasibilities.export');
 
@@ -65,6 +65,6 @@ Route::get('/cicsa_charge_areas/export', [CicsaController::class, 'exportChargeA
 
 //search
 
-Route::post('/cicsa_advance_search', [CicsaController::class, 'search'])->name('cicsa.advance.search');
+Route::post('/cicsa_advance_search/{type}', [CicsaController::class, 'search'])->name('cicsa.advance.search');
 
 Route::get('/cicsa_export_materials_summary/{ca_id}', [CicsaController::class, 'exportMaterialsSummary'])->name('cicsa.export.materials.summary');

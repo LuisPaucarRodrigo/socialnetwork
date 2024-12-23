@@ -12,6 +12,11 @@ class AssignationExport implements FromView, WithColumnWidths
     /**
      * @return \Illuminate\Support\Collection
      */
+    protected $type;
+    public function __construct($type)
+    {
+        $this->type = $type;
+    }
     public function view(): View
     {
         return view('Export.AssignationExport', [
@@ -25,7 +30,9 @@ class AssignationExport implements FromView, WithColumnWidths
                 'Gestor',
                 'Encargado'
             ],
-            'assignations' => CicsaAssignation::all()
+            'assignations' => CicsaAssignation::whereHas('project', function ($subQuery)  {
+                $subQuery->where('cost_line_id', $this->type);
+            })->get()
         ]);
     }
 

@@ -14,7 +14,7 @@
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
                         placeholder="Buscar ..." />
-                    <SelectCicsaComponent currentSelect="Factibilidad PINT y PEXT" />
+                    <SelectCicsaComponent currentSelect="Factibilidad PINT y PEXT" :type="type"/>
                     <div id="search_fields" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Nombre,Codigo,CPE
@@ -79,7 +79,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.project.cost_center.name }}
+                                    {{ item.project?.cost_center?.name }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -343,13 +343,14 @@ import { setAxiosErrors } from "@/utils/utils";
 import { notify, notifyError } from '@/Components/Notification';
 import { Toaster } from 'vue-sonner';
 
-const { feasibility, auth, searchCondition } = defineProps({
+const { feasibility, auth, searchCondition, type } = defineProps({
     feasibility: Object,
     auth: Object,
     searchCondition: {
         type: String,
         required: false
-    }
+    },
+    type: Number
 })
 
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
@@ -463,7 +464,7 @@ function modifyQuantity(id, event) {
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('feasibilities.index'), { searchQuery: $search });
+        const response = await axios.post(route('feasibilities.index', {type}), { searchQuery: $search });
         feasibilitys.value = response.data.feasibility;
     } catch (error) {
         console.error('Error searching:', error);

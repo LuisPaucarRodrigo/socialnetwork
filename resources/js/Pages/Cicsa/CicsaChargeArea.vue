@@ -63,7 +63,7 @@
                                 </td>
                                 <td colspan="4" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <p class="text-gray-900 text-center">
-                                        {{ item.project.cost_center.name }}
+                                        {{ item.project?.cost_center?.name }}
                                     </p>
                                 </td>
                                 <td colspan="4" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">

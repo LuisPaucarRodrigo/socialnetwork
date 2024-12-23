@@ -2,7 +2,7 @@
 
     <Head title="CICSA Asignación" />
 
-    <AuthenticatedLayout :redirectRoute="'cicsa.index'">
+    <AuthenticatedLayout :redirectRoute="route('cicsa.index', {type: type})">
         <template #header>
             Asignación
         </template>
@@ -13,14 +13,14 @@
                     <!-- <PrimaryButton @click="openAddAssignationModal" type="button">
                         + Agregar
                     </PrimaryButton> -->
-                    <a :href="route('assignation.export') + '?' + uniqueParam"
+                    <a :href="route('assignation.export', {type}) + '?' + uniqueParam"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 </div>
 
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
                         placeholder="Buscar ..." />
-                    <SelectCicsaComponent currentSelect="Asignación" />
+                    <SelectCicsaComponent currentSelect="Asignación" :type="type"/>
 
                 </div>
                 <div id="search_fields" role="tooltip"
@@ -96,7 +96,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.project?.cost_center.name }}
+                                    {{ item.project?.cost_center?.name }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -292,13 +292,14 @@ import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import { setAxiosErrors } from "@/utils/utils";
 
-const { assignation, auth, searchCondition } = defineProps({
+const { assignation, auth, searchCondition, type } = defineProps({
     assignation: Object,
     auth: Object,
     searchCondition: {
         type: String,
         Required: false
-    }
+    },
+    type: Number
 })
 
 const assignations = ref(assignation);
@@ -393,7 +394,7 @@ function openEditSotModal(item) {
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('assignation.index'), { searchQuery: $search });
+        const response = await axios.post(route('assignation.index', {type}), { searchQuery: $search });
         assignations.value = response.data.assignation;
 
     } catch (error) {

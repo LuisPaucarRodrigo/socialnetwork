@@ -14,15 +14,15 @@ import { ref, watch } from 'vue';
 const SotOptions = [
     {
         optionName: 'Proceso',
-        route: route('cicsa.index'),
+        route: route('cicsa.index', {type: props.type}),
     },
     {
         optionName: 'Asignación',
-        route: route('assignation.index'),
+        route: route('assignation.index', {type: props.type}),
     },
     {
         optionName: 'Factibilidad PINT y PEXT',
-        route: route('feasibilities.index'),
+        route: route('feasibilities.index', {type: props.type}),
     },
     {
         optionName: 'Materiales',
@@ -55,8 +55,11 @@ const props = defineProps({
     currentSelect: {
         type: String,
         required: true
-    }
+    },
+    type: Number
 });
+
+console.log(props.type)
 
 const selectedOption = ref(props.currentSelect);
 
