@@ -313,23 +313,32 @@ class CicsaController extends Controller
         return Excel::download(new FeasibilitiesExport($type), 'Factibilidad ' . date('d-m-Y') . '.xlsx');
     }
 
-    public function indexMaterial(Request $request, $searchCondition = null)
+    public function indexMaterial(Request $request, $type, $searchCondition = null)
     {
         if ($request->isMethod('get')) {
             $material = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
+                ->whereHas('project', function ($subQuery) use ($type) {
+                    $subQuery->where('cost_line_id', $type);
+                })
                 ->with('cicsa_feasibility.cicsa_feasibility_materials', 'cicsa_materials.cicsa_material_items', 'project.cost_center')
                 ->orderBy('assignation_date', 'desc')
                 ->paginate(20);
             return Inertia::render('Cicsa/CicsaMaterial', [
                 'material' => $material,
-                'searchCondition' => $searchCondition
+                'searchCondition' => $searchCondition,
+                'type' => $type
             ]);
         } elseif ($request->isMethod('post')) {
             $material = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
                 ->with('cicsa_feasibility.cicsa_feasibility_materials', 'cicsa_materials.cicsa_material_items', 'project.cost_center')
-                ->orWhere('project_name', 'like', "%$request->searchQuery%")
-                ->orWhere('project_code', 'like', "%$request->searchQuery%")
-                ->orWhere('cpe', 'like', "%$request->searchQuery%")
+                ->whereHas('project', function ($subQuery) use ($type) {
+                    $subQuery->where('cost_line_id', $type);
+                })
+                ->where(function ($query) use ($request) {
+                    $query->orWhere('project_name', 'like', "%$request->searchQuery%")
+                    ->orWhere('project_code', 'like', "%$request->searchQuery%")
+                    ->orWhere('cpe', 'like', "%$request->searchQuery%");
+                })
                 ->get();
             return response()->json([
                 'material' => $material

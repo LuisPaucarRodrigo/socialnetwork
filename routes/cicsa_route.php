@@ -15,11 +15,11 @@ Route::get('/cicsa_assignation/export/{type}', [CicsaController::class, 'exportA
 
 Route::any('/cicsa_feasibilities/{type}/{searchCondition?}', [CicsaController::class, 'indexFeasibilities'])->name('feasibilities.index');
 Route::put('/cicsa_feasibilities/store/update/{cicsa_assignation_id?}', [CicsaController::class, 'updateOrStoreFeasibilities'])->name('feasibilities.storeOrUpdate');
-Route::get('/cicsa_feasibilities/export', [CicsaController::class, 'exportFeasibilities'])->name('feasibilities.export');
+Route::get('/cicsa_feasibilities/export/{type}', [CicsaController::class, 'exportFeasibilities'])->name('feasibilities.export');
 
 
 
-Route::any('/cicsa_material/index/{searchCondition?}', [CicsaController::class, 'indexMaterial'])->name('material.index');
+Route::any('/cicsa_material/index/{type}/{searchCondition?}', [CicsaController::class, 'indexMaterial'])->name('material.index');
 Route::post('/cicsa_material/store', [CicsaController::class, 'storeMaterial'])->name('material.store');
 Route::put('/cicsa_material/update/{cicsa_material_id}', [CicsaController::class, 'updateMaterial'])->name('material.update');
 Route::post('/cicsa_material/search/material', [CicsaController::class, 'searchMaterial'])->name('material.search.material');

@@ -26,7 +26,7 @@ const SotOptions = [
     },
     {
         optionName: 'Materiales',
-        route: route('material.index'),
+        route: route('material.index', {type: props.type}),
     },
     {
         optionName: 'Instalación PINT y PEXT',

@@ -14,7 +14,7 @@
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
                         placeholder="Buscar ..." />
-                    <SelectCicsaComponent currentSelect="Materiales" />
+                    <SelectCicsaComponent currentSelect="Materiales" :type="type" />
                     <div id="search_fields" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Nombre,Codigo,CPE
@@ -518,13 +518,14 @@ import { EyeIcon } from '@heroicons/vue/24/outline';
 import { Toaster } from 'vue-sonner';
 import { notify } from '@/Components/Notification';
 
-const { material, auth, searchCondition } = defineProps({
+const { material, auth, searchCondition, type } = defineProps({
     material: Object,
     auth: Object,
     searchCondition: {
         type: String,
         required: false
-    }
+    },
+    type: Number
 })
 
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
@@ -717,7 +718,7 @@ function submitImportExcel() {
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('material.index'), { searchQuery: $search });
+        const response = await axios.post(route('material.index', {type}), { searchQuery: $search });
         materials.value = response.data.material;
 
     } catch (error) {
