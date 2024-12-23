@@ -7,6 +7,7 @@ use App\Models\AdditionalCost;
 use App\Models\PayrollDetailExpense;
 use App\Models\GeneralExpense;
 use App\Models\Contract;
+use App\Models\PextProjectExpense;
 use App\Models\StaticCost;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
@@ -19,26 +20,23 @@ use Inertia\Response;
 
 class ProfileController extends Controller
 {
-    public function allFine(){
-        $aditionalCostsData = PayrollDetailExpense::with('payroll_detail')->where('general_expense_id', null)->get();
-        foreach($aditionalCostsData as $item){
-            $ge = GeneralExpense::create([
-                'zone' => 'Nómina',
-                'expense_type' => ($item->type === 'Salary' )
-                    ? 'Sueldo' :( $item->type === 'Travel' 
-                        ? 'Viáticos' 
-                        : 'error' ),
-                'location' => $item->payroll_detail()->first()->employee_name ?? 'Sin descripción',
-                'amount' => $item->amount,
-                'operation_number' => $item->operation_number,
-                'operation_date' => $item->operation_date,
-                'account_statement_id' => $item->account_statement_id,
-            ]);
-            $item->update(['general_expense_id'=> $ge->id]);
-        }
+    // public function allFine(){
+    //     $aditionalCostsData = PextProjectExpense::with('project')->where('general_expense_id', null)->get();
+    //     foreach($aditionalCostsData as $item){
+    //         $ge = GeneralExpense::create([
+    //             'zone' => $item->zone,
+    //             'expense_type' => $item->expense_type,
+    //             'location' => $item?->project?->description ?? 'Sin descripción',
+    //             'amount' => $item->amount,
+    //             'operation_number' => $item->operation_number,
+    //             'operation_date' => $item->operation_date,
+    //             'account_statement_id' => $item->account_statement_id,
+    //         ]);
+    //         $item->update(['general_expense_id'=> $ge->id]);
+    //     }
         
-        return response()->json('siuuu');
-    }
+    //     return response()->json('siuuu');
+    // }
 
     /**
      * Display the user's profile form.
