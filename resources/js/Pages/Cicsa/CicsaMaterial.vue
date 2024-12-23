@@ -4,7 +4,7 @@
 
     <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
         <template #header>
-            Materiales
+            {{ type==1 ? 'Pint' : 'Pext' }} - Materiales
         </template>
         <Toaster richColors />
         <div class="min-w-full rounded-lg shadow">

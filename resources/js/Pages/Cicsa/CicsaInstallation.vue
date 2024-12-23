@@ -3,7 +3,7 @@
     <Head title="CICSA Asignación" />
 
     <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
-        <template #header> Instalación PINT y PEXT </template>
+        <template #header> {{ type==1 ? 'Pint' : 'Pext' }} - Instalación PINT y PEXT </template>
         <Toaster richColors />
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between space-x-3">

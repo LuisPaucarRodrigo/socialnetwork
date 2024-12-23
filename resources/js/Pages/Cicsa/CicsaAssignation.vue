@@ -4,7 +4,7 @@
 
     <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
         <template #header>
-            Asignación
+            {{ type==1 ? 'Pint' : 'Pext' }} - Asignación
         </template>
         
         <div class="min-w-full rounded-lg shadow">

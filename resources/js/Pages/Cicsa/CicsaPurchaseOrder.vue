@@ -5,7 +5,7 @@
     <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
         <Toaster richColors />
         <template #header>
-            Orden de Compra
+            {{ type==1 ? 'Pint' : 'Pext' }} - Orden de Compra
         </template>
         <Toaster richColors />
         <div class="min-w-full rounded-lg shadow">

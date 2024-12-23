@@ -3,7 +3,7 @@
     <Head title="CICSA Área de Cobranza" />
     <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
         <template #header>
-            Área de Cobranza
+            {{ type==1 ? 'Pint' : 'Pext' }} - Área de Cobranza
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">

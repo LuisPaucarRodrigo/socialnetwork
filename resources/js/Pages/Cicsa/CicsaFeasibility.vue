@@ -4,7 +4,7 @@
 
     <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
         <template #header>
-            Factibilidad PINT y PEXT
+            {{ type==1 ? 'Pint' : 'Pext' }} - Factibilidad PINT y PEXT
         </template>
         <Toaster richColors />
         <div class="min-w-full rounded-lg shadow">

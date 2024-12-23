@@ -4,7 +4,7 @@
 
     <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
         <template #header>
-            Validación de OC
+            {{ type==1 ? 'Pint' : 'Pext' }} - Validación de OC
         </template>
         <Toaster richColors />
         <div class="min-w-full rounded-lg shadow">

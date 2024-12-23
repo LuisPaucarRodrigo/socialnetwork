@@ -2,7 +2,7 @@
 
     <Head title="F. Pext" />
     <AuthenticatedLayout :redirectRoute="route('cicsa.index', {type})">
-        <template #header> Facturación Pext </template>
+        <template #header> Facturación {{ type==1 ? 'Pint' : 'Pext' }} </template>
         <template #header-right>
             <div>
                 <span class="text-gray-700 font-medium pr-2 bg-green-100">Co</span>

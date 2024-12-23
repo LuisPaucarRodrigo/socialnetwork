@@ -626,6 +626,9 @@ Usuarios
                     <span class="mx-3">Facturación</span>
                 </a>
                 <MyTransition :transitiondemonstration="showCicsa">
+                    <Link class="w-full" :href="route('cicsa.index', {type: 1})">Pint</Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showCicsa">
                     <Link class="w-full" :href="route('cicsa.index', {type: 2})">Pext</Link>
                 </MyTransition>
             </template>
