@@ -377,7 +377,7 @@
                                             </tr>
                                             <tr class="text-gray-700" v-for="(
                                                     item, i
-                                                ) in costsFounded.acData" :key="i">
+                                                ) in costsFounded.geData" :key="i">
                                                 <td
                                                     class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
                                                     {{ item.zone }}
@@ -388,58 +388,11 @@
                                                 </td>
                                                 <td
                                                     class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                    {{ item.project.name }}
+                                                    {{ item.location }}
                                                 </td>
                                                 <td
                                                     class="border-b border-gray-200 bg-white px-1 py-1 text-right text-[12px] tabular-nums">
-                                                    S/. {{ item.amount.toFixed(2) }}
-                                                </td>
-                                            </tr>
-                                            <tr class="text-gray-700" v-for="(
-                                                    item, i
-                                                ) in costsFounded.peData" :key="i">
-                                                <td
-                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                    {{ item.zone }}
-                                                </td>
-                                                <td
-                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                    {{ item.expense_type }}
-                                                </td>
-                                                <td
-                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                    {{
-                                                        item.project.name
-                                                    }}
-                                                </td>
-                                                <td
-                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-right text-[12px] tabular-nums">
-                                                    S/. {{ item.amount.toFixed(2) }}
-                                                </td>
-                                            </tr>
-                                            <tr class="text-gray-700" v-for="(
-                                                    item, i
-                                                ) in costsFounded.spData" :key="i">
-                                                <td
-                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                    {{ 'Nómina' }}
-                                                </td>
-                                                <td
-                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                    {{ item.type === 'Salary' 
-                                                        ? 'Sueldo' 
-                                                        : item.type === 'Travel' 
-                                                            ? 'Viáticos' 
-                                                            : '' 
-                                                    }}
-                                                </td>
-                                                <td
-                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                    {{ item.payroll_detail.employee_name }}
-                                                </td>
-                                                <td
-                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-right text-[12px] tabular-nums">
-                                                    S/. {{ item.amount.toFixed(2) }}
+                                                    S/. {{ item.amount }}
                                                 </td>
                                             </tr>
                                             <tr class="text-gray-700">
@@ -457,11 +410,7 @@
                                                     class="border-b border-gray-200 bg-white px-1 py-1 text-[12px] tabular-nums text-right font-medium">
                                                     S/. {{ 
                                                     
-                                                        (costsFounded.scData.reduce((a,b)=>a+b.amount, 0)
-                                                        + costsFounded.acData.reduce((a,b)=>a+b.amount, 0)
-                                                        + costsFounded.peData.reduce((a,b)=>a+b.amount, 0)
-                                                        + costsFounded.spData.reduce((a,b)=>a+b.amount, 0)
-                                                    ).toFixed(2)
+                                                        (costsFounded.geData.reduce((a,b)=>a+b.amount, 0)).toFixed(2)
                                                     }}
                                                 </td>
                                             </tr>
@@ -510,19 +459,11 @@
 
                             <div class="sm:col-span-2">
                                 <div v-if="
-                                    costsFounded.acData.length +
-                                    costsFounded.scData.length +
-                                    costsFounded.spData.length +
-                                    costsFounded.peData.length >
+                                    costsFounded.geData.length >
                                     0
                                 ">
                                     <p class="text-sm font-medium leading-6 text-gray-600">
-                                        Registros coincidentes ({{
-                                            costsFounded.acData.length +
-                                            costsFounded.scData.length +
-                                            costsFounded.spData.length +
-                                            costsFounded.peData.length
-                                        }})
+                                        Registros coincidentes ({{costsFounded.geData.length}})
                                     </p>
                                     <div class="rounded-md border border-gray-300 overflow-auto max-h-40">
                                         <table class="w-full">
@@ -550,7 +491,7 @@
                                             <tbody>
                                                 <tr class="text-gray-700" v-for="(
                                                         item, i
-                                                    ) in costsFounded.scData" :key="i">
+                                                    ) in costsFounded.geData" :key="i">
                                                     <td
                                                         class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
                                                         {{ item.zone }}
@@ -561,74 +502,7 @@
                                                     </td>
                                                     <td
                                                         class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                        {{ item.project.name }}
-                                                    </td>
-                                                    <td
-                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px] tabular-nums">
-                                                        S/. {{ item.amount }}
-                                                    </td>
-                                                </tr>
-                                                <tr class="text-gray-700" v-for="(
-                                                        item, i
-                                                    ) in costsFounded.acData" :key="i">
-                                                    <td
-                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                        {{ item.zone }}
-                                                    </td>
-                                                    <td
-                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                        {{ item.expense_type }}
-                                                    </td>
-                                                    <td
-                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                        {{ item.project.name }}
-                                                    </td>
-                                                    <td
-                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px] tabular-nums">
-                                                        S/. {{ item.amount }}
-                                                    </td>
-                                                </tr>
-                                                <tr class="text-gray-700" v-for="(
-                                                        item, i
-                                                    ) in costsFounded.spData" :key="i">
-                                                    <td
-                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                        {{ 'Nómina' }}
-                                                    </td>
-                                                    <td
-                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                        {{ item.type === 'Salary' 
-                                                        ? 'Sueldo' 
-                                                        : item.type === 'Travel' 
-                                                            ? 'Viáticos' 
-                                                            : '' 
-                                                        }}
-                                                    </td>
-                                                    <td
-                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                        {{ item.payroll_detail.employee_name }}
-                                                    </td>
-                                                    <td
-                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px] tabular-nums">
-                                                        S/. {{ item.amount }}
-                                                    </td>
-                                                </tr>
-                                                <tr class="text-gray-700" v-for="(
-                                                        item, i
-                                                    ) in costsFounded.peData" :key="i">
-                                                    <td
-                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                        {{ item.zone }}
-                                                    </td>
-                                                    <td
-                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                        {{ item.expense_type }}
-                                                    </td>
-                                                    <td
-                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                        {{
-                                                            item.project.name
-                                                        }}
+                                                        {{ item.location }}
                                                     </td>
                                                     <td
                                                         class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px] tabular-nums">
@@ -644,8 +518,7 @@
                                         No hay registros coincidentes
                                     </p>
                                 </div>
-                                <InputError :message="form.errors.acData" />
-                                <InputError :message="form.errors.scData" />
+                                <InputError :message="form.errors.geData" />
                             </div>
 
                             <div>
@@ -805,10 +678,7 @@ const hasPermission = (per) => {
     return userPermissions.includes(per);
 };
 const initStateCostsFounded = {
-    acData: [],
-    scData: [],
-    spData: [],
-    peData: [],
+    geData: [],
 };
 const stateOptions = [
     'Abono',
@@ -843,10 +713,7 @@ const form = useForm({
     description: "",
     charge: "",
     payment: "",
-    acData: [],
-    scData: [],
-    spData: [],
-    peData: [],
+    geData: [],
 });
 const importForm = useForm({
     excel_file: null,
@@ -1053,25 +920,13 @@ async function submitImport() {
 const toggleDetails = async (id) => {
     if (row.value == 0 || row.value != id) await handleExpansible(id);
     if (
-        row.value === costsFounded.value?.acData[0]?.account_statement_id ||
-        row.value === costsFounded.value?.scData[0]?.account_statement_id ||
-        row.value === costsFounded.value?.spData[0]?.account_statement_id ||
-        row.value === costsFounded.value?.peData[0]?.account_statement_id
+        row.value === costsFounded.value?.geData[0]?.account_statement_id
     ) {
         row.value = 0
     } else {
         row.value = 0
-        if (costsFounded.value?.acData.length > 0) {
-            row.value = costsFounded.value?.acData[0].account_statement_id;
-        }
-        if (costsFounded.value?.scData.length > 0) {
-            row.value = costsFounded.value?.scData[0].account_statement_id;
-        }
-        if (costsFounded.value?.spData.length > 0) {
-            row.value = costsFounded.value?.spData[0].account_statement_id;
-        }
-        if (costsFounded.value?.peData.length > 0) {
-            row.value = costsFounded.value?.peData[0].account_statement_id;
+        if (costsFounded.value?.geData.length > 0) {
+            row.value = costsFounded.value?.geData[0].account_statement_id;
         }
     }
 };
@@ -1085,10 +940,7 @@ const handleExpansible = async (id) => {
     costsFounded.value = res.data;
     notifyWarning(
         `Gastos Encontrados ${
-        costsFounded.value.acData.length +
-        costsFounded.value.scData.length +
-        costsFounded.value.spData.length +
-        costsFounded.value.peData.length
+        costsFounded.value.geData.length
         }`
     );
 };
@@ -1146,10 +998,7 @@ watch([() => form.operation_number, () => form.operation_date], async () => {
             operation_number: form.operation_number,
         });
         costsFounded.value = res;
-        form.acData = res.acData.map((val) => val?.id);
-        form.scData = res.scData.map((val) => val?.id);
-        form.spData = res.spData.map((val) => val?.id);
-        form.peData = res.peData.map((val) => val?.id);
+        form.geData = res.geData.map((val) => val?.id);
     }
 });
 
