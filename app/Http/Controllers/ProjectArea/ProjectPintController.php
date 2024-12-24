@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ProjectArea;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PreprojectRequest\ProjectPintCreateRequest;
 use App\Models\CostCenter;
+use App\Models\CostLine;
 use App\Models\CostLineCenterEmployee;
 use App\Models\Customers_contact;
 use App\Models\Preproject;
@@ -36,23 +37,27 @@ class ProjectPintController extends Controller
     }
 
     public function pext_create_project($type)
-    {
+    {   
+        $text = "Mantto";
         $ids = [1, 4, 5, 6, 7];
         $contacts_cicsa = Customers_contact::where('customer_id', 2)->get();
-        $cost_centers = CostCenter::where('cost_line_id', 2)->get();
+        $cost_line = CostLine::where('name', 'Pext')->with(['cost_center' => function ($query) use ($text) {
+            $query->where('name', 'like', "%$text%");
+        }])->first();
         $services = Service::whereIn('id', $ids)->get();
         return Inertia::render(
             'ProjectArea/PreProject/CreateProjectPext',
             [
                 'contacts_cicsa' => $contacts_cicsa,
-                'cost_centers' => $cost_centers,
+                'cost_centers' => $cost_line->cost_center,
                 'services' => $services,
                 'type' => $type,
             ]
         );
     }
 
-    public function getEmployees($cc_id){
+    public function getEmployees($cc_id)
+    {
         $costLineEmployee = CostLineCenterEmployee::with('employee.contract')->where('cost_center_id', $cc_id)->get();
         $employees = $costLineEmployee->map(function ($item) {
             $item->charge = $item->employee?->contract?->personal_segment;
@@ -69,8 +74,8 @@ class ProjectPintController extends Controller
     {
         $data = $request->validated();
         $projectConstants = new ProjectConstants();
-        $data['template']= 'Mantenimiento';
-        
+        $data['template'] = 'Mantenimiento';
+
         $template = $projectConstants->generateTemplate($data);
 
         //Preproject 
@@ -90,7 +95,7 @@ class ProjectPintController extends Controller
         $template['project']['preproject_id'] = $preproject->id;
         $project = Project::create($template['project']);
         $project->employees()->sync($template['project_employees']);
-        $this->createFolder($project->code.'_'.$project->id);
+        $this->createFolder($project->code . '_' . $project->id);
 
         //ProjectFolder
 
@@ -101,8 +106,8 @@ class ProjectPintController extends Controller
     {
         $data = $request->validated();
         $projectConstants = new ProjectConstantsPext();
-        $data['template']= 'Mantenimiento';
-        
+        $data['template'] = 'Mantenimiento';
+
         $template = $projectConstants->generateTemplate($data);
 
         //Preproject 
@@ -122,7 +127,7 @@ class ProjectPintController extends Controller
         $template['project']['preproject_id'] = $preproject->id;
         $project = Project::create($template['project']);
         $project->employees()->sync($template['project_employees']);
-        $this->createFolder($project->code.'_'.$project->id);
+        $this->createFolder($project->code . '_' . $project->id);
 
         //ProjectFolder
 
@@ -130,7 +135,8 @@ class ProjectPintController extends Controller
     }
 
 
-    public function createFolder($name){
+    public function createFolder($name)
+    {
         $path = 'Projects';
         $storagePath = storage_path('app/' . $path . '/' . $name);
         if (!file_exists($storagePath)) {
@@ -153,5 +159,4 @@ class ProjectPintController extends Controller
         $specialProducts = SpecialInventory::with('purchase_product')->where('cpe', $request->cpe)->where('warehouse_id', 2)->get();
         return response()->json($specialProducts, 200);
     }
-
 }

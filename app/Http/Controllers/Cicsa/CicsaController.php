@@ -69,6 +69,17 @@ class CicsaController extends Controller
             )
 
             ->paginate(15);
+        $projects->getCollection()->each(function ($project) {
+            $project->setAppends([
+                'total_materials',
+                'cicsa_project_status',
+                'cicsa_administration_status',
+                'cicsa_charge_status',
+                'last_project_status_date',
+                'last_administration_status_date',
+                'last_charge_status_date',
+            ]);
+        });
         $cost_line = CostLine::where('name', 'PEXT')->with('cost_center')->first();
         return Inertia::render('Cicsa/CicsaIndex', [
             'projects' => $projects,
@@ -148,7 +159,17 @@ class CicsaController extends Controller
             }
 
             $projectsCicsa = $projectsCicsa->get();
-
+            $projectsCicsa->each(function ($project) {
+                $project->setAppends([
+                    'total_materials',
+                    'cicsa_project_status',
+                    'cicsa_administration_status',
+                    'cicsa_charge_status',
+                    'last_project_status_date',
+                    'last_administration_status_date',
+                    'last_charge_status_date',
+                ]);
+            });
             if ($stages === "Administracion") {
                 $projectsCicsa = $projectsCicsa->filter(function ($item) {
                     return $item->cicsa_project_status === 'Completado';

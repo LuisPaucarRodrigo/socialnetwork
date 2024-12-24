@@ -481,59 +481,38 @@ class ApiController extends Controller
 
     public function cicsaProcess($zone)
     {
-        // $cicsaProcess = CicsaAssignation::select('id', 'project_name', 'zone', 'zone2')
-        //     ->where(function ($query) use ($zone) {
-        //         $query->where('zone', $zone)
-        //             ->orWhere('zone2', $zone);
-        //     })
-        // ->whereHas('cicsa_charge_area', function ($subQuery) {
-        //     $subQuery->where(function ($subQuery) {
-        //         $subQuery->whereNull('invoice_number')
-        //             ->orWhereNull('invoice_date')
-        //             ->orWhereNull('amount');
-        //     })
-        //         ->whereNull('deposit_date');
-        // })
-        //     ->get();
         $currentMonthStart = Carbon::now()->startOfMonth();
         $currentMonthEnd = Carbon::now()->endOfMonth();
-        $cicsaProcess = Project::where('cost_line_id', 2)
-            ->where(function ($query) use ($currentMonthStart, $currentMonthEnd) {
-                $query->whereHas('cost_center', function ($subQuery) use ($currentMonthStart, $currentMonthEnd) {
-                    $subQuery->where('name', 'like', '%Mantto%')
-                        ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd]);
-                })
-                    ->orWhereHas('cost_center', function ($subQuery) {
-                        $subQuery->where('name', 'not like', '%Mantto%');
+
+        $cicsaProcess = CicsaAssignation::select('id','zone','project_id','project_name')
+            ->where(function ($query) use ($zone) {
+                $query->where('zone', $zone)
+                    ->orWhere('zone2', $zone);
+            })
+            ->whereHas('project', function ($query) use ($currentMonthStart, $currentMonthEnd) {
+                $query->where('cost_line_id', 2)
+                    ->where(function ($subQuery) use ($currentMonthStart, $currentMonthEnd) {
+                        $subQuery->whereHas('cost_center', function ($costCenterQuery) use ($currentMonthStart, $currentMonthEnd) {
+                            $costCenterQuery->where('name', 'like', '%Mantto%')
+                                ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd]);
+                        })
+                            ->orWhereHas('cost_center', function ($costCenterQuery) {
+                                $costCenterQuery->where('name', 'not like', '%Mantto%');
+                            });
                     });
             })
-            ->whereHas('cicsa_assignation', function ($query) use ($zone) {
-                $query->select('id', 'project_name', 'zone', 'zone2')
-                    ->where(function ($query) use ($zone) {
-                        $query->where('zone', $zone)
-                            ->orWhere('zone2', $zone);
-                    })
-                    ->whereHas('cicsa_charge_area', function ($subQuery) {
-                        $subQuery->where(function ($subQuery) {
-                            $subQuery->whereNull('invoice_number')
-                                ->orWhereNull('invoice_date')
-                                ->orWhereNull('amount');
-                        })
-                            ->whereNull('deposit_date');
-                    });
+            ->whereHas('cicsa_charge_area', function ($query) {
+                $query->select('id', 'cicsa_assignation_id', 'invoice_number', 'invoice_date', 'amount')->where(function ($subQuery) {
+                    $subQuery->whereNull('invoice_number')
+                        ->orWhereNull('invoice_date')
+                        ->orWhereNull('amount');
+                })
+                    ->whereNull('deposit_date');
             })
             ->get();
-        // ->where(function ($query) use ($currentMonthStart, $currentMonthEnd) {
-        //     $query->whereDoesntHave('preproject')
-        //         ->orWhereHas('preproject', function ($subQuery) use ($currentMonthStart, $currentMonthEnd) {
-        //             $subQuery->whereHas('cost_center', function ($costCenterQuery) {
-        //                 $costCenterQuery->where('name', 'not like', '%Mantto%');
-        //             })
-        //                 ->whereBetween('date', [$currentMonthStart, $currentMonthEnd]);
-        //         });
-        // });
-        $cicsaProcess->cicsa_assignation->each->setAppends([]);
-        return response()->json($cicsaProcess->cicsa_assignation, 200);
+
+        $cicsaProcess->each->setAppends([]);
+        return response()->json($cicsaProcess, 200);
     }
 
     public function storeExpensesPext(ApiStoreExpensesRequest $request)

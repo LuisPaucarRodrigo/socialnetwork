@@ -53,8 +53,6 @@ class ProjectConstantsPext
                     'created_at' => Carbon::parse($data['date']),
                 ],
                 'project_employees' => $this->getEmployeesStructured($data['employees'], $data['date'])
-
-
             ];
         }
         return $template;

@@ -46,18 +46,16 @@ class PextController extends Controller
                 })
                 ->orderBy('created_at', 'desc')
                 ->paginate();
-            $project = Project::select('id', 'preproject_id')
+
+            $project = Project::select('id', 'preproject_id', 'cost_line_id')
                 ->with(['preproject:id,code'])
+                ->whereNotNull('preproject_id')
                 ->where('cost_line_id', 2)
                 ->whereDoesntHave('cicsa_assignation')
                 ->get();
+            
 
-            $project->each(function ($item) {
-                $item->setAppends([]);
-                if ($item->preproject) {
-                    $item->preproject->setAppends([]);
-                }
-            });
+            $project->each->setAppends([]);
 
             return Inertia::render('ProjectArea/ProjectManagement/PextProjectMonthly', [
                 'cicsa_assignation' => $cicsa_assignation,
@@ -381,14 +379,14 @@ class PextController extends Controller
 
     public function export_quote($project_id)
     {
-        $project = Project::with('project_quote.project_quote_valuations','cicsa_assignation')
+        $project = Project::with('project_quote.project_quote_valuations', 'cicsa_assignation')
             ->find($project_id);
         $pdf = Pdf::loadView('pdf.CotizationPDFProject', compact('project'));
         return $pdf->stream();
     }
 
     public function additional_expense_index($project_id, $fixedOrAdditional)
-    {   
+    {
         $expense = PextProjectExpense::with(['provider:id,company_name', 'project.cost_center'])
             ->where('fixedOrAdditional', json_decode($fixedOrAdditional))
             ->where('project_id', $project_id)
