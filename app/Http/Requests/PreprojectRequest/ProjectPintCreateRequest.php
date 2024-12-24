@@ -25,10 +25,10 @@ class ProjectPintCreateRequest extends FormRequest
         return [
             'cost_center_id' => 'required',
             'date' => 'required',
-            'cpe' => 'required',
             'contacts' => 'required',
-            'services' => 'required',
-            'employees' => 'required|nullable',
+            'cpe' => 'required_if:cost_center_id,1',
+            'services' => 'required_if:cost_center_id,1',
+            'employees' => 'required_if:cost_center_id,1',
         ];
     }
 }

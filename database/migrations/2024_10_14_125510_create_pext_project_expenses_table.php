@@ -34,10 +34,9 @@ return new class extends Migration
                 ->constrained('providers')
                 ->onDelete('set null');
             $table->integer('igv')->default('0');
-            $table->foreignId('account_statement_id')
-                ->nullable()
-                ->constrained('account_statements')
-                ->onDelete('set null');
+            $table->foreignId('general_expense_id')->nullable()
+                ->constrained('general_expenses')
+                ->cascadeOnDelete();
             $table->timestamps();
             $table->unique(['ruc', 'doc_number']);
         });

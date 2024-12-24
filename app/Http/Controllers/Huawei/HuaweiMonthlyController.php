@@ -8,7 +8,9 @@ use App\Http\Requests\Huawei\HuaweiMonthlyExpenseRequest;
 use App\Models\Employee;
 use App\Models\HuaweiMonthlyExpense;
 use App\Models\HuaweiMonthlyProject;
+use App\Models\HuaweiProject;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -18,9 +20,7 @@ class HuaweiMonthlyController extends Controller
     {
         return Inertia::render('Huawei/MonthlyProjects', [
             'projects' => HuaweiMonthlyProject::orderBy('created_at', 'desc')
-                ->with('huawei_monthly_employees')
                 ->paginate(10),
-            'employees' => Employee::select('id', 'name', 'lastname')->orderBy('name')->get()->makeHidden(['documents_about_to_expire', 'policy_about_to_expire', 'sctr_about_to_expire'])
         ]);
     }
 
@@ -31,15 +31,10 @@ class HuaweiMonthlyController extends Controller
 
         $projects = $query->whereRaw('LOWER(description) LIKE ?', ["%{$searchTerm}%"])
             ->orderBy('created_at', 'desc')
-            ->with('huawei_monthly_employees')
             ->get();
 
         return Inertia::render('Huawei/MonthlyProjects', [
             'projects' => $projects,
-            'employees' => Employee::select('id', 'name', 'lastname')
-                ->orderBy('name')
-                ->get()
-                ->makeHidden(['documents_about_to_expire', 'policy_about_to_expire', 'sctr_about_to_expire']),
             'search' => $searchTerm
         ]);
     }
@@ -50,15 +45,9 @@ class HuaweiMonthlyController extends Controller
         $data = $request->validate([
             'date' => 'required',
             'description' => 'required',
-            'employees' => 'array|nullable'
         ]);
 
         $project = HuaweiMonthlyProject::create($data);
-
-        if (!empty($data['employees'])) {
-            $employeeIds = collect($data['employees'])->pluck('id')->toArray();
-            $project->huawei_monthly_employees()->sync($employeeIds);
-        }
 
         return redirect()->back();
     }
@@ -68,15 +57,9 @@ class HuaweiMonthlyController extends Controller
         $data = $request->validate([
             'date' => 'required',
             'description' => 'required',
-            'employees' => 'array|nullable'
         ]);
 
         $project->update($data);
-
-        if (!empty($data['employees'])) {
-            $employeeIds = collect($data['employees'])->pluck('id')->toArray();
-            $project->huawei_monthly_employees()->sync($employeeIds);
-        }
 
         return redirect()->back();
     }
@@ -85,12 +68,10 @@ class HuaweiMonthlyController extends Controller
     public function getExpenses (HuaweiMonthlyProject $project)
     {
         $expenses = HuaweiMonthlyExpense::where('huawei_monthly_project_id', $project->id)->orderBy('created_at', 'desc')->paginate(15);
-        $project->load(['huawei_monthly_employees' => function ($query) {
-            $query->select('employees.id', 'employees.name', 'employees.lastname'); // Selecciona solo los campos necesarios
-        }]);
+
         return Inertia::render('Huawei/MonthlyExpenses', [
             'expense' => $expenses,
-            'project' => $project
+            'project' => $project,
         ]);
     }
 
@@ -113,23 +94,20 @@ class HuaweiMonthlyController extends Controller
 
         // Ejecutar la consulta y obtener los resultados
         $expenses = $expensesQuery->orderBy('created_at', 'desc')->get();
-        $project->load(['huawei_monthly_employees' => function ($query) {
-            $query->select('employees.id', 'employees.name', 'employees.lastname'); // Selecciona solo los campos necesarios
-        }]);
+
         return Inertia::render('Huawei/MonthlyExpenses', [
             'expense' => $expenses,
             'project' => $project,
-            'search' => $request
+            'search' => $request,
         ]);
     }
 
     public function searchAdvance (HuaweiMonthlyProject $project, Request $request)
     {
         $expenses = HuaweiMonthlyExpense::where('huawei_monthly_project_id', $project->id);
-        $employeeCount = $project->huawei_monthly_employees()->count();
-        if (count($request->selectedZones) < 17) {  // Filtrar solo si hay valor
-            $expenses->whereIn('zone', $request->selectedZones);
-        }
+
+        $employeeCount = 10;
+
         if (count($request->selectedExpenseTypes) < 9){
             $expenses->whereIn('expense_type', $request->selectedExpenseTypes);
         }
@@ -156,6 +134,18 @@ class HuaweiMonthlyController extends Controller
         }
         if($request->opNoDate){
             $expenses->where('ec_expense_date', null);
+        }
+
+        if(count($request->selectedStates) < 3){
+            $states = collect($request->selectedStates)->map(function ($state, $index) {
+                return match ($index) {
+                    0 => 1,
+                    1 => 0,
+                    2 => null,
+                    default => $state,
+                };
+            })->toArray();
+            $expenses->whereIn('is_accepted', $states);
         }
         $expenses = $expenses->orderBy('created_at', 'desc')->get(); // Asegúrate de asignar el resultado
         return response()->json(["expenses" => $expenses], 200);
@@ -256,7 +246,7 @@ class HuaweiMonthlyController extends Controller
 
         $expense->update($validatedData);
 
-        return response()->noContent();
+        return response()->json([$expense], 200);
     }
 
     public function exportMonthlyExpenses (HuaweiMonthlyProject $project)
@@ -279,6 +269,33 @@ class HuaweiMonthlyController extends Controller
             'ec_expense_date' => $data['ec_expense_date'],
             'ec_op_number' => $data['ec_op_number'],
         ]);
+
+        $updatedCosts = HuaweiMonthlyExpense::whereIn('id', $data['ids'])
+            ->get();
+
+        return response()->json($updatedCosts, 200);
+    }
+
+    public function massiveValidate (Request $request)
+    {
+        $data = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer',
+            'state' => 'required'
+        ]);
+
+        DB::beginTransaction();
+
+        foreach ($data['ids'] as $item){
+            $expense = HuaweiMonthlyExpense::find($item);
+            if ($expense->is_accepted !== null){
+                DB::rollBack();
+                abort(403, 'Acción no permitida');
+            }
+            $expense->update([
+                'is_accepted' => $data['state']
+            ]);
+        }
 
         $updatedCosts = HuaweiMonthlyExpense::whereIn('id', $data['ids'])
             ->get();

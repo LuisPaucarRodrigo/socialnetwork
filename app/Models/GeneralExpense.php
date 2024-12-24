@@ -17,4 +17,9 @@ class GeneralExpense extends Model
         'operation_date',
         'account_statement_id',
     ];
+
+    protected $casts = [
+        'amount' => 'double',
+    ];
+
 }

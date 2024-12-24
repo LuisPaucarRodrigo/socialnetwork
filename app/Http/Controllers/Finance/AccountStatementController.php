@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AccountStatement\AccountStatementImportRequest;
 use App\Http\Requests\AccountStatement\AccountStatementRequest;
 use App\Imports\AccountStatementImport;
+use App\Models\GeneralExpense;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Log;
 use App\Models\PayrollDetailExpense;
@@ -30,15 +31,9 @@ class AccountStatementController extends Controller
     public function store(AccountStatementRequest $request, $as_id = null)
     {
         $data = $request->validated();
-        $scIds = $data["scData"];
-        $acIds = $data["acData"];
-        $peIds = $data["peData"];
-        $spIds = $data["spData"];
+        $geIds = $data["geData"];
         $rg = AccountStatement::updateOrCreate(['id' => $as_id], $data);
-        $this->syncOneToMany($rg, 'AdditionalCost', $acIds, 'account_statement_id');
-        $this->syncOneToMany($rg, 'StaticCost', $scIds, 'account_statement_id');
-        $this->syncOneToMany($rg, 'PextProjectExpense', $peIds, 'account_statement_id');
-        $this->syncOneToMany($rg, 'PayrollDetailExpense', $spIds, 'account_statement_id');
+        $this->syncOneToMany($rg, 'GeneralExpense', $geIds, 'account_statement_id');
         $operationDate = Carbon::parse($data['operation_date']);
         $month = $operationDate->format('Y-m');
         $data = $this->getAccountVariables($request->month, $request->all);
@@ -93,128 +88,17 @@ class AccountStatementController extends Controller
     {
         $od = $request->operation_date;
         $on = $request->operation_number;
-
-        $acData = AdditionalCost::select('id', 'expense_type', 'zone', 'amount', 'project_id')
-            ->with([
-                'project' => function ($query) {
-                    $query->select('id', 'preproject_id');
-                }
-            ])
+        $geData =  GeneralExpense::select('id', 'zone', 'expense_type', 'location', 'amount', 'account_statement_id')
             ->where('operation_date', $od)
             ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
             ->get();
-        $acData->transform(function ($item) {
-            $item->project->setAppends(['name']);
-            $item->setAppends([]);
-            return $item;
-        });
-
-        $scData = StaticCost::select('id', 'expense_type', 'zone', 'amount', 'project_id')
-            ->with([
-                'project' => function ($query) {
-                    $query->select('id', 'preproject_id');
-                }
-            ])
-            ->where('operation_date', $od)
-            ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
-            ->get();
-        $scData->transform(function ($item) {
-            $item->project->setAppends(['name']);
-            $item->setAppends([]);
-            return $item;
-        });
-
-
-        $peData = PextProjectExpense::select('id', 'expense_type', 'zone', 'amount', 'cicsa_assignation_id')
-            ->with([
-                'cicsa_assignation' => function ($query) {
-                    $query->select('id', 'project_name');
-                }
-            ])
-            ->where('operation_date', $od)
-            ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
-            ->get();
-        $peData->transform(function ($item) {
-            $item->cicsa_assignation->setAppends([]);
-            $item->setAppends([]);
-            return $item;
-        });
-        
-        $spData = PayrollDetailExpense::select('id', 'type', 'payroll_detail_id')
-            ->with('payroll_detail')
-            ->where('operation_date', $od)
-            ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
-            ->get();
-        // TO DO xd
-        // $spData->transform(function ($item) {
-        //     $item->cicsa_assignation->setAppends([]);
-        //     $item->setAppends([]);
-        //     return $item;
-        // });
-
-        return response()->json([
-            'acData' => $acData,
-            'scData' => $scData,
-            'peData' => $peData,
-            'spData' => $spData,
-        ]);
+        return response()->json(['geData' => $geData]);
     }
 
     public function searchStatementsCosts($as_id)
     {
-        $acData = AdditionalCost::select('id', 'expense_type', 'zone', 'amount', 'project_id', 'account_statement_id')
-            ->with([
-                'project' => function ($query) {
-                    $query->select('id', 'preproject_id');
-                }
-            ])
-            ->where('account_statement_id', $as_id)
-            ->get();
-        $acData->transform(function ($item) {
-            $item->project->setAppends(['name']);
-            $item->setAppends([]);
-            return $item;
-        });
-
-        $scData = StaticCost::select('id', 'expense_type', 'zone', 'amount', 'project_id', 'account_statement_id')
-            ->with([
-                'project' => function ($query) {
-                    $query->select('id', 'preproject_id');
-                }
-            ])
-            ->where('account_statement_id', $as_id)
-            ->get();
-        $scData->transform(function ($item) {
-            $item->project->setAppends(['name']);
-            $item->setAppends([]);
-            return $item;
-        });
-
-        $peData = PextProjectExpense::select('id', 'expense_type', 'zone', 'amount', 'cicsa_assignation_id', 'account_statement_id')
-            ->with([
-                'cicsa_assignation' => function ($query) {
-                    $query->select('id', 'project_name');
-                }
-            ])
-            ->where('account_statement_id', $as_id)
-            ->get();
-        $peData->transform(function ($item) {
-            $item->cicsa_assignation->setAppends([]);
-            $item->setAppends([]);
-            return $item;
-        });
-
-        $spData = PayrollDetailExpense::select('id', 'type', 'payroll_detail_id', 'account_statement_id')
-            ->with('payroll_detail')
-            ->where('account_statement_id', $as_id)
-            ->get();
-
-        return response()->json([
-            'acData' => $acData,
-            'scData' => $scData,
-            'peData' => $peData,
-            'spData' => $spData,
-        ]);
+        $geData = GeneralExpense::select('id', 'zone', 'expense_type', 'location', 'amount', 'account_statement_id')->where('account_statement_id', $as_id)->get();
+        return response()->json(['geData' => $geData]);
     }
 
 

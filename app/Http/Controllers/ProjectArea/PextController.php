@@ -53,7 +53,6 @@ class PextController extends Controller
                 ->where('cost_line_id', 2)
                 ->whereDoesntHave('cicsa_assignation')
                 ->get();
-            
 
             $project->each->setAppends([]);
 

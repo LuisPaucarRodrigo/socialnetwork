@@ -2,19 +2,19 @@
 
     <Head title="CICSA Orden de Servicio" />
 
-    <AuthenticatedLayout :redirectRoute="'cicsa.index'">
+    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
         <template #header>
-            Orden de Servicio
+            {{ type==1 ? 'Pint' : 'Pext' }} - Orden de Servicio
         </template>
         <Toaster richColors />
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
-                <a :href="route('cicsa.service_orders.export') + '?' + uniqueParam"
+                <a :href="route('cicsa.service_orders.export', {type}) + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
                         placeholder="Buscar ..." />
-                    <SelectCicsaComponent currentSelect="Orden de Servicio" />
+                    <SelectCicsaComponent currentSelect="Orden de Servicio" :type="type" />
                     <div id="search_fields" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Nombre,Cod,CPE,OC,Observaciones
@@ -64,7 +64,7 @@
                                 </td>
                                 <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <p class="text-gray-900 text-center">
-                                        {{ item.project.cost_center.name }}
+                                        {{ item.project?.cost_center?.name }}
                                     </p>
                                 </td>
                                 <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -357,13 +357,14 @@ import { EyeIcon } from '@heroicons/vue/24/outline';
 import { Toaster } from 'vue-sonner';
 import { notify, notifyError } from '@/Components/Notification';
 
-const { service_order, auth,searchCondition } = defineProps({
+const { service_order, auth,searchCondition, type } = defineProps({
     service_order: Object,
     auth: Object,
     searchCondition: {
         type: String,
         Required: false
-    }
+    },
+    type: Number
 })
 
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
@@ -437,7 +438,7 @@ async function submit() {
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('cicsa.service_orders'), { searchQuery: $search });
+        const response = await axios.post(route('cicsa.service_orders', {type}), { searchQuery: $search });
         service_orders.value = response.data.service_order;
     } catch (error) {
         console.error('Error searching:', error);

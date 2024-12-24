@@ -26,7 +26,7 @@ class StaticCost extends Model
         'provider_id',
         'igv',
         'photo',
-        'account_statement_id',
+        'general_expense_id',
     ];
 
     protected $casts = [
@@ -37,6 +37,11 @@ class StaticCost extends Model
         'real_amount',
         'real_state'
     ];
+
+    public function general_expense()
+    {
+        return $this->belongsTo(GeneralExpense::class, 'general_expense_id');
+    }
 
     public function project(){
         return $this->belongsTo(Project::class, 'project_id');
@@ -51,9 +56,61 @@ class StaticCost extends Model
     }
 
     public function getRealStateAttribute() {
-        if ($this->account_statement_id) {
+        if ($this->general_expense()->first()->account_statement_id) {
             return PintConstants::ACEPTADO_VALIDADO;
         }
         return PintConstants::PENDIENTE;
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($item) {
+            $as = self::findAccountStatement($item);
+            $generalExpense = GeneralExpense::create([
+                'zone' => $item->zone,
+                'expense_type' => $item->expense_type,
+                'location' => $item?->project?->description ?? 'Sin descripción',
+                'amount' => $item->amount,
+                'operation_number' => $item->operation_number,
+                'operation_date' => $item->operation_date,
+                'account_statement_id' => $as?->id,
+            ]);
+
+            $item->general_expense_id = $generalExpense->id;
+        });
+
+        static::updating(function ($item) {
+            $generalExpense = $item->general_expense;
+            $as = self::findAccountStatement($item);
+            if ($generalExpense) {
+                $generalExpense->update([
+                    'zone' => $item->zone,
+                    'expense_type' => $item->expense_type,
+                    'location' => $item?->project?->description ?? 'Sin descripción',
+                    'amount' => $item->amount,
+                    'operation_number' => $item->operation_number,
+                    'operation_date' => $item->operation_date,
+                    'account_statement_id' => $as?->id,
+                ]);
+            }
+        });
+
+        static::deleting(function ($item) {
+            $generalExpense = $item->general_expense;
+            if ($generalExpense) {
+                $generalExpense->delete();
+            }
+        });
+    }
+
+   
+    protected static function findAccountStatement($item)
+    {
+        if ($item->operation_number && $item->operation_date) {
+            $on = substr($item->operation_number, -6);
+            return AccountStatement::where('operation_date', $item->operation_date)
+                ->where('operation_number', $on)->first();
+        }
+        return null;
     }
 }

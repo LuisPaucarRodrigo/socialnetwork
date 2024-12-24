@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ProjectArea;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PreprojectRequest\ProjectPintCreateRequest;
+use Illuminate\Support\Facades\DB;
 use App\Models\CostCenter;
 use App\Models\CostLine;
 use App\Models\CostLineCenterEmployee;
@@ -15,15 +16,15 @@ use App\Models\SpecialInventory;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Exception;
 
 class ProjectPintController extends Controller
 {
-
     public function pint_create_project($type)
     {
         $ids = [3, 4, 5, 6, 7];
         $contacts_cicsa = Customers_contact::where('customer_id', 1)->get();
-        $cost_centers = CostCenter::where('cost_line_id', 1)->get();
+        $cost_centers = CostCenter::whereIn('id', [1, 2])->get();
         $services = Service::whereIn('id', $ids)->get();
         return Inertia::render(
             'ProjectArea/PreProject/CreateProjectPint',
@@ -72,34 +73,44 @@ class ProjectPintController extends Controller
 
     public function pint_store_project(ProjectPintCreateRequest $request)
     {
+        $templateArray = [
+            1 => 'Mantenimiento',
+            2 => 'Combustible'
+        ];
         $data = $request->validated();
         $projectConstants = new ProjectConstants();
-        $data['template'] = 'Mantenimiento';
+        $data['template'] = $templateArray[$data['cost_center_id']];
 
         $template = $projectConstants->generateTemplate($data);
 
-        //Preproject 
-        $preproject = Preproject::create($template['preproject']);
+        DB::beginTransaction();
+        try {
+            //Preproject 
+            $preproject = Preproject::create($template['preproject']);
+    
+            //contacts
+            $contactIds = collect($template['preproject_contacts'])->pluck('id');
+            $preproject->contacts()->sync($contactIds);
+    
+            //quote
+            $quote = new PreProjectQuote($template['preproject_quote']);
+            $preproject->quote()->save($quote);
+    
+            $quote->services()->sync($template['quote_services']);
+    
+            //Project
+            $template['project']['preproject_id'] = $preproject->id;
+            $project = Project::create($template['project']);
+            $project->employees()->sync($template['project_employees']);
+            $this->createFolder($project->code . '_' . $project->id);
 
-        //contacts
-        $contactIds = collect($template['preproject_contacts'])->pluck('id');
-        $preproject->contacts()->sync($contactIds);
-
-        //quote
-        $quote = new PreProjectQuote($template['preproject_quote']);
-        $preproject->quote()->save($quote);
-
-        $quote->services()->sync($template['quote_services']);
-
-        //Project
-        $template['project']['preproject_id'] = $preproject->id;
-        $project = Project::create($template['project']);
-        $project->employees()->sync($template['project_employees']);
-        $this->createFolder($project->code . '_' . $project->id);
-
-        //ProjectFolder
-
-        return redirect()->back();
+            //ProjectFolder
+            DB::commit();
+            return redirect()->back();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
     }
 
     public function pext_store_project(ProjectPintCreateRequest $request)

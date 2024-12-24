@@ -2,17 +2,17 @@
 
     <Head title="CICSA Asignación" />
 
-    <AuthenticatedLayout :redirectRoute="'cicsa.index'">
-        <template #header> Instalación PINT y PEXT </template>
+    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
+        <template #header> {{ type==1 ? 'Pint' : 'Pext' }} - Instalación PINT y PEXT </template>
         <Toaster richColors />
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between space-x-3">
-                <a :href="route('cicsa.installation.export') + '?' + uniqueParam"
+                <a :href="route('cicsa.installation.export', {type}) + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
                         placeholder="Buscar ..." />
-                    <SelectCicsaComponent currentSelect="Instalación PINT y PEXT" />
+                    <SelectCicsaComponent currentSelect="Instalación PINT y PEXT" :type="type" />
                     <div id="search_fields" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Nombre,Codigo,CPE
@@ -105,7 +105,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.project?.cost_center.name }}
+                                    {{ item.project?.cost_center?.name }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -698,13 +698,14 @@ import { notify, notifyError } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 
 
-const { installation, auth, searchCondition } = defineProps({
+const { installation, auth, searchCondition, type } = defineProps({
     installation: Object,
     auth: Object,
     searchCondition: {
         type: String,
         required: false
-    }
+    },
+    type: Number
 });
 
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
@@ -866,7 +867,7 @@ function closeInstMaterialsModal() {
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route("cicsa.installation.index"), {
+        const response = await axios.post(route("cicsa.installation.index", {type}), {
             searchQuery: $search,
         });
         installations.value = response.data;

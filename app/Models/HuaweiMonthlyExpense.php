@@ -13,8 +13,8 @@ class HuaweiMonthlyExpense extends Model
 
     protected $fillable = [
         'expense_type',
-        'zone',
         'employee',
+        'zone',
         'expense_date',
         'cdp_type',
         'doc_number',
@@ -30,7 +30,8 @@ class HuaweiMonthlyExpense extends Model
         'ec_expense_date',
         'ec_op_number',
         'ec_amount',
-        'huawei_monthly_project_id'
+        'huawei_monthly_project_id',
+        'account_statement_id'
     ];
 
     public function huawei_monthly_project ()

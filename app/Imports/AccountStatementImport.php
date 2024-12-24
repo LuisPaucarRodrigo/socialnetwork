@@ -3,10 +3,7 @@
 namespace App\Imports;
 
 use App\Models\AccountStatement;
-use App\Models\AdditionalCost;
-use App\Models\PextProjectExpense;
-use App\Models\PayrollDetail;
-use App\Models\StaticCost;
+use App\Models\GeneralExpense;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -95,19 +92,7 @@ class AccountStatementImport implements ToModel
     private function searchAndUpdateCosts($od, $on, $accountStatementId)
     {
         if ($od && $on) {
-            AdditionalCost::where('operation_date', $od)
-                ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
-                ->update(['account_statement_id' => $accountStatementId]);
-
-            StaticCost::where('operation_date', $od)
-                ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
-                ->update(['account_statement_id' => $accountStatementId]);
-
-            PextProjectExpense::where('operation_date', $od)
-                ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
-                ->update(['account_statement_id' => $accountStatementId]);
-
-            PayrollDetail::where('operation_date', $od)
+            GeneralExpense::where('operation_date', $od)
                 ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
                 ->update(['account_statement_id' => $accountStatementId]);
         }

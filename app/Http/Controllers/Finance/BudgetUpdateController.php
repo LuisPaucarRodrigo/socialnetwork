@@ -69,13 +69,7 @@ class BudgetUpdateController extends Controller
     public function selectProject()
     {
         return Inertia::render('Finance/Budget/SelectProject', [
-            'projects' => Project::where(function ($query) {
-                $query->whereHas('cost_line', function ($query) {
-                    $query->where('name', 'PEXT');
-                })->whereHas('cost_center', function ($query) {
-                    $query->where('name', 'like', '%Mantto%');
-                });
-            })->get(),
+            'projects' => Project::where('status', null)->whereIn('cost_center_id', [1,4,5])->get(),
             'costLines' => CostLine::all(),
         ]);
     }

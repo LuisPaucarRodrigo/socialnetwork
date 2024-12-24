@@ -14,7 +14,7 @@ class ProjectConstants
             $name = 'PINT OBRA MRD MANTENIMIENTO INTEGRAL REGION SUR ' . $this->formatDate($data['date']);
             $template = [
                 'preproject' => [
-                    'date'=>$data['date'],
+                    'date'=>$this->getFirstDayOfMonth($data['date']),
                     'customer_id' => 1,
                     'cost_line_id'=>1,
                     'cost_center_id'=>$data['cost_center_id'],
@@ -29,7 +29,7 @@ class ProjectConstants
                 'preproject_contacts' => $data['contacts'],
                 'preproject_quote' => [
                     'name' => $name,
-                    'date' => $data['date'],
+                    'date' => $this->getFirstDayOfMonth($data['date']),
                     'supervisor' => 'Alexander Azabache',
                     'boss' => 'Hosmer Castillo',
                     'deliverable_time' => $this->getDaysInMonth($data['date']),
@@ -54,6 +54,50 @@ class ProjectConstants
 
             ];
         }
+        if ($data['template'] === 'Combustible') {
+            $name = 'COMBUSTIBLE GEP PINT ' . $this->formatDate($data['date']);
+            $template = [
+                'preproject' => [
+                    'date'=>$this->getFirstDayOfMonth($data['date']),
+                    'customer_id' => 1,
+                    'cost_line_id'=>1,
+                    'cost_center_id'=>$data['cost_center_id'],
+                    'subcustomer_id' => null,
+                    'description' => $name,
+                    'title' => null,
+                    'code' => $this->getCode($data['date'], 'CICSA-PINTOBRAM'),
+                    'cpe' => 'c_gep',
+                    'status' => 1,
+
+                ],
+                'preproject_contacts' => $data['contacts'],
+                'preproject_quote' => [
+                    'name' => $name,
+                    'date' => $this->getFirstDayOfMonth($data['date']),
+                    'supervisor' => 'Alexander Azabache',
+                    'boss' => 'Hosmer Castillo',
+                    'deliverable_time' => $this->getDaysInMonth($data['date']),
+                    'validity_time' => 5,
+                    'rev' => 1,
+                    'deliverable_place' => 'Zona Sur Peru',
+                    'payment_type' => 'CREDITO',
+                    'observations' => '-',
+                    'state' => true
+                ],
+                
+                'quote_services' => $this->getQuoteServicesStructured($data['services']),
+                'project' => [
+                    'priority'=> 'Alta',
+                    'description'=> $name,
+                    'cost_line_id'=>1,
+                    'cost_center_id'=>$data['cost_center_id'],
+                    'status'=>null
+                ],
+                'project_employees' => $this->getEmployeesStructured($data['employees'], $data['date']) 
+
+
+            ];
+        }
         return $template;
 
     }
@@ -62,17 +106,17 @@ class ProjectConstants
 
 
     public function getCode($date, $code)
-    {
-        $year = date('Y', strtotime($date));
-        $totalYearProjects = Preproject::whereYear('date', $year)->count() + 1;
-        $formattedTotal = str_pad($totalYearProjects, 3, '0', STR_PAD_LEFT);
-        return $year . '-' . $formattedTotal . '-' . strtoupper($code);
-    }
-
+{
+    $dateTime = \DateTime::createFromFormat('Y-m', $date);
+    $year = $dateTime->format('Y');
+    $totalYearProjects = Preproject::whereYear('date', $year)->count() + 1;
+    $formattedTotal = str_pad($totalYearProjects, 3, '0', STR_PAD_LEFT);
+    return $year . '-' . $formattedTotal . '-' . strtoupper($code);
+}
 
 
     private function formatDate($date) {
-        $dateTime = \DateTime::createFromFormat('Y-m-d', $date);
+        $dateTime = \DateTime::createFromFormat('Y-m', $date);
         $meses = [
             '01' => 'ENERO',
             '02' => 'FEBRERO',
@@ -91,9 +135,10 @@ class ProjectConstants
         $ano = $dateTime->format('Y');
         return "$mes $ano";
     }
+    
 
     function getDaysInMonth($date) {
-        $dateTime = \DateTime::createFromFormat('Y-m-d', $date);
+        $dateTime = \DateTime::createFromFormat('Y-m', $date);
         if ($dateTime !== false) {
             $year = $dateTime->format('Y');
             $month = $dateTime->format('n');
@@ -131,6 +176,14 @@ class ProjectConstants
                 ];
         }
         return $result;
+    }
+
+    function getFirstDayOfMonth($date) {
+        $dateTime = \DateTime::createFromFormat('Y-m', $date);
+        if ($dateTime !== false) {
+            return $dateTime->format('Y-m-01');
+        }
+        return 'Fecha no válida';
     }
 
 }

@@ -17,9 +17,9 @@ return new class extends Migration
             $table->date('operation_date')->nullable();
             $table->string('type');
             $table->foreignId('payroll_detail_id')->constrained()->onDelete('cascade');
-            $table->foreignId('account_statement_id')->nullable()
-                ->constrained('account_statements')
-                ->onDelete('set null');
+            $table->foreignId('general_expense_id')->nullable()
+                ->constrained('general_expenses')
+                ->cascadeOnDelete();
             $table->timestamps();
         });
     }

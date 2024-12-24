@@ -12,7 +12,7 @@
                     @click="add_purchase_request" type="button">
                     + Agregar
                 </PrimaryButton>
-                <PrimaryButton @click="expenses" type="button" class="bg-teal-600 hover:bg-teal-500">
+                <PrimaryButton  @click="expenses" type="button" class="bg-teal-600 hover:bg-teal-500">
                     Resumen de Gastos
                 </PrimaryButton>
                 <Link :href="route('projectmanagement.additionalCosts', { project_id: props.project.id })"

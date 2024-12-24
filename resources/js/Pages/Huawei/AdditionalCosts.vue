@@ -234,17 +234,6 @@
                         >
                             <TableAutocompleteFilter
                                 labelClass="text-[11px]"
-                                label="Zona"
-                                :options="zones"
-                                v-model="filterForm.selectedZones"
-                                width="w-48"
-                            />
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
-                        >
-                            <TableAutocompleteFilter
-                                labelClass="text-[11px]"
                                 label="Empleado"
                                 :options="employees"
                                 v-model="filterForm.selectedEmployees"
@@ -382,11 +371,6 @@
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
-                            {{ item.zone }}
-                        </td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
-                        >
                             {{ item.employee }}
                         </td>
                         <td
@@ -497,8 +481,9 @@
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
                             <div
-                                class="flex items-center gap-3 w-full justify-center"
+                                class="flex items-center gap-3 w-full justify-between"
                             >
+                                <div></div>
                                 <div
                                     v-if="item.is_accepted === null"
                                     class="flex gap-3 justify-center w-1/2"
@@ -549,8 +534,6 @@
                                         </svg>
                                     </button>
                                 </div>
-                                <div v-else class="w-1/2"></div>
-
                                 <div class="flex gap-3 justify-center w-1/2">
                                     <button
                                         @click="openEditAdditionalModal(item)"
@@ -569,6 +552,7 @@
                                         <TrashIcon class="h-5 w-5" />
                                     </button>
                                 </div>
+                                <div></div>
                             </div>
                         </td>
                     </tr>
@@ -583,7 +567,7 @@
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
-                            colspan="9"
+                            colspan="8"
                         ></td>
                         <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap"
@@ -656,36 +640,6 @@
                                     />
                                 </div>
                             </div>
-                            <div>
-                                <InputLabel
-                                    for="zone"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >Zona</InputLabel
-                                >
-                                <div class="mt-2">
-                                    <input
-                                        type="text"
-                                        v-model="form.zone"
-                                        list="zonesList"
-                                        placeholder="Seleccionar Zona"
-                                        id="zone"
-                                        autocomplete="off"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <datalist id="zonesList">
-                                        <option
-                                            v-for="(zone, index) in zones"
-                                            :key="index"
-                                            :value="zone"
-                                        >
-                                            {{ zone }}
-                                        </option>
-                                    </datalist>
-
-                                    <InputError :message="form.errors.zone" />
-                                </div>
-                            </div>
-
                             <div>
                                 <InputLabel
                                     for="employee"
@@ -812,25 +766,6 @@
 
                             <div>
                                 <InputLabel
-                                    for="description"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >Descripción
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <textarea
-                                        type="text"
-                                        v-model="form.description"
-                                        id="description"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError
-                                        :message="form.errors.description"
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel
                                     for="amount"
                                     class="font-medium leading-6 text-gray-900"
                                     >Monto</InputLabel
@@ -928,6 +863,25 @@
                                     />
                                     <InputError
                                         :message="form.errors.ec_amount"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="md:col-span-2 col-span-1">
+                                <InputLabel
+                                    for="description"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >Descripción
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <textarea
+                                        type="text"
+                                        v-model="form.description"
+                                        id="description"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                    <InputError
+                                        :message="form.errors.description"
                                     />
                                 </div>
                             </div>
@@ -1128,7 +1082,6 @@ const isFetching = ref(false);
 const form = useForm({
     id: "",
     expense_type: "",
-    zone: "",
     employee: "",
     expense_date: "",
     cdp_type: "",
@@ -1275,26 +1228,6 @@ const employees = [
     'JORGE DANIEL MONTOYA RODRIGUEZ'
 ]
 
-const zones = [
-    "DESAGUADERO",
-    "HUAWEI",
-    "HUAWEI-AQP",
-    "HUAWEI-PUNO",
-    "HUAWEI-TACNA",
-    "HUAWEI-CHALA",
-    "HUAWEI-CUSCO",
-    "HUAWEI-ILO",
-    "HUAWEI-JULIACA",
-    "HUAWEI-LA PUNTA",
-    "HUAWEI-ORCOPAMPA",
-    "HUAWEI-ABANCAY",
-    "HUAWEI-BANOSPAMPA",
-    "HUAWEI-EL PALOMAR",
-    "IP HUAWEI",
-    "PDI AQP",
-    "PERAL",
-];
-
 const expenseTypes = [
     "Combustible",
     "Consumibles",
@@ -1320,7 +1253,6 @@ const cdp_types = [
 const filterForm = ref({
     search: "",
     selectedEmployees: employees,
-    selectedZones: zones,
     selectedExpenseTypes: expenseTypes,
     selectedCDPTypes: cdp_types,
     exStartDate: '',
@@ -1335,7 +1267,6 @@ watch(
     () => [
         filterForm.value.search,
         filterForm.value.selectedEmployees,
-        filterForm.value.selectedZones,
         filterForm.value.selectedExpenseTypes,
         filterForm.value.selectedCDPTypes,
         filterForm.value.exStartDate,
