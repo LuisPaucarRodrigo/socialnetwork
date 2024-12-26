@@ -16,7 +16,8 @@
                         class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-500 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                     + Agregar
                     </Link>
-                    <Link v-if="preprojects_status === null && hasPermission('ProjectManager')" :href="route('project.auto.pext', { type })"
+                    <Link v-if="preprojects_status === null && hasPermission('ProjectManager')"
+                        :href="route('project.auto.pext', { type })"
                         class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs  uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-500 focus:border-indigo-600 focus:outline-none focus:ring-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="white" class="h-5 w-5 hover:text-gray-700">
@@ -100,7 +101,7 @@
                             <span v-else class="text-gray-400">Solicitud de Compras</span>
                         </div>
                         <div v-else>
-                            <span class="text-gray-600"> Solicitud de Compras</span>
+                            <span class="text-gray-400"> Solicitud de Compras</span>
                         </div>
                         <div v-if="item.project == null && item.status === null">
                             <Link v-if="item.customer_id == 1"
@@ -234,7 +235,7 @@ const submitAssignUser = () => {
             successAssign.value = true
             setTimeout(() => {
                 successAssign.value = false;
-                router.visit(route('preprojects.index'))
+                router.visit(route('preprojects.index', { type: props.type }))
             }, 2000);
         },
         onError: (e) => {

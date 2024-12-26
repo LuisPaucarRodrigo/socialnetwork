@@ -188,17 +188,7 @@
                                     </div>
                                 </div>
                             </div>
-
-
-
-
-
-
-
-
-
                         </div>
-
                     </div>
                 </div>
                 <div class="mt-3 flex items-center justify-end gap-x-6">
@@ -261,11 +251,12 @@ const showModal = ref(false)
 const showModalUpdate = ref(false)
 const showErrorContact = ref(false)
 
-const { contacts_cicsa, employees, services, cost_centers } = defineProps({
+const { contacts_cicsa, employees, services, cost_centers, type } = defineProps({
     contacts_cicsa: Object,
     services: Object,
     employees: Object,
     cost_centers: Array,
+    type: String
 })
 
 
@@ -287,19 +278,21 @@ const initial_state = {
     date: '',
     cpe: '',
     contacts: contacts_cicsa,
-    services: services.map(item => {
-        item.original_price = item.rent_price
-        if ([1, 4, 5, 6].includes(item.id)) {
-            item.profit_margin = (((21300 / item.rent_price) - 1) * 100).toFixed(5)
-            item.rent_price = 21300
-            item.days = 1
-        } else if ([7].includes(item.id)) {
-            item.profit_margin = (((22300 / item.rent_price) - 1) * 100).toFixed(5)
-            item.rent_price = 44600
-            item.days = 2
-        }
-        return item
-    }),
+    services: [],
+    // services: services.map(item => {
+    //     item.original_price = item.rent_price
+    //     if ([8].includes(item.id)) {
+    //         item.profit_margin = 0
+    //         item.rent_price = 0
+    //         item.days = 1
+    //     } 
+    //     // else if ([7].includes(item.id)) {
+    //     //     item.profit_margin = (((22300 / item.rent_price) - 1) * 100).toFixed(5)
+    //     //     item.rent_price = 44600
+    //     //     item.days = 2
+    //     // }
+    //     return item
+    // }),
     employees: employees,
 }
 
@@ -323,7 +316,7 @@ const submit = () => {
             showModal.value = true
             setTimeout(() => {
                 showModal.value = false
-                router.visit(route('preprojects.index', { preprojects_status: '2' }))
+                router.visit(route('preprojects.index', { type: type }))
             }, 2000);
         },
         onError: (e) => {

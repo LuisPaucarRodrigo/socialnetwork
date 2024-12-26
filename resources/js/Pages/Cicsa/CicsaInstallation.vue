@@ -781,7 +781,7 @@ function openEditFeasibilityModal(
     }
     form.reset();
     showAddEditModal.value = true;
-    console.log(form)
+
 }
 
 watch(() => form.total_materials, (newVal) => {
@@ -799,6 +799,8 @@ watch(() => form.total_materials, (newVal) => {
 watch(() => [form.pint_amount, form.pext_amount], (newVal) => {
     if (form.pint_amount || form.pext_amount) {
         form.projected_amount = form.pint_amount + form.pext_amount
+    } else if(!form.pint_amount && !form.pext_amount){
+        form.projected_amount = ''
     }
 });
 

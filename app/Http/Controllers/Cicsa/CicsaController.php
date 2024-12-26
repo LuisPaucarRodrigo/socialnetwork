@@ -233,7 +233,7 @@ class CicsaController extends Controller
         return response()->noContent();
     }
 
-    public function indexAssignation(Request $request, $type, $searchCondition = null, )
+    public function indexAssignation(Request $request, $type, $searchCondition = null,)
     {
         if ($request->isMethod('get')) {
             $assignation = CicsaAssignation::whereHas('project', function ($subQuery) use ($type) {
@@ -252,8 +252,8 @@ class CicsaController extends Controller
                 ->with('project.cost_center')
                 ->where(function ($query) use ($request) {
                     $query->orWhere('project_name', 'like', "%$request->searchQuery%")
-                    ->orWhere('project_code', 'like', "%$request->searchQuery%")
-                    ->orWhere('cpe', 'like', "%$request->searchQuery%");
+                        ->orWhere('project_code', 'like', "%$request->searchQuery%")
+                        ->orWhere('cpe', 'like', "%$request->searchQuery%");
                 })
                 ->get();
             return response()->json([
@@ -281,8 +281,8 @@ class CicsaController extends Controller
     {
         if ($request->isMethod('get')) {
             $feasibility = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')->whereHas('project', function ($subQuery) use ($type) {
-                        $subQuery->where('cost_line_id', $type);
-                    })
+                $subQuery->where('cost_line_id', $type);
+            })
                 ->with('cicsa_feasibility.cicsa_feasibility_materials', 'project.cost_center')
                 ->orderBy('assignation_date', 'desc')
                 ->paginate(20);
@@ -296,11 +296,10 @@ class CicsaController extends Controller
                 $subQuery->where('cost_line_id', $type);
             })
                 ->with('cicsa_feasibility.cicsa_feasibility_materials', 'project.cost_center')
-                ->where(function ($query) use ($request){
+                ->where(function ($query) use ($request) {
                     $query->orWhere('project_name', 'like', "%$request->searchQuery%")
-                    ->orWhere('project_code', 'like', "%$request->searchQuery%")
-                    ->orWhere('cpe', 'like', "%$request->searchQuery%");
-
+                        ->orWhere('project_code', 'like', "%$request->searchQuery%")
+                        ->orWhere('cpe', 'like', "%$request->searchQuery%");
                 })
                 ->get();
             return response()->json([
@@ -356,8 +355,8 @@ class CicsaController extends Controller
                 })
                 ->where(function ($query) use ($request) {
                     $query->orWhere('project_name', 'like', "%$request->searchQuery%")
-                    ->orWhere('project_code', 'like', "%$request->searchQuery%")
-                    ->orWhere('cpe', 'like', "%$request->searchQuery%");
+                        ->orWhere('project_code', 'like', "%$request->searchQuery%")
+                        ->orWhere('cpe', 'like', "%$request->searchQuery%");
                 })
                 ->get();
             return response()->json([
@@ -542,7 +541,7 @@ class CicsaController extends Controller
     }
 
 
-    public function indexInstallation(Request $request,$type, $searchCondition = null)
+    public function indexInstallation(Request $request, $type, $searchCondition = null)
     {
         if ($request->isMethod('get')) {
             $installations = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
@@ -556,6 +555,11 @@ class CicsaController extends Controller
                 })
                 ->orderBy('assignation_date', 'desc')
                 ->paginate();
+            $installations->getCollection()->each(function ($item) {
+                $item->setAppends([
+                    'total_materials',
+                ]);
+            });
             return Inertia::render('Cicsa/CicsaInstallation', [
                 'installation' => $installations,
                 'searchCondition' => $searchCondition,
@@ -573,10 +577,13 @@ class CicsaController extends Controller
                 })
                 ->where(function ($query) use ($request) {
                     $query->orWhere('project_name', 'like', "%$request->searchQuery%")
-                    ->orWhere('project_code', 'like', "%$request->searchQuery%")
-                    ->orWhere('cpe', 'like', "%$request->searchQuery%");
+                        ->orWhere('project_code', 'like', "%$request->searchQuery%")
+                        ->orWhere('cpe', 'like', "%$request->searchQuery%");
                 })
                 ->get();
+            $installations->each->setAppends([
+                'total_materials',
+            ]);
             return response()->json($installations, 200);
         }
     }

@@ -106,20 +106,20 @@
                         <th class="bg-gray-100 border-b-2 border-gray-20">
                             <div class="w-2"></div>
                         </th>
-                        <th
+                        <!-- <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Zona" :options="zones"
                                 v-model="filterForm.selectedZones" width="w-40" />
-                        </th>
+                        </th> -->
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 ">
                             <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Gasto" :options="expenseTypes"
-                                v-model="filterForm.selectedExpenseTypes" width="w-full" />
+                                v-model="filterForm.selectedExpenseTypes" width="w-40" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Documento" :options="docTypes"
-                                v-model="filterForm.selectedDocTypes" width="w-full" />
+                                v-model="filterForm.selectedDocTypes" width="w-40" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
@@ -178,9 +178,9 @@
                             },
                         ]">
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        <!-- <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                             {{ item.zone }}
-                        </td>
+                        </td> -->
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                             <p class="w-48 break-words">
                                 {{ item.expense_type }}
@@ -316,7 +316,7 @@
                 <form @submit.prevent="submit">
                     <div class="space-y-12 mt-4">
                         <div class="grid sm:grid-cols-2 gap-6 pb-6">
-                            <div>
+                            <!-- <div>
                                 <InputLabel for="zone" class="font-medium leading-6 text-gray-900">Zona</InputLabel>
                                 <div class="mt-2">
                                     <select v-model="form.zone" id="zone"
@@ -328,7 +328,7 @@
                                     </select>
                                     <InputError :message="form.errors.zone" />
                                 </div>
-                            </div>
+                            </div> -->
                             <div>
                                 <InputLabel for="expense_type" class="font-medium leading-6 text-gray-900">Tipo de Gasto
                                 </InputLabel>
@@ -541,10 +541,10 @@ const props = defineProps({
     providers: Object,
     auth: Object,
     userPermissions: Array,
-    state: String,
     cost_center: Object,
     project_id: String,
-    fixedOrAdditional: Boolean
+    fixedOrAdditional: Boolean,
+    cicsaAssignation: Object
 });
 
 const expenses = ref(props.expense);
@@ -560,7 +560,7 @@ const form = useForm({
     fixedOrAdditional: props.fixedOrAdditional,
     expense_type: "",
     ruc: "",
-    zone: "",
+    zone: props.cicsaAssignation.zone,
     provider_id: "",
     project_id: props.project_id,
     type_doc: "",
@@ -606,6 +606,7 @@ async function submit() {
         updateExpense(response.data, action)
         closeModal();
     } catch (error) {
+        console.log(error)
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, form)
@@ -661,18 +662,30 @@ function handlerPreview(id) {
     );
 }
 
-// const costCenter = props.cost_center.map(item => item.name)
+const initialExpenseFixed = [
+    'Alquiler de Vehículos',
+    'Alquiler de Locales',
+    'Combustible',
+    'Celulares',
+    'Terceros',
+    'Viáticos',
+    'Seguros y Pólizas',
+    'Gastos de Representación',
+    'Reposición de Equipo',
+    'Herramientas',
+    'Equipos',
+    'EPPs',
+    'Adicionales',
+    'Daños de Vehículos',
+    'Planilla',
+    'Otros',
+    'Adicionales',
+    'Daños de Vehículos',
+    'Planilla',
+    'Otros',
+]
 
-const zones = [
-    "Arequipa",
-    "Moquegua",
-    "Tacna",
-    "Cuzco",
-    "Puno",
-    "MDD"
-];
-
-const expenseTypes = [
+const initialExpenseAdditional = [
     "Hospedaje",
     "Mensajería",
     "Consumibles",
@@ -685,15 +698,29 @@ const expenseTypes = [
     "EPPs",
     "Seguros y Pólizas",
     "Otros",
-];
+]
 
+const expenseTypes = props.fixedOrAdditional
+    ? initialExpenseFixed
+    : initialExpenseAdditional;
+// const costCenter = props.cost_center.map(item => item.name)
+
+// const zones = [
+//     "Arequipa",
+//     "Moquegua",
+//     "Tacna",
+//     "Cuzco",
+//     "Puno",
+//     "MDD"
+// ];
 
 const docTypes = [
     "Efectivo",
     "Deposito",
     "Factura",
     "Boleta",
-    "Voucher de Pago",
+    "Ticket",
+    "Yape-Plin"
 ];
 
 
@@ -701,7 +728,7 @@ const filterForm = ref({
     fixedOrAdditional: props.fixedOrAdditional,
     rejected: true,
     search: "",
-    selectedZones: zones,
+    // selectedZones: zones,
     selectedExpenseTypes: expenseTypes,
     selectedDocTypes: docTypes
 });
@@ -712,7 +739,7 @@ watch(() => [
     filterForm.value.fixedOrAdditional,
     filterForm.value.rejected,
     filterForm.value.search,
-    filterForm.value.selectedZones,
+    // filterForm.value.selectedZones,
     filterForm.value.selectedExpenseTypes,
     filterForm.value.selectedDocTypes,
 ],

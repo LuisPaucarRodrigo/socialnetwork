@@ -241,7 +241,7 @@ class PextController extends Controller
             $validatedData
         );
 
-        $expense->load('cicsa_assignation.project.cost_center');
+        $expense->load('project.cost_center');
         $expense->setAppends(['real_amount']);
         return response()->json($expense, 200);
     }
@@ -401,6 +401,9 @@ class PextController extends Controller
         }
         $providers = Provider::select('id', 'ruc', 'company_name')->get();
         $cost_line = CostLine::where('name', 'PEXT')->with('cost_center')->first();
+        $cicsa_assignation = CicsaAssignation::select('id', 'project_id', 'zone')
+            ->where('project_id', $project_id)
+            ->first();
         return Inertia::render(
             'ProjectArea/ProjectManagement/PextProjectAdditionalExpenses',
             [
@@ -408,7 +411,8 @@ class PextController extends Controller
                 'providers' => $providers,
                 'project_id' => $project_id,
                 'cost_center' => $cost_line->cost_center,
-                'fixedOrAdditional' => json_decode($fixedOrAdditional)
+                'fixedOrAdditional' => json_decode($fixedOrAdditional),
+                'cicsaAssignation' => $cicsa_assignation
             ]
         );
     }
@@ -436,7 +440,7 @@ class PextController extends Controller
             });
         }
 
-        if (count($request->selectedZones) < 7) {
+        if ($request->selectedZones) {
             $expense = $expense->whereIn('zone', $request->selectedZones);
         }
         if (count($request->selectedExpenseTypes) < 14) {

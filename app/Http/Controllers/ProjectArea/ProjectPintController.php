@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\ProjectArea;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PreprojectRequest\ProjectPextCreateRequest;
 use App\Http\Requests\PreprojectRequest\ProjectPintCreateRequest;
 use Illuminate\Support\Facades\DB;
 use App\Models\CostCenter;
@@ -38,20 +39,20 @@ class ProjectPintController extends Controller
     }
 
     public function pext_create_project($type)
-    {   
+    {
         $text = "Mantto";
-        $ids = [1, 4, 5, 6, 7];
+        // $ids = [8];
         $contacts_cicsa = Customers_contact::where('customer_id', 2)->get();
         $cost_line = CostLine::where('name', 'Pext')->with(['cost_center' => function ($query) use ($text) {
             $query->where('name', 'like', "%$text%");
         }])->first();
-        $services = Service::whereIn('id', $ids)->get();
+        // $services = Service::whereIn('id', $ids)->get();
         return Inertia::render(
             'ProjectArea/PreProject/CreateProjectPext',
             [
                 'contacts_cicsa' => $contacts_cicsa,
                 'cost_centers' => $cost_line->cost_center,
-                'services' => $services,
+                // 'services' => $services,
                 'type' => $type,
             ]
         );
@@ -87,17 +88,17 @@ class ProjectPintController extends Controller
         try {
             //Preproject 
             $preproject = Preproject::create($template['preproject']);
-    
+
             //contacts
             $contactIds = collect($template['preproject_contacts'])->pluck('id');
             $preproject->contacts()->sync($contactIds);
-    
+
             //quote
             $quote = new PreProjectQuote($template['preproject_quote']);
             $preproject->quote()->save($quote);
-    
+
             $quote->services()->sync($template['quote_services']);
-    
+
             //Project
             $template['project']['preproject_id'] = $preproject->id;
             $project = Project::create($template['project']);
@@ -113,36 +114,39 @@ class ProjectPintController extends Controller
         }
     }
 
-    public function pext_store_project(ProjectPintCreateRequest $request)
+    public function pext_store_project(ProjectPextCreateRequest $request)
     {
         $data = $request->validated();
         $projectConstants = new ProjectConstantsPext();
-        $data['template'] = 'Mantenimiento';
 
         $template = $projectConstants->generateTemplate($data);
+        DB::beginTransaction();
+        try {
+            //Preproject 
+            $preproject = Preproject::create($template['preproject']);
 
-        //Preproject 
-        $preproject = Preproject::create($template['preproject']);
+            //contacts
+            $contactIds = collect($template['preproject_contacts'])->pluck('id');
+            $preproject->contacts()->sync($contactIds);
 
-        //contacts
-        $contactIds = collect($template['preproject_contacts'])->pluck('id');
-        $preproject->contacts()->sync($contactIds);
+            //quote
+            $quote = new PreProjectQuote($template['preproject_quote']);
+            $preproject->quote()->save($quote);
 
-        //quote
-        $quote = new PreProjectQuote($template['preproject_quote']);
-        $preproject->quote()->save($quote);
+            $quote->services()->sync($template['quote_services']);
 
-        $quote->services()->sync($template['quote_services']);
+            //Project
+            $template['project']['preproject_id'] = $preproject->id;
+            $project = Project::create($template['project']);
+            $project->employees()->sync($template['project_employees']);
+            $this->createFolder($project->code . '_' . $project->id);
 
-        //Project
-        $template['project']['preproject_id'] = $preproject->id;
-        $project = Project::create($template['project']);
-        $project->employees()->sync($template['project_employees']);
-        $this->createFolder($project->code . '_' . $project->id);
-
-        //ProjectFolder
-
-        return redirect()->back();
+            DB::commit();
+            return redirect()->back();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
     }
 
 

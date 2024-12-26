@@ -24,8 +24,8 @@ class ProjectConstants
                     'code' => $this->getCode($data['date'], 'CICSA-PINTOBRAM'),
                     'cpe' => $data['cpe'],
                     'status' => 1,
-
                 ],
+                
                 'preproject_contacts' => $data['contacts'],
                 'preproject_quote' => [
                     'name' => $name,

@@ -682,7 +682,30 @@ const zones = [
     "MDD"
 ];
 
-const expenseTypes = [
+const initialExpenseFixed = [
+    'Alquiler de Vehículos',
+    'Alquiler de Locales',
+    'Combustible',
+    'Celulares',
+    'Terceros',
+    'Viáticos',
+    'Seguros y Pólizas',
+    'Gastos de Representación',
+    'Reposición de Equipo',
+    'Herramientas',
+    'Equipos',
+    'EPPs',
+    'Adicionales',
+    'Daños de Vehículos',
+    'Planilla',
+    'Otros',
+    'Adicionales',
+    'Daños de Vehículos',
+    'Planilla',
+    'Otros',
+]
+
+const initialExpenseAdditional = [
     "Hospedaje",
     "Mensajería",
     "Consumibles",
@@ -695,8 +718,11 @@ const expenseTypes = [
     "EPPs",
     "Seguros y Pólizas",
     "Otros",
-];
+]
 
+const expenseTypes = props.fixedOrAdditional
+    ? initialExpenseFixed
+    : initialExpenseAdditional;
 
 const docTypes = [
     "Efectivo",

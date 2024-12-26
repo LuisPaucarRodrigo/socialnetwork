@@ -12,49 +12,47 @@ class ProjectConstantsPext
     public function generateTemplate($data)
     {
         $template = null;
-        if ($data['template'] === 'Mantenimiento') {
-            $name = 'PEXT OBRA MRD MANTENIMIENTO INTEGRAL REGION SUR ' . $this->formatDate($data['date']);
-            $template = [
-                'preproject' => [
-                    'date' => $data['date'],
-                    'customer_id' => 2,
-                    'cost_line_id' => 2,
-                    'cost_center_id' => $data['cost_center_id'],
-                    'subcustomer_id' => null,
-                    'description' => $name,
-                    'title' => null,
-                    'code' => $this->getCode($data['date'], 'CICSA-PINTOBRAM'),
-                    'cpe' => $data['cpe'],
-                    'status' => 1,
+        $name = 'PEXT OBRA MRD MANTENIMIENTO INTEGRAL REGION SUR ' . $this->formatDate($data['date']);
+        $template = [
+            'preproject' => [
+                'date' => $data['date'],
+                'customer_id' => 2,
+                'cost_line_id' => 2,
+                'cost_center_id' => $data['cost_center_id'],
+                'subcustomer_id' => null,
+                'description' => $name,
+                'title' => null,
+                'code' => $this->getCode($data['date'], 'CICSA-PEXTBRAM'),
+                'cpe' => $data['cpe'],
+                'status' => 1,
 
-                ],
-                'preproject_contacts' => $data['contacts'],
-                'preproject_quote' => [
-                    'name' => $name,
-                    'date' => $data['date'],
-                    'supervisor' => 'Alexander Azabache',
-                    'boss' => 'Hosmer Castillo',
-                    'deliverable_time' => $this->getDaysInMonth($data['date']),
-                    'validity_time' => 5,
-                    'rev' => 1,
-                    'deliverable_place' => 'Zona Sur Peru',
-                    'payment_type' => 'CREDITO',
-                    'observations' => 'A 30 días después de entregada la factura',
-                    'state' => true
-                ],
+            ],
+            'preproject_contacts' => $data['contacts'],
+            'preproject_quote' => [
+                'name' => $name,
+                'date' => $data['date'],
+                'supervisor' => 'Alexander Azabache',
+                'boss' => 'Hosmer Castillo',
+                'deliverable_time' => $this->getDaysInMonth($data['date']),
+                'validity_time' => 5,
+                'rev' => 1,
+                'deliverable_place' => 'Zona Sur Peru',
+                'payment_type' => 'CREDITO',
+                'observations' => 'A 30 días después de entregada la factura',
+                'state' => true
+            ],
 
-                'quote_services' => $this->getQuoteServicesStructured($data['services']),
-                'project' => [
-                    'priority' => 'Alta',
-                    'description' => $name,
-                    'cost_line_id' => 2,
-                    'cost_center_id' => $data['cost_center_id'],
-                    'status' => null,
-                    'created_at' => Carbon::parse($data['date']),
-                ],
-                'project_employees' => $this->getEmployeesStructured($data['employees'], $data['date'])
-            ];
-        }
+            'quote_services' => $this->getQuoteServicesStructured($data['services']),
+            'project' => [
+                'priority' => 'Alta',
+                'description' => $name,
+                'cost_line_id' => 2,
+                'cost_center_id' => $data['cost_center_id'],
+                'status' => null,
+                'created_at' => Carbon::parse($data['date']),
+            ],
+            'project_employees' => $this->getEmployeesStructured($data['employees'], $data['date'])
+        ];
         return $template;
     }
 
