@@ -2,17 +2,18 @@
 
     <Head title="CICSA Validación" />
 
-    <AuthenticatedLayout :redirectRoute="'cicsa.index'">
+    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
         <template #header>
-            Validación de OC
+            {{ type==1 ? 'Pint' : 'Pext' }} - Validación de OC
         </template>
+        <Toaster richColors />
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
-                <a :href="route('cicsa.purchase_orders.validation.export') + '?' + uniqueParam"
+                <a :href="route('cicsa.purchase_orders.validation.export', {type}) + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)" placeholder="Buscar ..." />
-                    <SelectCicsaComponent currentSelect="Validación de OC" />
+                    <SelectCicsaComponent currentSelect="Validación de OC" :type="type"/>
                     <div id="search_fields" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Nombre,Codigo,CPE,OC,Observaciones
@@ -63,7 +64,7 @@
                                 </td>
                                 <td colspan="3" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <p class="text-gray-900 text-center">
-                                        {{ item.cost_center }}
+                                        {{ item.project?.cost_center?.name }}
                                     </p>
                                 </td>
                                 <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -361,8 +362,8 @@
             </div>
         </Modal>
 
-        <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Validación Actualizada'"
-            :message="'La Validación fue actualizada'" />
+        <!-- <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Validación Actualizada'"
+            :message="'La Validación fue actualizada'" /> -->
     </AuthenticatedLayout>
 </template>
 
@@ -380,21 +381,24 @@ import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate, setAxiosErrors } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
+import { Toaster } from 'vue-sonner';
+import { notify, notifyError } from '@/Components/Notification';
 
-const { purchase_validation, auth,searchCondition } = defineProps({
+const { purchase_validation, auth,searchCondition, type } = defineProps({
     purchase_validation: Object,
     auth: Object,
     searchCondition: {
         type: String,
         Required: false
-    }
+    },
+    type: Number,
 })
 
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
 const purchase_validations = ref(purchase_validation)
 const oc_number = ref(null)
 const validation_purchase_order_row = ref(0);
-const confirmUpdateAssignation = ref(false);
+// const confirmUpdateAssignation = ref(false);
 
 const initialState = {
     id: null,
@@ -438,26 +442,26 @@ async function submit() {
         const response = await axios.put(url, form)
         updatePurchaseOrderValidation(response.data)
         closeAddAssignationModal()
-        confirmUpdateAssignation.value = true
-        setTimeout(() => {
-            confirmUpdateAssignation.value = false
-        }, 1500)
+        // confirmUpdateAssignation.value = true
+        // setTimeout(() => {
+        //     confirmUpdateAssignation.value = false
+        // }, 1500)
     } catch (error) {
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, form)
             } else {
-                console.error("Server error:", error.response.data)
+                notifyError("Server error:", error.response.data)
             }
         } else {
-            console.error("Network or other error:", error)
+            notifyError("Network or other error:", error)
         }
     }
 }
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('cicsa.purchase_orders.validation'), { searchQuery: $search });
+        const response = await axios.post(route('cicsa.purchase_orders.validation', {type}), { searchQuery: $search });
         purchase_validations.value = response.data.purchase_validation;
     } catch (error) {
         console.error('Error searching:', error);
@@ -477,6 +481,7 @@ function updatePurchaseOrderValidation(OCValidation) {
     const index = validations.findIndex(item => item.id === OCValidation.cicsa_assignation_id)
     const indexOCValidation = validations[index].cicsa_purchase_order_validation.findIndex(item => item.id === OCValidation.id)
     validations[index].cicsa_purchase_order_validation[indexOCValidation] = OCValidation
+    notify('Actualización Exitosa')
 }
 
 if (searchCondition) {

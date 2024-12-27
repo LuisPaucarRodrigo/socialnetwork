@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->date('oc_date')->nullable();
             $table->string('oc_number')->nullable();
+            $table->float('amount');
             $table->string('master_format');
             $table->string('item3456');
             $table->string('budget');

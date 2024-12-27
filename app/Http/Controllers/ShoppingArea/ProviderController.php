@@ -6,94 +6,81 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ProviderRequest\UpdateProviderRequest;
 use App\Http\Requests\ProviderRequest\CreateProviderRequest;
 use App\Models\Provider;
-use App\Models\ProviderCategory;
-use App\Models\ProviderSegment;
+use App\Models\Category;
+use App\Models\Segment;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
-use App\Providers\GlobalFunctionsServiceProvider;
 
 class ProviderController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Inertia::render('ShoppingArea/ProviderManagement/Provider',
-            ['providers' => Provider::paginate(),
-            ]
-        );
-    }
-
-    public function create()
-    {
-        return Inertia::render(
-            'ShoppingArea/ProviderManagement/ProviderCreateAndUpdate',
-            [
-                'category' => ProviderCategory::all(),
-                'segment' => ProviderSegment::all(),
-            ]
-        );
+        if ($request->isMethod('get')) {
+            $provider = Provider::with('segments', 'category')->paginate();
+            return Inertia::render(
+                'ShoppingArea/ProviderManagement/Provider',
+                [
+                    'provider' => $provider,
+                    'category' => Category::all(),
+                ]
+            );
+        } elseif ($request->isMethod('post')) {
+            $provider = Provider::with('segments', 'category')
+                ->where('company_name', 'like', "%$request->searchQuery%")
+                ->orWhere('contact_name', 'like', "%$request->searchQuery%")
+                ->orWhere('ruc', 'like', "%$request->searchQuery%")
+                ->get();
+            return response()->json($provider, 200);
+        }
     }
 
     public function store(CreateProviderRequest $request)
     {
         $validatedData = $request->validated();
-        Provider::create($validatedData);
-    }
-
-    public function edit($id)
-    {
-        return Inertia::render('ShoppingArea/ProviderManagement/ProviderCreateAndUpdate', [
-            'providers' => Provider::find($id),
-            'category' => ProviderCategory::all(),
-            'segment' => ProviderSegment::all(),
-        ]);
+        $provider = Provider::create($validatedData);
+        $provider->segments()->attach($validatedData['segments']);
+        $provider->load('segments', 'category');
+        return response()->json($provider, 200);
     }
 
     public function update(UpdateProviderRequest $request, $id)
     {
-        $provider = Provider::findOrFail($id);
         $validatedData = $request->validated();
+        $provider = Provider::findOrFail($id);
         $provider->update($validatedData);
-
-        return to_route('providersmanagement.index');
+        $provider->segments()->sync($validatedData['segments']);
+        $provider->load('segments', 'category');
+        return response()->json($provider, 200);
     }
 
     public function destroy($id)
     {
         Provider::destroy($id);
+        return response()->noContent();
     }
 
     public function category_provider(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required'
+            'name' => 'required|string'
         ]);
-        $new = ProviderCategory::create($data);
-        return response()->json(['new'=> $new],200);
+        $new = Category::create($data);
+        return response()->json(['new' => $new], 200);
     }
 
     public function segment_provider(Request $request)
     {
         $data = $request->validate([
+            'category_id' => 'required',
             'name' => 'required'
         ]);
-        $new = ProviderSegment::create($data);
-        return response()->json(['new'=> $new],200);
+        Segment::create($data);
+        return response()->json([], 200);
     }
 
-    public function search($request)
+    public function segment_list($category_id = null)
     {
-        $searchTerm = strtolower($request); // Convertir a minúsculas
-
-        $providers = Provider::where(function($query) use ($searchTerm) {
-            $query->whereRaw('LOWER(ruc) like ?', ['%'.$searchTerm.'%'])
-                  ->orWhereRaw('LOWER(company_name) like ?', ['%'.$searchTerm.'%'])
-                  ->orWhereRaw('LOWER(contact_name) like ?', ['%'.$searchTerm.'%']);
-        })->get();
-
-        return Inertia::render('ShoppingArea/ProviderManagement/Provider', [
-            'providers' => $providers,
-            'search' => $request
-        ]);
+        $segments = Segment::where('category_id', $category_id)->get();
+        return response()->json($segments, 200);
     }
 }

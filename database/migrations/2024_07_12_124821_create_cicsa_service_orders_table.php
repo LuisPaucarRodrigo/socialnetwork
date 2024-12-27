@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('purchase_order')->default('Pendiente');
             $table->string('pdf_invoice')->default('Pendiente');
             $table->string('zip_invoice')->default('Pendiente');
-            $table->string('document');
+            $table->string('document')->nullable();
             $table->string('document_invoice')->nullable();
             $table->string('user_name')->nullable();
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');

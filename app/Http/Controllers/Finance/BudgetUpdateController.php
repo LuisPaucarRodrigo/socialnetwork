@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Finance;
 
 use App\Http\Controllers\Controller;
 use App\Models\BudgetUpdate;
+use App\Models\CostLine;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\User;
@@ -15,6 +16,7 @@ class BudgetUpdateController extends Controller
 
     public function store(Request $request, Project $project)
     {
+        $user_id = Auth::id();
         $user = Auth::user();
         $request->validate([
             'new_budget' => 'required',
@@ -28,8 +30,8 @@ class BudgetUpdateController extends Controller
             'difference' => $request->difference,
             'project_id' => $request->project_id,
             'reason' => $request->reason,
-            'user_id' => $user->id,
-            'user_name' => $user->name,
+            'user_id' => $user_id,
+            'user_name' => $user->name . ' ' . $user->lastname
         ]);
 
         return to_route('initialbudget.index', ['project' => $project->id]);
@@ -67,7 +69,8 @@ class BudgetUpdateController extends Controller
     public function selectProject()
     {
         return Inertia::render('Finance/Budget/SelectProject', [
-            'projects' => Project::all()
+            'projects' => Project::where('status', null)->whereIn('cost_center_id', [1,4,5])->get(),
+            'costLines' => CostLine::all(),
         ]);
     }
 
@@ -82,5 +85,4 @@ class BudgetUpdateController extends Controller
         ]);
         return to_route('initialbudget.index', ['project' => $project->id]);
     }
-
 }

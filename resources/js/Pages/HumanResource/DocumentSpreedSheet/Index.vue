@@ -11,10 +11,14 @@
         <select @change="filterExpenseLine($event.target.value)"
           class="block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
           <option value="">Todos</option>
-          <option>Pint</option>
-          <option>Pext</option>
-          <option>Huawei</option>
+          <option v-for="item, i in costLines" :key="i">{{ item.name }}</option>
         </select>
+        <PrimaryButton
+          type="button"
+          @click="()=>router.visit(route('document.grupal_documents.index'))"
+        >
+          Documentos Grupales 
+        </PrimaryButton>
       </div>
       <br>
       <Toaster richColors class="z-1000" />
@@ -117,8 +121,8 @@
                   </a>
                 </td>
                 <!-- principalData -->
-                <td v-for="da, i in principalData" :key="i" :class="['px-2 py-2', da.propClass]">
-                  <div class="">
+                <td v-for="da, i in principalData" :key="i" :class="['px-2 py-2', { [da.propClass] : da.title == 'Personal' }]">
+                  <div>
                     {{ getProp({ obj: emp, path: da.propName, sep: ', ' }) }}
                   </div>
                 </td>
@@ -211,9 +215,16 @@
                     {{ index + employeesData.length + 1 }}
                   </div>
                 </td>
+                <td class="px-2 py-2 text-center">
+                  <a :href="'#'" class="text-green-700 hover:underline hover:text-green-500 cursor-pointer">
+
+                  </a>
+                </td>
                 <!-- principalData -->
                 <td v-for="da, i in principalData" :key="i"
-                  :class="['px-2 py-2 ', da.title == 'Personal' ? da.propClassExternal : da.propClass]">
+                  :class="['px-2 py-2 ', { 'bg-indigo-100 sticky left-0 z-10': da.title === 'Personal'}]"
+                  
+                  >
                   <div class="">
                     {{ getProp({ obj: emp, path: da.propName, sep: ', ' }) }}
                   </div>
@@ -402,7 +413,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -413,10 +424,11 @@ import { Toaster } from 'vue-sonner';
 import { notify, notifyError } from '@/Components/Notification';
 import FilterProcess from '@/Components/FilterProcess.vue';
 
-const { employees, e_employees, sections } = defineProps({
+const { employees, e_employees, sections, costLines } = defineProps({
   employees: Object,
   e_employees: Object,
   sections: Object,
+  costLines: Array,
 });
 
 
@@ -585,11 +597,12 @@ async function submitInsurance() {
 }
 
 async function filterExpenseLine(search) {
-  console.log(search)
   let url = route('document.rrhh.status')
   try {
     let response = await axios.post(url, { searchquery: search })
-    employeesData.value = response.data
+    console.log(response.data)
+    employeesData.value = response.data.employees
+    e_employeesData.value = response.data.e_employees
   } catch (error) {
     notifyError(error)
   }

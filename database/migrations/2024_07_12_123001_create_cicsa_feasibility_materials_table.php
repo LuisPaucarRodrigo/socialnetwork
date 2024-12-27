@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('unit');
             $table->integer('quantity');
+            $table->string('type')->default('Pext');
             $table->foreignId('cicsa_feasibility_id')->constrained('cicsa_feasibilities')->onDelete('cascade');
             $table->timestamps();
         });

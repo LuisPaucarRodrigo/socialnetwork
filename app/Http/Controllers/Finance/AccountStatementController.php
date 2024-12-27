@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AccountStatement\AccountStatementImportRequest;
 use App\Http\Requests\AccountStatement\AccountStatementRequest;
 use App\Imports\AccountStatementImport;
+use App\Models\GeneralExpense;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Log;
+use App\Models\PayrollDetailExpense;
 use App\Models\AccountStatement;
 use App\Models\AdditionalCost;
 use App\Models\PextProjectExpense;
@@ -29,13 +31,9 @@ class AccountStatementController extends Controller
     public function store(AccountStatementRequest $request, $as_id = null)
     {
         $data = $request->validated();
-        $scIds = $data["scData"];
-        $acIds = $data["acData"];
-        $peIds = $data["peData"];
+        $geIds = $data["geData"];
         $rg = AccountStatement::updateOrCreate(['id' => $as_id], $data);
-        $this->syncOneToMany($rg, 'AdditionalCost', $acIds, 'account_statement_id');
-        $this->syncOneToMany($rg, 'StaticCost', $scIds, 'account_statement_id');
-        $this->syncOneToMany($rg, 'PextProjectExpense', $peIds, 'account_statement_id');
+        $this->syncOneToMany($rg, 'GeneralExpense', $geIds, 'account_statement_id');
         $operationDate = Carbon::parse($data['operation_date']);
         $month = $operationDate->format('Y-m');
         $data = $this->getAccountVariables($request->month, $request->all);
@@ -90,108 +88,17 @@ class AccountStatementController extends Controller
     {
         $od = $request->operation_date;
         $on = $request->operation_number;
-
-        $acData = AdditionalCost::select('id', 'expense_type', 'zone', 'amount', 'project_id')
-            ->with([
-                'project' => function ($query) {
-                    $query->select('id', 'preproject_id');
-                }
-            ])
+        $geData =  GeneralExpense::select('id', 'zone', 'expense_type', 'location', 'amount', 'account_statement_id')
             ->where('operation_date', $od)
             ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
             ->get();
-        $acData->transform(function ($item) {
-            $item->project->setAppends(['name']);
-            $item->setAppends([]);
-            return $item;
-        });
-
-        $scData = StaticCost::select('id', 'expense_type', 'zone', 'amount', 'project_id')
-            ->with([
-                'project' => function ($query) {
-                    $query->select('id', 'preproject_id');
-                }
-            ])
-            ->where('operation_date', $od)
-            ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
-            ->get();
-        $scData->transform(function ($item) {
-            $item->project->setAppends(['name']);
-            $item->setAppends([]);
-            return $item;
-        });
-
-        $peData = PextProjectExpense::select('id', 'expense_type', 'zone', 'amount', 'cicsa_assignation_id')
-            ->with([
-                'cicsa_assignation' => function ($query) {
-                    $query->select('id', 'project_name');
-                }
-            ])
-            ->where('operation_date', $od)
-            ->whereRaw("RIGHT(operation_number, 6) = ?", [$on])
-            ->get();
-        $peData->transform(function ($item) {
-            $item->cicsa_assignation->setAppends([]);
-            $item->setAppends([]);
-            return $item;
-        });
-
-        return response()->json([
-            'acData' => $acData,
-            'scData' => $scData,
-            'peData' => $peData,
-        ]);
+        return response()->json(['geData' => $geData]);
     }
 
     public function searchStatementsCosts($as_id)
     {
-        $acData = AdditionalCost::select('id', 'expense_type', 'zone', 'amount', 'project_id', 'account_statement_id')
-            ->with([
-                'project' => function ($query) {
-                    $query->select('id', 'preproject_id');
-                }
-            ])
-            ->where('account_statement_id', $as_id)
-            ->get();
-        $acData->transform(function ($item) {
-            $item->project->setAppends(['name']);
-            $item->setAppends([]);
-            return $item;
-        });
-
-        $scData = StaticCost::select('id', 'expense_type', 'zone', 'amount', 'project_id', 'account_statement_id')
-            ->with([
-                'project' => function ($query) {
-                    $query->select('id', 'preproject_id');
-                }
-            ])
-            ->where('account_statement_id', $as_id)
-            ->get();
-        $scData->transform(function ($item) {
-            $item->project->setAppends(['name']);
-            $item->setAppends([]);
-            return $item;
-        });
-
-        $peData = PextProjectExpense::select('id', 'expense_type', 'zone', 'amount', 'cicsa_assignation_id', 'account_statement_id')
-            ->with([
-                'cicsa_assignation' => function ($query) {
-                    $query->select('id', 'project_name');
-                }
-            ])
-            ->where('account_statement_id', $as_id)
-            ->get();
-        $peData->transform(function ($item) {
-            $item->cicsa_assignation->setAppends([]);
-            $item->setAppends([]);
-            return $item;
-        });
-
-        return response()->json([
-            'acData' => $acData,
-            'scData' => $scData,
-            'peData' => $peData,
-        ]);
+        $geData = GeneralExpense::select('id', 'zone', 'expense_type', 'location', 'amount', 'account_statement_id')->where('account_statement_id', $as_id)->get();
+        return response()->json(['geData' => $geData]);
     }
 
 
@@ -247,6 +154,7 @@ class AccountStatementController extends Controller
         $totalCharge = 0;
         $totalPayment = 0;
         $balanceMedia = 0;
+        $totalITFM = 0;
         $accountStatements = AccountStatement::select(
             'id',
             'operation_date',
@@ -263,12 +171,15 @@ class AccountStatementController extends Controller
             $item->setAppends(['state']);
             return $item;
         });
-        $accountStatements = $accountStatements->map(function ($statement) use (&$currentBalance, &$totalCharge, &$totalPayment, &$balanceMedia) {
+        $accountStatements = $accountStatements->map(function ($statement) use (&$currentBalance, &$totalCharge, &$totalPayment, &$balanceMedia, &$totalITFM) {
                 $totalCharge += $statement->charge;
                 $totalPayment += $statement->payment;
                 $currentBalance += $statement->payment - $statement->charge;
                 $statement->balance = $currentBalance;
                 $balanceMedia += $statement->balance;
+                if($statement->operation_number === null){
+                    $totalITFM += $statement->charge;
+                }
                 return $statement;
             });
         $balanceMedia = $balanceMedia / ($accountStatements->count() ?: 1);
@@ -279,6 +190,7 @@ class AccountStatementController extends Controller
             'totalCharge' => $totalCharge,
             'totalPayment' => $totalPayment,
             'balanceMedia' => $balanceMedia,
+            'totalITFM' => $totalITFM,
         ];
     }
 }

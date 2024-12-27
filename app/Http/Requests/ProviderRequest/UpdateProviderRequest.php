@@ -23,7 +23,7 @@ class UpdateProviderRequest extends FormRequest
     public function rules(): array
     {
 
-        $providerId = $this->input('provider_id');
+        $providerId = $this->input('id');
 
         return [
             'company_name' => 'required|string|max:255',
@@ -47,8 +47,8 @@ class UpdateProviderRequest extends FormRequest
                 'max:255',
                 //Rule::unique('providers', 'email')->ignore($providerId)
             ],
-            'category' => 'required|string|max:255',
-            'segment' => 'required|string|max:255',
+            'category_id' => 'required|numeric',
+            'segments' => 'required|array',
             'zone' => 'required|string',
             'ruc' => [
                 'required',

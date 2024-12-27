@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ChecklistRequest\ChecklistDailytoolkitRequest;
 use App\Http\Requests\LoginMobileRequest;
 use App\Http\Requests\PextProjectRequest\ApiStoreExpensesRequest;
 use App\Http\Requests\PreprojectRequest\ImageRequest;
-use App\Models\ChecklistDailytoolkit;
 use App\Models\CicsaAssignation;
 use App\Models\HuaweiCode;
 use App\Models\HuaweiProject;
@@ -14,15 +12,12 @@ use App\Models\HuaweiProjectCode;
 use App\Models\HuaweiProjectImage;
 use App\Models\HuaweiProjectStage;
 use App\Models\Imagespreproject;
-use App\Models\Preproject;
 use App\Models\PreprojectCode;
 use App\Models\PreprojectTitle;
-use App\Models\PreReportHuaweiGeneral;
-use App\Models\Project;
 use App\Models\HuaweiSite;
 use App\Models\PextProject;
 use App\Models\PextProjectExpense;
-use App\Models\Projectimage;
+use App\Models\Project;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
@@ -486,22 +481,59 @@ class ApiController extends Controller
 
     public function cicsaProcess($zone)
     {
-        $cicsaProcess = CicsaAssignation::select('id', 'project_name', 'zone', 'zone2')
-            ->where(function ($query) use ($zone) {
-                $query->where('zone', $zone)
-                    ->orWhere('zone2', $zone);
-            })
-            ->whereHas('cicsa_charge_area', function ($subQuery) {
-                $subQuery->where(function ($subQuery) {
-                    $subQuery->whereNull('invoice_number')
-                        ->orWhereNull('invoice_date')
-                        ->orWhereNull('amount');
+        // $cicsaProcess = CicsaAssignation::select('id', 'project_name', 'zone', 'zone2')
+        //     ->where(function ($query) use ($zone) {
+        //         $query->where('zone', $zone)
+        //             ->orWhere('zone2', $zone);
+        //     })
+        // ->whereHas('cicsa_charge_area', function ($subQuery) {
+        //     $subQuery->where(function ($subQuery) {
+        //         $subQuery->whereNull('invoice_number')
+        //             ->orWhereNull('invoice_date')
+        //             ->orWhereNull('amount');
+        //     })
+        //         ->whereNull('deposit_date');
+        // })
+        //     ->get();
+        $currentMonthStart = Carbon::now()->startOfMonth();
+        $currentMonthEnd = Carbon::now()->endOfMonth();
+        $cicsaProcess = Project::where('cost_line_id', 2)
+            ->where(function ($query) use ($currentMonthStart, $currentMonthEnd) {
+                $query->whereHas('cost_center', function ($subQuery) use ($currentMonthStart, $currentMonthEnd) {
+                    $subQuery->where('name', 'like', '%Mantto%')
+                        ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd]);
                 })
-                    ->whereNull('deposit_date');
+                    ->orWhereHas('cost_center', function ($subQuery) {
+                        $subQuery->where('name', 'not like', '%Mantto%');
+                    });
+            })
+            ->whereHas('cicsa_assignation', function ($query) use ($zone) {
+                $query->select('id', 'project_name', 'zone', 'zone2')
+                    ->where(function ($query) use ($zone) {
+                        $query->where('zone', $zone)
+                            ->orWhere('zone2', $zone);
+                    })
+                    ->whereHas('cicsa_charge_area', function ($subQuery) {
+                        $subQuery->where(function ($subQuery) {
+                            $subQuery->whereNull('invoice_number')
+                                ->orWhereNull('invoice_date')
+                                ->orWhereNull('amount');
+                        })
+                            ->whereNull('deposit_date');
+                    });
             })
             ->get();
-        $cicsaProcess->each->setAppends([]);
-        return response()->json($cicsaProcess, 200);
+        // ->where(function ($query) use ($currentMonthStart, $currentMonthEnd) {
+        //     $query->whereDoesntHave('preproject')
+        //         ->orWhereHas('preproject', function ($subQuery) use ($currentMonthStart, $currentMonthEnd) {
+        //             $subQuery->whereHas('cost_center', function ($costCenterQuery) {
+        //                 $costCenterQuery->where('name', 'not like', '%Mantto%');
+        //             })
+        //                 ->whereBetween('date', [$currentMonthStart, $currentMonthEnd]);
+        //         });
+        // });
+        $cicsaProcess->cicsa_assignation->each->setAppends([]);
+        return response()->json($cicsaProcess->cicsa_assignation, 200);
     }
 
     public function storeExpensesPext(ApiStoreExpensesRequest $request)
@@ -531,7 +563,7 @@ class ApiController extends Controller
             if ($validateData['photo']) {
                 $validateData['photo'] = $this->storeBase64Image($validateData['photo'], 'documents/expensesPext', 'Gasto Pext');
             }
-            
+
             $validateData['user_id'] = $user->id;
             PextProjectExpense::create($validateData);
             return response()->noContent();

@@ -3,6 +3,7 @@
 namespace App\Exports\Payroll;
 
 use App\Models\Contract;
+use App\Models\PayrollDetail;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
@@ -10,11 +11,17 @@ use Maatwebsite\Excel\Concerns\WithColumnWidths;
 
 class PayrollExport implements FromView, WithColumnWidths
 {
+    protected $payroll_id;
+
+    public function __construct($payroll_id)
+    {
+        $this->payroll_id = $payroll_id;
+    }
 
     public function view(): View
     {   
         return view('Export.PayrollExport', [
-            'spreadsheets' => Contract::with('employee', 'pension')->get()
+            'spreadsheets' => PayrollDetail::with('employee', 'pension')->where('payroll_id',$this->payroll_id)->get()
         ]);
     }
 

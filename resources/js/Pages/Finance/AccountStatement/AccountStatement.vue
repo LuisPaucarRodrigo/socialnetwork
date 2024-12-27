@@ -16,7 +16,8 @@
                     </PrimaryButton>
                     <div>
                         <button data-tooltip-target="all_register_tooltip" type="button" @click="() => {
-                            filterForm = { month: '', search: '' }
+                            isFetchingAll = true
+                            filterForm = { ...initialFilterFormState,month: '', search: '' }
                             handleSearch(null, true);
                         }
                             " class="p-2 bg-gray-100 ring-1 ring-slate-400 rounded-md text-slate-900 hover:bg-white">
@@ -79,10 +80,10 @@
                                             class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                             Eliminar
                                         </button>
-                                        <button @click=""
+                                        <!-- <button @click=""
                                             class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                             Swap
-                                        </button>
+                                        </button> -->
                                     </div>
                                 </div>
                             </template>
@@ -91,6 +92,15 @@
                 </div>
 
                 <div class="flex flex-col sm:flex-row gap-4 items-center w-full sm:w-auto">
+                    <div class="flex gap-4 bg-white rounded-md border border-gray-300 h-full ">
+                        <div
+                            class="bg-gray-50 rounded-md border-b border-gray-200 text-[11px] font-semibold uppercase tracking-wider text-gray-600 flex items-center justify-center px-3">
+                            <p class="text-center whitespace-nowrap">Comisiones Bancarias</p>
+                        </div>
+                        <div class="flex items-center justify-center text-[13px] whitespace-nowrap tabular-nums px-3">
+                            S/. {{ dataToRender.totalITFM.toFixed(2) }}
+                        </div>
+                    </div>
                     <input type="month" @input="(e) => {
                         filterForm.search = ''
                         handleSearch(e.target.value);
@@ -327,7 +337,7 @@
                                             <tr
                                                 class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                                                 <th
-                                                    class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9dsdpx] font-semibold uppercase tracking-wider text-gray-600">
+                                                    class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600">
                                                     Zona
                                                 </th>
                                                 <th
@@ -362,12 +372,12 @@
                                                 </td>
                                                 <td
                                                     class="border-b border-gray-200 bg-white px-1 py-1 text-right text-[12px] tabular-nums">
-                                                    S/. {{ item.amount }}
+                                                    S/. {{ item.amount.toFixed(2) }}
                                                 </td>
                                             </tr>
                                             <tr class="text-gray-700" v-for="(
                                                     item, i
-                                                ) in costsFounded.acData" :key="i">
+                                                ) in costsFounded.geData" :key="i">
                                                 <td
                                                     class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
                                                     {{ item.zone }}
@@ -378,30 +388,7 @@
                                                 </td>
                                                 <td
                                                     class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                    {{ item.project.name }}
-                                                </td>
-                                                <td
-                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-right text-[12px] tabular-nums">
-                                                    S/. {{ item.amount }}
-                                                </td>
-                                            </tr>
-                                            <tr class="text-gray-700" v-for="(
-                                                    item, i
-                                                ) in costsFounded.peData" :key="i">
-                                                <td
-                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                    {{ item.zone }}
-                                                </td>
-                                                <td
-                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                    {{ item.expense_type }}
-                                                </td>
-                                                <td
-                                                    class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                    {{
-                                                        item.cicsa_assignation
-                                                            .project_name
-                                                    }}
+                                                    {{ item.location }}
                                                 </td>
                                                 <td
                                                     class="border-b border-gray-200 bg-white px-1 py-1 text-right text-[12px] tabular-nums">
@@ -423,9 +410,7 @@
                                                     class="border-b border-gray-200 bg-white px-1 py-1 text-[12px] tabular-nums text-right font-medium">
                                                     S/. {{ 
                                                     
-                                                        (costsFounded.scData.reduce((a,b)=>a+b.amount, 0)
-                                                        + costsFounded.acData.reduce((a,b)=>a+b.amount, 0)
-                                                        + costsFounded.peData.reduce((a,b)=>a+b.amount, 0)).toFixed(2)
+                                                        (costsFounded.geData.reduce((a,b)=>a+b.amount, 0)).toFixed(2)
                                                     }}
                                                 </td>
                                             </tr>
@@ -474,17 +459,11 @@
 
                             <div class="sm:col-span-2">
                                 <div v-if="
-                                    costsFounded.acData.length +
-                                    costsFounded.scData.length +
-                                    costsFounded.peData.length >
+                                    costsFounded.geData.length >
                                     0
                                 ">
                                     <p class="text-sm font-medium leading-6 text-gray-600">
-                                        Registros coincidentes ({{
-                                            costsFounded.acData.length +
-                                            costsFounded.scData.length +
-                                            costsFounded.peData.length
-                                        }})
+                                        Registros coincidentes ({{costsFounded.geData.length}})
                                     </p>
                                     <div class="rounded-md border border-gray-300 overflow-auto max-h-40">
                                         <table class="w-full">
@@ -512,7 +491,7 @@
                                             <tbody>
                                                 <tr class="text-gray-700" v-for="(
                                                         item, i
-                                                    ) in costsFounded.scData" :key="i">
+                                                    ) in costsFounded.geData" :key="i">
                                                     <td
                                                         class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
                                                         {{ item.zone }}
@@ -523,51 +502,7 @@
                                                     </td>
                                                     <td
                                                         class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                        {{ item.project.name }}
-                                                    </td>
-                                                    <td
-                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px] tabular-nums">
-                                                        S/. {{ item.amount }}
-                                                    </td>
-                                                </tr>
-                                                <tr class="text-gray-700" v-for="(
-                                                        item, i
-                                                    ) in costsFounded.acData" :key="i">
-                                                    <td
-                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                        {{ item.zone }}
-                                                    </td>
-                                                    <td
-                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                        {{ item.expense_type }}
-                                                    </td>
-                                                    <td
-                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                        {{ item.project.name }}
-                                                    </td>
-                                                    <td
-                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px] tabular-nums">
-                                                        S/. {{ item.amount }}
-                                                    </td>
-                                                </tr>
-                                                <tr class="text-gray-700" v-for="(
-                                                        item, i
-                                                    ) in costsFounded.peData" :key="i">
-                                                    <td
-                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                        {{ item.zone }}
-                                                    </td>
-                                                    <td
-                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                        {{ item.expense_type }}
-                                                    </td>
-                                                    <td
-                                                        class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]">
-                                                        {{
-                                                            item
-                                                                .cicsa_assignation
-                                                                .project_name
-                                                        }}
+                                                        {{ item.location }}
                                                     </td>
                                                     <td
                                                         class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px] tabular-nums">
@@ -583,8 +518,7 @@
                                         No hay registros coincidentes
                                     </p>
                                 </div>
-                                <InputError :message="form.errors.acData" />
-                                <InputError :message="form.errors.scData" />
+                                <InputError :message="form.errors.geData" />
                             </div>
 
                             <div>
@@ -721,6 +655,7 @@ const {
     previousBalance,
     currentBalance,
     totalCharge,
+    totalITFM,
     totalPayment,
     balanceMedia,
     auth,
@@ -732,6 +667,7 @@ const {
     balanceMedia: Number,
     totalCharge: Number,
     totalPayment: Number,
+    totalITFM: Number,
     auth: Object,
     userPermissions: Array,
 });
@@ -742,9 +678,7 @@ const hasPermission = (per) => {
     return userPermissions.includes(per);
 };
 const initStateCostsFounded = {
-    acData: [],
-    scData: [],
-    peData: [],
+    geData: [],
 };
 const stateOptions = [
     'Abono',
@@ -759,6 +693,7 @@ const dataToRender = ref({
     balanceMedia,
     totalCharge,
     totalPayment,
+    totalITFM,
 });
 const costsFounded = ref(initStateCostsFounded);
 const initialFilterFormState = {
@@ -769,7 +704,7 @@ const initialFilterFormState = {
     opEndDate : '',
     opNoDate : false,
 }
-
+const isFetchingAll = ref(false)
 const filterForm = ref({ ...initialFilterFormState });
 const form = useForm({
     id: null,
@@ -778,9 +713,7 @@ const form = useForm({
     description: "",
     charge: "",
     payment: "",
-    acData: [],
-    scData: [],
-    peData: [],
+    geData: [],
 });
 const importForm = useForm({
     excel_file: null,
@@ -987,21 +920,13 @@ async function submitImport() {
 const toggleDetails = async (id) => {
     if (row.value == 0 || row.value != id) await handleExpansible(id);
     if (
-        row.value === costsFounded.value?.acData[0]?.account_statement_id ||
-        row.value === costsFounded.value?.scData[0]?.account_statement_id ||
-        row.value === costsFounded.value?.peData[0]?.account_statement_id
+        row.value === costsFounded.value?.geData[0]?.account_statement_id
     ) {
         row.value = 0
     } else {
         row.value = 0
-        if (costsFounded.value?.acData.length > 0) {
-            row.value = costsFounded.value?.acData[0].account_statement_id;
-        }
-        if (costsFounded.value?.scData.length > 0) {
-            row.value = costsFounded.value?.scData[0].account_statement_id;
-        }
-        if (costsFounded.value?.peData.length > 0) {
-            row.value = costsFounded.value?.peData[0].account_statement_id;
+        if (costsFounded.value?.geData.length > 0) {
+            row.value = costsFounded.value?.geData[0].account_statement_id;
         }
     }
 };
@@ -1014,9 +939,8 @@ const handleExpansible = async (id) => {
         });
     costsFounded.value = res.data;
     notifyWarning(
-        `Gastos Encontrados ${costsFounded.value.acData.length +
-        costsFounded.value.scData.length +
-        costsFounded.value.peData.length
+        `Gastos Encontrados ${
+        costsFounded.value.geData.length
         }`
     );
 };
@@ -1074,9 +998,7 @@ watch([() => form.operation_number, () => form.operation_date], async () => {
             operation_number: form.operation_number,
         });
         costsFounded.value = res;
-        form.acData = res.acData.map((val) => val?.id);
-        form.scData = res.scData.map((val) => val?.id);
-        form.peData = res.peData.map((val) => val?.id);
+        form.geData = res.geData.map((val) => val?.id);
     }
 });
 
@@ -1108,8 +1030,12 @@ watch(
         filterForm.value.opNoDate,
     ],
     () => {
-        handleSearchClient();
-        notifyWarning(`Registros Encontrados ${dataToShow.value.length}`);
+        if(!isFetchingAll.value){
+            handleSearchClient();
+            notifyWarning(`Registros Encontrados ${dataToShow.value.length}`);
+        } else {
+            isFetchingAll.value = false
+        }
     }
 );
 watch(

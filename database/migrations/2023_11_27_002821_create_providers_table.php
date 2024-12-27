@@ -19,10 +19,9 @@ return new class extends Migration
             $table->string('phone1')->nullable();
             $table->string('phone2')->unique()->nullable();
             $table->string('email')->nullable();
-            $table->string('category');
             $table->string('zone');
             $table->string('ruc')->unique();
-            $table->string('segment');
+            $table->foreignId('category_id')->constrained();
             $table->timestamps();
 
             $table->unique(['ruc', 'email', 'phone1']);

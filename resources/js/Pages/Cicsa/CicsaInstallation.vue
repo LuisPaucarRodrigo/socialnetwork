@@ -2,16 +2,17 @@
 
     <Head title="CICSA Asignación" />
 
-    <AuthenticatedLayout :redirectRoute="'cicsa.index'">
-        <template #header> Instalación PINT y PEXT </template>
+    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
+        <template #header> {{ type==1 ? 'Pint' : 'Pext' }} - Instalación PINT y PEXT </template>
+        <Toaster richColors />
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between space-x-3">
-                <a :href="route('cicsa.installation.export') + '?' + uniqueParam"
+                <a :href="route('cicsa.installation.export', {type}) + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
                         placeholder="Buscar ..." />
-                    <SelectCicsaComponent currentSelect="Instalación PINT y PEXT" />
+                    <SelectCicsaComponent currentSelect="Instalación PINT y PEXT" :type="type" />
                     <div id="search_fields" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Nombre,Codigo,CPE
@@ -104,7 +105,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.cost_center }}
+                                    {{ item.project?.cost_center?.name }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -273,11 +274,27 @@
                                 <InputError :message="form.errors.projected_amount" />
                             </div>
                         </div>
-
                         <div class="sm:col-span-1">
-                            <InputLabel for="projected_amount">Monto Proyectado</InputLabel>
+                            <InputLabel for="pint_amount">Monto Pint</InputLabel>
                             <div class="mt-2">
-                                <input type="number" v-model="form.projected_amount" id="projected_amount" step="0.01"
+                                <input type="number" v-model="form.pint_amount" id="pint_amount" step="0.01"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.pint_amount" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-1">
+                            <InputLabel for="pext_amount">Monto Pext</InputLabel>
+                            <div class="mt-2">
+                                <input type="number" v-model="form.pext_amount" id="pext_amount" step="0.01"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.pext_amount" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-1">
+                            <InputLabel for="projected_amount">Monto Total</InputLabel>
+                            <div class="mt-2">
+                                <input type="number" disabled v-model="form.projected_amount" id="projected_amount"
+                                    step="0.01"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.projected_amount" />
                             </div>
@@ -654,10 +671,10 @@
                 </div>
             </div>
         </Modal>
-        <SuccessOperationModal :confirming="confirmAssignation" :title="'Nueva Instalación PINT y PEXT creada'"
-            :message="'La Asignacion fue creada con éxito'" />
-        <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Instalación PINT y PEXT Actualizada'"
-            :message="'La Asignacion fue actualizada'" />
+        <!-- <SuccessOperationModal :confirming="confirmAssignation" :title="'Nueva Instalación PINT y PEXT creada'"
+            :message="'La Asignacion fue creada con éxito'" /> -->
+        <!-- <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Instalación PINT y PEXT Actualizada'"
+            :message="'La Asignacion fue actualizada'" /> -->
     </AuthenticatedLayout>
 </template>
 
@@ -671,28 +688,30 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import { Head, useForm } from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SelectCicsaComponent from "@/Components/SelectCicsaComponent.vue";
-import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
+// import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
 import { formattedDate } from "@/utils/utils.js";
 import TextInput from "@/Components/TextInput.vue";
 import { EyeIcon } from "@heroicons/vue/24/outline";
 import { setAxiosErrors } from "@/utils/utils";
 import { ref, watch } from "vue";
+import { notify, notifyError } from "@/Components/Notification";
+import { Toaster } from "vue-sonner";
 
 
-const { installation, auth, searchCondition } = defineProps({
+const { installation, auth, searchCondition, type } = defineProps({
     installation: Object,
     auth: Object,
     searchCondition: {
         type: String,
         required: false
-    }
+    },
+    type: Number
 });
 
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
 const installations = ref(installation);
 const pintList = ref([])
 const pextList = ref([])
-
 const initialState = {
     user_id: auth.user.id,
     user_name: auth.user.name,
@@ -701,6 +720,8 @@ const initialState = {
     cicsa_assignation_id: '',
     pext_date: '',
     pint_date: '',
+    pext_amount: '',
+    pint_amount: '',
     projected_amount: '',
     conformity: 'Pendiente',
     report: 'Pendiente',
@@ -760,6 +781,7 @@ function openEditFeasibilityModal(
     }
     form.reset();
     showAddEditModal.value = true;
+    console.log(form)
 }
 
 watch(() => form.total_materials, (newVal) => {
@@ -774,26 +796,28 @@ watch(() => form.total_materials, (newVal) => {
     })
 });
 
+watch(() => [form.pint_amount, form.pext_amount], (newVal) => {
+    if (form.pint_amount || form.pext_amount) {
+        form.projected_amount = form.pint_amount + form.pext_amount
+    }
+});
+
 async function submit() {
     form.total_materials = pintList.value.concat(pextList.value);
-    let url = route("cicsa.installation.store", { ci_id: form?.id });
+    let url = route("cicsa.installation.store", { ci_id: form.id ?? null });
     try {
         const response = await axios.post(url, form);
         updateInstallations(form.cicsa_assignation_id, response.data)
         closeAddAssignationModal();
-        confirmUpdateAssignation.value = true;
-        setTimeout(() => {
-            confirmUpdateAssignation.value = false;
-        }, 1500);
     } catch (error) {
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, form)
             } else {
-                console.error("Server error:", error.response.data)
+                notifyError("Server error:", error.response.data)
             }
         } else {
-            console.error("Network or other error:", error)
+            notifyError("Network or other error:", error)
         }
     }
 }
@@ -843,10 +867,10 @@ function closeInstMaterialsModal() {
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route("cicsa.installation.index"), {
+        const response = await axios.post(route("cicsa.installation.index", {type}), {
             searchQuery: $search,
         });
-        installations.value = response.data.installation;
+        installations.value = response.data;
     } catch (error) {
         console.error("Error searching:", error);
     }
@@ -854,11 +878,14 @@ const search = async ($search) => {
 
 function updateInstallations(cicsa_assignation_id, installation) {
     const validations = installations.value.data || installations.value;
+    console.log(validations)
     const index = validations.findIndex(item => item.id === cicsa_assignation_id);
     validations[index].cicsa_installation = installation
+    notify('Se actualizo Correctamente')
 }
 
 if (searchCondition) {
     search(searchCondition)
 }
+
 </script>

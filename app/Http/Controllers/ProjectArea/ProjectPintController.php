@@ -4,6 +4,9 @@ namespace App\Http\Controllers\ProjectArea;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PreprojectRequest\ProjectPintCreateRequest;
+use Illuminate\Support\Facades\DB;
+use App\Models\CostCenter;
+use App\Models\CostLineCenterEmployee;
 use App\Models\Customers_contact;
 use App\Models\Employee;
 use App\Models\Preproject;
@@ -14,44 +17,107 @@ use App\Models\SpecialInventory;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Exception;
 
 class ProjectPintController extends Controller
 {
 
-    public function pint_create_project()
+    public function pint_create_project($type)
     {
         $ids = [3, 4, 5, 6, 7];
-        $pintEmployees = [9, 20, 15, 10, 8, 25, 6, 29, 28];
         $contacts_cicsa = Customers_contact::where('customer_id', 1)->get();
-        $employees = Employee::whereIn('id', $pintEmployees)->get();
-        $employees = $employees->map(function ($item) {
-            if (in_array($item->id, [9])) {
-                $item->charge = 'Administrativo';
-            }
-            if (in_array($item->id, [20])) {
-                $item->charge = 'MOI - Mano de Obra Indirecta';
-            }
-            if (in_array($item->id, [15, 10, 8, 25, 6, 29, 28])) {
-                $item->charge = 'MOD - Mano de Obra Directa';
-            }
-            return $item;
-        });
-
+        $cost_centers = CostCenter::whereIn('id', [1, 2])->get();
         $services = Service::whereIn('id', $ids)->get();
         return Inertia::render(
             'ProjectArea/PreProject/CreateProjectPint',
             [
                 'contacts_cicsa' => $contacts_cicsa,
+                'cost_centers' => $cost_centers,
                 'services' => $services,
-                'employees' => $employees
+                'type' => $type,
             ]
         );
     }
 
+    public function pext_create_project($type)
+    {
+        $ids = [1, 4, 5, 6, 7];
+        $contacts_cicsa = Customers_contact::where('customer_id', 2)->get();
+        $cost_centers = CostCenter::where('cost_line_id', 2)->get();
+        $services = Service::whereIn('id', $ids)->get();
+        return Inertia::render(
+            'ProjectArea/PreProject/CreateProjectPext',
+            [
+                'contacts_cicsa' => $contacts_cicsa,
+                'cost_centers' => $cost_centers,
+                'services' => $services,
+                'type' => $type,
+            ]
+        );
+    }
+
+    public function getEmployees($cc_id)
+    {
+        $costLineEmployee = CostLineCenterEmployee::with('employee.contract')->where('cost_center_id', $cc_id)->get();
+        $employees = $costLineEmployee->map(function ($item) {
+            $item->charge = $item->employee?->contract?->personal_segment;
+            $item->name = $item->employee?->name;
+            $item->id = $item->employee?->id;
+            $item->lastname = $item->employee?->lastname;
+            return $item;
+        });
+        return response()->json($employees);
+    }
+
+
     public function pint_store_project(ProjectPintCreateRequest $request)
     {
+        $templateArray = [
+            1 => 'Mantenimiento',
+            2 => 'Combustible'
+        ];
         $data = $request->validated();
         $projectConstants = new ProjectConstants();
+        $data['template'] = $templateArray[$data['cost_center_id']];
+
+        $template = $projectConstants->generateTemplate($data);
+
+        DB::beginTransaction();
+        try {
+            //Preproject 
+            $preproject = Preproject::create($template['preproject']);
+    
+            //contacts
+            $contactIds = collect($template['preproject_contacts'])->pluck('id');
+            $preproject->contacts()->sync($contactIds);
+    
+            //quote
+            $quote = new PreProjectQuote($template['preproject_quote']);
+            $preproject->quote()->save($quote);
+    
+            $quote->services()->sync($template['quote_services']);
+    
+            //Project
+            $template['project']['preproject_id'] = $preproject->id;
+            $project = Project::create($template['project']);
+            $project->employees()->sync($template['project_employees']);
+            $this->createFolder($project->code . '_' . $project->id);
+
+            //ProjectFolder
+            DB::commit();
+            return redirect()->back();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
+    }
+
+    public function pext_store_project(ProjectPintCreateRequest $request)
+    {
+        $data = $request->validated();
+        $projectConstants = new ProjectConstantsPext();
+        $data['template'] = 'Mantenimiento';
+
         $template = $projectConstants->generateTemplate($data);
 
         //Preproject 
@@ -71,7 +137,7 @@ class ProjectPintController extends Controller
         $template['project']['preproject_id'] = $preproject->id;
         $project = Project::create($template['project']);
         $project->employees()->sync($template['project_employees']);
-        $this->createFolder($project->code.'_'.$project->id);
+        $this->createFolder($project->code . '_' . $project->id);
 
         //ProjectFolder
 
@@ -79,7 +145,8 @@ class ProjectPintController extends Controller
     }
 
 
-    public function createFolder($name){
+    public function createFolder($name)
+    {
         $path = 'Projects';
         $storagePath = storage_path('app/' . $path . '/' . $name);
         if (!file_exists($storagePath)) {
@@ -94,6 +161,12 @@ class ProjectPintController extends Controller
     public function sameCPEProducts(Request $request)
     {
         $specialProducts = SpecialInventory::with('purchase_product')->where('cpe', $request->cpe)->where('warehouse_id', 1)->get();
+        return response()->json($specialProducts, 200);
+    }
+
+    public function sameCPEProductsPext(Request $request)
+    {
+        $specialProducts = SpecialInventory::with('purchase_product')->where('cpe', $request->cpe)->where('warehouse_id', 2)->get();
         return response()->json($specialProducts, 200);
     }
 

@@ -17,13 +17,20 @@
                 </div>
 
             </div>
-            <div class="overflow-auto">
+            <div class="overflow-auto h-[72vh]">
                 <table class="w-full whitespace-no-wrap">
-                    <thead>
+                    <thead class="sticky top-0 z-20">
                         <tr
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 w-auto">
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                <div class="w-[190px]">
+                                    <TableHeaderCicsaFilter label="Linea de Negocio" labelClass="text-gray-600"
+                                        :options="cost_line" v-model="formSearch.cost_line" />
+                                </div>
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -76,6 +83,9 @@
                         <tr v-for="employee in employees" :key="employee.id" class="text-gray-700">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <img :src="employee.profile" alt="Empleado" class="w-12 h-13 rounded-full">
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm w-auto">
+                                <p class="text-gray-900 whitespace-no-wrap">{{ employee?.cost_line?.name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm w-auto">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ employee.name }}</p>
@@ -169,7 +179,7 @@
                                     <ModalImage v-model="form.cropped_image" @imagenRecortada="handleImagenRecortada" />
                                     <InputError :message="form.errors.cropped_image" />
                                 </div>
-                            </div>  
+                            </div>
                             <div class="sm:col-span-3 sm:col-start-1">
                                 <InputLabel for="name">Nombre</InputLabel>
                                 <div class="mt-2">
@@ -182,6 +192,21 @@
                                 <div class="mt-2">
                                     <TextInput type="text" id="lastname" v-model="form.lastname" required />
                                     <InputError :message="form.errors.lastname" />
+                                </div>
+                            </div>
+                            <div class="sm:col-span-3">
+                                <InputLabel for="cost_line_id">
+                                    Linea de Negocio
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <select v-model="form.cost_line_id" id="cost_line_id" autocomplete="off"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option disabled value="">Seleccionar Linea de Negocio</option>
+                                        <option v-for="item, i in costLines" :key="item.id" :value="item.id">{{ item
+                                            .name}}
+                                        </option>
+                                    </select>
+                                    <InputError :message="form.errors.cost_line_id" />
                                 </div>
                             </div>
                             <div class="sm:col-span-3">
@@ -298,28 +323,33 @@ import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import TableHeaderCicsaFilter from '@/Components/TableHeaderCicsaFilter.vue';
 
 const confirmingUserDeletion = ref(false);
 const employeeToDelete = ref(null);
 const show_m_employee = ref(false);
 const showModalCreate = ref(false);
-const props = defineProps({
-    employees: Object,
-    userPermissions: Array,
-})
 
+const props = defineProps({
+    employee: Object,
+    userPermissions: Array,
+    costLines: Object,
+})
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
 }
+const employees = ref(props.employee)
+const cost_line = props.costLines.map(item => item.name)
 
 const initialState = {
     id: null,
     name: '',
     lastname: '',
+    cost_line_id: '',
     gender: '',
     address: '',
     birthdate: '',
@@ -336,6 +366,21 @@ const initialState = {
 
 const form = useForm({ ...initialState })
 
+const initialFormSearch = {
+    cost_line: [...cost_line],
+}
+
+const formSearch = ref({ ...initialFormSearch })
+
+watch(
+    () => [
+        formSearch.value.cost_line,
+    ],
+    () => {
+        search();
+    },
+    { deep: true }
+);
 
 const submit = () => {
     form.post(route('management.external.storeorupdate', { external_id: form.id }), {
@@ -398,4 +443,17 @@ function handlerPreview(id) {
     );
 }
 
+async function search() {
+    let url = route('employees.external.search')
+    try {
+        let response = await axios.post(url, formSearch.value)
+        employees.value = response.data
+    } catch (error) {
+        if (error.response.data) {
+            notifyError('Server error', error.response.data)
+        } else {
+            notifyError("Network or other error:", error)
+        }
+    }
+}
 </script>

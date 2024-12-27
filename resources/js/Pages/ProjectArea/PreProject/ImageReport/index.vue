@@ -69,15 +69,15 @@
                         class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 mt-5">
                         <div v-for="image in imageCode.imagecodepreprojet" :key="image.id"
                             class="bg-white p-4 rounded-md shadow sm:col-span-1 md:col-span-2">
-                            <h2 :data-tooltip-target="`info-tooltip-${image.id}`"
+                            <h2 
                                 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
                                 {{ image.description }}
                             </h2>
-                            <div :id="`info-tooltip-${image.id}`" role="tooltip"
+                            <!-- <div :id="`info-tooltip-${image.id}`" role="tooltip"
                                 class="absolute z-50 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                                 {{ image.description }}
                                 <div class="tooltip-arrow" data-popper-arrow></div>
-                            </div>
+                            </div> -->
 
                             <div class="grid grid-cols-1 gap-y-1 text-sm text-center">
                                 <img :src="image.image">
@@ -249,12 +249,13 @@ const preprojectImages = ref(props.preprojectImage)
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
 }
+console.log(props.preproject)
 
 let backUrl = (props.preproject?.status === undefined || props.preproject?.status === null)
-    ? 'preprojects.index'
+    ? { route: 'preprojects.index', params: { type: props.preproject.cost_line_id } }
     : props.preproject.status == true
-        ? { route: 'preprojects.index', params: { preprojects_status: 1 } }
-        : { route: 'preprojects.index', params: { preprojects_status: 0 } }
+        ? { route: 'preprojects.index', params: { type: props.preproject.cost_line_id, preprojects_status: 1 } }
+        : { route: 'preprojects.index', params: { type: props.preproject.cost_line_id,preprojects_status: 0 } }
 
 const confirmingImageDeletion = ref(false);
 const approve_reject_Image = ref(false);
@@ -417,7 +418,7 @@ async function submitStages() {
 function openModalAddedStages() {
     showOpenAddedStages.value = !showOpenAddedStages.value
     formStages.clearErrors()
-    formStages.defaults({ ... { 'reportStages': [] } })
+    formStages.defaults({ ... { reportStages: [] } })
     formStages.reset()
 }
 

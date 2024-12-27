@@ -42,14 +42,13 @@ Usuarios
             </template>
 
             <template v-if="hasPermission('HumanResourceManager') || hasPermission('HumanResource')">
-                <a v-if="subSectionsPorVencer.length + subSectionsPorVencer7.length > 0 || permissionsPorVencer.length + vacationPorVencer3.length + vacationPorVencer7.length > 0 || formationProgramsAlarms.length > 0 || employeeBirthdayAlarms.length > 0 || documentsToExpire.length>0"
-                    class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
-                    @click="showingHumanResource = (showingMembers && showingMembers7)
-                                ? false
-                                : !showingHumanResource;
-                                 showingMembers = showingMembers7 = false;
-                                 showDocumentsToExpireAlarms = false;
-                         ">
+                <a v-if="permissionsPorVencer.length + vacationPorVencer3.length + vacationPorVencer7.length > 0 || formationProgramsAlarms.length > 0 || employeeBirthdayAlarms.length > 0 || documentsToExpire.length > 0"
+                    class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#" @click="showingHumanResource = (showingMembers && showingMembers7)
+                        ? false
+                        : !showingHumanResource;
+                    showingMembers = showingMembers7 = false;
+                    showDocumentsToExpireAlarms = false;
+                    ">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="red" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -82,9 +81,8 @@ Usuarios
                         :transitiondemonstration="showEmployeeBirthdayAlarms">
                         <Link class="w-full flex items-center"
                             :href="route('management.employees.show', { id: item.id })">
-                        <svg class="w-4 h-4 mr-2 text-red-600"
-                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                            viewBox="0 0 20 20">
+                        <svg class="w-4 h-4 mr-2 text-red-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor" viewBox="0 0 20 20">
                             <path
                                 d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
                         </svg>
@@ -99,10 +97,10 @@ Usuarios
                     <Link class="w-full" :href="route('controlEmployees.index')">Control de Empleados</Link>
                 </MyTransition> -->
                 <MyTransition :transitiondemonstration="showingHumanResource">
-                    <Link class="w-full" :href="route('spreadsheets.index')">Nomina</Link>
+                    <Link class="w-full" :href="route('payroll.index')">Nomina</Link>
                 </MyTransition>
 
-                <MyTransition :transitiondemonstration="showingHumanResource">
+                <!-- <MyTransition :transitiondemonstration="showingHumanResource">
                     <div class="relative">
                         <button @click="showFormationProgramsAlarms = !showFormationProgramsAlarms">
                             <Link class="w-full" :href="route('management.employees.formation_development')">Formacion y
@@ -115,7 +113,7 @@ Usuarios
                         </button>
                     </div>
                 </MyTransition>
-                <!-- formation programs alarms -->
+                
                 <template v-if="formationProgramsAlarms.length !== 0">
                     <MyTransition v-for="item in formationProgramsAlarms" :key="item.id" class="ml-4"
                         :transitiondemonstration="showFormationProgramsAlarms">
@@ -130,10 +128,10 @@ Usuarios
                         <span>{{ item.name }} {{ item.lastname }}</span>
                         </Link>
                     </MyTransition>
-                </template>
+                </template> -->
 
 
-                <MyTransition :transitiondemonstration="showingHumanResource">
+                <!-- <MyTransition :transitiondemonstration="showingHumanResource">
                     <div class="relative">
                         <button @click="alarmVacaPermisions">
                             <span
@@ -144,9 +142,9 @@ Usuarios
                         </button>
                         <Link class="w-full" :href="route('management.vacation')">Vacaciones y Permisos</Link>
                     </div>
-                </MyTransition>
+                </MyTransition> -->
                 <!-- vacatioon permissions alarms -->
-                <template v-if="showingPermissionsAlarm && showingVacationAlarm">
+                <!-- <template v-if="showingPermissionsAlarm && showingVacationAlarm">
                     <div class="mb-4">
                         <MyTransition v-for="item in permissionsPorVencer" :key="item.id" class="ml-4"
                             :transitiondemonstration="showingPermissionsAlarm">
@@ -191,54 +189,10 @@ Usuarios
                             </Link>
                         </MyTransition>
                     </div>
-                </template>
+                </template> -->
                 <MyTransition :transitiondemonstration="showingHumanResource">
                     <Link class="w-full" :href="route('documents.index')">Documentos</Link>
                 </MyTransition>
-                <MyTransition :transitiondemonstration="showingHumanResource">
-                    <div class="relative">
-                        <button @click="toggleMembers"><span
-                                v-if="subSectionsPorVencer.length + subSectionsPorVencer7.length > 0"
-                                class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
-                                {{ subSectionsPorVencer.length + subSectionsPorVencer7.length }}
-                            </span>
-                        </button>
-                        <Link class="w-full" :href="route('sections.subSections')">Alarmas RRHH</Link>
-                    </div>
-                </MyTransition>
-                <template v-if="showingMembers && showingMembers7">
-                    <div class="mb-4">
-                        <MyTransition v-for="item in subSectionsPorVencer" :key="item.id" class="ml-4"
-                            :transitiondemonstration="showingMembers">
-                            <Link class="w-full flex items-center"
-                                :href="route('sections.subSection', { subSection: item.id })">
-                            <div class="flex items-center">
-                                <svg class="w-4 h-4 mr-2 text-red-600 dark:text-red" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                    <path
-                                        d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
-                                </svg>
-                                <span>{{ item.name }}</span>
-                            </div>
-                            </Link>
-                        </MyTransition>
-                        <MyTransition v-for="item in subSectionsPorVencer7" :key="item.id" class="ml-4"
-                            :transitiondemonstration="showingMembers7">
-                            <Link class="w-full flex items-center"
-                                :href="route('sections.subSection', { subSection: item.id })">
-                            <div class="flex items-center">
-                                <svg class="w-4 h-4 mr-2 text-yellow-600 dark:text-yellow" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                    <path
-                                        d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
-                                </svg>
-                                <span>{{ item.name }}</span>
-                            </div>
-                            </Link>
-                        </MyTransition>
-                    </div>
-                </template>
-
                 <MyTransition :transitiondemonstration="showingHumanResource">
                     <div class="relative">
                         <button @click="showDocumentsToExpireAlarms = !showDocumentsToExpireAlarms"><span
@@ -255,30 +209,22 @@ Usuarios
                         <MyTransition v-for="item, i in documentsToExpire" :key="i" class="ml-4"
                             :transitiondemonstration="showDocumentsToExpireAlarms">
                             <div class="w-full flex items-center">
-                            <div class="flex items-center">
-                                <svg class="w-4 h-4 mr-2 text-red-600 dark:text-red" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                    <path
-                                        d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
-                                </svg>
-                                <a :href="route('employee.document.rrhh.status', {emp_id: item.id})">
-                                    <span>{{ item.name }} {{ item.lastname }}</span>
-                                </a>
+                                <div class="flex items-center">
+                                    <svg class="w-4 h-4 mr-2 text-red-600 dark:text-red" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
+                                    </svg>
+                                    <a :href="route('employee.document.rrhh.status', { emp_id: item.id })">
+                                        <span>{{ item.name }} {{ item.lastname }}</span>
+                                    </a>
+                                </div>
                             </div>
-                        </div>
                         </MyTransition>
 
                     </div>
                 </template>
-
-
-
-
-
-
-
             </template>
-
             <template v-if="hasPermission('InventoryManager') || hasPermission('Inventory')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingInventory = !showingInventory">
@@ -301,7 +247,7 @@ Usuarios
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showingShoppingArea = !showingShoppingArea">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" :stroke="purchaseOrdersAlarms.length + shoppingPurchases.length + shoppingPurchases7.length
-        > 0 ? 'red' : 'currentColor'" class="w-6 h-6">
+                        > 0 ? 'red' : 'currentColor'" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                     </svg>
@@ -417,22 +363,25 @@ Usuarios
                     <Link class="w-full" :href="route('preprojects.titles')">PRO</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
-                    <Link class="w-full" :href="route('preprojects.index')">Anteproyectos</Link>
+                    <Link class="w-full" :href="route('preprojects.index', {type:1})">Anteproyectos Pint</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
-                    <Link class="w-full" :href="route('projectmanagement.index')">Proyectos</Link>
+                    <Link class="w-full" :href="route('preprojects.index', {type:2})">Anteproyectos Pext</Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showingProyectArea">
+                    <Link class="w-full" :href="route('projectmanagement.index')">Proyectos Pint</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
                     <Link class="w-full" :href="route('projectmanagement.pext.index')">Proyectos Pext</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
                     <Link class="w-full" :href="route('checklist.index')">
-                        Checklist
+                    Checklist
                     </Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
                     <Link class="w-full" :href="route('project.backlog.index')">
-                        Backlog
+                    Backlog
                     </Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showingProyectArea">
@@ -595,7 +544,7 @@ Usuarios
             </template>
 
 
-            <template v-if="hasPermission('DocumentGestion')">
+            <!-- <template v-if="hasPermission('DocumentGestion')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#" @click="showDocs = !showDocs">
                     <svg v-if="archiveAlarms.length + archiveAlarms7.length > 0" xmlns="http://www.w3.org/2000/svg"
                         fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" class="w-6 h-6 text-white">
@@ -633,7 +582,7 @@ Usuarios
                                         d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
                                 </svg>
                                 <span>{{ item.archive.folder.name + '/' + item.archive.name + '.' +
-        item.archive.extension }}</span>
+                                    item.archive.extension }}</span>
                             </div>
                             </Link>
                         </MyTransition>
@@ -648,7 +597,7 @@ Usuarios
                                         d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
                                 </svg>
                                 <span>{{ item.archive.folder.name + '/' + item.archive.name + '.' +
-        item.archive.extension }}</span>
+                                    item.archive.extension }}</span>
                             </div>
                             </Link>
                         </MyTransition>
@@ -656,14 +605,14 @@ Usuarios
                 </template>
                 <MyTransition :transitiondemonstration="showDocs">
                     <div class="relative">
-                        <Link class="w-full" :href="route('local.drive.index', {root: 1})">Local Drive</Link>
+                        <Link class="w-full" :href="route('local.drive.index', { root: 1 })">Local Drive</Link>
                     </div>
                 </MyTransition>
-                <!-- <MyTransition v-if="currentAuth.user.role_id === 1" :transitiondemonstration="showDocs">
+                <MyTransition v-if="currentAuth.user.role_id === 1" :transitiondemonstration="showDocs">
                     <Link class="w-full" :href="route('documment.management.folders.validation')">Aprobación</Link>
-                </MyTransition> -->
+                </MyTransition>
 
-            </template>
+            </template> -->
 
 
             <template v-if="true">
@@ -677,43 +626,22 @@ Usuarios
                     <span class="mx-3">Facturación</span>
                 </a>
                 <MyTransition :transitiondemonstration="showCicsa">
-                    <Link class="w-full" :href="route('cicsa.index')">Pext</Link>
+                    <Link class="w-full" :href="route('cicsa.index', {type: 1})">Pint</Link>
                 </MyTransition>
-            </template>
-
-
-
-
-
-
-
-
-
-
-
-            <template v-if="hasPermission('SocialNetwork')">
-                <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
-                    @click="showSocialNetworkSot = !showSocialNetworkSot">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z" />
-                    </svg>
-
-                    <span class="mx-3">Social Network</span>
-                </a>
-                <MyTransition :transitiondemonstration="showSocialNetworkSot">
-                    <Link class="w-full" :href="route('socialnetwork.sot')">SOT</Link>
+                <MyTransition :transitiondemonstration="showCicsa">
+                    <Link class="w-full" :href="route('cicsa.index', {type: 2})">Pext</Link>
                 </MyTransition>
             </template>
 
             <template v-if="hasPermission('HuaweiManager')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#" @click="toogleHUawei">
-                    <svg v-if="pending_orders.length == 0" fill="white" width="23px" height="23px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                    <svg v-if="pending_orders.length == 0" fill="white" width="23px" height="23px" viewBox="0 0 32 32"
+                        xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M4.896 8.188c0 0-2.469 2.359-2.604 4.854v0.464c0.109 2.016 1.63 3.203 1.63 3.203 2.438 2.385 8.344 5.385 9.729 6.063 0 0 0.083 0.042 0.135-0.010l0.026-0.052v-0.057c-3.786-8.25-8.917-14.464-8.917-14.464zM12.865 24.802c-0.026-0.109-0.13-0.109-0.13-0.109l-9.839 0.349c1.063 1.906 2.865 3.37 4.745 2.932 1.281-0.333 4.214-2.375 5.172-3.068 0.083-0.068 0.052-0.12 0.052-0.12zM12.974 23.76c-4.323-2.922-12.693-7.385-12.693-7.385-0.203 0.609-0.266 1.198-0.281 1.729v0.094c0 1.427 0.531 2.427 0.531 2.427 1.068 2.255 3.12 2.938 3.12 2.938 0.938 0.396 1.87 0.411 1.87 0.411 0.161 0.026 5.865 0 7.385 0 0.068 0 0.109-0.068 0.109-0.068v-0.078c0-0.042-0.042-0.068-0.042-0.068zM12.078 4.255c-1.938 0.495-3.328 2.198-3.427 4.198v0.547c0.042 0.802 0.214 1.401 0.214 1.401 0.88 3.865 5.151 10.198 6.068 11.531 0.068 0.068 0.135 0.042 0.135 0.042 0.052-0.021 0.083-0.078 0.078-0.135 1.417-14.13-1.479-17.891-1.479-17.891-0.427 0.026-1.589 0.307-1.589 0.307zM23.146 7.281c0 0-0.651-2.401-3.25-3.042 0 0-0.76-0.188-1.563-0.292 0 0-2.906 3.745-1.495 17.906 0.016 0.094 0.083 0.104 0.083 0.104 0.094 0.042 0.13-0.036 0.13-0.036 0.964-1.375 5.203-7.682 6.068-11.521 0 0 0.479-1.87 0.026-3.12zM19.255 24.708c0 0-0.094 0-0.12 0.063 0 0-0.016 0.094 0.036 0.135 0.932 0.682 3.802 2.667 5.177 3.068 0 0 0.214 0.068 0.573 0.078h0.182c0.922-0.026 2.536-0.49 4-3.010l-9.865-0.333zM29.693 13.495c0.188-2.75-2.589-5.297-2.589-5.307 0 0-5.13 6.214-8.891 14.401 0 0-0.042 0.104 0.026 0.172l0.052 0.010h0.083c1.411-0.703 7.276-3.693 9.703-6.052 0 0 1.536-1.24 1.615-3.224zM31.719 16.349c0 0-8.37 4.49-12.693 7.396 0 0-0.068 0.057-0.042 0.151 0 0 0.042 0.078 0.094 0.078 1.547 0 7.417 0 7.563-0.026 0 0 0.76-0.026 1.693-0.385 0 0 2.078-0.667 3.161-3.031 0 0 0.974-1.932 0.224-4.182z" />
                     </svg>
-                    <svg v-else fill="red" width="23px" height="23px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                    <svg v-else fill="red" width="23px" height="23px" viewBox="0 0 32 32"
+                        xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M4.896 8.188c0 0-2.469 2.359-2.604 4.854v0.464c0.109 2.016 1.63 3.203 1.63 3.203 2.438 2.385 8.344 5.385 9.729 6.063 0 0 0.083 0.042 0.135-0.010l0.026-0.052v-0.057c-3.786-8.25-8.917-14.464-8.917-14.464zM12.865 24.802c-0.026-0.109-0.13-0.109-0.13-0.109l-9.839 0.349c1.063 1.906 2.865 3.37 4.745 2.932 1.281-0.333 4.214-2.375 5.172-3.068 0.083-0.068 0.052-0.12 0.052-0.12zM12.974 23.76c-4.323-2.922-12.693-7.385-12.693-7.385-0.203 0.609-0.266 1.198-0.281 1.729v0.094c0 1.427 0.531 2.427 0.531 2.427 1.068 2.255 3.12 2.938 3.12 2.938 0.938 0.396 1.87 0.411 1.87 0.411 0.161 0.026 5.865 0 7.385 0 0.068 0 0.109-0.068 0.109-0.068v-0.078c0-0.042-0.042-0.068-0.042-0.068zM12.078 4.255c-1.938 0.495-3.328 2.198-3.427 4.198v0.547c0.042 0.802 0.214 1.401 0.214 1.401 0.88 3.865 5.151 10.198 6.068 11.531 0.068 0.068 0.135 0.042 0.135 0.042 0.052-0.021 0.083-0.078 0.078-0.135 1.417-14.13-1.479-17.891-1.479-17.891-0.427 0.026-1.589 0.307-1.589 0.307zM23.146 7.281c0 0-0.651-2.401-3.25-3.042 0 0-0.76-0.188-1.563-0.292 0 0-2.906 3.745-1.495 17.906 0.016 0.094 0.083 0.104 0.083 0.104 0.094 0.042 0.13-0.036 0.13-0.036 0.964-1.375 5.203-7.682 6.068-11.521 0 0 0.479-1.87 0.026-3.12zM19.255 24.708c0 0-0.094 0-0.12 0.063 0 0-0.016 0.094 0.036 0.135 0.932 0.682 3.802 2.667 5.177 3.068 0 0 0.214 0.068 0.573 0.078h0.182c0.922-0.026 2.536-0.49 4-3.010l-9.865-0.333zM29.693 13.495c0.188-2.75-2.589-5.297-2.589-5.307 0 0-5.13 6.214-8.891 14.401 0 0-0.042 0.104 0.026 0.172l0.052 0.010h0.083c1.411-0.703 7.276-3.693 9.703-6.052 0 0 1.536-1.24 1.615-3.224zM31.719 16.349c0 0-8.37 4.49-12.693 7.396 0 0-0.068 0.057-0.042 0.151 0 0 0.042 0.078 0.094 0.078 1.547 0 7.417 0 7.563-0.026 0 0 0.76-0.026 1.693-0.385 0 0 2.078-0.667 3.161-3.031 0 0 0.974-1.932 0.224-4.182z" />
                     </svg>
@@ -721,7 +649,9 @@ Usuarios
                 </a>
                 <MyTransition :transitiondemonstration="showHuawei">
                     <div class="relative">
-                        <Link class="w-full" :href="route('huawei.inventory.show', {warehouse: 1})">Inventario de Huawei</Link>
+                        <Link class="w-full" :href="route('huawei.inventory.show', { warehouse: 1 })">Inventario de
+                        Huawei
+                        </Link>
                         <button @click="showPendingOrders = !showPendingOrders">
                             <span v-if="pending_orders.length > 0"
                                 class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
@@ -734,11 +664,9 @@ Usuarios
                 <template v-if="pending_orders.length !== 0">
                     <MyTransition v-for="item in pending_orders" :key="item.id" class="ml-4"
                         :transitiondemonstration="showPendingOrders">
-                        <Link class="w-full flex items-center"
-                            :href="route('huawei.inventory.pendingorders')">
-                        <svg class="w-4 h-4 mr-2 text-red-600 dark:text-red"
-                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                            viewBox="0 0 20 20">
+                        <Link class="w-full flex items-center" :href="route('huawei.inventory.pendingorders')">
+                        <svg class="w-4 h-4 mr-2 text-red-600 dark:text-red" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                             <path
                                 d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
                         </svg>
@@ -760,7 +688,8 @@ Usuarios
                     <Link class="w-full" :href="route('huawei.titles')">Huawei PRO</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showHuawei">
-                    <Link class="w-full" :href="route('huawei.projects', {status: 1, prefix: 'Claro'})">Proyectos de Huawei</Link>
+                    <Link class="w-full" :href="route('huawei.projects', { status: 1, prefix: 'Claro' })">Proyectos de
+                    Huawei</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.monthlyprojects')">Proyectos Mensuales</Link>
@@ -802,13 +731,11 @@ export default {
 
     data() {
         return {
-            employeeBirthdayAlarms:[],
+            employeeBirthdayAlarms: [],
             permissionsPorVencer: [],
             documentsToExpire: [],
             vacationPorVencer3: [],
             vacationPorVencer7: [],
-            subSectionsPorVencer: [],
-            subSectionsPorVencer7: [],
             cicsasubSectionsPorVencer: [],
             cicsasubSectionsPorVencer7: [],
 
@@ -823,8 +750,8 @@ export default {
             shoppingPurchases: [],
             shoppingPurchases7: [],
 
-            archiveAlarms: [],
-            archiveAlarms7: [],
+            // archiveAlarms: [],
+            // archiveAlarms7: [],
 
             pending_orders: [],
         };
@@ -863,7 +790,7 @@ export default {
 
         let showDocs = ref(false)
         let showCicsa = ref(false)
-        let showSocialNetworkSot = ref(false)
+        
         let showHuawei = ref(false);
 
         let showPendingOrders = ref(false);
@@ -891,7 +818,6 @@ export default {
             showDocumentsToExpireAlarms,
             showDocs,
             showCicsa,
-            showSocialNetworkSot,
             showHuawei,
             showPendingOrders,
         }
@@ -935,16 +861,6 @@ export default {
                 this.vacationPorVencer7 = response.data.vacation7;
             } catch (error) {
                 console.error('Error al obtener el contador de vacation:', error);
-            }
-        },
-
-        async fetchSubSectionsCount() {
-            try {
-                const response = await axios.get(route('sections.alarm'));
-                this.subSectionsPorVencer = response.data.subSections;
-                this.subSectionsPorVencer7 = response.data.subSections7;
-            } catch (error) {
-                console.error('Error al obtener el contador de subsecciones:', error);
             }
         },
 
@@ -1012,15 +928,15 @@ export default {
             }
         },
 
-        async fetchArchiveRequest() {
-            try {
-                const response = await axios.get(route('archives.alarms'));
-                this.archiveAlarms = Object.values(response.data.alarms3);
-                this.archiveAlarms7 = Object.values(response.data.alarms7);
-            } catch (error) {
-                console.error('Error al obtener el contador de archivos:', error);
-            }
-        },
+        // async fetchArchiveRequest() {
+        //     try {
+        //         const response = await axios.get(route('archives.alarms'));
+        //         this.archiveAlarms = Object.values(response.data.alarms3);
+        //         this.archiveAlarms7 = Object.values(response.data.alarms7);
+        //     } catch (error) {
+        //         console.error('Error al obtener el contador de archivos:', error);
+        //     }
+        // },
 
         async fetchPendingOrders() {
             try {
@@ -1056,12 +972,12 @@ export default {
         toogleArchives() {
             this.showArchivesAlarms = !this.showArchivesAlarms;
         },
-        toogleOrders () {
+        toogleOrders() {
             this.showPendingOrders = !this.showPendingOrders;
         },
-        toogleHUawei (){
+        toogleHUawei() {
             this.showHuawei = !this.showHuawei;
-            if (!this.showHuawei){
+            if (!this.showHuawei) {
                 this.showPendingOrders = false;
             }
         }
@@ -1074,7 +990,6 @@ export default {
             this.fetchAlarmPermissionsCount();
             this.fetchAlarmVacationCount();
             this.fetchFormationProgramAlarms();
-            this.fetchSubSectionsCount();
         }
         if (this.hasPermission('ProjectManager') || this.hasPermission('Project')) {
             this.fetchCicsaSubSectionsCount();
@@ -1088,10 +1003,10 @@ export default {
             this.fetchFinancePurchases();
             this.fetchPaymentsAlarm();
         }
-        if (this.hasPermission('DocumentGestion')) {
-            this.fetchArchiveRequest();
-        }
-        if (this.hasPermission('HuaweiManager')){
+        // if (this.hasPermission('DocumentGestion')) {
+        //     this.fetchArchiveRequest();
+        // }
+        if (this.hasPermission('HuaweiManager')) {
             this.fetchPendingOrders();
         }
         setInterval(() => {
@@ -1101,7 +1016,6 @@ export default {
                 this.fetchAlarmPermissionsCount();
                 this.fetchAlarmVacationCount();
                 this.fetchFormationProgramAlarms();
-                this.fetchSubSectionsCount();
             }
             if (this.hasPermission('ProjectManager') || this.hasPermission('Project')) {
                 this.fetchCicsaSubSectionsCount();
@@ -1115,10 +1029,10 @@ export default {
                 this.fetchFinancePurchases();
                 this.fetchPaymentsAlarm();
             }
-            if (this.hasPermission('DocumentGestion')) {
-                this.fetchArchiveRequest();
-            }
-            if (this.hasPermission('HuaweiManager')){
+            // if (this.hasPermission('DocumentGestion')) {
+            //     this.fetchArchiveRequest();
+            // }
+            if (this.hasPermission('HuaweiManager')) {
                 this.fetchPendingOrders();
             }
         }, 60000);

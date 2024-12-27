@@ -16,9 +16,13 @@ return new class extends Migration
             $table->date('operation_date');
             $table->string('operation_number')->nullable()->unique();
             $table->string('description');
-            $table->double('charge');
-            $table->double('payment');
+            $table->double('charge')->nullable();
+            $table->double('payment')->nullable();
             $table->timestamps();
+
+            $table->index('operation_number');
+            $table->index('operation_date');
+            $table->index(['operation_number', 'operation_date']);
         });
     }
 

@@ -3,10 +3,10 @@
     <Head title="Anteproyectos" />
     <AuthenticatedLayout :redirectRoute="backUrls">
         <template v-if="preproject" #header>
-            Edición de Anteproyecto
+            Edición de Anteproyecto {{ cost_line.name }}
         </template>
         <template v-else #header>
-            Creación de Anteproyecto
+            Creación de Anteproyecto {{ cost_line.name }}
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
             <form @submit.prevent="submit">
@@ -184,9 +184,9 @@
                                     <InputError :message="form.errors.observation" />
                                 </div>
                             </div>
-                            <div class="col-span-1 border-t-2 border-gray-300 sm:col-span-2">
-                            </div>
                             <template v-if="!preproject">
+                                <div class="col-span-1 border-t-2 border-gray-300 sm:col-span-2">
+                                </div>
                                 <div class="flex space-x-3 justify-start sm:col-span-2">
                                     <h2 class="text-base font-semibold leading-7 text-gray-900 items-center">
                                         Agregar etapas de reporte
@@ -201,19 +201,18 @@
                                         <button type="button" @click="removeReportStage(index)"
                                             class="font-medium text-red-600 hover:text-indigo-500">Eliminar</button>
                                     </div>
-
                                     <InputLabel for="stage">
                                         Etapas
                                     </InputLabel>
                                     <div class="mt-2">
-                                        <select v-model="reportStage.name" id="stage"
+                                        <select v-model="reportStage.type" id="stage"
                                             class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                             <option value="">Selecciona etapa</option>
                                             <option v-for="stage in stages" :key="stage.id" :value="stage.name">
                                                 {{ stage.name }}
                                             </option>
                                         </select>
-                                        <InputError :message="form.errors['reportStages.' + index + '.name']" />
+                                        <InputError :message="form.errors['reportStages.' + index + '.type']" />
                                     </div>
 
                                     <InputLabel for="emergency_lastname">
@@ -236,8 +235,7 @@
                     </div>
                 </div>
                 <div class="mt-3 flex items-center justify-end gap-x-6">
-                    <button type="submit" :class="{ 'opacity-25': form.processing }"
-                        class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Guardar</button>
+                    <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">Guardar</PrimaryButton>
                 </div>
             </form>
             <Modal :show="showContactModal">
@@ -271,8 +269,6 @@
         </div>
         <ConfirmCreateModal :confirmingcreation="showModal" itemType="Anteproyecto" />
         <ConfirmUpdateModal :confirmingupdate="showModalUpdate" itemType="Anteproyecto" />
-
-
     </AuthenticatedLayout>
 </template>
 <script setup>
@@ -294,19 +290,20 @@ const showModal = ref(false)
 const showModalUpdate = ref(false)
 const showErrorContact = ref(false)
 
-const { preproject, customers, titles, stages } = defineProps({
+const { preproject, customers, titles, stages, type, cost_line } = defineProps({
     preproject: Object,
     customers: Object,
     titles: Object,
-    stages: Object
+    stages: Object,
+    type: String,
+    cost_line: Object,
 })
 
 let backUrls = (preproject?.status === undefined || preproject?.status === null)
-    ? 'preprojects.index'
+    ? { route: 'preprojects.index', params: { type } }
     : preproject?.status == true
-        ? { route: 'preprojects.index', params: { preprojects_status: 1 } }
-        : { route: 'preprojects.index', params: { preprojects_status: 0 } }
-
+        ? { route: 'preprojects.index', params: { type, preprojects_status: 1 } }
+        : { route: 'preprojects.index', params: { type, preprojects_status: 0 } }
 
 const initial_state = {
     customer_id: '',
@@ -316,6 +313,7 @@ const initial_state = {
     date: '',
     observation: '',
     reportStages: [],
+    cost_line_id: type,
     // title_factibilidad_id: '',
     // title_implementation_id: '',
     contacts: [],
@@ -382,10 +380,10 @@ const submit = () => {
                 }
                 route('', {})
                 router.visit(preproject?.status === undefined
-                    ? route('preprojects.index')
+                    ? route('preprojects.index', {type})
                     : preproject?.status == true
-                        ? route('preprojects.index', { preprojects_status: 1 })
-                        : route('preprojects.index', { preprojects_status: 0 }))
+                        ? route('preprojects.index', { type, preprojects_status: 1 })
+                        : route('preprojects.index', { type, preprojects_status: 0 }))
             }, 2000);
         },
         onError: (e) => {
@@ -457,7 +455,7 @@ watch(() => [customerBusinnes.value, form.description], updateProjectCode);
 
 const addReportStage = () => {
     form.reportStages.push({
-        name: '',
+        type: '',
         title_id: '',
     });
 }

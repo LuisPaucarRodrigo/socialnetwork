@@ -13,7 +13,6 @@ class PintConstants
         throw new \Exception("La constante '$name' no existe.");
     }
 
-
     // costs pint types
     public const HOSPEDAJE = 'Hospedaje';
     public const MENSAJERIA = 'Mensajería';
@@ -62,7 +61,6 @@ class PintConstants
     public const ACEPTADO_VALIDADO = "Aceptado - Validado";    
     public const RECHAZADO = "Rechazado";
 
-
     //zones
     public const AREQUIPA = "Arequipa";
     public const CHALA = "Chala";
@@ -73,8 +71,6 @@ class PintConstants
     public const MDD1_PM = "MDD1-PM";
     public const MDD2_MAZ = "MDD2-MAZ";
     public const OFICINA = "Oficina";
-
-
 
 
     public static function acExpenseTypes(): array
@@ -200,8 +196,6 @@ class PintConstants
         PintConstants::COMBUSTIBLE_GEP,
         PintConstants::REPOSICION_DE_EQUIPO,
     ];}
-
-
 
 
     public static function countAcExpenseTypes(): int{return count(self::acExpenseTypes());}

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('imagespreprojects', function (Blueprint $table) {
             $table->id();
             $table->text('description');
-            $table->string('observation')->nullable();
+            $table->text('observation')->nullable();
             $table->boolean('state')->nullable();
             $table->string('image')->unique();
             $table->string('lat');

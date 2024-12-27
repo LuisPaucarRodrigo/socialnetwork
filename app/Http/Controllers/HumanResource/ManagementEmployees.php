@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\HumanResource;
 
-use App\Actions\Jetstream\UpdateTeamName;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\HumanResource\CreateManagementEmployees;
 use App\Http\Requests\HumanResource\FiredContractEmployees;
@@ -10,13 +9,14 @@ use App\Http\Requests\HumanResource\StoreOrUpdateEmployeesExternal;
 use App\Http\Requests\HumanResource\UpdateManagementEmployees;
 use App\Models\Address;
 use App\Models\Contract;
+use App\Models\CostLine;
 use App\Models\Education;
 use App\Models\Emergency;
 use App\Models\Employee;
 use App\Models\ExternalEmployee;
 use App\Models\Family;
 use App\Models\Health;
-use App\Models\Pension;
+use App\Models\PayrollDetail;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -25,71 +25,57 @@ use Inertia\Inertia;
 
 class ManagementEmployees extends Controller
 {
-    public function index($reentry = false)
+    public function index()
     {
-        if ($reentry == false) {
-            $employees = Employee::with('contract')->whereHas('contract', function ($query) {
-                $query->where('state', 'Active');
-            })->paginate();
-        } else {
-            $employees = Employee::with('contract')->whereHas('contract', function ($query) {
-                $query->where('state', 'Inactive');
-            })->paginate();
-        }
+        $employees = Employee::with('contract.cost_line')->whereHas('contract', function ($query) {
+            $query->where('state', 'Active');
+        })->paginate();
+
         $employees->each(function ($employee) {
+            $employee = $employee->setAppends([]);
             $employee->cropped_image = url($employee->cropped_image ? '/image/profile/' . $employee->cropped_image : '/image/projectimage/DefaultUser.png');
         });
-
+        $cost_line = CostLine::all();
         return Inertia::render('HumanResource/ManagementEmployees/Employees', [
-            'employees' => $employees,
-            'boolean' => boolval($reentry)
+            'employee' => $employees,
+            'costLine' => $cost_line
         ]);
     }
 
 
     public function search(Request $request)
     {
-        $searchTerm = strtolower($request->query('searchTerm'));
-        $isActive = $request->query('isActive');
+        $state = $request->state;
+        $employees = Employee::with('contract.cost_line')->whereHas('contract', function ($query) use ($state) {
+            $query->where('state', $state);
+        });
 
-        if ($isActive) {
-            $employees = Employee::with('contract')
-                ->whereHas('contract', function ($query) {
-                    $query->where('state', 'Active');
-                });
-        } else {
-            $employees = Employee::with('contract')
-                ->whereHas('contract', function ($query) {
-                    $query->where('state', 'Inactive');
-                });
-        }
+        $searchTerm = $request->search;
         $employees = $employees->where(function ($query) use ($searchTerm) {
             $query->where('name', 'like', '%' . $searchTerm . '%')
                 ->orWhere('lastname', 'like', '%' . $searchTerm . '%')
                 ->orWhere('phone1', 'like', '%' . $searchTerm . '%')
-                ->orWhere('dni', 'like', '%' . $searchTerm . '%')
-                ->orWhereHas('contract', function ($item) use ($searchTerm) {
-                    $item->where('expense_line', $searchTerm);
-                });
-        })
-            ->get();
+                ->orWhere('dni', 'like', '%' . $searchTerm . '%');
+        });
+
+        $costLine = $request->cost_line;
+        $employees = $employees->whereHas('contract.cost_line', function ($item) use ($costLine) {
+            $item->whereIn('name', $costLine);
+        })->get();
+
         $employees->each(function ($employee) {
+            $employee = $employee->setAppends([]);
             $employee->cropped_image = url($employee->cropped_image ? '/image/profile/' . $employee->cropped_image : '/image/projectimage/DefaultUser.png');
         });
 
-        return Inertia::render('HumanResource/ManagementEmployees/Employees', [
-            'employees' => $employees,
-            'search' => $searchTerm,
-            'boolean' => !boolval($isActive)
-        ]);
+        return response()->json($employees, 200);
     }
-
-
 
     public function create()
     {
-        $pension = Pension::all();
-        return Inertia::render('HumanResource/ManagementEmployees/EmployeesStoreAndUpdate', ['pensions' => $pension]);
+        $pension = ['Habitad', 'Integra', 'Prima', 'Profuturo', 'HabitadMX', 'IntegraMX', 'PrimaMX', 'ProfuturoMX', 'ONP'];
+        $costLines = CostLine::all();
+        return Inertia::render('HumanResource/ManagementEmployees/EmployeesStoreAndUpdate', ['pensions' => $pension, 'costLines' => $costLines]);
     }
 
     public function store(CreateManagementEmployees $request)
@@ -128,7 +114,8 @@ class ManagementEmployees extends Controller
             $employeeId = $employee->id;
 
             Contract::create([
-                'expense_line' => $request->expense_line,
+                'cost_line_id' => $request->cost_line_id,
+                'personal_segment' => $request->personal_segment,
                 'state_travel_expenses' => $request->state_travel_expenses,
                 'type_contract' => $request->type_contract,
                 'amount_travel_expenses' => $request->amount_travel_expenses,
@@ -139,7 +126,7 @@ class ManagementEmployees extends Controller
                 'discount_sctr' => $request->discount_sctr,
                 'hire_date' => $request->hire_date,
                 'employee_id' => $employeeId,
-                'pension_id' => $request->pension_system,
+                'pension_type' => $request->pension_type,
             ]);
 
             Education::create([
@@ -206,13 +193,14 @@ class ManagementEmployees extends Controller
 
     public function edit($id)
     {
-        $employeesedit = Employee::with('contract', 'contract.pension', 'education', 'address', 'emergency', 'family', 'health')->find($id);
-        return Inertia::render('HumanResource/ManagementEmployees/EmployeesStoreAndUpdate', ['employees' => $employeesedit, 'pensions' => Pension::all()]);
+        $pension = ['Habitad', 'Integra', 'Prima', 'Profuturo', 'HabitadMX', 'IntegraMX', 'PrimaMX', 'ProfuturoMX', 'ONP'];
+        $employeesedit = Employee::with('contract', 'education', 'address', 'emergency', 'family', 'health')->find($id);
+        $costLines = CostLine::all();
+        return Inertia::render('HumanResource/ManagementEmployees/EmployeesStoreAndUpdate', ['employees' => $employeesedit, 'pensions' => $pension, 'costLines' => $costLines]);
     }
 
     public function update(UpdateManagementEmployees $request, $id)
     {
-
         DB::beginTransaction();
         try {
 
@@ -247,7 +235,8 @@ class ManagementEmployees extends Controller
             ]);
 
             $employee->contract->update([
-                'expense_line' => $request->expense_line,
+                'cost_line_id' => $request->cost_line_id,
+                'personal_segment' => $request->personal_segment,
                 'state_travel_expenses' => $request->state_travel_expenses,
                 'type_contract' => $request->type_contract,
                 'amount_travel_expenses' => $request->amount_travel_expenses,
@@ -257,7 +246,7 @@ class ManagementEmployees extends Controller
                 'discount_remuneration' => $request->discount_remuneration,
                 'discount_sctr' => $request->discount_sctr,
                 'hire_date' => $request->hire_date,
-                'pension_id' => $request->pension_system,
+                'pension_type' => $request->pension_type,
             ]);
 
             $employee->education->update([
@@ -338,11 +327,18 @@ class ManagementEmployees extends Controller
         $validateData = $request->validated();
         $contract = Contract::where('employee_id', $id)->first();
         $contract->update($validateData);
+
+        $payroll = PayrollDetail::where('employee_id', $id)
+            ->latest('created_at')
+            ->first();
+        if ($payroll) {
+            $payroll->update($validateData);
+        }
     }
 
     public function details($id)
     {
-        $details = Employee::with('contract', 'contract.pension', 'education', 'address', 'emergency', 'family', 'health')->find($id);
+        $details = Employee::with('contract.cost_line', 'contract', 'education', 'address', 'emergency', 'family', 'health')->find($id);
         return Inertia::render('HumanResource/ManagementEmployees/EmployeesDetails', ['details' => $details]);
     }
 
@@ -393,20 +389,34 @@ class ManagementEmployees extends Controller
 
     public function external_index()
     {
-        $employees = ExternalEmployee::all();
+        $employees = ExternalEmployee::with('cost_line')->get();
+        $costLines = CostLine::all();
         $employees->each(function ($employee) {
             $employee->profile = url($employee->cropped_image ? '/image/profile/' . $employee->cropped_image : '/image/projectimage/DefaultUser.png');
         });
         return Inertia::render('HumanResource/ManagementEmployees/EmployeesExternal', [
-            'employees' => $employees
+            'employee' => $employees,
+            'costLines' => $costLines
         ]);
+    }
+
+    public function external_search(Request $request)
+    {
+        $cost_line = $request->cost_line;
+        $employees = ExternalEmployee::with('cost_line')
+            ->whereHas('cost_line', function ($item) use ($cost_line) {
+                $item->whereIn('name', $cost_line);
+            })
+            ->get();
+        $employees->each(function ($employee) {
+            $employee->profile = url($employee->cropped_image ? '/image/profile/' . $employee->cropped_image : '/image/projectimage/DefaultUser.png');
+        });
+        return response()->json($employees, 200);
     }
 
     public function storeorupdate(StoreOrUpdateEmployeesExternal $request, $external_id = null)
     {
-
         $data = $request->validated();
-
         try {
             $employeesExternal = $external_id ? ExternalEmployee::findOrFail($external_id) : null;
             if ($request->hasFile('curriculum_vitae')) {

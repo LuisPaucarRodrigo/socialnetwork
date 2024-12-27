@@ -54,7 +54,6 @@ class PermissionMiddleware
             'Purchasing' => route('purchasesrequest.index'),
             'Administration' => '/management_employees',
             'DocumentGestion' => route('documment.management.folders'),
-            'SocialNetwork' => route('socialnetwork.sot'),
             'HuaweiManager' => route('huawei.inventory.show', ['warehouse' => 1])
         ];
 

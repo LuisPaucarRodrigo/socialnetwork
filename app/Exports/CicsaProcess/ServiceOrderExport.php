@@ -13,6 +13,11 @@ class ServiceOrderExport implements FromView, WithColumnWidths
     /**
      * @return \Illuminate\Support\Collection
      */
+    protected $type;
+    public function __construct($type)
+    {
+        $this->type = $type;
+    }
     public function view(): View
     {
         return view('Export.ServiceOrderExport', [
@@ -31,10 +36,15 @@ class ServiceOrderExport implements FromView, WithColumnWidths
                 'Encargado',
             ],
             'cicsa_service_orders' => CicsaServiceOrder::with(['cicsa_assignation' => function ($query) {
-                $query->select('id', 'project_name', 'project_code', 'cpe', 'cost_center');
+                $query->select('id', 'project_name', 'project_code', 'cpe');
             }, 'cicsa_purchase_order' => function ($query) {
                 $query->select('id', 'oc_number');
             }])
+            ->whereHas('cicsa_assignation', function ($iQuery) {
+                $iQuery->whereHas('project', function ($subQuery) {
+                    $subQuery->where('cost_line_id', $this->type);
+                });
+            })
                 ->get()
         ]);
     }

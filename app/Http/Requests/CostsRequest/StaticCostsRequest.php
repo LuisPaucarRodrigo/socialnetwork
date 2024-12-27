@@ -36,8 +36,8 @@ class StaticCostsRequest extends FormRequest
             'amount' => [
                 'required',
                 'numeric',
-                function ($attribute, $value, $fail) use ($remaining_budget) {
-                    if ($value > $remaining_budget) {
+                function ($attribute, $value, $fail) use ($remaining_budget, $project) {
+                    if ($value > $remaining_budget && $project->cost_center_id === 1) {
                         $fail(__('El monto del gasto excede el presupuesto restante. S/. ' . number_format($remaining_budget, 2)));
                     }
                 }

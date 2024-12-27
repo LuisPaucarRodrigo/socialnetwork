@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('operation_number')->nullable();
             $table->date('operation_date')->nullable();
             $table->string('doc_number')->nullable();
-            $table->date('doc_date');
+            $table->date('doc_date')->nullable();
             $table->double('amount');
             $table->text('description')->nullable();
             $table->string('photo')->nullable();
@@ -34,10 +34,9 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('projects')
                 ->onDelete('cascade');
-            $table->foreignId('account_statement_id')
-                ->nullable()
-                ->constrained('account_statements')
-                ->onDelete('set null');
+            $table->foreignId('general_expense_id')
+                ->constrained('general_expenses')
+                ->cascadeOnDelete();
             $table->integer('igv')->default('0');
             $table->timestamps();
             $table->unique(['ruc', 'doc_number']);

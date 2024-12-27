@@ -37,13 +37,10 @@ class PaymentController extends Controller
 
         $query = Purchase_quote::with('purchasing_requests', 'purchase_order', 'payment')
             ->has('payment');
-
         $payment_by_request_code = $query->get()->filter(function ($purchase_quote) use ($searchTerm) {
             return str_contains(strtolower($purchase_quote->purchasing_requests->code), $searchTerm);
         });
-
         $payment_by_code = $query->get()->filter(function ($purchase_quote) use ($searchTerm) {
-            // Verificar si algún pago tiene el código buscado
             foreach ($purchase_quote->payment as $payment) {
                 if (str_contains(strtolower($payment->cod_payment), $searchTerm)) {
                     return true;

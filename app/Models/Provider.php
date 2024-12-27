@@ -15,9 +15,17 @@ class Provider extends Model
         'phone1',
         'phone2',
         'email',
-        'category',
+        'category_id',
         'segment',
         'zone',
         'ruc',
     ];
+
+    public function category(){
+        return $this->belongsTo(Category::class,'category_id');
+    }
+
+    public function segments(){
+        return $this->belongsToMany(Segment::class,'provider_segments');
+    }
 }

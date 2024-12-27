@@ -14,6 +14,7 @@ class CicsaPurchaseOrder extends Model
     protected $fillable = [
         'oc_date',
         'oc_number',
+        'amount',
         'master_format',
         'item3456',
         'budget',
@@ -24,12 +25,12 @@ class CicsaPurchaseOrder extends Model
         'cicsa_assignation_id'
     ];
 
-    public function user ()
+    public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function cicsa_assignation ()
+    public function cicsa_assignation()
     {
         return $this->belongsTo(CicsaAssignation::class, 'cicsa_assignation_id');
     }

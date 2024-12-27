@@ -2,18 +2,19 @@
 
     <Head title="CICSA Orden de Servicio" />
 
-    <AuthenticatedLayout :redirectRoute="'cicsa.index'">
+    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
         <template #header>
-            Orden de Servicio
+            {{ type==1 ? 'Pint' : 'Pext' }} - Orden de Servicio
         </template>
+        <Toaster richColors />
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
-                <a :href="route('cicsa.service_orders.export') + '?' + uniqueParam"
+                <a :href="route('cicsa.service_orders.export', {type}) + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
                         placeholder="Buscar ..." />
-                    <SelectCicsaComponent currentSelect="Orden de Servicio" />
+                    <SelectCicsaComponent currentSelect="Orden de Servicio" :type="type" />
                     <div id="search_fields" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Nombre,Cod,CPE,OC,Observaciones
@@ -63,7 +64,7 @@
                                 </td>
                                 <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <p class="text-gray-900 text-center">
-                                        {{ item.cost_center }}
+                                        {{ item.project?.cost_center?.name }}
                                     </p>
                                 </td>
                                 <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -330,10 +331,10 @@
             </div>
         </Modal>
 
-        <SuccessOperationModal :confirming="confirmAssignation" :title="'Nueva Orden de Servicio creada'"
-            :message="'La Orden de Servicio fue creada con éxito'" />
-        <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Orden de Servicio Actualizada'"
-            :message="'La Orden de Servicio fue actualizada'" />
+        <!-- <SuccessOperationModal :confirming="confirmAssignation" :title="'Nueva Orden de Servicio creada'"
+            :message="'La Orden de Servicio fue creada con éxito'" /> -->
+        <!-- <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Orden de Servicio Actualizada'"
+            :message="'La Orden de Servicio fue actualizada'" /> -->
     </AuthenticatedLayout>
 </template>
 
@@ -353,14 +354,17 @@ import { formattedDate, setAxiosErrors, toFormData } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import InputFile from '@/Components/InputFile.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
+import { Toaster } from 'vue-sonner';
+import { notify, notifyError } from '@/Components/Notification';
 
-const { service_order, auth,searchCondition } = defineProps({
+const { service_order, auth,searchCondition, type } = defineProps({
     service_order: Object,
     auth: Object,
     searchCondition: {
         type: String,
         Required: false
-    }
+    },
+    type: Number
 })
 
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
@@ -390,7 +394,7 @@ const form = useForm(
 
 
 const showAddEditModal = ref(false);
-const confirmAssignation = ref(false);
+// const confirmAssignation = ref(false);
 
 function closeAddAssignationModal() {
     showAddEditModal.value = false
@@ -399,7 +403,7 @@ function closeAddAssignationModal() {
     form.reset()
 }
 
-const confirmUpdateAssignation = ref(false);
+// const confirmUpdateAssignation = ref(false);
 
 function openEditModal(item) {
     oc_number.value = item.cicsa_purchase_order.oc_number
@@ -415,26 +419,26 @@ async function submit() {
         const response = await axios.post(url, formData)
         updateServiceOrder(response.data)
         closeAddAssignationModal()
-        confirmUpdateAssignation.value = true
-        setTimeout(() => {
-            confirmUpdateAssignation.value = false
-        }, 1500)
+        // confirmUpdateAssignation.value = true
+        // setTimeout(() => {
+        //     confirmUpdateAssignation.value = false
+        // }, 1500)
     } catch (error) {
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, form)
             } else {
-                console.error("Server error:", error.response.data)
+                notifyError("Server error:", error.response.data)
             }
         } else {
-            console.error("Network or other error:", error)
+            notifyError("Network or other error:", error)
         }
     }
 }
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('cicsa.service_orders'), { searchQuery: $search });
+        const response = await axios.post(route('cicsa.service_orders', {type}), { searchQuery: $search });
         service_orders.value = response.data.service_order;
     } catch (error) {
         console.error('Error searching:', error);
@@ -470,6 +474,7 @@ function updateServiceOrder(serviceOrder) {
     const index = validations.findIndex(item => item.id === serviceOrder.cicsa_assignation_id)
     const indexServiceOrder = validations[index].cicsa_service_order.findIndex(item => item.id === serviceOrder.id)
     validations[index].cicsa_service_order[indexServiceOrder] = serviceOrder
+    notify('Actualización Exitosa')
 }
 
 if (searchCondition) {

@@ -2,19 +2,21 @@
 
     <Head title="CICSA Orden de Compra" />
 
-    <AuthenticatedLayout :redirectRoute="'cicsa.index'">
+    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
+        <Toaster richColors />
         <template #header>
-            Orden de Compra
+            {{ type==1 ? 'Pint' : 'Pext' }} - Orden de Compra
         </template>
+        <Toaster richColors />
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <a :href="route('purchase.order.export') + '?' + uniqueParam"
+                    <a :href="route('purchase.order.export', {type}) + '?' + uniqueParam"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 </div>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput type="text" @input="search($event.target.value)" placeholder="Buscar ..." />
-                    <SelectCicsaComponent currentSelect="Orden de Compra" />
+                    <SelectCicsaComponent currentSelect="Orden de Compra" :type="type" />
                     <div id="search_fields" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Nombre,Codigo,CPE,OC,Observaciones
@@ -45,6 +47,10 @@
                                 CPE
                             </th>
                             <th
+                                class="border-b-2 whitespace-nowrap border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Monto sin IGV
+                            </th>
+                            <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
@@ -64,12 +70,18 @@
                                 </td>
                                 <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <p class="text-gray-900 text-center">
-                                        {{ item.cost_center }}
+                                        {{ item.project?.cost_center?.name }}
                                     </p>
                                 </td>
                                 <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <p class="text-gray-900 text-center">
                                         {{ item.cpe }}
+                                    </p>
+                                </td>
+                                <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                    <p class="text-gray-900 text-center">
+                                        {{ item.cicsa_installation?.projected_amount ? 'S/' +
+                                            item.cicsa_installation.projected_amount.toFixed(2) : '' }}
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -113,6 +125,10 @@
                                     </th>
                                     <th
                                         class="border-b-2 border-gray-200 bg-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                        Monto sin IGV
+                                    </th>
+                                    <th
+                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                         Formato Maestro
                                     </th>
                                     <th
@@ -151,6 +167,11 @@
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                         <p class="text-gray-900 text-center">
                                             {{ materialDetail?.oc_number }}
+                                        </p>
+                                    </td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                                        <p class="text-gray-900 text-center">
+                                            {{ materialDetail?.amount ?'S/ '+ materialDetail?.amount.toFixed(2) : '' }}
                                         </p>
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -234,6 +255,14 @@
                             </div>
                         </div>
                         <div class="sm:col-span-1">
+                            <InputLabel for="amount">Monto sin IGV</InputLabel>
+                            <div class="mt-2">
+                                <input type="text" v-model="form.amount" autocomplete="off" id="oc_namountumber"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.amount" />
+                            </div>
+                        </div>
+                        <div class="sm:col-span-1">
                             <InputLabel for="master_format">Formato Maestro</InputLabel>
                             <div class="mt-2">
                                 <select id="master_format" v-model="form.master_format" autocomplete="off"
@@ -296,7 +325,7 @@
                 </form>
             </div>
         </Modal>
-        <SuccessOperationModal :confirming="confirmPuchaseOrder" :title="title" :message="message" />
+        <!-- <SuccessOperationModal :confirming="confirmPuchaseOrder" :title="title" :message="message" /> -->
     </AuthenticatedLayout>
 </template>
 
@@ -317,14 +346,17 @@ import TextInput from '@/Components/TextInput.vue';
 import axios from 'axios';
 import InputFile from '@/Components/InputFile.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
+import { notify, notifyError } from '@/Components/Notification';
+import { Toaster } from 'vue-sonner';
 
-const { purchaseOrder, auth, searchCondition } = defineProps({
+const { purchaseOrder, auth, searchCondition, type } = defineProps({
     purchaseOrder: Object,
     auth: Object,
     searchCondition: {
         type: String,
         Required: false
-    }
+    },
+    type: Number
 })
 
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
@@ -337,6 +369,7 @@ const initialState = {
     user_id: auth.user.id,
     oc_date: '',
     oc_number: '',
+    amount: '',
     master_format: 'Pendiente',
     item3456: 'Pendiente',
     budget: 'Pendiente',
@@ -350,11 +383,11 @@ const form = useForm(
 );
 
 const showAddEditModal = ref(false);
-const confirmPuchaseOrder = ref(false);
+// const confirmPuchaseOrder = ref(false);
 const cicsa_purchase_order_id = ref(null)
 const purcahse_order_row = ref(0);
-const title = ref('Nueva Orden de Compra creada')
-const message = ref('La Orden de Compra fue creada con éxito')
+// const title = ref('Nueva Orden de Compra creada')
+// const message = ref('La Orden de Compra fue creada con éxito')
 
 function closeAddPuchaseOrderModal() {
     showAddEditModal.value = false
@@ -379,6 +412,7 @@ function openEditModal(item, project_name, cpe) {
 }
 
 async function submit() {
+    console.log(form)
     let url = cicsa_purchase_order_id.value ? route('purchaseOrder.storeOrUpdate', { cicsa_purchase_order_id: cicsa_purchase_order_id.value }) : route('purchaseOrder.storeOrUpdate')
     try {
         let formData = toFormData(form)
@@ -386,35 +420,35 @@ async function submit() {
         closeAddPuchaseOrderModal()
         if (cicsa_purchase_order_id.value) {
             updatePurchaseOrder(false, response.data)
-            title.value = 'Orden de Compra Actualizada'
-            message.value = 'La Orden de Compra fue actualizada'
+            // title.value = 'Orden de Compra Actualizada'
+            // message.value = 'La Orden de Compra fue actualizada'
             cicsa_purchase_order_id.value = null
         } else {
             updatePurchaseOrder(true, response.data)
         }
-        confirmPuchaseOrder.value = true
-        setTimeout(() => {
-            confirmPuchaseOrder.value = false
-        }, 1500)
+        // confirmPuchaseOrder.value = true
+        // setTimeout(() => {
+        //     confirmPuchaseOrder.value = false
+        // }, 1500)
     } catch (error) {
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, form)
             } else {
-                console.error("Server error:", error.response.data)
+                notifyError("Server error:", error.response.data)
             }
         } else {
-            console.error("Network or other error:", error)
+            notifyError("Network or other error:", error)
         }
     }
 }
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('purchase.order.index'), { searchQuery: $search });
+        const response = await axios.post(route('purchase.order.index', {type}), { searchQuery: $search });
         purchaseOrders.value = response.data.purchaseOrder;
     } catch (error) {
-        console.error('Error searching:', error);
+        notifyError('Error searching:', error);
     }
 };
 
@@ -447,9 +481,11 @@ function updatePurchaseOrder(item, purchaseOrder) {
     const index = validations.findIndex(item => item.id === Number(purchaseOrder.cicsa_assignation_id));
     if (item) {
         validations[index].cicsa_purchase_order.push(purchaseOrder)
+        notify('Se creo Correctamente')
     } else {
         const indexMaterial = validations[index].cicsa_purchase_order.findIndex(item => item.id === purchaseOrder.id);
         validations[index].cicsa_purchase_order[indexMaterial] = purchaseOrder
+        notify('Se Actualizo Correctamente')
     }
 }
 
