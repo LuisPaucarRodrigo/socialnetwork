@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('checklist_dailytoolkits', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
+            $table->string('user_name');
             $table->string('personal_2')->nullable();
             $table->string('zone');
 

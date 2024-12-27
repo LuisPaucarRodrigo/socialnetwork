@@ -536,6 +536,7 @@ const form = useForm({
   new_date: '',
   folder_id: props.folder.id,
   user_id: props.auth.user.id,
+  user_name: props.auth.user.name,
 });
 
 const formUsers = useForm({

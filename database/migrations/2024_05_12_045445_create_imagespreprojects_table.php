@@ -19,7 +19,9 @@ return new class extends Migration
             $table->string('image')->unique();
             $table->string('lat');
             $table->string('lon');
-            $table->foreignId('preproject_code_id')->onDelete('cascade');
+            $table->foreignId('preproject_code_id')
+                ->constrained('preproject_codes')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }

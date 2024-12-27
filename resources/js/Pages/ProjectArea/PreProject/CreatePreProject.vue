@@ -88,15 +88,15 @@
                                 </InputLabel>
                                 <InputLabel class="leading-6 text-gray-900">
                                     {{ customers.find(item => item.id == (form.hasSubcustomer
-        ? form.subcustomer_id : form.customer_id)
-    )?.business_name }}
+                                        ? form.subcustomer_id : form.customer_id)
+                                    )?.business_name }}
                                 </InputLabel>
 
                                 <InputLabel class="font-medium leading-6 mt-2 text-gray-900">Dirección:
                                 </InputLabel>
                                 <InputLabel class="leading-6 text-gray-900">
                                     {{ customers.find(item => item.id == (form.hasSubcustomer
-        ? form.subcustomer_id : form.customer_id))?.address }}
+                                        ? form.subcustomer_id : form.customer_id))?.address }}
                                 </InputLabel>
 
                             </div>
@@ -114,7 +114,7 @@
                                 </div>
 
 
-                                <div v-for="( item, i ) in  contactsList " :key="i" class="">
+                                <div v-for="( item, i ) in contactsList " :key="i" class="">
                                     <div v-if="form.contacts.includes(item.id)"
                                         class="border-b col-span-8 border-gray-900/10 grid grid-cols-8 items-center my-2">
                                         <p class=" text-sm col-span-7 line-clamp-2">
@@ -231,13 +231,8 @@
                                     </div>
                                 </div>
                                 <InputError :message="form.errors.reportStages" />
-
                             </template>
-
-
-
                         </div>
-
                     </div>
                 </div>
                 <div class="mt-3 flex items-center justify-end gap-x-6">
@@ -256,7 +251,7 @@
                             <select v-model="contactItem" required
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                 <option disabled value="">Seleccione</option>
-                                <option v-for=" item  in contactsList" :value="item.id">
+                                <option v-for=" item in contactsList" :value="item.id">
                                     {{ item.name }}
                                 </option>
                             </select>

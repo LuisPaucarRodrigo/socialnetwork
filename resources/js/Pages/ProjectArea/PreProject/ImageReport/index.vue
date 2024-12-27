@@ -6,22 +6,44 @@
             Imagenes para Reporte
         </template>
         <div class="min-w-full overflow-hidden rounded-lg">
-
-            <!-- <GoogleMaps :mapVisible="mapVisible" :origin="origin" :destination="destination" :waypoints="waypoints" /> -->
+            <button class="ml-2" data-tooltip-target="add_stages" @click="openModalAddedStages">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-6 h-6 text-green-500 hover:bg-green-400">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+            </button>
+            <div id="add_stages" role="tooltip"
+                class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                Agregar Etapas
+                <div class="tooltip-arrow" data-popper-arrow></div>
+            </div>
             <div v-for="preprojectImage in preprojectImages" :key="preprojectImage.id">
-                <div class="mt-6 flex items-center justify-start gap-x-3">
-                    <h2 class="text-md font-bold text-gray-700 line-clamp-1 m-5">
-                        {{ preprojectImage.type }}
-                    </h2>
-                    <PrimaryButton @click="approveTitle(preprojectImage.id)"
-                        :customColor="[preprojectImage.state ? 'bg-red-600 hover:bg-red-500' : 'bg-green-600 hover:bg-green-500']">
-                        {{ preprojectImage.state ? 'Desabilitar' : 'Habilitar' }}
-                    </PrimaryButton>
-                    <a :href="`${route('preprojects.report.download', { preproject_title_id: preprojectImage.id })}?t=${Date.now()}`"
-                        target="_blank"
-                        class="rounded-md bg-green-500 px-4 py-2 text-center text-sm text-white hover:bg-green-400">
-                        Exportar
-                    </a>
+                <div class="mt-6 flex items-center justify-between">
+                    <div class="flex items-center justify-between gap-x-3">
+                        <h2 class="text-md font-bold text-gray-700 line-clamp-1 ml-2 mt-5 mr-5 mb-5">
+                            {{ preprojectImage.type }}
+                        </h2>
+                        <button @click="openModalDelete(preprojectImage.id)">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-5 h-5 text-red-500">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between gap-x-3">
+                        <PrimaryButton @click="approveTitle(preprojectImage.id)"
+                            :customColor="[preprojectImage.state ? 'bg-red-600 hover:bg-red-500' : 'bg-green-600 hover:bg-green-500']">
+                            {{ preprojectImage.state ? 'Desabilitar' : 'Habilitar' }}
+
+                        </PrimaryButton>
+                        <a :href="`${route('preprojects.report.download', { preproject_title_id: preprojectImage.id })}?t=${Date.now()}`"
+                            target="_blank"
+                            class="rounded-md bg-green-500 px-4 py-2 text-center text-sm text-white hover:bg-green-400">
+                            Exportar
+                        </a>
+                    </div>
                 </div>
                 <div v-for="imageCode in preprojectImage.preproject_codes" :key="imageCode.id" class="border">
                     <div class="grid grid-cols-1 sm:grid-cols-6">
@@ -124,6 +146,60 @@
                 </form>
             </div>
         </Modal>
+        <Modal :show="showOpenAddedStages">
+            <div class="p-6">
+                <div class="flex space-x-3 justify-start sm:col-span-2">
+                    <h2 class="text-base font-semibold leading-7 text-gray-900 items-center">
+                        Agregar etapas de reporte
+                    </h2>
+                    <button type="button" @click="addReportStage"
+                        class="font-medium text-indigo-600 hover:text-indigo-500 self-start sm:self-end items-center">Agregar
+                        etapas</button>
+                </div>
+                <form @submit.prevent="submitStages">
+                    <div v-for="(reportStage, index) in formStages.reportStages" :key="index">
+                        <div class="flex justify-end mt-5">
+                            <button type="button" @click="removeReportStage(index)"
+                                class="font-medium text-red-600 hover:text-indigo-500">Eliminar</button>
+                        </div>
+
+                        <InputLabel for="stage">
+                            Etapas
+                        </InputLabel>
+                        <div class="mt-2">
+                            <select v-model="reportStage.type" id="stage"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option value="">Selecciona etapa</option>
+                                <option v-for="stage in stages" :key="stage.id" :value="stage.name">
+                                    {{ stage.name }}
+                                </option>
+                            </select>
+                            <InputError :message="formStages.errors['reportStages.' + index + '.type']" />
+                        </div>
+
+                        <InputLabel for="emergency_lastname">
+                            Titulo
+                        </InputLabel>
+                        <div class="mt-2">
+                            <select v-model="reportStage.title_id" id="title_id"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option value="">Selecciona un título</option>
+                                <option v-for="title in titles" :key="title.id" :value="title.id">
+                                    {{ title.title }}
+                                </option>
+                            </select>
+                            <InputError :message="formStages.errors['reportStages.' + index + '.title_id']" />
+                        </div>
+                    </div>
+                    <InputError :message="formStages.errors.reportStages" />
+                    <div class="mt-6 flex items-center justify-end gap-x-3">
+                        <SecondaryButton @click="openModalAddedStages">Cerrar</SecondaryButton>
+                        <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">Agregar
+                        </PrimaryButton>
+                    </div>
+                </form>
+            </div>
+        </Modal>
         <ConfirmateModal :showConfirm="showApproveCode" tittle="Aprobacion de Codigo"
             text="Las fotos asociadas a este código serán eliminadas si no han sido aprobadas. ¿Desea continuar con la aprobación?"
             :actionFunction="approveCode" @closeModal="verifyApproveModal" />
@@ -131,6 +207,8 @@
             :message="messageSuccessImage" />
         <ConfirmDeleteModal :confirmingDeletion="confirmingImageDeletion" itemType="imagen"
             :deleteFunction="deleteImage" @closeModal="closeModalImage" />
+        <ConfirmDeleteModal :confirmingDeletion="showModalDelete" itemType="etapa" nameText="la etapa"
+            :deleteFunction="deleteStages" @closeModal="openModalDelete" />
     </AuthenticatedLayout>
 </template>
 
@@ -148,21 +226,24 @@ import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-// import GoogleMaps from '@/Components/GoogleMaps.vue';
-
+import { notifyError, notifyWarning } from '@/Components/Notification';
+import { setAxiosErrors } from '@/utils/utils';
 
 const showApproveCode = ref(false);
 const title_code_id = ref(null);
 const preproject_image_id = ref(null);
 const imageCodeId = ref('');
+const showOpenAddedStages = ref(false)
 const props = defineProps({
     // codesWithStatus: Object,
     preprojectImage: Object,
     imagesCode: Object,
     preproject: Object,
-    userPermissions: Array
+    userPermissions: Array,
+    stages: Object,
+    titles: Object
 });
-
+console.log(props.preprojectImage)
 const preprojectImages = ref(props.preprojectImage)
 
 const hasPermission = (permission) => {
@@ -178,37 +259,20 @@ let backUrl = (props.preproject?.status === undefined || props.preproject?.statu
 const confirmingImageDeletion = ref(false);
 const approve_reject_Image = ref(false);
 const imageToDelete = ref(null);
-// const photoCode = ref(props.imagesCode);
 const showRejectModal = ref(false)
-
-// const codes = ref(props.codesWithStatus);
-// const mapVisible = ref(false);
-
-// const filteredImages = ref(Object.values(props.imagesCode).filter(image => image.state == true));
-
-// const origin = {
-//     lat: Number(filteredImages.value[0]?.lat),
-//     lng: Number(filteredImages.value[0]?.lon)
-// };
-
-// const destination = {
-//     lat: Number(filteredImages.value[filteredImages.value.length - 1]?.lat),
-//     lng: Number(filteredImages.value[filteredImages.value.length - 1]?.lon)
-// };
-// const waypoints = filteredImages.value.slice(1, -1).map(item => ({
-//     location: {
-//         lat: Number(item?.lat),
-//         lng: Number(item?.lon)
-//     },
-//     stopover: true
-// }));
 const titleSuccessImage = ref('')
 const messageSuccessImage = ref('')
+const showModalDelete = ref(false)
+const title_id = ref(null)
 
 const form = useForm({
     'id': '',
     'state': '',
     'observation': ''
+})
+
+const formStages = useForm({
+    'reportStages': []
 })
 
 const confirmDeleteImagen = (imagenId) => {
@@ -309,25 +373,65 @@ async function submitRejectImage() {
     } catch (error) {
         console.error(error);
     }
-
-    // form.state = false
-    // form.put(route('preprojects.imagereport.approveReject', { preproject_image_id: imageCodeId.value }), {
-    //     onSuccess: () => {
-    //         showRejectModal.value = false
-    //         titleSuccessImage.value = "Imagen Rechazada"
-    //         messageSuccessImage.value = "La imagen se rechazo correctamente"
-    //         approve_reject_Image.value = true
-    //         setTimeout(() => {
-    //             approve_reject_Image.value = false
-    //             router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
-    //         }, 2000)
-    //     },
-    //     onError: (e) => {
-    //         console.log(e)
-    //     }
-    // })
 }
 
+function openModalDelete(stages_id) {
+    title_id.value = stages_id
+    showModalDelete.value = !showModalDelete.value
+}
+
+async function deleteStages() {
+    let url = route('preprojects.stages.delete', { title_id: title_id.value })
+    try {
+        await axios.delete(url)
+        updateStages(title_id.value, 'delete')
+        openModalDelete()
+    } catch (error) {
+        if (error.response.data) {
+            notifyError('Server Error: ', error.response.data)
+        } else {
+            notifyError(error)
+        }
+    }
+}
+
+async function submitStages() {
+    let url = route('preprojects.stages.store', { preproject_id: props.preproject.id })
+    try {
+        let response = await axios.put(url, formStages)
+        updateStages(response.data, 'added')
+        openModalAddedStages()
+    } catch (error) {
+        if (error.response) {
+            if (error.response.data.errors) {
+                setAxiosErrors(error.response.data.errors, formStages)
+            } else {
+                console.error("Server error:", error.response.data)
+            }
+        } else {
+            notifyError("Network or other error:", error)
+        }
+    }
+}
+
+function openModalAddedStages() {
+    showOpenAddedStages.value = !showOpenAddedStages.value
+    formStages.clearErrors()
+    formStages.defaults({ ... { 'reportStages': [] } })
+    formStages.reset()
+}
+
+function updateStages(stages, action) {
+    let validations = preprojectImages.value
+    if (action === 'delete') {
+        let index = validations.findIndex(item => item.id === stages)
+        validations.splice(index, 1)
+    } else if (action === 'added') {
+        stages.forEach(element => {
+            validations.push(element)
+        });
+    }
+}
 // function requestPhotos($e) {
 //     if ($e === '0') {
 //         router.get(route('preprojects.imagereport.index', { preproject_id: props.preproject.id }))
@@ -442,4 +546,14 @@ function updateStateStage(preproject_stage_id) {
     preprojectImages.value[index].state = !preprojectImages.value[index].state;
 }
 
+const addReportStage = () => {
+    formStages.reportStages.push({
+        type: '',
+        title_id: '',
+    });
+}
+
+const removeReportStage = (index) => {
+    formStages.reportStages.splice(index, 1);
+}
 </script>

@@ -20,7 +20,6 @@ return new class extends Migration
             $table->date('exp_date')->nullable();
             $table->string('state');
             $table->text('observations')->nullable();
-
             $table->timestamps();
             $table->unique(['subdivision_id', 'employee_id']);
         });

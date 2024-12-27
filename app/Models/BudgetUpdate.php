@@ -15,6 +15,7 @@ class BudgetUpdate extends Model
         'project_id',
         'reason',     
         'user_id',
+        "user_name",
         'created_at'
     ];
 

@@ -102,6 +102,7 @@ class ArchivesController extends Controller
                     'name' => $folder->name . '-' . $newVersion,
                     'folder_id' => $request->folder_id,
                     'user_id' => $request->user_id,
+                    'user_name' => $request->user_name,
                     'path' => $folder->path,
                     'comment' => $request->comment,
                     'version' => $newVersion,
@@ -109,6 +110,7 @@ class ArchivesController extends Controller
                 foreach($lastArchive->archive_users as $archive_user){
                     ArchiveUser::create([
                         'user_id' => $archive_user->user_id,
+                        'user_name' => $archive_user->user_name,
                         'due_date' => $request->new_date,
                         'status' => true,
                         'archive_id' => $archive->id,
@@ -119,6 +121,7 @@ class ArchivesController extends Controller
                     'name' => $folder->name . '-' . $newVersion,
                     'folder_id' => $request->folder_id,
                     'user_id' => $request->user_id,
+                    'user_name' => $request->user_name,
                     'path' => $folder->path,
                     'comment' => $request->comment,
                     'version' => $newVersion,
@@ -212,7 +215,13 @@ class ArchivesController extends Controller
             $due_date = $validatedData['due_date'];
 
             // Convertir la lista de usuarios en un array de ids para la verificación
-            $selectedUserIds = array_column($selectedUsers, 'id');
+            // $selectedUserIds = array_column($selectedUsers, 'id');
+            $selectedUserIds = array_map(function ($user) {
+                return [
+                    'id' => $user['id'],
+                    'name' => $user['name']
+                ];
+            }, $selectedUsers);
 
             // Obtener los registros existentes en la tabla 'archive_user' para este archivo
             $existingRecords = ArchiveUser::where('archive_id', $archiveId)->get();
@@ -220,7 +229,7 @@ class ArchivesController extends Controller
             // Iterar sobre los usuarios seleccionados
             foreach ($selectedUserIds as $userId) {
                 // Verificar si ya existe un registro para este usuario y archivo
-                $existingRecord = $existingRecords->firstWhere('user_id', $userId);
+                $existingRecord = $existingRecords->firstWhere('user_id', $userId['id']);
                 if ($existingRecord) {
                     // Actualizar el estado del registro existente a true
                     $existingRecord->status = true;
@@ -230,7 +239,8 @@ class ArchivesController extends Controller
                     ArchiveUser::create([
                         'archive_id' => $archiveId,
                         'due_date' => $due_date,
-                        'user_id' => $userId,
+                        'user_id' => $userId['id'],
+                        'user_name' => $userId['name'],
                     ]);
                 }
             }
@@ -323,6 +333,7 @@ class ArchivesController extends Controller
                     'name' => $tempName . '-' . $newVersion,
                     'folder_id' => $archiveFounded->folder_id,
                     'user_id' => $archiveFounded->user_id,
+                    'user_name' => $archiveFounded->user_name,
                     'comment' => $archiveFounded->comment,
                     'path' => $newArchivePath,
                     'version' => $newVersion,

@@ -654,7 +654,7 @@ class PreProjectController extends Controller
 
     public function index_image($preproject_id)
     {
-        $preprojectImages = PreprojectTitle::with('preprojectCodes.code', 'preprojectCodes.imagecodepreprojet',)->where('preproject_id', $preproject_id)->get();
+        $preprojectImages = PreprojectTitle::with('preprojectCodes.code', 'preprojectCodes.imagecodepreprojet')->where('preproject_id', $preproject_id)->get();
         $imagesCode = Imagespreproject::all();
         $imagesCode->each(function ($url) {
             $url->image = url('/image/imagereportpreproject/' . $url->image);
@@ -670,6 +670,8 @@ class PreProjectController extends Controller
             'preprojectImage' => $preprojectImages,
             'imagesCode' => $imagesCode,
             'preproject' => Preproject::select('id', 'status')->find($preproject_id),
+            'stages' => ReportStage::select('id', 'name')->get(),
+            'titles' => Title::all(),
         ]);
     }
 
@@ -692,6 +694,41 @@ class PreProjectController extends Controller
     //     });
     //     return response()->json(['images' => $data, 'codes' => $codesWithStatus]);
     // }
+
+    public function stages_store(Request $request, $preproject_id)
+    {
+        $data = $request->validate([
+            'reportStages' => 'required|array',
+            'reportStages.*.type' => 'required|string',
+            'reportStages.*.title_id' => 'required|numeric',
+        ]);
+        $preprojectTitles = [];
+        if (isset($data['reportStages'])) {
+            foreach ($data['reportStages'] as $report) {
+                $dataCode = TitleCode::where('title_id', $report['title_id'])->get();
+                $preprojectTitle = PreprojectTitle::create([
+                    'type' => $report['type'],
+                    'preproject_id' => $preproject_id,
+                ]);
+                foreach ($dataCode as $codes) {
+                    PreprojectCode::create([
+                        'preproject_title_id' => $preprojectTitle->id,
+                        'code_id' => $codes->code_id
+                    ]);
+                }
+                $preprojectTitle->load('preprojectCodes.code');
+                $preprojectTitles[] = $preprojectTitle;
+            }
+        }
+        return response()->json($preprojectTitles, 200);
+    }
+
+    public function delete_stages($title_id)
+    {
+        $preprojectTitle = PreprojectTitle::find($title_id);
+        $preprojectTitle->delete();
+        return response()->noContent();
+    }
 
     public function approve_reject_image(Request $request, $id)
     {

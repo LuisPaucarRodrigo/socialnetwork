@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/cicsa_process/index', [CicsaController::class, 'index'])->name('cicsa.index');
-Route::any('/cicsa_approve', [CicsaController::class, 'chargeCicsa'])->name('cicsa.charge');
 Route::get('/cicsa_process/export/{stages?}', [CicsaController::class, 'exportCiscaProcess'])->name('cicsa.export');
 
 Route::any('/cicsa_assignation/{searchCondition?}', [CicsaController::class, 'indexAssignation'])->name('assignation.index');
@@ -62,9 +61,6 @@ Route::any('/cicsa_charge_areas/index/{searchCondition?}', [CicsaController::cla
 Route::post('/cicsa_charge_areas/update/{cicsa_charge_area_id}', [CicsaController::class, 'updateChargeArea'])->name('cicsa.charge_areas.update');
 Route::get('/cicsa_charge_areas/showDocument/{chargeAreaOrder}', [CicsaController::class, 'showChargeAreaDocument'])->name('cicsa.charge_areas.showDocument');
 Route::get('/cicsa_charge_areas/export', [CicsaController::class, 'exportChargeArea'])->name('cicsa.charge_areas.export');
-
-// CicsaChargeAreaAccepted
-Route::any('/cicsa_charge_areas/accepted', [CicsaController::class, 'getChargeAreaAccepted'])->name('cicsa.charge_areas.accepted');
 
 
 //search

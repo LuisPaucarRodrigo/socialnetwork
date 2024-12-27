@@ -12,6 +12,7 @@ class ArchiveUser extends Model
     protected $fillable = [
         "archive_id",
         "user_id",
+        "user_name",
         "state",
         "status",
         "due_date",
