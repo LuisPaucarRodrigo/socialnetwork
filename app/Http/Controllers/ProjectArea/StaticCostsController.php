@@ -142,7 +142,7 @@ class StaticCostsController extends Controller
             'operation_number' => 'nullable|string',
             'operation_date' => 'nullable|date',
             'doc_number' => 'nullable|string',
-            'doc_date' => 'required|date',
+            'doc_date' => 'nullable|date',
             'amount' => 'required|numeric',
             'zone' => 'required',
             'provider_id' => 'nullable',
