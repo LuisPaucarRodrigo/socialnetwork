@@ -93,10 +93,10 @@ class StaticCostsController extends Controller
             return $item;
         });
         if (count($request->selectedStateTypes) < PintConstants::countScStatesTypes()) {
-            $result = $result->filter(function($item) use ($request) {
+            $result = $result->filter(function ($item) use ($request) {
                 return in_array($item->real_state, $request->selectedStateTypes);
             })->values()->all();
-        } 
+        }
         return response()->json($result, 200);
     }
 
@@ -108,7 +108,7 @@ class StaticCostsController extends Controller
             $data['photo'] = $this->file_store($request->file('photo'), 'documents/staticcosts/');
         }
         $data['account_statement_id'] = null;
-        if(isset($data['operation_number']) && isset($data['operation_date'])){
+        if (isset($data['operation_number']) && isset($data['operation_date'])) {
             $on = substr($data['operation_number'], -6);
             $as = AccountStatement::where('operation_date', $data['operation_date'])
                 ->where('operation_number', $on)->first();
@@ -152,7 +152,7 @@ class StaticCostsController extends Controller
         ]);
 
         $data['account_statement_id'] = null;
-        if(isset($data['operation_number']) && isset($data['operation_date'])){
+        if (isset($data['operation_number']) && isset($data['operation_date'])) {
             $on = substr($data['operation_number'], -6);
             $as = AccountStatement::where('operation_date', $data['operation_date'])
                 ->where('operation_number', $on)->first();
@@ -186,29 +186,33 @@ class StaticCostsController extends Controller
         return response()->json($additional_cost, 200);
     }
 
-    public function masiveUpdate (Request $request) {
+    public function masiveUpdate(Request $request)
+    {
         $data = $request->validate([
-            'ids' => 'required | array | min:1',
+            'ids' => 'required|array|min:1',
             'ids.*' => 'integer',
             'operation_date' => 'required|date',
             'operation_number' => 'required|min:6',
         ]);
         $on = substr($data['operation_number'], -6);
         $as = AccountStatement::where('operation_date', $data['operation_date'])
-                ->where('operation_number', $on)->first();
+            ->where('operation_number', $on)
+            ->first();
         $data['account_statement_id'] = $as?->id;
-
-        StaticCost::whereIn('id', $data['ids'])->update([
-            'operation_date' => $data['operation_date'],
-            'operation_number' => $data['operation_number'],
-            'account_statement_id' => $data['account_statement_id'],
-        ]);
+        $costs = StaticCost::whereIn('id', $data['ids'])->get();
+        foreach ($costs as $cost) {
+            $cost->update([
+                'operation_date' => $data['operation_date'],
+                'operation_number' => $data['operation_number'],
+                'account_statement_id' => $data['account_statement_id'],
+            ]);
+        }
         $updatedCosts = StaticCost::whereIn('id', $data['ids'])
-        ->with(['project', 'provider:id,company_name'])
-        ->get();
+            ->with(['project', 'provider:id,company_name'])
+            ->get();
         $updatedCosts->each(function ($cost) {
-        $cost->project->setAppends([]);
-        $cost->setAppends(['real_amount', 'real_state']);
+            $cost->project->setAppends([]);
+            $cost->setAppends(['real_amount', 'real_state']);
         });
         return response()->json($updatedCosts, 200);
     }
@@ -253,13 +257,13 @@ class StaticCostsController extends Controller
                         $photoPath = public_path("/documents/staticcosts/{$cost->photo}");
                         if (file_exists($photoPath)) {
                             $zip->addFile($photoPath, $cost->photo);
-                        } 
+                        }
                     }
                 }
                 $zip->close();
                 ob_end_clean();
                 return response()->download($zipFilePath)->deleteFileAfterSend(true);
-    
+
             } else {
                 Log::error('No se pudo abrir el archivo ZIP para escritura.');
                 return response()->json(['error' => 'No se pudo abrir el archivo ZIP para escritura.'], 500);

@@ -80,8 +80,6 @@ class AdditionalCostsController extends Controller
 
     public function search_costs(Request $request, $project_id)
     {
-
-
         $result = AdditionalCost::where('project_id', $project_id)->with([
             'project:id,description',
             'provider'
@@ -243,22 +241,26 @@ class AdditionalCostsController extends Controller
     public function masiveUpdate(Request $request)
     {
         $data = $request->validate([
-            'ids' => 'required | array | min:1',
+            'ids' => 'required|array|min:1',
             'ids.*' => 'integer',
             'operation_date' => 'required|date',
             'operation_number' => 'required|min:6',
         ]);
         $on = substr($data['operation_number'], -6);
         $as = AccountStatement::where('operation_date', $data['operation_date'])
-            ->where('operation_number', $on)->first();
-        $data['account_statement_id'] = $as?->id;
+            ->where('operation_number', $on)
+            ->first();
 
-        AdditionalCost::whereIn('id', $data['ids'])->update([
-            'operation_date' => $data['operation_date'],
-            'operation_number' => $data['operation_number'],
-            'account_statement_id' => $data['account_statement_id'],
-            'is_accepted' => 1
-        ]);
+        $data['account_statement_id'] = $as?->id;
+        $costs = AdditionalCost::whereIn('id', $data['ids'])->get();
+        foreach ($costs as $cost) {
+            $cost->update([
+                'operation_date' => $data['operation_date'],
+                'operation_number' => $data['operation_number'],
+                'account_statement_id' => $data['account_statement_id'],
+                'is_accepted' => 1,
+            ]);
+        }
         $updatedCosts = AdditionalCost::whereIn('id', $data['ids'])
             ->with(['project', 'provider:id,company_name'])
             ->get();
@@ -268,7 +270,6 @@ class AdditionalCostsController extends Controller
         });
         return response()->json($updatedCosts, 200);
     }
-
     public function swapCosts(Request $request)
     {
         $data = $request->validate([
@@ -278,21 +279,21 @@ class AdditionalCostsController extends Controller
             $ac = AdditionalCost::find($id);
             $ac->photo && $this->file_move($ac->photo);
             StaticCost::create([
-                'expense_type'=> $ac->expense_type,
-                'ruc'=> $ac->ruc,
-                'type_doc'=> $ac->type_doc,
-                'zone'=> $ac->zone,
-                'operation_number'=> $ac->operation_number,
-                'operation_date'=> $ac->operation_date,
-                'doc_number'=> $ac->doc_number,
-                'doc_date'=> $ac->doc_date,
-                'description'=> $ac->description,
-                'amount'=> $ac->amount,
-                'project_id'=> $ac->project_id,
-                'provider_id'=> $ac->provider_id,
-                'igv'=> $ac->igv,
-                'photo'=> $ac->photo,
-                'account_statement_id'=> $ac->account_statement_id,
+                'expense_type' => $ac->expense_type,
+                'ruc' => $ac->ruc,
+                'type_doc' => $ac->type_doc,
+                'zone' => $ac->zone,
+                'operation_number' => $ac->operation_number,
+                'operation_date' => $ac->operation_date,
+                'doc_number' => $ac->doc_number,
+                'doc_date' => $ac->doc_date,
+                'description' => $ac->description,
+                'amount' => $ac->amount,
+                'project_id' => $ac->project_id,
+                'provider_id' => $ac->provider_id,
+                'igv' => $ac->igv,
+                'photo' => $ac->photo,
+                'account_statement_id' => $ac->account_statement_id,
             ]);
         }
         AdditionalCost::whereIn('id', $data['ids'])->delete();
@@ -333,10 +334,10 @@ class AdditionalCostsController extends Controller
 
     public function file_move($fileName)
     {
-        $sourcePath = public_path('documents/additionalcosts/'.$fileName); 
-        $destinationPath = public_path('documents/staticcosts/'.$fileName);
+        $sourcePath = public_path('documents/additionalcosts/' . $fileName);
+        $destinationPath = public_path('documents/staticcosts/' . $fileName);
         if (file_exists($sourcePath)) {
-            rename($sourcePath, $destinationPath); 
+            rename($sourcePath, $destinationPath);
             return true;
         }
         return true;
