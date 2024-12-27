@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Huawei;
 
 use App\Http\Controllers\Controller;
+use App\Models\HuaweiAdditionalCost;
 use App\Models\HuaweiCode;
 use App\Models\HuaweiProject;
 use App\Models\HuaweiProjectCode;
@@ -10,7 +11,9 @@ use App\Models\HuaweiProjectImage;
 use App\Models\HuaweiProjectStage;
 use App\Models\HuaweiTitle;
 use App\Models\HuaweiTitleCode;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class HuaweiMobileController extends Controller
@@ -282,5 +285,111 @@ class HuaweiMobileController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    //expenses_dus
+    public function fetchSites ($request)
+    {
+        $projects = HuaweiProject::where('macro_project', $request)->get();
+
+        $sites = $projects->flatMap(function ($project) {
+            return $project->huawei_site()->get()->map(function ($site) {
+                return [
+                    'id' => $site->id,
+                    'name' => $site->name,
+                ];
+            });
+        })->unique('id');
+
+        return response()->json($sites, 200);
+    }
+
+    public function fetchProjects ($macro, $site)
+    {
+        $projects = HuaweiProject::select('id', 'name', 'assigned_diu')
+            ->where('macro_project', $macro)
+            ->where('huawei_site_id', $site)
+            ->get()
+            ->makeHidden([
+                'code',
+                'additional_cost_total',
+                'static_cost_total',
+                'materials_in_project',
+                'equipments_in_project',
+                'materials_liquidated',
+                'equipments_liquidated',
+                'total_earnings',
+                'total_real_earnings',
+                'total_real_earnings_without_deposit',
+                'total_project_cost',
+                'total_employee_costs',
+                'total_essalud_employee_cost',
+                'huawei_project_resources'
+            ])
+            ->filter(function ($project){
+                return $project->state == 1;
+            });
+
+        return response()->json($projects, 200);
+    }
+
+    public function storeExpense ($huawei_project, Request $request)
+    {
+        $data = $request->validate([
+            'id' => 'required|numeric',
+            'expense_type' => 'required',
+            'employee' => 'required',
+            'cdp_type' => 'required',
+            'doc_number' => 'required',
+            'op_number' => 'required',
+            'ruc' => 'required',
+            'description' => 'required',
+            'amount' => 'required',
+            'image1' => 'required',
+            'image2' => 'nullable',
+            'image3' => 'nullable',
+        ]);
+
+        $data['expense_date'] = Carbon::now();
+        $data['huawei_project_id'] = $huawei_project;
+        $data['refund_status'] = 'PENDIENTE';
+
+        DB::beginTransaction();
+
+        $new_expense = HuaweiAdditionalCost::create([
+            'expense_type' => $data['expense_type'],
+            'employee' => $data['employee'],
+            'expense_date' => $data['expense_date'],
+            'cdp_type' => $data['cdp_type'],
+            'doc_number' => $data['doc_number'],
+            'op_number' => $data['op_number'],
+            'ruc' => $data['ruc'],
+
+        ]);
+
+        try {
+            $expenseDirectory = 'documents/huawei/monthly_expenses/';
+            $imageFields = ['image1', 'image2', 'image3'];
+            $imageUpdates = [];
+
+            foreach ($imageFields as $index => $field){
+                if ($request->hasFile($field)){
+                    $image = str_replace('data:image/png;base64,', '', $data[$field]);
+                    $image = str_replace(' ', '+', $image);
+                    $imageContent = base64_decode($image);
+                    $data[$field] = time() . '.png';
+                    file_put_contents(public_path($expenseDirectory) . $data[$field], $imageContent);
+                    $imageUpdates[$field] = $data[$field];
+                }
+            }
+
+
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

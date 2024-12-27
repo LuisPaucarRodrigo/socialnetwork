@@ -221,6 +221,9 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::post('huawei/monthly_projects/monthly_expenses/massive_update/post', [HuaweiMonthlyController::class, 'massiveUpdate'])->name('huawei.monthlyexpenses.expenses.massiveupdate');
     Route::post('huawei/monthly_projects/monthly_expenses/massive_validate/post', [HuaweiMonthlyController::class, 'massiveValidate'])->name('huawei.monthlyexpenses.expenses.massivevalidate');
 
+    Route::get('huawei/mobile_controller/expenses/{request}/fetch_sites', [HuaweiMobileController::class, 'fetchSites'])->name('huawei.mobile.expenses.fetchsites');
+    Route::get('huawei/mobile_controller/expenses/{macro}/{site}/fetch_projects', [HuaweiMobileController::class, 'fetchProjects'])->name('huawei.mobile.expenses.fetchprojects');
+
 });
 
 

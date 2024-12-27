@@ -67,7 +67,8 @@ class HuaweiMonthlyController extends Controller
     //expenses
     public function getExpenses (HuaweiMonthlyProject $project)
     {
-        $expenses = HuaweiMonthlyExpense::where('huawei_monthly_project_id', $project->id)->orderBy('created_at', 'desc')->paginate(15);
+        $expenses = HuaweiMonthlyExpense::where('huawei_monthly_project_id', $project->id)->orderBy('created_at', 'desc')
+            ->paginate(20);
 
         return Inertia::render('Huawei/MonthlyExpenses', [
             'expense' => $expenses,
@@ -89,7 +90,8 @@ class HuaweiMonthlyController extends Controller
                     ->orWhereRaw('LOWER(doc_number) LIKE ?', ["%{$searchTerm}%"])
                     ->orWhereRaw('LOWER(op_number) LIKE ?', ["%{$searchTerm}%"])
                     ->orWhereRaw('LOWER(ruc) LIKE ?', ["%{$searchTerm}%"])
-                    ->orWhereRaw('LOWER(description) LIKE ?', ["%{$searchTerm}%"]);
+                    ->orWhereRaw('LOWER(description) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(ec_op_number) LIKE ?', ["%{$searchTerm}%"]);
             });
 
         // Ejecutar la consulta y obtener los resultados
