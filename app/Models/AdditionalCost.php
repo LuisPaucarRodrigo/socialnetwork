@@ -28,6 +28,7 @@ class AdditionalCost extends Model
         'igv',
         'user_id',
         'general_expense_id',
+        'account_statement_id',
 
     ];
 

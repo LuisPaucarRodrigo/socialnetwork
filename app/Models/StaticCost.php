@@ -28,6 +28,7 @@ class StaticCost extends Model
         'igv',
         'photo',
         'general_expense_id',
+        'account_statement_id',
     ];
 
     protected $casts = [
