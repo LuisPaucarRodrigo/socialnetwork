@@ -314,13 +314,13 @@ class PextController extends Controller
         return Excel::download(new PextExpenseExport($project_id, json_decode($fixedOrAdditional)), 'Gastos_Pext' . '-' . $project_name->project_name . '-' . $fOrA . '.xlsx');
     }
 
-    public function index_additional(Request $request)
+    public function index_additional(Request $request, $type)
     {
         $text = "Mantto";
         if ($request->isMethod('get')) {
             $project = CicsaAssignation::with('project.cost_center', 'project.project_quote.project_quote_valuations')
-                ->whereHas('project.cost_center', function ($query) use ($text) {
-                    $query->where('name', 'not like', "%$text%");
+                ->whereHas('project.cost_center', function ($query) use ($text, $type) {
+                    $query->where('name', 'not like', "%$text%")->where('cost_line_id', $type);
                 })
                 ->whereDoesntHave('project.preproject')
                 ->orderBy('created_at', 'desc')
@@ -332,7 +332,8 @@ class PextController extends Controller
 
             return Inertia::render('ProjectArea/ProjectManagement/ProjectAdditional', [
                 'project' => $project,
-                'cost_line' => $cost_line
+                'cost_line' => $cost_line,
+                'type' => $type,
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->searchQuery;
@@ -419,7 +420,7 @@ class PextController extends Controller
         return $pdf->stream();
     }
 
-    public function additional_expense_index($project_id, $fixedOrAdditional)
+    public function additional_expense_index($project_id, $fixedOrAdditional, $type)
     {
         $expense = PextProjectExpense::with(['provider:id,company_name', 'project.cost_center'])
             ->where('fixedOrAdditional', json_decode($fixedOrAdditional))
@@ -447,7 +448,8 @@ class PextController extends Controller
                 'project_id' => $project_id,
                 'cost_center' => $cost_line->cost_center,
                 'fixedOrAdditional' => json_decode($fixedOrAdditional),
-                'cicsaAssignation' => $cicsa_assignation
+                'cicsaAssignation' => $cicsa_assignation,
+                'type'=> $type
             ]
         );
     }
