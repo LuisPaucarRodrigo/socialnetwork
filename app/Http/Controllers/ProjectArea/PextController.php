@@ -330,7 +330,7 @@ class PextController extends Controller
                 $query->where('name', 'not like', "%$text%");
             }])->first();
 
-            return Inertia::render('ProjectArea/ProjectManagement/PextProjectAdditional', [
+            return Inertia::render('ProjectArea/ProjectManagement/ProjectAdditional', [
                 'project' => $project,
                 'cost_line' => $cost_line
             ]);
@@ -440,7 +440,7 @@ class PextController extends Controller
             ->where('project_id', $project_id)
             ->first();
         return Inertia::render(
-            'ProjectArea/ProjectManagement/PextProjectAdditionalExpenses',
+            'ProjectArea/ProjectManagement/ProjectAdditionalExpenses',
             [
                 'expense' => $expense,
                 'providers' => $providers,
