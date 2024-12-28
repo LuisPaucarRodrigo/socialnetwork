@@ -6,7 +6,7 @@
             Proyectos Adicionales
         </template>
         <Toaster richColors />
-        <div class="min-w-full rounded-lg shadow">
+        <div class="min-w-full">
             <div class="mt-6 flex items-center justify-between gap-x-6">
                 <div class="hidden sm:flex sm:items-center sm:space-x-3">
                     <PrimaryButton data-tooltip-target="add_monthly_project" v-if="hasPermission('ProjectManager')"
@@ -70,14 +70,14 @@
                         </template>
                     </dropdown>
                 </div>
-                <div class="flex items-center mt-4 space-x-3 sm:mt-0">
+                <div class="flex space-x-3">
                     <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
                         placeholder="Buscar ..." />
-                </div>
-                <div id="search_fields" role="tooltip"
-                    class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                    Nombre,Codigo,CPE
-                    <div class="tooltip-arrow" data-popper-arrow></div>
+                    <div id="search_fields" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Nombre,Codigo,CPE
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                 </div>
             </div>
             <br>
@@ -193,7 +193,7 @@
                             </Link>
                             <span v-else class="text-gray-400">Servicios</span> -->
                             <Link
-                                :href="route('pext.additional.expense.index', { project_id: item.id, fixedOrAdditional: false })"
+                                :href="route('pext.additional.expense.index', { project_id: item.project.id, fixedOrAdditional: false })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                             Compras y Gastos
                             </Link>
@@ -240,7 +240,7 @@
             </div>
             <br>
             <div v-if="projects.data"
-                class="flex flex-col items-center border-t px-5 py-5 xs:flex-row xs:justify-between">
+                class="flex flex-col items-center px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="projects.links" />
             </div>
         </div>
@@ -299,7 +299,7 @@
                                     <option value="">Seleccionar Centro de Costo</option>
                                     <option v-for="item in cost_line.cost_center" :key="item.id" :value="item.id">{{
                                         item.name
-                                        }}
+                                    }}
                                     </option>
                                 </select>
                                 <InputError :message="form.errors.cost_center_id" />

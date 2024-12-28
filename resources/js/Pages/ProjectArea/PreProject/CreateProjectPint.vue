@@ -311,7 +311,7 @@ watch(() => form.cost_center_id, () => {
 
 const submit = () => {
     let url = route('project.auto_store.pint')
-    console.log(form.data())
+    
     form.post(url, {
         onSuccess: () => {
             showModal.value = true

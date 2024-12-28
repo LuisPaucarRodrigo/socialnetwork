@@ -10,6 +10,7 @@ use App\Models\AccountStatement;
 use App\Models\CicsaAssignation;
 use App\Models\CostLine;
 use App\Models\PextProjectExpense;
+use App\Models\Preproject;
 use App\Models\Project;
 use App\Models\ProjectQuote;
 use App\Models\ProjectQuoteValuation;
@@ -40,34 +41,25 @@ class PextController extends Controller
             //     'project' => $project,
             //     'cost_line' => $cost_line
             // ]);
-            $cicsa_assignation = CicsaAssignation::with('project.cost_center')
-                ->whereHas('project.cost_center', function ($query) use ($text) {
-                    $query->where('name', 'like', "%$text%");
+            $cicsa_assignation = CicsaAssignation::with('project.cost_center', 'project.preproject')
+                ->whereHas('project', function ($query) use ($text) {
+                    $query->whereHas('cost_center', function ($costCenterQuery) use ($text) {
+                        $costCenterQuery->where('name', 'like', "%$text%");
+                    })->whereHas('preproject');
                 })
                 ->orderBy('created_at', 'desc')
                 ->paginate();
-            $project = Project::select('id', 'preproject_id')
-                ->with(['preproject:id,code'])
-                ->where('cost_line_id', 2)
-                ->whereDoesntHave('cicsa_assignation')
-                ->get();
-
-            $project->each(function ($item) {
-                $item->setAppends([]);
-                if ($item->preproject) {
-                    $item->preproject->setAppends([]);
-                }
-            });
 
             return Inertia::render('ProjectArea/ProjectManagement/PextProjectMonthly', [
                 'cicsa_assignation' => $cicsa_assignation,
-                'project' => $project
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->searchQuery;
             $project = CicsaAssignation::with('project.cost_center')
-                ->whereHas('project.cost_center', function ($query) use ($text) {
-                    $query->where('name', 'like', "%$text%");
+                ->whereHas('project', function ($query) use ($text) {
+                    $query->whereHas('cost_center', function ($costCenterQuery) use ($text) {
+                        $costCenterQuery->where('name', 'like', "%$text%");
+                    })->whereHas('preproject');
                 })->where(function ($query) use ($searchQuery) {
                     $query->orWhere('project_name', 'like', "%$searchQuery%")
                         ->orWhere('project_code', 'like', "%$searchQuery%")
@@ -79,21 +71,26 @@ class PextController extends Controller
         }
     }
 
-    // public function requestCicsa($zone = null)
-    // {
-    //     $cicsa = CicsaAssignation::select('id', 'project_name', 'customer')
-    //         ->where('zone', $zone)
-    //         ->orWhereHas('cicsa_charge_area', function ($subQuery) {
-    //             $subQuery->where(function ($subQuery) {
-    //                 $subQuery->whereNull('invoice_number')
-    //                     ->orWhereNull('invoice_date')
-    //                     ->orWhereNull('amount');
-    //             })
-    //                 ->whereNull('deposit_date');
-    //         })
-    //         ->get();
-    //     return response()->json($cicsa, 200);
-    // }
+    public function requestProjectOrPreproject($type)
+    {
+        if ($type === 'Proyectos') {
+            $pro = Project::select('id', 'preproject_id', 'cost_line_id')
+                ->with(['preproject:id,code'])
+                ->whereNotNull('preproject_id')
+                ->where('cost_line_id', 2)
+                ->whereDoesntHave('cicsa_assignation')
+                ->get();
+        } else {
+            $pro = Preproject::where('cost_line_id', 2)
+                ->whereHas('cost_center', function ($query) {
+                    $query->where('name', 'not like', "%Mantto%");
+                })
+                ->whereDoesntHave('project')
+                ->get();
+        }
+        $pro->each->setAppends([]);
+        return response()->json($pro, 200);
+    }
 
     public function storeOrUpdate(Request $request, $cicsa_assignation_id = null)
     {
@@ -110,18 +107,50 @@ class PextController extends Controller
             'user_id' => 'required|numeric',
             'project_id' => 'required|numeric',
         ]);
-        // $project = Project::create([
-        //     'priority' => 'Alta',
-        //     'description' => $validatedData['project_name'],
-        //     'cost_line_id' => $validatedData['cost_line_id'],
-        //     'cost_center_id' => $validatedData['cost_center_id'],
-        // ]);
+
         $cicsaAssignation = CicsaAssignation::updateOrCreate(
             ['id' => $cicsa_assignation_id],
             $validatedData
         );
+
         $cicsaAssignation->load('project.cost_center');
         return response()->json($cicsaAssignation, 200);
+    }
+
+    public function storeProjectAndAssignation(Request $request)
+    {
+        $validateData = $request->validate([
+            'assignation_date' => 'nullable|date',
+            'project_name' => 'required|string',
+            'customer' => 'nullable|string',
+            'project_code' => 'nullable|string',
+            'cpe' => 'nullable|string',
+            'zone' => 'required|string',
+            'zone2' => 'nullable|string',
+            'manager' => 'required|string',
+            'user_name' => 'required|string',
+            'user_id' => 'required|numeric',
+            'pre_project_id' => 'required|numeric',
+        ]);
+        DB::beginTransaction();
+        try {
+            $preproject = Preproject::find($validateData['pre_project_id']);
+            $project = Project::create([
+                'priority' => 'Alta',
+                'description' => $validateData['project_name'],
+                'cost_center_id' => $preproject->cost_center_id,
+                'cost_line_id' => $preproject->cost_line_id,
+                'preproject_id' => $validateData['pre_project_id']
+            ]);
+            $validateData['project_id'] = $project->id;
+            $cicsaAssignation = CicsaAssignation::create($validateData);
+            $cicsaAssignation->load('project.cost_center');
+            DB::commit();
+            return response()->json($cicsaAssignation, 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json($e->getMessage(), 500);
+        }
     }
 
 
@@ -226,7 +255,7 @@ class PextController extends Controller
         $validatedData['fixedOrAdditional'] = json_decode($validatedData['fixedOrAdditional']);
         // $validatedData['state'] = json_decode($validatedData['state']);
 
-        $validatedData['account_statement_id'] = null;
+        // $validatedData['account_statement_id'] = null;
         if (isset($validatedData['operation_number']) && isset($validatedData['operation_date'])) {
             $on = substr($validatedData['operation_number'], -6);
             $as = AccountStatement::where('operation_date', $validatedData['operation_date'])
@@ -244,7 +273,7 @@ class PextController extends Controller
             $validatedData
         );
 
-        $expense->load('cicsa_assignation.project.cost_center');
+        $expense->load('project.cost_center');
         $expense->setAppends(['real_amount']);
         return response()->json($expense, 200);
     }
@@ -293,8 +322,10 @@ class PextController extends Controller
                 ->whereHas('project.cost_center', function ($query) use ($text) {
                     $query->where('name', 'not like', "%$text%");
                 })
+                ->whereDoesntHave('project.preproject')
                 ->orderBy('created_at', 'desc')
                 ->paginate();
+
             $cost_line = CostLine::where('name', 'Pext')->with(['cost_center' => function ($query) use ($text) {
                 $query->where('name', 'not like', "%$text%");
             }])->first();
@@ -313,6 +344,7 @@ class PextController extends Controller
                         ->orWhere('project_code', 'like', "%$searchQuery%")
                         ->orWhere('cpe', 'like', "%$searchQuery%");
                 })
+                ->whereDoesntHave('project.preproject')
                 ->orderBy('created_at', 'desc')
                 ->get();
             return response()->json($project, 200);
@@ -381,7 +413,7 @@ class PextController extends Controller
 
     public function export_quote($project_id)
     {
-        $project = Project::with('project_quote.project_quote_valuations','cicsa_assignation')
+        $project = Project::with('project_quote.project_quote_valuations', 'cicsa_assignation')
             ->find($project_id);
         $pdf = Pdf::loadView('pdf.CotizationPDFProject', compact('project'));
         return $pdf->stream();
@@ -404,6 +436,9 @@ class PextController extends Controller
         }
         $providers = Provider::select('id', 'ruc', 'company_name')->get();
         $cost_line = CostLine::where('name', 'PEXT')->with('cost_center')->first();
+        $cicsa_assignation = CicsaAssignation::select('id', 'project_id', 'zone')
+            ->where('project_id', $project_id)
+            ->first();
         return Inertia::render(
             'ProjectArea/ProjectManagement/PextProjectAdditionalExpenses',
             [
@@ -411,7 +446,8 @@ class PextController extends Controller
                 'providers' => $providers,
                 'project_id' => $project_id,
                 'cost_center' => $cost_line->cost_center,
-                'fixedOrAdditional' => json_decode($fixedOrAdditional)
+                'fixedOrAdditional' => json_decode($fixedOrAdditional),
+                'cicsaAssignation' => $cicsa_assignation
             ]
         );
     }
@@ -439,7 +475,7 @@ class PextController extends Controller
             });
         }
 
-        if (count($request->selectedZones) < 7) {
+        if ($request->selectedZones) {
             $expense = $expense->whereIn('zone', $request->selectedZones);
         }
         if (count($request->selectedExpenseTypes) < 14) {

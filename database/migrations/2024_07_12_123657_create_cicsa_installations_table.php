@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->date('pext_date')->nullable();
             $table->date('pint_date')->nullable();
-            $table->double('pint_amount')->nullable();
-            $table->double('pext_amount')->nullable();
+            $table->float('pint_amount')->nullable();
+            $table->float('pext_amount')->nullable();
             $table->double('projected_amount')->nullable();
             $table->string('conformity');
             $table->string('report');

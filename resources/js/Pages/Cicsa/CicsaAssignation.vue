@@ -269,10 +269,10 @@
                 </form>
             </div>
         </Modal> -->
-        <SuccessOperationModal :confirming="confirmAssignation" :title="'Nueva Asignacion creada'"
+        <!-- <SuccessOperationModal :confirming="confirmAssignation" :title="'Nueva Asignacion creada'"
             :message="'La Asignacion fue creada con éxito'" />
         <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Asignacion Actualizada'"
-            :message="'La Asignacion fue actualizada'" />
+            :message="'La Asignacion fue actualizada'" /> -->
     </AuthenticatedLayout>
 </template>
 
@@ -305,27 +305,26 @@ const { assignation, auth, searchCondition, type } = defineProps({
 const assignations = ref(assignation);
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
 
-const initialState = {
-    id: null,
-    user_id: auth.user.id,
-    assignation_date: '',
-    project_name: '',
-    cost_center: '',
-    customer: '',
-    project_code: '',
-    cpe: '',
-    zone: '',
-    zone2: '',
-    manager: '',
-    user_name: auth.user.name,
-}
+// const initialState = {
+//     id: null,
+//     user_id: auth.user.id,
+//     assignation_date: '',
+//     project_name: '',
+//     customer: '',
+//     project_code: '',
+//     cpe: '',
+//     zone: '',
+//     zone2: '',
+//     manager: '',
+//     user_name: auth.user.name,
+// }
 
-const form = useForm(
-    { ...initialState }
-);
+// const form = useForm(
+//     { ...initialState }
+// );
 
-const showAddEditModal = ref(false);
-const confirmAssignation = ref(false);
+// const showAddEditModal = ref(false);
+// const confirmAssignation = ref(false);
 
 // function openAddAssignationModal() {
 //     showAddEditModal.value = true
@@ -361,13 +360,13 @@ const confirmAssignation = ref(false);
 //     }
 // }
 
-const confirmUpdateAssignation = ref(false);
+// const confirmUpdateAssignation = ref(false);
 
-function openEditSotModal(item) {
-    form.defaults({ ...item })
-    form.reset()
-    showAddEditModal.value = true
-}
+// function openEditSotModal(item) {
+//     form.defaults({ ...item })
+//     form.reset()
+//     showAddEditModal.value = true
+// }
 
 // async function submitUpdate() {
 //     let url = route('assignation.storeOrUpdate', { cicsa_assignation_id: form.id })

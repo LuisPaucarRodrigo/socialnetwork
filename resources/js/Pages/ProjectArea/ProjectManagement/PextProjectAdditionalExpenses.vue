@@ -14,6 +14,17 @@
                         @click="openCreateAdditionalModal" type="button" class="whitespace-nowrap">
                         + Agregar
                     </PrimaryButton>
+                    <PrimaryButton data-tooltip-target="update_data_tooltip" type="button" @click="() => {
+                        filterForm = { ...initialFilterFormState }
+                    }
+                        ">
+                        <ServerIcon class="w-5 h-5 text-white" />
+                    </PrimaryButton>
+                    <div id="update_data_tooltip" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Todos los Registros
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                     <button data-tooltip-target="export_tooltip" type="button"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500"
                         @click="openExportExcel">
@@ -50,9 +61,7 @@
                         :href="route('pext.additional.expense.index', { project_id: project_id, fixedOrAdditional: true })">
                     G.Fijos
                     </Link>
-
                 </div>
-
                 <div v-if="hasPermission('HumanResourceManager')" class="sm:hidden">
                     <dropdown align="left">
                         <template #trigger>
@@ -92,8 +101,14 @@
                         </template>
                     </dropdown>
                 </div>
-                <div class="sm:flex item-center">
-                    <TextInput type="text" placeholder="Buscar..." v-model="filterForm.search" class="h-auto" />
+                <div class="flex space-x-3">
+                    <TextInput data-tooltip-target="search_fields" type="text" placeholder="Buscar..."
+                        v-model="filterForm.search" class="h-auto" />
+                    <div id="search_fields" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Ruc,Fecha Documento,Descripción,Monto
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -106,20 +121,20 @@
                         <th class="bg-gray-100 border-b-2 border-gray-20">
                             <div class="w-2"></div>
                         </th>
-                        <th
+                        <!-- <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Zona" :options="zones"
                                 v-model="filterForm.selectedZones" width="w-40" />
-                        </th>
+                        </th> -->
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 ">
                             <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Gasto" :options="expenseTypes"
-                                v-model="filterForm.selectedExpenseTypes" width="w-full" />
+                                v-model="filterForm.selectedExpenseTypes" width="w-40" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Documento" :options="docTypes"
-                                v-model="filterForm.selectedDocTypes" width="w-full" />
+                                v-model="filterForm.selectedDocTypes" width="w-40" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
@@ -178,9 +193,9 @@
                             },
                         ]">
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                        <!-- <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                             {{ item.zone }}
-                        </td>
+                        </td> -->
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                             <p class="w-48 break-words">
                                 {{ item.expense_type }}
@@ -280,7 +295,7 @@
                         <td class="font-bold border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             TOTAL
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="10"></td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="8"></td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
                             S/.
                             {{
@@ -316,7 +331,7 @@
                 <form @submit.prevent="submit">
                     <div class="space-y-12 mt-4">
                         <div class="grid sm:grid-cols-2 gap-6 pb-6">
-                            <div>
+                            <!-- <div>
                                 <InputLabel for="zone" class="font-medium leading-6 text-gray-900">Zona</InputLabel>
                                 <div class="mt-2">
                                     <select v-model="form.zone" id="zone"
@@ -328,7 +343,7 @@
                                     </select>
                                     <InputError :message="form.errors.zone" />
                                 </div>
-                            </div>
+                            </div> -->
                             <div>
                                 <InputLabel for="expense_type" class="font-medium leading-6 text-gray-900">Tipo de Gasto
                                 </InputLabel>
@@ -522,7 +537,7 @@ import InputLabel from "@/Components/InputLabel.vue";
 import Modal from "@/Components/Modal.vue";
 import { ref, watch } from "vue";
 import { Head, useForm, router, Link } from "@inertiajs/vue3";
-import { TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
+import { TrashIcon, PencilSquareIcon, ServerIcon } from "@heroicons/vue/24/outline";
 import { formattedDate } from "@/utils/utils";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputFile from "@/Components/InputFile.vue";
@@ -541,10 +556,10 @@ const props = defineProps({
     providers: Object,
     auth: Object,
     userPermissions: Array,
-    state: String,
     cost_center: Object,
     project_id: String,
-    fixedOrAdditional: Boolean
+    fixedOrAdditional: Boolean,
+    cicsaAssignation: Object
 });
 
 const expenses = ref(props.expense);
@@ -560,7 +575,7 @@ const form = useForm({
     fixedOrAdditional: props.fixedOrAdditional,
     expense_type: "",
     ruc: "",
-    zone: "",
+    zone: props.cicsaAssignation.zone,
     provider_id: "",
     project_id: props.project_id,
     type_doc: "",
@@ -606,6 +621,7 @@ async function submit() {
         updateExpense(response.data, action)
         closeModal();
     } catch (error) {
+        console.log(error)
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, form)
@@ -661,18 +677,30 @@ function handlerPreview(id) {
     );
 }
 
-// const costCenter = props.cost_center.map(item => item.name)
+const initialExpenseFixed = [
+    'Alquiler de Vehículos',
+    'Alquiler de Locales',
+    'Combustible',
+    'Celulares',
+    'Terceros',
+    'Viáticos',
+    'Seguros y Pólizas',
+    'Gastos de Representación',
+    'Reposición de Equipo',
+    'Herramientas',
+    'Equipos',
+    'EPPs',
+    'Adicionales',
+    'Daños de Vehículos',
+    'Planilla',
+    'Otros',
+    'Adicionales',
+    'Daños de Vehículos',
+    'Planilla',
+    'Otros',
+]
 
-const zones = [
-    "Arequipa",
-    "Moquegua",
-    "Tacna",
-    "Cuzco",
-    "Puno",
-    "MDD"
-];
-
-const expenseTypes = [
+const initialExpenseAdditional = [
     "Hospedaje",
     "Mensajería",
     "Consumibles",
@@ -685,25 +713,42 @@ const expenseTypes = [
     "EPPs",
     "Seguros y Pólizas",
     "Otros",
-];
+]
 
+const expenseTypes = props.fixedOrAdditional
+    ? initialExpenseFixed
+    : initialExpenseAdditional;
+// const costCenter = props.cost_center.map(item => item.name)
+
+// const zones = [
+//     "Arequipa",
+//     "Moquegua",
+//     "Tacna",
+//     "Cuzco",
+//     "Puno",
+//     "MDD"
+// ];
 
 const docTypes = [
     "Efectivo",
     "Deposito",
     "Factura",
     "Boleta",
-    "Voucher de Pago",
+    "Ticket",
+    "Yape-Plin"
 ];
 
-
-const filterForm = ref({
+const initialFilterFormState = {
     fixedOrAdditional: props.fixedOrAdditional,
     rejected: true,
     search: "",
-    selectedZones: zones,
+    // selectedZones: zones,
     selectedExpenseTypes: expenseTypes,
     selectedDocTypes: docTypes
+}
+
+const filterForm = ref({
+    ...initialFilterFormState
 });
 
 
@@ -712,7 +757,7 @@ watch(() => [
     filterForm.value.fixedOrAdditional,
     filterForm.value.rejected,
     filterForm.value.search,
-    filterForm.value.selectedZones,
+    // filterForm.value.selectedZones,
     filterForm.value.selectedExpenseTypes,
     filterForm.value.selectedDocTypes,
 ],

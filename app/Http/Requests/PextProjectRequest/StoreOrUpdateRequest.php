@@ -58,7 +58,7 @@ class StoreOrUpdateRequest extends FormRequest
             'is_accepted' => 'required|string',
             // 'state' => 'required|string',
             'igv' => 'required',
-            'cicsa_assignation_id' => 'required'
+            'project_id' => 'required'
         ];
     }
 }

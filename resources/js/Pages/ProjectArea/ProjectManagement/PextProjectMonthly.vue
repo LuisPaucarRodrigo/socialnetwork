@@ -6,17 +6,33 @@
             Proyectos Mensuales Pext
         </template>
         <Toaster richColors />
-        <div class="min-w-full rounded-lg shadow">
+        <div class="min-w-full">
             <div class="mt-6 flex items-center justify-between gap-x-6">
                 <div class="hidden sm:flex sm:items-center sm:space-x-3">
                     <PrimaryButton data-tooltip-target="add_monthly_project" v-if="hasPermission('ProjectManager')"
-                        @click="createOrEditModal" type="button" customColor="bg-green-600 hover:bg-green-500">
+                        @click="createOrEditModal('Proyectos')" type="button"
+                        customColor="bg-green-600 hover:bg-green-500">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                         </svg>
                     </PrimaryButton>
+                    <PrimaryButton data-tooltip-target="add_preproject" v-if="hasPermission('ProjectManager')"
+                        @click="createOrEditModal('Ante Proyectos')" type="button"
+                        customColor="bg-green-600 hover:bg-green-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                    </PrimaryButton>
+                    <div id="add_preproject" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        + Agregar Proyecto
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
+
                     <div id="add_monthly_project" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         + Agregar Proyecto Mensual
@@ -58,13 +74,17 @@
                             <div>
                                 <div class="dropdown">
                                     <div v-if="hasPermission('ProjectManager')" class="dropdown-menu">
-                                        <button @click="createOrEditModal"
+                                        <button @click="createOrEditModal('Proyectos')"
                                             class="dropdown-item block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                            Agregar
+                                            Agregar Proyecto Mensual
                                         </button>
                                     </div>
-                                </div>
-                                <div class="">
+                                    <div v-if="hasPermission('ProjectManager')" class="dropdown-menu">
+                                        <button @click="createOrEditModal('Ante Proyectos')"
+                                            class="dropdown-item block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Agregar Proyecto
+                                        </button>
+                                    </div>
                                     <a
                                         class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                         Exportar
@@ -74,7 +94,15 @@
                         </template>
                     </dropdown>
                 </div>
-                <input type="text" class="rounded-md" @input="search($event.target.value)" placeholder="Buscar..." />
+                <div class="flex space-x-4">
+                    <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
+                        placeholder="Buscar..." />
+                    <div id="search_fields" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Nombre,Codigo,CPE
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
+                </div>
             </div>
             <br>
             <!-- <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -189,7 +217,7 @@
                             </Link>
                             <span v-else class="text-gray-400">Servicios</span> -->
                             <Link v-if="item?.project.initial_budget > 0"
-                                :href="route('projectmanagement.pext.expenses.index', { project_id: item.id, fixedOrAdditional: false })"
+                                :href="route('projectmanagement.pext.expenses.index', { project_id: item.project.id, fixedOrAdditional: false })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y
                             Gastos</Link>
                             <span v-else class="text-gray-400">Compras y Gastos</span>
@@ -220,7 +248,7 @@
             </div>
             <br>
             <div v-if="cicsa_assignations.data"
-                class="flex flex-col items-center border-t px-5 py-5 xs:flex-row xs:justify-between">
+                class="flex flex-col items-center px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="cicsa_assignations.links" />
             </div>
         </div>
@@ -228,22 +256,35 @@
         <Modal :show="showModal">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
-                    {{ form.id ? 'Actualizar Proyecto' : 'Crear Proyecto' }}
+                    {{ form.id ? 'Actualizar Asignacion' : 'Crear ' + type }}
                 </h2>
                 <form @submit.prevent="submit">
                     <div class="space-y-12 mt-4">
                         <div class="grid sm:grid-cols-2 gap-6">
-                            <div v-if="!form.id">
-                                <InputLabel for="project_id">Proyectos</InputLabel>
+                            <div v-if="!form.id && type === 'Proyecto'">
+                                <InputLabel for="project_id">{{ type }}</InputLabel>
                                 <div class="mt-2">
                                     <select id="project_id" v-model="form.project_id"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         <option value="">Seleccionar Proyecto</option>
-                                        <option v-for="item in project" :key="item.id" :value="item.id">
-                                            {{ item.preproject.code }}
+                                        <option v-for="item in projectsOrPreproject" :key="item.id" :value="item.id">
+                                            {{ item?.preproject?.code }}
                                         </option>
                                     </select>
                                     <InputError :message="form.errors.project_id" />
+                                </div>
+                            </div>
+                            <div v-if="!form.id && type === 'Ante Proyectos'">
+                                <InputLabel for="pre_project_id">{{ type }}</InputLabel>
+                                <div class="mt-2">
+                                    <select id="pre_project_id" v-model="form.pre_project_id"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option value="">Seleccionar Proyecto</option>
+                                        <option v-for="item in projectsOrPreproject" :key="item.id" :value="item.id">
+                                            {{ item.code }}
+                                        </option>
+                                    </select>
+                                    <InputError :message="form.errors.pre_project_id" />
                                 </div>
                             </div>
                             <div class="">
@@ -334,7 +375,7 @@
                             </div>
                         </div>
                         <div class="mt-6 flex items-center justify-end gap-x-3">
-                            <SecondaryButton @click="createOrEditModal">
+                            <SecondaryButton @click="createOrEditModal(null)">
                                 Cancelar
                             </SecondaryButton>
                             <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }"
@@ -407,11 +448,10 @@ import { formattedDate, setAxiosErrors } from '@/utils/utils';
 import { notifyError, notify } from '@/Components/Notification';
 import { Toaster } from 'vue-sonner';
 
-const { cicsa_assignation, userPermissions, auth, project } = defineProps({
+const { cicsa_assignation, userPermissions, auth } = defineProps({
     cicsa_assignation: Object,
     userPermissions: Array,
     auth: Object,
-    project: Object
 })
 
 const initialState = {
@@ -429,14 +469,19 @@ const initialState = {
     zone2: '',
     manager: '',
     user_name: auth.user.name,
+    pre_project_id: '',
 }
 
 const form = useForm({ ...initialState })
+
 const formExport = ref({
     startDate: "",
     endDate: ""
 })
+
 const modalExport = ref(false)
+const projectsOrPreproject = ref(null)
+const type = ref('Proyectos')
 
 const hasPermission = (permission) => {
     return userPermissions.includes(permission);
@@ -469,7 +514,11 @@ function editProject(pext) {
 //     confirmingProjectDeletion.value = true;
 // };
 
-const createOrEditModal = () => {
+const createOrEditModal = (item = null) => {
+    if (item !== null) {
+        type.value = item
+        requestProjectOrPreproject(item)
+    }
     if (showModal.value) {
         form.defaults({ ...initialState })
         form.reset()
@@ -477,18 +526,29 @@ const createOrEditModal = () => {
     showModal.value = !showModal.value
 };
 
-const search = async ($search) => {
+const search = async (search) => {
     try {
-        const response = await axios.post(route('projectmanagement.pext.index'), { searchQuery: $search });
+        const response = await axios.post(route('projectmanagement.pext.index'), { searchQuery: search });
         projects.value = response.data;
     } catch (error) {
         console.error('Error searching:', error);
     }
 };
 
+async function requestProjectOrPreproject(item) {
+    let url = route('projectmanagement.pext.requestProjectOrPreproject', { type: item })
+    try {
+        let response = await axios.get(url)
+        projectsOrPreproject.value = response.data
+    } catch (error) {
+        console.error('Error project or preproject:', error);
+    }
+}
+// 
 async function submit() {
     try {
-        const url = route('projectmanagement.pext.storeOrUpdate', { 'pext_id': form.id ?? null })
+        console.log(type.value)
+        const url = type.value === 'Proyectos' ? route('projectmanagement.pext.storeOrUpdate', { 'pext_id': form.id ?? null }) : route('projectmanagement.pext.storeProjectAndAssignation')
         const response = await axios.post(url, form)
         const action = form.id ? 'update' : 'create'
         updatePext(response.data, action)
