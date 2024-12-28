@@ -45,14 +45,20 @@ use ZipArchive;
 class PreProjectController extends Controller
 {
 
-    public function index(Request $request, $type, $preprojects_status=null)
+    public function index(Request $request, $type, $preprojects_status = null)
     {
         $viewTemplate = '';
-        if($type == "1" ){ $viewTemplate = 'PreProjectsPint'; }
-        if($type == "2" ){ $viewTemplate = 'PreProjectsPext';}
-        if($type!=="1" && $type!=="2") {abort(404);}
+        if ($type == "1") {
+            $viewTemplate = 'PreProjectsPint';
+        }
+        if ($type == "2") {
+            $viewTemplate = 'PreProjectsPext';
+        }
+        if ($type !== "1" && $type !== "2") {
+            abort(404);
+        }
         if ($request->isMethod('get')) {
-            return Inertia::render('ProjectArea/PreProject/'.$viewTemplate, [
+            return Inertia::render('ProjectArea/PreProject/' . $viewTemplate, [
                 'preprojects' => Preproject::with('users')->where('status', $preprojects_status)
                     ->where('cost_line_id', $type)
                     ->orderBy('date', 'desc')
@@ -66,9 +72,9 @@ class PreProjectController extends Controller
             $preprojects = Preproject::with('users')
                 ->where('status', $preprojects_status)
                 ->where('cost_line_id', $type)
-                ->where(function ($query) use ($searchQuery){
+                ->where(function ($query) use ($searchQuery) {
                     return $query->orWhere('code', 'like', "%$searchQuery%")
-                    ->orWhere('description', 'like', "%$searchQuery%");
+                        ->orWhere('description', 'like', "%$searchQuery%");
                 })
                 ->orderBy('date', 'desc')
                 ->paginate(12);
@@ -79,12 +85,18 @@ class PreProjectController extends Controller
         }
     }
 
-    public function create($type ,$preproject_id = null)
-    {   
+    public function create($type, $preproject_id = null)
+    {
         $customers = Customer::with('customer_contacts');
-        if($type == "1" ){ $customers = $customers->where('id', '!=', 2); }
-        if($type == "2" ){ $customers = $customers->where('id', '!=', 1); }
-        if($type!=="1" && $type!=="2") { abort(404); }
+        if ($type == "1") {
+            $customers = $customers->where('id', '!=', 2);
+        }
+        if ($type == "2") {
+            $customers = $customers->where('id', '!=', 1);
+        }
+        if ($type !== "1" && $type !== "2") {
+            abort(404);
+        }
         $customers = $customers->get();
         return Inertia::render('ProjectArea/PreProject/CreatePreProject', [
             'preproject' => Preproject::with('project', 'customer', 'contacts')->find($preproject_id),
@@ -92,7 +104,9 @@ class PreProjectController extends Controller
             'titles' => Title::all(),
             'stages' => ReportStage::select('id', 'name')->get(),
             'type' => $type,
-            'cost_line' => CostLine::find($type),
+            'cost_line' => CostLine::with(['cost_center' => function ($query) {
+                $query->where('name', 'not like', '%Mantto%');
+            }])->find(2)
         ]);
     }
 

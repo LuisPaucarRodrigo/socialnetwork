@@ -484,7 +484,7 @@ class ApiController extends Controller
         $currentMonthStart = Carbon::now()->startOfMonth();
         $currentMonthEnd = Carbon::now()->endOfMonth();
 
-        $cicsaProcess = CicsaAssignation::select('id','zone','project_id','project_name')
+        $cicsaProcess = CicsaAssignation::select('id', 'zone', 'project_id', 'project_name')
             ->where(function ($query) use ($zone) {
                 $query->where('zone', $zone)
                     ->orWhere('zone2', $zone);
@@ -492,22 +492,30 @@ class ApiController extends Controller
             ->whereHas('project', function ($query) use ($currentMonthStart, $currentMonthEnd) {
                 $query->where('cost_line_id', 2)
                     ->where(function ($subQuery) use ($currentMonthStart, $currentMonthEnd) {
-                        $subQuery->whereHas('cost_center', function ($costCenterQuery) use ($currentMonthStart, $currentMonthEnd) {
-                            $costCenterQuery->where('name', 'like', '%Mantto%')
-                                ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd]);
+                        $subQuery->where(function ($subSubQuery) use ($currentMonthStart, $currentMonthEnd) {
+                            $subSubQuery->whereHas('cost_center', function ($costCenterQuery) {
+                                $costCenterQuery->where('name', 'like', '%Mantto%');
+                            })
+                                ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
+                                ->where('initial_budget', '>', 0);
                         })
                             ->orWhereHas('cost_center', function ($costCenterQuery) {
+                                // No aplica filtro de fechas para los demás cost_center
                                 $costCenterQuery->where('name', 'not like', '%Mantto%');
                             });
                     });
             })
-            ->whereHas('cicsa_charge_area', function ($query) {
-                $query->select('id', 'cicsa_assignation_id', 'invoice_number', 'invoice_date', 'amount')->where(function ($subQuery) {
-                    $subQuery->whereNull('invoice_number')
-                        ->orWhereNull('invoice_date')
-                        ->orWhereNull('amount');
+            ->where(function ($query) {
+                $query->whereHas('cicsa_charge_area', function ($subQuery) {
+                    $subQuery->select('id', 'cicsa_assignation_id', 'invoice_number', 'invoice_date', 'amount', 'deposit_date')
+                        ->where(function ($subSubQuery) {
+                            $subSubQuery->whereNull('invoice_number')
+                                ->orWhereNull('invoice_date')
+                                ->orWhereNull('amount');
+                        })
+                        ->whereNull('deposit_date');
                 })
-                    ->whereNull('deposit_date');
+                    ->orDoesntHave('cicsa_charge_area');
             })
             ->get();
 

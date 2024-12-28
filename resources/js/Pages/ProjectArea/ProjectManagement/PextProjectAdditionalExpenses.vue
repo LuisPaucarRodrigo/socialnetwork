@@ -14,6 +14,17 @@
                         @click="openCreateAdditionalModal" type="button" class="whitespace-nowrap">
                         + Agregar
                     </PrimaryButton>
+                    <PrimaryButton data-tooltip-target="update_data_tooltip" type="button" @click="() => {
+                        filterForm = { ...initialFilterFormState }
+                    }
+                        ">
+                        <ServerIcon class="w-5 h-5 text-white" />
+                    </PrimaryButton>
+                    <div id="update_data_tooltip" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Todos los Registros
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                     <button data-tooltip-target="export_tooltip" type="button"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500"
                         @click="openExportExcel">
@@ -50,9 +61,7 @@
                         :href="route('pext.additional.expense.index', { project_id: project_id, fixedOrAdditional: true })">
                     G.Fijos
                     </Link>
-
                 </div>
-
                 <div v-if="hasPermission('HumanResourceManager')" class="sm:hidden">
                     <dropdown align="left">
                         <template #trigger>
@@ -92,8 +101,14 @@
                         </template>
                     </dropdown>
                 </div>
-                <div class="sm:flex item-center">
-                    <TextInput type="text" placeholder="Buscar..." v-model="filterForm.search" class="h-auto" />
+                <div class="flex space-x-3">
+                    <TextInput data-tooltip-target="search_fields" type="text" placeholder="Buscar..."
+                        v-model="filterForm.search" class="h-auto" />
+                    <div id="search_fields" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Ruc,Fecha Documento,Descripción,Monto
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -522,7 +537,7 @@ import InputLabel from "@/Components/InputLabel.vue";
 import Modal from "@/Components/Modal.vue";
 import { ref, watch } from "vue";
 import { Head, useForm, router, Link } from "@inertiajs/vue3";
-import { TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
+import { TrashIcon, PencilSquareIcon, ServerIcon } from "@heroicons/vue/24/outline";
 import { formattedDate } from "@/utils/utils";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputFile from "@/Components/InputFile.vue";
@@ -723,14 +738,17 @@ const docTypes = [
     "Yape-Plin"
 ];
 
-
-const filterForm = ref({
+const initialFilterFormState = {
     fixedOrAdditional: props.fixedOrAdditional,
     rejected: true,
     search: "",
     // selectedZones: zones,
     selectedExpenseTypes: expenseTypes,
     selectedDocTypes: docTypes
+}
+
+const filterForm = ref({
+    ...initialFilterFormState
 });
 
 

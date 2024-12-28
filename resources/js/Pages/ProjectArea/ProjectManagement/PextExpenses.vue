@@ -14,6 +14,17 @@
                         @click="openCreateAdditionalModal" type="button" class="whitespace-nowrap">
                         + Agregar
                     </PrimaryButton>
+                    <PrimaryButton data-tooltip-target="update_data_tooltip" type="button" @click="() => {
+                        filterForm = { ...initialFilterFormState }
+                    }
+                        ">
+                        <ServerIcon class="w-5 h-5 text-white" />
+                    </PrimaryButton>
+                    <div id="update_data_tooltip" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Todos los Registros
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                     <button data-tooltip-target="export_tooltip" type="button"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500"
                         @click="openExportExcel">
@@ -91,8 +102,13 @@
                         </template>
                     </dropdown>
                 </div>
-                <div class="sm:flex item-center">
+                <div class="flex space-x-3">
                     <TextInput type="text" placeholder="Buscar..." v-model="filterForm.search" class="h-auto" />
+                    <div id="search_fields" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Ruc,Fecha Documento,Descripción,Monto
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -121,12 +137,12 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 ">
                             <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Gasto" :options="expenseTypes"
-                                v-model="filterForm.selectedExpenseTypes" width="w-full" />
+                                v-model="filterForm.selectedExpenseTypes" width="w-40" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Documento" :options="docTypes"
-                                v-model="filterForm.selectedDocTypes" width="w-full" />
+                                v-model="filterForm.selectedDocTypes" width="w-40" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
@@ -518,7 +534,7 @@ import InputLabel from "@/Components/InputLabel.vue";
 import Modal from "@/Components/Modal.vue";
 import { ref, watch } from "vue";
 import { Head, useForm, router, Link } from "@inertiajs/vue3";
-import { TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
+import { TrashIcon, PencilSquareIcon, ServerIcon } from "@heroicons/vue/24/outline";
 import { formattedDate } from "@/utils/utils";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputFile from "@/Components/InputFile.vue";
@@ -732,14 +748,17 @@ const docTypes = [
     "Voucher de Pago",
 ];
 
-
-const filterForm = ref({
+const initialFilterFormState = {
     fixedOrAdditional: props.fixedOrAdditional,
     rejected: true,
     search: "",
     selectedZones: zones,
     selectedExpenseTypes: expenseTypes,
     selectedDocTypes: docTypes
+}
+
+const filterForm = ref({
+    ...initialFilterFormState
 });
 
 
