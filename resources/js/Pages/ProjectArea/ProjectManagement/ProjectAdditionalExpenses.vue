@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Gestion de Costos Adicionales" />
-    <AuthenticatedLayout :redirectRoute="{route:'projectmanagement.pext.additional.index', params:{type}}">
+    <AuthenticatedLayout :redirectRoute="{ route: 'projectmanagement.pext.additional.index', params: { type } }">
         <template #header>
             Gastos {{ fixedOrAdditional ? 'Fijos' : 'Adicionales' }}
         </template>
@@ -50,6 +50,47 @@
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Rechazados
                         <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
+                    <div>
+                        <dropdown align="left">
+                            <template #trigger>
+                                <button data-tooltip-target="action_button_tooltip"
+                                    @click="dropdownOpen = !dropdownOpen"
+                                    class="relative block overflow-hidden rounded-md text-white hover:bg-indigo-400 text-center text-sm bg-indigo-500 p-2">
+                                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 6H20M4 12H20M4 18H20" stroke="#ffffff" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </button>
+                                <div id="action_button_tooltip" role="tooltip"
+                                    class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700 whitespace-nowrap">
+                                    Acciones
+                                    <div class="tooltip-arrow" data-popper-arrow></div>
+                                </div>
+                            </template>
+
+                            <template #content class="origin-left">
+                                <div>
+                                    <!-- Alineación a la derecha -->
+
+                                    <div class="">
+                                        <button @click="openOpNuDaModal"
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Actualizar Operación
+                                        </button>
+                                        <button @click="openSwapCostsModal"
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Swap
+                                        </button>
+                                        <!-- <button @click=""
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Eliminar
+                                        </button> -->
+                                    </div>
+                                </div>
+                            </template>
+                        </dropdown>
                     </div>
                     <Link v-if="fixedOrAdditional"
                         class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
@@ -121,6 +162,14 @@
                         <th class="bg-gray-100 border-b-2 border-gray-20">
                             <div class="w-2"></div>
                         </th>
+                        <th
+                            class="sticky left-2 z-10 border-b-2 border-r border-gray-200 bg-gray-100 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 w-12">
+                            <label :for="`check-all`" class="flex gap-3 justify-center w-12 px-2 py-1">
+                                <input @change="handleCheckAll" :id="`check-all`" :checked="actionForm.ids.length > 0"
+                                    type="checkbox" />
+                                {{ actionForm.ids.length ?? "" }}
+                            </label>
+                        </th>
                         <!-- <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Zona" :options="zones"
@@ -148,17 +197,29 @@
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Numero de Operacion
                         </th>
-                        <th
+                        <!-- <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Fecha de Operacion
+                        </th> -->
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            <TableDateFilter labelClass="text-[11px]" label="Fecha de Operación"
+                                v-model:startDate="filterForm.opStartDate" v-model:endDate="filterForm.opEndDate"
+                                v-model:noDate="filterForm.opNoDate" width="w-40" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Numero de Doc
                         </th>
-                        <th
+                        <!-- <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Fecha de Documento
+                        </th> -->
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            <TableDateFilter labelClass="text-[11px]" label="Fecha de Documento"
+                                v-model:startDate="filterForm.docStartDate" v-model:endDate="filterForm.docEndDate"
+                                v-model:noDate="filterForm.docNoDate" width="w-40" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
@@ -196,6 +257,13 @@
                         <!-- <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                             {{ item.zone }}
                         </td> -->
+                        <td
+                            class="sticky left-2 z-10 border-b border-r border-gray-200 bg-amber-100 text-center text-[13px] whitespace-nowrap tabular-nums">
+                            <label :for="`check-${item.id}`" class="block w-12 px-2 py-1">
+                                <input v-model="actionForm.ids" :value="item.id" :id="`check-${item.id}`"
+                                    type="checkbox" />
+                            </label>
+                        </td>
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                             <p class="w-48 break-words">
                                 {{ item.expense_type }}
@@ -295,7 +363,7 @@
                         <td class="font-bold border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             TOTAL
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="8"></td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="7"></td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
                             S/.
                             {{
@@ -520,6 +588,55 @@
             </div>
         </Modal>
 
+        <Modal :show="showOpNuDatModal" @close="closeOpNuDatModal">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900 mb-2">
+                    Actualización Masiva
+                </h2>
+                <h4 class="text-sm font-light text-green-900 bg-green-500/10 rounded-lg p-3 ">
+                    Los registros con fecha de operación y número de operación, pasarán a automáticamente estar
+                    aceptados.
+                </h4>
+                <form @submit.prevent="submitOpNuDatModal">
+                    <div class="space-y-12">
+                        <div class="border-b grid grid-cols-1 gap-6 border-gray-900/10 pb-12">
+                            <div>
+                                <InputLabel for="operation_number" class="font-medium leading-6 text-gray-900">Numero de
+                                    Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="text" v-model="opNuDateForm.operation_number" id="operation_number"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="opNuDateForm.errors.operation_number" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="operation_date" class="font-medium leading-6 text-gray-900">Fecha de
+                                    Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="date" v-model="opNuDateForm.operation_date" id="operation_date"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="opNuDateForm.errors.operation_date" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <SecondaryButton @click="closeOpNuDatModal">
+                                Cancelar
+                            </SecondaryButton>
+                            <button type="submit" :disabled="opNuDateForm.processing"
+                                :class="{ 'opacity-25': opNuDateForm.processing }"
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </Modal>
+
         <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Gasto"
             :deleteFunction="deleteAdditional" @closeModal="closeModalDoc" />
         <!-- <SuccessOperationModal :confirming="confirmValidation" :title="'Validación'"
@@ -548,8 +665,9 @@ import axios from "axios";
 import TextInput from "@/Components/TextInput.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import { setAxiosErrors, toFormData } from "@/utils/utils";
-import { notify, notifyError } from "@/Components/Notification";
+import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
+import TableDateFilter from "@/Components/TableDateFilter.vue";
 
 const props = defineProps({
     expense: Object,
@@ -560,7 +678,7 @@ const props = defineProps({
     project_id: String,
     fixedOrAdditional: Boolean,
     cicsaAssignation: Object,
-    type:Number,
+    type: String,
 });
 
 const expenses = ref(props.expense);
@@ -592,10 +710,16 @@ const form = useForm({
     igv: 0,
 });
 
+const opNuDateForm = useForm({
+    operation_date: '',
+    operation_number: '',
+})
+
 const create_additional = ref(false);
 const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
 const pext_project_zone = ref("");
+const showOpNuDatModal = ref(false)
 
 const openCreateAdditionalModal = () => {
     create_additional.value = true;
@@ -612,6 +736,21 @@ const closeModal = () => {
     form.reset();
     create_additional.value = false;
 };
+
+const openOpNuDaModal = () => {
+    if (actionForm.value.ids.length === 0) {
+        notifyWarning("No hay registros selccionados");
+        return;
+    }
+    showOpNuDatModal.value = true
+}
+
+const closeOpNuDatModal = () => {
+    showOpNuDatModal.value = false
+    // isFetching.value = false
+    opNuDateForm.reset()
+    opNuDateForm.clearErrors()
+}
 
 async function submit() {
     const url = route('pext.expenses.storeOrUpdate', { 'expense_id': form.id ?? null })
@@ -745,7 +884,13 @@ const initialFilterFormState = {
     search: "",
     // selectedZones: zones,
     selectedExpenseTypes: expenseTypes,
-    selectedDocTypes: docTypes
+    selectedDocTypes: docTypes,
+    opStartDate: "",
+    opEndDate: "",
+    opNoDate: false,
+    docStartDate: "",
+    docEndDate: "",
+    docNoDate: false,
 }
 
 const filterForm = ref({
@@ -760,7 +905,12 @@ watch(() => [
     filterForm.value.search,
     // filterForm.value.selectedZones,
     filterForm.value.selectedExpenseTypes,
-    filterForm.value.selectedDocTypes,
+    filterForm.value.opStartDate,
+    filterForm.value.opEndDate,
+    filterForm.value.opNoDate,
+    filterForm.value.docStartDate,
+    filterForm.value.docEndDate,
+    filterForm.value.docNoDate,
 ],
     () => {
         search_advance(filterForm.value);
@@ -805,7 +955,6 @@ watch([() => form.type_doc, () => form.zone], () => {
 });
 
 // const confirmValidation = ref(false);
-
 async function validateRegister(expense_id, is_accepted) {
     const url = route("projectmanagement.pext.expenses.validate", { 'expense_id': expense_id })
     try {
@@ -852,4 +1001,91 @@ function rejectedExpenses() {
     filterForm.value.rejected = !filterForm.value.rejected
 }
 
+const actionForm = ref({ ids: [], });
+
+const handleCheckAll = (e) => {
+    if (e.target.checked) { actionForm.value.ids = expenses.value.map((item) => item.id); }
+    else { actionForm.value.ids = []; }
+};
+
+watch(
+    () => filterForm.value,
+    () => { actionForm.value = { ids: [] }; },
+    { deep: true }
+);
+
+// const submitOpNuDatModal = async () => {
+//     // isFetching.value = true;
+//     const res = await axios
+//         .post(route("projectmanagement.pext.massiveUpdate"), {
+//             ...opNuDateForm.data(),
+//             ...actionForm.value
+//         })
+//         .catch((e) => {
+//             // isFetching.value = false;
+//             if (e.response?.data?.errors) {
+//                 setAxiosErrors(e.response.data.errors, opNuDateForm);
+//             } else {
+//                 notifyError("Server Error");
+//             }
+//         });
+
+//     const originalMap = new Map(dataToRender.value.map(item => [item.id, item]));
+//     res.data.forEach(update => {
+//         if (originalMap.has(update.id)) {
+//             originalMap.set(update.id, update);
+//         }
+//     });
+//     const updatedArray = Array.from(originalMap.values());
+//     dataToRender.value = updatedArray
+//     closeOpNuDatModal();
+//     notify("Registros Seleccionados Actualizados");
+// }
+
+async function submitOpNuDatModal() {
+    let url = route("projectmanagement.pext.massiveUpdate")
+    try {
+        let response = await axios.post(url, {
+            ...opNuDateForm.data(),
+            ...actionForm.value
+        })
+        const originalMap = new Map(expenses.value.map(item => [item.id, item]));
+        response.data.forEach(update => {
+            if (originalMap.has(update.id)) {
+                originalMap.set(update.id, update);
+            }
+        });
+        const updatedArray = Array.from(originalMap.values());
+        expenses.value = updatedArray
+        closeOpNuDatModal();
+        notify("Registros Seleccionados Actualizados");
+    } catch (error) {
+        // isFetching.value = false;
+        console.log(error)
+        if (error.response?.data?.errors) {
+            setAxiosErrors(error.response.data.errors, opNuDateForm);
+        } else {
+            notifyError("Server Error");
+        }
+    }
+    // const res = await axios
+    //     .post(, {
+    //         ...opNuDateForm.data(),
+    //         ...actionForm.value
+    //     })
+    //     .catch((e) => {
+
+    //     });
+
+    // const originalMap = new Map(dataToRender.value.map(item => [item.id, item]));
+    // res.data.forEach(update => {
+    //     if (originalMap.has(update.id)) {
+    //         originalMap.set(update.id, update);
+    //     }
+    // });
+    // const updatedArray = Array.from(originalMap.values());
+    // dataToRender.value = updatedArray
+    // closeOpNuDatModal();
+    // notify("Registros Seleccionados Actualizados");
+}
 </script>

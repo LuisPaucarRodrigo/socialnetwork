@@ -449,7 +449,7 @@ class PextController extends Controller
                 'cost_center' => $cost_line->cost_center,
                 'fixedOrAdditional' => json_decode($fixedOrAdditional),
                 'cicsaAssignation' => $cicsa_assignation,
-                'type'=> $type
+                'type' => $type
             ]
         );
     }
@@ -477,6 +477,25 @@ class PextController extends Controller
             });
         }
 
+        if ($request->docNoDate) {
+            $expense->where('doc_date', null);
+        }
+        if ($request->docStartDate) {
+            $expense->where('doc_date', '>=', $request->docStartDate);
+        }
+        if ($request->docEndDate) {
+            $expense->where('doc_date', '<=', $request->docEndDate);
+        }
+        if ($request->opNoDate) {
+            $expense->where('operation_date', null);
+        }
+        if ($request->opStartDate) {
+            $expense->where('operation_date', '>=', $request->opStartDate);
+        }
+        if ($request->opEndDate) {
+            $expense->where('operation_date', '<=', $request->opEndDate);
+        }
+
         if ($request->selectedZones) {
             $expense = $expense->whereIn('zone', $request->selectedZones);
         }
@@ -495,5 +514,38 @@ class PextController extends Controller
         });
 
         return response()->json($expense, 200);
+    }
+
+    public function masiveUpdate(Request $request)
+    {
+        $data = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer',
+            'operation_date' => 'required|date',
+            'operation_number' => 'required|min:6',
+        ]);
+        $on = substr($data['operation_number'], -6);
+        $as = AccountStatement::where('operation_date', $data['operation_date'])
+            ->where('operation_number', $on)
+            ->first();
+
+        $data['account_statement_id'] = $as?->id;
+        $costs = PextProjectExpense::whereIn('id', $data['ids'])->get();
+        foreach ($costs as $cost) {
+            $cost->update([
+                'operation_date' => $data['operation_date'],
+                'operation_number' => $data['operation_number'],
+                'account_statement_id' => $data['account_statement_id'],
+                'is_accepted' => 1,
+            ]);
+        }
+        $updatedCosts = PextProjectExpense::whereIn('id', $data['ids'])
+            ->with(['project', 'provider:id,company_name'])
+            ->get();
+        $updatedCosts->each(function ($cost) {
+            $cost->project->setAppends([]);
+            $cost->setAppends(['real_amount', 'real_state']);
+        });
+        return response()->json($updatedCosts, 200);
     }
 }

@@ -51,6 +51,19 @@ class PextProjectExpense extends Model
         return $this->amount / (1 + $this->igv / 100);
     }
 
+    public function getRealStateAttribute()
+    {
+        if ($this->is_accepted === 0) {
+            return "Rechazado";
+        }
+        if ($this->is_accepted && $this->general_expense()->first()?->account_statement_id) {
+            return "Aceptado - Validado";
+        }
+        if ($this->is_accepted) {
+            return "Aceptado";
+        }
+        return "Pendiente";
+    }
     // protected static function booted()
     // {
     //     static::creating(function ($item) {
