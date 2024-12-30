@@ -45,6 +45,8 @@ class HuaweiMonthlyExpense extends Model
         return $this->belongsTo(GeneralExpense::class, 'general_expense_id');
     }
 
+    
+
     protected static function booted()
     {
         static::creating(function ($item) {
