@@ -1192,10 +1192,6 @@ const successMessage = ref("");
 const showOpNuDatModal = ref(false);
 const isFetching = ref(false);
 
-console.log(props.search)
-console.log(filterMode.value)
-console.log(expenses.value)
-
 const form = useForm({
     id: "",
     expense_type: "",

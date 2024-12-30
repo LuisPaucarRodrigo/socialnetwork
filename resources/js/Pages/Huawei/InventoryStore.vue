@@ -317,29 +317,30 @@
 
         <div class="col-span-1">
             <div class="flex items-center gap-2">
-                <InputLabel for="brand" class="font-medium leading-6 text-gray-900 mb-1">Marca</InputLabel>
+                <InputLabel for="brand" class="font-medium text-gray-900 mb-0">Marca</InputLabel>
 
-            <button type="button" @click="new_brand">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                </svg>
-            </button>
+                <button type="button" @click="new_brand" class="p-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                </button>
             </div>
+            <!-- Select -->
             <select :disabled="autoCompletement" v-model="equipmentForm.brand" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600">
-            <option value="" disabled>Seleccionar Marca</option>
-            <option v-for="brand in props.brands" :key="brand.id" :value="brand.id">{{ brand.name }}</option>
+                <option value="" disabled>Seleccionar Marca</option>
+                <option v-for="brand in props.brands" :key="brand.id" :value="brand.id">{{ brand.name }}</option>
             </select>
         </div>
 
         <div class="col-span-1">
             <div class="flex items-center gap-2">
-                <InputLabel for="model" class="font-medium leading-6 text-gray-900 mb-1">Modelo</InputLabel>
+                <InputLabel for="brand" class="font-medium text-gray-900 mb-0">Modelo</InputLabel>
 
-            <button type="button" @click="new_brand_model">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                </svg>
-            </button>
+                <button type="button" @click="new_brand_model" class="p-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                </button>
             </div>
             <select :disabled="autoCompletement" v-model="equipmentForm.brand_model" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600">
             <option value="" disabled>Seleccionar Modelo</option>

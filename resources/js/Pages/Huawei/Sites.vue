@@ -37,6 +37,10 @@
                   </th>
                   <th scope="col"
                     class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">
+                    Dirección
+                  </th>
+                  <th scope="col"
+                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">
                     Acciones
                   </th>
                 </tr>
@@ -45,6 +49,9 @@
                 <tr v-for="site in (props.search ? props.sites : sites.data)" :key="site.id">
                   <td class="px-6 py-4 whitespace-nowrap text-center">
                     <div class="text-sm font-medium text-gray-900">{{ site.name }}</div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-center whitespace-nowrap">
+                    <div class="text-sm font-medium text-gray-900">{{ site.address }}</div>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-center">
                     <div class="flex justify-center items-center">
@@ -71,13 +78,22 @@
             <form @submit.prevent="isCreateModalOpen ? submit(false) : submit(true)">
               <div class="space-y-12">
                 <div class="border-b border-gray-900/10 pb-12">
-                  <div>
+                  <div class="mt-2">
                     <InputLabel for="name">{{ isCreateModalOpen ? 'Agregar nuevo Site:' : 'Actualizar Site' }}</InputLabel>
                     <div class="mt-2">
                       <TextInput type="text" v-model="form.name" id="name" autocomplete="off" />
                       <InputError :message="form.errors.name" />
                     </div>
                   </div>
+
+                  <div class="mt-2">
+                    <InputLabel for="address">Dirección</InputLabel>
+                    <div class="mt-2">
+                      <TextInput type="text" v-model="form.address" id="address" autocomplete="off" />
+                      <InputError :message="form.errors.address" />
+                    </div>
+                  </div>
+
                   <div class="mt-6 flex items-center justify-end gap-x-6">
                     <SecondaryButton @click="isCreateModalOpen ? closeCreateModal() : closeUpdateModal()"> Cancelar </SecondaryButton>
                     <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">{{ isCreateModalOpen ? 'Guardar' : 'Actualizar' }}</PrimaryButton>
@@ -143,6 +159,7 @@
   const form = useForm({
     id: '',
     name: '',
+    address: ''
   });
 
   const isCreateModalOpen = ref(false);
@@ -158,6 +175,7 @@
       editingSite.value = JSON.parse(JSON.stringify(item));
       form.id = editingSite.value.id;
       form.name = editingSite.value.name;
+      form.address = editingSite.value.address;
       isUpdateModalOpen.value = true;
   };
 
