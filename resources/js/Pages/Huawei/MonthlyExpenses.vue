@@ -368,7 +368,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        v-for="item in props.search ? expenses : expenses.data"
+                        v-for="item in (!props.search || !filterMode ? expenses.data : expenses)"
                         :key="item.id"
                         class="text-gray-700"
                     >
@@ -447,7 +447,7 @@
                         <td
                             class="border-b whitespace-nowrap border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
-                            S/. {{ item.amount.toFixed(2) }}
+                            S/. {{ item.amount ? item.amount.toFixed(2) : '' }}
                         </td>
 
                         <td

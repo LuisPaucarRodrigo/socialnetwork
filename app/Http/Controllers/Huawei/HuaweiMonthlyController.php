@@ -67,7 +67,8 @@ class HuaweiMonthlyController extends Controller
     //expenses
     public function getExpenses (HuaweiMonthlyProject $project)
     {
-        $expenses = HuaweiMonthlyExpense::where('huawei_monthly_project_id', $project->id)->orderBy('created_at', 'desc')->paginate(15);
+        $expenses = HuaweiMonthlyExpense::where('huawei_monthly_project_id', $project->id)->orderBy('expense_date')
+            ->paginate(20);
 
         return Inertia::render('Huawei/MonthlyExpenses', [
             'expense' => $expenses,
@@ -89,11 +90,12 @@ class HuaweiMonthlyController extends Controller
                     ->orWhereRaw('LOWER(doc_number) LIKE ?', ["%{$searchTerm}%"])
                     ->orWhereRaw('LOWER(op_number) LIKE ?', ["%{$searchTerm}%"])
                     ->orWhereRaw('LOWER(ruc) LIKE ?', ["%{$searchTerm}%"])
-                    ->orWhereRaw('LOWER(description) LIKE ?', ["%{$searchTerm}%"]);
+                    ->orWhereRaw('LOWER(description) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(ec_op_number) LIKE ?', ["%{$searchTerm}%"]);
             });
 
         // Ejecutar la consulta y obtener los resultados
-        $expenses = $expensesQuery->orderBy('created_at', 'desc')->get();
+        $expenses = $expensesQuery->orderBy('expense_date')->get();
 
         return Inertia::render('Huawei/MonthlyExpenses', [
             'expense' => $expenses,
@@ -147,7 +149,7 @@ class HuaweiMonthlyController extends Controller
             })->toArray();
             $expenses->whereIn('is_accepted', $states);
         }
-        $expenses = $expenses->orderBy('created_at', 'desc')->get(); // Asegúrate de asignar el resultado
+        $expenses = $expenses->orderBy('expense_date')->get(); // Asegúrate de asignar el resultado
         return response()->json(["expenses" => $expenses], 200);
     }
 
@@ -255,25 +257,29 @@ class HuaweiMonthlyController extends Controller
     }
 
 
-    public function massiveUpdate (Request $request)
+    public function massiveUpdate(Request $request)
     {
         $data = $request->validate([
-            'ids' => 'required | array | min:1',
+            'ids' => 'required|array|min:1',
             'ids.*' => 'integer',
             'ec_expense_date' => 'required|date',
             'ec_op_number' => 'required|min:6',
         ]);
 
+        foreach ($data['ids'] as $id) {
+            $monthlyExpense = HuaweiMonthlyExpense::find($id);
 
-        HuaweiMonthlyExpense::whereIn('id', $data['ids'])->update([
-            'ec_expense_date' => $data['ec_expense_date'],
-            'ec_op_number' => $data['ec_op_number'],
-        ]);
+            if ($monthlyExpense) {
+                $monthlyExpense->update([
+                    'ec_expense_date' => $data['ec_expense_date'],
+                    'ec_op_number' => $data['ec_op_number'],
+                ]);
+            }
+        }
 
-        $updatedCosts = HuaweiMonthlyExpense::whereIn('id', $data['ids'])
-            ->get();
+        $updatedCosts = HuaweiMonthlyExpense::whereIn('id', $data['ids'])->get();
 
-        return response()->json($updatedCosts, 200);
+        return response()->json($updatedCosts ,200);
     }
 
     public function massiveValidate (Request $request)

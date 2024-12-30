@@ -13,7 +13,8 @@ class HuaweiSite extends Model
     protected $table = 'huawei_sites';
 
     protected $fillable = [
-        'name'
+        'name',
+        'address'
     ];
 
     public function huawei_projects ()

@@ -436,7 +436,7 @@ class HuaweiProjectController extends Controller
     public function getSites ()
     {
         return Inertia::render('Huawei/Sites', [
-            'sites' => HuaweiSite::select('id','name')->orderBy('name')->paginate(10)
+            'sites' => HuaweiSite::select('id','name','address')->orderBy('name')->paginate(10)
         ]);
     }
 
@@ -446,10 +446,11 @@ class HuaweiProjectController extends Controller
 
         $query = HuaweiSite::query();
 
-        $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"]);
+        $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"])
+              ->orWhereRaw('LOWER(address) LIKE?', ["%{$searchTerm}%"]);
 
         return Inertia::render('Huawei/Sites', [
-            'sites' => $query->select('id','name')->orderBy('name')->get(),
+            'sites' => $query->select('id','name','address')->orderBy('name')->get(),
             'search' => $request
         ]);
     }
@@ -457,7 +458,8 @@ class HuaweiProjectController extends Controller
     public function storeSite (Request $request)
     {
         $data = $request->validate([
-            'name' => 'required'
+            'name' => 'required',
+            'address' => 'required'
         ]);
 
         HuaweiSite::create($data);
@@ -468,7 +470,8 @@ class HuaweiProjectController extends Controller
     public function updateSite (HuaweiSite $site, Request $request)
     {
         $data = $request->validate([
-            'name' => 'required'
+            'name' => 'required',
+            'address' => 'required'
         ]);
 
         $site->update($data);
