@@ -164,6 +164,22 @@
                                 <InputError :message="form.errors.code" />
                             </div>
 
+                            <div>
+                                <InputLabel for="customer" class="font-medium leading-6 text-gray-900">
+                                    Centro de Costos
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <select v-model="form.cost_center_id"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option value="" disabled>Selecciona un centro de costos</option>
+                                        <option v-for="item, i in cost_line.cost_center" :value="item.id" :key="i">
+                                            {{ item.name }}
+                                        </option>
+                                    </select>
+                                    <InputError :message="form.errors.cost_center_id" />
+                                </div>
+                            </div>
+
                             <div v-if="[1, 2].includes(form.customer_id)">
                                 <label for="cpe" class="font-medium leading-6 text-gray-900">CPE</label>
                                 <div class="mt-2 flex justify-center items-center gap-2">
@@ -311,6 +327,7 @@ const initial_state = {
     code: '',
     description: '',
     date: '',
+    cost_center_id: '',
     observation: '',
     reportStages: [],
     cost_line_id: type,
@@ -378,9 +395,8 @@ const submit = () => {
                 } else {
                     showModal.value = false
                 }
-                route('', {})
                 router.visit(preproject?.status === undefined
-                    ? route('preprojects.index', {type})
+                    ? route('preprojects.index', { type })
                     : preproject?.status == true
                         ? route('preprojects.index', { type, preprojects_status: 1 })
                         : route('preprojects.index', { type, preprojects_status: 0 }))

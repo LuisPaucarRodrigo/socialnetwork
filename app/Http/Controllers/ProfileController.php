@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\HuaweiMonthlyExpense;
 use App\Models\AdditionalCost;
 use App\Models\PayrollDetailExpense;
 use App\Models\GeneralExpense;
@@ -14,29 +15,39 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Exception;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class ProfileController extends Controller
 {
-    // public function allFine(){
-    //     $aditionalCostsData = PextProjectExpense::with('project')->where('general_expense_id', null)->get();
-    //     foreach($aditionalCostsData as $item){
-    //         $ge = GeneralExpense::create([
-    //             'zone' => $item->zone,
-    //             'expense_type' => $item->expense_type,
-    //             'location' => $item?->project?->description ?? 'Sin descripción',
-    //             'amount' => $item->amount,
-    //             'operation_number' => $item->operation_number,
-    //             'operation_date' => $item->operation_date,
-    //             'account_statement_id' => $item->account_statement_id,
-    //         ]);
-    //         $item->update(['general_expense_id'=> $ge->id]);
-    //     }
+    public function allFine(){
+        DB::beginTransaction();
+        try {
+            $costs = HuaweiMonthlyExpense::with('huawei_monthly_project')->get();
+            foreach($costs as $item) {
+                $ge = GeneralExpense::create([
+                    'zone' => $item->zone,
+                    'expense_type' => $item->expense_type,
+                    'location' => $item?->huawei_monthly_project?->description ?? 'Sin descripción',
+                    'amount' => $item->amount,
+                    'operation_number' => $item->ec_op_number,
+                    'operation_date' => $item->ec_expense_date,
+                    'account_statement_id' => null,
+                ]);
+                $item->update(['general_expense_id'=>$ge->id]);
+            }
+            DB::commit();
+        }
+        catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
         
-    //     return response()->json('siuuu');
-    // }
+        return response()->json('siuuu');
+    }
 
     /**
      * Display the user's profile form.

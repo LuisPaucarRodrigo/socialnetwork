@@ -34,6 +34,11 @@ class Preproject extends Model
     ];
 
     //RELATIONS
+    public function cost_center()
+    {
+        return $this->belongsTo(CostCenter::class, 'cost_center_id');
+    }
+    
     public function project()
     {
         return $this->hasOne(Project::class);

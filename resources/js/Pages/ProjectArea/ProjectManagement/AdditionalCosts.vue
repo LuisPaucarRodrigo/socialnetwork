@@ -1420,6 +1420,7 @@ const handleCheckAll = (e) => {
     if (e.target.checked) {actionForm.value.ids = dataToRender.value.map((item) => item.id);} 
     else { actionForm.value.ids = [];}
 };
+
 watch(
     () => filterForm.value,
     () => {actionForm.value = { ids: [] };},
@@ -1545,9 +1546,6 @@ const swapCosts = async () => {
     notify("Registros Movidos con éxito");
 }
 
-
-
-
 const stateCreateAtSort = ref(false)
 function sortValue() {
     if (stateCreateAtSort.value) {
@@ -1557,9 +1555,4 @@ function sortValue() {
     }
     stateCreateAtSort.value = !stateCreateAtSort.value;
 }
-
-
-
-
-
 </script>

@@ -45,7 +45,7 @@ class StoreOrUpdateRequest extends FormRequest
                     }
                 }
             ],
-            'type_doc' => 'required|string|in:Efectivo,Deposito,Factura,Boleta,Voucher de Pago',
+            'type_doc' => 'required|string|in:Efectivo,Deposito,Factura,Boleta,Voucher de Pago,Yape-Plin',
             'operation_number' => 'nullable|string|min:6',
             'operation_date' => 'nullable|date',
             'doc_number' => 'nullable|string',
@@ -58,7 +58,7 @@ class StoreOrUpdateRequest extends FormRequest
             'is_accepted' => 'required|string',
             // 'state' => 'required|string',
             'igv' => 'required',
-            'cicsa_assignation_id' => 'required'
+            'project_id' => 'required'
         ];
     }
 }

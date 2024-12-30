@@ -4,7 +4,6 @@ namespace App\Http\Controllers\ProjectArea;
 
 use App\Models\Employee;
 use App\Models\Preproject;
-use App\Models\Service;
 
 class ProjectConstants
 {
@@ -25,8 +24,8 @@ class ProjectConstants
                     'code' => $this->getCode($data['date'], 'CICSA-PINTOBRAM'),
                     'cpe' => $data['cpe'],
                     'status' => 1,
-
                 ],
+                
                 'preproject_contacts' => $data['contacts'],
                 'preproject_quote' => [
                     'name' => $name,

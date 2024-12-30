@@ -6,7 +6,7 @@
             Proyectos Adicionales
         </template>
         <Toaster richColors />
-        <div class="min-w-full rounded-lg shadow">
+        <div class="min-w-full">
             <div class="mt-6 flex items-center justify-between gap-x-6">
                 <div class="hidden sm:flex sm:items-center sm:space-x-3">
                     <PrimaryButton data-tooltip-target="add_monthly_project" v-if="hasPermission('ProjectManager')"
@@ -22,19 +22,6 @@
                         + Agregar Proyecto
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
-                    <!-- <PrimaryButton data-tooltip-target="export" type="button"
-                        customColor="bg-green-600 hover:bg-green-500" @click="modalExportExcel">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                d="M9.29289 1.29289C9.48043 1.10536 9.73478 1 10 1H18C19.6569 1 21 2.34315 21 4V9C21 9.55228 20.5523 10 20 10C19.4477 10 19 9.55228 19 9V4C19 3.44772 18.5523 3 18 3H11V8C11 8.55228 10.5523 9 10 9H5V20C5 20.5523 5.44772 21 6 21H7C7.55228 21 8 21.4477 8 22C8 22.5523 7.55228 23 7 23H6C4.34315 23 3 21.6569 3 20V8C3 7.73478 3.10536 7.48043 3.29289 7.29289L9.29289 1.29289ZM6.41421 7H9V4.41421L6.41421 7ZM19 12C19.5523 12 20 12.4477 20 13V19H23C23.5523 19 24 19.4477 24 20C24 20.5523 23.5523 21 23 21H19C18.4477 21 18 20.5523 18 20V13C18 12.4477 18.4477 12 19 12ZM11.8137 12.4188C11.4927 11.9693 10.8682 11.8653 10.4188 12.1863C9.96935 12.5073 9.86526 13.1318 10.1863 13.5812L12.2711 16.5L10.1863 19.4188C9.86526 19.8682 9.96935 20.4927 10.4188 20.8137C10.8682 21.1347 11.4927 21.0307 11.8137 20.5812L13.5 18.2205L15.1863 20.5812C15.5073 21.0307 16.1318 21.1347 16.5812 20.8137C17.0307 20.4927 17.1347 19.8682 16.8137 19.4188L14.7289 16.5L16.8137 13.5812C17.1347 13.1318 17.0307 12.5073 16.5812 12.1863C16.1318 11.8653 15.5073 11.9693 15.1863 12.4188L13.5 14.7795L11.8137 12.4188Z"
-                                fill="#ffffff" />
-                        </svg>
-                    </PrimaryButton>
-                    <div id="export" role="tooltip"
-                        class="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                        Exportar Excel
-                        <div class="tooltip-arrow" data-popper-arrow></div>
-                    </div> -->
                 </div>
 
                 <div class="sm:hidden">
@@ -70,14 +57,14 @@
                         </template>
                     </dropdown>
                 </div>
-                <div class="flex items-center mt-4 space-x-3 sm:mt-0">
+                <div class="flex space-x-3">
                     <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
                         placeholder="Buscar ..." />
-                </div>
-                <div id="search_fields" role="tooltip"
-                    class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                    Nombre,Codigo,CPE
-                    <div class="tooltip-arrow" data-popper-arrow></div>
+                    <div id="search_fields" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Nombre,Codigo,CPE
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                 </div>
             </div>
             <br>
@@ -193,7 +180,7 @@
                             </Link>
                             <span v-else class="text-gray-400">Servicios</span> -->
                             <Link
-                                :href="route('pext.additional.expense.index', { project_id: item.id, fixedOrAdditional: false })"
+                                :href="route('pext.additional.expense.index', { project_id: item.project.id, fixedOrAdditional: false, type })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                             Compras y Gastos
                             </Link>
@@ -240,7 +227,7 @@
             </div>
             <br>
             <div v-if="projects.data"
-                class="flex flex-col items-center border-t px-5 py-5 xs:flex-row xs:justify-between">
+                class="flex flex-col items-center px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="projects.links" />
             </div>
         </div>
@@ -299,7 +286,7 @@
                                     <option value="">Seleccionar Centro de Costo</option>
                                     <option v-for="item in cost_line.cost_center" :key="item.id" :value="item.id">{{
                                         item.name
-                                        }}
+                                    }}
                                     </option>
                                 </select>
                                 <InputError :message="form.errors.cost_center_id" />
@@ -586,11 +573,12 @@ import { formattedDate, setAxiosErrors } from '@/utils/utils';
 import { notifyError, notify } from '@/Components/Notification';
 import { Toaster } from 'vue-sonner';
 
-const { project, auth, userPermissions, cost_line } = defineProps({
+const { project, auth, userPermissions, cost_line, type } = defineProps({
     project: Object,
     userPermissions: Array,
     auth: Object,
-    cost_line: Object
+    cost_line: Object,
+    type: Number
 })
 
 const initialState = {
@@ -675,7 +663,7 @@ const createOrEditModal = () => {
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('projectmanagement.pext.additional.index'), { searchQuery: $search });
+        const response = await axios.post(route('projectmanagement.pext.additional.index', {type}), { searchQuery: $search });
         projects.value = response.data;
     } catch (error) {
         notifyError('Error searching:', error);

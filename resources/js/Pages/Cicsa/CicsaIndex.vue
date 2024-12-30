@@ -162,7 +162,7 @@
                                 </div>
                             </th>
 
-                            <th v-if="checkVisibility('Asignación')" :style="thStickyStyle.pcpe_sticky" :class="[
+                            <th :style="thStickyStyle.pcpe_sticky" :class="[
                                 'border-b-2 border-gray-300 bg-gray-100 px-2 py-1 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600'
                             ]">
                                 <div class="flex justify-center">

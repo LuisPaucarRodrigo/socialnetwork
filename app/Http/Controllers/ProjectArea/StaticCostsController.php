@@ -158,7 +158,6 @@ class StaticCostsController extends Controller
                 ->where('operation_number', $on)->first();
             $data['account_statement_id'] = $as?->id;
         }
-
         if ($request->hasFile('photo')) {
             $filename = $additional_cost->photo;
             if ($filename) {

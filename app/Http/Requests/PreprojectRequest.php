@@ -23,6 +23,7 @@ class PreprojectRequest extends FormRequest
     {
         $rules = [
             'customer_id' => 'required',
+            'cost_center_id'=>'required',
             'cost_line_id'=>'required',
             'code' => 'required',
             'description' => 'required',
