@@ -288,9 +288,13 @@ class HuaweiMobileController extends Controller
     }
 
     //expenses_dus
-    public function fetchSites ($request)
+    public function fetchSites (Request $request)
     {
-        $projects = HuaweiProject::where('macro_project', $request)->get();
+        $request->validate([
+            'macro_project' => 'required'
+        ]);
+
+        $projects = HuaweiProject::where('macro_project', $request->macro_project)->get();
 
         $sites = $projects->flatMap(function ($project) {
             return $project->huawei_site()->get()->map(function ($site) {
@@ -304,11 +308,15 @@ class HuaweiMobileController extends Controller
         return response()->json($sites, 200);
     }
 
-    public function fetchProjects ($macro, $site)
+    public function fetchProjects (Request $request)
     {
+        $request->validate([
+            'macro_project' => 'required',
+            'site' => 'required'
+        ]);
         $projects = HuaweiProject::select('id', 'name', 'assigned_diu')
-            ->where('macro_project', $macro)
-            ->where('huawei_site_id', $site)
+            ->where('macro_project', $request->macro_project)
+            ->where('huawei_site_id', $request->site)
             ->get()
             ->makeHidden([
                 'code',
@@ -364,7 +372,10 @@ class HuaweiMobileController extends Controller
             'doc_number' => $data['doc_number'],
             'op_number' => $data['op_number'],
             'ruc' => $data['ruc'],
-
+            'description' => $data['description'],
+            'amount' => $data['amount'],
+            'refund_status' => $data['refund_status'],
+            'huawei_project_id' => $data['huawei_project_id']
         ]);
 
         try {
@@ -373,7 +384,7 @@ class HuaweiMobileController extends Controller
             $imageUpdates = [];
 
             foreach ($imageFields as $index => $field){
-                if ($request->hasFile($field)){
+                if (isset($data[$field])){
                     $image = str_replace('data:image/png;base64,', '', $data[$field]);
                     $image = str_replace(' ', '+', $image);
                     $imageContent = base64_decode($image);
@@ -382,9 +393,9 @@ class HuaweiMobileController extends Controller
                     $imageUpdates[$field] = $data[$field];
                 }
             }
-
-
-
+            $new_expense->update($imageUpdates);
+            DB::commit();
+            return response()->json([201]);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([

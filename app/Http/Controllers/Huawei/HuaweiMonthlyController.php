@@ -257,25 +257,29 @@ class HuaweiMonthlyController extends Controller
     }
 
 
-    public function massiveUpdate (Request $request)
+    public function massiveUpdate(Request $request)
     {
         $data = $request->validate([
-            'ids' => 'required | array | min:1',
+            'ids' => 'required|array|min:1',
             'ids.*' => 'integer',
             'ec_expense_date' => 'required|date',
             'ec_op_number' => 'required|min:6',
         ]);
 
+        foreach ($data['ids'] as $id) {
+            $monthlyExpense = HuaweiMonthlyExpense::find($id);
 
-        HuaweiMonthlyExpense::whereIn('id', $data['ids'])->update([
-            'ec_expense_date' => $data['ec_expense_date'],
-            'ec_op_number' => $data['ec_op_number'],
-        ]);
+            if ($monthlyExpense) {
+                $monthlyExpense->update([
+                    'ec_expense_date' => $data['ec_expense_date'],
+                    'ec_op_number' => $data['ec_op_number'],
+                ]);
+            }
+        }
 
-        $updatedCosts = HuaweiMonthlyExpense::whereIn('id', $data['ids'])
-            ->get();
+        $updatedCosts = HuaweiMonthlyExpense::whereIn('id', $data['ids'])->get();
 
-        return response()->json($updatedCosts, 200);
+        return response()->json($updatedCosts ,200);
     }
 
     public function massiveValidate (Request $request)
