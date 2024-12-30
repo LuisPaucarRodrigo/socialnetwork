@@ -67,7 +67,7 @@ class HuaweiMonthlyController extends Controller
     //expenses
     public function getExpenses (HuaweiMonthlyProject $project)
     {
-        $expenses = HuaweiMonthlyExpense::where('huawei_monthly_project_id', $project->id)->orderBy('created_at', 'desc')
+        $expenses = HuaweiMonthlyExpense::where('huawei_monthly_project_id', $project->id)->orderBy('expense_date')
             ->paginate(20);
 
         return Inertia::render('Huawei/MonthlyExpenses', [
@@ -95,7 +95,7 @@ class HuaweiMonthlyController extends Controller
             });
 
         // Ejecutar la consulta y obtener los resultados
-        $expenses = $expensesQuery->orderBy('created_at', 'desc')->get();
+        $expenses = $expensesQuery->orderBy('expense_date')->get();
 
         return Inertia::render('Huawei/MonthlyExpenses', [
             'expense' => $expenses,
@@ -149,7 +149,7 @@ class HuaweiMonthlyController extends Controller
             })->toArray();
             $expenses->whereIn('is_accepted', $states);
         }
-        $expenses = $expenses->orderBy('created_at', 'desc')->get(); // Asegúrate de asignar el resultado
+        $expenses = $expenses->orderBy('expense_date')->get(); // Asegúrate de asignar el resultado
         return response()->json(["expenses" => $expenses], 200);
     }
 
