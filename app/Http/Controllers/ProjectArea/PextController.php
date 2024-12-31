@@ -434,7 +434,6 @@ class PextController extends Controller
             ->paginate();
         foreach ($expense as $exp) {
             $exp->setAppends(['real_amount', 'real_state']);
-            $exp->state = 1 ? true : false;
         }
         $providers = Provider::select('id', 'ruc', 'company_name')->get();
         $cost_line = CostLine::where('name', 'PEXT')->with('cost_center')->first();
@@ -458,7 +457,7 @@ class PextController extends Controller
     public function search_advance_monthly_or_additional_expense(Request $request, $project_id)
     {
         $rejected = $request->rejected;
-        $fixedOrAdditional = $request->fixedOrAdditional;
+        $fixedOrAdditional = ($request->fixedOrAdditional);
         $expense = PextProjectExpense::with(['provider:id,company_name', 'project.cost_center'])
             ->where('fixedOrAdditional', $fixedOrAdditional)
             ->where('project_id', $project_id)
@@ -518,11 +517,10 @@ class PextController extends Controller
 
         $expense->transform(function ($item) {
             $item->setAppends(['real_amount', 'real_state']);
-            $item->state = 1 ? true : false;
             return $item;
         });
 
-        if ($request->state !== false && count($request->selectedStateTypes)) {
+        if (count($request->selectedStateTypes)) {
             $expense = $expense->filter(function ($item) use ($request) {
                 return in_array($item->real_state, $request->selectedStateTypes);
             })->values()->all();

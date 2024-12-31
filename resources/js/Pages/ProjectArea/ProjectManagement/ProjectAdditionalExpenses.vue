@@ -898,7 +898,7 @@ const docTypes = [
 const stateTypes = [
     "Pendiente",
     "Aceptado",
-    "Aceptado-Validado",
+    "Aceptado - Validado",
 ];
 
 const initialFilterFormState = {
