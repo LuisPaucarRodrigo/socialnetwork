@@ -14,6 +14,17 @@
                         @click="openCreateAdditionalModal" type="button" class="whitespace-nowrap">
                         + Agregar
                     </PrimaryButton>
+                    <PrimaryButton data-tooltip-target="update_data_tooltip" type="button" @click="() => {
+                        filterForm = { ...initialFilterFormState }
+                    }
+                        ">
+                        <ServerIcon class="w-5 h-5 text-white" />
+                    </PrimaryButton>
+                    <div id="update_data_tooltip" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Todos los Registros
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                     <button data-tooltip-target="export_tooltip" type="button"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500"
                         @click="openExportExcel">
@@ -40,6 +51,57 @@
                         Rechazados
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
+                    <div>
+                        <dropdown align="left">
+                            <template #trigger>
+                                <button data-tooltip-target="action_button_tooltip"
+                                    @click="dropdownOpen = !dropdownOpen"
+                                    class="relative block overflow-hidden rounded-md text-white hover:bg-indigo-400 text-center text-sm bg-indigo-500 p-2">
+                                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 6H20M4 12H20M4 18H20" stroke="#ffffff" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </button>
+                                <div id="action_button_tooltip" role="tooltip"
+                                    class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700 whitespace-nowrap">
+                                    Acciones
+                                    <div class="tooltip-arrow" data-popper-arrow></div>
+                                </div>
+                            </template>
+
+                            <template #content class="origin-left">
+                                <div>
+                                    <!-- Alineación a la derecha -->
+
+                                    <div class="">
+                                        <button @click="openOpNuDaModal"
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Actualizar Operación
+                                        </button>
+                                        <!-- <button @click="openSwapCostsModal"
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Swap
+                                        </button> -->
+                                        <!-- <button @click=""
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Eliminar
+                                        </button> -->
+                                    </div>
+                                </div>
+                            </template>
+                        </dropdown>
+                    </div>
+                    <Link v-if="fixedOrAdditional"
+                        class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
+                        :href="route('projectmanagement.pext.expenses.index', { project_id: project_id, fixedOrAdditional: false })">
+                    G.Adicionales
+                    </Link>
+                    <Link v-else
+                        class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
+                        :href="route('projectmanagement.pext.expenses.index', { project_id: project_id, fixedOrAdditional: true })">
+                    G.Fijos
+                    </Link>
                 </div>
 
                 <div v-if="hasPermission('HumanResourceManager')" class="sm:hidden">
@@ -81,8 +143,13 @@
                         </template>
                     </dropdown>
                 </div>
-                <div class="sm:flex item-center">
+                <div class="flex space-x-3">
                     <TextInput type="text" placeholder="Buscar..." v-model="filterForm.search" class="h-auto" />
+                    <div id="search_fields" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Ruc,Fecha Documento,Descripción,Monto
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -96,28 +163,35 @@
                             <div class="w-2"></div>
                         </th>
                         <th
+                            class="sticky left-2 z-10 border-b-2 border-r border-gray-200 bg-gray-100 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 w-12">
+                            <label :for="`check-all`" class="flex gap-3 justify-center w-12 px-2 py-1">
+                                <input @change="handleCheckAll" :id="`check-all`" :checked="actionForm.ids.length > 0"
+                                    type="checkbox" />
+                                {{ actionForm.ids.length ?? "" }}
+                            </label>
+                        </th>
+                        <!-- <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Proyecto
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <TableHeaderFilter labelClass="text-[11px]" label="Centro de Costos" :options="costCenter"
-                                v-model="filterForm.selectedCostCenter" width="w-48" />
-                        </th>
+                            Centro de Costos
+                        </th> -->
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Zona" :options="zones"
-                                v-model="filterForm.selectedZones" width="w-35" />
+                                v-model="filterForm.selectedZones" width="w-40" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 ">
                             <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Gasto" :options="expenseTypes"
-                                v-model="filterForm.selectedExpenseTypes" width="w-full" />
+                                v-model="filterForm.selectedExpenseTypes" width="w-40" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Documento" :options="docTypes"
-                                v-model="filterForm.selectedDocTypes" width="w-full" />
+                                v-model="filterForm.selectedDocTypes" width="w-40" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
@@ -133,7 +207,9 @@
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Fecha de Operacion
+                            <TableDateFilter labelClass="text-[11px]" label="Fecha de Operación"
+                                v-model:startDate="filterForm.opStartDate" v-model:endDate="filterForm.opEndDate"
+                                v-model:noDate="filterForm.opNoDate" width="w-40" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
@@ -141,7 +217,9 @@
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Fecha de Documento
+                            <TableDateFilter labelClass="text-[11px]" label="Fecha de Documento"
+                                v-model:startDate="filterForm.docStartDate" v-model:endDate="filterForm.docEndDate"
+                                v-model:noDate="filterForm.docNoDate" width="w-40" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
@@ -161,12 +239,17 @@
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            <TableHeaderFilter labelClass="text-[11px]" label="Estado" :options="stateTypes"
+                                v-model="filterForm.selectedStateTypes" width="w-48" />
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Acciones
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in expenses.data" :key="item.id" class="text-gray-700">
+                    <tr v-for="item in expenses.data || expenses" :key="item.id" class="text-gray-700">
                         <td :class="[
                             'border-b border-gray-200',
                             {
@@ -176,13 +259,20 @@
                             },
                         ]">
                         </td>
-                        <td
+                        <!-- <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap">
                             {{ item.cicsa_assignation?.project_name }}
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap">
-                            {{ item.cicsa_assignation?.cost_center }}
+                            {{ item.project?.cost_center?.name }}
+                        </td> -->
+                        <td
+                            class="sticky left-2 z-10 border-b border-r border-gray-200 bg-amber-100 text-center text-[13px] whitespace-nowrap tabular-nums">
+                            <label :for="`check-${item.id}`" class="block w-12 px-2 py-1">
+                                <input v-model="actionForm.ids" :value="item.id" :id="`check-${item.id}`"
+                                    type="checkbox" />
+                            </label>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                             {{ item.zone }}
@@ -232,6 +322,19 @@
                             <p class="w-[250px]">
                                 {{ item.description }}
                             </p>
+                        </td>
+                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                            <div :class="[
+                                'text-center',
+                                {
+                                    'text-indigo-500': item.real_state === 'Pendiente',
+                                    'text-green-500': item.real_state == 'Aceptado - Validado',
+                                    'text-amber-500': item.real_state == 'Aceptado',
+                                    'text-red-500': item.real_state == 'Rechazado',
+                                },
+                            ]">
+                                {{ item.real_state }}
+                            </div>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                             <div class="flex items-center gap-3 w-full">
@@ -286,11 +389,11 @@
                         <td class="font-bold border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             TOTAL
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="10"></td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="9"></td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
                             S/.
                             {{
-                                expenses.data
+                                (expenses.data || expenses)
                                     ?.reduce((a, item) => a + item.amount, 0)
                                     .toFixed(2)
                             }}
@@ -298,19 +401,19 @@
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
                             S/.
                             {{
-                                expenses.data
+                                (expenses.data || expenses)
                                     .reduce(
                                         (a, item) => a + item.real_amount, 0)
                                     .toFixed(2)
                             }}
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="3"></td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="4"></td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <div v-if="!filterMode"
+        <div v-if="!expenses"
             class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
             <pagination :links="expenses.links" />
         </div>
@@ -333,23 +436,6 @@
                                         <option v-for="op in zones">{{ op }}</option>
                                     </select>
                                     <InputError :message="form.errors.zone" />
-                                </div>
-                            </div>
-                            <div>
-                                <InputLabel for="subCostCenter" class="font-medium leading-6 text-gray-900">Sub
-                                    Centro de Costos
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input type="text" id="subCostCenter" v-model="form.pext_project_name"
-                                        @input="handleProjectNameAutocomplete($event.target.value)" autocomplete="off"
-                                        list="project_name"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <datalist id="project_name">
-                                        <option v-for="item in subCostCenter" :value="item.project_name">
-                                            {{ item.project_name }} {{ item.customer }}
-                                        </option>
-                                    </datalist>
-                                    <InputError :message="form.errors.cicsa_assignation_id" />
                                 </div>
                             </div>
                             <div>
@@ -461,7 +547,6 @@
                                     <InputError :message="form.errors.igv" />
                                 </div>
                             </div>
-
                             <div>
                                 <InputLabel for="amount" class="font-medium leading-6 text-gray-900">Monto sin IGV
                                 </InputLabel>
@@ -476,7 +561,6 @@
                                     }}</InputLabel>
                                 </div>
                             </div>
-
                             <div>
                                 <InputLabel for="description" class="font-medium leading-6 text-gray-900">Descripción
                                 </InputLabel>
@@ -484,23 +568,6 @@
                                     <textarea type="text" v-model="form.description" id="description"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.description" />
-                                </div>
-                            </div>
-                            <div>
-                                <InputLabel for="state" class="font-medium leading-6 text-gray-900">¿Es caja chica?
-                                </InputLabel>
-                                <div class="mt-2 class flex gap-4">
-                                    <label class="flex gap-2 items-center">
-                                        Sí
-                                        <input type="radio" v-model="form.state" id="state" :value="true"
-                                            class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
-                                    </label>
-                                    <label class="flex gap-2 items-center">
-                                        No
-                                        <input type="radio" v-model="form.state" id="state" :value="false"
-                                            class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
-                                    </label>
-                                    <InputError :message="form.errors.state" />
                                 </div>
                             </div>
                             <div class="sm:col-span-2">
@@ -528,6 +595,55 @@
             </div>
         </Modal>
 
+        <Modal :show="showOpNuDatModal" @close="closeOpNuDatModal">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900 mb-2">
+                    Actualización Masiva
+                </h2>
+                <h4 class="text-sm font-light text-green-900 bg-green-500/10 rounded-lg p-3 ">
+                    Los registros con fecha de operación y número de operación, pasarán a automáticamente estar
+                    aceptados.
+                </h4>
+                <form @submit.prevent="submitOpNuDatModal">
+                    <div class="space-y-12">
+                        <div class="border-b grid grid-cols-1 gap-6 border-gray-900/10 pb-12">
+                            <div>
+                                <InputLabel for="operation_number" class="font-medium leading-6 text-gray-900">Numero de
+                                    Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="text" v-model="opNuDateForm.operation_number" id="operation_number"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="opNuDateForm.errors.operation_number" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="operation_date" class="font-medium leading-6 text-gray-900">Fecha de
+                                    Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="date" v-model="opNuDateForm.operation_date" id="operation_date"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="opNuDateForm.errors.operation_date" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <SecondaryButton @click="closeOpNuDatModal">
+                                Cancelar
+                            </SecondaryButton>
+                            <button type="submit" :disabled="opNuDateForm.processing"
+                                :class="{ 'opacity-25': opNuDateForm.processing }"
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </Modal>
+
         <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Gasto"
             :deleteFunction="deleteAdditional" @closeModal="closeModalDoc" />
         <!-- <SuccessOperationModal :confirming="confirmValidation" :title="'Validación'"
@@ -544,8 +660,8 @@ import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import Modal from "@/Components/Modal.vue";
 import { ref, watch } from "vue";
-import { Head, useForm, router } from "@inertiajs/vue3";
-import { TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
+import { Head, useForm, router, Link } from "@inertiajs/vue3";
+import { TrashIcon, PencilSquareIcon, ServerIcon } from "@heroicons/vue/24/outline";
 import { formattedDate } from "@/utils/utils";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputFile from "@/Components/InputFile.vue";
@@ -556,35 +672,36 @@ import axios from "axios";
 import TextInput from "@/Components/TextInput.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import { setAxiosErrors, toFormData } from "@/utils/utils";
-import { notify, notifyError } from "@/Components/Notification";
+import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
+import TableDateFilter from "@/Components/TableDateFilter.vue";
 
 const props = defineProps({
     expense: Object,
-    pext_project_id: String,
     providers: Object,
     auth: Object,
     userPermissions: Array,
     state: String,
+    project_id: String,
+    fixedOrAdditional: Boolean
 });
 
 const expenses = ref(props.expense);
-const filterMode = ref(false);
-const subCostCenterZone = ref(null);
-const subCostCenter = ref(null)
+// const subCostCenterZone = ref(null);
+const showOpNuDatModal = ref(false)
+
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
 };
 
 const form = useForm({
     id: "",
+    fixedOrAdditional: props.fixedOrAdditional,
     expense_type: "",
     ruc: "",
     zone: "",
     provider_id: "",
-    cicsa_assignation_id: "",
-    pext_project_name: "",
-    pext_project_id: props.pext_project_id,
+    project_id: props.project_id,
     type_doc: "",
     operation_number: "",
     operation_date: "",
@@ -592,10 +709,16 @@ const form = useForm({
     doc_date: "",
     description: "",
     photo: "",
-    state: true,
+    // state: props.fixedOrAdditional ? true : false,
+    is_accepted: true,
     amount: "",
     igv: 0,
 });
+
+const opNuDateForm = useForm({
+    operation_date: '',
+    operation_number: '',
+})
 
 const create_additional = ref(false);
 const confirmingDocDeletion = ref(false);
@@ -629,7 +752,11 @@ async function submit() {
         closeModal();
     } catch (error) {
         if (error.response) {
-            setAxiosErrors(error.response.data.errors, form)
+            if (error.response.data.errors) {
+                setAxiosErrors(error.response.data.errors, form)
+            } else {
+                notifyError('Server Error', error.response.data)
+            }
         } else {
             notifyError('Server Error')
         }
@@ -669,36 +796,22 @@ const handleRucDniAutocomplete = (e) => {
     }
 };
 
-watch(() => form.zone, (newVal) => {
-    if (pext_project_zone.value != form.zone) {
-        form.pext_project_name = ""
-        form.cicsa_assignation_id = ""
-    }
-    searchSubCostCenter()
-});
+// watch(() => form.zone, (newVal) => {
+//     if (pext_project_zone.value != form.zone) {
+//         form.pext_project_name = ""
+//     }
+//     searchSubCostCenter()
+// });
 
-async function searchSubCostCenter() {
-    let url = route('projectmanagement.pext.requestCicsa', { 'zone': form.zone })
-    try {
-        const response = await axios.get(url)
-        subCostCenterZone.value = response.data
-    } catch (error) {
-        console.error(error)
-    }
-}
-
-function handleProjectNameAutocomplete(e) {
-    subCostCenter.value = subCostCenterZone.value.filter(item => item.project_name.includes(e));
-    const cicsaAssignation = subCostCenter.value
-    console.log("cicsaAssignation ", cicsaAssignation)
-    let cicsa_assignation = cicsaAssignation.find(item => item.project_name === e);
-    console.log("cicsa_assignation ", cicsa_assignation)
-    if (cicsa_assignation) {
-        form.cicsa_assignation_id = cicsa_assignation.id;
-    } else {
-        form.cicsa_assignation_id = "";
-    }
-}
+// async function searchSubCostCenter() {
+//     let url = route('projectmanagement.pext.requestCicsa', { 'zone': form.zone })
+//     try {
+//         const response = await axios.get(url)
+//         subCostCenterZone.value = response.data
+//     } catch (error) {
+//         console.error(error)
+//     }
+// }
 
 function handlerPreview(id) {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
@@ -710,16 +823,6 @@ function handlerPreview(id) {
     );
 }
 
-const costCenter = [
-    "Planta Externa Claro",
-    "Instalaciones GTD",
-    "Planta Externa GTD-Averias",
-    "STL",
-    "Densificacion",
-    "Adicionales",
-    "Instalaciones Claro"
-]
-
 const zones = [
     "Arequipa",
     "Moquegua",
@@ -729,7 +832,30 @@ const zones = [
     "MDD"
 ];
 
-const expenseTypes = [
+const initialExpenseFixed = [
+    'Alquiler de Vehículos',
+    'Alquiler de Locales',
+    'Combustible',
+    'Celulares',
+    'Terceros',
+    'Viáticos',
+    'Seguros y Pólizas',
+    'Gastos de Representación',
+    'Reposición de Equipo',
+    'Herramientas',
+    'Equipos',
+    'EPPs',
+    'Adicionales',
+    'Daños de Vehículos',
+    'Planilla',
+    'Otros',
+    'Adicionales',
+    'Daños de Vehículos',
+    'Planilla',
+    'Otros',
+]
+
+const initialExpenseAdditional = [
     "Hospedaje",
     "Mensajería",
     "Consumibles",
@@ -742,8 +868,11 @@ const expenseTypes = [
     "EPPs",
     "Seguros y Pólizas",
     "Otros",
-];
+]
 
+const expenseTypes = props.fixedOrAdditional
+    ? initialExpenseFixed
+    : initialExpenseAdditional;
 
 const docTypes = [
     "Efectivo",
@@ -753,25 +882,48 @@ const docTypes = [
     "Voucher de Pago",
 ];
 
+const stateTypes = [
+    "Pendiente",
+    "Aceptado",
+    "Aceptado-Validado",
+];
 
-const filterForm = ref({
-    rejected: 1,
+const initialFilterFormState = {
+    fixedOrAdditional: props.fixedOrAdditional,
+    rejected: true,
     search: "",
-    selectedCostCenter: costCenter,
     selectedZones: zones,
     selectedExpenseTypes: expenseTypes,
-    selectedDocTypes: docTypes
+    selectedDocTypes: docTypes,
+    selectedStateTypes: stateTypes,
+    opStartDate: "",
+    opEndDate: "",
+    opNoDate: false,
+    docStartDate: "",
+    docEndDate: "",
+    docNoDate: false,
+}
+
+const filterForm = ref({
+    ...initialFilterFormState
 });
 
 
 
 watch(() => [
+    filterForm.value.fixedOrAdditional,
     filterForm.value.rejected,
     filterForm.value.search,
-    filterForm.value.selectedCostCenter,
     filterForm.value.selectedZones,
     filterForm.value.selectedExpenseTypes,
     filterForm.value.selectedDocTypes,
+    filterForm.value.selectedStateTypes,
+    filterForm.value.opStartDate,
+    filterForm.value.opEndDate,
+    filterForm.value.opNoDate,
+    filterForm.value.docStartDate,
+    filterForm.value.docEndDate,
+    filterForm.value.docNoDate,
 ],
     () => {
         search_advance(filterForm.value);
@@ -779,12 +931,12 @@ watch(() => [
 );
 
 async function search_advance(data) {
-    let url = route("projectmanagement.pext.expenses.index", {
-        pext_project_id: props.pext_project_id,
+    let url = route("pext.monthly.additional.expense.search_advance", {
+        project_id: props.project_id,
     })
     try {
         let response = await axios.post(url, data);
-        expenses.value.data = response.data;
+        expenses.value = response.data;
     } catch (error) {
         console.error('Error en la solicitud:', error);
     }
@@ -795,7 +947,8 @@ function openExportExcel() {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
     const url =
         route("projectmanagement.pext.expenses.export", {
-            pext_project_id: props.pext_project_id,
+            project_id: props.project_id,
+            fixedOrAdditional: filterForm.value.fixedOrAdditional
         }) +
         "?" +
         uniqueParam;
@@ -819,52 +972,103 @@ async function validateRegister(expense_id, is_accepted) {
     const url = route("projectmanagement.pext.expenses.validate", { 'expense_id': expense_id })
     try {
         await axios.put(url, { 'is_accepted': is_accepted });
-        if(filterForm.value.rejected){
+        if (filterForm.value.rejected) {
             updateExpense(expense_id, "validate", is_accepted)
         } else {
             updateExpense(expense_id, "rejectedValidate")
         }
-        
-        // confirmValidation.value = true;
-        // setTimeout(() => {
-        //     confirmValidation.value = false;
-        // }, 1000);
     } catch (e) {
         console.log(e);
     }
 }
 
 function updateExpense(expense, action, state) {
+    let listDate = expenses.value.data || expenses.value
     if (action === "create") {
-        expenses.value.data.unshift(expense)
+        listDate.unshift(expense)
         notify('Gasto Creado')
     } else if (action === "update") {
-        let index = expenses.value.data.findIndex(item => item.id == expense.id)
-        expenses.value.data[index] = expense
+        let index = listDate.findIndex(item => item.id == expense.id)
+        listDate[index] = expense
         notify('Gasto Actualizado')
     } else if (action === "delete") {
-        let index = expenses.value.data.findIndex(item => item.id == expense)
-        expenses.value.data.splice(index, 1);
+        let index = listDate.findIndex(item => item.id == expense)
+        listDate.splice(index, 1);
         notify('Gasto Eliminado')
     } else if (action === "validate") {
-        let index = expenses.value.data.findIndex(item => item.id == expense)
+        let index = listDate.findIndex(item => item.id == expense)
         if (state) {
-            expenses.value.data[index].is_accepted = state;
+            listDate[index].is_accepted = state;
             notify('Gasto Aceptado')
         } else {
-            expenses.value.data.splice(index, 1);
+            listDate.splice(index, 1);
             notify('Gasto Rechazado')
         }
     } else if (action === "rejectedValidate") {
-        let index = expenses.value.data.findIndex(item => item.id == expense)
-        expenses.value.data.splice(index, 1);
+        let index = listDate.findIndex(item => item.id == expense)
+        listDate.splice(index, 1);
         notify('El gasto paso a ser aceptado')
-    } 
+    } else if (action === "masiveUpdate") {
+        const originalMap = new Map(listDate.map(item => [item.id, item]));
+        expense.forEach(update => {
+            if (originalMap.has(update.id)) {
+                originalMap.set(update.id, update);
+            }
+        });
+        const updatedArray = Array.from(originalMap.values());
+        listDate = updatedArray
+        closeOpNuDatModal();
+        notify("Registros Seleccionados Actualizados");
+    }
 }
 
 async function rejectedExpenses() {
-    console.log(filterForm.value.rejected)
     filterForm.value.rejected = !filterForm.value.rejected
-    
+}
+
+const actionForm = ref({ ids: [], });
+
+const handleCheckAll = (e) => {
+    if (e.target.checked) { actionForm.value.ids = expenses.value.map((item) => item.id); }
+    else { actionForm.value.ids = []; }
+};
+
+watch(
+    () => filterForm.value,
+    () => { actionForm.value = { ids: [] }; },
+    { deep: true }
+);
+
+const openOpNuDaModal = () => {
+    if (actionForm.value.ids.length === 0) {
+        notifyWarning("No hay registros seleccionados");
+        return;
+    }
+    showOpNuDatModal.value = true
+}
+
+const closeOpNuDatModal = () => {
+    showOpNuDatModal.value = false
+    // isFetching.value = false
+    opNuDateForm.reset()
+    opNuDateForm.clearErrors()
+}
+
+async function submitOpNuDatModal() {
+    let url = route("projectmanagement.pext.massiveUpdate")
+    try {
+        let response = await axios.post(url, {
+            ...opNuDateForm.data(),
+            ...actionForm.value
+        })
+        updateExpense(response.data, 'masiveUpdate')
+    } catch (error) {
+        // isFetching.value = false;
+        if (error.response?.data?.errors) {
+            setAxiosErrors(error.response.data.errors, opNuDateForm);
+        } else {
+            notifyError("Server Error");
+        }
+    }
 }
 </script>

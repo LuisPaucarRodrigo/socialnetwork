@@ -43,6 +43,8 @@ class AccountStatementRequest extends FormRequest
             'scData.*' => 'integer',
             'peData' => 'nullable|array',
             'peData.*' => 'integer',
+            'spData' => 'nullable|array',
+            'spData.*' => 'integer',
         ];
     }
 }

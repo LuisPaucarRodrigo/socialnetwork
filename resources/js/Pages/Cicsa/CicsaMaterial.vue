@@ -2,10 +2,11 @@
 
     <Head title="CICSA Material" />
 
-    <AuthenticatedLayout :redirectRoute="'cicsa.index'">
+    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
         <template #header>
-            Materiales
+            {{ type==1 ? 'Pint' : 'Pext' }} - Materiales
         </template>
+        <Toaster richColors />
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-end">
                 <!-- <a :href="route('material.export') + '?' + uniqueParam"
@@ -13,7 +14,7 @@
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
                         placeholder="Buscar ..." />
-                    <SelectCicsaComponent currentSelect="Materiales" />
+                    <SelectCicsaComponent currentSelect="Materiales" :type="type" />
                     <div id="search_fields" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Nombre,Codigo,CPE
@@ -68,7 +69,7 @@
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <p class="text-gray-900 text-center">
-                                        {{ item.cost_center }}
+                                        {{ item.project?.cost_center?.name }}
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -492,10 +493,10 @@
         </Modal>
 
 
-        <SuccessOperationModal :confirming="confirmMaterial" :title="'Nueva Material creada'"
-            :message="'La Material fue creada con éxito'" />
-        <SuccessOperationModal :confirming="confirmUpdateMaterial" :title="'Material Actualizada'"
-            :message="'La Material fue actualizada'" />
+        <!-- <SuccessOperationModal :confirming="confirmMaterial" :title="'Nueva Material creada'"
+            :message="'La Material fue creada con éxito'" /> -->
+        <!-- <SuccessOperationModal :confirming="confirmUpdateMaterial" :title="'Material Actualizada'"
+            :message="'La Material fue actualizada'" /> -->
     </AuthenticatedLayout>
 </template>
 
@@ -511,18 +512,20 @@ import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
-import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate, setAxiosErrors } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
+import { Toaster } from 'vue-sonner';
+import { notify } from '@/Components/Notification';
 
-const { material, auth, searchCondition } = defineProps({
+const { material, auth, searchCondition, type } = defineProps({
     material: Object,
     auth: Object,
     searchCondition: {
         type: String,
         required: false
-    }
+    },
+    type: Number
 })
 
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
@@ -562,7 +565,7 @@ function closeAddMaterialModal() {
     form.reset()
 }
 
-const confirmUpdateMaterial = ref(false);
+// const confirmUpdateMaterial = ref(false);
 
 function openEditSotModal(item, feasibility_materials, project_name, cpe) {
     dateModal.value = { 'project_name': project_name, 'cpe': cpe }
@@ -582,41 +585,24 @@ function openEditSotModal(item, feasibility_materials, project_name, cpe) {
 
 async function submit() {
     let url = cicsa_material_id.value ? route('material.update', { cicsa_material_id: cicsa_material_id.value }) : route('material.store')
-    if (cicsa_material_id.value) {
-        try {
-            const response = await axios.put(url, form)
-            updateMaterial(false, response.data)
-            closeAddMaterialModal()
-            confirmUpdateMaterial.value = true
-            setTimeout(() => {
-                confirmUpdateMaterial.value = false
-            }, 1500)
-        } catch (error) {
-            if (error.response) {
-                if (error.response.data.errors) {
-                    setAxiosErrors(error.response.data.errors, form)
-                } else {
-                    console.error("Server error:", error.response.data)
-                }
-            } else {
-                console.error("Network or other error:", error)
-            }
-        }
-    } else {
-        try {
-            const response = await axios.post(url, form)
-            updateMaterial(true, response.data)
-            closeAddMaterialModal()
-            confirmUpdateMaterial.value = true
-            setTimeout(() => {
-                confirmUpdateMaterial.value = false
-            }, 1500)
-        } catch (error) {
-            if (error.response) {
+    let action = cicsa_material_id.value ? false : true
+    try {
+        const response = await axios.put(url, form)
+        updateMaterial(action, response.data)
+        closeAddMaterialModal()
+        // confirmUpdateMaterial.value = true
+        // setTimeout(() => {
+        //     confirmUpdateMaterial.value = false
+        // }, 1500)
+    } catch (error) {
+        if (error.response) {
+            if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, form)
             } else {
-                console.error(error)
+                notifyError("Server error:", error.response.data)
             }
+        } else {
+            notifyError("Network or other error:", error)
         }
     }
 }
@@ -634,7 +620,7 @@ const material_item = ref({
     unit: '',
     type: '',
     quantity: 0,
-    total_quantity:null
+    total_quantity: null
 });
 
 function addFeasibility() {
@@ -707,7 +693,6 @@ function modalImportMaterial() {
 }
 
 function submitImportExcel() {
-
     axios.post(route('material.import'), formImport, {
         headers: {
             'Content-Type': 'multipart/form-data',
@@ -715,11 +700,13 @@ function submitImportExcel() {
     })
         .then(response => {
             if (response.status === 200) {
+                console.log(response.data)
                 form.cicsa_material_items = response.data;
                 modalImportMaterial();
             }
         })
         .catch(error => {
+            console.log(error)
             if (error.response.status === 400) {
                 formImport.errors.document = error.response.data.errorMessage
             } else {
@@ -731,7 +718,7 @@ function submitImportExcel() {
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('material.index'), { searchQuery: $search });
+        const response = await axios.post(route('material.index', {type}), { searchQuery: $search });
         materials.value = response.data.material;
 
     } catch (error) {
@@ -762,9 +749,11 @@ function updateMaterial(item, material) {
     const index = validations.findIndex(item => item.id === material.cicsa_assignation_id);
     if (item) {
         validations[index].cicsa_materials.push(material)
+        notify('Creacion Exitosa')
     } else {
         const indexMaterial = validations[index].cicsa_materials.findIndex(item => item.id === material.id);
         validations[index].cicsa_materials[indexMaterial] = material
+        notify('Actualizacion Exitosa')
     }
 }
 

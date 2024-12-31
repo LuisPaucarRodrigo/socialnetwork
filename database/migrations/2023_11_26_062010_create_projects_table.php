@@ -1,5 +1,6 @@
 <?php
 
+use App\Constants\ProjectConstants;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,7 +18,10 @@ return new class extends Migration
             $table->text('description');
             $table->string('status')->nullable();
             $table->double('initial_budget', 8, 2)->default(0);
-            $table->foreignId('preproject_id')->constrained()->nullable()->onDelete('cascade');
+            $table->foreignId('preproject_id')->nullable()->constrained()->onDelete('cascade');
+            $table->enum('type', ProjectConstants::projectTypes())->nullable();
+            $table->foreignId('cost_center_id')->nullable()->constrained('cost_centers')->nullOnDelete();
+            $table->foreignId('cost_line_id')->nullable()->constrained('cost_lines')->nullOnDelete();
             $table->timestamps();
         });
     }

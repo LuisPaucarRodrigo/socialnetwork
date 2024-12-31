@@ -337,6 +337,7 @@ const createFolderForm = useForm({
     areas: [],
     currentPath,
     user_id: auth.user.id,
+    user_name: auth.user.name,
     upper_folder_id: folder?.id
 })
 function openAddFoldermodal() {

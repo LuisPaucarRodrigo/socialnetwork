@@ -4,9 +4,9 @@ use App\Http\Controllers\DocumentSpreedSheetController;
 use App\Http\Controllers\HumanResource\ControlEmployees;
 use App\Http\Controllers\HumanResource\DocumentController;
 use App\Http\Controllers\HumanResource\FormationDevelopment;
+use App\Http\Controllers\HumanResource\GrupalDocumentController;
 use App\Http\Controllers\HumanResource\ManagementEmployees;
 use App\Http\Controllers\HumanResource\ScheduleController;
-use App\Http\Controllers\HumanResource\SectionController;
 use App\Http\Controllers\HumanResource\SpreadsheetsController;
 use App\Http\Controllers\HumanResource\VacationController;
 use Illuminate\Routing\Route as RoutingRoute;
@@ -20,6 +20,7 @@ Route::middleware('permission:HumanResourceManager')->group(function () {
 
     //Empleados Externos
     Route::get('/management_employees/external/index', [ManagementEmployees::class, 'external_index'])->name('employees.external.index');
+    Route::post('/management_employees/external/search', [ManagementEmployees::class, 'external_search'])->name('employees.external.search');
     Route::post('/management_employees/storeorupdate/{external_id?}', [ManagementEmployees::class, 'storeorupdate'])->name('management.external.storeorupdate');
     Route::delete('/management_employees/external/delete/{id}', [ManagementEmployees::class, 'external_delete'])->name('employees.external.delete');
 
@@ -27,7 +28,7 @@ Route::middleware('permission:HumanResourceManager')->group(function () {
 
     //Control of Employees
     Route::any('/management_employees/control_employees/index', [ControlEmployees::class, 'control_employees_index'])->name('controlEmployees.index');
-    
+
     Route::any('/management_employees/fixed_documentation/index', [ControlEmployees::class, 'fixed_documentation_index'])->name('controlEmployees.fixed.documentation.index');
     Route::post('/management_employees/fixed_documentation/storeOrUpdate/{fixed_documentation_id?}', [ControlEmployees::class, 'fixed_documentation_storeOrUpdate'])->name('controlEmployees.fixed.documentation.store');
 
@@ -43,16 +44,15 @@ Route::middleware('permission:HumanResourceManager')->group(function () {
     Route::get('/management_employees/schedule/preview/{schedule}', [ScheduleController::class, 'preview'])->name('management.employees.schedule.preview');
     Route::get('/management_employees/schedule/latest', [ScheduleController::class, 'latest'])->name('management.employees.schedule.latest');
     Route::get('/management_employees/schedule/download/{schedule}', [ScheduleController::class, 'download'])->name('management.employees.schedule.download');
-    Route::post('/management_employees/schedule/update_number_people', [SpreadsheetsController::class, 'update_number_people'])->name('management.employees.schedule.update_number_people');
 
     //Nomina
-    Route::get('/management_employees/pension_system/edit', [SpreadsheetsController::class, 'edit'])->name('pension_system.edit');
-    Route::put('/management_employees/pension_system/update/{id}', [SpreadsheetsController::class, 'update'])->name('pension_system.update');
-    Route::put('/management_employees/pension_system/update_seg/{id}', [SpreadsheetsController::class, 'update_seg'])->name('pension_system_seg.update');
+    Route::post('/management_employees/payroll/store', [SpreadsheetsController::class, 'store_payroll'])->name('payroll.store');
+    Route::get('/management_employees/payroll/state/{payroll_id}', [SpreadsheetsController::class, 'update_payroll_state'])->name('payroll.state.update');
+    Route::put('/management_employees/payroll/salary/{payroll_details_id}/update', [SpreadsheetsController::class, 'update_payroll_salary'])->name('payroll.payment.salary.store');
+    Route::put('/management_employees/payroll/travelExpense/{payroll_details_id}/update', [SpreadsheetsController::class, 'update_payroll_travelExpense'])->name('payroll.payment.travelExpense.store');
+    Route::get('/management_employees/spreadsheets/payroll/export/{payroll_id}', [SpreadsheetsController::class, 'export'])->name('spreadsheets.payroll.export');
+    Route::put('/management_employees/payroll/discount/{payroll_id}', [SpreadsheetsController::class, 'discount_employee'])->name('payroll.discount');
 
-    //Sctr
-    Route::post('/management_employees/sctr_p/update', [SpreadsheetsController::class, 'update_sctr_p'])->name('sctr_p.update');
-    Route::post('/management_employees/sctr_s/update', [SpreadsheetsController::class, 'update_sctr_s'])->name('sctr_s.update');
 
     //Trainings
     Route::get('/management_employees/formation_development/trainings/create/{id?}', [FormationDevelopment::class, 'trainings_create'])->name('management.employees.formation_development.trainings.create');
@@ -95,31 +95,22 @@ Route::middleware('permission:HumanResourceManager')->group(function () {
     Route::get('/document_sections/{section}/subdivisions/{subdivisionId}/zipdownload', [DocumentController::class, 'downloadSubdivisionDocumentsZip'])->name('documents.zipSubdivision');
     //Route::delete('/document_sections/{section}/subdivisions/{subdivisionId}/zipdelete', [DocumentController::class, 'deleteZip'])->name('documents.deleteZipSubdivision');
 
-    //SubSections
-    Route::post('/subSections', [SectionController::class, 'storeSubSection'])->name('sections.storeSubSection');
-
-    //Sections
-    Route::get('/sections', [SectionController::class, 'showSections'])->name('sections.sections');
-    Route::post('/sections', [SectionController::class, 'storeSection'])->name('sections.storeSection');
-    Route::delete('/sections/{section}', [SectionController::class, 'destroySection'])->name('sections.destroySection');
-
-
     Route::post('/document_rrhh_status/store/{dr_id?}', [DocumentSpreedSheetController::class, 'store'])->name('document.rrhh.status.store');
     Route::delete('/document_rrhh_status/destroy/{dr_id}', [DocumentSpreedSheetController::class, 'destroy'])->name('document.rrhh.status.destroy');
     Route::post('/document_rrhh_status/insurance_exp_date', [DocumentSpreedSheetController::class, 'insurance_exp_date'])->name('document.rrhh.status.in_expdate');
 });
 
 Route::middleware('permission:HumanResourceManager|HumanResource')->group(function () {
-    Route::get('/management_employees/index/{reentry?}', [ManagementEmployees::class, 'index'])->name('management.employees');
+    Route::get('/management_employees/index', [ManagementEmployees::class, 'index'])->name('management.employees');
     Route::get('/management_employees/information_additional/details/{id}', [ManagementEmployees::class, 'details'])->name('management.employees.show');
     Route::get('/management_employees/information_additional/details/download/{id}', [ManagementEmployees::class, 'download'])->name('management.employees.information.details.download');
-    Route::get('/management_employees/index-search', [ManagementEmployees::class, 'search'])->name('management.employees.search');
+    Route::post('/management_employees/index-search', [ManagementEmployees::class, 'search'])->name('management.employees.search');
 
     Route::get('/management_employees/happy_birthday', [ManagementEmployees::class, 'happy_birthday'])->name('management.employees.happy.birthday');
 
     //Nomina
-    Route::get('/management_employees/spreadsheets/{reentry?}', [SpreadsheetsController::class, 'index'])->name('spreadsheets.index');
-    Route::get('/management_employees/spreadsheets/payroll/export', [SpreadsheetsController::class, 'export'])->name('spreadsheets.payroll.export');
+    Route::get('/management_employees/payroll', [SpreadsheetsController::class, 'index'])->name('payroll.index');
+    Route::any('/management_employees/spreadsheets/{payroll_id}', [SpreadsheetsController::class, 'index_payroll'])->name('spreadsheets.index');
 
     //Formation and Development
     Route::get('/management_employees/formation_development', [FormationDevelopment::class, 'index'])->name('management.employees.formation_development');
@@ -148,18 +139,19 @@ Route::middleware('permission:HumanResourceManager|HumanResource')->group(functi
     Route::get('/documents/filter/{section}/section/{request?}', [DocumentController::class, 'sectionFilter'])->name('documents.filter.section');
     Route::get('/documents/filter/{section}/section/{subdivision}/subdivision/{request?}', [DocumentController::class, 'subdivisionFilter'])->name('documents.filter.subdivision');
     Route::get('/documents/search/{section}/{subdivision}/{request}/get', [DocumentController::class, 'search'])->name('documents.search');
-    //SubSections
-    Route::get('/subSections', [SectionController::class, 'showSubSections'])->name('sections.subSections');
-    Route::get('/subSections/show/{subSection}', [SectionController::class, 'showSubSection'])->name('sections.subSection');
-    Route::get('/calendar_alarm', [SectionController::class, 'calendarAlarm'])->name('sections.calendar');
-
-    //Member Alarm
-    Route::get('/doTask', [SectionController::class, 'doTask'])->name('sections.alarm');
-
-
 
     //Document Spreed Sheet
     Route::any('/documents_rrhh_status', [DocumentSpreedSheetController::class, 'index'])->name('document.rrhh.status');
     Route::get('/documents_rrhh_status/{emp_id?}', [DocumentSpreedSheetController::class, 'employee_document_alarms'])->name('employee.document.rrhh.status');
     Route::get('/document_rrhh_status_alarm', [DocumentSpreedSheetController::class, 'employeesDocumentAlarms'])->name('document.rrhh.status.alarms');
+
+
+    Route::get('/documents/grupal_document', [GrupalDocumentController::class, 'index'])->name('document.grupal_documents.index');
+    Route::post('/documents/grupal_document/store', [GrupalDocumentController::class, 'store'])->name('document.grupal_documents.store');
+    Route::post('/documents/grupal_document/update/{gd_id}', [GrupalDocumentController::class, 'update'])->name('document.grupal_documents.update');
+    Route::delete('/documents/grupal_document/destroy/{gd_id}', [GrupalDocumentController::class, 'destroy'])->name('document.grupal_documents.destroy');
+    Route::get('/documents/grupal_document/download/{gd_id}', [GrupalDocumentController::class, 'download'])->name('document.grupal_documents.download');
+
+
+
 });

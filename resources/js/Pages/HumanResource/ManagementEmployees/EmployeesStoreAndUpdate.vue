@@ -123,18 +123,16 @@
                     <h2 class="text-base font-semibold leading-7 text-gray-900">Informacion de Contrato</h2>
                     <div class="mt-3 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div class="sm:col-span-2">
-                            <InputLabel for="expense_line">
-                                Linea de Gasto
+                            <InputLabel for="cost_line_id">
+                                Linea de Negocio
                             </InputLabel>
                             <div class="mt-2">
-                                <select v-model="form.expense_line" id="expense_line" autocomplete="off"
+                                <select v-model="form.cost_line_id" id="cost_line_id" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option disabled value="">Seleccionar Linea de Gastos</option>
-                                    <option>Pint</option>
-                                    <option>Pext</option>
-                                    <option>Huawei</option>
+                                    <option disabled value="">Seleccionar Linea de Negocio</option>
+                                    <option v-for="item,i in costLines" :key="i" :value="item.id">{{ item.name }}</option>
                                 </select>
-                                <InputError :message="form.errors.expense_line" />
+                                <InputError :message="form.errors.cost_line_id" />
                             </div>
                         </div>
                         <div class="mt-3 sm:col-span-2">
@@ -183,12 +181,14 @@
                             <div class="mt-2 class flex gap-4">
                                 <label class="flex gap-2 items-center">
                                     Sí
-                                    <input type="radio" v-model="form.state_travel_expenses" id="state_travel_expenses" :value="true"
+                                    <input type="radio" v-model="form.state_travel_expenses" id="state_travel_expenses"
+                                        :value="true"
                                         class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
                                 </label>
                                 <label class="flex gap-2 items-center">
                                     No
-                                    <input type="radio" v-model="form.state_travel_expenses" id="state_travel_expenses" :value="false"
+                                    <input type="radio" v-model="form.state_travel_expenses" id="state_travel_expenses"
+                                        :value="false"
                                         class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
                                 </label>
                                 <InputError :message="form.errors.state_travel_expenses" />
@@ -196,18 +196,18 @@
                         </div>
 
                         <div class="sm:col-span-2 sm:col-start-1">
-                            <InputLabel for="pension_system">Regimen
+                            <InputLabel for="pension_type">Regimen
                                 Pensionario
                             </InputLabel>
                             <div class="mt-2">
-                                <select v-model="form.pension_system" id="pension_system" autocomplete="off"
+                                <select v-model="form.pension_type" id="pension_type" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Sistema de Pension</option>
-                                    <option v-for="pension in pensions" :key="pension" :value="pension.id">
-                                        {{ pension.type }}
+                                    <option v-for="pension in pensions" :key="pension" :value="pension">
+                                        {{ pension }}
                                     </option>
                                 </select>
-                                <InputError :message="form.errors.pension_system" />
+                                <InputError :message="form.errors.pension_type" />
                             </div>
                         </div>
 
@@ -225,6 +225,21 @@
                                 <InputError :message="form.errors.type_contract" />
                             </div>
                         </div>
+                        <div class="sm:col-span-2">
+                            <InputLabel for="personal_segment">
+                                Segmento de Personal
+                            </InputLabel>
+                            <div class="mt-2">
+                                <select v-model="form.personal_segment" required id="personal_segment" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option disabled value="">Seleccionar</option>
+                                    <option>MOD</option>
+                                    <option>MOI</option>
+                                    <option>Administrativo</option>
+                                </select>
+                                <InputError :message="form.errors.personal_segment" />
+                            </div>
+                        </div>
 
                         <div class="sm:col-span-2">
                             <InputLabel for="basic_salary">Salario Basico
@@ -240,8 +255,8 @@
                             <InputLabel for="amount_travel_expenses">Monto de Viaticos
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="number" v-model="form.amount_travel_expenses" id="amount_travel_expenses"
-                                    autocomplete="off" />
+                                <TextInput type="number" v-model="form.amount_travel_expenses"
+                                    id="amount_travel_expenses" autocomplete="off" />
                                 <InputError :message="form.errors.amount_travel_expenses" />
                             </div>
                         </div>
@@ -650,7 +665,7 @@ import TextInput from '@/Components/TextInput.vue';
 import InputFile from '@/Components/InputFile.vue';
 import InputError from '@/Components/InputError.vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const showModal = ref(false);
@@ -661,6 +676,7 @@ const props = defineProps({
         type: Object,
         requerid: false
     },
+    costLines: Array
 })
 
 const form = useForm({
@@ -676,12 +692,13 @@ const form = useForm({
     email_company: '',
     phone1: '',
     phone2: '',
-    expense_line: '',
+    cost_line_id: '',
+    personal_segment: '',
     type_contract: '',
     state_travel_expenses: true,
     discount_remuneration: '',
     discount_sctr: '',
-    pension_system: '',
+    pension_type: '',
     basic_salary: '',
     amount_travel_expenses: '',
     life_ley: '',
@@ -721,12 +738,12 @@ if (props.employees) {
     form.email_company = props.employees.email_company;
     form.phone1 = props.employees.phone1;
     form.phone2 = props.employees.phone2;
-    form.expense_line = props.employees.contract.expense_line;
+    form.cost_line_id = props.employees.contract.cost_line_id;
     form.type_contract = props.employees.contract.type_contract;
     form.state_travel_expenses = props.employees.contract.state_travel_expenses == 1 ? true : false;
     form.discount_remuneration = props.employees.contract.discount_remuneration == 1 ? true : false;
     form.discount_sctr = props.employees.contract.discount_sctr == 1 ? true : false;
-    form.pension_system = props.employees.contract.pension.id;
+    form.pension_type = props.employees.contract.pension_type;
     form.basic_salary = props.employees.contract.basic_salary;
     form.amount_travel_expenses = props.employees.contract.amount_travel_expenses;
     form.life_ley = props.employees.contract.life_ley;
@@ -751,7 +768,12 @@ if (props.employees) {
     form.operations = props.employees.health.operations;
     form.accidents = props.employees.health.accidents;
     form.vaccinations = props.employees.health.vaccinations;
+    form.personal_segment = props.employees.contract.personal_segment
 }
+
+watch(form.state_travel_expenses,(newVal) => {
+    form.amount_travel_expenses = ''
+})
 
 const addDependent = () => {
     form.familyDependents.push({
@@ -786,7 +808,15 @@ const handleImagenRecortada = (imagenRecorted) => {
 
 const submit = () => {
     if (props.employees) {
-        form.post(route('management.employees.update', props.employees.id), form)
+        console.log('hola')
+        form.post(
+            route('management.employees.update', props.employees.id),
+        {
+            onError: (e)=>{
+                console.log(e)
+            }
+        }    
+    )
     } else {
         form.post(route('management.employees.store'), {
             onSuccess: () => {
@@ -796,7 +826,8 @@ const submit = () => {
                     router.visit(route('management.employees'))
                 }, 2000);
             },
-            onError: () => {
+            onError: (error) => {
+                console.log(error)
                 console.error('Ha ocurrido un error. Por favor, inténtelo de nuevo.');
             }
         })

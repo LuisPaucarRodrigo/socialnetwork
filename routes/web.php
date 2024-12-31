@@ -18,7 +18,7 @@ Route::get('/scrape', [ScraperController::class, 'scrape']);
 
 Route::middleware(['auth', 'checkPlatformWeb'])->group(function () {
 
-
+    Route::get('/allfine', [ProfileController::class, 'allFine']);
 
     
 
@@ -39,10 +39,6 @@ Route::middleware(['auth', 'checkPlatformWeb'])->group(function () {
 
 Route::middleware(['auth', 'permission:DocumentGestion', 'checkPlatformWeb'])->group(function () {
     include_once 'documentgestion_route.php';
-});
-
-Route::middleware(['auth', 'permission:SocialNetwork', 'checkPlatformWeb'])->group(function () {
-    include_once 'snsot_route.php';
 });
 
 // Route::get('/huaweiproject/{project}', [FileDataController::class, 'render'])->name('huawei.show');

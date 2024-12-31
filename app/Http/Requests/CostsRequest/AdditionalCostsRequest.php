@@ -43,7 +43,7 @@ class AdditionalCostsRequest extends FormRequest
 
         if ($this->has('project_id')) {
             $project = Project::find($this->input('project_id'));
-            if ($project) {
+            if ($project && $project->cost_center_id === 1) {
                 $remaining_budget = $project->getRemainingBudgetAttribute();
                 $rules['amount'] = [
                     'required',

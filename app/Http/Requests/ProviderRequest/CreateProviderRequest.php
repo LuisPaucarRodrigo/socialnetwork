@@ -46,8 +46,8 @@ class CreateProviderRequest extends FormRequest
                 'max:255',
                 //Rule::unique('providers', 'email')
             ],
-            'category' => 'required|string|max:255',
-            'segment' => 'required|string|max:255',
+            'category_id' => 'required|numeric',
+            'segments' => 'required|array',
             'zone' => 'required|string',
             'ruc' => [
                 'required',

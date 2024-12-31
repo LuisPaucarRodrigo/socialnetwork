@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\CostLine;
+use App\Models\CostCenter;
 use App\Models\Pension;
 use App\Models\Permission;
 use App\Models\Role;
@@ -18,7 +20,7 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Crear el rol "admin"
+        //Crear el rol "admin"
         $adminRole = Role::create([
             'name' => 'admin',
             'description' => 'Rol de administrador con todos los permisos de gerente'
@@ -63,57 +65,6 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        //Social Network Roles and Permissions
-        $snP = Permission::create(['name' => 'SocialNetwork', 'description' => 'Permite acceso a usuarios de social network']);
-        $snPPr = Permission::create(['name' => 'SocialNetworkProgramation', 'description' => 'Permite accesos al área de programación']);
-        $snPOp = Permission::create(['name' => 'SocialNetworkOperation', 'description' => 'Permite accesos al área de operaciones']);
-        $snPLi = Permission::create(['name' => 'SocialNetworkLiquidation', 'description' => 'Permite accesos al área de liquidaciones']);
-        $snPCh = Permission::create(['name' => 'SocialNetworkCharge', 'description' => 'Permite accesos al área de cobranzas']);
-        $snPCo = Permission::create(['name' => 'SocialNetworkControl', 'description' => 'Permite accesos al área de control']);
-
-        $adminRole->permissions()->attach($snP);
-        $adminRole->permissions()->attach($snPPr);
-        $adminRole->permissions()->attach($snPOp);
-        $adminRole->permissions()->attach($snPLi);
-        $adminRole->permissions()->attach($snPCh);
-        $adminRole->permissions()->attach($snPCo);
-
-        $snRolesPermissions = [
-            [
-                'name' => 'SocialNetwork Programacion',
-                'description' => 'Social Network área programación',
-                'permissions' => [$snP->id, $snPPr->id]
-            ],
-            [
-                'name' => 'SocialNetwork Operaciones',
-                'description' => 'Social Network área operaciones',
-                'permissions' => [$snP->id, $snPOp->id]
-            ],
-            [
-                'name' => 'SocialNetwork Liquidaciones',
-                'description' => 'Social Network área liquidación',
-                'permissions' => [$snP->id, $snPLi->id]
-            ],
-            [
-                'name' => 'SocialNetwork Cobranzas',
-                'description' => 'Social Network área cobranzas',
-                'permissions' => [$snP->id, $snPCh->id]
-            ],
-            [
-                'name' => 'SocialNetwork Control',
-                'description' => 'Social Network área control',
-                'permissions' => [$snP->id, $snPCo->id]
-            ],
-        ];
-
-        foreach ($snRolesPermissions as $item) {
-            $current = Role::create([
-                'name' => $item['name'],
-                'description' => $item['description'],
-            ]);
-            $current->permissions()->sync($item['permissions']);
-        }
-
         $areasData = [
             ['name' => 'Gerencia'],
             ['name' => 'Contabilidad'],
@@ -136,56 +87,6 @@ class DatabaseSeeder extends Seeder
             'role_id' => '1',
             'area_id' => 1
         ]);
-
-        $data = [
-            [
-                'type' => 'HABITAT',
-                'values' => 0.0147,
-                'values_seg' => 0.0184,
-            ],
-            [
-                'type' => 'INTEGRA',
-                'values' => 0.0155,
-                'values_seg' => 0.0184,
-            ],
-            [
-                'type' => 'PRIMA',
-                'values' => 0.0160,
-                'values_seg' => 0.0184,
-            ],
-            [
-                'type' => 'PROFUTURO',
-                'values' => 0.0169,
-                'values_seg' => 0.0184,
-            ],
-            [
-                'type' => 'HABITATMX',
-                'values' => 0,
-                'values_seg' => 0.0184,
-            ],
-            [
-                'type' => 'INTEGRAMX',
-                'values' => 0,
-                'values_seg' => 0.0184,
-            ],
-            [
-                'type' => 'PRIMAMX',
-                'values' => 0,
-                'values_seg' => 0.0184,
-            ],
-            [
-                'type' => 'PROFUTUROMX',
-                'values' => 0,
-                'values_seg' => 0.0184,
-            ],
-            [
-                'type' => 'ONP',
-                'values' => 0.13,
-                'values_seg' => 0.0,
-            ],
-        ];
-        Pension::insert($data);
-
 
         $customersData = [
             ['id' => 1, 'ruc' => 20512780114, 'business_name' => 'CICSA PERU SAC', 'category' => 'Especial', 'address' => 'CALLE AMADOR MERINO REINA 267 OFC 501 LIMA LIMA SAN ISIDRO'],
@@ -215,6 +116,25 @@ class DatabaseSeeder extends Seeder
             ['id' => 6, 'customer_id' => 2, 'warehouse_id' => 4],
         ];
 
+        $costLinesData = [
+            ["name" => "PINT"],
+            ["name" => "PEXT"],
+            ["name" => "HUAWEI"],
+        ];
+        $costCenterData = [
+            ["name" => "Mantto pint CLARO", "cost_line_id" => 1, "percentage"=> "20"],
+            ["name" => "Combustible pint CLARO", "cost_line_id" => 1, "percentage"=> "40"] ,
+            ["name" => "Adicionales pint CLARO", "cost_line_id" => 1, "percentage"=> "40"],
+            ["name" => "Mantto pext CLARO", "cost_line_id" => 2, "percentage"=> "10"],
+            ["name" => "Mantto pext GTD", "cost_line_id" => 2, "percentage"=> "10"],
+            ["name" => "Instalaciones CLARO", "cost_line_id" => 2, "percentage"=> "30"],
+            ["name" => "Instalaciones GTD", "cost_line_id" => 2, "percentage"=> "20"],
+            ["name" => "Densificaion", "cost_line_id" => 2, "percentage"=> "20"],
+            ["name" => "Adicionales", "cost_line_id" => 2, "percentage"=> "10"],
+        ];
+
+        CostLine::insert($costLinesData);
+        CostCenter::insert($costCenterData);
         Customer::insert($customersData);
         Customers_contact::insert($customersContactData);
         Warehouse::insert($warehousesData);

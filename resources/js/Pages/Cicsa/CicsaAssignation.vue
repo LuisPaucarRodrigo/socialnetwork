@@ -2,24 +2,25 @@
 
     <Head title="CICSA Asignación" />
 
-    <AuthenticatedLayout :redirectRoute="'cicsa.index'">
+    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
         <template #header>
-            Asignación
+            {{ type==1 ? 'Pint' : 'Pext' }} - Asignación
         </template>
+        
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <PrimaryButton @click="openAddAssignationModal" type="button">
+                    <!-- <PrimaryButton @click="openAddAssignationModal" type="button">
                         + Agregar
-                    </PrimaryButton>
-                    <a :href="route('assignation.export') + '?' + uniqueParam"
+                    </PrimaryButton> -->
+                    <a :href="route('assignation.export', {type}) + '?' + uniqueParam"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 </div>
 
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
                         placeholder="Buscar ..." />
-                    <SelectCicsaComponent currentSelect="Asignación" />
+                    <SelectCicsaComponent currentSelect="Asignación" :type="type"/>
 
                 </div>
                 <div id="search_fields" role="tooltip"
@@ -30,7 +31,7 @@
             </div>
             <br>
             <div class="overflow-x-auto h-[70vh]">
-                <table class="w-full whitespace-no-wrap">
+                <table class="w-full whitespace-nowrap">
                     <thead>
                         <tr
                             class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -70,9 +71,9 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Encargado
                             </th>
-                            <th
+                            <!-- <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            </th>
+                            </th> -->
                         </tr>
                     </thead>
                     <tbody>
@@ -95,7 +96,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.cost_center }}
+                                    {{ item.project?.cost_center?.name }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -123,7 +124,7 @@
                                     {{ item.user_name }}
                                 </p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
+                            <!-- <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <div class="flex space-x-3 justify-center">
                                     <button class="text-blue-900" @click="openEditSotModal(item)">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -133,7 +134,7 @@
                                         </svg>
                                     </button>
                                 </div>
-                            </td>
+                            </td> -->
                         </tr>
                     </tbody>
                 </table>
@@ -144,7 +145,7 @@
             </div>
         </div>
 
-        <Modal :show="showAddEditModal" @close="closeAddAssignationModal">
+        <!-- <Modal :show="showAddEditModal" @close="closeAddAssignationModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
                     {{ form.id ? 'Editar Asignación' : 'Nueva Asignación' }}
@@ -267,11 +268,11 @@
                     </div>
                 </form>
             </div>
-        </Modal>
-        <SuccessOperationModal :confirming="confirmAssignation" :title="'Nueva Asignacion creada'"
+        </Modal> -->
+        <!-- <SuccessOperationModal :confirming="confirmAssignation" :title="'Nueva Asignacion creada'"
             :message="'La Asignacion fue creada con éxito'" />
         <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Asignacion Actualizada'"
-            :message="'La Asignacion fue actualizada'" />
+            :message="'La Asignacion fue actualizada'" /> -->
     </AuthenticatedLayout>
 </template>
 
@@ -291,107 +292,108 @@ import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import { setAxiosErrors } from "@/utils/utils";
 
-const { assignation, auth, searchCondition } = defineProps({
+const { assignation, auth, searchCondition, type } = defineProps({
     assignation: Object,
     auth: Object,
     searchCondition: {
         type: String,
         Required: false
-    }
+    },
+    type: Number
 })
 
 const assignations = ref(assignation);
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
 
-const initialState = {
-    id: null,
-    user_id: auth.user.id,
-    assignation_date: '',
-    project_name: '',
-    cost_center: '',
-    customer: '',
-    project_code: '',
-    cpe: '',
-    zone: '',
-    zone2: '',
-    manager: '',
-    user_name: auth.user.name,
-}
+// const initialState = {
+//     id: null,
+//     user_id: auth.user.id,
+//     assignation_date: '',
+//     project_name: '',
+//     customer: '',
+//     project_code: '',
+//     cpe: '',
+//     zone: '',
+//     zone2: '',
+//     manager: '',
+//     user_name: auth.user.name,
+// }
 
-const form = useForm(
-    { ...initialState }
-);
+// const form = useForm(
+//     { ...initialState }
+// );
 
-const showAddEditModal = ref(false);
-const confirmAssignation = ref(false);
+// const showAddEditModal = ref(false);
+// const confirmAssignation = ref(false);
 
-function openAddAssignationModal() {
-    showAddEditModal.value = true
-}
+// function openAddAssignationModal() {
+//     showAddEditModal.value = true
+// }
 
-function closeAddAssignationModal() {
-    showAddEditModal.value = false
-    form.defaults({ ...initialState })
-    form.reset()
-}
+// function closeAddAssignationModal() {
+//     showAddEditModal.value = false
+//     form.clearErrors()
+//     form.defaults({ ...initialState })
+//     form.reset()
+// }
 
-async function submitStore() {
-    let url = route('assignation.storeOrUpdate');
-    try {
-        const response = await axios.put(url, form)
-        updateAssignation(null, response.data)
-        closeAddAssignationModal()
-        confirmAssignation.value = true
-        setTimeout(() => {
-            confirmAssignation.value = false
-        }, 1500)
-    } catch (error) {
-        if (error.response) {
-            if (error.response.data.errors) {
-                setAxiosErrors(error.response.data.errors, form)
-            } else {
-                console.error("Server error:", error.response.data)
-            }
-        } else {
-            console.error("Network or other error:", error)
-        }
-    }
-}
+// async function submitStore() {
+//     let url = route('assignation.storeOrUpdate');
+//     try {
+//         const response = await axios.put(url, form)
+//         updateAssignation(null, response.data)
+//         closeAddAssignationModal()
+//         confirmAssignation.value = true
+//         setTimeout(() => {
+//             confirmAssignation.value = false
+//         }, 1500)
+//     } catch (error) {
+//         if (error.response) {
+//             if (error.response.data.errors) {
+//                 setAxiosErrors(error.response.data.errors, form)
+//             } else {
+//                 console.error("Server error:", error.response.data)
+//             }
+//         } else {
+//             console.error("Network or other error:", error)
+//         }
+//     }
+// }
 
-const confirmUpdateAssignation = ref(false);
+// const confirmUpdateAssignation = ref(false);
 
-function openEditSotModal(item) {
-    form.defaults({ ...item })
-    form.reset()
-    showAddEditModal.value = true
-}
+// function openEditSotModal(item) {
+//     form.defaults({ ...item })
+//     form.reset()
+//     showAddEditModal.value = true
+// }
 
-async function submitUpdate() {
-    let url = route('assignation.storeOrUpdate', { cicsa_assignation_id: form.id })
-    try {
-        const response = await axios.put(url, form)
-        updateAssignation(form.id, response.data)
-        closeAddAssignationModal()
-        confirmUpdateAssignation.value = true
-        setTimeout(() => {
-            confirmUpdateAssignation.value = false
-        }, 1500)
-    } catch (error) {
-        if (error.response) {
-            setAxiosErrors(error.response.data.errors, form)
-        } else {
-            console.error('Error desconocido:', error);
-        }
-    }
-}
+// async function submitUpdate() {
+//     let url = route('assignation.storeOrUpdate', { cicsa_assignation_id: form.id })
+//     try {
+//         const response = await axios.put(url, form)
+//         updateAssignation(form.id, response.data)
+//         closeAddAssignationModal()
+//         confirmUpdateAssignation.value = true
+//         setTimeout(() => {
+//             confirmUpdateAssignation.value = false
+//         }, 1500)
+//     } catch (error) {
+//         if (error.response) {
+//             setAxiosErrors(error.response.data.errors, form)
+//         } else {
+//             console.error('Error desconocido:', error);
+//         }
+//     }
+// }
 
-function submit() {
-    form.id ? submitUpdate() : submitStore()
-}
+// function submit() {
+//     form.id ? submitUpdate() : submitStore()
+// }
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('assignation.index'), { searchQuery: $search });
+        const response = await axios.post(route('assignation.index', {type}), { searchQuery: $search });
         assignations.value = response.data.assignation;
 
     } catch (error) {
@@ -399,19 +401,19 @@ const search = async ($search) => {
     }
 };
 
-function updateAssignation(cicsa_assignation_id, assignation) {
-    const validations = assignations.value.data || assignations.value;
-    const index = validations.findIndex(item => item.id === cicsa_assignation_id)
-    if (cicsa_assignation_id) {
-        validations[index] = assignation
-    } else {
-        validations.unshift(assignation);
-    }
+// function updateAssignation(cicsa_assignation_id, assignation) {
+//     const validations = assignations.value.data || assignations.value;
+//     const index = validations.findIndex(item => item.id === cicsa_assignation_id)
+//     if (cicsa_assignation_id) {
+//         validations[index] = assignation
+//     } else {
+//         validations.unshift(assignation);
+//     }
 
-    if (validations.length > assignations.value.per_page) {
-        validations.pop();
-    }
-}
+//     if (validations.length > assignations.value.per_page) {
+//         validations.pop();
+//     }
+// }
 
 if (searchCondition) {
     search(searchCondition)

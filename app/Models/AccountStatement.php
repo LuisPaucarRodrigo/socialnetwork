@@ -17,30 +17,28 @@ class AccountStatement extends Model
         'payment',
     ];
 
-    public function additional_costs () {
-        return $this->hasMany(AdditionalCost::class, 'account_statement_id');
+    public function general_expenses()
+    {
+        return $this->hasMany(GeneralExpense::class, 'account_statement_id');
     }
+    
 
-    public function static_costs () {
-        return $this->hasMany(StaticCost::class, 'account_statement_id');
-    }
-
-    public function pext_project_expenses () {
-        return $this->hasMany(PextProjectExpense::class, 'account_statement_id');
-    }
-
-    public function getStateAttribute () {
+    public function getStateAttribute()
+    {
+        
+        if ($this->operation_number === null) {
+            return 'Validado';
+        }
         if ($this->payment) {
             return 'Abono';
         }
         if ($this->charge) {
-            $totalAC = $this->additional_costs()->get()->sum('amount');
-            $totalSC = $this->static_costs()->get()->sum('amount');
-            $totalPE = $this->pext_project_expenses()->get()->sum('amount');
-            $total = $totalAC + $totalSC + $totalPE;
-            if ($total >= $this->charge){
+            $total = $this->general_expenses()->get()->sum('amount');
+            $chargeFormatted = number_format($this->charge, 2, '.', '');
+            $totalFormatted = number_format($total, 2, '.', '');
+            if ((float)$totalFormatted >= (float)$chargeFormatted) {
                 return 'Validado';
-            } else if ( $total > 0) {
+            } elseif ((float)$totalFormatted > 0) {
                 return 'Por validar';
             } else {
                 return 'No validado';

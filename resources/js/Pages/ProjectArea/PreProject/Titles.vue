@@ -4,7 +4,7 @@
 
     <AuthenticatedLayout :redirectRoute="'preprojects.titles'">
         <template #header>
-            Tìtulos
+            Títulos
         </template>
         <div class="mt-6 flex items-center justify-start gap-x-3">
             <PrimaryButton v-if="hasPermission('ProjectManager')" @click="add_title" type="button">

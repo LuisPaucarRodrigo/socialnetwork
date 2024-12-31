@@ -17,7 +17,9 @@ class Project extends Model
         'description',
         'status',
         'preproject_id',
-        'initial_budget'
+        'cost_center_id',
+        'cost_line_id',
+        'initial_budget',
     ];
 
     protected $appends = [
@@ -38,6 +40,7 @@ class Project extends Model
         'total_sum_task',
         'is_liquidable',
         'total_products_cost_claro_cicsa',
+        'serialized_code'
     ];
 
     // CALCULATED
@@ -54,7 +57,7 @@ class Project extends Model
 
     public function getPreprojectQuoteNoMarginAttribute()
     {
-        return $this->preproject->quote->total_amount_no_margin;
+        return $this->preproject?->quote->total_amount_no_margin;
     }
 
     public function getNameAttribute()
@@ -76,7 +79,7 @@ class Project extends Model
     public function getEndDateAttribute()
     {
         $startDate = Carbon::parse($this->preproject()->first()?->quote->date);
-        $daysFromQuote = optional($this->preproject()->first()->quote)->deliverable_time;
+        $daysFromQuote = optional($this->preproject()->first()?->quote)->deliverable_time;
         return $startDate->addDays($daysFromQuote - 1)->format('d/m/Y');
     }
 
@@ -100,7 +103,9 @@ class Project extends Model
 
     public function getRemainingBudgetAttribute()
     {
-        if ($this->initial_budget === 0.00) { return 0.00;}
+        if ($this->initial_budget === 0.00) {
+            return 0.00;
+        }
         $lastUpdate = $this->budget_updates()->latest()->first();
         $currentBudget = $lastUpdate ? $lastUpdate->new_budget : $this->initial_budget;
         $additionalCosts = $this->additionalCosts()
@@ -115,9 +120,9 @@ class Project extends Model
             - $this->getTotalProductsCostAttribute()
             - $additionalCosts
             - $staticCosts;
-        foreach ($this->getTotalEmployeeCostsAttribute() as $value){
-            $currentBudget -= $value['total_payroll']; 
-            $currentBudget -= $value['essalud']; 
+        foreach ($this->getTotalEmployeeCostsAttribute() as $value) {
+            $currentBudget -= $value['total_payroll'];
+            $currentBudget -= $value['essalud'];
         }
         return $currentBudget;
     }
@@ -159,9 +164,11 @@ class Project extends Model
         $preproject = $this->preproject()
             ->with('quote.preproject_quote_services')
             ->first();
-        foreach ($preproject->quote->preproject_quote_services as $item) {
-            if ($item->liquidation_state === false) {
-                return false;
+        if ($preproject) {
+            foreach ($preproject->quote->preproject_quote_services as $item) {
+                if ($item->liquidation_state === false) {
+                    return false;
+                }
             }
         }
         $tasks = $this->tasks()->get();
@@ -194,12 +201,12 @@ class Project extends Model
                 'essalud' => $this->employeeChargeCosts('Administrativo') * 0.09
             ],
             [
-                'type' => 'MOD - Mano de Obra Directa' ,
+                'type' => 'MOD - Mano de Obra Directa',
                 'total_payroll' => $this->employeeChargeCosts('MOD - Mano de Obra Directa'),
                 'essalud' => $this->employeeChargeCosts('MOD - Mano de Obra Directa') * 0.09
             ],
             [
-                'type' => 'MOI - Mano de Obra Indirecta' ,
+                'type' => 'MOI - Mano de Obra Indirecta',
                 'total_payroll' => $this->employeeChargeCosts('MOI - Mano de Obra Indirecta'),
                 'essalud' => $this->employeeChargeCosts('MOI - Mano de Obra Indirecta') * 0.09
             ],
@@ -221,8 +228,16 @@ class Project extends Model
 
     public function getDaysAttribute()
     {
-        return optional($this->preproject()->first()->quote)->deliverable_time;
+        // return optional($this->preproject()->first()->quote)->deliverable_time;
+        return $this->preproject?->quote?->deliverable_time ?? null;
     }
+
+    public function getSerializedCodeAttribute()
+    {
+        $currentYear = now()->year;
+        return 'CCIP-PEXT-' . $currentYear . '-' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
+    }
+
 
     //RELATIONS
     public function preproject()
@@ -273,5 +288,30 @@ class Project extends Model
     public function project_image()
     {
         return $this->hasMany(Projectimage::class);
+    }
+
+    public function cicsa_assignation()
+    {
+        return $this->hasOne(CicsaAssignation::class);
+    }
+
+    public function cost_line()
+    {
+        return $this->belongsTo(CostLine::class, 'cost_line_id');
+    }
+
+    public function cost_center()
+    {
+        return $this->belongsTo(CostCenter::class, 'cost_center_id');
+    }
+
+    public function pext_project_expenses()
+    {
+        return $this->hasMany(PextProjectExpense::class);
+    }
+
+    public function project_quote()
+    {
+        return $this->hasOne(ProjectQuote::class);
     }
 }

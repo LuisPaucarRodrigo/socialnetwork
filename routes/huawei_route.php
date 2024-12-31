@@ -73,13 +73,16 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::get('huawei/projects/{huawei_project}/additional_costs/get', [HuaweiProjectController::class, 'getAdditionalCosts'])->name('huawei.projects.additionalcosts');
     Route::post('huawei/projects/{huawei_project}/additional_costs/store', [HuaweiProjectController::class, 'storeAdditionalCosts'])->name('huawei.projects.additionalcosts.store');
     Route::post('huawei/projects/{huawei_project}/additional_costs/update/{huawei_additional_cost}', [HuaweiProjectController::class, 'updateAdditionalCosts'])->name('huawei.projects.additionalcosts.update');
+    Route::get('huawei/projects/{expense}/huawei_projects/{image}/show_image', [HuaweiProjectController::class, 'showImage'])->name('huawei.projects.additionalcosts.showimage');
     Route::delete('huawei/projects/{huawei_project}/additional_costs/delete/{huawei_additional_cost}', [HuaweiProjectController::class, 'deleteAdditionalCost'])->name('huawei.projects.additionalcosts.delete');
     Route::get('huawei/projects/{huawei_project}/additional_costs/search/{request}', [HuaweiProjectController::class, 'searchAdditionalCosts'])->name('huawei.projects.additionalcosts.search');
+    Route::put('huawei/projects/{expense}/huawei_projects/validate', [HuaweiProjectController::class, 'validateExpense'])->name('huawei.projects.additionalcosts.validate');
     Route::get('huawei/projects/{huawei_project}/addtitional_costs/summary', [HuaweiProjectController::class, 'getCostSummary'])->name('huawei.projects.additionalcosts.summary');
     Route::get('huawei/projects/additional_costs/preview/{huawei_additional_cost}', [HuaweiProjectController::class, 'showAdditionalArchive'])->name('huawei.projects.additionalcosts.preview');
     Route::post('huawei/projects/{huawei_project_id}/additional_cost/advanced_search', [HuaweiProjectController::class, 'search_costs'])->name('huawei.projects.additionalcosts.advancedsearch');
     Route::get('huawei/projects/{huawei_project}/additional_costs/export', [HuaweiProjectController::class, 'exportAdditionalCosts'])->name('huawei.projects.additionalcosts.export');
     Route::post('huawei/projects/{huawei_project}/additional_costs/import/post', [HuaweiProjectController::class, 'importCosts'])->name('huawei.projects.additionalcosts.import');
+    Route::post('huawei/projects/massive_update/huawei_projects/post', [HuaweiProjectController::class, 'massiveUpdate'])->name('huawei.projects.additionalcosts.massiveupdate');
 
     //static costs
 
@@ -121,6 +124,8 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::get('huawei/projects/{huawei_project}/liquidations/get_resources', [HuaweiProjectController::class, 'geResourcesToLiquidate'])->name('huawei.projects.liquidations');
     Route::get('huawei/projects/{huawei_project}/liquidations/history/{equipment?}', [HuaweiProjectController::class, 'liquidationsHistory'])->name('huawei.projects.liquidations.history');
     Route::post('huawei/projects/{huawei_project}/liquidations/store_liquidation/{equipment?}', [HuaweiProjectController::class, 'liquidate'])->name('huawei.projects.liquidations.post');
+    Route::post('huawei/projects/{huawei_project}/liquidations/get_resources/search_advance/post', [HuaweiProjectController::class, 'search_advance_liquidate'])->name('huawei.projects.liquidations.searchadvance');
+    Route::post('huawei/projects/liquidations/massive_liquidation/post/liquidations/{equipment?}', [HuaweiProjectController::class, 'massiveLiquidation'])->name('huawei.projects.liquidations.massiveliquidation');
 
     //SpecialRefunds
     Route::get('huawei/special_refunds/get', [HuaweiManagementController::class, 'getSpecialRefunds'])->name('huawei.specialrefunds');
@@ -213,8 +218,8 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::put('huawei/monthly_projects/monthly_expenses/{expense}/validate', [HuaweiMonthlyController::class, 'validateExpense'])->name('huawei.monthlyexpenses.expenses.validate');
     Route::get('huawei/monthly_projects/monthly_expenses/{expense}/{image}/show_image', [HuaweiMonthlyController::class, 'showImage'])->name('huawei.monthlyexpenses.expenses.showimage');
     Route::get('huawei/monthly_projects/{project}/monthly_expenses/export/excel', [HuaweiMonthlyController::class, 'exportMonthlyExpenses'])->name('huawei.monthlyexpenses.expenses.export');
-
     Route::post('huawei/monthly_projects/monthly_expenses/massive_update/post', [HuaweiMonthlyController::class, 'massiveUpdate'])->name('huawei.monthlyexpenses.expenses.massiveupdate');
+    Route::post('huawei/monthly_projects/monthly_expenses/massive_validate/post', [HuaweiMonthlyController::class, 'massiveValidate'])->name('huawei.monthlyexpenses.expenses.massivevalidate');
 });
 
 

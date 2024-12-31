@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->date('assignation_date')->nullable();
             $table->string('project_name');
-            $table->string('cost_center');
             $table->string('customer')->nullable();
             $table->string('project_code')->nullable();
             $table->string('cpe')->nullable();
@@ -23,6 +22,7 @@ return new class extends Migration
             $table->string('zone2')->nullable();
             $table->string('manager');
             $table->string('user_name');
+            $table->foreignId('project_id')->nullable()->constrained('projects')->OnDelete('cascade');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
         });

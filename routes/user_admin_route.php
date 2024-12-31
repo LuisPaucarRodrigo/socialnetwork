@@ -13,7 +13,6 @@ use App\Http\Controllers\HumanResource\FormationDevelopment;
 use App\Http\Controllers\ProjectArea\TaskManagementController;
 use App\Http\Controllers\HumanResource\VacationController;
 use App\Http\Controllers\HumanResource\DocumentController;
-use App\Http\Controllers\HumanResource\SectionController;
 use App\Http\Controllers\Inventory\PurchaseProductsController;
 use App\Http\Controllers\ProjectArea\CicsaSectionController;
 use App\Http\Controllers\Inventory\SpecialWarehouseController;
@@ -107,10 +106,6 @@ Route::middleware('permission:UserManager')->group(function () {
     //Document
     Route::delete('/documents/{id}/delete', [DocumentController::class, 'destroy'])->name('documents.destroy');
 
-    //SubSectionAlarmRRHH
-    Route::put('/subSections/{subSection}/update', [SectionController::class, 'updateSubSection'])->name('sections.updateSubSection');
-    Route::delete('/subSections/{subSection}/delete', [SectionController::class, 'destroySubSection'])->name('sections.destroySubSection');
-
     Route::post('/purchasing_request_product_store', [PurchaseRequestController::class, 'purchasing_request_product_store'])->name('purchasing_request_product.store');
     Route::delete('/purchasing_request_product_delete/{purchasing_request_product_id}', [PurchaseRequestController::class, 'purchasing_request_product_delete'])->name('purchasing_request_product.delete');
 
@@ -142,7 +137,7 @@ Route::middleware('permission:UserManager')->group(function () {
 
     //Providers
     Route::get('/shopping_area/providers/edit/{id}', [ProviderController::class, 'edit'])->name('providersmanagement.edit');
-    Route::put('/shopping_area/providers/update/{id}', [ProviderController::class, 'update'])->name('providersmanagement.update');
+    Route::post('/shopping_area/providers/update/{id}', [ProviderController::class, 'update'])->name('providersmanagement.update');
     Route::delete('/shopping_area/providers/destroy/{id}', [ProviderController::class, 'destroy'])->name('providersmanagement.destroy');
 
     //Purchase request

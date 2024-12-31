@@ -12,10 +12,13 @@ class CicsaProcessExport implements FromView
      * @return \Illuminate\Support\Collection
      */
     protected $stages;
-    public function __construct($stages)
+    protected $type;
+    public function __construct($type, $stages)
     {
+        $this->type = $type;
         $this->stages = $stages;
     }
+
     public function view(): View
     {   
         $titleBase = [
@@ -47,6 +50,7 @@ class CicsaProcessExport implements FromView
             'Monto Proyecto',
             'Coordinador',
             'Encargado',
+            'Estado',
         ];
         $titleAdministration = [
             'Fecha de OC',
@@ -74,6 +78,7 @@ class CicsaProcessExport implements FromView
             'PDF Factura',
             'ZIP Factura',
             'Encargado',
+            'Estado'
         ];
         $titleOCNumber = [
             'Numero de OC',
@@ -85,10 +90,13 @@ class CicsaProcessExport implements FromView
             'Credito',
             'Fecha de Deposito',
             'Monto',
-            'Encargado'
+            'Encargado',
+            'Estado'
         ];
         $title = [];
-        $stageExport = CicsaAssignation::query();
+        $stageExport = CicsaAssignation::whereHas('project', function ($subQuery) {
+            $subQuery->where('cost_line_id', $this->type);
+        });
         if ($this->stages === 'Proyecto') {
             $title = array_merge($titleBase,$titleProject);
             $stageExport = $stageExport->with('cicsa_feasibility', 'cicsa_installation', 'cicsa_materials')->get();

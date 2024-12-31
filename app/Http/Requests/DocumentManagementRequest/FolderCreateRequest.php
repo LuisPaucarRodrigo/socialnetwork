@@ -42,6 +42,7 @@ class FolderCreateRequest extends FormRequest
             'type' => 'required',
             'areas' => 'required',
             'user_id' => 'required',
+            'user_name' => 'required',
             'currentPath' => 'required',
         ];
 

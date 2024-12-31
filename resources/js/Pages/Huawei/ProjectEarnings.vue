@@ -9,11 +9,11 @@
       <div class="flex flex-col sm:flex-row gap-4 justify-between rounded-lg p-4">
     <!-- Botones principales visibles en pantallas grandes -->
     <div class="flex flex-col sm:flex-row gap-4 items-center">
-        <button @click.prevent="openCreateAdditionalModal" type="button" v-if="props.huawei_project.status && props.earnings.data.length > 0"
+        <button @click.prevent="openCreateAdditionalModal" type="button" v-if="props.huawei_project.status"
             class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
             + Agregar
         </button>
-        <button @click.prevent="openImportModal" type="button" v-if="props.huawei_project.status && props.earnings.data.length == 0"
+        <button @click.prevent="openImportModal" type="button" v-if="props.huawei_project.status"
             class="hidden sm:block rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500 whitespace-nowrap">
             Importar Datos
         </button>

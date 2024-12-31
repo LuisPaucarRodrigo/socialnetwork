@@ -13,17 +13,22 @@ use App\Models\ProjectEmployee;
 use Inertia\Inertia;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+
 class TaskManagementController extends Controller
 {
     public function index($id = null)
     {
         $projectId = $id;
+        $project = Project::find($projectId);
+        $projects = Project::where('id', '!=', $projectId)
+            ->where('cost_line_id', $project->cost_line_id)
+            ->whereHas('preproject')
+            ->get();
         $tasks = Tasks::where('project_id', $projectId)->paginate(10);
         return Inertia::render('ProjectArea/TasksManagement/index', [
             'tasks' => $tasks,
-            'project' => Project::find($projectId),
-            'projects' => Project::where('id', '!=', $projectId)
-                ->get()
+            'project' => $project,
+            'projects' => $projects
         ]);
     }
 

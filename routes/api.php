@@ -30,6 +30,10 @@ use App\Http\Controllers\ProjectArea\ChecklistsController;
         Route::post('/huaweiproject/stages/codes/store_image', [ApiController::class, 'storeImagePerCode']);
         Route::get('/huaweiproject/{code}/images/get', [ApiController::class, 'getImageHistoryPerCode']);
 
+        Route::post('/huawei/expenses/fetch_sites', [ApiController::class, 'fetchSites']);
+        Route::post('/huawei/expenses/fetch_projects', [ApiController::class, 'fetchProjects']);
+        Route::post('/huawei/expenses/storeExpense/post', [ApiController::class, 'storeExpense']);
+
         //ProcessManuals
         Route::post('/processmanuals/index', [ApiController::class, 'localDriveIndex']);
         Route::post('/processmanuals/folder_archive_download', [ApiController::class, 'localDriveDownload']);

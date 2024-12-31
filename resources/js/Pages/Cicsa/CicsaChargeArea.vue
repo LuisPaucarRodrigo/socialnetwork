@@ -1,9 +1,9 @@
 <template>
 
     <Head title="CICSA Área de Cobranza" />
-    <AuthenticatedLayout :redirectRoute="'cicsa.index'">
+    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
         <template #header>
-            Área de Cobranza
+            {{ type==1 ? 'Pint' : 'Pext' }} - Área de Cobranza
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
@@ -12,7 +12,7 @@
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
                         placeholder="Buscar ..." />
-                    <SelectCicsaComponent currentSelect="Cobranza" />
+                    <SelectCicsaComponent currentSelect="Cobranza" :type="type" />
                     <div id="search_fields" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Nombre,Codigo,CPE,OC,Numero de Factura
@@ -63,7 +63,7 @@
                                 </td>
                                 <td colspan="4" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                     <p class="text-gray-900 text-center">
-                                        {{ item.cost_center }}
+                                        {{ item.project?.cost_center?.name }}
                                     </p>
                                 </td>
                                 <td colspan="4" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -481,13 +481,14 @@ import { EyeIcon } from '@heroicons/vue/24/outline';
 import InputFile from '@/Components/InputFile.vue';
 
 
-const { charge_area, auth, searchCondition } = defineProps({
+const { charge_area, auth, searchCondition, type } = defineProps({
     charge_area: Object,
     auth: Object,
     searchCondition: {
         type: String,
         Required: false
-    }
+    },
+    type: Number
 })
 
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
@@ -561,7 +562,6 @@ async function submit() {
                 confirmUpdateAssignation.value = false
             }, 1500)
         } catch (error) {
-            console.log(error)
             if (error.response) {
                 if (error.response.data.errors) {
                     setAxiosErrors(error.response.data.errors, form)
@@ -622,7 +622,7 @@ function formattedDate2(dateString) {
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('cicsa.charge_areas'), { searchQuery: $search });
+        const response = await axios.post(route('cicsa.charge_areas', {type}), { searchQuery: $search });
         charge_areas.value = response.data.charge_area;
     } catch (error) {
         console.error('Error searching:', error);

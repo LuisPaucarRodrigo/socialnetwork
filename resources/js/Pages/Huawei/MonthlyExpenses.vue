@@ -92,6 +92,14 @@
                                             Actualizar Operación
                                         </button>
                                     </div>
+                                    <div class="">
+                                        <button
+                                            @click="openMassiveValidate"
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                                        >
+                                            Aceptar o Rechazar
+                                        </button>
+                                    </div>
                                 </div>
                             </template>
                         </dropdown>
@@ -218,11 +226,7 @@
                                 {{ actionForm.ids.length ?? "" }}
                             </label>
                         </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
-                        >
-                            Proyecto
-                        </th>
+
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
@@ -237,13 +241,7 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                            <TableAutocompleteFilter
-                                labelClass="text-[11px]"
-                                label="Zona"
-                                :options="zones"
-                                v-model="filterForm.selectedZones"
-                                width="w-48"
-                            />
+                            Zona
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
@@ -253,7 +251,7 @@
                                 label="Empleado"
                                 :options="employees"
                                 v-model="filterForm.selectedEmployees"
-                                width="w-40"
+                                width="w-72"
                             />
                         </th>
                         <th
@@ -268,10 +266,16 @@
                             />
                         </th>
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <TableDateFilter labelClass="text-[11px]" label="Fecha de Gasto"
-                                v-model:startDate="filterForm.exStartDate" v-model:endDate="filterForm.exEndDate"
-                                v-model:noDate="filterForm.exNoDate" width="w-40" />
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                        >
+                            <TableDateFilter
+                                labelClass="text-[11px]"
+                                label="Fecha de Gasto"
+                                v-model:startDate="filterForm.exStartDate"
+                                v-model:endDate="filterForm.exEndDate"
+                                v-model:noDate="filterForm.exNoDate"
+                                width="w-40"
+                            />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
@@ -314,10 +318,16 @@
                             Imagen 3
                         </th>
                         <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <TableDateFilter labelClass="text-[11px]" label="Fecha de Depósito E.C."
-                                v-model:startDate="filterForm.opStartDate" v-model:endDate="filterForm.opEndDate"
-                                v-model:noDate="filterForm.opNoDate" width="w-40" />
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                        >
+                            <TableDateFilter
+                                labelClass="text-[11px]"
+                                label="Fecha de Depósito E.C."
+                                v-model:startDate="filterForm.opStartDate"
+                                v-model:endDate="filterForm.opEndDate"
+                                v-model:noDate="filterForm.opNoDate"
+                                width="w-40"
+                            />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
@@ -337,7 +347,17 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                            Estado
+                            <TableAutocompleteFilter
+                                labelClass="text-[11px]"
+                                label="Estado"
+                                :options="[
+                                    'Aceptado',
+                                    'Rechazado',
+                                    'Pendiente',
+                                ]"
+                                v-model="filterForm.selectedStates"
+                                width="w-48"
+                            />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
@@ -348,7 +368,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        v-for="item in props.search ? expenses : expenses.data"
+                        v-for="item in (!props.search || !filterMode ? expenses.data : expenses)"
                         :key="item.id"
                         class="text-gray-700"
                     >
@@ -376,11 +396,6 @@
                                     type="checkbox"
                                 />
                             </label>
-                        </td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
-                        >
-                            {{ props.project.description }}
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
@@ -432,7 +447,7 @@
                         <td
                             class="border-b whitespace-nowrap border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
-                            S/. {{ item.amount.toFixed(2) }}
+                            S/. {{ item.amount ? item.amount.toFixed(2) : '' }}
                         </td>
 
                         <td
@@ -496,11 +511,11 @@
                             class="border-b whitespace-nowrap border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap"
                         >
                             {{
-                                item.is_accepted === 1
+                                item.is_accepted == 1
                                     ? "Aceptado"
-                                    : item.is_accepted === null
-                                    ? "Pendiente"
-                                    : "Rechazado"
+                                    : item.is_accepted == 0
+                                    ? "Rechazado"
+                                    : "Pendiente"
                             }}
                         </td>
                         <td
@@ -593,7 +608,7 @@
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
-                            colspan="10"
+                            colspan="9"
                         ></td>
                         <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap"
@@ -666,32 +681,20 @@
                                     />
                                 </div>
                             </div>
+
                             <div>
                                 <InputLabel
                                     for="zone"
                                     class="font-medium leading-6 text-gray-900"
-                                    >Zona</InputLabel
-                                >
+                                    >Zona
+                                </InputLabel>
                                 <div class="mt-2">
                                     <input
                                         type="text"
                                         v-model="form.zone"
-                                        list="zonesList"
-                                        placeholder="Seleccionar Zona"
                                         id="zone"
-                                        autocomplete="off"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     />
-                                    <datalist id="zonesList">
-                                        <option
-                                            v-for="(zone, index) in zones"
-                                            :key="index"
-                                            :value="zone"
-                                        >
-                                            {{ zone }}
-                                        </option>
-                                    </datalist>
-
                                     <InputError :message="form.errors.zone" />
                                 </div>
                             </div>
@@ -1079,6 +1082,60 @@
             </div>
         </Modal>
 
+        <Modal :show="showValidateModal" @close="closeMassiveValidate">
+            <div class="p-6">
+                <h2
+                    class="text-base font-medium leading-7 text-gray-900 text-center"
+                >
+                    Aceptar o Rechazar
+                </h2>
+                <form @submit.prevent="massiveValidate">
+                    <div class="mt-6 flex flex-col items-center space-y-4">
+                        <InputLabel
+                            for="operation_decision"
+                            class="font-medium leading-6 text-gray-900 text-center"
+                        >
+                            Seleccione una opción
+                        </InputLabel>
+                        <div class="flex space-x-8">
+                            <label class="flex items-center space-x-2">
+                                <input
+                                    type="radio"
+                                    v-model="validateForm.state"
+                                    :value="1"
+                                    class="h-5 w-5 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                                />
+                                <span class="text-gray-700">Aceptar</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input
+                                    type="radio"
+                                    v-model="validateForm.state"
+                                    :value="0"
+                                    class="h-5 w-5 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                                />
+                                <span class="text-gray-700">Rechazar</span>
+                            </label>
+                        </div>
+                        <InputError :message="validateForm.errors.state" />
+                    </div>
+                    <div class="mt-8 flex justify-center gap-4">
+                        <SecondaryButton @click="closeMassiveValidate">
+                            Cancelar
+                        </SecondaryButton>
+                        <button
+                            type="submit"
+                            :disabled="isFetching"
+                            :class="{ 'opacity-25': isFetching }"
+                            class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        >
+                            Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </Modal>
+
         <ConfirmDeleteModal
             :confirmingDeletion="confirmingDocDeletion"
             itemType="Gasto"
@@ -1160,12 +1217,13 @@ const form = useForm({
 const create_additional = ref(false);
 const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
+const showValidateModal = ref(false);
 
 const openCreateAdditionalModal = () => {
     create_additional.value = true;
 };
 
-const openEditAdditionalModal = (additional) => {
+const openEditAdditionalModal = async (additional) => {
     Object.assign(form, additional);
     create_additional.value = true;
 };
@@ -1267,31 +1325,32 @@ const openPreviewDocumentModal = (expense, img) => {
     window.open(routeToShow, "_blank");
 };
 
-const employees = props.project.huawei_monthly_employees.map((employee) => {
-    return `${employee.name} ${employee.lastname}`; // Combina nombre y apellido
-});
-
-const zones = [
-    "DESAGUADERO",
-    "HUAWEI",
-    "HUAWEI-AQP",
-    "HUAWEI-PUNO",
-    "HUAWEI-TACNA",
-    "HUAWEI-CHALA",
-    "HUAWEI-CUSCO",
-    "HUAWEI-ILO",
-    "HUAWEI-JULIACA",
-    "HUAWEI-LA PUNTA",
-    "HUAWEI-ORCOPAMPA",
-    "HUAWEI-ABANCAY",
-    "HUAWEI-BANOSPAMPA",
-    "HUAWEI-EL PALOMAR",
-    "IP HUAWEI",
-    "PDI AQP",
-    "PERAL",
+const employees = [
+    "ANGIE NICOLE DURAN VILLACORTA",
+    "CESAR DAVID NINACANSAYA APAZA",
+    "EDUARDO JOHEL HINOJOSA AMUDIO",
+    "ENMANUEL EDUARDO JUAN HANCO TEJADA",
+    "JOSE HUMBERTO QUENTA VILLANUEVA",
+    "PABLO ENRIQUE LAURA FLORES",
+    "REMMILTON CRUZ QUISPE",
+    "VICTOR HUGO CACERES CONDORI",
+    "XAVIER ABDUL CALAPUJA FLORES",
+    "YERSON HENRRY LLERENA CONDORI",
+    "EDWIN RICHARD CRUZ CHALCO",
+    "JORGE DANIEL MONTOYA RODRIGUEZ",
+    "JONATHAN ELISBAN MOLINA YUCRA",
+    "GUSTAVO GIOVANNI FLORES LLERENA",
+    "HANS MENDOZA TRUJILLO",
+    "CLINTON LUIS YUCRA PACCO",
+    "JEAN PAUL HILARION TABOADA",
+    'JHONY PUCHO CCARITA',
+    'MARIO ALFONSO LLONTOP SOTO',
+    'EDWIN RICHARD CRUZ CHALCO'
 ];
 
 const expenseTypes = [
+    "Alimentación",
+    "Adicional Camioneta",
     "Combustible",
     "Consumibles",
     "Fletes",
@@ -1300,6 +1359,7 @@ const expenseTypes = [
     "Movilidad",
     "Planilla",
     "Herramientas",
+    "Transporte",
     "Otros",
 ];
 
@@ -1316,22 +1376,21 @@ const cdp_types = [
 const filterForm = ref({
     search: "",
     selectedEmployees: employees,
-    selectedZones: zones,
     selectedExpenseTypes: expenseTypes,
     selectedCDPTypes: cdp_types,
-    exStartDate: '',
-    exEndDate: '',
+    exStartDate: "",
+    exEndDate: "",
     exNoDate: false,
-    opStartDate: '',
-    opEndDate: '',
-    opNoDate: false
+    opStartDate: "",
+    opEndDate: "",
+    selectedStates: ["Aceptado", "Rechazado", "Pendiente"],
+    opNoDate: false,
 });
 
 watch(
     () => [
         filterForm.value.search,
         filterForm.value.selectedEmployees,
-        filterForm.value.selectedZones,
         filterForm.value.selectedExpenseTypes,
         filterForm.value.selectedCDPTypes,
         filterForm.value.exStartDate,
@@ -1339,7 +1398,8 @@ watch(
         filterForm.value.exNoDate,
         filterForm.value.opStartDate,
         filterForm.value.opEndDate,
-        filterForm.value.opNoDate
+        filterForm.value.opNoDate,
+        filterForm.value.selectedStates,
     ],
     () => {
         (filterMode.value = true), search_advance(filterForm.value);
@@ -1381,9 +1441,19 @@ async function validateRegister(expense_id, is_accepted) {
         expense: expense_id,
     });
     try {
-        await axios.put(url, { is_accepted: is_accepted });
+        const response = await axios.put(url, { is_accepted: is_accepted });
         updateExpense(expense_id, "validate", is_accepted);
         confirmValidation.value = true;
+        const originalMap = new Map(
+            expenses.value.data.map((item) => [item.id, item])
+        );
+        response.data.forEach((update) => {
+            if (originalMap.has(update.id)) {
+                originalMap.set(update.id, update);
+            }
+        });
+        const updatedArray = Array.from(originalMap.values());
+        expenses.value.data = updatedArray;
         setTimeout(() => {
             confirmValidation.value = false;
         }, 1000);
@@ -1442,6 +1512,10 @@ const opNuDateForm = useForm({
     ec_op_number: "",
 });
 
+const validateForm = useForm({
+    state: "",
+});
+
 const handleCheckAll = (e) => {
     if (e.target.checked) {
         actionForm.value.ids = expenses.value.data.map((item) => item.id);
@@ -1462,6 +1536,31 @@ const closeOpNuDatModal = () => {
     isFetching.value = false;
     showOpNuDatModal.value = false;
     opNuDateForm.reset();
+};
+
+const openMassiveValidate = () => {
+
+    if (actionForm.value.ids.length === 0) {
+        notifyWarning("No hay registros selccionados");
+        return;
+    }
+    const invalidExpense = actionForm.value.ids.find(id => {
+        const expense = expenses.value.data.find(exp => exp.id === id);
+        return expense && expense.is_accepted !== null;
+    });
+
+    if (invalidExpense){
+        notifyWarning('Hay registros ya aceptados o rechazados');
+        return;
+    }
+
+    showValidateModal.value = true;
+};
+
+const closeMassiveValidate = () => {
+    isFetching.value = false;
+    showValidateModal.value = false;
+    validateForm.reset();
 };
 
 const submitOpNuDatModal = async () => {
@@ -1491,6 +1590,36 @@ const submitOpNuDatModal = async () => {
     const updatedArray = Array.from(originalMap.values());
     expenses.value.data = updatedArray;
     closeOpNuDatModal();
+    notify("Registros Seleccionados Actualizados");
+};
+
+const massiveValidate = async () => {
+    isFetching.value = true;
+    const res = await axios
+        .post(route("huawei.monthlyexpenses.expenses.massivevalidate"), {
+            ...validateForm.data(),
+            ...actionForm.value,
+        })
+        .catch((e) => {
+            isFetching.value = false;
+            if (e.response?.data?.errors) {
+                setAxiosErrors(e.response.data.errors, validateForm);
+            } else {
+                notifyError("Server Error");
+            }
+        });
+
+    const originalMap = new Map(
+        expenses.value.data.map((item) => [item.id, item])
+    );
+    res.data.forEach((update) => {
+        if (originalMap.has(update.id)) {
+            originalMap.set(update.id, update);
+        }
+    });
+    const updatedArray = Array.from(originalMap.values());
+    expenses.value.data = updatedArray;
+    closeMassiveValidate();
     notify("Registros Seleccionados Actualizados");
 };
 </script>

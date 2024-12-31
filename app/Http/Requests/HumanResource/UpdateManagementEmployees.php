@@ -37,14 +37,14 @@ class UpdateManagementEmployees extends FormRequest
             'phone1' => 'required|numeric|digits:9',
             'phone2' => 'nullable|numeric|digits:9',
 
-            'expense_line' => 'required|string',
+            'cost_line_id' => 'required|numeric',
             'state_travel_expenses' => 'required|boolean',
             'type_contract' => 'required|string',
             'amount_travel_expenses' => 'nullable|numeric',
             
             'discount_remuneration' => 'required|boolean',
             'discount_sctr' => 'required|boolean',
-            'pension_system' => 'required|numeric',
+            'pension_type' => 'required|string',
             'basic_salary' => 'required|numeric',
             'life_ley' => 'required|numeric',
             'hire_date' => 'required|date',

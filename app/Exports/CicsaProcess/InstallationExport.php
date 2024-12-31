@@ -12,6 +12,12 @@ class InstallationExport implements FromView, WithColumnWidths
     /**
     * @return \Illuminate\Support\Collection
     */
+    protected $type;
+    public function __construct($type)
+    {
+        $this->type = $type;
+    }
+
     public function view(): View
     {
         return view('Export.InstallationExport', [
@@ -29,7 +35,10 @@ class InstallationExport implements FromView, WithColumnWidths
                 'Coordinador',
                 'Encargado'
             ],
-            'assignations' => CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'cost_center')
+            'assignations' => CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe',  'project_id')
+            ->whereHas('project', function ($subQuery) {
+                $subQuery->where('cost_line_id', $this->type);
+            })
             ->with('cicsa_installation')
             ->get()
         ]);

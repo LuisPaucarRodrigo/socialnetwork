@@ -40,8 +40,8 @@
             <div class="w-full bg-gray-200 rounded-full h-6 dark:bg-gray-700 mt-2 pl-0.5">
                 <div class="bg-green-600 h-6 text-md font-bold text-blue-100 p-0.5 leading-none rounded-full flex items-center justify-center"
                     :style="`width: ${project.total_percentage_tasks_completed}%`"> {{
-        project.total_percentage_tasks_completed
-            != 0 ? project.total_percentage_tasks_completed : 0 }}%</div>
+                        project.total_percentage_tasks_completed
+                            != 0 ? project.total_percentage_tasks_completed : 0 }}%</div>
             </div>
         </div>
 
@@ -103,8 +103,7 @@
                                         <template v-if="hasPermission('ProjectManager')">
                                             <div v-if="task.status === 'pendiente'">
                                                 <button @click="openModalStart(task)"
-                                                    v-if="task.start_date && task.end_date"
-                                                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2
+                                                    v-if="task.start_date && task.end_date" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2
                                                     px-4 rounded">
                                                     <PlayIcon class="text-white-900 h-4 w-4" style="stroke-width:4;" />
                                                 </button>
@@ -112,7 +111,7 @@
 
                                             <div v-else-if="task.status === 'proceso' || task.status === 'detenido'">
                                                 <!-- Botones en proceso o detenido -->
-                                                <button @click="statustask(task.id, 'stop')"
+                                                <!-- <button @click="statustask(task.id, 'stop')"
                                                     v-if="task.status === 'proceso'"
                                                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                                     <PauseIcon class="text-white-900 h-4 w-4" style="stroke-width:4;" />
@@ -121,19 +120,19 @@
                                                     class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
                                                     <PlayPauseIcon class="text-white-900 h-4 w-4"
                                                         style="stroke-width:3;" />
-                                                </button>
+                                                </button> -->
                                                 <button @click="openModalComplete(task)"
                                                     class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
                                                     <CheckIcon class="text-white-900 h-4 w-4" style="stroke-width:4;" />
                                                 </button>
                                             </div>
-                                            <p v-else class="text-red-500 font-bold py-2 px-4 rounded">
+                                            <p v-else class="text-green-500 font-bold py-2 px-4 rounded">
                                                 Completado
                                             </p>
                                         </template>
 
                                         <template class="flex space-x-3 justify-center">
-                                            <Link :href="route('tasks.show', { taskId: task.id })">
+                                            <!-- <Link :href="route('tasks.show', { taskId: task.id })">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-teal-500">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -141,7 +140,7 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                             </svg>
-                                            </Link>
+                                            </Link> -->
                                             <template v-if="hasPermission('ProjectManager')">
                                                 <button v-if="task.status === 'pendiente'"
                                                     @click="showModalDate(task.id)">
@@ -217,7 +216,7 @@
                         <select v-model="form.project_id_duplicated" id="project_id_duplicated"
                             class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                             <option value="" disabled>Seleccionar Proyecto</option>
-                            <option v-for="item in projects" :key="item.id" :value="item.id">{{ item.name }}
+                            <option v-for="item in projects" :key="item.id" :value="item.id">{{ item.description }}
                             </option>
                         </select>
                         <InputError :message="form.errors.project_id_duplicated" />
@@ -313,11 +312,15 @@ const hasPermission = (permission) => {
     return userPermissions.includes(permission);
 }
 
-let backUrl = project.status === null
+let backUrl = project.cost_line_id === 1 ? project.status === null
     ? 'projectmanagement.index'
     : project.status == true
         ? 'projectmanagement.historial'
-        : 'projectmanagement.index'
+        : 'projectmanagement.index' : project.status === null
+    ? 'projectmanagement.pext.index'
+    : project.status == true
+        ? ''
+        : 'projectmanagement.pext.index'
 
 const taskIdDelete = ref(null);
 

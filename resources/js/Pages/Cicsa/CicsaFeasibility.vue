@@ -2,18 +2,19 @@
 
     <Head title="CICSA Factibilidad" />
 
-    <AuthenticatedLayout :redirectRoute="'cicsa.index'">
+    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
         <template #header>
-            Factibilidad PINT y PEXT
+            {{ type==1 ? 'Pint' : 'Pext' }} - Factibilidad PINT y PEXT
         </template>
+        <Toaster richColors />
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
-                <a :href="route('feasibilities.export') + '?' + uniqueParam"
+                <a :href="route('feasibilities.export', {type}) + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
                         placeholder="Buscar ..." />
-                    <SelectCicsaComponent currentSelect="Factibilidad PINT y PEXT" />
+                    <SelectCicsaComponent currentSelect="Factibilidad PINT y PEXT" :type="type"/>
                     <div id="search_fields" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Nombre,Codigo,CPE
@@ -78,7 +79,7 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                 <p class="text-gray-900 text-center">
-                                    {{ item.cost_center }}
+                                    {{ item.project?.cost_center?.name }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
@@ -188,7 +189,7 @@
                             <br>
                         </div>
                         <div class="sm:col-span-2">
-                            <table class="w-full whitespace-no-wrap">
+                            <table class="w-full whitespace-nowrap">
                                 <thead>
                                     <tr
                                         class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -318,11 +319,8 @@
 
 
         </Modal>
-
-        <SuccessOperationModal :confirming="confirmFeasibility" :title="'Nueva Factibilidad creada'"
-            :message="'La Factibilidad fue creada con éxito'" />
-        <SuccessOperationModal :confirming="confirmUpdateFeasibility" :title="'Factibilidad Actualizada'"
-            :message="'La Factibilidad fue actualizada'" />
+        <!-- <SuccessOperationModal :confirming="confirmUpdateFeasibility" :title="'Factibilidad Actualizada'"
+            :message="'La Factibilidad fue actualizada'" /> -->
     </AuthenticatedLayout>
 </template>
 
@@ -337,19 +335,22 @@ import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
-import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
+// import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import axios from 'axios';
 import { setAxiosErrors } from "@/utils/utils";
+import { notify, notifyError } from '@/Components/Notification';
+import { Toaster } from 'vue-sonner';
 
-const { feasibility, auth, searchCondition } = defineProps({
+const { feasibility, auth, searchCondition, type } = defineProps({
     feasibility: Object,
     auth: Object,
     searchCondition: {
         type: String,
         required: false
-    }
+    },
+    type: Number
 })
 
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
@@ -376,8 +377,8 @@ const feasibilityObject = ref({
     unit: '',
     quantity: 0,
 });
+
 const showAddEditModal = ref(false);
-const confirmFeasibility = ref(false);
 const showModalFeasibility = ref(false);
 const cicsa_assignation_id = ref(null);
 
@@ -408,19 +409,19 @@ async function submit() {
         const response = await axios.put(url, form);
         updateFeasibility(cicsa_assignation_id.value, response.data)
         closeAddFeasibilityModal()
-        confirmUpdateFeasibility.value = true
-        setTimeout(() => {
-            confirmUpdateFeasibility.value = false
-        }, 1500)
+        // confirmUpdateFeasibility.value = true
+        // setTimeout(() => {
+        //     confirmUpdateFeasibility.value = false
+        // }, 1500)
     } catch (error) {
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, form)
             } else {
-                console.error("Server error:", error.response.data)
+                notifyError("Server error:", error.response.data)
             }
         } else {
-            console.error("Network or other error:", error)
+            notifyError("Network or other error:", error)
         }
     }
 }
@@ -463,7 +464,7 @@ function modifyQuantity(id, event) {
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('feasibilities.index'), { searchQuery: $search });
+        const response = await axios.post(route('feasibilities.index', {type}), { searchQuery: $search });
         feasibilitys.value = response.data.feasibility;
     } catch (error) {
         console.error('Error searching:', error);
@@ -492,9 +493,10 @@ function updateFeasibility(cicsa_assignation_id, feasibility) {
     const validations = feasibilitys.value.data || feasibilitys.value;
     const index = validations.findIndex(item => item.id === cicsa_assignation_id)
     validations[index].cicsa_feasibility = feasibility
+    notify('Actualización Exitosa')
 }
 
-if(searchCondition){
+if (searchCondition) {
     search(searchCondition)
 }
 </script>

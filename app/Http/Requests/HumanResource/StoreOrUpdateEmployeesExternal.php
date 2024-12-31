@@ -5,6 +5,7 @@ namespace App\Http\Requests\HumanResource;
 use App\Models\ExternalEmployee;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Date;
 
 class StoreOrUpdateEmployeesExternal extends FormRequest
 {
@@ -26,10 +27,11 @@ class StoreOrUpdateEmployeesExternal extends FormRequest
         $rules =  [
             'name' => 'required|string',
             'lastname' => 'required|string',
+            'cost_line_id' => 'required|numeric',
             'cropped_image' => 'nullable',
             'gender' => 'required|in:Masculino,Femenino',
             'address' => 'required|string',
-            'birthdate' => 'required|date',
+            'birthdate' => 'required|date|before_or_equal:' . Date::now()->subYears(18)->format('Y-m-d'),
             'dni' => 'required|numeric|digits:8',
             'phone1' => 'required|numeric|digits:9',
             'salary' => 'required|numeric',

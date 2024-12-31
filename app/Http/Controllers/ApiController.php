@@ -2,27 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ChecklistRequest\ChecklistDailytoolkitRequest;
 use App\Http\Requests\LoginMobileRequest;
 use App\Http\Requests\PextProjectRequest\ApiStoreExpensesRequest;
 use App\Http\Requests\PreprojectRequest\ImageRequest;
-use App\Models\ChecklistDailytoolkit;
 use App\Models\CicsaAssignation;
+use App\Models\HuaweiAdditionalCost;
 use App\Models\HuaweiCode;
 use App\Models\HuaweiProject;
 use App\Models\HuaweiProjectCode;
 use App\Models\HuaweiProjectImage;
 use App\Models\HuaweiProjectStage;
 use App\Models\Imagespreproject;
-use App\Models\Preproject;
 use App\Models\PreprojectCode;
 use App\Models\PreprojectTitle;
-use App\Models\PreReportHuaweiGeneral;
-use App\Models\Project;
 use App\Models\HuaweiSite;
 use App\Models\PextProject;
 use App\Models\PextProjectExpense;
-use App\Models\Projectimage;
+use App\Models\Project;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
@@ -484,39 +480,46 @@ class ApiController extends Controller
         return response()->download($filePath);
     }
 
-    public function dailytoolkit_store(ChecklistDailytoolkitRequest $request)
-    {
-        $data = $request->validated();
-        DB::beginTransaction();
-        try {
-            $data['user_id'] = Auth::user()->id;
-            ChecklistDailytoolkit::create($data);
-            DB::commit();
-            return response()->json([], 201);
-        } catch (Exception $e) {
-            return response()->json([
-                'error' => 'Ocurrió un error al procesar la solicitud',
-                'message' => $e->getMessage()
-            ], 500);
-        }
-    }
-
     public function cicsaProcess($zone)
     {
-        $cicsaProcess = CicsaAssignation::select('id', 'project_name', 'zone', 'zone2')
+        $currentMonthStart = Carbon::now()->startOfMonth();
+        $currentMonthEnd = Carbon::now()->endOfMonth();
+
+        $cicsaProcess = CicsaAssignation::select('id', 'zone', 'project_id', 'project_name')
             ->where(function ($query) use ($zone) {
                 $query->where('zone', $zone)
                     ->orWhere('zone2', $zone);
             })
-            ->whereHas('cicsa_charge_area', function ($subQuery) {
-                $subQuery->where(function ($subQuery) {
-                    $subQuery->whereNull('invoice_number')
-                        ->orWhereNull('invoice_date')
-                        ->orWhereNull('amount');
+            ->whereHas('project', function ($query) use ($currentMonthStart, $currentMonthEnd) {
+                $query->where('cost_line_id', 2)
+                    ->where(function ($subQuery) use ($currentMonthStart, $currentMonthEnd) {
+                        $subQuery->where(function ($subSubQuery) use ($currentMonthStart, $currentMonthEnd) {
+                            $subSubQuery->whereHas('cost_center', function ($costCenterQuery) {
+                                $costCenterQuery->where('name', 'like', '%Mantto%');
+                            })
+                                ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
+                                ->where('initial_budget', '>', 0);
+                        })
+                            ->orWhereHas('cost_center', function ($costCenterQuery) {
+                                // No aplica filtro de fechas para los demás cost_center
+                                $costCenterQuery->where('name', 'not like', '%Mantto%');
+                            });
+                    });
+            })
+            ->where(function ($query) {
+                $query->whereHas('cicsa_charge_area', function ($subQuery) {
+                    $subQuery->select('id', 'cicsa_assignation_id', 'invoice_number', 'invoice_date', 'amount', 'deposit_date')
+                        ->where(function ($subSubQuery) {
+                            $subSubQuery->whereNull('invoice_number')
+                                ->orWhereNull('invoice_date')
+                                ->orWhereNull('amount');
+                        })
+                        ->whereNull('deposit_date');
                 })
-                    ->whereNull('deposit_date');
+                    ->orDoesntHave('cicsa_charge_area');
             })
             ->get();
+
         $cicsaProcess->each->setAppends([]);
         return response()->json($cicsaProcess, 200);
     }
@@ -525,30 +528,20 @@ class ApiController extends Controller
     {
         $validateData = $request->validated();
         try {
-            $doc_date = Carbon::createFromFormat('d/m/Y', $validateData['doc_date'])->format('Y-m');
-
-            $pextProject = PextProject::where('date', $doc_date)
-                ->select('id')
-                ->first();
-            if (!$pextProject) {
-                return response()->json([
-                    'error' => "No se encontraron proyectos pext al cual asignar su gasto."
-                ], 404);
-            }
-            $validateData['pext_project_id'] = $pextProject->id;
             $docDate = Carbon::createFromFormat('d/m/Y', $validateData['doc_date']);
             $validateData['doc_date'] = $docDate->format('Y-m-d');
-
+            $validateData['fixedOrAdditional'] = 0;
             if (($validateData['zone'] !== 'MDD') && $validateData['type_doc'] === 'Factura') {
                 $validateData['igv'] = 18;
             }
-            $newDesc = Auth::user()->name . ", " . $validateData['description'];
+            $user = Auth::user();
+            $newDesc = $user->name . ", " . $validateData['description'];
             $validateData['description'] = $newDesc;
             if ($validateData['photo']) {
                 $validateData['photo'] = $this->storeBase64Image($validateData['photo'], 'documents/expensesPext', 'Gasto Pext');
             }
-            $validateData['user_id'] = Auth::user()->id;
 
+            $validateData['user_id'] = $user->id;
             PextProjectExpense::create($validateData);
             return response()->noContent();
         } catch (Exception $e) {
@@ -582,5 +575,122 @@ class ApiController extends Controller
             })
             ->get();
         return response()->json($expensesPext, 200);
+    }
+
+    //expenses_dus
+    public function fetchSites (Request $request)
+    {
+        $request->validate([
+            'macro_project' => 'required'
+        ]);
+
+        $projects = HuaweiProject::where('macro_project', $request->macro_project)->get();
+
+        $sites = $projects->flatMap(function ($project) {
+            return $project->huawei_site()->get()->map(function ($site) {
+                return [
+                    'id' => $site->id,
+                    'name' => $site->name,
+                ];
+            });
+        })->unique('id');
+
+        return response()->json($sites, 200);
+    }
+
+    public function fetchProjects (Request $request)
+    {
+        $request->validate([
+            'macro_project' => 'required',
+            'site' => 'required'
+        ]);
+        $projects = HuaweiProject::select('id', 'name', 'assigned_diu')
+            ->where('macro_project', $request->macro_project)
+            ->where('huawei_site_id', $request->site)
+            ->get()
+            ->makeHidden([
+                'code',
+                'additional_cost_total',
+                'static_cost_total',
+                'materials_in_project',
+                'equipments_in_project',
+                'materials_liquidated',
+                'equipments_liquidated',
+                'total_earnings',
+                'total_real_earnings',
+                'total_real_earnings_without_deposit',
+                'total_project_cost',
+                'total_employee_costs',
+                'total_essalud_employee_cost',
+                'huawei_project_resources'
+            ])
+            ->filter(function ($project){
+                return $project->state == 1;
+            });
+
+        return response()->json($projects, 200);
+    }
+
+    public function storeExpense ($huawei_project, Request $request)
+    {
+        $data = $request->validate([
+            'id' => 'required|numeric',
+            'expense_type' => 'required',
+            'employee' => 'required',
+            'cdp_type' => 'required',
+            'doc_number' => 'required',
+            'op_number' => 'required',
+            'ruc' => 'required',
+            'description' => 'required',
+            'amount' => 'required',
+            'image1' => 'required',
+            'image2' => 'nullable',
+            'image3' => 'nullable',
+        ]);
+
+        $data['expense_date'] = Carbon::now();
+        $data['huawei_project_id'] = $huawei_project;
+        $data['refund_status'] = 'PENDIENTE';
+
+        DB::beginTransaction();
+
+        $new_expense = HuaweiAdditionalCost::create([
+            'expense_type' => $data['expense_type'],
+            'employee' => $data['employee'],
+            'expense_date' => $data['expense_date'],
+            'cdp_type' => $data['cdp_type'],
+            'doc_number' => $data['doc_number'],
+            'op_number' => $data['op_number'],
+            'ruc' => $data['ruc'],
+            'description' => $data['description'],
+            'amount' => $data['amount'],
+            'refund_status' => $data['refund_status'],
+            'huawei_project_id' => $data['huawei_project_id']
+        ]);
+
+        try {
+            $expenseDirectory = 'documents/huawei/monthly_expenses/';
+            $imageFields = ['image1', 'image2', 'image3'];
+            $imageUpdates = [];
+
+            foreach ($imageFields as $index => $field){
+                if (isset($data[$field])){
+                    $image = str_replace('data:image/png;base64,', '', $data[$field]);
+                    $image = str_replace(' ', '+', $image);
+                    $imageContent = base64_decode($image);
+                    $data[$field] = time() . '.png';
+                    file_put_contents(public_path($expenseDirectory) . $data[$field], $imageContent);
+                    $imageUpdates[$field] = $data[$field];
+                }
+            }
+            $new_expense->update($imageUpdates);
+            DB::commit();
+            return response()->json([201]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

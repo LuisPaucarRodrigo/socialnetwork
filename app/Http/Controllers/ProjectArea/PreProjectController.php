@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PreprojectRequest;
 use App\Http\Requests\PreprojectRequest\PreprojectQuoteRequest;
 use App\Http\Requests\PurchaseRequest\UpdatePurchaseRequest;
+use App\Models\CostLine;
 use App\Models\Customer;
 use App\Models\PhotoReport;
 use App\Models\Preproject;
@@ -43,24 +44,39 @@ use ZipArchive;
 
 class PreProjectController extends Controller
 {
-    public function index(Request $request)
+
+    public function index(Request $request, $type, $preprojects_status = null)
     {
+        $viewTemplate = '';
+        if ($type == "1") {
+            $viewTemplate = 'PreProjectsPint';
+        }
+        if ($type == "2") {
+            $viewTemplate = 'PreProjectsPext';
+        }
+        if ($type !== "1" && $type !== "2") {
+            abort(404);
+        }
         if ($request->isMethod('get')) {
-            $preprojects_status = $request->input('preprojects_status');
-            return Inertia::render('ProjectArea/PreProject/PreProjects', [
+            return Inertia::render('ProjectArea/PreProject/' . $viewTemplate, [
                 'preprojects' => Preproject::with('users')->where('status', $preprojects_status)
-                    ->orderBy('created_at', 'desc')
+                    ->where('cost_line_id', $type)
+                    ->orderBy('date', 'desc')
                     ->paginate(12),
                 'preprojects_status' => $preprojects_status,
+                'type' => $type,
                 'users' => User::select('id', 'name')->orderBy('name', 'asc')->get()
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
-            $preprojects_status = $request->input('preprojects_status');
-            $preprojects = Preproject::with('users')->orWhere('code', 'like', "%$searchQuery%")
-                ->orWhere('description', 'like', "%$searchQuery%")
+            $preprojects = Preproject::with('users')
                 ->where('status', $preprojects_status)
-                ->orderBy('created_at', 'desc')
+                ->where('cost_line_id', $type)
+                ->where(function ($query) use ($searchQuery) {
+                    return $query->orWhere('code', 'like', "%$searchQuery%")
+                        ->orWhere('description', 'like', "%$searchQuery%");
+                })
+                ->orderBy('date', 'desc')
                 ->paginate(12);
 
             return response()->json([
@@ -69,16 +85,30 @@ class PreProjectController extends Controller
         }
     }
 
-    public function create($preproject_id = null)
+    public function create($type, $preproject_id = null)
     {
+        $customers = Customer::with('customer_contacts');
+        if ($type == "1") {
+            $customers = $customers->where('id', '!=', 2);
+        }
+        if ($type == "2") {
+            $customers = $customers->where('id', '!=', 1);
+        }
+        if ($type !== "1" && $type !== "2") {
+            abort(404);
+        }
+        $customers = $customers->get();
         return Inertia::render('ProjectArea/PreProject/CreatePreProject', [
             'preproject' => Preproject::with('project', 'customer', 'contacts')->find($preproject_id),
-            'customers' => Customer::with('customer_contacts')->where('id', '!=', 1)->get(),
+            'customers' => $customers,
             'titles' => Title::all(),
             'stages' => ReportStage::select('id', 'name')->get(),
+            'type' => $type,
+            'cost_line' => CostLine::with(['cost_center' => function ($query) {
+                $query->where('name', 'not like', '%Mantto%');
+            }])->find(2)
         ]);
     }
-
 
     public function getCode($date, $code)
     {
@@ -100,7 +130,7 @@ class PreProjectController extends Controller
                 foreach ($data['reportStages'] as $report) {
                     $dataCode = TitleCode::where('title_id', $report['title_id'])->get();
                     $preprojectTitle = PreprojectTitle::create([
-                        'type' => $report['name'],
+                        'type' => $report['type'],
                         'preproject_id' => $preproject->id,
                     ]);
                     foreach ($dataCode as $codes) {
@@ -654,7 +684,7 @@ class PreProjectController extends Controller
 
     public function index_image($preproject_id)
     {
-        $preprojectImages = PreprojectTitle::with('preprojectCodes.code', 'preprojectCodes.imagecodepreprojet',)->where('preproject_id', $preproject_id)->get();
+        $preprojectImages = PreprojectTitle::with('preprojectCodes.code', 'preprojectCodes.imagecodepreprojet')->where('preproject_id', $preproject_id)->get();
         $imagesCode = Imagespreproject::all();
         $imagesCode->each(function ($url) {
             $url->image = url('/image/imagereportpreproject/' . $url->image);
@@ -669,7 +699,9 @@ class PreProjectController extends Controller
         return Inertia::render('ProjectArea/PreProject/ImageReport/index', [
             'preprojectImage' => $preprojectImages,
             'imagesCode' => $imagesCode,
-            'preproject' => Preproject::select('id', 'status')->find($preproject_id),
+            'preproject' => Preproject::select('id', 'status', 'cost_line_id')->find($preproject_id),
+            'stages' => ReportStage::select('id', 'name')->get(),
+            'titles' => Title::all(),
         ]);
     }
 
@@ -692,6 +724,41 @@ class PreProjectController extends Controller
     //     });
     //     return response()->json(['images' => $data, 'codes' => $codesWithStatus]);
     // }
+
+    public function stages_store(Request $request, $preproject_id)
+    {
+        $data = $request->validate([
+            'reportStages' => 'required|array',
+            'reportStages.*.type' => 'required|string',
+            'reportStages.*.title_id' => 'required|numeric',
+        ]);
+        $preprojectTitles = [];
+        if (isset($data['reportStages'])) {
+            foreach ($data['reportStages'] as $report) {
+                $dataCode = TitleCode::where('title_id', $report['title_id'])->get();
+                $preprojectTitle = PreprojectTitle::create([
+                    'type' => $report['type'],
+                    'preproject_id' => $preproject_id,
+                ]);
+                foreach ($dataCode as $codes) {
+                    PreprojectCode::create([
+                        'preproject_title_id' => $preprojectTitle->id,
+                        'code_id' => $codes->code_id
+                    ]);
+                }
+                $preprojectTitle->load('preprojectCodes.code');
+                $preprojectTitles[] = $preprojectTitle;
+            }
+        }
+        return response()->json($preprojectTitles, 200);
+    }
+
+    public function delete_stages($title_id)
+    {
+        $preprojectTitle = PreprojectTitle::find($title_id);
+        $preprojectTitle->delete();
+        return response()->noContent();
+    }
 
     public function approve_reject_image(Request $request, $id)
     {

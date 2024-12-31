@@ -134,9 +134,6 @@
                         Fecha de Pedido
                       </th>
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                        DU Asignada
-                      </th>
-                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                         Observación
                       </th>
                       <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
@@ -152,7 +149,6 @@
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.unit }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.order_number }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.order_date) }}</td>
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.assigned_diu }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.observation }}</td>
                       <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                         <div class="flex items-center">
@@ -284,13 +280,7 @@
         <input id="order_date" type="date" v-model="materialForm.order_date" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
       </div>
 
-      <div class="col-span-1">
-            <InputLabel class="mb-1" for="assigned_diu">DU Asignada</InputLabel>
-            <input type="text" v-model="materialForm.assigned_diu" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
-        </div>
-
-
-      <div class="col-span-1">
+      <div class="col-span-1 md:col-span-2">
         <InputLabel class="mb-1" for="observation">Observación</InputLabel>
         <textarea v-model="materialForm.observation" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600"></textarea>
       </div>
@@ -327,29 +317,30 @@
 
         <div class="col-span-1">
             <div class="flex items-center gap-2">
-                <InputLabel for="brand" class="font-medium leading-6 text-gray-900 mb-1">Marca</InputLabel>
+                <InputLabel for="brand" class="font-medium text-gray-900 mb-0">Marca</InputLabel>
 
-            <button type="button" @click="new_brand">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                </svg>
-            </button>
+                <button type="button" @click="new_brand" class="p-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                </button>
             </div>
+            <!-- Select -->
             <select :disabled="autoCompletement" v-model="equipmentForm.brand" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600">
-            <option value="" disabled>Seleccionar Marca</option>
-            <option v-for="brand in props.brands" :key="brand.id" :value="brand.id">{{ brand.name }}</option>
+                <option value="" disabled>Seleccionar Marca</option>
+                <option v-for="brand in props.brands" :key="brand.id" :value="brand.id">{{ brand.name }}</option>
             </select>
         </div>
 
         <div class="col-span-1">
             <div class="flex items-center gap-2">
-                <InputLabel for="model" class="font-medium leading-6 text-gray-900 mb-1">Modelo</InputLabel>
+                <InputLabel for="brand" class="font-medium text-gray-900 mb-0">Modelo</InputLabel>
 
-            <button type="button" @click="new_brand_model">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                </svg>
-            </button>
+                <button type="button" @click="new_brand_model" class="p-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                </button>
             </div>
             <select :disabled="autoCompletement" v-model="equipmentForm.brand_model" class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600">
             <option value="" disabled>Seleccionar Modelo</option>
@@ -621,7 +612,6 @@
       observation: '',
       order_number: '',
       order_date: '',
-      assigned_diu: ''
     });
 
     const equipmentForm = useForm({
@@ -756,7 +746,6 @@
             unit: materialForm.unit,
             order_number: materialForm.order_number ? materialForm.order_number : form.order_number,
             order_date: materialForm.order_date ? materialForm.order_date : form.order_date,
-            assigned_diu: materialForm.assigned_diu
         });
 
             materialForm.reset();

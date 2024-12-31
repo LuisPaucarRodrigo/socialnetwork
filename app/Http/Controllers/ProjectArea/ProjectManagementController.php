@@ -31,15 +31,16 @@ class ProjectManagementController extends Controller
     {
         if ($request->isMethod('get')) {
             $projectsData = Project::join('preprojects', 'projects.preproject_id', '=', 'preprojects.id')
-            ->select('projects.*', 'preprojects.date as preproject_date')
-            ->orderBy('preproject_date', 'desc')->where('projects.status', null)->paginate();
+                ->select('projects.*', 'preprojects.date as preproject_date')
+                ->orderBy('preproject_date', 'desc')->where('projects.status', null)->where('projects.cost_line_id', 1)->paginate();
             $projectsData->getCollection()->each->setAppends([
-                'name', 
-                'code', 
-                'remaining_budget', 
+                'name',
+                'code',
+                'remaining_budget',
                 'current_budget',
                 'is_liquidable',
             ]);
+
             return Inertia::render('ProjectArea/ProjectManagement/Project', [
                 'projects' => $projectsData,
             ]);
@@ -60,6 +61,7 @@ class ProjectManagementController extends Controller
                 ->join('preprojects', 'projects.preproject_id', '=', 'preprojects.id')
                 ->select('projects.*', 'preprojects.date as preproject_date')
                 ->whereNull('projects.status')
+                ->where('projects.cost_line_id', 1)
                 ->orderBy('preprojects.date', 'desc')
                 ->paginate(12);
 
@@ -75,7 +77,7 @@ class ProjectManagementController extends Controller
             return Inertia::render('ProjectArea/ProjectManagement/ProjectHistorial', [
                 'projects' => Project::join('preprojects', 'projects.preproject_id', '=', 'preprojects.id')
                     ->select('projects.*', 'preprojects.date as preproject_date')
-                    ->orderBy('preprojects.date', 'desc')->where('projects.status', true)->paginate(),
+                    ->orderBy('preprojects.date', 'desc')->where('projects.status', true)->where('projects.cost_line_id', 1)->paginate(),
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
@@ -94,6 +96,7 @@ class ProjectManagementController extends Controller
                 ->join('preprojects', 'projects.preproject_id', '=', 'preprojects.id')
                 ->select('projects.*', 'preprojects.date as preproject_date')
                 ->where('projects.status', true)
+                ->where('projects.cost_line_id', 1)
                 ->orderBy('preprojects.date', 'desc')
                 ->paginate(12);
 
@@ -137,7 +140,7 @@ class ProjectManagementController extends Controller
             $project->update($data);
         } else {
             $project = Project::create($data);
-            $this->createFolder($project->code.'_'.$project->id);
+            $this->createFolder($project->code . '_' . $project->id);
             $preproject = Preproject::find($request->preproject_id);
             $preproject->update(['status' => true]);
             Purchasing_request::where('preproject_id', $request->preproject_id)
@@ -186,7 +189,7 @@ class ProjectManagementController extends Controller
             }
         }
     }
-    
+
 
     public function project_delete_employee($pivot_id)
     {
@@ -199,11 +202,11 @@ class ProjectManagementController extends Controller
     {
         $project = Project::with('employees')->find($project_id);
         $request->validate([
-            'employee.id' => ['required', function($attribute, $value, $fail)  use ($project) {
-                foreach($project->employees as $emp) {
+            'employee.id' => ['required', function ($attribute, $value, $fail)  use ($project) {
+                foreach ($project->employees as $emp) {
                     if ($emp->id == $value) {
-                        $fail('El trabajador ya se encuentra en el proyecto' );
-                    }   
+                        $fail('El trabajador ya se encuentra en el proyecto');
+                    }
                 }
             }]
         ]);
@@ -309,7 +312,7 @@ class ProjectManagementController extends Controller
             ->select('expense_type', DB::raw('SUM(amount/(1+igv/100)) as total_amount'))
             ->groupBy('expense_type')
             ->get();
-        $acExpensesAmounts = $acArr->map(function($cost) {
+        $acExpensesAmounts = $acArr->map(function ($cost) {
             return [
                 'expense_type' => $cost->expense_type,
                 'total_amount' => $cost->total_amount,
@@ -317,14 +320,14 @@ class ProjectManagementController extends Controller
         })->toArray();
 
         $staticCosts =  $project_id->staticCosts()->whereNotIn('expense_type', PintConstants::scExpensesThatDontCount())->get()
-        ->sum('real_amount');
+            ->sum('real_amount');
         $scArr = $project_id->staticCosts()
             ->select('expense_type', DB::raw('SUM(amount/(1+igv/100)) as total_amount'))
             ->groupBy('expense_type')
             ->get();
 
-        
-        $scExpensesAmounts = $scArr->map(function($cost) {
+
+        $scExpensesAmounts = $scArr->map(function ($cost) {
             return [
                 'expense_type' => $cost->expense_type,
                 'total_amount' => $cost->total_amount,
@@ -344,13 +347,14 @@ class ProjectManagementController extends Controller
             'acExpensesAmounts' => $acExpensesAmounts,
             'scExpensesAmounts' => $scExpensesAmounts,
             'staticCosts' => $staticCosts,
-            'scExpensesThatDontCount'=> PintConstants::scExpensesThatDontCount(),
+            'scExpensesThatDontCount' => PintConstants::scExpensesThatDontCount(),
         ]);
     }
 
-    public function project_expense_details (Request $request) {
+    public function project_expense_details(Request $request)
+    {
         $arrModels = [
-            'additional' => 'App\Models\AdditionalCost', 
+            'additional' => 'App\Models\AdditionalCost',
             'static' => 'App\Models\StaticCost'
         ];
         $model = app($arrModels[$request->spMod]);
@@ -414,7 +418,7 @@ class ProjectManagementController extends Controller
             $products = SpecialInventory::with('purchase_product')
                 ->where('warehouse_id', $warehouse->id)
                 ->where('cpe', $project->preproject->cpe)->get();
-            $products = $products->filter(function($item){
+            $products = $products->filter(function ($item) {
                 return $item->quantity_available > 0;
             })->values()->all();
             return response()->json(['products' => $products]);
@@ -504,7 +508,8 @@ class ProjectManagementController extends Controller
         return redirect()->back();
     }
 
-    public function createFolder($name){
+    public function createFolder($name)
+    {
         $path = 'Projects';
         $storagePath = storage_path('app/' . $path . '/' . $name);
         if (!file_exists($storagePath)) {

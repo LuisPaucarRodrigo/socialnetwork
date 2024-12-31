@@ -17,7 +17,9 @@ class Preproject extends Model
         'cpe',
         'observation',
         'status',
-        'title_id'
+        'title_id',
+        'cost_center_id',
+        'cost_line_id',
     ];
 
     protected $appends = [
@@ -32,6 +34,11 @@ class Preproject extends Model
     ];
 
     //RELATIONS
+    public function cost_center()
+    {
+        return $this->belongsTo(CostCenter::class, 'cost_center_id');
+    }
+    
     public function project()
     {
         return $this->hasOne(Project::class);

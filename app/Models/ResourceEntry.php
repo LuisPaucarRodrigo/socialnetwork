@@ -10,6 +10,7 @@ class ResourceEntry extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'cost_line_id',
         'condition',
         'entry_date',
         'serial_number',

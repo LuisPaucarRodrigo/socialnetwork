@@ -20,9 +20,4 @@ class HuaweiMonthlyProject extends Model
     {
         return $this->hasMany(HuaweiMonthlyExpense::class, 'huawei_monthly_project_id');
     }
-
-    public function huawei_monthly_employees ()
-    {
-        return $this->belongsToMany(Employee::class, 'huawei_monthly_project_employees', 'huawei_mp_id', 'employee_id');
-    }
 }

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('pext_project_expenses', function (Blueprint $table) {
             $table->id();
+            $table->boolean('fixedOrAdditional');
             $table->string('expense_type');
             $table->string('ruc');
             $table->string('zone');
@@ -25,18 +26,17 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('photo')->nullable();
             $table->boolean('is_accepted')->nullable();
-            $table->boolean('state')->default(true);
+            // $table->boolean('state')->default(true);
             $table->foreignId('user_id')->nullable()->constrained();
-            $table->foreignId('cicsa_assignation_id')->nullable()->constrained();
+            $table->foreignId('project_id')->nullable()->constrained();
             $table->foreignId('provider_id')
                 ->nullable()
                 ->constrained('providers')
                 ->onDelete('set null');
-            $table->foreignId('pext_project_id')
-                ->nullable()
-                ->constrained()
-                ->onDelete('cascade');
             $table->integer('igv')->default('0');
+            $table->foreignId('general_expense_id')->nullable()
+                ->constrained('general_expenses')
+                ->cascadeOnDelete();
             $table->timestamps();
             $table->unique(['ruc', 'doc_number']);
         });
