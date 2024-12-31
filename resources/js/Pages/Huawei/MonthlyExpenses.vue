@@ -1343,9 +1343,14 @@ const employees = [
     "HANS MENDOZA TRUJILLO",
     "CLINTON LUIS YUCRA PACCO",
     "JEAN PAUL HILARION TABOADA",
+    'JHONY PUCHO CCARITA',
+    'MARIO ALFONSO LLONTOP SOTO',
+    'EDWIN RICHARD CRUZ CHALCO'
 ];
 
 const expenseTypes = [
+    "Alimentación",
+    "Adicional Camioneta",
     "Combustible",
     "Consumibles",
     "Fletes",
@@ -1354,6 +1359,7 @@ const expenseTypes = [
     "Movilidad",
     "Planilla",
     "Herramientas",
+    "Transporte",
     "Otros",
 ];
 
