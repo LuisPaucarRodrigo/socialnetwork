@@ -79,10 +79,10 @@
                                             class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                             Actualizar Operación
                                         </button>
-                                        <button @click="openSwapCostsModal"
+                                        <!-- <button @click="openSwapCostsModal"
                                             class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                             Swap
-                                        </button>
+                                        </button> -->
                                         <!-- <button @click=""
                                             class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                             Eliminar
@@ -239,12 +239,17 @@
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            <TableHeaderFilter labelClass="text-[11px]" label="Estado" :options="stateTypes"
+                                v-model="filterForm.selectedStateTypes" width="w-48" />
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Acciones
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in expenses.data" :key="item.id" class="text-gray-700">
+                    <tr v-for="item in expenses.data || expenses" :key="item.id" class="text-gray-700">
                         <td :class="[
                             'border-b border-gray-200',
                             {
@@ -311,6 +316,19 @@
                             </p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                            <div :class="[
+                                'text-center',
+                                {
+                                    'text-indigo-500': item.real_state === 'Pendiente',
+                                    'text-green-500': item.real_state == 'Aceptado - Validado',
+                                    'text-amber-500': item.real_state == 'Aceptado',
+                                    'text-red-500': item.real_state == 'Rechazado',
+                                },
+                            ]">
+                                {{ item.real_state }}
+                            </div>
+                        </td>
+                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                             <div class="flex items-center gap-3 w-full">
                                 <div v-if="item.is_accepted === null" class="flex gap-3 justify-center w-1/2">
                                     <button @click="() =>
@@ -363,11 +381,11 @@
                         <td class="font-bold border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             TOTAL
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="7"></td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="8"></td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
                             S/.
                             {{
-                                expenses.data
+                                (expenses.data || expenses)
                                     ?.reduce((a, item) => a + item.amount, 0)
                                     .toFixed(2)
                             }}
@@ -375,19 +393,19 @@
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
                             S/.
                             {{
-                                expenses.data
+                                (expenses.data || expenses)
                                     .reduce(
                                         (a, item) => a + item.real_amount, 0)
                                     .toFixed(2)
                             }}
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="3"></td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="4"></td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <div v-if="!filterMode"
+        <div v-if="expenses.data"
             class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
             <pagination :links="expenses.links" />
         </div>
@@ -682,7 +700,7 @@ const props = defineProps({
 });
 
 const expenses = ref(props.expense);
-const filterMode = ref(false);
+// const filterMode = ref(false);
 // const subCostCenterZone = ref(null);
 // const subCostCenter = ref(null)
 const hasPermission = (permission) => {
@@ -739,7 +757,7 @@ const closeModal = () => {
 
 const openOpNuDaModal = () => {
     if (actionForm.value.ids.length === 0) {
-        notifyWarning("No hay registros selccionados");
+        notifyWarning("No hay registros seleccionados");
         return;
     }
     showOpNuDatModal.value = true
@@ -761,7 +779,6 @@ async function submit() {
         updateExpense(response.data, action)
         closeModal();
     } catch (error) {
-        console.log(error)
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, form)
@@ -878,6 +895,12 @@ const docTypes = [
     "Yape-Plin"
 ];
 
+const stateTypes = [
+    "Pendiente",
+    "Aceptado",
+    "Aceptado-Validado",
+];
+
 const initialFilterFormState = {
     fixedOrAdditional: props.fixedOrAdditional,
     rejected: true,
@@ -885,6 +908,7 @@ const initialFilterFormState = {
     // selectedZones: zones,
     selectedExpenseTypes: expenseTypes,
     selectedDocTypes: docTypes,
+    selectedStateTypes: stateTypes,
     opStartDate: "",
     opEndDate: "",
     opNoDate: false,
@@ -905,6 +929,8 @@ watch(() => [
     filterForm.value.search,
     // filterForm.value.selectedZones,
     filterForm.value.selectedExpenseTypes,
+    filterForm.value.selectedDocTypes,
+    filterForm.value.selectedStateTypes,
     filterForm.value.opStartDate,
     filterForm.value.opEndDate,
     filterForm.value.opNoDate,
@@ -918,18 +944,16 @@ watch(() => [
 );
 
 async function search_advance(data) {
-    console.log(filterForm.value)
     let url = route("pext.monthly.additional.expense.search_advance", {
         project_id: props.project_id,
     })
     try {
         let response = await axios.post(url, data);
-        expenses.value.data = response.data;
+        expenses.value = response.data;
     } catch (error) {
         console.error('Error en la solicitud:', error);
     }
 }
-
 
 function openExportExcel() {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
@@ -966,34 +990,6 @@ async function validateRegister(expense_id, is_accepted) {
         }
     } catch (e) {
         console.log(e);
-    }
-}
-
-function updateExpense(expense, action, state) {
-    if (action === "create") {
-        expenses.value.data.unshift(expense)
-        notify('Gasto Creado')
-    } else if (action === "update") {
-        let index = expenses.value.data.findIndex(item => item.id == expense.id)
-        expenses.value.data[index] = expense
-        notify('Gasto Actualizado')
-    } else if (action === "delete") {
-        let index = expenses.value.data.findIndex(item => item.id == expense)
-        expenses.value.data.splice(index, 1);
-        notify('Gasto Eliminado')
-    } else if (action === "validate") {
-        let index = expenses.value.data.findIndex(item => item.id == expense)
-        if (state) {
-            expenses.value.data[index].is_accepted = state;
-            notify('Gasto Aceptado')
-        } else {
-            expenses.value.data.splice(index, 1);
-            notify('Gasto Rechazado')
-        }
-    } else if (action === "rejectedValidate") {
-        let index = expenses.value.data.findIndex(item => item.id == expense)
-        expenses.value.data.splice(index, 1);
-        notify('El gasto paso a ser aceptado')
     }
 }
 
@@ -1049,43 +1045,55 @@ async function submitOpNuDatModal() {
             ...opNuDateForm.data(),
             ...actionForm.value
         })
-        const originalMap = new Map(expenses.value.map(item => [item.id, item]));
-        response.data.forEach(update => {
-            if (originalMap.has(update.id)) {
-                originalMap.set(update.id, update);
-            }
-        });
-        const updatedArray = Array.from(originalMap.values());
-        expenses.value = updatedArray
-        closeOpNuDatModal();
-        notify("Registros Seleccionados Actualizados");
+        updateExpense(response.data, 'masiveUpdate')
     } catch (error) {
         // isFetching.value = false;
-        console.log(error)
         if (error.response?.data?.errors) {
             setAxiosErrors(error.response.data.errors, opNuDateForm);
         } else {
             notifyError("Server Error");
         }
     }
-    // const res = await axios
-    //     .post(, {
-    //         ...opNuDateForm.data(),
-    //         ...actionForm.value
-    //     })
-    //     .catch((e) => {
-
-    //     });
-
-    // const originalMap = new Map(dataToRender.value.map(item => [item.id, item]));
-    // res.data.forEach(update => {
-    //     if (originalMap.has(update.id)) {
-    //         originalMap.set(update.id, update);
-    //     }
-    // });
-    // const updatedArray = Array.from(originalMap.values());
-    // dataToRender.value = updatedArray
-    // closeOpNuDatModal();
-    // notify("Registros Seleccionados Actualizados");
 }
+
+function updateExpense(expense, action, state) {
+    let listDate = expenses.value.data || expenses.value
+    if (action === "create") {
+        listDate.unshift(expense)
+        notify('Gasto Creado')
+    } else if (action === "update") {
+        let index = listDate.findIndex(item => item.id == expense.id)
+        listDate[index] = expense
+        notify('Gasto Actualizado')
+    } else if (action === "delete") {
+        let index = listDate.findIndex(item => item.id == expense)
+        listDate.splice(index, 1);
+        notify('Gasto Eliminado')
+    } else if (action === "validate") {
+        let index = listDate.findIndex(item => item.id == expense)
+        if (state) {
+            listDate[index].is_accepted = state;
+            notify('Gasto Aceptado')
+        } else {
+            listDate.splice(index, 1);
+            notify('Gasto Rechazado')
+        }
+    } else if (action === "rejectedValidate") {
+        let index = listDate.findIndex(item => item.id == expense)
+        listDate.splice(index, 1);
+        notify('El gasto paso a ser aceptado')
+    } else if (action === "masiveUpdate") {
+        const originalMap = new Map(listDate.map(item => [item.id, item]));
+        expense.forEach(update => {
+            if (originalMap.has(update.id)) {
+                originalMap.set(update.id, update);
+            }
+        });
+        const updatedArray = Array.from(originalMap.values());
+        listDate = updatedArray
+        closeOpNuDatModal();
+        notify("Registros Seleccionados Actualizados");
+    }
+}
+
 </script>

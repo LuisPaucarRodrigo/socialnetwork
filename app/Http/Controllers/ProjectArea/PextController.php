@@ -179,7 +179,7 @@ class PextController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate();
         foreach ($expense as $exp) {
-            $exp->setAppends(['real_amount']);
+            $exp->setAppends(['real_amount','real_state']);
             $exp->state = 1 ? true : false;
         }
         $providers = Provider::select('id', 'ruc', 'company_name')->get();
@@ -239,7 +239,7 @@ class PextController extends Controller
     //     $expense = $expense->orderBy('doc_date')->get();
 
     //     $expense->transform(function ($item) {
-    //         $item->setAppends(['real_amount']);
+    //         $item->setAppends(['real_amount','real_state']);
     //         $item->state = 1 ? true : false;
     //         return $item;
     //     });
@@ -274,7 +274,7 @@ class PextController extends Controller
         );
 
         $expense->load('project.cost_center');
-        $expense->setAppends(['real_amount']);
+        $expense->setAppends(['real_amount','real_state']);
         return response()->json($expense, 200);
     }
 
@@ -432,7 +432,7 @@ class PextController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate();
         foreach ($expense as $exp) {
-            $exp->setAppends(['real_amount']);
+            $exp->setAppends(['real_amount','real_state']);
             $exp->state = 1 ? true : false;
         }
         $providers = Provider::select('id', 'ruc', 'company_name')->get();
@@ -499,6 +499,7 @@ class PextController extends Controller
         if ($request->selectedZones) {
             $expense = $expense->whereIn('zone', $request->selectedZones);
         }
+        
         if (count($request->selectedExpenseTypes) < 14) {
             $expense = $expense->whereIn('expense_type', $request->selectedExpenseTypes);
         }
@@ -508,10 +509,16 @@ class PextController extends Controller
         $expense = $expense->orderBy('doc_date')->get();
 
         $expense->transform(function ($item) {
-            $item->setAppends(['real_amount']);
+            $item->setAppends(['real_amount','real_state']);
             $item->state = 1 ? true : false;
             return $item;
         });
+
+        if ($request->state !== false && count($request->selectedStateTypes)) {
+            $expense = $expense->filter(function ($item) use ($request) {
+                return in_array($item->real_state, $request->selectedStateTypes);
+            })->values()->all();
+        }
 
         return response()->json($expense, 200);
     }

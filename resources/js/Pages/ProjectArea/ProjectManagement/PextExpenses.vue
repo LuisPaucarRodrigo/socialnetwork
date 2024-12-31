@@ -51,6 +51,47 @@
                         Rechazados
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
+                    <div>
+                        <dropdown align="left">
+                            <template #trigger>
+                                <button data-tooltip-target="action_button_tooltip"
+                                    @click="dropdownOpen = !dropdownOpen"
+                                    class="relative block overflow-hidden rounded-md text-white hover:bg-indigo-400 text-center text-sm bg-indigo-500 p-2">
+                                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 6H20M4 12H20M4 18H20" stroke="#ffffff" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </button>
+                                <div id="action_button_tooltip" role="tooltip"
+                                    class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700 whitespace-nowrap">
+                                    Acciones
+                                    <div class="tooltip-arrow" data-popper-arrow></div>
+                                </div>
+                            </template>
+
+                            <template #content class="origin-left">
+                                <div>
+                                    <!-- Alineación a la derecha -->
+
+                                    <div class="">
+                                        <button @click="openOpNuDaModal"
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Actualizar Operación
+                                        </button>
+                                        <!-- <button @click="openSwapCostsModal"
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Swap
+                                        </button> -->
+                                        <!-- <button @click=""
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Eliminar
+                                        </button> -->
+                                    </div>
+                                </div>
+                            </template>
+                        </dropdown>
+                    </div>
                     <Link v-if="fixedOrAdditional"
                         class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
                         :href="route('projectmanagement.pext.expenses.index', { project_id: project_id, fixedOrAdditional: false })">
@@ -121,6 +162,14 @@
                         <th class="bg-gray-100 border-b-2 border-gray-20">
                             <div class="w-2"></div>
                         </th>
+                        <th
+                            class="sticky left-2 z-10 border-b-2 border-r border-gray-200 bg-gray-100 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 w-12">
+                            <label :for="`check-all`" class="flex gap-3 justify-center w-12 px-2 py-1">
+                                <input @change="handleCheckAll" :id="`check-all`" :checked="actionForm.ids.length > 0"
+                                    type="checkbox" />
+                                {{ actionForm.ids.length ?? "" }}
+                            </label>
+                        </th>
                         <!-- <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Proyecto
@@ -158,7 +207,9 @@
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Fecha de Operacion
+                            <TableDateFilter labelClass="text-[11px]" label="Fecha de Operación"
+                                v-model:startDate="filterForm.opStartDate" v-model:endDate="filterForm.opEndDate"
+                                v-model:noDate="filterForm.opNoDate" width="w-40" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
@@ -166,7 +217,9 @@
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Fecha de Documento
+                            <TableDateFilter labelClass="text-[11px]" label="Fecha de Documento"
+                                v-model:startDate="filterForm.docStartDate" v-model:endDate="filterForm.docEndDate"
+                                v-model:noDate="filterForm.docNoDate" width="w-40" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
@@ -186,12 +239,17 @@
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            <TableHeaderFilter labelClass="text-[11px]" label="Estado" :options="stateTypes"
+                                v-model="filterForm.selectedStateTypes" width="w-48" />
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Acciones
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in expenses.data" :key="item.id" class="text-gray-700">
+                    <tr v-for="item in expenses.data || expenses" :key="item.id" class="text-gray-700">
                         <td :class="[
                             'border-b border-gray-200',
                             {
@@ -209,6 +267,13 @@
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap">
                             {{ item.project?.cost_center?.name }}
                         </td> -->
+                        <td
+                            class="sticky left-2 z-10 border-b border-r border-gray-200 bg-amber-100 text-center text-[13px] whitespace-nowrap tabular-nums">
+                            <label :for="`check-${item.id}`" class="block w-12 px-2 py-1">
+                                <input v-model="actionForm.ids" :value="item.id" :id="`check-${item.id}`"
+                                    type="checkbox" />
+                            </label>
+                        </td>
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                             {{ item.zone }}
                         </td>
@@ -257,6 +322,19 @@
                             <p class="w-[250px]">
                                 {{ item.description }}
                             </p>
+                        </td>
+                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                            <div :class="[
+                                'text-center',
+                                {
+                                    'text-indigo-500': item.real_state === 'Pendiente',
+                                    'text-green-500': item.real_state == 'Aceptado - Validado',
+                                    'text-amber-500': item.real_state == 'Aceptado',
+                                    'text-red-500': item.real_state == 'Rechazado',
+                                },
+                            ]">
+                                {{ item.real_state }}
+                            </div>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                             <div class="flex items-center gap-3 w-full">
@@ -311,11 +389,11 @@
                         <td class="font-bold border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             TOTAL
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="8"></td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="9"></td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
                             S/.
                             {{
-                                expenses.data
+                                (expenses.data || expenses)
                                     ?.reduce((a, item) => a + item.amount, 0)
                                     .toFixed(2)
                             }}
@@ -323,19 +401,19 @@
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
                             S/.
                             {{
-                                expenses.data
+                                (expenses.data || expenses)
                                     .reduce(
                                         (a, item) => a + item.real_amount, 0)
                                     .toFixed(2)
                             }}
                         </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="3"></td>
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="4"></td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <div v-if="!filterMode"
+        <div v-if="!expenses"
             class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
             <pagination :links="expenses.links" />
         </div>
@@ -517,6 +595,55 @@
             </div>
         </Modal>
 
+        <Modal :show="showOpNuDatModal" @close="closeOpNuDatModal">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900 mb-2">
+                    Actualización Masiva
+                </h2>
+                <h4 class="text-sm font-light text-green-900 bg-green-500/10 rounded-lg p-3 ">
+                    Los registros con fecha de operación y número de operación, pasarán a automáticamente estar
+                    aceptados.
+                </h4>
+                <form @submit.prevent="submitOpNuDatModal">
+                    <div class="space-y-12">
+                        <div class="border-b grid grid-cols-1 gap-6 border-gray-900/10 pb-12">
+                            <div>
+                                <InputLabel for="operation_number" class="font-medium leading-6 text-gray-900">Numero de
+                                    Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="text" v-model="opNuDateForm.operation_number" id="operation_number"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="opNuDateForm.errors.operation_number" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="operation_date" class="font-medium leading-6 text-gray-900">Fecha de
+                                    Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="date" v-model="opNuDateForm.operation_date" id="operation_date"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="opNuDateForm.errors.operation_date" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <SecondaryButton @click="closeOpNuDatModal">
+                                Cancelar
+                            </SecondaryButton>
+                            <button type="submit" :disabled="opNuDateForm.processing"
+                                :class="{ 'opacity-25': opNuDateForm.processing }"
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </Modal>
+
         <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Gasto"
             :deleteFunction="deleteAdditional" @closeModal="closeModalDoc" />
         <!-- <SuccessOperationModal :confirming="confirmValidation" :title="'Validación'"
@@ -545,8 +672,9 @@ import axios from "axios";
 import TextInput from "@/Components/TextInput.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import { setAxiosErrors, toFormData } from "@/utils/utils";
-import { notify, notifyError } from "@/Components/Notification";
+import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
+import TableDateFilter from "@/Components/TableDateFilter.vue";
 
 const props = defineProps({
     expense: Object,
@@ -559,8 +687,9 @@ const props = defineProps({
 });
 
 const expenses = ref(props.expense);
-const filterMode = ref(false);
 // const subCostCenterZone = ref(null);
+const showOpNuDatModal = ref(false)
+
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
 };
@@ -585,6 +714,11 @@ const form = useForm({
     amount: "",
     igv: 0,
 });
+
+const opNuDateForm = useForm({
+    operation_date: '',
+    operation_number: '',
+})
 
 const create_additional = ref(false);
 const confirmingDocDeletion = ref(false);
@@ -748,13 +882,26 @@ const docTypes = [
     "Voucher de Pago",
 ];
 
+const stateTypes = [
+    "Pendiente",
+    "Aceptado",
+    "Aceptado-Validado",
+];
+
 const initialFilterFormState = {
     fixedOrAdditional: props.fixedOrAdditional,
     rejected: true,
     search: "",
     selectedZones: zones,
     selectedExpenseTypes: expenseTypes,
-    selectedDocTypes: docTypes
+    selectedDocTypes: docTypes,
+    selectedStateTypes: stateTypes,
+    opStartDate: "",
+    opEndDate: "",
+    opNoDate: false,
+    docStartDate: "",
+    docEndDate: "",
+    docNoDate: false,
 }
 
 const filterForm = ref({
@@ -770,6 +917,13 @@ watch(() => [
     filterForm.value.selectedZones,
     filterForm.value.selectedExpenseTypes,
     filterForm.value.selectedDocTypes,
+    filterForm.value.selectedStateTypes,
+    filterForm.value.opStartDate,
+    filterForm.value.opEndDate,
+    filterForm.value.opNoDate,
+    filterForm.value.docStartDate,
+    filterForm.value.docEndDate,
+    filterForm.value.docNoDate,
 ],
     () => {
         search_advance(filterForm.value);
@@ -782,7 +936,7 @@ async function search_advance(data) {
     })
     try {
         let response = await axios.post(url, data);
-        expenses.value.data = response.data;
+        expenses.value = response.data;
     } catch (error) {
         console.error('Error en la solicitud:', error);
     }
@@ -823,45 +977,98 @@ async function validateRegister(expense_id, is_accepted) {
         } else {
             updateExpense(expense_id, "rejectedValidate")
         }
-
-        // confirmValidation.value = true;
-        // setTimeout(() => {
-        //     confirmValidation.value = false;
-        // }, 1000);
     } catch (e) {
         console.log(e);
     }
 }
 
 function updateExpense(expense, action, state) {
+    let listDate = expenses.value.data || expenses.value
     if (action === "create") {
-        expenses.value.data.unshift(expense)
+        listDate.unshift(expense)
         notify('Gasto Creado')
     } else if (action === "update") {
-        let index = expenses.value.data.findIndex(item => item.id == expense.id)
-        expenses.value.data[index] = expense
+        let index = listDate.findIndex(item => item.id == expense.id)
+        listDate[index] = expense
         notify('Gasto Actualizado')
     } else if (action === "delete") {
-        let index = expenses.value.data.findIndex(item => item.id == expense)
-        expenses.value.data.splice(index, 1);
+        let index = listDate.findIndex(item => item.id == expense)
+        listDate.splice(index, 1);
         notify('Gasto Eliminado')
     } else if (action === "validate") {
-        let index = expenses.value.data.findIndex(item => item.id == expense)
+        let index = listDate.findIndex(item => item.id == expense)
         if (state) {
-            expenses.value.data[index].is_accepted = state;
+            listDate[index].is_accepted = state;
             notify('Gasto Aceptado')
         } else {
-            expenses.value.data.splice(index, 1);
+            listDate.splice(index, 1);
             notify('Gasto Rechazado')
         }
     } else if (action === "rejectedValidate") {
-        let index = expenses.value.data.findIndex(item => item.id == expense)
-        expenses.value.data.splice(index, 1);
+        let index = listDate.findIndex(item => item.id == expense)
+        listDate.splice(index, 1);
         notify('El gasto paso a ser aceptado')
+    } else if (action === "masiveUpdate") {
+        const originalMap = new Map(listDate.map(item => [item.id, item]));
+        expense.forEach(update => {
+            if (originalMap.has(update.id)) {
+                originalMap.set(update.id, update);
+            }
+        });
+        const updatedArray = Array.from(originalMap.values());
+        listDate = updatedArray
+        closeOpNuDatModal();
+        notify("Registros Seleccionados Actualizados");
     }
 }
 
 async function rejectedExpenses() {
     filterForm.value.rejected = !filterForm.value.rejected
+}
+
+const actionForm = ref({ ids: [], });
+
+const handleCheckAll = (e) => {
+    if (e.target.checked) { actionForm.value.ids = expenses.value.map((item) => item.id); }
+    else { actionForm.value.ids = []; }
+};
+
+watch(
+    () => filterForm.value,
+    () => { actionForm.value = { ids: [] }; },
+    { deep: true }
+);
+
+const openOpNuDaModal = () => {
+    if (actionForm.value.ids.length === 0) {
+        notifyWarning("No hay registros seleccionados");
+        return;
+    }
+    showOpNuDatModal.value = true
+}
+
+const closeOpNuDatModal = () => {
+    showOpNuDatModal.value = false
+    // isFetching.value = false
+    opNuDateForm.reset()
+    opNuDateForm.clearErrors()
+}
+
+async function submitOpNuDatModal() {
+    let url = route("projectmanagement.pext.massiveUpdate")
+    try {
+        let response = await axios.post(url, {
+            ...opNuDateForm.data(),
+            ...actionForm.value
+        })
+        updateExpense(response.data, 'masiveUpdate')
+    } catch (error) {
+        // isFetching.value = false;
+        if (error.response?.data?.errors) {
+            setAxiosErrors(error.response.data.errors, opNuDateForm);
+        } else {
+            notifyError("Server Error");
+        }
+    }
 }
 </script>
