@@ -1022,7 +1022,7 @@ function updateExpense(expense, action, state) {
     }
 }
 
-async function rejectedExpenses() {
+function rejectedExpenses() {
     filterForm.value.rejected = !filterForm.value.rejected
 }
 
