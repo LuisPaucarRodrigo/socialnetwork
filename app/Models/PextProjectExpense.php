@@ -64,55 +64,56 @@ class PextProjectExpense extends Model
         }
         return "Pendiente";
     }
-    // protected static function booted()
-    // {
-    //     static::creating(function ($item) {
-    //         $as = self::findAccountStatement($item);
-    //         $generalExpense = GeneralExpense::create([
-    //             'zone' => $item->zone,
-    //             'expense_type' => $item->expense_type,
-    //             'location' => $item?->project?->description ?? 'Sin descripción',
-    //             'amount' => $item->amount,
-    //             'operation_number' => $item->operation_number,
-    //             'operation_date' => $item->operation_date,
-    //             'account_statement_id' => $as?->id,
-    //         ]);
-    //         $item->general_expense_id = $generalExpense->id;
-    //     });
+    
+    protected static function booted()
+    {
+        static::creating(function ($item) {
+            $as = self::findAccountStatement($item);
+            $generalExpense = GeneralExpense::create([
+                'zone' => $item->zone,
+                'expense_type' => $item->expense_type,
+                'location' => $item?->project?->description ?? 'Sin descripción',
+                'amount' => $item->amount,
+                'operation_number' => $item->operation_number,
+                'operation_date' => $item->operation_date,
+                'account_statement_id' => $as?->id,
+            ]);
+            $item->general_expense_id = $generalExpense->id;
+        });
 
 
-    //     static::updating(function ($expense) {
-    //         if ($expense->isDirty('photo')) {
-    //             $oldImage = $expense->getOriginal('photo');
-    //             if ($oldImage) {
-    //                 $filePath = public_path('documents/expensesPext/' . $oldImage);
-    //                 if (file_exists($filePath)) {unlink($filePath);}
-    //             }
-    //         }
-    //         $generalExpense = $expense->general_expense;
-    //         $as = self::findAccountStatement($expense);
-    //         if ($generalExpense) {
-    //             $generalExpense->update([
-    //                 'zone' => $expense->zone,
-    //                 'expense_type' => $expense->expense_type,
-    //                 'location' => $expense?->project?->description ?? 'Sin descripción',
-    //                 'amount' => $expense->amount,
-    //                 'operation_number' => $expense->operation_number,
-    //                 'operation_date' => $expense->operation_date,
-    //                 'account_statement_id' => $as?->id,
-    //             ]);
-    //         }
-    //     });
+        static::updating(function ($expense) {
+            if ($expense->isDirty('photo')) {
+                $oldImage = $expense->getOriginal('photo');
+                if ($oldImage) {
+                    $filePath = public_path('documents/expensesPext/' . $oldImage);
+                    if (file_exists($filePath)) {unlink($filePath);}
+                }
+            }
+            $generalExpense = $expense->general_expense;
+            $as = self::findAccountStatement($expense);
+            if ($generalExpense) {
+                $generalExpense->update([
+                    'zone' => $expense->zone,
+                    'expense_type' => $expense->expense_type,
+                    'location' => $expense?->project?->description ?? 'Sin descripción',
+                    'amount' => $expense->amount,
+                    'operation_number' => $expense->operation_number,
+                    'operation_date' => $expense->operation_date,
+                    'account_statement_id' => $as?->id,
+                ]);
+            }
+        });
 
-    //     static::deleting(function ($expense) {
-    //         if ($expense->photo) {
-    //             $profile = public_path('documents/expensesPext/' . $expense->photo);
-    //             if (file_exists($profile)) {
-    //                 unlink($profile);
-    //             }
-    //         }
-    //     });
-    // }
+        static::deleting(function ($expense) {
+            if ($expense->photo) {
+                $profile = public_path('documents/expensesPext/' . $expense->photo);
+                if (file_exists($profile)) {
+                    unlink($profile);
+                }
+            }
+        });
+    }
 
     protected static function findAccountStatement($item)
     {
