@@ -1523,7 +1523,7 @@ const closeSwapCostsModal = () => {
 }
 const openSwapCostsModal = () => {
     if (actionForm.value.ids.length === 0) {
-        notifyWarning("No hay registros selccionados");
+        notifyWarning("No hay registros seleccionados");
         return;
     }
     showSwapCostsModal.value = true

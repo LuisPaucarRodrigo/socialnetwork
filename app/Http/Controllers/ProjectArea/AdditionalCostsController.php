@@ -270,7 +270,6 @@ class AdditionalCostsController extends Controller
         });
         return response()->json($updatedCosts, 200);
     }
-    
     public function swapCosts(Request $request)
     {
         $data = $request->validate([
