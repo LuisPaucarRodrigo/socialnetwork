@@ -18,6 +18,7 @@ use App\Models\Provider;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -179,7 +180,7 @@ class PextController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate();
         foreach ($expense as $exp) {
-            $exp->setAppends(['real_amount','real_state']);
+            $exp->setAppends(['real_amount', 'real_state']);
             $exp->state = 1 ? true : false;
         }
         $providers = Provider::select('id', 'ruc', 'company_name')->get();
@@ -274,7 +275,7 @@ class PextController extends Controller
         );
 
         $expense->load('project.cost_center');
-        $expense->setAppends(['real_amount','real_state']);
+        $expense->setAppends(['real_amount', 'real_state']);
         return response()->json($expense, 200);
     }
 
@@ -432,7 +433,7 @@ class PextController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate();
         foreach ($expense as $exp) {
-            $exp->setAppends(['real_amount','real_state']);
+            $exp->setAppends(['real_amount', 'real_state']);
             $exp->state = 1 ? true : false;
         }
         $providers = Provider::select('id', 'ruc', 'company_name')->get();
@@ -467,6 +468,7 @@ class PextController extends Controller
                 $query->where('is_accepted', 1)
                     ->orWhere('is_accepted', null);
             });
+            
         if ($request->search) {
             $searchTerms = $request->input('search');
             $expense = $expense->where(function ($query) use ($searchTerms) {
@@ -480,36 +482,42 @@ class PextController extends Controller
         if ($request->docNoDate) {
             $expense->where('doc_date', null);
         }
+
         if ($request->docStartDate) {
             $expense->where('doc_date', '>=', $request->docStartDate);
         }
+
         if ($request->docEndDate) {
             $expense->where('doc_date', '<=', $request->docEndDate);
         }
+
         if ($request->opNoDate) {
             $expense->where('operation_date', null);
         }
+
         if ($request->opStartDate) {
             $expense->where('operation_date', '>=', $request->opStartDate);
         }
+
         if ($request->opEndDate) {
             $expense->where('operation_date', '<=', $request->opEndDate);
         }
 
-        if ($request->selectedZones) {
+        if ($request->selectedZones && count($request->selectedZones) < 6) {
             $expense = $expense->whereIn('zone', $request->selectedZones);
         }
-        
+
         if (count($request->selectedExpenseTypes) < 14) {
             $expense = $expense->whereIn('expense_type', $request->selectedExpenseTypes);
         }
-        if (count($request->selectedDocTypes) < 5) {
+
+        if (count($request->selectedDocTypes) < 6) {
             $expense = $expense->whereIn('type_doc', $request->selectedDocTypes);
         }
         $expense = $expense->orderBy('doc_date')->get();
 
         $expense->transform(function ($item) {
-            $item->setAppends(['real_amount','real_state']);
+            $item->setAppends(['real_amount', 'real_state']);
             $item->state = 1 ? true : false;
             return $item;
         });
