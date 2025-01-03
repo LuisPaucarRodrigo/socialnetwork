@@ -356,13 +356,16 @@ class PextController extends Controller
     public function updateOrStoreAdditional(StoreOrUpdateAssigantionRequest $request, $cicsa_assignation_id = null)
     {
         $validateData = $request->validated();
-        $project = Project::create([
-            'priority' => 'Alta',
-            'description' => $validateData['project_name'],
-            'cost_line_id' => $validateData['cost_line_id'],
-            'cost_center_id' => $validateData['cost_center_id']
-        ]);
-        $validateData['project_id'] = $project->id;
+        if ($cicsa_assignation_id == null) {
+            $project = Project::create([
+                'priority' => 'Alta',
+                'description' => $validateData['project_name'],
+                'cost_line_id' => $validateData['cost_line_id'],
+                'cost_center_id' => $validateData['cost_center_id']
+            ]);
+            $validateData['project_id'] = $project->id;
+        }
+
         $cicsaAssignation = CicsaAssignation::updateOrCreate(
             ['id' => $cicsa_assignation_id],
             $validateData
@@ -467,7 +470,7 @@ class PextController extends Controller
                 $query->where('is_accepted', 1)
                     ->orWhere('is_accepted', null);
             });
-            
+
         if ($request->search) {
             $searchTerms = $request->input('search');
             $expense = $expense->where(function ($query) use ($searchTerms) {
