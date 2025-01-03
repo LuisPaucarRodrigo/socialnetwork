@@ -354,6 +354,7 @@
                                     'Aceptado',
                                     'Rechazado',
                                     'Pendiente',
+                                    'Aceptado-Validado'
                                 ]"
                                 v-model="filterForm.selectedStates"
                                 width="w-48"
@@ -372,16 +373,15 @@
                         :key="item.id"
                         class="text-gray-700"
                     >
-                        <td
-                            :class="[
-                                'sticky left-0 z-10 border-b border-gray-200',
-                                {
-                                    'bg-indigo-500': item.is_accepted === null,
-                                    'bg-green-500': item.is_accepted == true,
-                                    'bg-red-500': item.is_accepted == false,
-                                },
-                            ]"
-                        ></td>
+                        <td :class="[
+                            'sticky left-0 z-10 border-b border-gray-200',
+                            {
+                                'bg-indigo-500': item.real_state === 'Pendiente',
+                                'bg-green-500': item.real_state == 'Aceptado-Validado',
+                                'bg-amber-500': item.real_state == 'Aceptado',
+                                'bg-red-500': item.real_state == 'Rechazado',
+                            },
+                        ]"></td>
                         <td
                             class="sticky left-2 z-10 border-b border-r border-gray-200 bg-amber-100 text-center text-[13px] whitespace-nowrap tabular-nums"
                         >
@@ -453,7 +453,7 @@
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
                         >
-                            <button
+                            <button v-if="item.image1"
                                 @click="openPreviewDocumentModal(item.id, '1')"
                                 class="flex items-center justify-center w-full"
                             >
@@ -464,7 +464,7 @@
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
                         >
-                            <button
+                            <button v-if="item.image2"
                                 @click="openPreviewDocumentModal(item.id, '2')"
                                 class="flex items-center justify-center w-full"
                             >
@@ -475,7 +475,7 @@
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
                         >
-                            <button
+                            <button v-if="item.image3"
                                 @click="openPreviewDocumentModal(item.id, '3')"
                                 class="flex items-center justify-center w-full"
                             >
@@ -509,13 +509,18 @@
                         </td>
                         <td
                             class="border-b whitespace-nowrap border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap"
-                        >
+                            :class = "[
+                                'text-center',
+                                {
+                                    'text-indigo-500': item.real_state === 'Pendiente',
+                                    'text-green-500': item.real_state == 'Aceptado - Validado',
+                                    'text-amber-500': item.real_state == 'Aceptado',
+                                    'text-red-500': item.real_state == 'Rechazado',
+                                },
+                            ]"
+                            >
                             {{
-                                item.is_accepted == 1
-                                    ? "Aceptado"
-                                    : item.is_accepted == 0
-                                    ? "Rechazado"
-                                    : "Pendiente"
+                                item.real_state
                             }}
                         </td>
                         <td
@@ -610,33 +615,18 @@
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
                             colspan="9"
                         ></td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap"
-                        >
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
                             S/.
                             {{
-                                expenses.data
-                                    ?.reduce((a, item) => a + item.amount, 0)
-                                    .toFixed(2)
+                                (props.search || filterMode.value)
+                                    ? expenses?.reduce((a, item) => a + item.amount, 0).toFixed(2)
+                                    : expenses?.data?.reduce((a, item) => a + item.amount, 0).toFixed(2)
                             }}
                         </td>
+
                         <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
-                            colspan="5"
-                        ></td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap"
-                        >
-                            S/.
-                            {{
-                                expenses.data
-                                    ?.reduce((a, item) => a + item.ec_amount, 0)
-                                    .toFixed(2)
-                            }}
-                        </td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
-                            colspan="3"
+                            colspan="9"
                         ></td>
                     </tr>
                 </tbody>
@@ -1328,24 +1318,24 @@ const openPreviewDocumentModal = (expense, img) => {
 const employees = [
     "ANGIE NICOLE DURAN VILLACORTA",
     "CESAR DAVID NINACANSAYA APAZA",
+    "CLINTON LUIS YUCRA PACCO",
     "EDUARDO JOHEL HINOJOSA AMUDIO",
+    "EDWIN RICHARD CRUZ CHALCO",
+    "EDWIN RICHARD CRUZ CHALCO",
     "ENMANUEL EDUARDO JUAN HANCO TEJADA",
+    "GUSTAVO GIOVANNI FLORES LLERENA",
+    "HANS MENDOZA TRUJILLO",
+    "JEAN PAUL HILARION TABOADA",
+    "JHONY PUCHO CCARITA",
+    "JORGE DANIEL MONTOYA RODRIGUEZ",
+    "JONATHAN ELISBAN MOLINA YUCRA",
     "JOSE HUMBERTO QUENTA VILLANUEVA",
+    "MARIO ALFONSO LLONTOP SOTO",
     "PABLO ENRIQUE LAURA FLORES",
     "REMMILTON CRUZ QUISPE",
     "VICTOR HUGO CACERES CONDORI",
     "XAVIER ABDUL CALAPUJA FLORES",
-    "YERSON HENRRY LLERENA CONDORI",
-    "EDWIN RICHARD CRUZ CHALCO",
-    "JORGE DANIEL MONTOYA RODRIGUEZ",
-    "JONATHAN ELISBAN MOLINA YUCRA",
-    "GUSTAVO GIOVANNI FLORES LLERENA",
-    "HANS MENDOZA TRUJILLO",
-    "CLINTON LUIS YUCRA PACCO",
-    "JEAN PAUL HILARION TABOADA",
-    'JHONY PUCHO CCARITA',
-    'MARIO ALFONSO LLONTOP SOTO',
-    'EDWIN RICHARD CRUZ CHALCO'
+    "YERSON HENRRY LLERENA CONDORI"
 ];
 
 const expenseTypes = [
@@ -1383,7 +1373,7 @@ const filterForm = ref({
     exNoDate: false,
     opStartDate: "",
     opEndDate: "",
-    selectedStates: ["Aceptado", "Rechazado", "Pendiente"],
+    selectedStates: ['Aceptado', 'Rechazado', 'Pendiente', 'Aceptado-Validado'],
     opNoDate: false,
 });
 
