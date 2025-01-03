@@ -35,6 +35,10 @@ class HuaweiMonthlyExpense extends Model
         'general_expense_id',
     ];
 
+    protected $appends = [
+        'real_state'
+    ];
+
     public function huawei_monthly_project ()
     {
         return $this->belongsTo(HuaweiMonthlyProject::class, 'huawei_monthly_project_id');
@@ -44,8 +48,6 @@ class HuaweiMonthlyExpense extends Model
     {
         return $this->belongsTo(GeneralExpense::class, 'general_expense_id');
     }
-
-    
 
     protected static function booted()
     {
@@ -96,5 +98,19 @@ class HuaweiMonthlyExpense extends Model
                 ->where('operation_number', $on)->first();
         }
         return null;
+    }
+
+    public function getRealStateAttribute()
+    {
+        if ($this->is_accepted === 0){
+            return 'Rechazado';
+        }
+        if ($this->is_accepted && $this->general_expense()->first()?->account_statement_id) {
+            return 'Aceptado-Validado';
+        }
+        if ($this->is_accepted){
+            return 'Aceptado';
+        }
+        return 'Pendiente';
     }
 }

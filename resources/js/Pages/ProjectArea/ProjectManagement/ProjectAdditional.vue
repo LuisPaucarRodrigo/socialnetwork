@@ -226,8 +226,7 @@
                 </div>
             </div>
             <br>
-            <div v-if="projects.data"
-                class="flex flex-col items-center px-5 py-5 xs:flex-row xs:justify-between">
+            <div v-if="projects.data" class="flex flex-col items-center px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="projects.links" />
             </div>
         </div>
@@ -286,7 +285,7 @@
                                     <option value="">Seleccionar Centro de Costo</option>
                                     <option v-for="item in cost_line.cost_center" :key="item.id" :value="item.id">{{
                                         item.name
-                                    }}
+                                        }}
                                     </option>
                                 </select>
                                 <InputError :message="form.errors.cost_center_id" />
@@ -663,7 +662,7 @@ const createOrEditModal = () => {
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('projectmanagement.pext.additional.index', {type}), { searchQuery: $search });
+        const response = await axios.post(route('projectmanagement.pext.additional.index', { type }), { searchQuery: $search });
         projects.value = response.data;
     } catch (error) {
         notifyError('Error searching:', error);
@@ -671,7 +670,7 @@ const search = async ($search) => {
 };
 
 async function submit() {
-    let url = route('projectmanagement.pext.additional.store', { 'project_id': form.id ?? null })
+    let url = route('projectmanagement.pext.additional.store', { 'cicsa_assignation_id': form.id ?? null })
     try {
         let response = await axios.post(url, form)
         let action = form.id ? 'update' : 'create'

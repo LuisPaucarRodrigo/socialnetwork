@@ -104,54 +104,65 @@ class HuaweiMonthlyController extends Controller
         ]);
     }
 
-    public function searchAdvance (HuaweiMonthlyProject $project, Request $request)
+    public function searchAdvance(HuaweiMonthlyProject $project, Request $request)
     {
-        $expenses = HuaweiMonthlyExpense::where('huawei_monthly_project_id', $project->id);
+        // Iniciar la consulta base de expenses
+        $expensesQuery = HuaweiMonthlyExpense::where('huawei_monthly_project_id', $project->id);
 
         $employeeCount = 10;
 
-        if (count($request->selectedExpenseTypes) < 9){
-            $expenses->whereIn('expense_type', $request->selectedExpenseTypes);
+        // Aplicar filtros de base de datos
+        if (count($request->selectedExpenseTypes) < 9) {
+            $expensesQuery->whereIn('expense_type', $request->selectedExpenseTypes);
         }
-        if (count($request->selectedCDPTypes) < 7){
-            $expenses->whereIn('cdp_type', $request->selectedCDPTypes);
+        if (count($request->selectedCDPTypes) < 7) {
+            $expensesQuery->whereIn('cdp_type', $request->selectedCDPTypes);
         }
-        if (count($request->selectedEmployees) < $employeeCount){
-            $expenses->whereIn('employee', $request->selectedEmployees);
+        if (count($request->selectedEmployees) < $employeeCount) {
+            $expensesQuery->whereIn('employee', $request->selectedEmployees);
         }
-        if($request->exStartDate){
-            $expenses->where('expense_date', '>=', $request->exStartDate);
+        if ($request->exStartDate) {
+            $expensesQuery->where('expense_date', '>=', $request->exStartDate);
         }
-        if($request->exEndDate){
-            $expenses->where('expense_date', '<=', $request->exEndDate);
+        if ($request->exEndDate) {
+            $expensesQuery->where('expense_date', '<=', $request->exEndDate);
         }
-        if($request->exNoDate){
-            $expenses->where('expense_date', null);
+        if ($request->exNoDate) {
+            $expensesQuery->whereNull('expense_date');
         }
-        if($request->opStartDate){
-            $expenses->where('ec_expense_date', '>=', $request->opStartDate);
+        if ($request->opStartDate) {
+            $expensesQuery->where('ec_expense_date', '>=', $request->opStartDate);
         }
-        if($request->opEndDate){
-            $expenses->where('ec_expense_date', '<=', $request->opEndDate);
+        if ($request->opEndDate) {
+            $expensesQuery->where('ec_expense_date', '<=', $request->opEndDate);
         }
-        if($request->opNoDate){
-            $expenses->where('ec_expense_date', null);
+        if ($request->opNoDate) {
+            $expensesQuery->whereNull('ec_expense_date');
         }
 
-        if(count($request->selectedStates) < 3){
-            $states = collect($request->selectedStates)->map(function ($state, $index) {
-                return match ($index) {
-                    0 => 1,
-                    1 => 0,
-                    2 => null,
-                    default => $state,
-                };
-            })->toArray();
-            $expenses->whereIn('is_accepted', $states);
+        // Obtener todas las expenses según los filtros de base de datos
+        $expenses = $expensesQuery->orderBy('expense_date')->get();
+
+        // Si se han seleccionado menos de 4 estados, filtrar las expenses por el campo real_state
+        if (count($request->selectedStates) < 4) {
+            $selectedStates = $request->selectedStates;
+
+            // Filtrar solo los estados válidos
+            $filteredStates = array_filter($selectedStates, function ($state) {
+                return in_array($state, ["Aceptado", "Rechazado", "Pendiente", "Aceptado-Validado"]);
+            });
+
+            // Filtrar la colección de expenses por el campo real_state
+            $expenses = $expenses->filter(function ($expense) use ($filteredStates) {
+                // Verificar que real_state esté en la lista de estados seleccionados
+                return in_array($expense->real_state, $filteredStates);
+            });
         }
-        $expenses = $expenses->orderBy('expense_date')->get(); // Asegúrate de asignar el resultado
-        return response()->json(["expenses" => $expenses], 200);
+
+        // Convertir la colección a array antes de enviarla en la respuesta JSON
+        return response()->json(["expenses" => $expenses->values()->toArray()], 200);
     }
+
 
     public function storeExpense (HuaweiMonthlyExpenseRequest $request)
     {
@@ -302,7 +313,7 @@ class HuaweiMonthlyController extends Controller
                 'is_accepted' => $data['state']
             ]);
         }
-
+        DB::commit();
         $updatedCosts = HuaweiMonthlyExpense::whereIn('id', $data['ids'])
             ->get();
 
