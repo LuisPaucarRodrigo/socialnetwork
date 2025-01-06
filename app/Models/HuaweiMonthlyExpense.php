@@ -61,6 +61,7 @@ class HuaweiMonthlyExpense extends Model
                 'operation_number' => $item->ec_op_number,
                 'operation_date' => $item->ec_expense_date,
                 'account_statement_id' => $as?->id,
+                'type'=>'huawei_monthly'
             ]);
 
             $item->general_expense_id = $generalExpense->id;
@@ -78,6 +79,7 @@ class HuaweiMonthlyExpense extends Model
                     'operation_number' => $item->ec_op_number,
                     'operation_date' => $item->ec_expense_date,
                     'account_statement_id' => $as?->id,
+                    'type'=>'huawei_monthly'
                 ]);
             }
         });

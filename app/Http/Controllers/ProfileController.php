@@ -26,16 +26,16 @@ class ProfileController extends Controller
     public function allFine(){
         DB::beginTransaction();
         try {
-            $costs = HuaweiMonthlyExpense::with('huawei_monthly_project')->get();
+            $costs = PextProjectExpense::with('project')->get();
             foreach($costs as $item) {
                 $ge = GeneralExpense::create([
                     'zone' => $item->zone,
                     'expense_type' => $item->expense_type,
-                    'location' => $item?->huawei_monthly_project?->description ?? 'Sin descripción',
+                    'location' => $item?->project?->description ?? 'Sin descripción',
                     'amount' => $item->amount,
-                    'operation_number' => $item->ec_op_number,
-                    'operation_date' => $item->ec_expense_date,
-                    'account_statement_id' => null,
+                    'operation_number' => $item->operation_number,
+                    'operation_date' => $item->operation_date,
+                    'account_statement_id' => $item?->account_statement_id,
                 ]);
                 $item->update(['general_expense_id'=>$ge->id]);
             }
