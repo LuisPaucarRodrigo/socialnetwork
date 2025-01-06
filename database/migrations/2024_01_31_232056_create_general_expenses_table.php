@@ -23,6 +23,7 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('account_statements')
                 ->onDelete('set null');
+            $table->string('type');
             $table->timestamps();
 
             // Agregar índices

@@ -23,7 +23,6 @@ class PextProjectExpense extends Model
         'provider_id',
         'photo',
         'is_accepted',
-        // 'state',
         'igv',
         'user_id',
         'project_id',
@@ -77,6 +76,7 @@ class PextProjectExpense extends Model
                 'operation_number' => $item->operation_number,
                 'operation_date' => $item->operation_date,
                 'account_statement_id' => $as?->id,
+                'type'=>'pext_expense'
             ]);
             $item->general_expense_id = $generalExpense->id;
         });
@@ -101,6 +101,7 @@ class PextProjectExpense extends Model
                     'operation_number' => $expense->operation_number,
                     'operation_date' => $expense->operation_date,
                     'account_statement_id' => $as?->id,
+                    'type'=>'pext_expense'
                 ]);
             }
         });
