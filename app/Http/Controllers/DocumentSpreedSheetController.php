@@ -39,6 +39,8 @@ class DocumentSpreedSheetController extends Controller
                 )
                 ->orderBy('name')
                 ->get();
+            $employees->each->setAppends['sctr_about_to_expire,policy_about_to_expire'];
+
             $e_employees = ExternalEmployee::with([
                 'document_registers',
             ])
@@ -57,8 +59,8 @@ class DocumentSpreedSheetController extends Controller
                 )
 
                 ->get();
+            $e_employees->each->setAppends['sctr_about_to_expire,policy_about_to_expire'];
         } elseif ($request->isMethod('post')) {
-
             $searchquery = $request->searchquery;
             $employees = Employee::with([
                 'document_registers',
@@ -80,16 +82,17 @@ class DocumentSpreedSheetController extends Controller
                     'policy_exp_date',
                 )
                 ->whereHas('contract', function ($query) use ($searchquery) {
-                    if($searchquery){
+                    if ($searchquery) {
                         $query->whereHas('cost_line', function ($subquery) use ($searchquery) {
                             $subquery->where('name', 'like', '%' . $searchquery . '%');
                         });
                     } else {
-                        return ;
+                        return;
                     }
                 })
                 ->orderBy('name')
                 ->get();
+            $employees->each->setAppends['sctr_about_to_expire,policy_about_to_expire'];
 
             $e_employees = ExternalEmployee::with([
                 'document_registers',
@@ -108,14 +111,14 @@ class DocumentSpreedSheetController extends Controller
                     'policy_exp_date',
                     'cost_line_id'
                 );
-                if($searchquery){
-                    $e_employees = $e_employees->whereHas('cost_line', function ($query) use ($searchquery) {
-                            $query->where('name', 'like', '%' . $searchquery . '%');
-                    })->get();    
-                } else {
-                    $e_employees = $e_employees->get();
-                }
-                
+            if ($searchquery) {
+                $e_employees = $e_employees->whereHas('cost_line', function ($query) use ($searchquery) {
+                    $query->where('name', 'like', '%' . $searchquery . '%');
+                })->get();
+            } else {
+                $e_employees = $e_employees->get();
+            }
+            $e_employees->each->setAppends['sctr_about_to_expire,policy_about_to_expire'];
         }
 
         $employees->map(function ($emp) {
@@ -289,10 +292,16 @@ class DocumentSpreedSheetController extends Controller
     {
         $employees = Employee::whereHas('contract', function ($query) {
             $query->where('state', 'Active');
-        })->orderBy('name')->get()->filter(function ($item) {
+        })->orderBy('name')->get();
+        $employees->each->setAppends['documents_about_to_expire'];
+        $employees->filter(function ($item) {
             return $item->documents_about_to_expire > 0;
         })->values()->all();
-        $e_employees = ExternalEmployee::orderBy('lastname')->get()->filter(function ($item) {
+
+        $e_employees = ExternalEmployee::orderBy('lastname')->get();
+        $e_employees->each->setAppends['documents_about_to_expire'];
+
+        $e_employees->filter(function ($item) {
             return $item->documents_about_to_expire > 0;
         })->values()->all();
         $employees = array_merge($employees, $e_employees);
