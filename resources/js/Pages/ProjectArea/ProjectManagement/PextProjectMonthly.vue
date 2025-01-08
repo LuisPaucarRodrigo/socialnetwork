@@ -51,7 +51,7 @@
                         Exportar Excel
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div> -->
-                    <Link :href="route('projectmanagement.pext.additional.index', {type: 2})"
+                    <Link :href="route('projectmanagement.pext.additional.index')"
                         class="bg-indigo-600 hover:bg-indigo-500 rounded-md px-4 py-2 text-center text-sm text-white">
                     P. Adicionales
                     </Link>

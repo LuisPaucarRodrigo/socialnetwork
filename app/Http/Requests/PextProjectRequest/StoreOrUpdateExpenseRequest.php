@@ -5,7 +5,7 @@ namespace App\Http\Requests\PextProjectRequest;
 use App\Models\PextProjectExpense;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreOrUpdateRequest extends FormRequest
+class StoreOrUpdateExpenseRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -56,7 +56,6 @@ class StoreOrUpdateRequest extends FormRequest
             'description' => 'required|string',
             'photo' => 'nullable|max:2048',
             'is_accepted' => 'required|string',
-            // 'state' => 'required|string',
             'igv' => 'required',
             'project_id' => 'required'
         ];
