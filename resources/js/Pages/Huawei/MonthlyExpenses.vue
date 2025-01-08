@@ -513,7 +513,7 @@
                                 'text-center',
                                 {
                                     'text-indigo-500': item.real_state === 'Pendiente',
-                                    'text-green-500': item.real_state == 'Aceptado - Validado',
+                                    'text-green-500': item.real_state == 'Aceptado-Validado',
                                     'text-amber-500': item.real_state == 'Aceptado',
                                     'text-red-500': item.real_state == 'Rechazado',
                                 },
