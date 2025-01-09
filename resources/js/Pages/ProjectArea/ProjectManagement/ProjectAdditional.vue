@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Proyectos" />
-    <AuthenticatedLayout :redirectRoute="'projectmanagement.pext.index'">
+    <AuthenticatedLayout :redirectRoute="type ==2 ?'projectmanagement.pext.index': 'projectmanagement.index'">
         <template #header>
             Proyectos Adicionales
         </template>
@@ -642,7 +642,7 @@ const createOrEditModal = () => {
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('projectmanagement.pext.additional.index', {type:2}), { searchQuery: $search });
+        const response = await axios.post(route('projectmanagement.pext.additional.index', {type}), { searchQuery: $search });
         projects.value = response.data;
     } catch (error) {
         notifyError('Error searching:', error);
