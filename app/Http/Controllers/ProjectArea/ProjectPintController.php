@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ProjectArea;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PreprojectRequest\ProjectPextCreateRequest;
 use App\Http\Requests\PreprojectRequest\ProjectPintCreateRequest;
+use App\Models\CicsaAssignation;
 use Illuminate\Support\Facades\DB;
 use App\Models\CostCenter;
 use App\Models\CostLine;
@@ -105,6 +106,8 @@ class ProjectPintController extends Controller
             $project->employees()->sync($template['project_employees']);
             $this->createFolder($project->code . '_' . $project->id);
 
+            //
+
             //ProjectFolder
             DB::commit();
             return redirect()->back();
@@ -124,6 +127,7 @@ class ProjectPintController extends Controller
         try {
             //Preproject 
             $preproject = Preproject::create($template['preproject']);
+            $preproject->load('customer');
 
             //contacts
             $contactIds = collect($template['preproject_contacts'])->pluck('id');
@@ -139,7 +143,24 @@ class ProjectPintController extends Controller
             $template['project']['preproject_id'] = $preproject->id;
             $project = Project::create($template['project']);
             $project->employees()->sync($template['project_employees']);
+
+            //ProjectFolder
             $this->createFolder($project->code . '_' . $project->id);
+
+            //CicsaAssignation
+            CicsaAssignation::create([
+                "assignation_date"=> $preproject->date,
+                "project_name"=> $project->description,
+                "customer"=> $preproject->customer->business_name,
+                "project_code"=> $preproject->code,
+                "cpe"=> $preproject->cpe,
+                "zone"=> 'Arequipa',
+                "zone2"=> null,
+                "manager"=> 'Nikol Sheyla Rondón Neyra',
+                "user_name"=> 'Nikol Sheyla Rondón Neyra',
+                "user_id"=> 17,
+                "project_id"=> $project->id,
+            ]);
 
             DB::commit();
             return redirect()->back();

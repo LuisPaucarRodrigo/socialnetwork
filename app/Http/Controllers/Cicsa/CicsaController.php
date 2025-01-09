@@ -83,7 +83,12 @@ class CicsaController extends Controller
                 'last_charge_status_date',
             ]);
         });
-        $cost_line = CostLine::where('name', 'PEXT')->with('cost_center')->first();
+        if($type == 2){
+            $cost_line = CostLine::where('name', 'PEXT')->with('cost_center')->first();
+        }
+        if($type == 1){
+            $cost_line = CostLine::where('name', 'PINT')->with('cost_center')->first();
+        }
         return Inertia::render('Cicsa/CicsaIndex', [
             'projects' => $projects,
             'center_list' => $cost_line->cost_center,
