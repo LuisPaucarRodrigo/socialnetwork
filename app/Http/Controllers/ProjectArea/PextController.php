@@ -177,7 +177,7 @@ class PextController extends Controller
         return Excel::download(new PextExpenseExport(null, json_decode($fixedOrAdditional)), $fileName);
     }
 
-    public function index_additional(Request $request)
+    public function index_additional(Request $request, $type)
     {
         $text = "Mantto";
         if ($request->isMethod('get')) {
@@ -195,7 +195,8 @@ class PextController extends Controller
 
             return Inertia::render('ProjectArea/ProjectManagement/ProjectAdditional', [
                 'project' => $project,
-                'cost_line' => $cost_line
+                'cost_line' => $cost_line,
+                'type' => $type,
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->searchQuery;
@@ -287,7 +288,7 @@ class PextController extends Controller
         return $pdf->stream();
     }
 
-    public function additional_expense_index($project_id, $fixedOrAdditional)
+    public function additional_expense_index($project_id, $fixedOrAdditional, $type)
     {
         $expense = PextProjectExpense::with(['provider:id,company_name', 'project.cost_center'])
             ->where('fixedOrAdditional', json_decode($fixedOrAdditional))
@@ -314,12 +315,13 @@ class PextController extends Controller
                 'project_id' => $project_id,
                 'cost_center' => $cost_line->cost_center,
                 'fixedOrAdditional' => json_decode($fixedOrAdditional),
-                'cicsaAssignation' => $cicsa_assignation
+                'cicsaAssignation' => $cicsa_assignation,
+                'type'=> $type
             ]
         );
     }
 
-    public function additional_expense_index_general($fixedOrAdditional)
+    public function additional_expense_index_general($fixedOrAdditional, $type)
     {
         $expense = PextProjectExpense::with(['provider:id,company_name', 'project.cost_center'])
             ->where('fixedOrAdditional', json_decode($fixedOrAdditional))
@@ -343,7 +345,8 @@ class PextController extends Controller
                 'providers' => $providers,
                 'cost_center' => $cost_line->cost_center,
                 'fixedOrAdditional' => json_decode($fixedOrAdditional),
-                'cicsaAssignation' => $cicsa_assignation
+                'cicsaAssignation' => $cicsa_assignation,
+                'type'=>$type
             ]
         );
     }

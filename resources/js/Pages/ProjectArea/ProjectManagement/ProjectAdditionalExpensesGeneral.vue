@@ -1,7 +1,11 @@
 <template>
 
     <Head title="Gestion de Costos Adicionales" />
-    <AuthenticatedLayout :redirectRoute="'projectmanagement.pext.additional.index'">
+    <AuthenticatedLayout ::redirectRoute="
+    {
+        route: 'projectmanagement.pext.additional.index',
+        params: {type}
+    }">
         <template #header>
             Gastos {{ fixedOrAdditional ? 'Fijos' : 'Adicionales' }}
         </template>
@@ -86,12 +90,12 @@
                     </div>
                     <Link v-if="fixedOrAdditional"
                         class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
-                        :href="route('pext.additional.expense.general.index', { fixedOrAdditional: false })">
+                        :href="route('pext.additional.expense.general.index', { fixedOrAdditional: false , type})">
                     G.Adicionales
                     </Link>
                     <Link v-else
                         class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
-                        :href="route('pext.additional.expense.general.index', { fixedOrAdditional: true })">
+                        :href="route('pext.additional.expense.general.index', { fixedOrAdditional: true, type })">
                     G.Fijos
                     </Link>
                 </div>
@@ -672,7 +676,8 @@ const props = defineProps({
     userPermissions: Array,
     cost_center: Object,
     fixedOrAdditional: Boolean,
-    cicsaAssignation: Object
+    cicsaAssignation: Object,
+    type: Number
 });
 
 const expenses = ref(props.expense);
