@@ -929,6 +929,7 @@ async function search_advance(data) {
         let response = await axios.post(url, data);
         console.log(response.data)
         expenses.value = response.data;
+        notifyWarning(`Se encontraron ${response.data.length} registro(s)`);
     } catch (error) {
         console.error('Error en la solicitud:', error);
     }
@@ -1061,14 +1062,12 @@ function updateExpense(expense, action, state) {
         listDate.splice(index, 1);
         notify('El gasto paso a ser aceptado')
     } else if (action === "masiveUpdate") {
-        const originalMap = new Map(listDate.map(item => [item.id, item]));
         expense.forEach(update => {
-            if (originalMap.has(update.id)) {
-                originalMap.set(update.id, update);
-            }
-        });
-        const updatedArray = Array.from(originalMap.values());
-        listDate = updatedArray
+        const index = listDate.findIndex(item => item.id === update.id);
+        if (index !== -1) {
+            listDate[index] = update;
+        }
+    });
         closeOpNuDatModal();
         notify("Registros Seleccionados Actualizados");
     }

@@ -111,7 +111,7 @@ class PextProjectServices
         return $expense;
     }
 
-    public function textSearch($expense, $searchTerms)
+    public function textSearch($expense, $searchTerms): Builder
     {
         $expense = $expense->where(function ($query) use ($searchTerms) {
             $query->where('ruc', 'like', "%$searchTerms%")
