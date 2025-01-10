@@ -18,23 +18,24 @@ class HuaweiMonthlyExpenseRequest extends FormRequest
     {
         return [
             'expense_type' => 'required',
-            'zone' => 'required',
+            'zone' => 'nullable',
             'employee' => 'required',
             'expense_date' => 'required|date',
-            'cdp_type' => 'nullable',
+            'cdp_type' => 'required',
             'doc_number' => 'nullable',
             'op_number' => 'nullable',
             'ruc' => 'nullable|digits:11',
             'description' => 'required',
             'amount' => 'required',
-            'image1' => 'required',
+            'image1' => 'nullable',
             'image2' => 'nullable',
             'image3' => 'nullable',
             'refund_status' => 'required',
             'ec_expense_date' => 'nullable|date',
             'ec_op_number' => 'nullable',
             'ec_amount' => 'nullable',
-            'huawei_monthly_project_id' => 'required|exists:huawei_monthly_projects,id'
+            'huawei_monthly_project_id' => 'required|exists:huawei_monthly_projects,id',
+            'huawei_project_id' => 'nullable|exists:huawei_projects,id',
         ];
     }
 

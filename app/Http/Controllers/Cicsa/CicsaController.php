@@ -262,16 +262,6 @@ class CicsaController extends Controller
         }
     }
 
-    public function updateOrStoreAssignation(StoreOrUpdateAssigantionRequest $request, $cicsa_assignation_id = null)
-    {
-        $validateData = $request->validated();
-        $cicsa_assigantion = CicsaAssignation::updateOrCreate(
-            ['id' => $cicsa_assignation_id],
-            $validateData
-        );
-        return response()->json($cicsa_assigantion, 200);
-    }
-
     public function exportAssignation($type)
     {
         return Excel::download(new AssignationExport($type), 'Asignación ' . date('d-m-Y') . '.xlsx');

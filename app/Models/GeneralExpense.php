@@ -16,6 +16,7 @@ class GeneralExpense extends Model
         'operation_number',
         'operation_date',
         'account_statement_id',
+        'type',
     ];
 
     protected $casts = [

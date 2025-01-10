@@ -9,7 +9,6 @@ Route::get('/cicsa_process/export/{type}/{stages?}', [CicsaController::class, 'e
 
 Route::any('/cicsa_assignation/{type}/{searchCondition?}', [CicsaController::class, 'indexAssignation'])->name('assignation.index');
 Route::delete('/cicsa_assignation/destroy/{ca_id}', [CicsaController::class, 'destroy'])->name('cicsa.assignation.destroy');
-Route::put('/cicsa_assignation/store/update/{cicsa_assignation_id?}', [CicsaController::class, 'updateOrStoreAssignation'])->name('assignation.storeOrUpdate');
 Route::get('/cicsa_assignation/export/{type}', [CicsaController::class, 'exportAssignation'])->name('assignation.export');
 
 

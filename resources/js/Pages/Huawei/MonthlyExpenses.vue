@@ -241,7 +241,25 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                            Zona
+                            <TableAutocompleteFilter
+                                labelClass="text-[11px]"
+                                label="Zona"
+                                :options="props.summary.zones"
+                                v-model="filterForm.selectedZones"
+                                width="w-48"
+                            />
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                        >
+                            <TableAutocompleteFilter
+                                labelClass="text-[11px]"
+                                label="DU del Proyecto"
+                                :options="props.summary.assigned_dius"
+                                v-model="filterForm.selectedDus"
+                                :empty="true"
+                                width="w-72"
+                            />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
@@ -280,12 +298,12 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                            Número de Documento
+                            Número de Serie
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                            Numero de Operacion
+                            Correlativo
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
@@ -354,7 +372,7 @@
                                     'Aceptado',
                                     'Rechazado',
                                     'Pendiente',
-                                    'Aceptado-Validado'
+                                    'Aceptado-Validado',
                                 ]"
                                 v-model="filterForm.selectedStates"
                                 width="w-48"
@@ -369,19 +387,27 @@
                 </thead>
                 <tbody>
                     <tr
-                        v-for="item in (!props.search || !filterMode ? expenses.data : expenses)"
+                        v-for="item in !props.search || !filterMode
+                            ? expenses.data
+                            : expenses"
                         :key="item.id"
                         class="text-gray-700"
                     >
-                        <td :class="[
-                            'sticky left-0 z-10 border-b border-gray-200',
-                            {
-                                'bg-indigo-500': item.real_state === 'Pendiente',
-                                'bg-green-500': item.real_state == 'Aceptado-Validado',
-                                'bg-amber-500': item.real_state == 'Aceptado',
-                                'bg-red-500': item.real_state == 'Rechazado',
-                            },
-                        ]"></td>
+                        <td
+                            :class="[
+                                'sticky left-0 z-10 border-b border-gray-200',
+                                {
+                                    'bg-indigo-500':
+                                        item.real_state === 'Pendiente',
+                                    'bg-green-500':
+                                        item.real_state == 'Aceptado-Validado',
+                                    'bg-amber-500':
+                                        item.real_state == 'Aceptado',
+                                    'bg-red-500':
+                                        item.real_state == 'Rechazado',
+                                },
+                            ]"
+                        ></td>
                         <td
                             class="sticky left-2 z-10 border-b border-r border-gray-200 bg-amber-100 text-center text-[13px] whitespace-nowrap tabular-nums"
                         >
@@ -405,9 +431,14 @@
                             </p>
                         </td>
                         <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center whitespace-nowrap text-[13px]"
                         >
                             {{ item.zone }}
+                        </td>
+                        <td
+                            class="border-b border-gray-200 bg-white px-2 py-2 text-center whitespace-nowrap text-[13px]"
+                        >
+                            {{ item.huawei_project?.assigned_diu }}
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
@@ -447,13 +478,14 @@
                         <td
                             class="border-b whitespace-nowrap border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
-                            S/. {{ item.amount ? item.amount.toFixed(2) : '' }}
+                            S/. {{ item.amount ? item.amount.toFixed(2) : "" }}
                         </td>
 
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
                         >
-                            <button v-if="item.image1"
+                            <button
+                                v-if="item.image1"
                                 @click="openPreviewDocumentModal(item.id, '1')"
                                 class="flex items-center justify-center w-full"
                             >
@@ -464,7 +496,8 @@
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
                         >
-                            <button v-if="item.image2"
+                            <button
+                                v-if="item.image2"
                                 @click="openPreviewDocumentModal(item.id, '2')"
                                 class="flex items-center justify-center w-full"
                             >
@@ -475,7 +508,8 @@
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
                         >
-                            <button v-if="item.image3"
+                            <button
+                                v-if="item.image3"
                                 @click="openPreviewDocumentModal(item.id, '3')"
                                 class="flex items-center justify-center w-full"
                             >
@@ -509,19 +543,21 @@
                         </td>
                         <td
                             class="border-b whitespace-nowrap border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap"
-                            :class = "[
+                            :class="[
                                 'text-center',
                                 {
-                                    'text-indigo-500': item.real_state === 'Pendiente',
-                                    'text-green-500': item.real_state == 'Aceptado - Validado',
-                                    'text-amber-500': item.real_state == 'Aceptado',
-                                    'text-red-500': item.real_state == 'Rechazado',
+                                    'text-indigo-500':
+                                        item.real_state === 'Pendiente',
+                                    'text-green-500':
+                                        item.real_state == 'Aceptado-Validado',
+                                    'text-amber-500':
+                                        item.real_state == 'Aceptado',
+                                    'text-red-500':
+                                        item.real_state == 'Rechazado',
                                 },
                             ]"
-                            >
-                            {{
-                                item.real_state
-                            }}
+                        >
+                            {{ item.real_state }}
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
@@ -613,14 +649,26 @@
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
-                            colspan="9"
+                            colspan="10"
                         ></td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
+                        <td
+                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap"
+                        >
                             S/.
                             {{
-                                (props.search || filterMode.value)
-                                    ? expenses?.reduce((a, item) => a + item.amount, 0).toFixed(2)
-                                    : expenses?.data?.reduce((a, item) => a + item.amount, 0).toFixed(2)
+                                props.search || filterMode.value
+                                    ? expenses
+                                          ?.reduce(
+                                              (a, item) => a + item.amount,
+                                              0
+                                          )
+                                          .toFixed(2)
+                                    : expenses?.data
+                                          ?.reduce(
+                                              (a, item) => a + item.amount,
+                                              0
+                                          )
+                                          .toFixed(2)
                             }}
                         </td>
 
@@ -647,6 +695,94 @@
                 <form @submit.prevent="form.id ? submit(true) : submit(false)">
                     <div class="space-y-12 mt-4">
                         <div class="grid sm:grid-cols-2 gap-6 pb-6">
+                            <div
+                                class="md:col-span-2 col-span-1 p-4 border border-black rounded-lg"
+                            >
+                                <div class="grid sm:grid-cols-4 gap-6">
+                                    <div class="sm:col-span-2">
+                                        <InputLabel
+                                            for="refund_status"
+                                            class="font-medium leading-6 text-gray-900"
+                                            >Macroproyecto</InputLabel
+                                        >
+                                        <div class="mt-2">
+                                            <select
+                                                v-model="selectedMacro"
+                                                @change="fetchSites"
+                                                id="refund_status"
+                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            >
+                                                <option disabled value="">
+                                                    Seleccionar Macroproyecto
+                                                </option>
+                                                <option>DWDM</option>
+                                                <option>IPRAN24</option>
+                                                <option>FTTH</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div
+                                        class="sm:col-span-2"
+                                        v-if="selectedMacro"
+                                    >
+                                        <InputLabel
+                                            for="refund_status"
+                                            class="font-medium leading-6 text-gray-900"
+                                            >Site</InputLabel
+                                        >
+                                        <div class="mt-2">
+                                            <select
+                                                v-model="selectedSite"
+                                                @change="fetchProjects"
+                                                id="refund_status"
+                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            >
+                                                <option disabled value="">
+                                                    Seleccionar site
+                                                </option>
+                                                <option
+                                                    v-for="site in sites"
+                                                    :key="site.id"
+                                                    :value="site.id"
+                                                >
+                                                    {{ site.name }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div
+                                        class="sm:col-span-4"
+                                        v-if="selectedSite"
+                                    >
+                                        <InputLabel
+                                            for="huawei_project_id"
+                                            class="font-medium leading-6 text-gray-900"
+                                            >Proyecto</InputLabel
+                                        >
+                                        <div class="mt-2">
+                                            <select
+                                                v-model="form.huawei_project_id"
+                                                id="huawei_project_id"
+                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            >
+                                                <option disabled value="">
+                                                    Seleccionar Proyecto
+                                                </option>
+                                                <option
+                                                    v-for="project in projects"
+                                                    :key="project.id"
+                                                    :value="project.id"
+                                                >
+                                                    {{ project.assigned_diu }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div>
                                 <InputLabel
                                     for="expense_type"
@@ -669,23 +805,6 @@
                                     <InputError
                                         :message="form.errors.expense_type"
                                     />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel
-                                    for="zone"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >Zona
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input
-                                        type="text"
-                                        v-model="form.zone"
-                                        id="zone"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError :message="form.errors.zone" />
                                 </div>
                             </div>
 
@@ -761,7 +880,7 @@
                                 <InputLabel
                                     for="doc_number"
                                     class="font-medium leading-6 text-gray-900"
-                                    >Número de Documento
+                                    >Número de Serie
                                 </InputLabel>
                                 <div class="mt-2">
                                     <input
@@ -780,7 +899,7 @@
                                 <InputLabel
                                     for="op_number"
                                     class="font-medium leading-6 text-gray-900"
-                                    >Número de Operación
+                                    >Correlativo
                                 </InputLabel>
                                 <div class="mt-2">
                                     <input
@@ -1044,6 +1163,7 @@
                                         type="text"
                                         v-model="opNuDateForm.ec_op_number"
                                         id="operation_number"
+                                        min="6"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     />
                                     <InputError
@@ -1168,11 +1288,13 @@ import TextInput from "@/Components/TextInput.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
+import { setAxiosErrors } from "@/utils/utils";
 
 const props = defineProps({
     expense: Object,
     project: Object,
     search: String,
+    summary: Object
 });
 
 const expenses = ref(props.expense);
@@ -1202,12 +1324,17 @@ const form = useForm({
     ec_op_number: "",
     ec_amount: "",
     huawei_monthly_project_id: props.project.id,
+    huawei_project_id: "",
 });
 
 const create_additional = ref(false);
 const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
 const showValidateModal = ref(false);
+const sites = ref([]);
+const projects = ref([]);
+const selectedMacro = ref("");
+const selectedSite = ref("");
 
 const openCreateAdditionalModal = () => {
     create_additional.value = true;
@@ -1215,65 +1342,93 @@ const openCreateAdditionalModal = () => {
 
 const openEditAdditionalModal = async (additional) => {
     Object.assign(form, additional);
-    create_additional.value = true;
+    if (additional.huawei_project_id) {
+        axios
+            .get(
+                route("huawei.monthlyexpenses.expenses.fetchsites", {
+                    macro: additional.huawei_project?.macro_project,
+                })
+            )
+            .then((response) => {
+                sites.value = response.data;
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+
+        axios
+            .get(
+                route("huawei.monthlyexpenses.expenses.fetchprojects", {
+                    macro: additional.huawei_project?.macro_project,
+                    site_id: additional.huawei_project?.huawei_site_id,
+                })
+            )
+            .then((response) => {
+                projects.value = response.data;
+                selectedMacro.value = additional.huawei_project?.macro_project;
+                selectedSite.value = additional.huawei_project?.huawei_site_id;
+                create_additional.value = true;
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    } else {
+        create_additional.value = true;
+    }
 };
 
 const closeModal = () => {
     form.clearErrors();
     form.reset();
+    selectedMacro.value = '',
+    selectedSite.value = ''
     isFetching.value = false;
     create_additional.value = false;
 };
 
-function submit(update) {
+async function submit(update) {
     if (!update) {
         isFetching.value = true;
         const url = route("huawei.monthlyexpenses.expenses.store");
-        form.post(url, {
-            onSuccess: () => {
-                closeModal();
-                successMessage.value = "Se creó el registro correctamente";
-                showSuccessModal.value = true;
-                setTimeout(() => {
-                    showSuccessModal.value = false;
-                    successMessage.value = "";
-                    router.visit(
-                        route("huawei.monthlyexpenses.expenses", {
-                            project: props.project.id,
-                        })
-                    );
-                }, 2000);
-            },
-            onError: (e) => {
-                isFetching.value = false;
-                console.error(e);
-            },
+        const res = await axios.post(url, form.data()).catch((e) => {
+            isFetching.value = false;
+            isFetching.value = false;
+            if (e.response?.data?.errors) {
+                setAxiosErrors(e.response.data.errors, form);
+            } else {
+                notifyError("Server Error");
+            }
         });
+        const originalMap = new Map(
+            expenses.value.data.map((item) => [item.id, item])
+        );
+        const newExpense = res.data;
+        originalMap.set(newExpense.id, newExpense);
+        expenses.value.data = Array.from(originalMap.values());
+        closeModal();
+        notify("Se creó el registro correctamente");
     } else {
         isFetching.value = true;
         const url = route("huawei.monthlyexpenses.expenses.update", {
             expense: form.id,
         });
-        form.post(url, {
-            onSuccess: () => {
-                closeModal();
-                successMessage.value = "Se actualizó el registro correctamente";
-                showSuccessModal.value = true;
-                setTimeout(() => {
-                    showSuccessModal.value = false;
-                    successMessage.value = "";
-                    router.visit(
-                        route("huawei.monthlyexpenses.expenses", {
-                            project: props.project.id,
-                        })
-                    );
-                }, 2000);
-            },
-            onError: (e) => {
-                isFetching.value = false;
-                console.error(e);
-            },
+
+        const res = await axios.post(url, form.data()).catch((e) => {
+            isFetching.value = false;
+            if (e.response?.data?.errors) {
+                setAxiosErrors(e.response.data.errors, form);
+            } else {
+                notifyError("Server Error");
+            }
         });
+        const originalMap = new Map(
+            expenses.value.data.map((item) => [item.id, item])
+        );
+        const newExpense = res.data;
+        originalMap.set(newExpense.id, newExpense);
+        expenses.value.data = Array.from(originalMap.values());
+        closeModal();
+        notify("Se actualizó el registro correctamente");
     }
 }
 
@@ -1335,7 +1490,7 @@ const employees = [
     "REMMILTON CRUZ QUISPE",
     "VICTOR HUGO CACERES CONDORI",
     "XAVIER ABDUL CALAPUJA FLORES",
-    "YERSON HENRRY LLERENA CONDORI"
+    "YERSON HENRRY LLERENA CONDORI",
 ];
 
 const expenseTypes = [
@@ -1366,6 +1521,8 @@ const cdp_types = [
 const filterForm = ref({
     search: "",
     selectedEmployees: employees,
+    selectedZones: props.summary.zones,
+    selectedDus: props.summary.assigned_dius,
     selectedExpenseTypes: expenseTypes,
     selectedCDPTypes: cdp_types,
     exStartDate: "",
@@ -1373,7 +1530,7 @@ const filterForm = ref({
     exNoDate: false,
     opStartDate: "",
     opEndDate: "",
-    selectedStates: ['Aceptado', 'Rechazado', 'Pendiente', 'Aceptado-Validado'],
+    selectedStates: ["Aceptado", "Rechazado", "Pendiente", "Aceptado-Validado"],
     opNoDate: false,
 });
 
@@ -1381,6 +1538,8 @@ watch(
     () => [
         filterForm.value.search,
         filterForm.value.selectedEmployees,
+        filterForm.value.selectedZones,
+        filterForm.value.selectedDus,
         filterForm.value.selectedExpenseTypes,
         filterForm.value.selectedCDPTypes,
         filterForm.value.exStartDate,
@@ -1529,18 +1688,17 @@ const closeOpNuDatModal = () => {
 };
 
 const openMassiveValidate = () => {
-
     if (actionForm.value.ids.length === 0) {
         notifyWarning("No hay registros selccionados");
         return;
     }
-    const invalidExpense = actionForm.value.ids.find(id => {
-        const expense = expenses.value.data.find(exp => exp.id === id);
+    const invalidExpense = actionForm.value.ids.find((id) => {
+        const expense = expenses.value.data.find((exp) => exp.id === id);
         return expense && expense.is_accepted !== null;
     });
 
-    if (invalidExpense){
-        notifyWarning('Hay registros ya aceptados o rechazados');
+    if (invalidExpense) {
+        notifyWarning("Hay registros ya aceptados o rechazados");
         return;
     }
 
@@ -1611,5 +1769,36 @@ const massiveValidate = async () => {
     expenses.value.data = updatedArray;
     closeMassiveValidate();
     notify("Registros Seleccionados Actualizados");
+};
+
+const fetchSites = (macro) => {
+    axios
+        .get(
+            route("huawei.monthlyexpenses.expenses.fetchsites", {
+                macro: macro.target.value,
+            })
+        )
+        .then((response) => {
+            sites.value = response.data;
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+};
+
+const fetchProjects = (site) => {
+    axios
+        .get(
+            route("huawei.monthlyexpenses.expenses.fetchprojects", {
+                macro: selectedMacro.value,
+                site_id: site.target.value,
+            })
+        )
+        .then((response) => {
+            projects.value = response.data;
+        })
+        .catch((error) => {
+            console.error(error);
+        });
 };
 </script>
