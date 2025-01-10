@@ -33,6 +33,7 @@ class HuaweiMonthlyExpense extends Model
         'huawei_monthly_project_id',
         'account_statement_id',
         'general_expense_id',
+        'huawei_project_id'
     ];
 
     protected $appends = [
@@ -49,12 +50,18 @@ class HuaweiMonthlyExpense extends Model
         return $this->belongsTo(GeneralExpense::class, 'general_expense_id');
     }
 
+    public function huawei_project()
+    {
+        return $this->belongsTo(HuaweiProject::class, 'huawei_project_id');
+    }
+
     protected static function booted()
     {
         static::creating(function ($item) {
             $as = self::findAccountStatement($item);
+            $zone = HuaweiProject::find($item->huawei_project_id)->huawei_site->name ?? 'Sin zona';
             $generalExpense = GeneralExpense::create([
-                'zone' => $item->zone,
+                'zone' => $zone,
                 'expense_type' => $item->expense_type,
                 'location' => $item?->huawei_monthly_project?->description ?? 'Sin descripción',
                 'amount' => $item->amount,
@@ -69,9 +76,10 @@ class HuaweiMonthlyExpense extends Model
         static::updating(function ($item) {
             $generalExpense = $item->general_expense;
             $as = self::findAccountStatement($item);
+            $zone = HuaweiProject::find($item->huawei_project_id)->huawei_site->name ?? 'Sin zona';
             if ($generalExpense) {
                 $generalExpense->update([
-                    'zone' => $item->zone,
+                    'zone' => $zone,
                     'expense_type' => $item->expense_type,
                     'location' => $item?->huawei_monthly_project?->description ?? 'Sin descripción',
                     'amount' => $item->amount,
