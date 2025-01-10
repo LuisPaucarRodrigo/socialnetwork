@@ -1,10 +1,10 @@
 <template>
 
     <Head title="Gestion de Costos Adicionales" />
-    <AuthenticatedLayout :redirectRoute="
+    <AuthenticatedLayout ::redirectRoute="
     {
         route: 'projectmanagement.pext.additional.index',
-        params: {type:type}
+        params: {type}
     }">
         <template #header>
             Gastos {{ fixedOrAdditional ? 'Fijos' : 'Adicionales' }}
@@ -14,6 +14,10 @@
         <div class="inline-block min-w-full mb-4">
             <div class="flex gap-4 justify-between">
                 <div class="hidden sm:flex sm:items-center space-x-3">
+                    <PrimaryButton v-if="hasPermission('ProjectManager') && filterForm.rejected"
+                        @click="openCreateAdditionalModal" type="button" class="whitespace-nowrap">
+                        + Agregar
+                    </PrimaryButton>
                     <PrimaryButton data-tooltip-target="update_data_tooltip" type="button" @click="() => {
                         filterForm = { ...initialFilterFormState }
                     }
@@ -51,15 +55,47 @@
                         Rechazados
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
+                    <div>
+                        <dropdown align="left">
+                            <template #trigger>
+                                <button data-tooltip-target="action_button_tooltip"
+                                    @click="dropdownOpen = !dropdownOpen"
+                                    class="relative block overflow-hidden rounded-md text-white hover:bg-indigo-400 text-center text-sm bg-indigo-500 p-2">
+                                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 6H20M4 12H20M4 18H20" stroke="#ffffff" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </button>
+                                <div id="action_button_tooltip" role="tooltip"
+                                    class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700 whitespace-nowrap">
+                                    Acciones
+                                    <div class="tooltip-arrow" data-popper-arrow></div>
+                                </div>
+                            </template>
 
+                            <template #content class="origin-left">
+                                <div>
+                                    <!-- Alineación a la derecha -->
+
+                                    <div class="">
+                                        <button @click="openOpNuDaModal"
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Actualizar Operación
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                        </dropdown>
+                    </div>
                     <Link v-if="fixedOrAdditional"
                         class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
-                        :href="route('pext.additional.expense.index', { project_id: project_id, fixedOrAdditional: false, type })">
+                        :href="route('pext.additional.expense.general.index', { fixedOrAdditional: false , type})">
                     G.Adicionales
                     </Link>
                     <Link v-else
                         class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
-                        :href="route('pext.additional.expense.index', { project_id: project_id, fixedOrAdditional: true, type })">
+                        :href="route('pext.additional.expense.general.index', { fixedOrAdditional: true, type })">
                     G.Fijos
                     </Link>
                 </div>
@@ -79,11 +115,10 @@
                         <template #content class="origin-left">
                             <div class="dropdown">
                                 <div class="dropdown-menu">
-                                    <button data-tooltip-target="update_data_tooltip" type="button" @click="() => {
-                                        filterForm = { ...initialFilterFormState }
-                                    }
-                                        ">
-                                        Todos los registros
+                                    <button v-if="hasPermission('ProjectManager') && filterForm.rejected"
+                                        @click="openCreateAdditionalModal"
+                                        class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                        Agregar
                                     </button>
                                 </div>
                                 <div class="dropdown-menu">
@@ -98,18 +133,6 @@
                                         @click="rejectedExpenses">
                                         Rechazados
                                     </button>
-                                </div>
-                                <div class="dropdown-menu">
-                                    <Link v-if="fixedOrAdditional"
-                                        class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-ouy"
-                                        :href="route('pext.additional.expense.index', { project_id: project_id, fixedOrAdditional: false, type })">
-                                    G.Adicionales
-                                    </Link>
-                                    <Link v-else
-                                        class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-ouy"
-                                        :href="route('pext.additional.expense.index', { project_id: project_id, fixedOrAdditional: true, type })">
-                                    G.Fijos
-                                    </Link>
                                 </div>
                             </div>
                         </template>
@@ -132,7 +155,7 @@
                     <tr
                         class=" border-b bg-gray-50 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">
 
-                        <th class="bg-gray-100 border-b-2 border-gray-20">
+                        <th class="bg-gray-100 border-b-2 border-gray-20 sticky left-0 z-10">
                             <div class="w-2"></div>
                         </th>
                         <th
@@ -143,11 +166,11 @@
                                 {{ actionForm.ids.length ?? "" }}
                             </label>
                         </th>
-                        <!-- <th
+                        <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Zona" :options="zones"
                                 v-model="filterForm.selectedZones" width="w-40" />
-                        </th> -->
+                        </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 ">
                             <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Gasto" :options="expenseTypes"
@@ -224,23 +247,23 @@
                 <tbody>
                     <tr v-for="item in expenses.data || expenses" :key="item.id" class="text-gray-700">
                         <td :class="[
-                            'border-b border-gray-200',
+                            'sticky left-0 z-10 border-b border-gray-200',
                             {
-                                'bg-indigo-500': item.is_accepted === null,
-                                'bg-green-500': item.is_accepted == true,
-                                'bg-red-500': item.is_accepted == false,
+                                'bg-indigo-500': item.real_state === 'Pendiente',
+                                'bg-green-500': item.real_state == 'Aceptado - Validado',
+                                'bg-amber-500': item.real_state == 'Aceptado',
+                                'bg-red-500': item.real_state == 'Rechazado',
                             },
-                        ]">
-                        </td>
-                        <!-- <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                            {{ item.zone }}
-                        </td> -->
+                        ]"></td>
                         <td
                             class="sticky left-2 z-10 border-b border-r border-gray-200 bg-amber-100 text-center text-[13px] whitespace-nowrap tabular-nums">
                             <label :for="`check-${item.id}`" class="block w-12 px-2 py-1">
                                 <input v-model="actionForm.ids" :value="item.id" :id="`check-${item.id}`"
                                     type="checkbox" />
                             </label>
+                        </td>
+                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                            {{ item.zone }}
                         </td>
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                             <p class="w-48 break-words">
@@ -325,10 +348,32 @@
                                     </button>
                                 </div>
                                 <div v-else class="w-1/2"></div>
+
+                                <div v-if="hasPermission('ProjectManager')" class="flex gap-3 mr-3">
+                                    <button v-if="!filterForm.rejected" data-tooltip-target="tooltip-up-ac" @click="() => validateRegister(item.id, true)
+                                        " class="flex items-center rounded-xl text-blue-700 hover:bg-green-200">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15m0-3-3-3m0 0-3 3m3-3V15" />
+                                        </svg>
+                                    </button>
+                                    <button @click="openEditAdditionalModal(item)"
+                                        class="text-amber-600 hover:underline">
+                                        <PencilSquareIcon class="h-5 w-5 ml-1" />
+                                    </button>
+                                    <button @click="
+                                        confirmDeleteAdditional(item.id)
+                                        " class="text-red-600 hover:underline">
+                                        <TrashIcon class="h-5 w-5" />
+                                    </button>
+                                </div>
                             </div>
                         </td>
                     </tr>
                     <tr class="sticky bottom-0 z-10 text-gray-700">
+                        <td class="font-bold border-b border-gray-200 bg-white">
+                        </td>
                         <td class="font-bold border-b border-gray-200 bg-white">
                         </td>
                         <td class="font-bold border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -362,6 +407,240 @@
             class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
             <pagination :links="expenses.links" />
         </div>
+        <Modal :show="create_additional" @close="closeModal">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900">
+                    {{ form.id ? "Actualizar" : "Agregar" }} Gasto
+                </h2>
+                <form @submit.prevent="submit">
+                    <div class="space-y-12 mt-4">
+                        <div class="grid sm:grid-cols-2 gap-6 pb-6">
+                            <div>
+                                <InputLabel for="project_id" class="font-medium leading-6 text-gray-900">Proyectos Cicsa
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <select id="project_id" v-model="form.project_id"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option disabled value="">
+                                            Seleccionar Proyecto
+                                        </option>
+                                        <option v-for="op in cicsaAssignation" :value="op.project_id">{{ op.project_name
+                                            }}
+                                        </option>
+                                    </select>
+                                    <InputError :message="form.errors.project_id" />
+                                </div>
+                            </div>
+                            <div>
+                                <InputLabel for="expense_type" class="font-medium leading-6 text-gray-900">Tipo de Gasto
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <select v-model="form.expense_type" id="expense_type"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option disabled value="">
+                                            Seleccionar Gasto
+                                        </option>
+                                        <option v-for="op in expenseTypes">{{ op }}</option>
+                                    </select>
+                                    <InputError :message="form.errors.expense_type" />
+                                </div>
+                            </div>
+                            <div>
+                                <InputLabel for="type_doc" class="font-medium leading-6 text-gray-900">Tipo de Documento
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <select v-model="form.type_doc" id="type_doc"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option disabled value="">
+                                            Seleccionar Documento
+                                        </option>
+                                        <option v-for="op in docTypes">{{ op }}</option>
+                                    </select>
+                                    <InputError :message="form.errors.type_doc" />
+                                </div>
+                            </div>
+                            <div>
+                                <InputLabel for="ruc" class="font-medium leading-6 text-gray-900">RUC / DNI
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="text" v-model="form.ruc" id="ruc" maxlength="11"
+                                        @input="handleRucDniAutocomplete" autocomplete="off" list="options"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <datalist id="options">
+                                        <option v-for="item in providers" :value="item.ruc">
+                                            {{ item.company_name }}
+                                        </option>
+                                    </datalist>
+                                    <InputError :message="form.errors.ruc" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="operation_number" class="font-medium leading-6 text-gray-900">Numero de
+                                    Operacion
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="text" v-model="form.operation_number" id="operation_number"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.operation_number" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="operation_date" class="font-medium leading-6 text-gray-900">Fecha de
+                                    Operacion
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="date" v-model="form.operation_date" id="operation_date"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.operation_date" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="doc_number" class="font-medium leading-6 text-gray-900">Numero de
+                                    Documento
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="text" v-model="form.doc_number" id="doc_number"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.doc_number" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="doc_date" class="font-medium leading-6 text-gray-900">Fecha de
+                                    Documento
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="date" v-model="form.doc_date" id="doc_date"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.doc_date" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="amount" class="font-medium leading-6 text-gray-900">Monto</InputLabel>
+                                <div class="mt-2">
+                                    <input type="number" step="0.0001" v-model="form.amount" id="amount"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.amount" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="igv" class="font-medium leading-6 text-gray-900">
+                                    IGV (%)
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <div class="flex gap-3 items-center">
+                                        <input type="number" step="1" max="100" v-model="form.igv" id="igv"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />%
+                                    </div>
+                                    <InputError :message="form.errors.igv" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="amount" class="font-medium leading-6 text-gray-900">Monto sin IGV
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <InputLabel for="amount" class="font-medium leading-6 text-gray-900">{{
+                                        form.amount
+                                            ? (
+                                                form.amount /
+                                                (1 + form.igv / 100)
+                                            ).toFixed(4)
+                                            : 0
+                                    }}</InputLabel>
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="description" class="font-medium leading-6 text-gray-900">Descripción
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <textarea type="text" v-model="form.description" id="description"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.description" />
+                                </div>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <InputLabel class="font-medium leading-6 text-gray-900">
+                                    Archivo
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <InputFile type="file" v-model="form.photo" accept=".jpeg, .jpg, .png"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.photo" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <SecondaryButton @click="closeModal">
+                                Cancelar
+                            </SecondaryButton>
+                            <button type="submit" :disabled="form.processing" :class="{ 'opacity-25': form.processing }"
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </Modal>
+
+        <Modal :show="showOpNuDatModal" @close="closeOpNuDatModal">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900 mb-2">
+                    Actualización Masiva
+                </h2>
+                <h4 class="text-sm font-light text-green-900 bg-green-500/10 rounded-lg p-3 ">
+                    Los registros con fecha de operación y número de operación, pasarán a automáticamente estar
+                    aceptados.
+                </h4>
+                <form @submit.prevent="submitOpNuDatModal">
+                    <div class="space-y-12">
+                        <div class="border-b grid grid-cols-1 gap-6 border-gray-900/10 pb-12">
+                            <div>
+                                <InputLabel for="operation_number" class="font-medium leading-6 text-gray-900">Numero de
+                                    Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="text" v-model="opNuDateForm.operation_number" id="operation_number"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="opNuDateForm.errors.operation_number" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="operation_date" class="font-medium leading-6 text-gray-900">Fecha de
+                                    Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="date" v-model="opNuDateForm.operation_date" id="operation_date"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="opNuDateForm.errors.operation_date" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <SecondaryButton @click="closeOpNuDatModal">
+                                Cancelar
+                            </SecondaryButton>
+                            <button type="submit" :disabled="opNuDateForm.processing"
+                                :class="{ 'opacity-25': opNuDateForm.processing }"
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </Modal>
+
+        <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Gasto"
+            :deleteFunction="deleteAdditional" @closeModal="closeModalDoc" />
         <!-- <SuccessOperationModal :confirming="confirmValidation" :title="'Validación'"
             :message="'La validación del gasto fue exitosa.'" /> -->
     </AuthenticatedLayout>
@@ -398,7 +677,6 @@ const props = defineProps({
     auth: Object,
     userPermissions: Array,
     cost_center: Object,
-    project_id: String,
     fixedOrAdditional: Boolean,
     cicsaAssignation: Object,
     type: Number
@@ -432,7 +710,30 @@ const form = useForm({
     igv: 0,
 });
 
+const opNuDateForm = useForm({
+    operation_date: '',
+    operation_number: '',
+})
+
+const create_additional = ref(false);
+const confirmingDocDeletion = ref(false);
+const docToDelete = ref(null);
 const showOpNuDatModal = ref(false)
+
+const openCreateAdditionalModal = () => {
+    create_additional.value = true;
+};
+
+const openEditAdditionalModal = (additional) => {
+    Object.assign(form, additional)
+    create_additional.value = true;
+};
+
+const closeModal = () => {
+    form.clearErrors()
+    form.reset();
+    create_additional.value = false;
+};
 
 const openOpNuDaModal = () => {
     if (actionForm.value.ids.length === 0) {
@@ -441,6 +742,69 @@ const openOpNuDaModal = () => {
     }
     showOpNuDatModal.value = true
 }
+
+const closeOpNuDatModal = () => {
+    showOpNuDatModal.value = false
+    // isFetching.value = false
+    opNuDateForm.reset()
+    opNuDateForm.clearErrors()
+}
+
+async function submit() {
+    console.log(form)
+    const url = route('pext.expenses.storeOrUpdate', { 'expense_id': form.id ?? null })
+    try {
+        const formData = toFormData(form)
+        const response = await axios.post(url, formData);
+        const action = form.id ? "update" : "create"
+        updateExpense(response.data, action)
+        closeModal();
+    } catch (error) {
+        console.log(error)
+        if (error.response) {
+            if (error.response.data.errors) {
+                setAxiosErrors(error.response.data.errors, form)
+            } else {
+                notifyError('Server Error', error.response.data)
+            }
+        } else {
+            notifyError("Network or other error:", error)
+        }
+    }
+};
+
+const confirmDeleteAdditional = (additionalId) => {
+    docToDelete.value = additionalId;
+    confirmingDocDeletion.value = true;
+};
+
+const closeModalDoc = () => {
+    confirmingDocDeletion.value = false;
+};
+
+async function deleteAdditional() {
+    const docId = docToDelete.value;
+    const url = route("pext.expenses.delete", {
+        expense_id: docId,
+    })
+    try {
+        await axios.delete(url)
+        closeModalDoc()
+        updateExpense(docId, "delete")
+    } catch (e) {
+        console.log(e)
+    }
+};
+
+const handleRucDniAutocomplete = (e) => {
+    let ruc = e.target.value;
+    let findProv = props.providers.find((item) => item.ruc == ruc);
+    if (findProv) {
+        form.provider_id = findProv.id;
+    } else {
+        form.provider_id = "";
+    }
+};
 
 function handlerPreview(id) {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
@@ -495,14 +859,14 @@ const expenseTypes = props.fixedOrAdditional
     : initialExpenseAdditional;
 // const costCenter = props.cost_center.map(item => item.name)
 
-// const zones = [
-//     "Arequipa",
-//     "Moquegua",
-//     "Tacna",
-//     "Cuzco",
-//     "Puno",
-//     "MDD"
-// ];
+const zones = [
+    "Arequipa",
+    "Moquegua",
+    "Tacna",
+    "Cuzco",
+    "Puno",
+    "MDD"
+];
 
 const docTypes = [
     "Efectivo",
@@ -523,7 +887,7 @@ const initialFilterFormState = {
     fixedOrAdditional: props.fixedOrAdditional,
     rejected: true,
     search: "",
-    // selectedZones: zones,
+    selectedZones: zones,
     selectedExpenseTypes: expenseTypes,
     selectedDocTypes: docTypes,
     selectedStateTypes: stateTypes,
@@ -539,11 +903,18 @@ const filterForm = ref({
     ...initialFilterFormState
 });
 
+watch(() => form.project_id, () => {
+    let cicsa = props.cicsaAssignation.find(item => item.project_id == form.project_id)
+    form.zone = cicsa?.zone
+    console.log(form.zone)
+}
+)
+
 watch(() => [
     filterForm.value.fixedOrAdditional,
     filterForm.value.rejected,
     filterForm.value.search,
-    // filterForm.value.selectedZones,
+    filterForm.value.selectedZones,
     filterForm.value.selectedExpenseTypes,
     filterForm.value.selectedDocTypes,
     filterForm.value.selectedStateTypes,
@@ -560,11 +931,10 @@ watch(() => [
 );
 
 async function search_advance(data) {
-    let url = route("pext.monthly.additional.expense.search_advance", {
-        project_id: props.project_id,
-    })
+    let url = route("pext.monthly.additional.expense.general.search_advance")
     try {
         let response = await axios.post(url, data);
+        console.log(response.data)
         expenses.value = response.data;
     } catch (error) {
         console.error('Error en la solicitud:', error);
@@ -574,8 +944,7 @@ async function search_advance(data) {
 function openExportExcel() {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
     const url =
-        route("projectmanagement.pext.expenses.export", {
-            project_id: props.project_id,
+        route("projectmanagement.pext.expenses.general.export", {
             fixedOrAdditional: filterForm.value.fixedOrAdditional
         }) +
         "?" +
@@ -625,5 +994,91 @@ watch(
     () => { actionForm.value = { ids: [] }; },
     { deep: true }
 );
+
+// const submitOpNuDatModal = async () => {
+//     // isFetching.value = true;
+//     const res = await axios
+//         .post(route("projectmanagement.pext.massiveUpdate"), {
+//             ...opNuDateForm.data(),
+//             ...actionForm.value
+//         })
+//         .catch((e) => {
+//             // isFetching.value = false;
+//             if (e.response?.data?.errors) {
+//                 setAxiosErrors(e.response.data.errors, opNuDateForm);
+//             } else {
+//                 notifyError("Server Error");
+//             }
+//         });
+
+//     const originalMap = new Map(dataToRender.value.map(item => [item.id, item]));
+//     res.data.forEach(update => {
+//         if (originalMap.has(update.id)) {
+//             originalMap.set(update.id, update);
+//         }
+//     });
+//     const updatedArray = Array.from(originalMap.values());
+//     dataToRender.value = updatedArray
+//     closeOpNuDatModal();
+//     notify("Registros Seleccionados Actualizados");
+// }
+
+async function submitOpNuDatModal() {
+    let url = route("projectmanagement.pext.massiveUpdate")
+    try {
+        let response = await axios.post(url, {
+            ...opNuDateForm.data(),
+            ...actionForm.value
+        })
+        updateExpense(response.data, 'masiveUpdate')
+    } catch (error) {
+        // isFetching.value = false;
+        if (error.response?.data?.errors) {
+            setAxiosErrors(error.response.data.errors, opNuDateForm);
+        } else {
+            notifyError("Server Error");
+        }
+    }
+}
+
+function updateExpense(expense, action, state) {
+    let listDate = expenses.value.data || expenses.value
+    if (action === "create") {
+        listDate.unshift(expense)
+        notify('Gasto Creado')
+    } else if (action === "update") {
+        let index = listDate.findIndex(item => item.id == expense.id)
+        listDate[index] = expense
+        notify('Gasto Actualizado')
+    } else if (action === "delete") {
+        let index = listDate.findIndex(item => item.id == expense)
+        listDate.splice(index, 1);
+        notify('Gasto Eliminado')
+    } else if (action === "validate") {
+        let index = listDate.findIndex(item => item.id == expense)
+        if (state) {
+            listDate[index].is_accepted = state;
+            notify('Gasto Aceptado')
+        } else {
+            listDate.splice(index, 1);
+            notify('Gasto Rechazado')
+        }
+    } else if (action === "rejectedValidate") {
+        let index = listDate.findIndex(item => item.id == expense)
+        listDate.splice(index, 1);
+        notify('El gasto paso a ser aceptado')
+    } else if (action === "masiveUpdate") {
+        const originalMap = new Map(listDate.map(item => [item.id, item]));
+        expense.forEach(update => {
+            if (originalMap.has(update.id)) {
+                originalMap.set(update.id, update);
+            }
+        });
+        const updatedArray = Array.from(originalMap.values());
+        listDate = updatedArray
+        closeOpNuDatModal();
+        notify("Registros Seleccionados Actualizados");
+    }
+}
 
 </script>

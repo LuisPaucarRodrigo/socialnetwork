@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Cicsa;
+namespace App\Http\Requests\PextProjectRequest;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreOrUpdateAssigantionRequest extends FormRequest
+class StoreOrUpdateAssignationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -32,8 +32,10 @@ class StoreOrUpdateAssigantionRequest extends FormRequest
             'manager' => 'required|string',
             'user_name' => 'required|string',
             'user_id' => 'required|numeric',
-            'cost_line_id' => 'required|numeric',
-            'cost_center_id' => 'required|numeric'
+            'project_id' => 'sometimes|required|numeric',
+            'pre_project_id' => 'sometimes|required|numeric',
+            'cost_line_id' => 'required',
+            'cost_center_id' => 'required',
         ];
     }
 }

@@ -26,11 +26,11 @@ class Employee extends Model
         'policy_exp_date',
     ];
 
-    protected $appends = [
-        'sctr_about_to_expire',
-        'policy_about_to_expire',
-        'documents_about_to_expire',
-    ];
+    // protected $appends = [
+    //     'sctr_about_to_expire',
+    //     'policy_about_to_expire',
+    //     'documents_about_to_expire',
+    // ];
 
     //RELATIONS
 
@@ -92,7 +92,7 @@ class Employee extends Model
     {
         return $this->hasOne(ProjectEmployee::class);
     }
-    
+
     public function payroll_details()
     {
         return $this->hasMany(PayrollDetail::class, 'employee_id', 'id');
@@ -152,7 +152,7 @@ class Employee extends Model
         }
         return $total;
     }
-    
+
     protected static function booted()
     {
         static::updating(function ($employee) {

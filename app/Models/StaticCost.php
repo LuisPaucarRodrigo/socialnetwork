@@ -76,6 +76,7 @@ class StaticCost extends Model
                 'operation_number' => $item->operation_number,
                 'operation_date' => $item->operation_date,
                 'account_statement_id' => $as?->id,
+                'type'=>'static'
             ]);
 
             $item->general_expense_id = $generalExpense->id;
@@ -93,6 +94,7 @@ class StaticCost extends Model
                     'operation_number' => $item->operation_number,
                     'operation_date' => $item->operation_date,
                     'account_statement_id' => $as?->id,
+                     'type'=>'static'
                 ]);
             }
         });

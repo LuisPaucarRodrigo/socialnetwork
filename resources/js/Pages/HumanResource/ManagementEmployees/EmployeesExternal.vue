@@ -17,13 +17,14 @@
                 </div>
 
             </div>
-            <div class="overflow-auto h-[72vh]">
-                <table class="w-full whitespace-no-wrap">
+            <div class="overflow-auto h-[72vh] rounded-lg shadow">
+                <table class="w-full">
                     <thead class="sticky top-0 z-20">
                         <tr
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 w-auto">
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Perfil
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -81,51 +82,51 @@
                     </thead>
                     <tbody>
                         <tr v-for="employee in employees" :key="employee.id" class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <img :src="employee.profile" alt="Empleado" class="w-12 h-13 rounded-full">
+                            <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
+                                <img :src="employee.cropped_image" alt="Empleado" class="w-12 h-13 rounded-full">
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm w-auto">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ employee?.cost_line?.name }}</p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm w-auto">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ employee.name }}</p>
+                            <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
+                                <p class="text-gray-900">{{ employee?.cost_line?.name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ employee.lastname }}</p>
+                                <p class="text-gray-900">{{ employee.name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ employee.dni }}</p>
+                                <p class="text-gray-900">{{ employee.lastname }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ employee.phone1 }}</p>
+                                <p class="text-gray-900">{{ employee.dni }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">
+                                <p class="text-gray-900">{{ employee.phone1 }}</p>
+                            </td>
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <p class="text-gray-900">
                                     {{ employee.birthdate }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">
+                                <p class="text-gray-900">
                                     {{ employee.address }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">
+                                <p class="text-gray-900">
                                     {{ employee.email }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">
+                                <p class="text-gray-900">
                                     {{ employee.email_company }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">
+                                <p class="text-gray-900">
                                     {{ employee.salary }}
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">
+                                <p class="text-gray-900">
                                     {{ employee.sctr ? 'Si' : 'No' }}
                                 </p>
                             </td>
@@ -139,7 +140,7 @@
                                 <div class="flex space-x-3 justify-center">
                                     <button v-if="hasPermission('HumanResourceManager')" type="button"
                                         @click="modal_employees_external(employee)"
-                                        class="text-blue-900 whitespace-no-wrap">
+                                        class="text-blue-900">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -148,7 +149,7 @@
                                     </button>
                                     <button v-if="hasPermission('HumanResourceManager')" type="button"
                                         @click="confirmUserDeletion(employee.id)"
-                                        class="text-blue-900 whitespace-no-wrap">
+                                        class="text-blue-900">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -171,7 +172,7 @@
                     <div class="border-b border-gray-900/10 pb-12">
                         <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                             <div v-if="form.cropped_image" class="flex justify-center">
-                                <img :src="form.profile" alt="Imagen Personal" class="rounded-full h-45 w-45 py-5">
+                                <img :src="form.cropped_image" alt="Imagen Personal" class="rounded-full h-45 w-45 py-5">
                             </div>
                             <div class="sm:col-span-3">
                                 <InputLabel for="reentry_date">Foto de Usuario</InputLabel>
