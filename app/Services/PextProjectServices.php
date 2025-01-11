@@ -21,10 +21,10 @@ class PextProjectServices
         return $query;
     }
 
-    public function getCicsaAssignation(): Object
+    public function getCicsaAssignation()
     {
         $cicsaAssignation = $this->baseCicsaAssignation();
-        $cicsaAssignation->orderBy('created_at', 'desc')
+        $cicsaAssignation = $cicsaAssignation->orderBy('created_at', 'desc')
             ->paginate();
         return $cicsaAssignation;
     }
@@ -111,7 +111,7 @@ class PextProjectServices
         return $expense;
     }
 
-    public function textSearch($expense, $searchTerms)
+    public function textSearch($expense, $searchTerms): Builder
     {
         $expense = $expense->where(function ($query) use ($searchTerms) {
             $query->where('ruc', 'like', "%$searchTerms%")
