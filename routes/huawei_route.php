@@ -220,6 +220,8 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::get('huawei/monthly_projects/{project}/monthly_expenses/export/excel', [HuaweiMonthlyController::class, 'exportMonthlyExpenses'])->name('huawei.monthlyexpenses.expenses.export');
     Route::post('huawei/monthly_projects/monthly_expenses/massive_update/post', [HuaweiMonthlyController::class, 'massiveUpdate'])->name('huawei.monthlyexpenses.expenses.massiveupdate');
     Route::post('huawei/monthly_projects/monthly_expenses/massive_validate/post', [HuaweiMonthlyController::class, 'massiveValidate'])->name('huawei.monthlyexpenses.expenses.massivevalidate');
+    Route::get('huawei/monthly_projects/monthly_expenses/{macro}/fetch_sites/get', [HuaweiMonthlyController::class, 'fetchSites'])->name('huawei.monthlyexpenses.expenses.fetchsites');
+    Route::get('huawei/monthly_projects/monthly_expenses/{macro}/{site_id}/fetch_projects/get', [HuaweiMonthlyController::class, 'fetchProjects'])->name('huawei.monthlyexpenses.expenses.fetchprojects');
 });
 
 
