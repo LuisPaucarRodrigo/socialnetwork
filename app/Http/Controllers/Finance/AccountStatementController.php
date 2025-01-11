@@ -172,12 +172,6 @@ class AccountStatementController extends Controller
             'charge',
             'payment',
         );
-        Log::info('hello');
-        Log::info($currentMonth);
-        Log::info($currentYear);
-        Log::info($inputEndMonth);
-        Log::info($inputEndYear);
-        Log::info($all);
         if (!$all) { 
             if($endMonth) {
                 $startDate = Carbon::create($currentYear, $currentMonth, 1)->startOfMonth();
