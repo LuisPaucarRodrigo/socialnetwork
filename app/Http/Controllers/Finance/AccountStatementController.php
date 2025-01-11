@@ -36,7 +36,7 @@ class AccountStatementController extends Controller
         $this->syncOneToMany($rg, 'GeneralExpense', $geIds, 'account_statement_id');
         $operationDate = Carbon::parse($data['operation_date']);
         $month = $operationDate->format('Y-m');
-        $data = $this->getAccountVariables($request->month, $request->all);
+        $data = $this->getAccountVariables($request->month, $request->endMonth ,$request->all);
         return response()->json(['dataToRender'=>$data, 'month'=>$month], 200);
     }
 
@@ -44,14 +44,14 @@ class AccountStatementController extends Controller
     {
         $as = AccountStatement::findOrFail($as_id);
         $as->delete();
-        $data = $this->getAccountVariables($request->month, $request->all);
+        $data = $this->getAccountVariables($request->month, $request->endMonth,$request->all);
         return response()->json(['dataToRender'=>$data], 200);
     }
 
     
     public function searchStatements(Request $request)
     {
-        $data = $this->getAccountVariables($request->month, $request->all);
+        $data = $this->getAccountVariables($request->month, $request->endMonth,$request->all);
         return response()->json($data, 200);
     }
 
@@ -76,7 +76,7 @@ class AccountStatementController extends Controller
             'ids.*' => 'integer'
         ]);
         AccountStatement::whereIn('id', $data['ids'])->delete();
-        $data = $this->getAccountVariables($request->month, $request->all);
+        $data = $this->getAccountVariables($request->month, $request->endMonth,$request->all);
         return response()->json(['dataToRender'=>$data], 200);
     }
 
@@ -140,7 +140,7 @@ class AccountStatementController extends Controller
     }
 
 
-    private function getAccountVariables($month = null, $all = false)
+    private function getAccountVariables($month = null, $endMonth = null, $all = false)
     {
         if ($month) {
             $currentMonth = Carbon::parse($month)->month;
@@ -149,6 +149,15 @@ class AccountStatementController extends Controller
             $currentMonth = Carbon::now()->month;
             $currentYear = Carbon::now()->year;
         }
+
+        if($endMonth) {
+            $inputEndMonth = Carbon::parse($endMonth)->month;
+            $inputEndYear = Carbon::parse($endMonth)->year;
+        } else {
+            $inputEndMonth = Carbon::now()->month;
+            $inputEndYear = Carbon::now()->year;
+        }
+
         $previousBalance = $this->previousBalance($month, $all);
         $currentBalance = $previousBalance;
         $totalCharge = 0;
@@ -163,9 +172,26 @@ class AccountStatementController extends Controller
             'charge',
             'payment',
         );
-        $accountStatements = $all ? $accountStatements : $accountStatements
+        Log::info('hello');
+        Log::info($currentMonth);
+        Log::info($currentYear);
+        Log::info($inputEndMonth);
+        Log::info($inputEndYear);
+        Log::info($all);
+        if (!$all) { 
+            if($endMonth) {
+                $startDate = Carbon::create($currentYear, $currentMonth, 1)->startOfMonth();
+                $endDate = Carbon::create($inputEndYear, $inputEndMonth, 1)->endOfMonth();
+                $accountStatements = $accountStatements
+                    ->whereBetween('operation_date', [$startDate, $endDate]);
+            } else {
+                $accountStatements =  $accountStatements
                 ->whereMonth('operation_date', $currentMonth)
                 ->whereYear('operation_date', $currentYear);
+            }
+        }
+
+
         $accountStatements = $accountStatements->orderBy('operation_date', 'asc')->get();
         $accountStatements->transform(function ($item) {
             $item->setAppends(['state']);
