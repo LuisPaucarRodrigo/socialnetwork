@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Cicsa;
+namespace App\Http\Requests\PextProjectRequest;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -34,6 +34,8 @@ class StoreOrUpdateAssignationRequest extends FormRequest
             'user_id' => 'required|numeric',
             'project_id' => 'sometimes|required|numeric',
             'pre_project_id' => 'sometimes|required|numeric',
+            'cost_line_id' => 'required',
+            'cost_center_id' => 'required',
         ];
     }
 }

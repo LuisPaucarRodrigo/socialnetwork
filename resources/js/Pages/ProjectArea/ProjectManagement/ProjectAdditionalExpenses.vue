@@ -1,7 +1,11 @@
 <template>
 
     <Head title="Gestion de Costos Adicionales" />
-    <AuthenticatedLayout :redirectRoute="'projectmanagement.pext.additional.index'">
+    <AuthenticatedLayout :redirectRoute="
+    {
+        route: 'projectmanagement.pext.additional.index',
+        params: {type:type}
+    }">
         <template #header>
             Gastos {{ fixedOrAdditional ? 'Fijos' : 'Adicionales' }}
         </template>
@@ -50,12 +54,12 @@
 
                     <Link v-if="fixedOrAdditional"
                         class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
-                        :href="route('pext.additional.expense.index', { project_id: project_id, fixedOrAdditional: false })">
+                        :href="route('pext.additional.expense.index', { project_id: project_id, fixedOrAdditional: false, type })">
                     G.Adicionales
                     </Link>
                     <Link v-else
                         class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
-                        :href="route('pext.additional.expense.index', { project_id: project_id, fixedOrAdditional: true })">
+                        :href="route('pext.additional.expense.index', { project_id: project_id, fixedOrAdditional: true, type })">
                     G.Fijos
                     </Link>
                 </div>
@@ -98,12 +102,12 @@
                                 <div class="dropdown-menu">
                                     <Link v-if="fixedOrAdditional"
                                         class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-ouy"
-                                        :href="route('pext.additional.expense.index', { project_id: project_id, fixedOrAdditional: false })">
+                                        :href="route('pext.additional.expense.index', { project_id: project_id, fixedOrAdditional: false, type })">
                                     G.Adicionales
                                     </Link>
                                     <Link v-else
                                         class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-ouy"
-                                        :href="route('pext.additional.expense.index', { project_id: project_id, fixedOrAdditional: true })">
+                                        :href="route('pext.additional.expense.index', { project_id: project_id, fixedOrAdditional: true, type })">
                                     G.Fijos
                                     </Link>
                                 </div>
@@ -396,7 +400,8 @@ const props = defineProps({
     cost_center: Object,
     project_id: String,
     fixedOrAdditional: Boolean,
-    cicsaAssignation: Object
+    cicsaAssignation: Object,
+    type: Number
 });
 
 const expenses = ref(props.expense);

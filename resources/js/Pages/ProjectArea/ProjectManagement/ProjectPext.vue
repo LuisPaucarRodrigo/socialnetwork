@@ -12,7 +12,7 @@
                         class="whitespace-nowrap inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                         + Agregar
                     </button>
-                    <Link :href="route('projectmanagement.pext.additional.index')"
+                    <Link :href="route('projectmanagement.pext.additional.index', {type:2})"
                         class="bg-indigo-600 hover:bg-indigo-500 rounded-md px-4 py-2 text-center text-sm text-white">
                     P. Adicionales
                     </Link>

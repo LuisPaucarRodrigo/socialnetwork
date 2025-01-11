@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Proyectos" />
-    <AuthenticatedLayout :redirectRoute="'projectmanagement.pext.index'">
+    <AuthenticatedLayout :redirectRoute="type ==2 ?'projectmanagement.pext.index': 'projectmanagement.index'">
         <template #header>
             Proyectos Adicionales
         </template>
@@ -137,7 +137,7 @@
                     </div>
                     <div>
                         <div class="grid grid-cols-1 gap-y-1">
-                            <Link :href="route('pext.additional.expense.general.index', { fixedOrAdditional: false })"
+                            <Link :href="route('pext.additional.expense.general.index', { fixedOrAdditional: false, type })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                             Compras y Gastos
                             </Link>
@@ -182,7 +182,7 @@
                     <div>
                         <div class="grid grid-cols-1 gap-y-1">
                             <Link
-                                :href="route('pext.additional.expense.index', { project_id: item.project.id, fixedOrAdditional: false })"
+                                :href="route('pext.additional.expense.index', { project_id: item.project.id, fixedOrAdditional: false, type })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                             Compras y Gastos
                             </Link>
@@ -552,11 +552,12 @@ import { formattedDate, setAxiosErrors } from '@/utils/utils';
 import { notifyError, notify } from '@/Components/Notification';
 import { Toaster } from 'vue-sonner';
 
-const { project, auth, userPermissions, cost_line } = defineProps({
+const { project, auth, userPermissions, cost_line, type } = defineProps({
     project: Object,
     userPermissions: Array,
     auth: Object,
-    cost_line: Object
+    cost_line: Object,
+    type: Number,
 })
 
 const initialState = {
@@ -641,7 +642,7 @@ const createOrEditModal = () => {
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('projectmanagement.pext.additional.index'), { searchQuery: $search });
+        const response = await axios.post(route('projectmanagement.pext.additional.index', {type}), { searchQuery: $search });
         projects.value = response.data;
     } catch (error) {
         notifyError('Error searching:', error);
@@ -651,7 +652,7 @@ const search = async ($search) => {
 async function submit() {
     let url = route('projectmanagement.pext.additional.store', { 'cicsa_assignation_id': form.id ?? null })
     try {
-        let response = await axios.post(url, form)
+        let response = await axios.post(url, {...form.data()})
         let action = form.id ? 'update' : 'create'
         updatePext(response.data, action)
     } catch (error) {
