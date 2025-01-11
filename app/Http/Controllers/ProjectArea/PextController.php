@@ -335,15 +335,15 @@ class PextController extends Controller
         $providers = Provider::select('id', 'ruc', 'company_name')->get();
         $cost_line = CostLine::where('name', 'PEXT')->with('cost_center')->first();
         $cicsa_assignation = CicsaAssignation::select('id', 'project_name', 'project_id', 'zone')
-            ->whereHas('cicsa_charge_area', function ($subQuery) {
-                $subQuery->select('id', 'cicsa_assignation_id', 'invoice_number', 'invoice_date', 'amount', 'deposit_date')
-                    ->where(function ($subSubQuery) {
-                        $subSubQuery->whereNull('invoice_number')
-                            ->orWhereNull('invoice_date')
-                            ->orWhereNull('amount');
-                    })
-                    ->whereNull('deposit_date');
-            })
+        ->whereHas('cicsa_charge_area', function ($subQuery) {
+            $subQuery->select('id', 'cicsa_assignation_id', 'invoice_number', 'invoice_date', 'amount', 'deposit_date')
+                ->where(function ($subSubQuery) {
+                    $subSubQuery->whereNull('invoice_number')
+                        ->orWhereNull('invoice_date')
+                        ->orWhereNull('amount');
+                })
+                ->whereNull('deposit_date');
+        })
             ->get();
         return Inertia::render(
             'ProjectArea/ProjectManagement/ProjectAdditionalExpensesGeneral',

@@ -111,7 +111,7 @@
                 </div>
             </div> -->
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                <div class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
+                <div class="bg-blue-200 p-3 rounded-md shadow-sm border border-gray-300 items-center">
                     <div class="grid grid-cols-2">
                         <p class="col-start-1 col-span-1 text-sm font-semibold mb-3">
                             Nombre: General
