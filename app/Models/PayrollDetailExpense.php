@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Log;
+use App\Constants\ProjectConstants;
 
 class PayrollDetailExpense extends Model
 {
@@ -58,7 +59,7 @@ class PayrollDetailExpense extends Model
                 'operation_number' => $item->operation_number,
                 'operation_date' => $item->operation_date,
                 'account_statement_id' => $as?->id,
-                'type'=>'payroll'
+                'type'=> ProjectConstants::EXP_TYPE_PAYROLL
             ]);
 
             $item->general_expense_id = $generalExpense->id;
@@ -79,7 +80,7 @@ class PayrollDetailExpense extends Model
                     'operation_number' => $item->operation_number,
                     'operation_date' => $item->operation_date,
                     'account_statement_id' => $as?->id,
-                    'type'=>'payroll'
+                    'type'=> ProjectConstants::EXP_TYPE_PAYROLL
                 ]);
             }
         });

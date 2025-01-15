@@ -24,28 +24,12 @@ use Inertia\Response;
 class ProfileController extends Controller
 {
     public function allFine(){
-        DB::beginTransaction();
-        try {
-            $costs = PextProjectExpense::with('project')->get();
-            foreach($costs as $item) {
-                $ge = GeneralExpense::create([
-                    'zone' => $item->zone,
-                    'expense_type' => $item->expense_type,
-                    'location' => $item?->project?->description ?? 'Sin descripción',
-                    'amount' => $item->amount,
-                    'operation_number' => $item->operation_number,
-                    'operation_date' => $item->operation_date,
-                    'account_statement_id' => $item?->account_statement_id,
-                ]);
-                $item->update(['general_expense_id'=>$ge->id]);
+        $costs = PayrollDetailExpense::with('general_expense')->get();
+        foreach($costs as $item) {
+            if ($item->general_expense === null) {
+                return response()->json('hay registro pero porqueee');
             }
-            DB::commit();
         }
-        catch (Exception $e) {
-            DB::rollBack();
-            return $e->getMessage();
-        }
-        
         return response()->json('siuuu');
     }
 

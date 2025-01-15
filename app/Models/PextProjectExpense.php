@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Constants\ProjectConstants;
 
 class PextProjectExpense extends Model
 {
@@ -76,7 +77,7 @@ class PextProjectExpense extends Model
                 'operation_number' => $item->operation_number,
                 'operation_date' => $item->operation_date,
                 'account_statement_id' => $as?->id,
-                'type'=>'pext_expense'
+                'type'=> ProjectConstants::EXP_TYPE_PEXTEXP
             ]);
             $item->general_expense_id = $generalExpense->id;
         });
@@ -101,7 +102,7 @@ class PextProjectExpense extends Model
                     'operation_number' => $expense->operation_number,
                     'operation_date' => $expense->operation_date,
                     'account_statement_id' => $as?->id,
-                    'type'=>'pext_expense'
+                    'type'=> ProjectConstants::EXP_TYPE_PEXTEXP
                 ]);
             }
         });
