@@ -65,7 +65,7 @@ class ProjectConstants
                     'subcustomer_id' => null,
                     'description' => $name,
                     'title' => null,
-                    'code' => $this->getCode($data['date'], 'CICSA-PINTOBRAM'),
+                    'code' => $this->getCode($data['date'], 'CICSA-COMBUSGEP'),
                     'cpe' => 'c_gep',
                     'status' => 1,
 

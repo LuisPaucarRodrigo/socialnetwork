@@ -431,8 +431,6 @@ class PextController extends Controller
         $expense = $this->pextServices->filterAdvance($expense, $request);
         $expense = $this->pextServices->addCalculatedFields($expense);
         $expense = $this->pextServices->filterCalculatedFields($expense, $selectedStateTypes);
-
-
         return response()->json($expense, 200);
     }
 

@@ -566,19 +566,15 @@ class ApiController extends Controller
     }
 
     public function historyExpensesPext()
-    {
+    {   
         $user = Auth::user();
-        $month = now()->format('Y-m');
         $expensesPext = PextProjectExpense::where('user_id', $user->id)
-            ->whereHas('pext_project', function ($query) use ($month) {
-                $query->where('date', $month);
-            })
             ->get();
         return response()->json($expensesPext, 200);
     }
 
     //expenses_dus
-    public function fetchSites (Request $request)
+    public function fetchSites(Request $request)
     {
         $request->validate([
             'macro_project' => 'required'
@@ -598,7 +594,7 @@ class ApiController extends Controller
         return response()->json($sites, 200);
     }
 
-    public function fetchProjects (Request $request)
+    public function fetchProjects(Request $request)
     {
         $request->validate([
             'macro_project' => 'required',
@@ -624,14 +620,14 @@ class ApiController extends Controller
                 'total_essalud_employee_cost',
                 'huawei_project_resources'
             ])
-            ->filter(function ($project){
+            ->filter(function ($project) {
                 return $project->state == 1;
             });
 
         return response()->json($projects, 200);
     }
 
-    public function storeExpense ($huawei_project, Request $request)
+    public function storeExpense($huawei_project, Request $request)
     {
         $data = $request->validate([
             'id' => 'required|numeric',
@@ -673,8 +669,8 @@ class ApiController extends Controller
             $imageFields = ['image1', 'image2', 'image3'];
             $imageUpdates = [];
 
-            foreach ($imageFields as $index => $field){
-                if (isset($data[$field])){
+            foreach ($imageFields as $index => $field) {
+                if (isset($data[$field])) {
                     $image = str_replace('data:image/png;base64,', '', $data[$field]);
                     $image = str_replace(' ', '+', $image);
                     $imageContent = base64_decode($image);
