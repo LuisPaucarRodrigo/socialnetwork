@@ -1448,9 +1448,10 @@ async function deleteAdditional() {
     if (docId) {
         const response = await axios.delete(route("huawei.monthlyexpenses.expenses.delete", { expense: docId }));
         if (response.data == true){
-            const index = dataToRender.value.data.findIndex(item => item.id === docId);
+            const index = expenses.value.data.findIndex(item => item.id === docId);
                 if (index !== -1) {
-                    dataToRender.value.data.splice(index, 1);
+                    expenses.value.data.splice(index, 1);
+                    closeModalDoc();
                     notify("Registro eliminado correctamente");
                 }
         }
