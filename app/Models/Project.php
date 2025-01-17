@@ -235,7 +235,10 @@ class Project extends Model
     public function getSerializedCodeAttribute()
     {
         $currentYear = now()->year;
-        return 'CCIP-PEXT-' . $currentYear . '-' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
+        $prev = '';
+        if($this->cost_line_id == 2){ $prev = 'CCIP-PEXT-'; }
+        if($this->cost_line_id == 1){ $prev = 'CCIP-PINT-'; }
+        return $prev . $currentYear . '-' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
     }
 
 

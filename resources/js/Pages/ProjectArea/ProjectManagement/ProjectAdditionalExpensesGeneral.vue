@@ -1,7 +1,11 @@
 <template>
 
     <Head title="Gestion de Costos Adicionales" />
-    <AuthenticatedLayout :redirectRoute="'projectmanagement.pext.additional.index'">
+    <AuthenticatedLayout ::redirectRoute="
+    {
+        route: 'projectmanagement.pext.additional.index',
+        params: {type}
+    }">
         <template #header>
             Gastos {{ fixedOrAdditional ? 'Fijos' : 'Adicionales' }}
         </template>
@@ -86,12 +90,12 @@
                     </div>
                     <Link v-if="fixedOrAdditional"
                         class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
-                        :href="route('pext.additional.expense.general.index', { fixedOrAdditional: false })">
+                        :href="route('pext.additional.expense.general.index', { fixedOrAdditional: false , type})">
                     G.Adicionales
                     </Link>
                     <Link v-else
                         class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
-                        :href="route('pext.additional.expense.general.index', { fixedOrAdditional: true })">
+                        :href="route('pext.additional.expense.general.index', { fixedOrAdditional: true, type })">
                     G.Fijos
                     </Link>
                 </div>
@@ -151,7 +155,7 @@
                     <tr
                         class=" border-b bg-gray-50 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">
 
-                        <th class="bg-gray-100 border-b-2 border-gray-20">
+                        <th class="bg-gray-100 border-b-2 border-gray-20 sticky left-0 z-10">
                             <div class="w-2"></div>
                         </th>
                         <th
@@ -368,6 +372,8 @@
                         </td>
                     </tr>
                     <tr class="sticky bottom-0 z-10 text-gray-700">
+                        <td class="font-bold border-b border-gray-200 bg-white">
+                        </td>
                         <td class="font-bold border-b border-gray-200 bg-white">
                         </td>
                         <td class="font-bold border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -672,7 +678,8 @@ const props = defineProps({
     userPermissions: Array,
     cost_center: Object,
     fixedOrAdditional: Boolean,
-    cicsaAssignation: Object
+    cicsaAssignation: Object,
+    type: Number
 });
 
 const expenses = ref(props.expense);

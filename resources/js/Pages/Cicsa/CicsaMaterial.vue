@@ -586,8 +586,13 @@ function openEditSotModal(item, feasibility_materials, project_name, cpe) {
 async function submit() {
     let url = cicsa_material_id.value ? route('material.update', { cicsa_material_id: cicsa_material_id.value }) : route('material.store')
     let action = cicsa_material_id.value ? false : true
+    let method = cicsa_material_id.value ? 'put' : 'post'
     try {
-        const response = await axios.put(url, form)
+        const response = await axios({
+            method: method, // Dinámico según el caso
+            url: url,
+            data: form,
+        });
         updateMaterial(action, response.data)
         closeAddMaterialModal()
         // confirmUpdateMaterial.value = true

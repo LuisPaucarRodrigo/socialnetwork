@@ -91,10 +91,10 @@ class CicsaController extends Controller
                 'last_charge_status_date',
             ]);
         });
-        if ($type == 2) {
+        if($type == 2){
             $cost_line = CostLine::where('name', 'PEXT')->with('cost_center')->first();
         }
-        if ($type == 1) {
+        if($type == 1){
             $cost_line = CostLine::where('name', 'PINT')->with('cost_center')->first();
         }
         return Inertia::render('Cicsa/CicsaIndex', [
@@ -397,7 +397,7 @@ class CicsaController extends Controller
         if ($cicsaMaterial->cicsa_material_items) {
             CicsaMaterialsItem::where('cicsa_material_id', $cicsaMaterial->id)->delete();
         }
-        
+
         foreach ($request->cicsa_material_items as $item) {
             $item['cicsa_material_id'] = $cicsaMaterial->id;
             CicsaMaterialsItem::create($item);

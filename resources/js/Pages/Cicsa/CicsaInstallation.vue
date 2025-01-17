@@ -713,6 +713,7 @@ const installations = ref(installation);
 const pintList = ref([])
 const pextList = ref([])
 const initialState = {
+    id:'',
     user_id: auth.user.id,
     user_name: auth.user.name,
     coordinator: '',

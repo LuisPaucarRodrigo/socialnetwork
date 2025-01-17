@@ -4,8 +4,7 @@ namespace App\Http\Controllers\ProjectArea;
 
 use App\Exports\PextExpenseExport;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Cicsa\StoreOrUpdateAssigantionRequest;
-use App\Http\Requests\Cicsa\StoreOrUpdateAssignationRequest;
+use App\Http\Requests\PextProjectRequest\StoreOrUpdateAssignationRequest;
 use App\Http\Requests\PextProjectRequest\StoreOrUpdateExpenseRequest;
 use App\Models\AccountStatement;
 use App\Models\CicsaAssignation;
@@ -185,37 +184,70 @@ class PextController extends Controller
         return Excel::download(new PextExpenseExport(null, json_decode($fixedOrAdditional)), $fileName);
     }
 
-    public function index_additional(Request $request)
+    public function index_additional(Request $request, $type)
     {
         $text = "Mantto";
         if ($request->isMethod('get')) {
-            $project = CicsaAssignation::with('project.cost_center', 'project.project_quote.project_quote_valuations')
+            $project = null;
+            if ($type == 2){
+                $project = CicsaAssignation::with('project.cost_center', 'project.project_quote.project_quote_valuations')
                 ->whereHas('project.cost_center', function ($query) use ($text) {
                     $query->where('name', 'not like', "%$text%")->where('cost_line_id', 2);
                 })
                 ->whereDoesntHave('project.preproject')
                 ->orderBy('created_at', 'desc')
                 ->paginate();
+            }
+            
+            if($type == 1) {
+                $project = CicsaAssignation::with('project.cost_center')
+                    ->whereHas('project', function($query) {
+                        $query->where('cost_center_id', 3);
+                    })
+                    ->orderBy('created_at', 'desc')
+                    ->paginate();
+            }
 
-            $cost_line = CostLine::where('name', 'Pext')->with(['cost_center' => function ($query) use ($text) {
-                $query->where('name', 'not like', "%$text%");
-            }])->first();
+            $cost_line = null;
 
+            if ($type == 2){
+                $cost_line = CostLine::where('name', 'Pext')->with(['cost_center' => function ($query) use ($text) {
+                    $query->where('name', 'not like', "%$text%");
+                }])->first();
+            }
+            if ($type == 1){
+                $cost_line = CostLine::where('id', '1')->with(['cost_center' => function ($query)  {
+                    $query->where('id', 3);
+                }])->first();
+            }
+            
             return Inertia::render('ProjectArea/ProjectManagement/ProjectAdditional', [
                 'project' => $project,
-                'cost_line' => $cost_line
+                'cost_line' => $cost_line,
+                'type' => $type,
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->searchQuery;
-            $project = CicsaAssignation::with('project.cost_center', 'project.project_quote.project_quote_valuations')
+            $project = null;
+            if ($type == 2){
+                $project = CicsaAssignation::with('project.cost_center', 'project.project_quote.project_quote_valuations')
                 ->whereHas('project.cost_center', function ($query) use ($text) {
                     $query->where('name', 'not like', "%$text%");
-                })->where(function ($query) use ($searchQuery) {
+                })->whereDoesntHave('project.preproject');
+            }
+            if ($type == 1){
+                $project = CicsaAssignation::with('project.cost_center', 'project.project_quote.project_quote_valuations')
+                ->whereHas('project.cost_center', function ($query)  {
+                    $query->where('id', 3);
+                });
+            }
+
+            $project = $project->where(function ($query) use ($searchQuery) {
                     $query->orWhere('project_name', 'like', "%$searchQuery%")
                         ->orWhere('project_code', 'like', "%$searchQuery%")
                         ->orWhere('cpe', 'like', "%$searchQuery%");
                 })
-                ->whereDoesntHave('project.preproject')
+                
                 ->orderBy('created_at', 'desc')
                 ->get();
             return response()->json($project, 200);
@@ -296,7 +328,7 @@ class PextController extends Controller
         return $pdf->stream();
     }
 
-    public function additional_expense_index($project_id, $fixedOrAdditional)
+    public function additional_expense_index($project_id, $fixedOrAdditional, $type)
     {
         $expense = PextProjectExpense::with(['provider:id,company_name', 'project.cost_center'])
             ->where('fixedOrAdditional', json_decode($fixedOrAdditional))
@@ -323,15 +355,19 @@ class PextController extends Controller
                 'project_id' => $project_id,
                 'cost_center' => $cost_line->cost_center,
                 'fixedOrAdditional' => json_decode($fixedOrAdditional),
-                'cicsaAssignation' => $cicsa_assignation
+                'cicsaAssignation' => $cicsa_assignation,
+                'type'=> $type
             ]
         );
     }
 
-    public function additional_expense_index_general($fixedOrAdditional)
+    public function additional_expense_index_general($fixedOrAdditional, $type)
     {
         $expense = PextProjectExpense::with(['provider:id,company_name', 'project.cost_center'])
             ->where('fixedOrAdditional', json_decode($fixedOrAdditional))
+            ->whereHas('project', function($query) use ($type){
+                $query->where('cost_line_id', $type);
+            })
             ->where(function ($query) {
                 $query->where('is_accepted', 1)
                     ->orWhere('is_accepted', null);
@@ -341,19 +377,27 @@ class PextController extends Controller
         foreach ($expense as $exp) {
             $exp->setAppends(['real_amount', 'real_state']);
         }
+
+
         $providers = Provider::select('id', 'ruc', 'company_name')->get();
-        $cost_line = CostLine::where('name', 'PEXT')->with('cost_center')->first();
-        $cicsa_assignation = CicsaAssignation::select('id', 'project_name', 'project_id', 'zone')
-            ->whereHas('cicsa_charge_area', function ($subQuery) {
-                $subQuery->select('id', 'cicsa_assignation_id', 'invoice_number', 'invoice_date', 'amount', 'deposit_date')
-                    ->where(function ($subSubQuery) {
-                        $subSubQuery->whereNull('invoice_number')
-                            ->orWhereNull('invoice_date')
-                            ->orWhereNull('amount');
-                    })
-                    ->whereNull('deposit_date');
-            })
-            ->get();
+
+        $cost_line = null;
+        if($type == 2){$cost_line = CostLine::where('name', 'PEXT')->with('cost_center')->first();}
+        if($type == 1){$cost_line = CostLine::where('name', 'PINT')->with('cost_center')->first();}
+
+        $cicsa_assignation = null;
+        if($type == 2){$cicsa_assignation = CicsaAssignation::select('id', 'project_name', 'project_id', 'zone')->get();}
+        if($type == 1){
+            $cicsa_assignation = CicsaAssignation::select('id', 'project_name', 'project_id', 'zone')
+                ->whereHas('project', function($query){
+                    $query->where('cost_center_id', 3);
+                })
+                ->get();
+        }
+
+
+
+        
         return Inertia::render(
             'ProjectArea/ProjectManagement/ProjectAdditionalExpensesGeneral',
             [
@@ -361,7 +405,8 @@ class PextController extends Controller
                 'providers' => $providers,
                 'cost_center' => $cost_line->cost_center,
                 'fixedOrAdditional' => json_decode($fixedOrAdditional),
-                'cicsaAssignation' => $cicsa_assignation
+                'cicsaAssignation' => $cicsa_assignation,
+                'type'=>$type
             ]
         );
     }
