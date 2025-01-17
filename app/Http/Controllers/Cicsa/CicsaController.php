@@ -34,6 +34,7 @@ use App\Models\CicsaServiceOrder;
 use App\Models\CicsaPurchaseOrderValidation;
 use App\Models\CostLine;
 use App\Models\ToolsGtd;
+use App\Services\CicsaServices;
 use Inertia\Inertia;
 use Carbon\Carbon;
 use Exception;
@@ -42,6 +43,13 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class CicsaController extends Controller
 {
+    protected $cicsaService;
+
+    public function __construct(CicsaServices $cicsaService)
+    {
+        $this->cicsaService = $cicsaService;
+    }
+
     public function index($type)
     {
         $projects = CicsaAssignation::whereHas('project', function ($subQuery) use ($type) {
@@ -122,7 +130,8 @@ class CicsaController extends Controller
             } else {
                 $projectsCicsa = CicsaAssignation::whereHas('project', function ($subQuery) use ($type) {
                     $subQuery->where('cost_line_id', $type);
-                });
+                })
+                    ->with('project.cost_center');
                 if ($stages === "Proyecto") {
                     $projectsCicsa->with(
                         'cicsa_feasibility.cicsa_feasibility_materials',
@@ -230,12 +239,14 @@ class CicsaController extends Controller
         }
     }
 
-
-
     public function destroy($ca_id)
     {
-        CicsaAssignation::findOrFail($ca_id)->delete();
-        return response()->noContent();
+        try {
+            CicsaAssignation::findOrFail($ca_id)->delete();
+            return response()->noContent();
+        } catch (Exception $e) {
+            return response()->json($e);
+        }
     }
 
     public function indexAssignation(Request $request, $type, $searchCondition = null,)
@@ -386,6 +397,7 @@ class CicsaController extends Controller
         if ($cicsaMaterial->cicsa_material_items) {
             CicsaMaterialsItem::where('cicsa_material_id', $cicsaMaterial->id)->delete();
         }
+
         foreach ($request->cicsa_material_items as $item) {
             $item['cicsa_material_id'] = $cicsaMaterial->id;
             CicsaMaterialsItem::create($item);

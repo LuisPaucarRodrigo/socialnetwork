@@ -343,7 +343,7 @@
                     </div>
                     <br />
                     <br />
-                    <template v-if="true">
+                    <template>
                         <div class="ring-1 p-3 text-sm ring-gray-300 rounded-md">
                             <div class="flex gap-2 items-center">
                                 <b>Liquidación de Pint</b>
@@ -713,6 +713,7 @@ const installations = ref(installation);
 const pintList = ref([])
 const pextList = ref([])
 const initialState = {
+    id:'',
     user_id: auth.user.id,
     user_name: auth.user.name,
     coordinator: '',
@@ -859,10 +860,12 @@ function closeMaterialsModal() {
 //installation materials
 const showInstMaterials = ref(false);
 const instMaterials = ref([]);
+
 function openInstMaterialsModal(arrayMaterials) {
     instMaterials.value = arrayMaterials ? arrayMaterials : [];
     showInstMaterials.value = true;
 }
+
 function closeInstMaterialsModal() {
     showInstMaterials.value = false;
 }
@@ -880,7 +883,6 @@ const search = async ($search) => {
 
 function updateInstallations(cicsa_assignation_id, installation) {
     const validations = installations.value.data || installations.value;
-    console.log(validations)
     const index = validations.findIndex(item => item.id === cicsa_assignation_id);
     validations[index].cicsa_installation = installation
     notify('Se actualizo Correctamente')

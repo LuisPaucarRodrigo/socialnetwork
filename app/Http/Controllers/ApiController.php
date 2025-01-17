@@ -501,7 +501,6 @@ class ApiController extends Controller
                                 ->where('initial_budget', '>', 0);
                         })
                             ->orWhereHas('cost_center', function ($costCenterQuery) {
-                                // No aplica filtro de fechas para los demás cost_center
                                 $costCenterQuery->where('name', 'not like', '%Mantto%');
                             });
                     });

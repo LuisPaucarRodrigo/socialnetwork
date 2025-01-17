@@ -18,6 +18,7 @@ use App\Models\Provider;
 use App\Services\PextProjectServices;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
@@ -44,6 +45,13 @@ class PextController extends Controller
             $project = $this->pextServices->searchCicsaAssignation($searchQuery);
             return response()->json($project, 200);
         }
+    }
+
+    public function search(Request $request)
+    {
+        $searchQuery = $request->searchQuery;
+        $project = $this->pextServices->searchCicsaAssignation($searchQuery);
+        return response()->json($project, 200);
     }
 
     public function requestProjectOrPreproject($type)
@@ -274,6 +282,8 @@ class PextController extends Controller
             'delivery_place' => 'required|string',
             'delivery_time' => 'required|numeric',
             'observations' => 'required|string',
+            'fee' => 'required|boolean',
+            'user_id' => 'required',
             'project_quote_valuations' => 'required|array',
         ]);
         DB::beginTransaction();
@@ -282,7 +292,6 @@ class PextController extends Controller
                 ['id' => $project_quote_id],
                 $validateData
             );
-
             $valuations = collect($validateData['project_quote_valuations'])->map(function ($item) use ($project_quote) {
                 $item['project_quote_id'] = $project_quote->id;
                 return $item;
@@ -312,7 +321,7 @@ class PextController extends Controller
     public function export_quote($project_id)
     {
         if ($project_id) {
-            $project = Project::with('project_quote.project_quote_valuations', 'cicsa_assignation')
+            $project = Project::with('project_quote.user', 'project_quote.project_quote_valuations', 'cicsa_assignation')
                 ->find($project_id);
         }
         $pdf = Pdf::loadView('pdf.CotizationPDFProject', compact('project'));
