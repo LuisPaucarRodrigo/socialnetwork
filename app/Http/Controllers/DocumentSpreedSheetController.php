@@ -289,7 +289,8 @@ class DocumentSpreedSheetController extends Controller
 
     public function employeesDocumentAlarms()
     {
-        $employees = Employee::whereHas('contract', function ($query) {
+        try {
+             $employees = Employee::whereHas('contract', function ($query) {
             $query->where('state', 'Active');
         })->orderBy('name')->get();
         $employees->each->setAppends(['documents_about_to_expire']);
@@ -300,11 +301,14 @@ class DocumentSpreedSheetController extends Controller
         $e_employees = ExternalEmployee::orderBy('lastname')->get();
         $e_employees->each->setAppends(['documents_about_to_expire']);
 
-        $e_employees->filter(function ($item) {
-            return $item->documents_about_to_expire > 0;
-        })->values()->all();
-        $employees = array_merge($employees, $e_employees);
-        return response()->json($employees, 200);
+            $e_employees->filter(function ($item) {
+                return $item->documents_about_to_expire > 0;
+            })->values()->all();
+            $employees = array_merge($employees, $e_employees);
+            return response()->json($employees, 200);
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(),500);
+        }
     }
 
 
