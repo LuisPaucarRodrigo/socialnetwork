@@ -104,6 +104,9 @@ class AdditionalCost extends Model
                 'amount' => $item->amount,
                 'operation_number' => $item->operation_number,
                 'operation_date' => $item->operation_date,
+                'doc_date' => $item->doc_date,
+                'doc_number' => $item->doc_number,
+                'type_doc' => $item->type_doc,
                 'account_statement_id' => $as?->id,
                 'type'=> ProjectConstants::EXP_TYPE_ADDITIONAL
             ]);
@@ -122,7 +125,10 @@ class AdditionalCost extends Model
                     'amount' => $item->amount,
                     'operation_number' => $item->operation_number,
                     'operation_date' => $item->operation_date,
+                    'doc_date' => $item->doc_date,
+                    'doc_number' => $item->doc_number,
                     'account_statement_id' => $as?->id,
+                    'type_doc' => $item->type_doc,
                     'type'=> ProjectConstants::EXP_TYPE_ADDITIONAL
                 ]);
             }

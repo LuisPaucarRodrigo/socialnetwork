@@ -76,6 +76,9 @@ class StaticCost extends Model
                 'amount' => $item->amount,
                 'operation_number' => $item->operation_number,
                 'operation_date' => $item->operation_date,
+                'doc_date' => $item->doc_date,
+                'doc_number' => $item->doc_number,
+                'type_doc' => $item->type_doc,
                 'account_statement_id' => $as?->id,
                 'type'=> ProjectConstants::EXP_TYPE_STATIC
             ]);
@@ -94,6 +97,9 @@ class StaticCost extends Model
                     'amount' => $item->amount,
                     'operation_number' => $item->operation_number,
                     'operation_date' => $item->operation_date,
+                    'doc_date' => $item->doc_date,
+                    'doc_number' => $item->doc_number,
+                    'type_doc' => $item->type_doc,
                     'account_statement_id' => $as?->id,
                     'type'=> ProjectConstants::EXP_TYPE_STATIC
                 ]);

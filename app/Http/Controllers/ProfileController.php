@@ -24,11 +24,26 @@ use Inertia\Response;
 class ProfileController extends Controller
 {
     public function allFine(){
-        $costs = PayrollDetailExpense::with('general_expense')->get();
+        $costs = AdditionalCost::with('general_expense')->get();
         foreach($costs as $item) {
-            if ($item->general_expense === null) {
-                return response()->json('hay registro pero porqueee');
-            }
+            $ge = $item->general_expense;
+            $ge->update([
+                'type_doc' => $item->type_doc,
+            ]);
+        }
+        $costs2 = StaticCost::with('general_expense')->get();
+        foreach($costs2 as $item) {
+            $ge = $item->general_expense;
+            $ge->update([
+                'type_doc' => $item->type_doc,
+            ]);
+        }
+        $costs3 = PextProjectExpense::with('general_expense')->get();
+        foreach($costs3 as $item) {
+            $ge = $item->general_expense;
+            $ge->update([
+                'type_doc' => $item->type_doc,
+            ]);
         }
         return response()->json('siuuu');
     }
