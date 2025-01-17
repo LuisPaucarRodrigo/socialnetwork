@@ -12,12 +12,19 @@ class ProjectQuote extends Model
         'delivery_place',
         'delivery_time',
         'observations',
-        'project_id'
+        'fee',
+        'project_id',
+        'user_id'
     ];
 
     public function project()
     {
         return $this->belongsTo(Project::class, 'project_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function project_quote_valuations()

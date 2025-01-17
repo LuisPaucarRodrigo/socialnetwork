@@ -34,6 +34,7 @@ use App\Models\CicsaServiceOrder;
 use App\Models\CicsaPurchaseOrderValidation;
 use App\Models\CostLine;
 use App\Models\ToolsGtd;
+use App\Services\CicsaServices;
 use Inertia\Inertia;
 use Carbon\Carbon;
 use Exception;
@@ -42,48 +43,43 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class CicsaController extends Controller
 {
+    protected $cicsaService;
+
+    public function __construct(CicsaServices $cicsaService)
+    {
+        $this->cicsaService = $cicsaService;
+    }
+
     public function index($type)
     {
-        $projects = CicsaAssignation::whereHas('project', function ($subQuery) use ($type) {
-            $subQuery->where('cost_line_id', $type);
-        })
-            ->where(function ($query) {
-                $query->whereDoesntHave('cicsa_charge_area')
-                    ->orWhere(function ($query) {
-                        $query->whereHas('cicsa_charge_area', function ($subQuery) {
-                            $subQuery->where(function ($subQuery) {
-                                $subQuery->whereNull('invoice_number')
-                                    ->orWhereNull('invoice_date')
-                                    ->orWhereNull('amount');
-                            })
-                                ->whereNull('deposit_date');
-                        });
-                    });
-            })
-            ->with(
-                'cicsa_feasibility.cicsa_feasibility_materials',
-                'cicsa_materials.cicsa_material_items',
-                'cicsa_installation.cicsa_installation_materials',
-                'cicsa_purchase_order',
-                'cicsa_purchase_order_validation',
-                'cicsa_service_order',
-                'cicsa_charge_area',
-                'project.cost_center'
-            )
-
-            ->paginate(15);
-        $projects->getCollection()->each(function ($project) {
-            $project->setAppends([
-                'total_materials',
-                'cicsa_project_status',
-                'cicsa_administration_status',
-                'cicsa_charge_status',
-                'last_project_status_date',
-                'last_administration_status_date',
-                'last_charge_status_date',
-            ]);
-        });
-        $cost_line = CostLine::where('name', 'PEXT')->with('cost_center')->first();
+        $projects = $this->cicsaService->cicsaBaseQuery($type);
+        // $projects = $projects->where(function ($query) {
+        //     $query->whereDoesntHave('cicsa_charge_area')
+        //         ->orWhere(function ($query) {
+        //             $query->whereHas('cicsa_charge_area', function ($subQuery) {
+        //                 $subQuery->where(function ($subQuery) {
+        //                     $subQuery->whereNull('invoice_number')
+        //                         ->orWhereNull('invoice_date')
+        //                         ->orWhereNull('amount');
+        //                 })
+        //                     ->whereNull('deposit_date');
+        //             });
+        //         });
+        // })
+        // $projects = $projects->with(
+        //         'cicsa_feasibility.cicsa_feasibility_materials',
+        //         'cicsa_materials.cicsa_material_items',
+        //         'cicsa_installation.cicsa_installation_materials',
+        //         'cicsa_purchase_order',
+        //         'cicsa_purchase_order_validation',
+        //         'cicsa_service_order',
+        //         'cicsa_charge_area',
+        //         'project.cost_center'
+        //     )
+        $projects = $this->cicsaService->addRelations($projects);
+        $projects->paginate(15);
+        $projects = $this->cicsaService->addCalculatedFields($projects);
+        $cost_line = $this->cicsaService->costLine();
         return Inertia::render('Cicsa/CicsaIndex', [
             'projects' => $projects,
             'center_list' => $cost_line->cost_center,
@@ -117,7 +113,8 @@ class CicsaController extends Controller
             } else {
                 $projectsCicsa = CicsaAssignation::whereHas('project', function ($subQuery) use ($type) {
                     $subQuery->where('cost_line_id', $type);
-                });
+                })
+                    ->with('project.cost_center');
                 if ($stages === "Proyecto") {
                     $projectsCicsa->with(
                         'cicsa_feasibility.cicsa_feasibility_materials',
@@ -225,12 +222,14 @@ class CicsaController extends Controller
         }
     }
 
-
-
     public function destroy($ca_id)
     {
-        CicsaAssignation::findOrFail($ca_id)->delete();
-        return response()->noContent();
+        try {
+            CicsaAssignation::findOrFail($ca_id)->delete();
+            return response()->noContent();
+        } catch (Exception $e) {
+            return response()->json($e);
+        }
     }
 
     public function indexAssignation(Request $request, $type, $searchCondition = null,)

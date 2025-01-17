@@ -312,6 +312,6 @@ class Project extends Model
 
     public function project_quote()
     {
-        return $this->hasOne(ProjectQuote::class);
+        return $this->hasOne(ProjectcQuote::class);
     }
 }

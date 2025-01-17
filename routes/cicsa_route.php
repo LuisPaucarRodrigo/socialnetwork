@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/cicsa_process/index/{type}', [CicsaController::class, 'index'])->name('cicsa.index');
 Route::get('/cicsa_process/export/{type}/{stages?}', [CicsaController::class, 'exportCiscaProcess'])->name('cicsa.export');
 
-Route::any('/cicsa_assignation/{type}/{searchCondition?}', [CicsaController::class, 'indexAssignation'])->name('assignation.index');
+Route::any('/cicsa_assignation/{type}/index/{searchCondition?}', [CicsaController::class, 'indexAssignation'])->name('assignation.index');
 Route::delete('/cicsa_assignation/destroy/{ca_id}', [CicsaController::class, 'destroy'])->name('cicsa.assignation.destroy');
 Route::get('/cicsa_assignation/export/{type}', [CicsaController::class, 'exportAssignation'])->name('assignation.export');
 

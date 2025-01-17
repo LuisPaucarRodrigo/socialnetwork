@@ -1836,6 +1836,7 @@ const confirmSotDelete = ref(false);
 
 function openSotDeleteModal(id) {
     sotToDelete.value = id;
+    console.log(sotToDelete.value)
     showSotDeleteModal.value = true;
 }
 
@@ -1845,6 +1846,7 @@ function closeSotDeleteModal() {
 }
 
 async function deleteSot() {
+    console.log(sotToDelete.value)
     let url = route("cicsa.assignation.destroy", { ca_id: sotToDelete.value });
     try {
         await axios.delete(url)

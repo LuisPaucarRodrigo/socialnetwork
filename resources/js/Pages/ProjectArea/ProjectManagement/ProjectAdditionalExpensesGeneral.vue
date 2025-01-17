@@ -243,14 +243,14 @@
                 <tbody>
                     <tr v-for="item in expenses.data || expenses" :key="item.id" class="text-gray-700">
                         <td :class="[
-                            'border-b border-gray-200',
+                            'sticky left-0 z-10 border-b border-gray-200',
                             {
-                                'bg-indigo-500': item.is_accepted === null,
-                                'bg-green-500': item.is_accepted == true,
-                                'bg-red-500': item.is_accepted == false,
+                                'bg-indigo-500': item.real_state === 'Pendiente',
+                                'bg-green-500': item.real_state == 'Aceptado - Validado',
+                                'bg-amber-500': item.real_state == 'Aceptado',
+                                'bg-red-500': item.real_state == 'Rechazado',
                             },
-                        ]">
-                        </td>
+                        ]"></td>
                         <td
                             class="sticky left-2 z-10 border-b border-r border-gray-200 bg-amber-100 text-center text-[13px] whitespace-nowrap tabular-nums">
                             <label :for="`check-${item.id}`" class="block w-12 px-2 py-1">

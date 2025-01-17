@@ -38,9 +38,9 @@
     <p style="font-weight: bold; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Proyecto:</p>
     <p style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{ $project->cicsa_assignation->project_name }}</p>
     <p style="font-weight: bold; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Asesor Comercial:</p>
-    <p style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Gustavo Flores Llerrena</p>
-    <p style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; color: blue; text-decoration: underline;">gflores@ccip.com.pe</p>
-    <p style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">992275316</p>
+    <p style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{ $project->project_quote->user->name }}</p>
+    <p style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; color: blue; text-decoration: underline;">{{ $project->project_quote->user->email }}</p>
+    <p style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">{{ $project->project_quote->user->phone }}</p>
     <br>
     <br>
     <br>
@@ -51,7 +51,10 @@
     <br>
     <p style="font-size: 18px; font-weight: bold; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">“Innovación y tecnología al alcance de la sociedad”</p>
   </div>
-
+  @php
+  $jefe = $project->cost_line_id === 1 ? 'Luis Herrea':'prueba2';
+  $supervisor = $project->cost_line_id === 1 ? 'Carlos Caceres':'suerpprueba2';
+  @endphp
   <table>
     <tbody>
       <tr>
@@ -63,7 +66,7 @@
         <td class="td-custom" style="width: 82.5px">Cliente</td>
         <td class="td-custom" style="width: 150px" style="text-align: center; font-weight: bold; width: 150px">{{ $project->cicsa_assignation->customer }}</td>
         <td class="td-custom" style="width: 60px">Supervisor:</td>
-        <td class="td-custom" style="width: 150px" style="text-align: center; font-weight: bold; width: 150px">{{ $project->cicsa_assignation->user_name }}</td>
+        <td class="td-custom" style="width: 150px" style="text-align: center; font-weight: bold; width: 150px">{{ $supervisor }}</td>
         <td class="td-custom" style="width: 82.5px">Rev.</td>
         <td class="td-custom" style="width: 150px" style="text-align: right; width: 150px;">
           1
@@ -73,7 +76,7 @@
         <td class="td-custom" style="width: 82.5px">Elaborado por:</td>
         <td class="td-custom" style="width: 150px" style="text-align: center; font-weight: bold;">CCIP</td>
         <td class="td-custom" style="width: 60px">Jefe</td>
-        <td class="td-custom" style="width: 150px" style="text-align: center; font-weight: bold;">{{ $project->cicsa_assignation->manager }}</td>
+        <td class="td-custom" style="width: 150px" style="text-align: center; font-weight: bold;">{{ $jefe }}</td>
         <td class="td-custom" style="width: 82.5px">Fecha</td>
         <td class="td-custom" style="width: 150px" style="text-align: right">{{ \Illuminate\Support\Carbon::createFromFormat('Y-m-d', $project->cicsa_assignation->assignation_date)->format('d/m/Y') }}</td>
       </tr>
@@ -98,6 +101,7 @@
       </tr>
       @php
       $subtotalProd = 0; // Inicializa una variable para almacenar la suma
+
       @endphp
       @foreach ($project->project_quote->project_quote_valuations as $index => $item)
       <tr>
@@ -113,12 +117,15 @@
         <td class="td-custom" style="text-align: right">S/. {{ number_format($item['days'] * $item['metrado'] *numberTwoDecimal($item['unit_value'],4), 2) }}</td>
       </tr>
       @php
-      $subtotalProd += floatval($item['days'] * $item['metrado'] *numberTwoDecimal($item['unit_value'],4));
+      $subtotalProd += floatval($item['days'] * $item['metrado'] * numberTwoDecimal($item['unit_value'], 4));
+      $fee = $project->project_quote->fee ? $subtotalProd * 0.10 : 0; // Calcula el fee solo si es true
+      $igv = $subtotalProd * 0.18; // Siempre calcula el IGV
+      $total = $subtotalProd + $fee + $igv; // Suma el fee solo si corresponde
       @endphp
       @endforeach
     </tbody>
   </table>
-  
+
 
   <table style="width: 100%; border: none; all: initial;">
     <tr>
@@ -135,21 +142,24 @@
                 S/. {{ number_format($subtotalProd, 2) }}
               </td>
             </tr>
+            @if($project->project_quote->fee)
             <tr>
               <td class="td-custom" style="font-size: 10.5px; text-align: right; background: #bcd6ed">FEE 10%</td>
               <td class="td-custom" style="font-size: 10.5px; text-align: right">
-                S/. {{ number_format($subtotalProd * 0.10, 2) }}
+                S/. {{ number_format($fee, 2) }}
               </td>
             </tr>
+            @endif
+
             <tr>
               <td class="td-custom" style="font-size: 10.5px; text-align: right; background: #bcd6ed">IGV 18%</td>
               <td class="td-custom" style="font-size: 10.5px; text-align: right">
-                S/. {{ number_format($subtotalProd * 0.18, 2) }}
+                S/. {{ number_format($igv, 2) }}
               </td>
             </tr>
             <tr>
               <td class="td-custom" style="font-size: 10.5px; text-align: right; background: #bcd6ed">TOTAL</td>
-              <td class="td-custom" style="font-size: 10.5px; text-align: right">S/. {{ number_format($subtotalProd * 0.10 + $subtotalProd * 0.18 + $subtotalProd, 2) }}</td>
+              <td class="td-custom" style="font-size: 10.5px; text-align: right">S/. {{ number_format($total, 2) }}</td>
             </tr>
           </tbody>
         </table>
