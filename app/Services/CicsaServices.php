@@ -39,7 +39,7 @@ class CicsaServices
         return $query;
     }
 
-    public function addCalculatedFields($item): Builder
+    public function addCalculatedFields($item)
     {
         $query = $item->with(
             'cicsa_feasibility.cicsa_feasibility_materials',
@@ -51,6 +51,7 @@ class CicsaServices
             'cicsa_charge_area',
             'project.cost_center'
         );
+        
         return $query;
     }
 }

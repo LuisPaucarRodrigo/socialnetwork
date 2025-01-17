@@ -516,7 +516,7 @@ import { formattedDate, setAxiosErrors } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 import { Toaster } from 'vue-sonner';
-import { notify } from '@/Components/Notification';
+import { notify, notifyError } from '@/Components/Notification';
 
 const { material, auth, searchCondition, type } = defineProps({
     material: Object,
@@ -595,6 +595,7 @@ async function submit() {
         //     confirmUpdateMaterial.value = false
         // }, 1500)
     } catch (error) {
+        console.log(error)
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, form)

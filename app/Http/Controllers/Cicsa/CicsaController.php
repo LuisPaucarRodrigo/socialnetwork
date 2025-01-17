@@ -52,34 +52,51 @@ class CicsaController extends Controller
 
     public function index($type)
     {
-        $projects = $this->cicsaService->cicsaBaseQuery($type);
-        // $projects = $projects->where(function ($query) {
-        //     $query->whereDoesntHave('cicsa_charge_area')
-        //         ->orWhere(function ($query) {
-        //             $query->whereHas('cicsa_charge_area', function ($subQuery) {
-        //                 $subQuery->where(function ($subQuery) {
-        //                     $subQuery->whereNull('invoice_number')
-        //                         ->orWhereNull('invoice_date')
-        //                         ->orWhereNull('amount');
-        //                 })
-        //                     ->whereNull('deposit_date');
-        //             });
-        //         });
-        // })
-        // $projects = $projects->with(
-        //         'cicsa_feasibility.cicsa_feasibility_materials',
-        //         'cicsa_materials.cicsa_material_items',
-        //         'cicsa_installation.cicsa_installation_materials',
-        //         'cicsa_purchase_order',
-        //         'cicsa_purchase_order_validation',
-        //         'cicsa_service_order',
-        //         'cicsa_charge_area',
-        //         'project.cost_center'
-        //     )
-        $projects = $this->cicsaService->addRelations($projects);
-        $projects->paginate(15);
-        $projects = $this->cicsaService->addCalculatedFields($projects);
-        $cost_line = $this->cicsaService->costLine();
+        $projects = CicsaAssignation::whereHas('project', function ($subQuery) use ($type) {
+            $subQuery->where('cost_line_id', $type);
+        })
+            ->where(function ($query) {
+                $query->whereDoesntHave('cicsa_charge_area')
+                    ->orWhere(function ($query) {
+                        $query->whereHas('cicsa_charge_area', function ($subQuery) {
+                            $subQuery->where(function ($subQuery) {
+                                $subQuery->whereNull('invoice_number')
+                                    ->orWhereNull('invoice_date')
+                                    ->orWhereNull('amount');
+                            })
+                                ->whereNull('deposit_date');
+                        });
+                    });
+            })
+            ->with(
+                'cicsa_feasibility.cicsa_feasibility_materials',
+                'cicsa_materials.cicsa_material_items',
+                'cicsa_installation.cicsa_installation_materials',
+                'cicsa_purchase_order',
+                'cicsa_purchase_order_validation',
+                'cicsa_service_order',
+                'cicsa_charge_area',
+                'project.cost_center'
+            )
+
+            ->paginate(15);
+        $projects->getCollection()->each(function ($project) {
+            $project->setAppends([
+                'total_materials',
+                'cicsa_project_status',
+                'cicsa_administration_status',
+                'cicsa_charge_status',
+                'last_project_status_date',
+                'last_administration_status_date',
+                'last_charge_status_date',
+            ]);
+        });
+        if ($type == 2) {
+            $cost_line = CostLine::where('name', 'PEXT')->with('cost_center')->first();
+        }
+        if ($type == 1) {
+            $cost_line = CostLine::where('name', 'PINT')->with('cost_center')->first();
+        }
         return Inertia::render('Cicsa/CicsaIndex', [
             'projects' => $projects,
             'center_list' => $cost_line->cost_center,
@@ -380,6 +397,7 @@ class CicsaController extends Controller
         if ($cicsaMaterial->cicsa_material_items) {
             CicsaMaterialsItem::where('cicsa_material_id', $cicsaMaterial->id)->delete();
         }
+        
         foreach ($request->cicsa_material_items as $item) {
             $item['cicsa_material_id'] = $cicsaMaterial->id;
             CicsaMaterialsItem::create($item);
