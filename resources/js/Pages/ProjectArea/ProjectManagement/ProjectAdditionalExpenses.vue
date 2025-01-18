@@ -472,6 +472,7 @@ const initialExpenseFixed = [
     'Adicionales',
     'Daños de Vehículos',
     'Planilla',
+    "Pago a Terceros",
     'Otros',
 ]
 
@@ -487,6 +488,7 @@ const initialExpenseAdditional = [
     "Equipos",
     "EPPs",
     "Seguros y Pólizas",
+    "Pago a Terceros",
     "Otros",
 ]
 

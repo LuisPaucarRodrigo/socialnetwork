@@ -55,6 +55,7 @@ class CicsaController extends Controller
         $projects = CicsaAssignation::whereHas('project', function ($subQuery) use ($type) {
             $subQuery->where('cost_line_id', $type);
         })
+            ->whereHas('project', function($query){$query->where('is_accepted', 1);})
             ->where(function ($query) {
                 $query->whereDoesntHave('cicsa_charge_area')
                     ->orWhere(function ($query) {
@@ -115,7 +116,7 @@ class CicsaController extends Controller
             $stages = $request->typeStages;
             if ($stages === "Todos") {
                 $projectsCicsa = CicsaAssignation::whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
+                    $subQuery->where('is_accepted', 1)->where('cost_line_id', $type);
                 })
                     ->with(
                         'cicsa_feasibility.cicsa_feasibility_materials',
@@ -129,7 +130,7 @@ class CicsaController extends Controller
                     );
             } else {
                 $projectsCicsa = CicsaAssignation::whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
+                    $subQuery->where('is_accepted', 1)->where('cost_line_id', $type);
                 })
                     ->with('project.cost_center');
                 if ($stages === "Proyecto") {
@@ -253,7 +254,7 @@ class CicsaController extends Controller
     {
         if ($request->isMethod('get')) {
             $assignation = CicsaAssignation::whereHas('project', function ($subQuery) use ($type) {
-                $subQuery->where('cost_line_id', $type);
+                $subQuery->where('is_accepted', 1)->where('cost_line_id', $type);
             })
                 ->with('project.cost_center')->orderBy('created_at', 'desc')->paginate();
             return Inertia::render('Cicsa/CicsaAssignation', [
@@ -263,7 +264,7 @@ class CicsaController extends Controller
             ]);
         } elseif ($request->isMethod('post')) {
             $assignation = CicsaAssignation::whereHas('project', function ($subQuery) use ($type) {
-                $subQuery->where('cost_line_id', $type);
+                $subQuery->where('is_accepted', 1)->where('cost_line_id', $type);
             })
                 ->with('project.cost_center')
                 ->where(function ($query) use ($request) {
@@ -287,7 +288,7 @@ class CicsaController extends Controller
     {
         if ($request->isMethod('get')) {
             $feasibility = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')->whereHas('project', function ($subQuery) use ($type) {
-                $subQuery->where('cost_line_id', $type);
+                $subQuery->where('is_accepted', 1)->where('cost_line_id', $type);
             })
                 ->with('cicsa_feasibility.cicsa_feasibility_materials', 'project.cost_center')
                 ->orderBy('assignation_date', 'desc')
@@ -299,7 +300,7 @@ class CicsaController extends Controller
             ]);
         } elseif ($request->isMethod('post')) {
             $feasibility = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')->whereHas('project', function ($subQuery) use ($type) {
-                $subQuery->where('cost_line_id', $type);
+                $subQuery->where('is_accepted', 1)->where('cost_line_id', $type);
             })
                 ->with('cicsa_feasibility.cicsa_feasibility_materials', 'project.cost_center')
                 ->where(function ($query) use ($request) {
@@ -343,7 +344,7 @@ class CicsaController extends Controller
         if ($request->isMethod('get')) {
             $material = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
                 ->whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
+                    $subQuery->where('is_accepted', 1)->where('cost_line_id', $type);
                 })
                 ->with('cicsa_feasibility.cicsa_feasibility_materials', 'cicsa_materials.cicsa_material_items', 'project.cost_center')
                 ->orderBy('assignation_date', 'desc')
@@ -357,7 +358,7 @@ class CicsaController extends Controller
             $material = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
                 ->with('cicsa_feasibility.cicsa_feasibility_materials', 'cicsa_materials.cicsa_material_items', 'project.cost_center')
                 ->whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
+                    $subQuery->where('is_accepted', 1)->where('cost_line_id', $type);
                 })
                 ->where(function ($query) use ($request) {
                     $query->orWhere('project_name', 'like', "%$request->searchQuery%")
@@ -453,7 +454,7 @@ class CicsaController extends Controller
                 ->with('cicsa_installation', 'cicsa_purchase_order', 'project.cost_center')
                 // ->whereDoesntHave('cicsa_purchase_order_validation')
                 ->whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
+                    $subQuery->where('is_accepted', 1)->where('cost_line_id', $type);
                 })
                 ->orderBy('assignation_date', 'desc')
                 ->paginate(20);
@@ -468,7 +469,7 @@ class CicsaController extends Controller
                 ->with('cicsa_installation', 'cicsa_purchase_order', 'project.cost_center')
                 // ->whereDoesntHave('cicsa_purchase_order_validation')
                 ->whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
+                    $subQuery->where('is_accepted', 1)->where('cost_line_id', $type);
                 })
                 ->where(function ($query) use ($searchQuery) {
                     $query->orWhere('project_name', 'like', "%$searchQuery%")
@@ -558,7 +559,7 @@ class CicsaController extends Controller
                     'project.cost_center'
                 )
                 ->whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
+                    $subQuery->where('is_accepted', 1)->where('cost_line_id', $type);
                 })
                 ->orderBy('assignation_date', 'desc')
                 ->paginate();
@@ -580,7 +581,7 @@ class CicsaController extends Controller
                     'project.cost_center'
                 )
                 ->whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
+                    $subQuery->where('is_accepted', 1)->where('cost_line_id', $type);
                 })
                 ->where(function ($query) use ($request) {
                     $query->orWhere('project_name', 'like', "%$request->searchQuery%")
@@ -635,7 +636,7 @@ class CicsaController extends Controller
                     'project.cost_center'
                 ])
                 ->whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
+                    $subQuery->where('is_accepted', 1)->where('cost_line_id', $type);
                 })
                 // ->whereDoesntHave('cicsa_service_order')
                 // ->whereHas('cicsa_purchase_order', function ($query) {
@@ -663,7 +664,7 @@ class CicsaController extends Controller
                     'project.cost_center'
                 ])
                 ->whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
+                    $subQuery->where('is_accepted', 1)->where('cost_line_id', $type);
                 })
                 // ->whereDoesntHave('cicsa_service_order')
                 // ->whereHas('cicsa_purchase_order', function ($query) {
@@ -732,7 +733,7 @@ class CicsaController extends Controller
                     'project.cost_center'
                 ])
                 ->whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
+                    $subQuery->where('is_accepted', 1)->where('cost_line_id', $type);
                 })
                 // ->whereDoesntHave('cicsa_charge_area')
                 // ->whereHas('cicsa_purchase_order_validation',function($query){
@@ -761,7 +762,7 @@ class CicsaController extends Controller
                     'project.cost_center'
                 ])
                 ->whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
+                    $subQuery->where('is_accepted', 1)->where('cost_line_id', $type);
                 })
                 // ->whereDoesntHave('cicsa_charge_area')
                 // ->whereHas('cicsa_purchase_order_validation',function($query){
@@ -870,7 +871,7 @@ class CicsaController extends Controller
                     'project.cost_center'
                 ])
                 ->whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
+                    $subQuery->where('is_accepted', 1)->where('cost_line_id', $type);
                 })
                 ->orderBy('assignation_date', 'desc')
                 ->paginate(20);
@@ -890,7 +891,7 @@ class CicsaController extends Controller
                     'project.cost_center'
                 ])
                 ->whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
+                    $subQuery->where('is_accepted', 1)->where('cost_line_id', $type);
                 })
                 // ->whereHas('cicsa_service_order',function($query){
                 //     $query->where('service_order','Completado')
