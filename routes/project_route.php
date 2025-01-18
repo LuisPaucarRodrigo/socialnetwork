@@ -246,7 +246,7 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     Route::get('/projectPext/expenses/export/general/{fixedOrAdditional}', [PextController::class, 'expense_export_general'])->name('projectmanagement.pext.expenses.general.export');
 
     //Project Pext Additional
-    Route::any('/projectPext/additional/index/{type}', [PextController::class, 'index_additional'])->name('projectmanagement.pext.additional.index');
+    Route::any('/projectPext/additional_index/{type}/{searchCondition?}', [PextController::class, 'index_additional'])->name('projectmanagement.pext.additional.index');
     Route::any('/projectPext/additional_rejected/index/{type}', [PextController::class, 'index_additional_rejected'])->name('projectmanagement.pext.additional.index_rejected');
     Route::post('/projectPext/additional_reject/{pa_id}', [PextController::class, 'rejectProjectAdditional'])->name('projectmanagement.pext.additional.reject');
 

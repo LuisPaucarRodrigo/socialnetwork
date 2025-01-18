@@ -202,7 +202,7 @@
                             <div class="flex gap-x-3">
                                 <button @click="openQuickQuote(item.project)"
                                     class="text-blue-600 underline hover:text-purple-600">
-                                    Cotización Rapida
+                                    Cotización Rápida
                                 </button>
                                 <a v-if="item.project.project_quote"
                                     :href="route('projectmanagement.pext.export.pdf.quote', { project_id: item.project.id })"
@@ -347,7 +347,7 @@
         <Modal :show="showQuickQuote">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
-                    Cotización Rapida
+                    Cotización Rápida
                 </h2>
                 <form @submit.prevent="submitQuickQuote">
                     <div class="space-y-12 mt-4">
@@ -583,13 +583,19 @@ import { formattedDate, setAxiosErrors } from '@/utils/utils';
 import { notifyError, notify } from '@/Components/Notification';
 import { Toaster } from 'vue-sonner';
 
-const { project, auth, userPermissions, cost_line, type } = defineProps({
+const { project, auth, userPermissions, searchCondition, cost_line, type } = defineProps({
     project: Object,
     userPermissions: Array,
     auth: Object,
     cost_line: Object,
     type: Number,
+    searchCondition: {
+        type: String,
+        Required: false
+    },
 })
+
+
 
 const initialState = {
     id: null,
@@ -611,6 +617,7 @@ const initialStateQuote = {
     project_id: '',
     delivery_place: '',
     delivery_time: null,
+    user_id: auth.user.id,
     observations: '',
     fee: '',
     project_quote_valuations: [],
@@ -623,7 +630,6 @@ const valuation = ref({
     unit: '',
     metrado: '',
     unit_value: 0,
-    user_id: auth.user.id,
     description: ''
 });
 // const formExport = ref({
@@ -805,6 +811,9 @@ async function rejectAdditionalProject (id) {
 }
 
 
+if (searchCondition) {
+    search(searchCondition)
+}
 // function modalExportExcel() {
 //     modalExport.value = !modalExport.value
 // }

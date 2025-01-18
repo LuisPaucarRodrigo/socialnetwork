@@ -184,7 +184,7 @@ class PextController extends Controller
         return Excel::download(new PextExpenseExport(null, json_decode($fixedOrAdditional)), $fileName);
     }
 
-    public function index_additional(Request $request, $type)
+    public function index_additional(Request $request, $type, $searchCondition = null,)
     {
         $text = "Mantto";
         if ($request->isMethod('get')) {
@@ -227,6 +227,7 @@ class PextController extends Controller
             return Inertia::render('ProjectArea/ProjectManagement/ProjectAdditional', [
                 'project' => $project,
                 'cost_line' => $cost_line,
+                'searchCondition' => $searchCondition,
                 'type' => $type,
             ]);
         } elseif ($request->isMethod('post')) {
