@@ -265,7 +265,7 @@
                                     <option value="">Seleccionar Centro de Costo</option>
                                     <option v-for="item in cost_line.cost_center" :key="item.id" :value="item.id">{{
                                         item.name
-                                        }}
+                                    }}
                                     </option>
                                 </select>
                                 <InputError :message="form.errors.cost_center_id" />
@@ -365,6 +365,24 @@
                                     <textarea class="w-full rounded-xl" v-model="formQuote.observations"
                                         id="observations" />
                                     <InputError :message="formQuote.errors.observations" />
+                                </div>
+                            </div>
+                            <div>
+                                <InputLabel for="observations">
+                                    Tiene Fee?
+                                </InputLabel>
+                                <div class="mt-2 class flex gap-4">
+                                    <label class="flex gap-2 items-center">
+                                        Sí
+                                        <input type="radio" v-model="formQuote.fee" id="discount_sctr" :value="true"
+                                            class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                    </label>
+                                    <label class="flex gap-2 items-center">
+                                        No
+                                        <input type="radio" v-model="formQuote.fee" id="discount_sctr" :value="false"
+                                            class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                    </label>
+                                    <InputError :message="formQuote.errors.fee" />
                                 </div>
                             </div>
                         </div>
@@ -581,6 +599,7 @@ const initialStateQuote = {
     delivery_place: '',
     delivery_time: null,
     observations: '',
+    fee: '',
     project_quote_valuations: [],
 }
 
@@ -591,6 +610,7 @@ const valuation = ref({
     unit: '',
     metrado: '',
     unit_value: 0,
+    user_id: auth.user.id,
     description: ''
 });
 // const formExport = ref({
@@ -696,6 +716,7 @@ function updatePext(pext, action) {
 
 function openQuickQuote(project) {
     const defaultData = project.project_quote || initialStateQuote;
+    defaultData.fee = defaultData.fee ? true : false 
     formQuote.defaults({ ...defaultData, project_id: project.id });
     formQuote.reset();
     showQuickQuote.value = !showQuickQuote.value;

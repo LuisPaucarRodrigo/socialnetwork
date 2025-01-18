@@ -343,7 +343,7 @@
                     </div>
                     <br />
                     <br />
-                    <template v-if="true">
+                    <template>
                         <div class="ring-1 p-3 text-sm ring-gray-300 rounded-md">
                             <div class="flex gap-2 items-center">
                                 <b>Liquidación de Pint</b>
@@ -860,10 +860,12 @@ function closeMaterialsModal() {
 //installation materials
 const showInstMaterials = ref(false);
 const instMaterials = ref([]);
+
 function openInstMaterialsModal(arrayMaterials) {
     instMaterials.value = arrayMaterials ? arrayMaterials : [];
     showInstMaterials.value = true;
 }
+
 function closeInstMaterialsModal() {
     showInstMaterials.value = false;
 }
