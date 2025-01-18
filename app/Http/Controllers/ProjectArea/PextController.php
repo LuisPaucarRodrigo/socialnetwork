@@ -191,6 +191,9 @@ class PextController extends Controller
             $project = null;
             if ($type == 2){
                 $project = CicsaAssignation::with('project.cost_center', 'project.project_quote.project_quote_valuations')
+                ->whereHas('project', function($query){
+                    $query->where('is_accepted', 1);
+                })
                 ->whereHas('project.cost_center', function ($query) use ($text) {
                     $query->where('name', 'not like', "%$text%")->where('cost_line_id', 2);
                 })
@@ -200,9 +203,9 @@ class PextController extends Controller
             }
             
             if($type == 1) {
-                $project = CicsaAssignation::with('project.cost_center')
+                $project = CicsaAssignation::with('project.cost_center',  'project.project_quote.project_quote_valuations')
                     ->whereHas('project', function($query) {
-                        $query->where('cost_center_id', 3);
+                        $query->where('cost_center_id', 3)->where('is_accepted', 1);
                     })
                     ->orderBy('created_at', 'desc')
                     ->paginate();
@@ -231,6 +234,9 @@ class PextController extends Controller
             $project = null;
             if ($type == 2){
                 $project = CicsaAssignation::with('project.cost_center', 'project.project_quote.project_quote_valuations')
+                ->whereHas('project', function($query){
+                    $query->where('is_accepted', 1);
+                })
                 ->whereHas('project.cost_center', function ($query) use ($text) {
                     $query->where('name', 'not like', "%$text%");
                 })->whereDoesntHave('project.preproject');
@@ -238,7 +244,7 @@ class PextController extends Controller
             if ($type == 1){
                 $project = CicsaAssignation::with('project.cost_center', 'project.project_quote.project_quote_valuations')
                 ->whereHas('project.cost_center', function ($query)  {
-                    $query->where('id', 3);
+                    $query->where('id', 3)->where('is_accepted', 1);
                 });
             }
 
@@ -252,6 +258,90 @@ class PextController extends Controller
                 ->get();
             return response()->json($project, 200);
         }
+    }
+
+
+    public function index_additional_rejected(Request $request, $type)
+    {
+        $text = "Mantto";
+        if ($request->isMethod('get')) {
+            $project = null;
+            if ($type == 2){
+                $project = CicsaAssignation::with('project.cost_center', 'project.project_quote.project_quote_valuations')
+                ->whereHas('project', function($query){
+                    $query->where('is_accepted', 0);
+                })
+                ->whereHas('project.cost_center', function ($query) use ($text) {
+                    $query->where('name', 'not like', "%$text%")->where('cost_line_id', 2);
+                })
+                ->whereDoesntHave('project.preproject')
+                ->orderBy('created_at', 'desc')
+                ->paginate();
+            }
+            
+            if($type == 1) {
+                $project = CicsaAssignation::with('project.cost_center', 'project.project_quote.project_quote_valuations')
+                    ->whereHas('project', function($query) {
+                        $query->where('cost_center_id', 3)->where('is_accepted', 0);
+                    })
+                    ->orderBy('created_at', 'desc')
+                    ->paginate();
+            }
+
+            $cost_line = null;
+
+            if ($type == 2){
+                $cost_line = CostLine::where('name', 'Pext')->with(['cost_center' => function ($query) use ($text) {
+                    $query->where('name', 'not like', "%$text%");
+                }])->first();
+            }
+            if ($type == 1){
+                $cost_line = CostLine::where('id', '1')->with(['cost_center' => function ($query)  {
+                    $query->where('id', 3);
+                }])->first();
+            }
+            
+            return Inertia::render('ProjectArea/ProjectManagement/ProjectAdditionalRejected', [
+                'project' => $project,
+                'cost_line' => $cost_line,
+                'type' => $type,
+            ]);
+        } elseif ($request->isMethod('post')) {
+            $searchQuery = $request->searchQuery;
+            $project = null;
+            if ($type == 2){
+                $project = CicsaAssignation::with('project.cost_center', 'project.project_quote.project_quote_valuations')
+                ->whereHas('project', function($query){
+                    $query->where('is_accepted', 0);
+                })
+                ->whereHas('project.cost_center', function ($query) use ($text) {
+                    $query->where('name', 'not like', "%$text%");
+                })->whereDoesntHave('project.preproject');
+            }
+            if ($type == 1){
+                $project = CicsaAssignation::with('project.cost_center', 'project.project_quote.project_quote_valuations')
+                ->whereHas('project.cost_center', function ($query)  {
+                    $query->where('id', 3)->where('is_accepted', 0);
+                });
+            }
+
+            $project = $project->where(function ($query) use ($searchQuery) {
+                    $query->orWhere('project_name', 'like', "%$searchQuery%")
+                        ->orWhere('project_code', 'like', "%$searchQuery%")
+                        ->orWhere('cpe', 'like', "%$searchQuery%");
+                })
+                
+                ->orderBy('created_at', 'desc')
+                ->get();
+            return response()->json($project, 200);
+        }
+    }
+
+
+    public function rejectProjectAdditional ($pa_id) {
+        $rg = Project::find($pa_id);
+        $rg->update(['is_accepted'=>0]);
+        return response()->json(['msg'=>true]);
     }
 
     public function updateOrStoreAdditional(StoreOrUpdateAssignationRequest $request, $cicsa_assignation_id = null)

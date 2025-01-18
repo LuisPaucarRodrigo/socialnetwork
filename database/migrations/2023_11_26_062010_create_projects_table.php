@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignId('preproject_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('cost_center_id')->nullable()->constrained('cost_centers')->nullOnDelete();
             $table->foreignId('cost_line_id')->nullable()->constrained('cost_lines')->nullOnDelete();
+            $table->boolean('is_accepted')->default(true);
             $table->timestamps();
         });
     }

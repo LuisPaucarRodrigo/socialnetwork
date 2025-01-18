@@ -20,6 +20,7 @@ class Project extends Model
         'cost_center_id',
         'cost_line_id',
         'initial_budget',
+        'is_accepted',
     ];
 
     protected $appends = [
@@ -315,6 +316,6 @@ class Project extends Model
 
     public function project_quote()
     {
-        return $this->hasOne(ProjectcQuote::class);
+        return $this->hasOne(ProjectQuote::class);
     }
 }

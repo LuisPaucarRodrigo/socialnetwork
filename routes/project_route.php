@@ -247,6 +247,10 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
 
     //Project Pext Additional
     Route::any('/projectPext/additional/index/{type}', [PextController::class, 'index_additional'])->name('projectmanagement.pext.additional.index');
+    Route::any('/projectPext/additional_rejected/index/{type}', [PextController::class, 'index_additional_rejected'])->name('projectmanagement.pext.additional.index_rejected');
+    Route::post('/projectPext/additional_reject/{pa_id}', [PextController::class, 'rejectProjectAdditional'])->name('projectmanagement.pext.additional.reject');
+
+
     Route::post('/projectPext/additional/store/quote/{project_quote_id?}', [PextController::class, 'store_quote'])->name('projectmanagement.pext.store.quote');
     Route::get('/projectPext/additional/export/quote/{project_id}', [PextController::class, 'export_quote'])->name('projectmanagement.pext.export.pdf.quote');
     Route::post('/projectPext/additional/store/{cicsa_assignation_id?}', [PextController::class, 'updateOrStoreAdditional'])->name('projectmanagement.pext.additional.store');

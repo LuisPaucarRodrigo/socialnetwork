@@ -15,7 +15,7 @@ class PintConstants
 
     // costs pint types
     public const HOSPEDAJE = 'Hospedaje';
-    public const MENSAJERIA = 'Mensajería';
+    public const ENCOMIENDA = 'Encomienda';
     public const CONSUMIBLES = 'Consumibles';
     public const PASAJE_INTERPROVINCIAL = 'Pasaje Interprovincial';
     public const TAXIS_Y_PASAJES = 'Taxis y Pasajes';
@@ -77,14 +77,12 @@ class PintConstants
     {
         return [
             self::HOSPEDAJE,
-            self::MENSAJERIA,
+            self::ENCOMIENDA,
             self::CONSUMIBLES,
             self::PASAJE_INTERPROVINCIAL,
             self::TAXIS_Y_PASAJES,
             self::BANDEOS,
             self::PEAJE,
-            self::HERRAMIENTAS,
-            self::EQUIPOS,
             self::DANOS_DE_VEHICULOS,
             self::EPPS,
             self::SEGUROS_Y_POLIZAS,
@@ -210,7 +208,7 @@ class PintConstants
             self::COCHERAS,
             self::APOYOS,
             self::ACARREOS,
-            self::MENSAJERIA,
+            self::ENCOMIENDA,
             self::CONSUMIBLES,
             self::BANDEOS,
             self::BANDEOS,
