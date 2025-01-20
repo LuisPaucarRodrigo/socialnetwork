@@ -150,6 +150,12 @@
             </div>
         </div>
         <div class="overflow-x-auto h-[85vh]">
+            <div class="mb-4">
+                <ChartsAdditionalExpenses 
+                    :acExpensesAmounts="acExpensesAmounts"
+                    :scExpensesAmounts="scExpensesAmounts"
+                />
+            </div>
             <table class="w-full">
                 <thead class="sticky top-0 z-20">
                     <tr
@@ -670,6 +676,7 @@ import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
+import ChartsAdditionalExpenses from "./ChartsAdditionalExpenses.vue";
 
 const props = defineProps({
     expense: Object,
@@ -679,7 +686,9 @@ const props = defineProps({
     cost_center: Object,
     fixedOrAdditional: Boolean,
     cicsaAssignation: Object,
-    type: Number
+    type: Number,
+    acExpensesAmounts: Array,
+    scExpensesAmounts: Array,
 });
 
 const expenses = ref(props.expense);

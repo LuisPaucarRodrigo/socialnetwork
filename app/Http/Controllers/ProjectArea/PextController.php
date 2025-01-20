@@ -430,6 +430,7 @@ class PextController extends Controller
             })
             ->orderBy('created_at', 'desc')
             ->paginate();
+
         foreach ($expense as $exp) {
             $exp->setAppends(['real_amount', 'real_state']);
         }
@@ -438,6 +439,43 @@ class PextController extends Controller
         $cicsa_assignation = CicsaAssignation::select('id', 'project_id', 'zone')
             ->where('project_id', $project_id)
             ->first();
+
+        
+        $project = Project::find($project_id);
+        $acArr = $project
+            ->pext_project_expenses()
+            ->where('fixedOrAdditional', 0)
+            ->where(function ($query) {
+                $query->where('is_accepted', 1)
+                    ->orWhere('is_accepted', null);
+            })
+            ->select('expense_type', DB::raw('SUM(amount/(1+igv/100)) as total_amount'))
+            ->groupBy('expense_type')
+            ->get();
+        $acExpensesAmounts = $acArr->map(function ($cost) {
+                return [
+                    'expense_type' => $cost->expense_type,
+                    'total_amount' => $cost->total_amount,
+                ];
+            })->toArray();
+
+        $scArr = $project
+            ->pext_project_expenses()
+            ->where('fixedOrAdditional', 1)
+            ->where(function ($query) {
+                $query->where('is_accepted', 1)
+                    ->orWhere('is_accepted', null);
+            })
+            ->select('expense_type', DB::raw('SUM(amount/(1+igv/100)) as total_amount'))
+            ->groupBy('expense_type')
+            ->get();
+        $scExpensesAmounts = $scArr->map(function ($cost) {
+                return [
+                    'expense_type' => $cost->expense_type,
+                    'total_amount' => $cost->total_amount,
+                ];
+            })->toArray();
+        
         return Inertia::render(
             'ProjectArea/ProjectManagement/ProjectAdditionalExpenses',
             [
@@ -447,14 +485,19 @@ class PextController extends Controller
                 'cost_center' => $cost_line->cost_center,
                 'fixedOrAdditional' => json_decode($fixedOrAdditional),
                 'cicsaAssignation' => $cicsa_assignation,
-                'type'=> $type
+                'type'=> $type,
+                'acExpensesAmounts' => $acExpensesAmounts,
+                'scExpensesAmounts' => $scExpensesAmounts,
             ]
         );
     }
 
     public function additional_expense_index_general($fixedOrAdditional, $type)
     {
-        $expense = PextProjectExpense::with(['provider:id,company_name', 'project.cost_center'])
+        $prevExpense = PextProjectExpense::with([
+            'provider:id,company_name', 
+            'project.cost_center',
+            ])
             ->where('fixedOrAdditional', json_decode($fixedOrAdditional))
             ->whereHas('project', function($query) use ($type){
                 $query->where('cost_line_id', $type);
@@ -462,12 +505,38 @@ class PextController extends Controller
             ->where(function ($query) {
                 $query->where('is_accepted', 1)
                     ->orWhere('is_accepted', null);
-            })
+            });
+        $expense = $prevExpense
             ->orderBy('created_at', 'desc')
             ->paginate();
         foreach ($expense as $exp) {
             $exp->setAppends(['real_amount', 'real_state']);
         }
+
+
+        $acArr = $prevExpense
+            ->where('fixedOrAdditional', 0)
+            ->select('expense_type', DB::raw('SUM(amount/(1+igv/100)) as total_amount'))
+            ->groupBy('expense_type')
+            ->get();
+        $acExpensesAmounts = $acArr->map(function ($cost) {
+                return [
+                    'expense_type' => $cost->expense_type,
+                    'total_amount' => $cost->total_amount,
+                ];
+            })->toArray();
+
+        $scArr = $prevExpense
+            ->where('fixedOrAdditional', 1)
+            ->select('expense_type', DB::raw('SUM(amount/(1+igv/100)) as total_amount'))
+            ->groupBy('expense_type')
+            ->get();
+        $scExpensesAmounts = $scArr->map(function ($cost) {
+                return [
+                    'expense_type' => $cost->expense_type,
+                    'total_amount' => $cost->total_amount,
+                ];
+            })->toArray();
 
 
         $providers = Provider::select('id', 'ruc', 'company_name')->get();
@@ -497,7 +566,9 @@ class PextController extends Controller
                 'cost_center' => $cost_line->cost_center,
                 'fixedOrAdditional' => json_decode($fixedOrAdditional),
                 'cicsaAssignation' => $cicsa_assignation,
-                'type'=>$type
+                'type'=>$type,
+                'acExpensesAmounts' => $acExpensesAmounts,
+                'scExpensesAmounts' => $scExpensesAmounts,
             ]
         );
     }
