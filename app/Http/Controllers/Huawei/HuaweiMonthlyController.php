@@ -301,11 +301,9 @@ class HuaweiMonthlyController extends Controller
                     unlink($oldPath);
                 }
             }
-
         }
-
         $expense->delete();
-        return redirect()->back();
+        return response()->json(true, 200);
     }
 
     public function validateExpense(Request $request, HuaweiMonthlyExpense $expense)

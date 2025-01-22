@@ -52,4 +52,7 @@ use App\Http\Controllers\ProjectArea\ChecklistsController;
         Route::get('/cicsaProcessList/{zone}', [ApiController::class, 'cicsaProcess']);
         Route::post('/expensePext/store', [ApiController::class, 'storeExpensesPext']);
         Route::get('/expensePext/history', [ApiController::class, 'historyExpensesPext']);
+
+        //pint constants
+        Route::get('/pintconstants/mobile', [ChecklistsController::class, 'getPintMobileConstants']);
     });

@@ -127,6 +127,12 @@
             </div>
         </div>
         <div class="overflow-x-auto h-[85vh]">
+            <div class="mb-4">
+                <ChartsAdditionalExpenses 
+                    :acExpensesAmounts="acExpensesAmounts"
+                    :scExpensesAmounts="scExpensesAmounts"
+                />
+            </div>
             <table class="w-full">
                 <thead class="sticky top-0 z-20">
                     <tr
@@ -391,6 +397,7 @@ import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
+import ChartsAdditionalExpenses from "./ChartsAdditionalExpenses.vue";
 
 const props = defineProps({
     expense: Object,
@@ -401,7 +408,9 @@ const props = defineProps({
     project_id: String,
     fixedOrAdditional: Boolean,
     cicsaAssignation: Object,
-    type: Number
+    type: Number,
+    acExpensesAmounts: Array,
+    scExpensesAmounts: Array,
 });
 
 const expenses = ref(props.expense);
@@ -472,6 +481,7 @@ const initialExpenseFixed = [
     'Adicionales',
     'Daños de Vehículos',
     'Planilla',
+    "Pago a Terceros",
     'Otros',
 ]
 
@@ -487,6 +497,7 @@ const initialExpenseAdditional = [
     "Equipos",
     "EPPs",
     "Seguros y Pólizas",
+    "Pago a Terceros",
     "Otros",
 ]
 
@@ -625,5 +636,6 @@ watch(
     () => { actionForm.value = { ids: [] }; },
     { deep: true }
 );
+
 
 </script>

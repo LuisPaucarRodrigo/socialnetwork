@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Constants\ProjectConstants;
 
 class HuaweiMonthlyExpense extends Model
 {
@@ -68,7 +69,7 @@ class HuaweiMonthlyExpense extends Model
                 'operation_number' => $item->ec_op_number,
                 'operation_date' => $item->ec_expense_date,
                 'account_statement_id' => $as?->id,
-                'type'=>'huawei_monthly'
+                'type'=> ProjectConstants::EXP_TYPE_HMONTHLY
             ]);
 
             $item->general_expense_id = $generalExpense->id;
@@ -87,7 +88,7 @@ class HuaweiMonthlyExpense extends Model
                     'operation_number' => $item->ec_op_number,
                     'operation_date' => $item->ec_expense_date,
                     'account_statement_id' => $as?->id,
-                    'type'=>'huawei_monthly'
+                    'type'=> ProjectConstants::EXP_TYPE_HMONTHLY
                 ]);
             }
         });

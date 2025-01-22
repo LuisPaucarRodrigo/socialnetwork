@@ -15,7 +15,7 @@ class PintConstants
 
     // costs pint types
     public const HOSPEDAJE = 'Hospedaje';
-    public const MENSAJERIA = 'Mensajería';
+    public const ENCOMIENDA = 'Encomienda';
     public const CONSUMIBLES = 'Consumibles';
     public const PASAJE_INTERPROVINCIAL = 'Pasaje Interprovincial';
     public const TAXIS_Y_PASAJES = 'Taxis y Pasajes';
@@ -34,7 +34,7 @@ class PintConstants
 
     public const ALQUILER_DE_VEHICULOS = 'Alquiler de Vehículos';
     public const ALQUILER_DE_LOCALES = 'Alquiler de Locales';
-    public const COMBUSTIBLE = 'Combustible';
+    public const COMBUSTIBLE_UM = 'Combustible UM';
     public const COMBUSTIBLE_GEP = 'Combustible GEP';
     public const CELULARES = 'Celulares';
     public const PROVEIDOS = 'Proveídos';
@@ -49,8 +49,8 @@ class PintConstants
 
 
     //ac doc types
-    public const EFECTIVO = "Efectivo";
-    public const DEPOSITO = "Deposito";
+    public const SIN_COMPROBANTE = "Sin Comprobante";
+    public const RH = "Recibo por Honorarios";
     public const FACTURA = "Factura";
     public const BOLETA = "Boleta";
     public const VOUCHER_DE_PAGO = "Voucher de Pago";
@@ -77,14 +77,12 @@ class PintConstants
     {
         return [
             self::HOSPEDAJE,
-            self::MENSAJERIA,
+            self::ENCOMIENDA,
             self::CONSUMIBLES,
             self::PASAJE_INTERPROVINCIAL,
             self::TAXIS_Y_PASAJES,
             self::BANDEOS,
             self::PEAJE,
-            self::HERRAMIENTAS,
-            self::EQUIPOS,
             self::DANOS_DE_VEHICULOS,
             self::EPPS,
             self::SEGUROS_Y_POLIZAS,
@@ -99,11 +97,11 @@ class PintConstants
     public static function acDocTypes(): array
     {
         return [
-            self::EFECTIVO,
-            self::DEPOSITO,
+            self::SIN_COMPROBANTE,
             self::FACTURA,
             self::BOLETA,
             self::VOUCHER_DE_PAGO,
+            self::RH,
         ];
     }
 
@@ -130,8 +128,8 @@ class PintConstants
             self::CHALA,
             self::MOQUEGUA,
             self::TACNA,
-            self::MDD1,
-            self::MDD2,
+            self::MDD1_PM,
+            self::MDD2_MAZ,
             self::OFICINA,
         ];
     }
@@ -140,7 +138,7 @@ class PintConstants
         return [
             self::ALQUILER_DE_VEHICULOS,
             self::ALQUILER_DE_LOCALES,
-            self::COMBUSTIBLE,
+            self::COMBUSTIBLE_UM,
             self::COMBUSTIBLE_GEP,
             self::CELULARES,
             self::PROVEIDOS,
@@ -163,11 +161,11 @@ class PintConstants
     public static function scDocTypes(): array
     {
         return [
-            self::EFECTIVO,
-            self::DEPOSITO,
+            self::SIN_COMPROBANTE,
             self::FACTURA,
             self::BOLETA,
             self::VOUCHER_DE_PAGO,
+            self::RH,
         ];
     }
 
@@ -196,6 +194,49 @@ class PintConstants
         PintConstants::COMBUSTIBLE_GEP,
         PintConstants::REPOSICION_DE_EQUIPO,
     ];}
+
+
+    public static function mobileExpenses(): array
+    {
+        return [
+            self::COMBUSTIBLE_UM,
+            self::COMBUSTIBLE_GEP,
+            self::HOSPEDAJE,
+            self::PASAJE_INTERPROVINCIAL,
+            self::PEAJE,
+            self::TAXIS_Y_PASAJES,
+            self::COCHERAS,
+            self::APOYOS,
+            self::ACARREOS,
+            self::ENCOMIENDA,
+            self::CONSUMIBLES,
+            self::BANDEOS,
+            self::BANDEOS,
+            self::OTROS,
+        ];
+    }
+
+    public static function mobileDocTypes(): array
+    {
+        return [
+            self::SIN_COMPROBANTE,
+            self::FACTURA,
+            self::BOLETA,
+            self::VOUCHER_DE_PAGO,
+            self::RH,
+        ];
+    }
+
+    public static function mobileZones () : array {
+        return [
+            self::AREQUIPA,
+            self::CHALA,
+            self::MOQUEGUA,
+            self::TACNA,
+            self::MDD1_PM,
+            self::MDD2_MAZ,
+        ];
+    }
 
 
     public static function countAcExpenseTypes(): int{return count(self::acExpenseTypes());}

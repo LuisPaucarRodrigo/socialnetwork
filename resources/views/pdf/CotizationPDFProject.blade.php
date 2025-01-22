@@ -52,7 +52,7 @@
     <p style="font-size: 18px; font-weight: bold; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">“Innovación y tecnología al alcance de la sociedad”</p>
   </div>
   @php
-  $jefe = $project->cost_line_id === 1 ? 'Luis Herrea':'prueba2';
+  $jefe = $project->cost_line_id === 1 ? 'Luis Herrera':'prueba2';
   $supervisor = $project->cost_line_id === 1 ? 'Carlos Caceres':'suerpprueba2';
   @endphp
   <table>
