@@ -16,7 +16,8 @@ class Health extends Model
         'shirt_size',
         'pants_size',
         'medical_condition',
-        'allergies','operations',
+        'allergies',
+        'operations',
         'accidents',
         'vaccinations',
         'employee_id'

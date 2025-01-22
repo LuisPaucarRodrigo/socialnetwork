@@ -14,6 +14,7 @@ use App\Models\Emergency;
 use App\Models\Employee;
 use App\Models\ExternalEmployee;
 use App\Models\Family;
+use App\Models\Health;
 use App\Services\ManagementEmployeesServices;
 use Exception;
 use Illuminate\Http\Request;
@@ -71,7 +72,7 @@ class ManagementEmployees extends Controller
                 Family::where('employee_id', $employee_id)->delete();
                 $this->employeesServices->updateOrCreateFamily($validateData['familyDependents'], $employee_id);
             }
-            $this->employeesServices->updateOrCreateHealth($request->only((new Family())->getFillable()), $employee_id);
+            $this->employeesServices->updateOrCreateHealth($request->only((new Health())->getFillable()), $employee_id);
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
@@ -105,7 +106,7 @@ class ManagementEmployees extends Controller
                 Family::where('employee_id', $id)->delete();
                 $this->employeesServices->updateOrCreateFamily($validateData['familyDependents'], $id);
             }
-            $this->employeesServices->updateOrCreateHealth($request->only((new Family())->getFillable()), $id);
+            $this->employeesServices->updateOrCreateHealth($request->only((new Health())->getFillable()), $id);
             DB::commit();
             return to_route('management.employees');
         } catch (\Exception $e) {

@@ -2,12 +2,12 @@
 
     <Head title="CICSA Asignación" />
 
-    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
-        <template #header> {{ type==1 ? 'Pint' : 'Pext' }} - Instalación PINT y PEXT </template>
+    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: { type } }">
+        <template #header> {{ type == 1 ? 'Pint' : 'Pext' }} - Instalación PINT y PEXT </template>
         <Toaster richColors />
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between space-x-3">
-                <a :href="route('cicsa.installation.export', {type}) + '?' + uniqueParam"
+                <a :href="route('cicsa.installation.export', { type }) + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
@@ -343,155 +343,152 @@
                     </div>
                     <br />
                     <br />
-                    <template>
-                        <div class="ring-1 p-3 text-sm ring-gray-300 rounded-md">
-                            <div class="flex gap-2 items-center">
-                                <b>Liquidación de Pint</b>
-                            </div>
-                            <br />
-                            <div v-if="pintList.length > 0" class="overflow-auto">
-                                <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
-                                    <thead>
-                                        <tr
-                                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                            <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
-                                                Material
-                                            </th>
-                                            <th
-                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
-                                                Cantidad Requerida
-                                            </th>
-                                            <th
-                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
-                                                Cantidad Recibida
-                                            </th>
-                                            <th
-                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
-                                                Usados
-                                            </th>
-                                            <th
-                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
-                                                Resto
-                                            </th>
-                                            <th
-                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
-                                                Cantidad de Materiales Conproco
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="(
+                    <div class="ring-1 p-3 text-sm ring-gray-300 rounded-md">
+                        <div class="flex gap-2 items-center">
+                            <b>Liquidación de Pint</b>
+                        </div>
+                        <br />
+                        <div v-if="pintList.length > 0" class="overflow-auto">
+                            <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
+                                <thead>
+                                    <tr
+                                        class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                        <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                            Material
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                            Cantidad Requerida
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                            Cantidad Recibida
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                            Usados
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                            Resto
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                            Cantidad de Materiales Conproco
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(
                                                 item, i
                                             ) in pintList" :key="i" class="text-gray-700 bg-white text-sm">
-                                            <td class="border-b border-slate-300 px-2 py-4">
-                                                {{ item?.name }}
-                                            </td>
-                                            <td class="border-b border-slate-300 text-center px-2 py-4">
-                                                {{ item?.total_quantity }}
-                                            </td>
-                                            <td class="border-b border-slate-300 text-center px-2 py-4">
-                                                {{ item?.quantity }}
-                                            </td>
-                                            <td class="border-b border-slate-300 px-2 py-4">
-                                                <input required type="number" min="0" v-model="pintList[i][
-                                                    'used_quantity'
-                                                ]
-                                                    " autocomplete="off" :max="item.quantity"
-                                                    class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                            </td>
-                                            <td class="border-b border-slate-300 text-center px-2 py-4">
-                                                {{
-                                                    item?.quantity -
-                                                    item.used_quantity
-                                                }}
-                                            </td>
-                                            <td class="border-b border-slate-300 text-center px-2 py-4">
-                                                {{ item.total_quantity && item.quantity === item.used_quantity
-                                                    ? Math.max(0, item.total_quantity - item.quantity)
-                                                    : 0 }}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div v-else>No hay materiales por liquidar</div>
+                                        <td class="border-b border-slate-300 px-2 py-4">
+                                            {{ item?.name }}
+                                        </td>
+                                        <td class="border-b border-slate-300 text-center px-2 py-4">
+                                            {{ item?.total_quantity }}
+                                        </td>
+                                        <td class="border-b border-slate-300 text-center px-2 py-4">
+                                            {{ item?.quantity }}
+                                        </td>
+                                        <td class="border-b border-slate-300 px-2 py-4">
+                                            <input required type="number" min="0" v-model="pintList[i][
+                                                'used_quantity'
+                                            ]
+                                                " autocomplete="off" :max="item.quantity"
+                                                class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                        </td>
+                                        <td class="border-b border-slate-300 text-center px-2 py-4">
+                                            {{
+                                                item?.quantity -
+                                                item.used_quantity
+                                            }}
+                                        </td>
+                                        <td class="border-b border-slate-300 text-center px-2 py-4">
+                                            {{ item.total_quantity && item.quantity === item.used_quantity
+                                                ? Math.max(0, item.total_quantity - item.quantity)
+                                                : 0 }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
+                        <div v-else>No hay materiales por liquidar</div>
+                    </div>
 
-                        <div class="ring-1 p-3 text-sm ring-gray-300 rounded-md">
-                            <div class="flex gap-2 items-center">
-                                <b>Liquidación de Pext</b>
-                            </div>
-                            <br />
-                            <div v-if="pextList.length > 0" class="overflow-auto">
-                                <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
-                                    <thead>
-                                        <tr
-                                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                            <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
-                                                Material
-                                            </th>
-                                            <th
-                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
-                                                Cantidad Requerida
-                                            </th>
-                                            <th
-                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
-                                                Cantidad Recibida
-                                            </th>
-                                            <th
-                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
-                                                Usados
-                                            </th>
-                                            <th
-                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
-                                                Resto
-                                            </th>
-                                            <th
-                                                class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
-                                                Cantidad de Materiales Conproco
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="(item, i) in pextList" :key="i"
-                                            class="text-gray-700 bg-white text-sm">
-                                            <td class="border-b border-slate-300 px-2 py-4">
-                                                {{ item?.name }}
-                                            </td>
-                                            <td class="border-b border-slate-300 text-center px-2 py-4">
-                                                {{ item?.total_quantity }}
-                                            </td>
-                                            <td class="border-b border-slate-300 text-center px-2 py-4">
-                                                {{ item?.quantity }}
-                                            </td>
-                                            <td class="border-b border-slate-300 px-2 py-4">
-                                                <input required type="number" min="0" v-model="pextList[i][
-                                                    'used_quantity'
-                                                ]
-                                                    " autocomplete="off" :max="item.quantity"
-                                                    class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                            </td>
-                                            <td class="border-b border-slate-300 text-center px-2 py-4">
-                                                {{
-                                                    item?.quantity -
-                                                    item.used_quantity
-                                                }}
-                                            </td>
-                                            <td class="border-b border-slate-300 text-center px-2 py-4">
-                                                {{ item.total_quantity && item.quantity === item.used_quantity
-                                                    ? Math.max(0, item.total_quantity - item.quantity)
-                                                    : 0 }}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div v-else>No hay materiales por liquidar</div>
+                    <div class="ring-1 p-3 text-sm ring-gray-300 rounded-md">
+                        <div class="flex gap-2 items-center">
+                            <b>Liquidación de Pext</b>
                         </div>
+                        <br />
+                        <div v-if="pextList.length > 0" class="overflow-auto">
+                            <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
+                                <thead>
+                                    <tr
+                                        class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                        <th class="border-b-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-600">
+                                            Material
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                            Cantidad Requerida
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                            Cantidad Recibida
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                            Usados
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                            Resto
+                                        </th>
+                                        <th
+                                            class="border-b-2 border-gray-200 text-center bg-gray-100 px-4 py-2 text-gray-600">
+                                            Cantidad de Materiales Conproco
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(item, i) in pextList" :key="i" class="text-gray-700 bg-white text-sm">
+                                        <td class="border-b border-slate-300 px-2 py-4">
+                                            {{ item?.name }}
+                                        </td>
+                                        <td class="border-b border-slate-300 text-center px-2 py-4">
+                                            {{ item?.total_quantity }}
+                                        </td>
+                                        <td class="border-b border-slate-300 text-center px-2 py-4">
+                                            {{ item?.quantity }}
+                                        </td>
+                                        <td class="border-b border-slate-300 px-2 py-4">
+                                            <input required type="number" min="0" v-model="pextList[i][
+                                                'used_quantity'
+                                            ]
+                                                " autocomplete="off" :max="item.quantity"
+                                                class="block w-full text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                        </td>
+                                        <td class="border-b border-slate-300 text-center px-2 py-4">
+                                            {{
+                                                item?.quantity -
+                                                item.used_quantity
+                                            }}
+                                        </td>
+                                        <td class="border-b border-slate-300 text-center px-2 py-4">
+                                            {{ item.total_quantity && item.quantity === item.used_quantity
+                                                ? Math.max(0, item.total_quantity - item.quantity)
+                                                : 0 }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div v-else>No hay materiales por liquidar</div>
+                    </div>
 
 
-                        <InputError :message="form.errors.total_materials" />
-                    </template>
+                    <InputError :message="form.errors.total_materials" />
 
                     <br />
                     <div class="mt-6 flex justify-end">
@@ -713,7 +710,7 @@ const installations = ref(installation);
 const pintList = ref([])
 const pextList = ref([])
 const initialState = {
-    id:'',
+    id: '',
     user_id: auth.user.id,
     user_name: auth.user.name,
     coordinator: '',
@@ -800,7 +797,7 @@ watch(() => form.total_materials, (newVal) => {
 watch(() => [form.pint_amount, form.pext_amount], (newVal) => {
     if (form.pint_amount || form.pext_amount) {
         form.projected_amount = form.pint_amount + form.pext_amount
-    } else if(!form.pint_amount && !form.pext_amount){
+    } else if (!form.pint_amount && !form.pext_amount) {
         form.projected_amount = ''
     }
 });
@@ -872,7 +869,7 @@ function closeInstMaterialsModal() {
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route("cicsa.installation.index", {type}), {
+        const response = await axios.post(route("cicsa.installation.index", { type }), {
             searchQuery: $search,
         });
         installations.value = response.data;
