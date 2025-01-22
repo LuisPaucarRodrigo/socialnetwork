@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use App\Constants\PintConstants;
+use App\Constants\ProjectConstants;
 
 class StaticCost extends Model
 {
@@ -76,7 +77,7 @@ class StaticCost extends Model
                 'operation_number' => $item->operation_number,
                 'operation_date' => $item->operation_date,
                 'account_statement_id' => $as?->id,
-                'type'=>'static'
+                'type'=> ProjectConstants::EXP_TYPE_STATIC
             ]);
 
             $item->general_expense_id = $generalExpense->id;
@@ -94,7 +95,7 @@ class StaticCost extends Model
                     'operation_number' => $item->operation_number,
                     'operation_date' => $item->operation_date,
                     'account_statement_id' => $as?->id,
-                     'type'=>'static'
+                    'type'=> ProjectConstants::EXP_TYPE_STATIC
                 ]);
             }
         });

@@ -1,69 +1,16 @@
 <template>
 
     <Head title="Proyectos" />
-    <AuthenticatedLayout :redirectRoute="type ==2 ?'projectmanagement.pext.index': 'projectmanagement.index'">
+    <AuthenticatedLayout :redirectRoute="{
+        route: 'projectmanagement.pext.additional.index',
+        params: {type:type}
+    }">
         <template #header>
-            Proyectos Adicionales
+            Proyectos Adicionales - No Proceden
         </template>
         <Toaster richColors />
         <div class="min-w-full">
-            <div class="mt-6 flex items-center justify-between gap-x-6">
-                <div class="hidden sm:flex sm:items-center sm:space-x-3">
-                    <PrimaryButton data-tooltip-target="add_monthly_project" v-if="hasPermission('ProjectManager')"
-                        @click="createOrEditModal" type="button" customColor="bg-green-600 hover:bg-green-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="w-5 h-5">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                        </svg>
-                    </PrimaryButton>
-                    <div id="add_monthly_project" role="tooltip"
-                    class="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                    + Agregar Proyecto
-                    <div class="tooltip-arrow" data-popper-arrow></div>
-                </div>
-                <PrimaryButton data-tooltip-target="add_monthly_project" v-if="hasPermission('ProjectManager')"
-                    @click="()=>{router.visit(route('projectmanagement.pext.additional.index_rejected', {type}))}" type="button" customColor="bg-red-600 hover:bg-red-500">
-                    No Proceden
-                </PrimaryButton>
-
-                    
-
-                </div>
-
-                <div class="sm:hidden">
-                    <dropdown align='left'>
-                        <template #trigger>
-                            <button @click="dropdownOpen = !dropdownOpen"
-                                class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100">
-                                <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4 6H20M4 12H20M4 18H20" stroke="#000000" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                            </button>
-                        </template>
-
-                        <template #content class="origin-left">
-                            <div>
-                                <div class="dropdown">
-                                    <div v-if="hasPermission('ProjectManager')" class="dropdown-menu">
-                                        <button @click="createOrEditModal"
-                                            class="dropdown-item block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                            Agregar
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="">
-                                    <a
-                                        class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                        Exportar
-                                    </a>
-                                </div>
-                            </div>
-                        </template>
-                    </dropdown>
-                </div>
+            <div class="mt-6 flex items-center justify-end gap-x-6">
                 <div class="flex space-x-3">
                     <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
                         placeholder="Buscar ..." />
@@ -75,83 +22,7 @@
                 </div>
             </div>
             <br>
-            <!-- <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                <div v-for="item in projects.data || projects" :key="item.id"
-                    class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
-                    <div class="grid grid-cols-2">
-                        <p class="col-start-1 col-span-2 text-sm font-semibold mb-3">
-                            Proyecto: {{ item.project_name }}
-                        </p>
-                        <div v-if="hasPermission('ProjectManager')" class="inline-flex justify-end items-start gap-x-2">
-                            <button type="button" class="text-blue-900 whitespace-no-wrap" @click="editProject(item)">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                    <p class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
-                        Fecha: {{ formattedDate(item.assignation_date) }}
-                    </p>
-                    <p class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
-                        Cliente: {{ item.customer }}
-                    </p>
-                    <p class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
-                        Centro de Costos: {{ item.project?.cost_center?.name }}
-                    </p>
-                    <p class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
-                        Codigo: {{ item.project_code }}
-                    </p>
-                    <p class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
-                        CPE: {{ item.cpe }}
-                    </p>
-                    <p class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
-                        Zonas: {{ item.zone }}
-                    </p>
-                    <div class="grid grid-cols-1 gap-y-1">
-                        <Link :href="route('pext.additional.expense.index', { cicsa_assignation_id: item.id })"
-                            class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Gastos
-                        </Link>
-                    </div>
-                </div>
-            </div> -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                <div class="bg-blue-200 p-3 rounded-md shadow-sm border border-gray-300 items-center">
-                    <div class="grid grid-cols-2">
-                        <p class="col-start-1 col-span-1 text-sm font-semibold mb-3">
-                            Nombre: General
-                        </p>
-                        <p class="col-start-1 col-span-2 text-sm font-semibold mb-3">
-                            Fecha: Indefinida
-                        </p>
-                        <p class="col-start-1 col-span-2 text-sm font-semibold mb-3">
-                            Cliente: Sin Cliente
-                        </p>
-                        <p class="col-start-1 col-span-2 text-sm font-semibold mb-3">
-                            Centro de Costos: Sin Centro de Costo
-                        </p>
-                        <p class="col-start-1 col-span-2 text-sm font-semibold mb-3">
-                            Codigo: 0000
-                        </p>
-                        <p class="col-start-1 col-span-2 text-sm font-semibold mb-3">
-                            CPE: 0000
-                        </p>
-                        <p class="col-start-1 col-span-2 text-sm font-semibold mb-3">
-                            Zonas: Sin Zona
-                        </p>
-                    </div>
-                    <div>
-                        <div class="grid grid-cols-1 gap-y-1">
-                            <Link :href="route('pext.additional.expense.general.index', { fixedOrAdditional: false, type })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
-                            Compras y Gastos
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-
+           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 <div v-for="item in projects.data || projects" :key="item.id"
                     class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
                     <div class="grid grid-cols-2">
@@ -159,12 +30,6 @@
                             Nombre: {{ item.project_name }}
                         </p>
                         <div v-if="hasPermission('ProjectManager')" class="inline-flex justify-end items-start gap-x-2">
-                            <button type="button" @click="rejectAdditionalProject(item.project.id)">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                </svg>
-
-                            </button>
                             <button type="button" @click="editProject(item)">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
@@ -583,19 +448,13 @@ import { formattedDate, setAxiosErrors } from '@/utils/utils';
 import { notifyError, notify } from '@/Components/Notification';
 import { Toaster } from 'vue-sonner';
 
-const { project, auth, userPermissions, searchCondition, cost_line, type } = defineProps({
+const { project, auth, userPermissions, cost_line, type } = defineProps({
     project: Object,
     userPermissions: Array,
     auth: Object,
     cost_line: Object,
     type: Number,
-    searchCondition: {
-        type: String,
-        Required: false
-    },
 })
-
-
 
 const initialState = {
     id: null,
@@ -617,7 +476,6 @@ const initialStateQuote = {
     project_id: '',
     delivery_place: '',
     delivery_time: null,
-    user_id: auth.user.id,
     observations: '',
     fee: '',
     project_quote_valuations: [],
@@ -630,6 +488,7 @@ const valuation = ref({
     unit: '',
     metrado: '',
     unit_value: 0,
+    user_id: auth.user.id,
     description: ''
 });
 // const formExport = ref({
@@ -681,7 +540,7 @@ const createOrEditModal = () => {
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('projectmanagement.pext.additional.index', {type}), { searchQuery: $search });
+        const response = await axios.post(route('projectmanagement.pext.additional.index_rejected', {type}), { searchQuery: $search });
         projects.value = response.data;
     } catch (error) {
         notifyError('Error searching:', error);
@@ -796,24 +655,8 @@ function deleteValoration(index) {
     formQuote.valuations.splice(index, 1)
 }
 
-async function rejectAdditionalProject (id) {
-    try{
-        const res = await axios.post(route('projectmanagement.pext.additional.reject', {pa_id: id}))
-        if(res.data.msg) {
-            const validations = projects.value.data || projects.value
-            let index = validations.findIndex(item => item.project.id === id)
-            validations.splice(index, 1)
-        }
-    }catch (e) {
-        console.log(e)
-        notifyError('Server Error')
-    }
-}
 
 
-if (searchCondition) {
-    search(searchCondition)
-}
 // function modalExportExcel() {
 //     modalExport.value = !modalExport.value
 // }

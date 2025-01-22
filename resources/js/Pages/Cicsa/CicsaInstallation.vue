@@ -804,9 +804,9 @@ watch(() => [form.pint_amount, form.pext_amount], (newVal) => {
 
 async function submit() {
     form.total_materials = pintList.value.concat(pextList.value);
-    let url = route("cicsa.installation.store", { ci_id: form.id ?? null });
+    let url = route("cicsa.installation.store", { ci_id: form?.id });
     try {
-        const response = await axios.post(url, form);
+        const response = await axios.post(url, form.data());
         updateInstallations(form.cicsa_assignation_id, response.data)
         closeAddAssignationModal();
     } catch (error) {

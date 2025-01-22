@@ -26,11 +26,11 @@ class Employee extends Model
         'policy_exp_date',
     ];
 
-    // protected $appends = [
-    //     'sctr_about_to_expire',
-    //     'policy_about_to_expire',
-    //     'documents_about_to_expire',
-    // ];
+    protected $appends = [
+        'sctr_about_to_expire',
+        'policy_about_to_expire',
+        'documents_about_to_expire',
+    ];
 
     //RELATIONS
 

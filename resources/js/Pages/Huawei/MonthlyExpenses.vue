@@ -1446,19 +1446,15 @@ async function deleteAdditional() {
     isFetching.value = true;
     const docId = docToDelete.value;
     if (docId) {
-        router.delete(
-            route("huawei.monthlyexpenses.expenses.delete", { expense: docId }),
-            {
-                onSuccess: () => {
+        const response = await axios.delete(route("huawei.monthlyexpenses.expenses.delete", { expense: docId }));
+        if (response.data == true){
+            const index = expenses.value.data.findIndex(item => item.id === docId);
+                if (index !== -1) {
+                    expenses.value.data.splice(index, 1);
                     closeModalDoc();
-                    router.visit(
-                        route("huawei.monthlyexpenses.expenses", {
-                            project: props.project.id,
-                        })
-                    );
-                },
-            }
-        );
+                    notify("Registro eliminado correctamente");
+                }
+        }
     }
 }
 

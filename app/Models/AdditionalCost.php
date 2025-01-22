@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Constants\PintConstants;
+use App\Constants\ProjectConstants;
 
 class AdditionalCost extends Model
 {
@@ -104,7 +105,7 @@ class AdditionalCost extends Model
                 'operation_number' => $item->operation_number,
                 'operation_date' => $item->operation_date,
                 'account_statement_id' => $as?->id,
-                'type'=>'additional'
+                'type'=> ProjectConstants::EXP_TYPE_ADDITIONAL
             ]);
 
             $item->general_expense_id = $generalExpense->id;
@@ -122,7 +123,7 @@ class AdditionalCost extends Model
                     'operation_number' => $item->operation_number,
                     'operation_date' => $item->operation_date,
                     'account_statement_id' => $as?->id,
-                    'type'=>'additional'
+                    'type'=> ProjectConstants::EXP_TYPE_ADDITIONAL
                 ]);
             }
         });
