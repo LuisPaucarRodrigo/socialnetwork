@@ -566,7 +566,6 @@ class PextController extends Controller
                 'providers' => $providers,
                 'cost_center' => $cost_line->cost_center,
                 'fixedOrAdditional' => json_decode($fixedOrAdditional),
-                'cicsaAssignation' => $cicsa_assignation,
                 'type' => $type,
                 'acExpensesAmounts' => $acExpensesAmounts,
                 'scExpensesAmounts' => $scExpensesAmounts,
