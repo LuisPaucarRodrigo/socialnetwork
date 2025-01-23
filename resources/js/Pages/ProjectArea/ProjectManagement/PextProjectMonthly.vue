@@ -51,7 +51,7 @@
                         Exportar Excel
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div> -->
-                    <Link :href="route('projectmanagement.pext.additional.index', {type:2})"
+                    <Link :href="route('projectmanagement.pext.additional.index', { type: 2 })"
                         class="bg-indigo-600 hover:bg-indigo-500 rounded-md px-4 py-2 text-center text-sm text-white">
                     P. Adicionales
                     </Link>
@@ -261,10 +261,10 @@
                 <form @submit.prevent="submit">
                     <div class="space-y-12 mt-4">
                         <div class="grid sm:grid-cols-2 gap-6">
-                            <div v-if="!form.id && type === 'Proyecto'">
+                            <div v-if="!form.id && type === 'Proyectos'">
                                 <InputLabel for="project_id">{{ type }}</InputLabel>
                                 <div class="mt-2">
-                                    <select id="project_id" v-model="form.project_id"
+                                    <select id="project_id" v-model="form.project_id" required
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         <option value="">Seleccionar Proyecto</option>
                                         <option v-for="item in projectsOrPreproject" :key="item.id" :value="item.id">
@@ -277,9 +277,9 @@
                             <div v-if="!form.id && type === 'Ante Proyectos'">
                                 <InputLabel for="pre_project_id">{{ type }}</InputLabel>
                                 <div class="mt-2">
-                                    <select id="pre_project_id" v-model="form.pre_project_id"
+                                    <select id="pre_project_id" v-model="form.pre_project_id" required
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                        <option value="">Seleccionar Proyecto</option>
+                                        <option value="">Seleccionar Ante Proyecto</option>
                                         <option v-for="item in projectsOrPreproject" :key="item.id" :value="item.id">
                                             {{ item.code }}
                                         </option>
@@ -453,15 +453,12 @@ const { cicsa_assignation, userPermissions, auth } = defineProps({
     userPermissions: Array,
     auth: Object,
 })
-console.log(cicsa_assignation)
+console.log(cicsa_assignation);
 const initialState = {
     id: "",
-    // cost_center_id: "",
     user_id: auth.user.id,
     assignation_date: '',
     project_name: '',
-    project_id: '',
-    // cost_line_id: cost_line.id,
     customer: '',
     project_code: '',
     cpe: '',
@@ -469,6 +466,7 @@ const initialState = {
     zone2: '',
     manager: '',
     user_name: auth.user.name,
+    project_id: '',
     pre_project_id: '',
 }
 
@@ -529,7 +527,7 @@ const createOrEditModal = (item = null) => {
 const search = async (search) => {
     try {
         const response = await axios.post(route('projectmanagement.pext.index'), { searchQuery: search });
-        projects.value = response.data;
+        cicsa_assignations.value = response.data;
     } catch (error) {
         console.error('Error searching:', error);
     }
@@ -547,12 +545,14 @@ async function requestProjectOrPreproject(item) {
 // 
 async function submit() {
     try {
-        console.log(type.value)
-        const url = type.value === 'Proyectos' ? route('projectmanagement.pext.storeOrUpdate', { 'pext_id': form.id ?? null }) : route('projectmanagement.pext.storeProjectAndAssignation')
+        const url = type.value === 'Proyectos' ?
+            route('projectmanagement.pext.storeOrUpdate', { 'pext_id': form.id ?? null }) :
+            route('projectmanagement.pext.storeProjectAndAssignation')
         const response = await axios.post(url, form)
         const action = form.id ? 'update' : 'create'
         updatePext(response.data, action)
     } catch (error) {
+        console.log(error)
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, form)

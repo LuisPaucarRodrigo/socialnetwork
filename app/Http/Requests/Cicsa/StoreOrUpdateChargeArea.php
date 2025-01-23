@@ -29,18 +29,20 @@ class StoreOrUpdateChargeArea extends FormRequest
             'deposit_date' => [
                 'nullable',
                 'date',
-                function ($attribute, $value, $fail) {
-                    if ($value && Carbon::parse($value)->lt(Carbon::parse($this->input('invoice_date')))) {
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($value && Carbon::parse($value)->lt(Carbon::parse($request->invoice_date))) {
                         $fail('La fecha de abono debe ser mayor o igual que la fecha de la factura.');
                     }
                 }
             ],
+            'document' => 'nullable',
+            'amount' => 'required',
+            'state_detraction' => 'required|string',
             'transaction_number_current' => 'nullable',
-            'checking_account_amount' => 'nullable|numeric|min:0',
+            'checking_account_amount' => 'nullable|string',
             'deposit_date_bank' => 'nullable|date',
             'transaction_number_bank' => 'nullable',
-            'amount_bank' => 'nullable|numeric|min:0',
-            'amount' => 'required',
+            'amount_bank' => 'nullable|numeric',
             'user_name' => 'required',
             'user_id' => 'required',
         ];

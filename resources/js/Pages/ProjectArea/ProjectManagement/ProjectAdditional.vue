@@ -585,8 +585,8 @@ import { Toaster } from 'vue-sonner';
 
 const { project, auth, userPermissions, searchCondition, cost_line, type } = defineProps({
     project: Object,
-    userPermissions: Array,
     auth: Object,
+    userPermissions: Array,
     cost_line: Object,
     type: Number,
     searchCondition: {
@@ -595,7 +595,7 @@ const { project, auth, userPermissions, searchCondition, cost_line, type } = def
     },
 })
 
-
+console.log(auth)
 
 const initialState = {
     id: null,
@@ -736,6 +736,7 @@ function updatePext(pext, action) {
 function openQuickQuote(project) {
     const defaultData = project.project_quote || initialStateQuote;
     defaultData.fee = defaultData.fee ? true : false 
+    console.log('data',defaultData)
     formQuote.defaults({ ...defaultData, project_id: project.id });
     formQuote.reset();
     showQuickQuote.value = !showQuickQuote.value;

@@ -256,6 +256,8 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     Route::post('/projectPext/additional/store/{cicsa_assignation_id?}', [PextController::class, 'updateOrStoreAdditional'])->name('projectmanagement.pext.additional.store');
     Route::get('/projectPext/additionalOrFixed/expenses/{project_id}/index/{fixedOrAdditional}/{type}', [PextController::class, 'additional_expense_index'])->name('pext.additional.expense.index');
     Route::get('/projectPext/additionalOrFixed/expenses/general/{fixedOrAdditional}/index/{type}', [PextController::class, 'additional_expense_index_general'])->name('pext.additional.expense.general.index');
+    Route::post('/projectPext/additionalOrFixed/getCicsaAssignation/search_zone', [PextController::class, 'getCicsaAssignation'])->name('pext.additional.expense.general.getCicsaAssignation');
+    
     Route::post('/projectPext/additionalOrFixed/expense/search/{project_id}', [PextController::class, 'search_advance_monthly_or_additional_expense'])->name('pext.monthly.additional.expense.search_advance');
     Route::post('/projectPext/additionalOrFixed/expense/general/search', [PextController::class, 'search_advance_additional_expense_general'])->name('pext.monthly.additional.expense.general.search_advance');
     Route::post('/projectPext/massive_update', [PextController::class, 'masiveUpdate'])->name('projectmanagement.pext.massiveUpdate');
