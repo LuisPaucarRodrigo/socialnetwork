@@ -4,6 +4,7 @@ namespace App\Http\Requests\CostsRequest;
 
 use App\Models\AdditionalCost;
 use App\Constants\PintConstants;
+use App\Models\StaticCost;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Project;
 use App\Models\Preproject;
@@ -38,9 +39,8 @@ class AdditionalCostsApiRequest extends FormRequest
         $isAdditional = !$isStatic && !$isGEP;
 
         
-        
         //MantoPINT
-        if($isStatic||$isAdditional){
+        if ($isStatic || $isAdditional) {
             $preprojectId = Preproject::where('date', '>=', $startOfMonth)
                 ->where('cost_center_id', 1)
                 ->where('cost_line_id', 1)
@@ -48,11 +48,21 @@ class AdditionalCostsApiRequest extends FormRequest
                 ->where('customer_id', 1)
                 ->select('id')
                 ->first();
-            $projectId = Project::where('preproject_id', $preprojectId->id)->select('id')->first();
-
+            if (!$preprojectId) {
+                throw new HttpResponseException(
+                    response()->json(['error' => 'No se encontraron preproyectos para este mes.'], 404)
+                );
+            }
+            $projectId = Project::where('preproject_id', $preprojectId->id)->first();
+            if (!$projectId) {
+                throw new HttpResponseException(
+                    response()->json(['error' => 'No se encontraron proyectos relacionados al preproyecto.'], 404)
+                );
+            }
         }
-        //GEPPINT
-        if($isGEP){
+    
+        // Manejo de Preproject y Project para GEP
+        if ($isGEP) {
             $preprojectId = Preproject::where('date', '>=', $startOfMonth)
                 ->where('cost_center_id', 2)
                 ->where('cost_line_id', 1)
@@ -60,18 +70,23 @@ class AdditionalCostsApiRequest extends FormRequest
                 ->where('customer_id', 1)
                 ->select('id')
                 ->first();
-            $projectId = Project::where('preproject_id', $preprojectId->id)->select('id')->first();
+            if (!$preprojectId) {
+                throw new HttpResponseException(
+                    response()->json(['error' => 'No se encontraron preproyectos GEP para este mes.'], 404)
+                );
+            }
+            $projectId = Project::where('preproject_id', $preprojectId->id)->first();
+            if (!$projectId) {
+                throw new HttpResponseException(
+                    response()->json(['error' => 'No se encontraron proyectos relacionados al preproyecto GEP.'], 404)
+                );
+            }
         }
-
-        if (!$projectId) {
-            return response()->json(['error' => "No se encontraron preproyectos pint para este mes."], 404);
-        }
-
         //Validation Rules
         $rules = [
             'expense_type' => 'required|string',
             'ruc' => 'required|numeric|digits:11',
-            'type_doc' => 'required|string|in:Efectivo,Deposito,Factura,Boleta,Voucher de Pago',
+            'type_doc' => 'required|string|in:Sin Comprobante,Deposito,Factura,Boleta,Voucher de Pago',
             'doc_number' => [
                 'nullable',
                 'string',
@@ -83,7 +98,7 @@ class AdditionalCostsApiRequest extends FormRequest
                                 ->where('doc_number', $value)->count();
                         }
                         if ($isGEP || $isAdditional){
-                            $numberOfElements = Static::where('project_id', $projectId->id)
+                            $numberOfElements = StaticCost::where('project_id', $projectId->id)
                                 ->where('doc_number', $value)->count();
                         }
                         if ($numberOfElements > 0) {
@@ -109,7 +124,7 @@ class AdditionalCostsApiRequest extends FormRequest
                 'numeric',
                 function ($attribute, $value, $fail) use ($projectId) {
                     $remaining_budget = $projectId->getRemainingBudgetAttribute();
-                    if ($value > $remaining_budget) {
+                    if ($projectId->cost_center_id == 1 && $value > $remaining_budget) {
                         $fail(__('El monto del gasto excede el presupuesto restante. S/. ' . number_format($remaining_budget, 2)));
                     }
                 }
