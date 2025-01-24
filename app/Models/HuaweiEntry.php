@@ -16,6 +16,7 @@ class HuaweiEntry extends Model
         'guide_number',
         'entry_date',
         'observation',
+        'archive',
     ];
 
     public function huawei_entry_details ()

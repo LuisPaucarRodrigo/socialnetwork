@@ -209,6 +209,7 @@ class HuaweiManagementController extends Controller
             'guide_number' => 'nullable|unique:huawei_entries,guide_number',
             'entry_date' => 'nullable',
             'observation' => 'nullable',
+            'archive' => 'required|mimes:pdf,jpg,jpeg,png|max:2048',
             'order_number' => 'required',
             'order_date' => 'required',
             'materials' => 'nullable|array',
@@ -222,12 +223,19 @@ class HuaweiManagementController extends Controller
         }
 
         DB::beginTransaction(); // Iniciar transacción
-
+       
+        $filename = '';
+        if ($request->hasFile('archive')){
+            $file = $request->file('archive');
+            $filename = time() . '_' . $request->guide_number . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('documents/huawei/guides/'), $filename);
+        }
         // Crear entrada
         $huawei_entry = HuaweiEntry::create([
             'guide_number' => $request->guide_number,
             'entry_date' => $request->entry_date,
-            'observation' => $request->observation
+            'observation' => $request->observation,
+            'archive' => $filename
         ]);
 
         $warehouse = null;
@@ -372,6 +380,18 @@ class HuaweiManagementController extends Controller
             DB::rollBack(); // Revertir transacción en caso de error
             return response()->json(['error' => $e], 500);
         }
+    }
+
+    public function showGuide (HuaweiEntry $entry)
+    {
+        $filename = $entry->archive;
+        $filePath = '/documents/huawei/guides/' . $filename;
+        $path = public_path($filePath);
+        if (file_exists($path)) {
+            ob_end_clean();
+            return response()->file($path);
+        }
+        abort(404, 'Archivo no encontrado');
     }
 
     public function storeOrder (Request $request)
@@ -965,7 +985,7 @@ class HuaweiManagementController extends Controller
             'huawei_pending_order:id,order_number,order_date,observation',
             'huawei_equipment_serie.huawei_equipment:id,name',
             'latest_huawei_project_resource.huawei_project:id,name,assigned_diu,ot'
-        ])
+        ])->orderBy('created_at', 'desc')
         ->get();
 
         $entries->each(function ($equipment) {
@@ -1475,8 +1495,15 @@ class HuaweiManagementController extends Controller
         $data = $request->validate([
             'guide_number' => 'required',
             'entry_date' => 'required',
+            'archive' => 'required',
             'observation' => 'required'
         ]);
+
+        if ($request->hasFile('archive')){
+            $file = $request->file('archive');
+            $data['archive'] = time() . '_' . $request->guide_number . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('documents/huawei/guides/'), $data['archive']);
+        }
 
         $entry = HuaweiEntry::create($data);
 

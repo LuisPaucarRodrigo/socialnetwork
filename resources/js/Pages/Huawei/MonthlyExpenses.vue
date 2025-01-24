@@ -1768,6 +1768,8 @@ const massiveValidate = async () => {
 };
 
 const fetchSites = (macro) => {
+    selectedSite.value = '';
+    form.huawei_project_id = '';
     axios
         .get(
             route("huawei.monthlyexpenses.expenses.fetchsites", {
@@ -1783,6 +1785,7 @@ const fetchSites = (macro) => {
 };
 
 const fetchProjects = (site) => {
+    form.huawei_project_id = '';
     axios
         .get(
             route("huawei.monthlyexpenses.expenses.fetchprojects", {
