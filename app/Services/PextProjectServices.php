@@ -7,6 +7,7 @@ use App\Models\PextProjectExpense;
 use App\Models\Preproject;
 use App\Models\Project;
 use Illuminate\Database\Eloquent\Builder;
+use PhpParser\Node\Expr\Cast\Array_;
 
 class PextProjectServices
 {
@@ -32,7 +33,7 @@ class PextProjectServices
     public function searchCicsaAssignation($searchQuery): Object
     {
         $cicsaAssignation = $this->baseCicsaAssignation();
-        $cicsaAssignation->where(function ($query) use ($searchQuery) {
+        $cicsaAssignation = $cicsaAssignation->where(function ($query) use ($searchQuery) {
             $query->orWhere('project_name', 'like', "%$searchQuery%")
                 ->orWhere('project_code', 'like', "%$searchQuery%")
                 ->orWhere('cpe', 'like', "%$searchQuery%");
@@ -53,6 +54,7 @@ class PextProjectServices
                 ->get();
         } else {
             $pro = Preproject::where('cost_line_id', 2)
+                ->where('status', 1)
                 ->whereHas('cost_center', function ($query) {
                     $query->where('name', 'not like', "%Mantto%");
                 })
@@ -74,7 +76,7 @@ class PextProjectServices
         return $cicsaAssignation;
     }
 
-    public function storeProject($validateData): Object
+    public function storeProject($validateData): array
     {
         $preproject = Preproject::find($validateData['pre_project_id']);
         $project = Project::create([

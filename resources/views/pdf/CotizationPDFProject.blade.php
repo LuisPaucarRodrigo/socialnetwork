@@ -118,8 +118,8 @@
       </tr>
       @php
       $subtotalProd += floatval($item['days'] * $item['metrado'] * numberTwoDecimal($item['unit_value'], 4));
-      $fee = $project->project_quote->fee ? $subtotalProd * 0.10 : 0; // Calcula el fee solo si es true
-      $igv = $subtotalProd * 0.18; // Siempre calcula el IGV
+      $fee = $project->project_quote->fee == 1 ? $subtotalProd * 0.10 : 0; // Calcula el fee solo si es true
+      $igv = ($subtotalProd + $fee) * 0.18; // Siempre calcula el IGV
       $total = $subtotalProd + $fee + $igv; // Suma el fee solo si corresponde
       @endphp
       @endforeach

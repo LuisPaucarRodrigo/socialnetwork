@@ -55,4 +55,5 @@ use App\Http\Controllers\ProjectArea\ChecklistsController;
 
         //pint constants
         Route::get('/pintconstants/mobile', [ChecklistsController::class, 'getPintMobileConstants']);
+        Route::get('/pextconstants/mobile', [ChecklistsController::class, 'getPextMobileConstants']);
     });
