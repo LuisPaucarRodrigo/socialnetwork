@@ -86,7 +86,7 @@ class AdditionalCostsApiRequest extends FormRequest
         $rules = [
             'expense_type' => 'required|string',
             'ruc' => 'required|numeric|digits:11',
-            'type_doc' => 'required|string|in:Sin Comprobante,Deposito,Factura,Boleta,Voucher de Pago',
+            'type_doc' => 'required',
             'doc_number' => [
                 'nullable',
                 'string',
