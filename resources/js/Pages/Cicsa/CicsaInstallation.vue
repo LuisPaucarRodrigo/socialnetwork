@@ -252,9 +252,18 @@
                                 <select id="coordinator" v-model="form.coordinator" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option value="" disabled>Seleccionar Coordinador</option>
-                                    <option>Valery Joana</option>
-                                    <option>Maria Moscoso</option>
-                                    <option>Angela Mayela</option>
+                                    <option v-for="opt in (
+                                        type == 2
+                                            ? [ 'Valery Joana', 
+                                                'Maria Moscoso', 
+                                                'Angela Mayela'] 
+                                            : 
+                                        type == 1
+                                            ? [ 'Sheyla Rondón'] 
+                                            : []
+                                        )" :key="opt">
+                                            {{ opt }}
+                                    </option>
                                 </select>
                                 <InputError :message="form.errors.coordinator" />
                             </div>

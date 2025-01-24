@@ -272,6 +272,7 @@ class ChecklistsController extends Controller
     public function expenseStore(AdditionalCostsApiRequest $request)
     {
         $data = $request->validated();
+        // return response()->json($data);
         $isStatic = $data['expense_type'] === PintConstants::COMBUSTIBLE_UM;
         $isGEP = $data['expense_type'] === PintConstants::COMBUSTIBLE_GEP;
         $isAdditional = !$isStatic && !$isGEP;
@@ -325,7 +326,7 @@ class ChecklistsController extends Controller
             }
             $newDesc = Auth::user()->name . ", " . $data['description'];
             $data['description'] = $newDesc;
-            if ($data['photo']) {
+            if (isset($data['photo'])) {
                 if ($isStatic || $isGEP) {
                     $data['photo'] = $this->storeBase64Image($data['photo'], 'documents/staticcosts', 'Gasto');
                 }
@@ -340,7 +341,7 @@ class ChecklistsController extends Controller
             if ($isStatic || $isGEP) StaticCost::create($data);
             if ($isAdditional) AdditionalCost::create($data);
 
-            return response()->json([], 200);
+            return response()->json(['msg' => "saved"], 200);
         } catch (Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
