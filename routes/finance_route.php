@@ -6,6 +6,7 @@ use App\Http\Controllers\Finance\CostLineController;
 use App\Http\Controllers\Finance\DepositController;
 use App\Http\Controllers\Finance\ExpenseManagementController;
 use App\Http\Controllers\Finance\PaymentController;
+use App\Http\Controllers\Finance\SunatController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('permission:FinanceManager')->group(function () {
@@ -29,6 +30,10 @@ Route::middleware('permission:FinanceManager')->group(function () {
     Route::post('/finance/account_statement_import', [AccountStatementController::class, 'importExcel'])->name('finance.account_statement.import');
     Route::get('/finance/account_statement_costs/{as_id}', [AccountStatementController::class, 'searchStatementsCosts'])->name('finance.account_statement.costs');
     Route::post('/finance/account_statement_massive_delete', [AccountStatementController::class, 'masiveDestroy'])->name('finance.account_statement.masivedelete');
+
+
+    //Sunata SIRE
+    Route::get('/finance/sunnat_allexpenses', [SunatController::class, 'general_expenses'])->name('finance.sunata.gexpenses');
 
 
     //Costs Lines
