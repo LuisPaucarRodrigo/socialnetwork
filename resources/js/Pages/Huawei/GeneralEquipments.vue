@@ -297,8 +297,9 @@
                                 </td>
                                 <td
                                     class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center"
-                                >
+                                ><button class="text-blue-600 hover:underline" @click="openGuide(item.huawei_entry?.id)">
                                     {{ item.huawei_entry?.guide_number }}
+                                </button>
                                 </td>
                                 <td
                                     class="border-b border-gray-200 bg-white px-2 py-1 text-xs text-center"
@@ -818,4 +819,8 @@ const submitOpNuDatModal = async () => {
     closeOpNuDatModal();
     notify("Registros Seleccionados Actualizados");
 };
+const openGuide = (id) => {
+    const routeToShow = route('huawei.inventory.showguide', {entry: id});
+    window.open(routeToShow, '_blank');
+}
 </script>

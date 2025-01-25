@@ -44,6 +44,15 @@
                 <InputError :message="form.errors.entry_date" />
               </div>
 
+              <div v-if="isActive" class="col-span-1">
+                <label for="archive" class="block text-sm font-medium text-gray-700">Guía</label>
+                <InputFile v-model="form.archive"
+                  id="archive"
+                  class="block w-full rounded-md border-0 mt-1 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                <InputError :message="form.errors.entry_date" />
+              </div>
+
               <div class="col-span-1">
                 <label for="order_number" class="block text-sm font-medium text-gray-700">N° de Pedido</label>
                 <input
@@ -81,7 +90,7 @@
                 <InputError :message="form.errors.warehouse" />
             </div>
 
-            <div class="col-span-1">
+            <div :class="{ 'col-span-2': isActive, 'col-span-1': !isActive }">
                 <label for="observation" class="block text-sm font-medium text-gray-700">Observaciones</label>
                 <textarea
                   id="observation"
@@ -543,6 +552,7 @@
     import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
     import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
     import { formattedDate } from '@/utils/utils';
+import InputFile from '@/Components/InputFile.vue';
 
     const props = defineProps({
       brand_models: Object,
@@ -596,6 +606,7 @@
       entry_date: '',
       observation: '',
       warehouse: '',
+      archive: '',
       order_number: '',
       order_date: '',
       materials: [],
