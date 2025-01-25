@@ -32,10 +32,8 @@ class StoreOrUpdateAssignationRequest extends FormRequest
             'manager' => 'required|string',
             'user_name' => 'required|string',
             'user_id' => 'required|numeric',
-            'project_id' => 'sometimes|required|numeric',
-            'pre_project_id' => 'sometimes|required|numeric',
-            'cost_line_id' => 'required',
-            'cost_center_id' => 'required',
+            'project_id' => 'nullable|numeric',
+            'pre_project_id' => 'nullable|numeric',
         ];
     }
 }

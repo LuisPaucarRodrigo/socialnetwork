@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ProjectArea;
 
+use App\Constants\PintConstants;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ChecklistRequest\ChecklistCarRequest;
 use App\Http\Requests\ChecklistRequest\ChecklistDailytoolkitRequest;
@@ -15,6 +16,7 @@ use App\Models\ChecklistEpp;
 use App\Models\ChecklistToolkit;
 use App\Models\Preproject;
 use App\Models\Project;
+use App\Models\StaticCost;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
@@ -148,7 +150,8 @@ class ChecklistsController extends Controller
     }
 
 
-    public function car_destroy ($id) {
+    public function car_destroy($id)
+    {
         $checklistCar = ChecklistCar::findOrFail($id);
         $checklistCar->front && $this->file_delete($checklistCar->front, 'image/checklist/checklistcar');
         $checklistCar->leftSide && $this->file_delete($checklistCar->leftSide, 'image/checklist/checklistcar');
@@ -162,7 +165,8 @@ class ChecklistsController extends Controller
         return redirect()->back();
     }
 
-    public function toolkit_destroy ($id) {
+    public function toolkit_destroy($id)
+    {
         $checklistToolkit = ChecklistToolkit::findOrFail($id);
         $checklistToolkit->badTools && $this->file_delete($checklistToolkit->badTools, 'image/checklist/checklisttoolkit');
         $checklistToolkit->goodTools && $this->file_delete($checklistToolkit->goodTools, 'image/checklist/checklisttoolkit');
@@ -171,14 +175,16 @@ class ChecklistsController extends Controller
     }
 
 
-    public function dailytoolkit_destroy($cdt_id){
+    public function dailytoolkit_destroy($cdt_id)
+    {
         $checklistdailytoolkit = ChecklistDailytoolkit::find($cdt_id);
         $checklistdailytoolkit->delete();
         return redirect()->back();
     }
 
 
-    public function epp_store(ChecklistEppRequest $request){
+    public function epp_store(ChecklistEppRequest $request)
+    {
         $data = $request->validated();
         $data['user_id'] = Auth::user()->id;
         $data['user_name'] = Auth::user()->name;
@@ -186,7 +192,8 @@ class ChecklistsController extends Controller
         return response()->json([], 201);
     }
 
-    public function epp_destroy($epp_id){
+    public function epp_destroy($epp_id)
+    {
         $checklistepp = ChecklistEpp::find($epp_id);
         $checklistepp->delete();
         return redirect()->back();
@@ -213,7 +220,7 @@ class ChecklistsController extends Controller
         if (file_exists($path))
             unlink($path);
     }
-    
+
 
     public function checklist_history()
     {
@@ -265,39 +272,76 @@ class ChecklistsController extends Controller
     public function expenseStore(AdditionalCostsApiRequest $request)
     {
         $data = $request->validated();
+        // return response()->json($data);
+        $isStatic = $data['expense_type'] === PintConstants::COMBUSTIBLE_UM;
+        $isGEP = $data['expense_type'] === PintConstants::COMBUSTIBLE_GEP;
+        $isAdditional = !$isStatic && !$isGEP;
         try {
             $doc_date = Carbon::createFromFormat('d/m/Y', $data['doc_date']);
             $startOfMonth = $doc_date->startOfMonth()->format('Y-m-d');
             $endOfMonth = $doc_date->endOfMonth()->format('Y-m-d');
 
-            $preprojectId = Preproject::where('date', '>=', $startOfMonth)
-                ->where('date', '<=', $endOfMonth)
-                ->where('customer_id', 1)
-                ->select('id')
-                ->first();
-            $projectId = Project::where('preproject_id', $preprojectId->id)
-                ->select('id')->first();
-            if (!$projectId) {
-                return response()->json([
-                    'error' => "No se encontraron preproyectos pint para este mes."
-                ], 404);
-            }
-            $data['project_id'] = $projectId->id;
+            $projectId = null;
 
+            //MantoPINT
+            if ($isStatic || $isAdditional) {
+                $preprojectId = Preproject::where('date', '>=', $startOfMonth)
+                    ->where('cost_center_id', 1)
+                    ->where('cost_line_id', 1)
+                    ->where('date', '<=', $endOfMonth)
+                    ->where('customer_id', 1)
+                    ->select('id')
+                    ->first();
+                $projectId = Project::where('preproject_id', $preprojectId->id)->select('id')->first();
+            }
+            //GEPPINT
+            if ($isGEP) {
+                $preprojectId = Preproject::where('date', '>=', $startOfMonth)
+                    ->where('cost_center_id', 2)
+                    ->where('cost_line_id', 1)
+                    ->where('date', '<=', $endOfMonth)
+                    ->where('customer_id', 1)
+                    ->select('id')
+                    ->first();
+                $projectId = Project::where('preproject_id', $preprojectId->id)->select('id')->first();
+            }
+
+
+
+            //Errror if neither exists
+            if (!$projectId) {
+                return response()->json(['error' => "No se encontraron preproyectos pint para este mes."], 404);
+            }
+
+
+            //Format fields to insert
+            $data['project_id'] = $projectId->id;
             $docDate = Carbon::createFromFormat('d/m/Y', $data['doc_date']);
             $data['doc_date'] = $docDate->format('Y-m-d');
-
-            if (($data['zone']!=='MDD1'&& $data['zone']!=='MDD2') && $data['type_doc'] === 'Factura' ) {
+            if (($data['zone'] !== PintConstants::MDD1_PM
+                    && $data['zone'] !== PintConstants::MDD2_MAZ)
+                && $data['type_doc'] === PintConstants::FACTURA
+            ) {
                 $data['igv'] = 18;
             }
-            $newDesc = Auth::user()->name.", ".$data['description'];
+            $newDesc = Auth::user()->name . ", " . $data['description'];
             $data['description'] = $newDesc;
-            if ($data['photo']) {
-                $data['photo'] = $this->storeBase64Image($data['photo'], 'documents/additionalcosts', 'Gasto');
+            if (isset($data['photo'])) {
+                if ($isStatic || $isGEP) {
+                    $data['photo'] = $this->storeBase64Image($data['photo'], 'documents/staticcosts', 'Gasto');
+                }
+                if ($isAdditional) {
+                    $data['photo'] = $this->storeBase64Image($data['photo'], 'documents/additionalcosts', 'Gasto');
+                }
             }
             $data['user_id'] = Auth::user()->id;
-            AdditionalCost::create($data);
-            return response()->json([], 200);
+
+
+            //saving data
+            if ($isStatic || $isGEP) StaticCost::create($data);
+            if ($isAdditional) AdditionalCost::create($data);
+
+            return response()->json(['msg' => "saved"], 200);
         } catch (Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
@@ -324,12 +368,57 @@ class ChecklistsController extends Controller
                 ], 404);
             }
             $userId = Auth::user()->id;
-            $expense = AdditionalCost::where('user_id', $userId)->where('project_id', $projectId->id)->select('zone', 'expense_type', 'amount','is_accepted','description')->get();
+            $expense = AdditionalCost::where('user_id', $userId)->where('project_id', $projectId->id)->select('zone', 'expense_type', 'amount', 'is_accepted', 'description')->get();
             return response()->json($expense, 200);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function getPintMobileConstants()
+    {
+        return response()->json([
+            'expenseTypes' => PintConstants::mobileExpenses(),
+            'docTypes' => PintConstants::mobileDocTypes(),
+            'zones' => PintConstants::mobileZones()
+        ]);
+    }
+
+    public function getPextMobileConstants()
+    {
+        return response()->json([
+            'zones' => [
+                "Arequipa",
+                "Moquegua",
+                "Tacna",
+                "Cuzco",
+                "Puno",
+                "MDD"
+            ],
+            'docTypes' => [
+                "Efectivo",
+                "RH(Recibo por Honorarios)",
+                "Factura",
+                "Boleta",
+                "Ticket",
+                "Yape-Plin"
+            ],
+            'expenseTypes' => [
+                "Hospedaje",
+                "Pasaje Interprovincial",
+                "Peaje",
+                "Taxis y Pasajes",
+                "Encomienda",
+                "Consumibles",
+                "Bandeos",
+                "Herramientas",
+                "Equipos",
+                "Epps",
+                "Seguro y Pólizas",
+                "Otros"
+            ],
+        ]);
     }
 }

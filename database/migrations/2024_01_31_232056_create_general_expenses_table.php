@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string('amount');
             $table->string('operation_number')->nullable();
             $table->date('operation_date')->nullable();
+            $table->string('doc_number')->nullable();
+            $table->date('doc_date')->nullable();
+            $table->string('type_doc')->nullable();
             $table->foreignId('account_statement_id')
                 ->nullable()
                 ->constrained('account_statements')

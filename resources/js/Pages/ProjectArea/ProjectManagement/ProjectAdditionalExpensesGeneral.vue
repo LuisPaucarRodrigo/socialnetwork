@@ -1,10 +1,9 @@
 <template>
 
     <Head title="Gestion de Costos Adicionales" />
-    <AuthenticatedLayout ::redirectRoute="
-    {
+    <AuthenticatedLayout ::redirectRoute="{
         route: 'projectmanagement.pext.additional.index',
-        params: {type}
+        params: { type }
     }">
         <template #header>
             Gastos {{ fixedOrAdditional ? 'Fijos' : 'Adicionales' }}
@@ -90,7 +89,7 @@
                     </div>
                     <Link v-if="fixedOrAdditional"
                         class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
-                        :href="route('pext.additional.expense.general.index', { fixedOrAdditional: false , type})">
+                        :href="route('pext.additional.expense.general.index', { fixedOrAdditional: false, type })">
                     G.Adicionales
                     </Link>
                     <Link v-else
@@ -150,6 +149,10 @@
             </div>
         </div>
         <div class="overflow-x-auto h-[85vh]">
+            <div class="mb-4">
+                <ChartsAdditionalExpenses :acExpensesAmounts="acExpensesAmounts"
+                    :scExpensesAmounts="scExpensesAmounts" />
+            </div>
             <table class="w-full">
                 <thead class="sticky top-0 z-20">
                     <tr
@@ -416,6 +419,22 @@
                     <div class="space-y-12 mt-4">
                         <div class="grid sm:grid-cols-2 gap-6 pb-6">
                             <div>
+                                <InputLabel for="project_id" class="font-medium leading-6 text-gray-900">Zona
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <select id="project_id" v-model="form.zone"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option disabled value="">
+                                            Seleccionar Zona
+                                        </option>
+                                        <option v-for="zone in zones" :value="zone">
+                                            {{ zone }}
+                                        </option>
+                                    </select>
+                                    <InputError :message="form.errors.project_id" />
+                                </div>
+                            </div>
+                            <div>
                                 <InputLabel for="project_id" class="font-medium leading-6 text-gray-900">Proyectos Cicsa
                                 </InputLabel>
                                 <div class="mt-2">
@@ -670,6 +689,7 @@ import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
+import ChartsAdditionalExpenses from "./ChartsAdditionalExpenses.vue";
 
 const props = defineProps({
     expense: Object,
@@ -678,11 +698,13 @@ const props = defineProps({
     userPermissions: Array,
     cost_center: Object,
     fixedOrAdditional: Boolean,
-    cicsaAssignation: Object,
-    type: Number
+    type: Number,
+    acExpensesAmounts: Array,
+    scExpensesAmounts: Array,
 });
 
 const expenses = ref(props.expense);
+const cicsaAssignation = ref(null);
 // const filterMode = ref(false);
 // const subCostCenterZone = ref(null);
 // const subCostCenter = ref(null)
@@ -751,7 +773,6 @@ const closeOpNuDatModal = () => {
 }
 
 async function submit() {
-    console.log(form)
     const url = route('pext.expenses.storeOrUpdate', { 'expense_id': form.id ?? null })
     try {
         const formData = toFormData(form)
@@ -903,12 +924,20 @@ const filterForm = ref({
     ...initialFilterFormState
 });
 
-watch(() => form.project_id, () => {
-    let cicsa = props.cicsaAssignation.find(item => item.project_id == form.project_id)
-    form.zone = cicsa?.zone
-    console.log(form.zone)
+watch(() => form.zone, () => {
+    getProject()
+})
+
+async function getProject() {
+    let url = route('pext.additional.expense.general.getCicsaAssignation')
+    let data = { type: props.type, zone: form.zone}
+    try {
+        let response = await axios.post(url, data);
+        cicsaAssignation.value = response
+    } catch (error) {
+        notifyError(error)
+    }
 }
-)
 
 watch(() => [
     filterForm.value.fixedOrAdditional,
@@ -1070,11 +1099,11 @@ function updateExpense(expense, action, state) {
         notify('El gasto paso a ser aceptado')
     } else if (action === "masiveUpdate") {
         expense.forEach(update => {
-        const index = listDate.findIndex(item => item.id === update.id);
-        if (index !== -1) {
-            listDate[index] = update;
-        }
-    });
+            const index = listDate.findIndex(item => item.id === update.id);
+            if (index !== -1) {
+                listDate[index] = update;
+            }
+        });
         closeOpNuDatModal();
         notify("Registros Seleccionados Actualizados");
     }

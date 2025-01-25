@@ -63,9 +63,7 @@ class ProjectConstantsPext
         $formattedTotal = str_pad($totalYearProjects, 3, '0', STR_PAD_LEFT);
         return $year . '-' . $formattedTotal . '-' . strtoupper($code);
     }
-
-
-
+    
     private function formatDate($date)
     {
         $dateTime = \DateTime::createFromFormat('Y-m-d', $date);

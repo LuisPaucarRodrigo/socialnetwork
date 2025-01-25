@@ -22,7 +22,9 @@ use App\Models\CicsaInstallationMaterial;
 use App\Models\CicsaMaterialsItem;
 use Illuminate\Http\Request;
 use App\Http\Requests\Cicsa\StoreOrUpdateMaterialRequest;
+use App\Http\Requests\Cicsa\StoreOrUpdateOCValidation;
 use App\Http\Requests\Cicsa\StoreOrUpdatePurchaseOrderRequest;
+use App\Http\Requests\Cicsa\StoreOrUpdateServiceOrder;
 use App\Imports\CicsaMaterialImport;
 use App\Models\CicsaAssignation;
 use App\Models\CicsaChargeArea;
@@ -34,6 +36,7 @@ use App\Models\CicsaServiceOrder;
 use App\Models\CicsaPurchaseOrderValidation;
 use App\Models\CostLine;
 use App\Models\ToolsGtd;
+use App\Services\CicsaServices;
 use Inertia\Inertia;
 use Carbon\Carbon;
 use Exception;
@@ -42,36 +45,48 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class CicsaController extends Controller
 {
+    protected $cicsaService;
+
+    public function __construct(CicsaServices $cicsaService)
+    {
+        $this->cicsaService = $cicsaService;
+    }
+
     public function index($type)
     {
-        $projects = CicsaAssignation::whereHas('project', function ($subQuery) use ($type) {
-            $subQuery->where('cost_line_id', $type);
-        })
-            ->where(function ($query) {
-                $query->whereDoesntHave('cicsa_charge_area')
-                    ->orWhere(function ($query) {
-                        $query->whereHas('cicsa_charge_area', function ($subQuery) {
-                            $subQuery->where(function ($subQuery) {
-                                $subQuery->whereNull('invoice_number')
-                                    ->orWhereNull('invoice_date')
-                                    ->orWhereNull('amount');
-                            })
-                                ->whereNull('deposit_date');
-                        });
+        // $projects = CicsaAssignation::whereHas('project', function ($subQuery) use ($type) {
+        //     $subQuery->where('cost_line_id', $type);
+        // });
+        $projects = $this->cicsaService->cicsaBaseQuery($type);
+        // $projects = $projects->whereHas('project', function ($query) {
+        //     $query->where('is_accepted', 1);
+        // })
+        $projects = $projects->where(function ($query) {
+            $query->whereDoesntHave('cicsa_charge_area')
+                ->orWhere(function ($query) {
+                    $query->whereHas('cicsa_charge_area', function ($subQuery) {
+                        $subQuery->where(function ($subQuery) {
+                            $subQuery->whereNull('invoice_number')
+                                ->orWhereNull('invoice_date')
+                                ->orWhereNull('amount');
+                        })
+                            ->whereNull('deposit_date');
                     });
-            })
-            ->with(
-                'cicsa_feasibility.cicsa_feasibility_materials',
-                'cicsa_materials.cicsa_material_items',
-                'cicsa_installation.cicsa_installation_materials',
-                'cicsa_purchase_order',
-                'cicsa_purchase_order_validation',
-                'cicsa_service_order',
-                'cicsa_charge_area',
-                'project.cost_center'
-            )
+                });
+        });
+        // ->with(
+        //     'cicsa_feasibility.cicsa_feasibility_materials',
+        //     'cicsa_materials.cicsa_material_items',
+        //     'cicsa_installation.cicsa_installation_materials',
+        //     'cicsa_purchase_order',
+        //     'cicsa_purchase_order_validation',
+        //     'cicsa_service_order',
+        //     'cicsa_charge_area',
+        //     'project.cost_center'
+        // )
+        $projects = $this->cicsaService->addRelations($projects);
+        $projects = $projects->paginate(15);
 
-            ->paginate(15);
         $projects->getCollection()->each(function ($project) {
             $project->setAppends([
                 'total_materials',
@@ -83,15 +98,13 @@ class CicsaController extends Controller
                 'last_charge_status_date',
             ]);
         });
-        if($type == 2){
-            $cost_line = CostLine::where('name', 'PEXT')->with('cost_center')->first();
-        }
-        if($type == 1){
-            $cost_line = CostLine::where('name', 'PINT')->with('cost_center')->first();
-        }
+        // $projects = $this->cicsaService->addCalculatedFields($projectss);
+
+        $cost_center = $this->cicsaService->differentialIndex($type);
+
         return Inertia::render('Cicsa/CicsaIndex', [
             'projects' => $projects,
-            'center_list' => $cost_line->cost_center,
+            'center_list' => $cost_center,
             'type' => $type,
         ]);
     }
@@ -106,23 +119,14 @@ class CicsaController extends Controller
         try {
             $stages = $request->typeStages;
             if ($stages === "Todos") {
-                $projectsCicsa = CicsaAssignation::whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
-                })
-                    ->with(
-                        'cicsa_feasibility.cicsa_feasibility_materials',
-                        'cicsa_materials.cicsa_material_items',
-                        'cicsa_installation.cicsa_installation_materials',
-                        'cicsa_purchase_order',
-                        'cicsa_purchase_order_validation',
-                        'cicsa_service_order',
-                        'cicsa_charge_area',
-                        'project.cost_center'
-                    );
+                $projectsCicsa = $this->cicsaService->cicsaBaseQuery($type);
+                $projectsCicsa = $this->cicsaService->addRelations($projectsCicsa);
             } else {
                 $projectsCicsa = CicsaAssignation::whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
-                });
+                    $subQuery->where('is_accepted', 1)
+                        ->where('cost_line_id', $type);
+                })
+                    ->with('project.cost_center');
                 if ($stages === "Proyecto") {
                     $projectsCicsa->with(
                         'cicsa_feasibility.cicsa_feasibility_materials',
@@ -144,35 +148,9 @@ class CicsaController extends Controller
                     );
                 }
             }
-
-            if ($request->opNoDate) {
-                $projectsCicsa->where('assignation_date', null);
-            }
-            if ($request->opStartDate) {
-                $projectsCicsa->where('assignation_date', '>=', $request->opStartDate);
-            }
-            if ($request->opEndDate) {
-                $projectsCicsa->where('assignation_date', '<=', $request->opEndDate);
-            }
-            if (!empty($request->search)) {
-                $search = $request->search;
-                $searchTerms = explode(' ', $search);
-                $projectsCicsa = $projectsCicsa->where(function ($query) use ($searchTerms) {
-                    foreach ($searchTerms as $term) {
-                        $query->where('project_name', 'like', "%$term%")
-                            ->orWhere('project_code', 'like', "%$term%")
-                            ->orWhere('cpe', 'like', "%$term%");
-                    }
-                });
-            }
-            if (count($request->cost_center) < 7) {
-                $costCenter = $request->cost_center;
-                $projectsCicsa = $projectsCicsa->whereHas('project.cost_center', function ($query) use ($costCenter) {
-                    $query->whereIn('name', $costCenter);
-                });
-            }
-
+            $projectsCicsa = $this->cicsaService->filteredAdvance($request, $projectsCicsa);
             $projectsCicsa = $projectsCicsa->get();
+
             $projectsCicsa->each(function ($project) {
                 $project->setAppends([
                     'total_materials',
@@ -184,45 +162,8 @@ class CicsaController extends Controller
                     'last_charge_status_date',
                 ]);
             });
-            if ($stages === "Administracion") {
-                $projectsCicsa = $projectsCicsa->filter(function ($item) {
-                    return $item->cicsa_project_status === 'Completado';
-                });
-            } elseif ($stages === "Cobranza") {
-                $projectsCicsa = $projectsCicsa->filter(function ($item) {
-                    return $item->cicsa_administration_status === 'Completado';
-                });
-            }
-
-            if (count($request->state_charge_area) < 4) {
-                $selectedPS = $request->state_charge_area;
-                $projectsCicsa = $projectsCicsa->filter(function ($project) use ($selectedPS) {
-                    return $project->cicsa_charge_area->contains(function ($chargeArea) use ($selectedPS) {
-                        return in_array($chargeArea->state, $selectedPS);
-                    });
-                });
-            }
-
-            if (count($request->project_status) < 3) {
-                $selectedPS = $request->project_status;
-                $projectsCicsa = $projectsCicsa->filter(function ($item) use ($selectedPS) {
-                    return in_array($item->cicsa_project_status, $selectedPS);
-                });
-            }
-
-            if (count($request->administration_status) < 3) {
-                $selectedPS = $request->administration_status;
-                $projectsCicsa = $projectsCicsa->filter(function ($item) use ($selectedPS) {
-                    return in_array($item->cicsa_administration_status, $selectedPS);
-                });
-            }
-
-            if (count($request->charge_status) < 3) {
-                $selectedPS = $request->charge_status;
-                $projectsCicsa = $projectsCicsa->filter(function ($item) use ($selectedPS) {
-                    return in_array($item->cicsa_charge_status, $selectedPS);
-                });
-            }
+            $projectsCicsa = $this->cicsaService->filteredCalculated($stages, $projectsCicsa);
+            $projectsCicsa = $this->cicsaService->filteredExternal($request, $projectsCicsa);
 
             return response()->json($projectsCicsa->values()->all(), 200);
         } catch (\Exception $th) {
@@ -230,35 +171,34 @@ class CicsaController extends Controller
         }
     }
 
-
-
     public function destroy($ca_id)
     {
-        CicsaAssignation::findOrFail($ca_id)->delete();
-        return response()->noContent();
+        try {
+            CicsaAssignation::findOrFail($ca_id)->delete();
+            return response()->noContent();
+        } catch (Exception $e) {
+            return response()->json($e);
+        }
     }
 
     public function indexAssignation(Request $request, $type, $searchCondition = null,)
     {
         if ($request->isMethod('get')) {
-            $assignation = CicsaAssignation::whereHas('project', function ($subQuery) use ($type) {
-                $subQuery->where('cost_line_id', $type);
-            })
-                ->with('project.cost_center')->orderBy('created_at', 'desc')->paginate();
+            $assignation = $this->cicsaService->cicsaBaseQuery($type);
+            $assignation = $assignation->with('project.cost_center')->orderBy('created_at', 'desc')->paginate();
             return Inertia::render('Cicsa/CicsaAssignation', [
                 'assignation' => $assignation,
                 'searchCondition' => $searchCondition,
                 'type' => $type,
             ]);
         } elseif ($request->isMethod('post')) {
-            $assignation = CicsaAssignation::whereHas('project', function ($subQuery) use ($type) {
-                $subQuery->where('cost_line_id', $type);
-            })
-                ->with('project.cost_center')
+            $assignation = $this->cicsaService->cicsaBaseQuery($type);
+            $assignation = $assignation->with('project.cost_center')
                 ->where(function ($query) use ($request) {
-                    $query->orWhere('project_name', 'like', "%$request->searchQuery%")
-                        ->orWhere('project_code', 'like', "%$request->searchQuery%")
-                        ->orWhere('cpe', 'like', "%$request->searchQuery%");
+                    $this->cicsaService->searchBase($query, $request->searchQuery);
+                    // $query->orWhere('project_name', 'like', "%$request->searchQuery%")
+                    //     ->orWhere('project_code', 'like', "%$request->searchQuery%")
+                    //     ->orWhere('cpe', 'like', "%$request->searchQuery%");
                 })
                 ->get();
             return response()->json([
@@ -275,10 +215,11 @@ class CicsaController extends Controller
     public function indexFeasibilities(Request $request, $type, $searchCondition = null)
     {
         if ($request->isMethod('get')) {
-            $feasibility = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')->whereHas('project', function ($subQuery) use ($type) {
-                $subQuery->where('cost_line_id', $type);
-            })
-                ->with('cicsa_feasibility.cicsa_feasibility_materials', 'project.cost_center')
+            $feasibility = $this->cicsaService->cicsaBaseQuery($type);
+            $feasibility = $feasibility->with(
+                'cicsa_feasibility.cicsa_feasibility_materials',
+                'project.cost_center'
+            )
                 ->orderBy('assignation_date', 'desc')
                 ->paginate(20);
             return Inertia::render('Cicsa/CicsaFeasibility', [
@@ -287,14 +228,13 @@ class CicsaController extends Controller
                 'type' => $type,
             ]);
         } elseif ($request->isMethod('post')) {
-            $feasibility = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')->whereHas('project', function ($subQuery) use ($type) {
-                $subQuery->where('cost_line_id', $type);
-            })
-                ->with('cicsa_feasibility.cicsa_feasibility_materials', 'project.cost_center')
+            $feasibility = $this->cicsaService->cicsaBaseQuery($type);
+            $feasibility = $feasibility->with(
+                'cicsa_feasibility.cicsa_feasibility_materials',
+                'project.cost_center'
+            )
                 ->where(function ($query) use ($request) {
-                    $query->orWhere('project_name', 'like', "%$request->searchQuery%")
-                        ->orWhere('project_code', 'like', "%$request->searchQuery%")
-                        ->orWhere('cpe', 'like', "%$request->searchQuery%");
+                    $this->cicsaService->searchBase($query, $request->searchQuery);
                 })
                 ->get();
             return response()->json([
@@ -330,11 +270,17 @@ class CicsaController extends Controller
     public function indexMaterial(Request $request, $type, $searchCondition = null)
     {
         if ($request->isMethod('get')) {
-            $material = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
-                ->whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
-                })
-                ->with('cicsa_feasibility.cicsa_feasibility_materials', 'cicsa_materials.cicsa_material_items', 'project.cost_center')
+            // $material = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
+            //     ->whereHas('project', function ($subQuery) use ($type) {
+            //         $subQuery->where('is_accepted', 1)->where('cost_line_id', $type);
+            //     })
+            $material = $this->cicsaService->cicsaBaseQuery($type);
+
+            $material = $material->with(
+                'cicsa_feasibility.cicsa_feasibility_materials',
+                'cicsa_materials.cicsa_material_items',
+                'project.cost_center'
+            )
                 ->orderBy('assignation_date', 'desc')
                 ->paginate(20);
             return Inertia::render('Cicsa/CicsaMaterial', [
@@ -343,15 +289,15 @@ class CicsaController extends Controller
                 'type' => $type
             ]);
         } elseif ($request->isMethod('post')) {
-            $material = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
-                ->with('cicsa_feasibility.cicsa_feasibility_materials', 'cicsa_materials.cicsa_material_items', 'project.cost_center')
-                ->whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
-                })
+            $material = $this->cicsaService->cicsaBaseQuery($type);
+
+            $material = $material->with(
+                'cicsa_feasibility.cicsa_feasibility_materials',
+                'cicsa_materials.cicsa_material_items',
+                'project.cost_center'
+            )
                 ->where(function ($query) use ($request) {
-                    $query->orWhere('project_name', 'like', "%$request->searchQuery%")
-                        ->orWhere('project_code', 'like', "%$request->searchQuery%")
-                        ->orWhere('cpe', 'like', "%$request->searchQuery%");
+                    $this->cicsaService->searchBase($query, $request->searchQuery);
                 })
                 ->get();
             return response()->json([
@@ -386,6 +332,7 @@ class CicsaController extends Controller
         if ($cicsaMaterial->cicsa_material_items) {
             CicsaMaterialsItem::where('cicsa_material_id', $cicsaMaterial->id)->delete();
         }
+
         foreach ($request->cicsa_material_items as $item) {
             $item['cicsa_material_id'] = $cicsaMaterial->id;
             CicsaMaterialsItem::create($item);
@@ -437,12 +384,10 @@ class CicsaController extends Controller
     public function indexPurchaseOrder(Request $request, $type, $searchCondition = null)
     {
         if ($request->isMethod('get')) {
-            $purchase_order = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
-                ->with('cicsa_installation', 'cicsa_purchase_order', 'project.cost_center')
+            $purchase_order = $this->cicsaService->cicsaBaseQuery($type);
+
+            $purchase_order = $purchase_order->with('cicsa_installation', 'cicsa_purchase_order', 'project.cost_center')
                 // ->whereDoesntHave('cicsa_purchase_order_validation')
-                ->whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
-                })
                 ->orderBy('assignation_date', 'desc')
                 ->paginate(20);
             return Inertia::render('Cicsa/CicsaPurchaseOrder', [
@@ -452,12 +397,9 @@ class CicsaController extends Controller
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->searchQuery;
-            $purchase_order = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
-                ->with('cicsa_installation', 'cicsa_purchase_order', 'project.cost_center')
+            $purchase_order = $this->cicsaService->cicsaBaseQuery($type);
+            $purchase_order = $purchase_order->with('cicsa_installation', 'cicsa_purchase_order', 'project.cost_center')
                 // ->whereDoesntHave('cicsa_purchase_order_validation')
-                ->whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
-                })
                 ->where(function ($query) use ($searchQuery) {
                     $query->orWhere('project_name', 'like', "%$searchQuery%")
                         ->orWhere('project_code', 'like', "%$searchQuery%")
@@ -539,15 +481,12 @@ class CicsaController extends Controller
     public function indexInstallation(Request $request, $type, $searchCondition = null)
     {
         if ($request->isMethod('get')) {
-            $installations = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
-                ->with(
-                    'cicsa_installation.cicsa_installation_materials',
-                    'cicsa_installation.user',
-                    'project.cost_center'
-                )
-                ->whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
-                })
+            $installations = $this->cicsaService->cicsaBaseQuery($type);
+            $installations = $installations->with(
+                'cicsa_installation.cicsa_installation_materials',
+                'cicsa_installation.user',
+                'project.cost_center'
+            )
                 ->orderBy('assignation_date', 'desc')
                 ->paginate();
             $installations->getCollection()->each(function ($item) {
@@ -561,15 +500,18 @@ class CicsaController extends Controller
                 'type' => $type
             ]);
         } elseif ($request->isMethod('post')) {
-            $installations = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
-                ->with(
-                    'cicsa_installation.cicsa_installation_materials',
-                    'cicsa_installation.user',
-                    'project.cost_center'
-                )
-                ->whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
-                })
+            // $installations = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
+            //     ->with(
+            //         'cicsa_installation.cicsa_installation_materials',
+            //         'cicsa_installation.user',
+            //         'project.cost_center'
+            //     )
+            $installations = $this->cicsaService->cicsaBaseQuery($type);
+            $installations = $installations->with(
+                'cicsa_installation.cicsa_installation_materials',
+                'cicsa_installation.user',
+                'project.cost_center'
+            )
                 ->where(function ($query) use ($request) {
                     $query->orWhere('project_name', 'like', "%$request->searchQuery%")
                         ->orWhere('project_code', 'like', "%$request->searchQuery%")
@@ -615,16 +557,13 @@ class CicsaController extends Controller
     public function indexOCValidation(Request $request, $type,  $searchCondition = null)
     {
         if ($request->isMethod('get')) {
-            $purchase_validations = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
-                ->with([
-                    'cicsa_purchase_order_validation.cicsa_purchase_order' => function ($query) {
-                        $query->select('id', 'oc_number');
-                    },
-                    'project.cost_center'
-                ])
-                ->whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
-                })
+            $purchase_validations = $this->cicsaService->cicsaBaseQuery($type);
+            $purchase_validations = $purchase_validations->with([
+                'cicsa_purchase_order_validation.cicsa_purchase_order' => function ($query) {
+                    $query->select('id', 'oc_number');
+                },
+                'project.cost_center'
+            ])
                 // ->whereDoesntHave('cicsa_service_order')
                 // ->whereHas('cicsa_purchase_order', function ($query) {
                 //     $query->whereNotNull('oc_date')
@@ -643,16 +582,20 @@ class CicsaController extends Controller
         } elseif ($request->isMethod('post')) {
 
             $searchQuery = $request->searchQuery;
-            $purchase_validations = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
-                ->with([
-                    'cicsa_purchase_order_validation.cicsa_purchase_order' => function ($query) {
-                        $query->select('id', 'oc_number');
-                    },
-                    'project.cost_center'
-                ])
-                ->whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
-                })
+            // $purchase_validations = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
+            //     ->with([
+            //         'cicsa_purchase_order_validation.cicsa_purchase_order' => function ($query) {
+            //             $query->select('id', 'oc_number');
+            //         },
+            //         'project.cost_center'
+            //     ])
+            $purchase_validations = $this->cicsaService->cicsaBaseQuery($type);
+            $purchase_validations = $purchase_validations->with([
+                'cicsa_purchase_order_validation.cicsa_purchase_order' => function ($query) {
+                    $query->select('id', 'oc_number');
+                },
+                'project.cost_center'
+            ])
                 // ->whereDoesntHave('cicsa_service_order')
                 // ->whereHas('cicsa_purchase_order', function ($query) {
                 //     $query->whereNotNull('oc_date')
@@ -665,6 +608,7 @@ class CicsaController extends Controller
                     $query->orWhere('project_name', 'like', "%$searchQuery%")
                         ->orWhere('project_code', 'like', "%$searchQuery%")
                         ->orWhere('cpe', 'like', "%$searchQuery%")
+
                         ->orWhereHas('cicsa_purchase_order', function ($query) use ($searchQuery) {
                             $query->where('oc_number', 'like', "%$searchQuery%");
                         })
@@ -679,21 +623,9 @@ class CicsaController extends Controller
         }
     }
 
-    public function storeOrUpdateOCValidation(Request $request, $cicsa_validation_order_id)
+    public function storeOrUpdateOCValidation(StoreOrUpdateOCValidation $request, $cicsa_validation_order_id)
     {
-        $validateData = $request->validate([
-            'validation_date' => 'required',
-            'materials_control' => 'required',
-            'file_validation' => 'required',
-            'supervisor' => 'required',
-            'warehouse' => 'required',
-            'boss' => 'required',
-            'liquidator' => 'required',
-            'superintendent' => 'required',
-            'observations' => 'nullable',
-            'user_name' => 'required',
-            'user_id' => 'required',
-        ]);
+        $validateData = $request->validated();
         $validationOc = CicsaPurchaseOrderValidation::with([
             'cicsa_purchase_order' => function ($query) {
                 $query->select('id', 'oc_number');
@@ -712,16 +644,13 @@ class CicsaController extends Controller
     public function indexServiceOrder(Request $request, $type, $searchCondition = null)
     {
         if ($request->isMethod('get')) {
-            $service_orders = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
-                ->with([
-                    'cicsa_service_order.cicsa_purchase_order' => function ($query) {
-                        $query->select('id', 'oc_number');
-                    },
-                    'project.cost_center'
-                ])
-                ->whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
-                })
+            $service_orders = $this->cicsaService->cicsaBaseQuery($type);
+            $service_orders = $service_orders->with([
+                'cicsa_service_order.cicsa_purchase_order' => function ($query) {
+                    $query->select('id', 'oc_number');
+                },
+                'project.cost_center'
+            ])
                 // ->whereDoesntHave('cicsa_charge_area')
                 // ->whereHas('cicsa_purchase_order_validation',function($query){
                 //     $query->where('file_validation','Completado')
@@ -741,16 +670,13 @@ class CicsaController extends Controller
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->searchQuery;
-            $service_orders = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
-                ->with([
-                    'cicsa_service_order.cicsa_purchase_order' => function ($query) {
-                        $query->select('id', 'oc_number');
-                    },
-                    'project.cost_center'
-                ])
-                ->whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
-                })
+            $service_orders = $this->cicsaService->cicsaBaseQuery($type);
+            $service_orders = $service_orders->with([
+                'cicsa_service_order.cicsa_purchase_order' => function ($query) {
+                    $query->select('id', 'oc_number');
+                },
+                'project.cost_center'
+            ])
                 // ->whereDoesntHave('cicsa_charge_area')
                 // ->whereHas('cicsa_purchase_order_validation',function($query){
                 //     $query->where('file_validation','Completado')
@@ -778,20 +704,9 @@ class CicsaController extends Controller
         }
     }
 
-    public function updateServiceOrder(Request $request, $cicsa_service_order_id)
+    public function updateServiceOrder(StoreOrUpdateServiceOrder $request, $cicsa_service_order_id)
     {
-        $validateData = $request->validate([
-            'service_order_date' => 'required',
-            'service_order' => 'required',
-            'estimate_sheet' => 'required',
-            'purchase_order' => 'required',
-            'pdf_invoice' => 'required',
-            'zip_invoice' => 'required',
-            'document' => 'required',
-            'document_invoice' => 'nullable',
-            'user_name' => 'required',
-            'user_id' => 'required',
-        ]);
+        $validateData = $request->validated();
         $document = null;
         $document_invoice = null;
         DB::beginTransaction();
@@ -849,17 +764,14 @@ class CicsaController extends Controller
     public function indexChargeArea(Request $request, $type, $searchCondition = null)
     {
         if ($request->isMethod('get')) {
-            $charge_areas = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
-                ->with([
-                    'cicsa_charge_area.cicsa_purchase_order' => function ($query) {
-                        $query->select('id', 'oc_number')
-                            ->with(['cicsa_service_order:id,document_invoice,cicsa_purchase_order_id']);
-                    },
-                    'project.cost_center'
-                ])
-                ->whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
-                })
+            $charge_areas = $this->cicsaService->cicsaBaseQuery($type);
+            $charge_areas = $charge_areas->with([
+                'cicsa_charge_area.cicsa_purchase_order' => function ($query) {
+                    $query->select('id', 'oc_number')
+                        ->with(['cicsa_service_order:id,document_invoice,cicsa_purchase_order_id']);
+                },
+                'project.cost_center'
+            ])
                 ->orderBy('assignation_date', 'desc')
                 ->paginate(20);
             return Inertia::render('Cicsa/CicsaChargeArea', [
@@ -869,17 +781,14 @@ class CicsaController extends Controller
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->searchQuery;
-            $charge_areas = CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe', 'project_id')
-                ->with([
-                    'cicsa_charge_area.cicsa_purchase_order' => function ($query) {
-                        $query->select('id', 'oc_number')
-                            ->with(['cicsa_service_order:id,document_invoice,cicsa_purchase_order_id']);
-                    },
-                    'project.cost_center'
-                ])
-                ->whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('cost_line_id', $type);
-                })
+            $charge_areas = $this->cicsaService->cicsaBaseQuery($type);
+            $charge_areas = $charge_areas->with([
+                'cicsa_charge_area.cicsa_purchase_order' => function ($query) {
+                    $query->select('id', 'oc_number')
+                        ->with(['cicsa_service_order:id,document_invoice,cicsa_purchase_order_id']);
+                },
+                'project.cost_center'
+            ])
                 // ->whereHas('cicsa_service_order',function($query){
                 //     $query->where('service_order','Completado')
                 //     ->where('estimate_sheet','Completado')
@@ -910,33 +819,9 @@ class CicsaController extends Controller
         }
     }
 
-    public function updateChargeArea(Request $request, $cicsa_charge_area_id)
+    public function updateChargeArea(StoreOrUpdateChargeArea $request, $cicsa_charge_area_id)
     {
-        $validateData = $request->validate([
-            'invoice_number' => 'nullable',
-            'invoice_date' => 'nullable',
-            'credit_to' => 'nullable|min:0',
-            'deposit_date' => [
-                'nullable',
-                'date',
-                function ($attribute, $value, $fail) use ($request) {
-                    if ($value && Carbon::parse($value)->lt(Carbon::parse($request->invoice_date))) {
-                        $fail('La fecha de abono debe ser mayor o igual que la fecha de la factura.');
-                    }
-                }
-            ],
-            'document' => 'nullable',
-            'amount' => 'required',
-            'state_detraction' => 'required|string',
-            'transaction_number_current' => 'nullable',
-            'checking_account_amount' => 'nullable|string',
-            'deposit_date_bank' => 'nullable|date',
-            'transaction_number_bank' => 'nullable',
-            'amount_bank' => 'nullable|numeric',
-            'user_name' => 'required',
-            'user_id' => 'required',
-        ]);
-
+        $validateData = $request->validated();
         DB::beginTransaction();
         try {
             $validateData['state_detraction'] = $validateData['state_detraction'] === 'true' ? 1 : 0;

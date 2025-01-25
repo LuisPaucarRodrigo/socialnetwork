@@ -258,10 +258,7 @@ class ApiController extends Controller
 
     private function sanitizeText($text)
     {
-        // Convertir a mayúsculas
         $sanitizedText = strtoupper($text);
-
-        // Reemplazar guiones y subguiones por espacios
         $sanitizedText = str_replace(['-', '_'], ' ', $sanitizedText);
 
         return $sanitizedText;
@@ -501,7 +498,6 @@ class ApiController extends Controller
                                 ->where('initial_budget', '>', 0);
                         })
                             ->orWhereHas('cost_center', function ($costCenterQuery) {
-                                // No aplica filtro de fechas para los demás cost_center
                                 $costCenterQuery->where('name', 'not like', '%Mantto%');
                             });
                     });

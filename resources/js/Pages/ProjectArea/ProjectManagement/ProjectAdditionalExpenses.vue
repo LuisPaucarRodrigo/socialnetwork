@@ -127,6 +127,12 @@
             </div>
         </div>
         <div class="overflow-x-auto h-[85vh]">
+            <div class="mb-4">
+                <ChartsAdditionalExpenses 
+                    :acExpensesAmounts="acExpensesAmounts"
+                    :scExpensesAmounts="scExpensesAmounts"
+                />
+            </div>
             <table class="w-full">
                 <thead class="sticky top-0 z-20">
                     <tr
@@ -224,14 +230,14 @@
                 <tbody>
                     <tr v-for="item in expenses.data || expenses" :key="item.id" class="text-gray-700">
                         <td :class="[
-                            'border-b border-gray-200',
+                            'sticky left-0 z-10 border-b border-gray-200',
                             {
-                                'bg-indigo-500': item.is_accepted === null,
-                                'bg-green-500': item.is_accepted == true,
-                                'bg-red-500': item.is_accepted == false,
+                                'bg-indigo-500': item.real_state === 'Pendiente',
+                                'bg-green-500': item.real_state == 'Aceptado - Validado',
+                                'bg-amber-500': item.real_state == 'Aceptado',
+                                'bg-red-500': item.real_state == 'Rechazado',
                             },
-                        ]">
-                        </td>
+                        ]"></td>
                         <!-- <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                             {{ item.zone }}
                         </td> -->
@@ -391,6 +397,7 @@ import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
+import ChartsAdditionalExpenses from "./ChartsAdditionalExpenses.vue";
 
 const props = defineProps({
     expense: Object,
@@ -401,7 +408,9 @@ const props = defineProps({
     project_id: String,
     fixedOrAdditional: Boolean,
     cicsaAssignation: Object,
-    type: Number
+    type: Number,
+    acExpensesAmounts: Array,
+    scExpensesAmounts: Array,
 });
 
 const expenses = ref(props.expense);
@@ -472,6 +481,7 @@ const initialExpenseFixed = [
     'Adicionales',
     'Daños de Vehículos',
     'Planilla',
+    "Pago a Terceros",
     'Otros',
 ]
 
@@ -487,6 +497,7 @@ const initialExpenseAdditional = [
     "Equipos",
     "EPPs",
     "Seguros y Pólizas",
+    "Pago a Terceros",
     "Otros",
 ]
 
@@ -625,5 +636,6 @@ watch(
     () => { actionForm.value = { ids: [] }; },
     { deep: true }
 );
+
 
 </script>

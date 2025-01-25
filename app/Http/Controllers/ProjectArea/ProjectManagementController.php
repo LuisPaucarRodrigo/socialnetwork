@@ -311,6 +311,7 @@ class ProjectManagementController extends Controller
         $acArr = $project_id->additionalCosts()
             ->select('expense_type', DB::raw('SUM(amount/(1+igv/100)) as total_amount'))
             ->groupBy('expense_type')
+            ->orderBy('total_amount', 'desc')
             ->get();
         $acExpensesAmounts = $acArr->map(function ($cost) {
             return [
@@ -324,6 +325,7 @@ class ProjectManagementController extends Controller
         $scArr = $project_id->staticCosts()
             ->select('expense_type', DB::raw('SUM(amount/(1+igv/100)) as total_amount'))
             ->groupBy('expense_type')
+            ->orderBy('total_amount', 'desc')
             ->get();
 
 
@@ -354,11 +356,11 @@ class ProjectManagementController extends Controller
     public function project_expense_details(Request $request)
     {
         $arrModels = [
-            'additional' => 'App\Models\AdditionalCost',
-            'static' => 'App\Models\StaticCost'
+            'additional' => 'additional_costs',
+            'static' => 'static_costs'
         ];
-        $model = app($arrModels[$request->spMod]);
-        $data = $model
+        $table = $arrModels[$request->spMod];
+        $data = \DB::table($table)
             ->select('zone as spentName', \DB::raw('ROUND(SUM(amount / (1 + igv / 100)), 2) as amount'))
             ->where('project_id', $request->project_id)
             ->where('expense_type', $request->expType)

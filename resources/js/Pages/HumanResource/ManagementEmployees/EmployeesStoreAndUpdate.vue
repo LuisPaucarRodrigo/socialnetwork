@@ -596,7 +596,7 @@
                                 alguna
                                 condición médica? Si es así, por favor especifique</InputLabel>
                             <div class="mt-2">
-                                <textarea v-model="form.medical_condition" id="medical_condition"
+                                <textarea v-model="form.medical_condition" id="medical_condition" required
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.medical_condition" />
                             </div>
@@ -607,7 +607,7 @@
                                 algún
                                 medicamento? Si es así, por favor especifique</InputLabel>
                             <div class="mt-2">
-                                <textarea v-model="form.allergies" id="allergies"
+                                <textarea v-model="form.allergies" id="allergies" required
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.allergies" />
                             </div>
@@ -617,7 +617,7 @@
                             <InputLabel for="operations">¿Ha tenido alguna
                                 operación? Si es así, por favor especifique</InputLabel>
                             <div class="mt-2">
-                                <textarea v-model="form.operations" id="operations"
+                                <textarea v-model="form.operations" id="operations" required
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.operations" />
                             </div>
@@ -627,7 +627,7 @@
                             <InputLabel for="accidents">¿Ha sufrido algún
                                 accidente grave? Si es así, por favor especifique</InputLabel>
                             <div class="mt-2">
-                                <textarea v-model="form.accidents" id="accidents"
+                                <textarea v-model="form.accidents" id="accidents" required
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.accidents" />
                             </div>
@@ -638,7 +638,7 @@
                                 alguna
                                 vacuna? Si es así, por favor especifique</InputLabel>
                             <div class="mt-2">
-                                <textarea v-model="form.vaccinations" id="vaccinations"
+                                <textarea v-model="form.vaccinations" id="vaccinations" required
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                 <InputError :message="form.errors.vaccinations" />
                             </div>

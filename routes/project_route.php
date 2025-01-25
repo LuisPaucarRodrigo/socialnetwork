@@ -246,12 +246,18 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     Route::get('/projectPext/expenses/export/general/{fixedOrAdditional}', [PextController::class, 'expense_export_general'])->name('projectmanagement.pext.expenses.general.export');
 
     //Project Pext Additional
-    Route::any('/projectPext/additional/index/{type}', [PextController::class, 'index_additional'])->name('projectmanagement.pext.additional.index');
+    Route::any('/projectPext/additional_index/{type}/{searchCondition?}', [PextController::class, 'index_additional'])->name('projectmanagement.pext.additional.index');
+    Route::any('/projectPext/additional_rejected/index/{type}', [PextController::class, 'index_additional_rejected'])->name('projectmanagement.pext.additional.index_rejected');
+    Route::post('/projectPext/additional_reject/{pa_id}', [PextController::class, 'rejectProjectAdditional'])->name('projectmanagement.pext.additional.reject');
+
+
     Route::post('/projectPext/additional/store/quote/{project_quote_id?}', [PextController::class, 'store_quote'])->name('projectmanagement.pext.store.quote');
-    Route::get('/projectPext/additional/export/quote/{project_id?}', [PextController::class, 'export_quote'])->name('projectmanagement.pext.export.pdf.quote');
+    Route::get('/projectPext/additional/export/quote/{project_id}', [PextController::class, 'export_quote'])->name('projectmanagement.pext.export.pdf.quote');
     Route::post('/projectPext/additional/store/{cicsa_assignation_id?}', [PextController::class, 'updateOrStoreAdditional'])->name('projectmanagement.pext.additional.store');
     Route::get('/projectPext/additionalOrFixed/expenses/{project_id}/index/{fixedOrAdditional}/{type}', [PextController::class, 'additional_expense_index'])->name('pext.additional.expense.index');
     Route::get('/projectPext/additionalOrFixed/expenses/general/{fixedOrAdditional}/index/{type}', [PextController::class, 'additional_expense_index_general'])->name('pext.additional.expense.general.index');
+    Route::post('/projectPext/additionalOrFixed/getCicsaAssignation/search_zone', [PextController::class, 'getCicsaAssignation'])->name('pext.additional.expense.general.getCicsaAssignation');
+    
     Route::post('/projectPext/additionalOrFixed/expense/search/{project_id}', [PextController::class, 'search_advance_monthly_or_additional_expense'])->name('pext.monthly.additional.expense.search_advance');
     Route::post('/projectPext/additionalOrFixed/expense/general/search', [PextController::class, 'search_advance_additional_expense_general'])->name('pext.monthly.additional.expense.general.search_advance');
     Route::post('/projectPext/massive_update', [PextController::class, 'masiveUpdate'])->name('projectmanagement.pext.massiveUpdate');
@@ -274,7 +280,7 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
 
 
 
-    Route::get('/project/purchases_request/{project_id}/additional_costs', [AdditionalCostsController::class, 'index'])->name('projectmanagement.additionalCosts');
+    Route::get('/project/purchases_request_index/{project_id}/additional_costs', [AdditionalCostsController::class, 'index'])->name('projectmanagement.additionalCosts');
     Route::get('/project/purchases_request/{project_id}/additional_costs/rejected', [AdditionalCostsController::class, 'indexRejected'])->name('projectmanagement.additionalCosts.rejected');
     Route::get('/additionalcost_photo/{additional_cost_id}', [AdditionalCostsController::class, 'download_ac_photo'])->name('additionalcost.archive');
     Route::post('/additionalcost_advancesearch/{project_id}', [AdditionalCostsController::class, 'search_costs'])->name('additionalcost.advance.search');

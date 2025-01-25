@@ -27,7 +27,7 @@ class AdditionalCostsRequest extends FormRequest
         $rules = [
             'expense_type' => 'required|string',
             'ruc' => 'required|numeric|digits:11',
-            'type_doc' => 'required|string|in:Efectivo,Deposito,Factura,Boleta,Voucher de Pago',
+            'type_doc' => 'required|string|in:Efectivo,Deposito,Factura,Boleta,Voucher de Pago,Sin Comprobante',
             'operation_number' => 'nullable',
             'operation_date' => 'nullable|date',
             'doc_number' => 'nullable|string',

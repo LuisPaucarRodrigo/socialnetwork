@@ -25,23 +25,23 @@
               <tbody class="tabular-nums">
                 <tr class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Presupuesto actual</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
                     S/. {{ current_budget.toFixed(2) }}
                   </td>
                 </tr>
                 <tr class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Presupuesto restante</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
                     S/. {{ project.remaining_budget.toFixed(2) }}</td>
                 </tr>
                 <tr class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total gastos en servicios</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">S/. {{
                     project.total_services_cost.toFixed(2) }}</td>
                 </tr>
                 <tr class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Total gastos en productos</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/.
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">S/.
                     {{ project.total_products_cost.toFixed(2) }}</td>
                 </tr>
                 <tr class="text-gray-700">
@@ -58,18 +58,18 @@
                       </button>
                     </div>
                   </td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
                     S/.{{ project.total_employee_costs.reduce((a, item) => item.total_payroll + a, 0).toFixed(2) }}
                   </td>
                 </tr>
                 <tr class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Costos Fijos</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
                     S/. {{ staticCosts.toFixed(2) }}</td>
                 </tr>
                 <tr class="text-gray-700">
                   <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Costos Variables</td>
-                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">
+                  <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
                     S/. {{ additionalCosts.toFixed(2) }}</td>
                 </tr>
               </tbody>
@@ -237,6 +237,7 @@ let operativeMod = [
   { spentName: 'Essalud', amount: project.total_employee_costs.reduce((a, item) => item.essalud + a, 0) },
   // { spentName : 'Viáticos', amount: 0 },
 ]
+
 
 const chartInstance = ref(null);
 const updateChart = () => {

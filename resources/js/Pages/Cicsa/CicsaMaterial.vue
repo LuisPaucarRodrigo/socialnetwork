@@ -516,7 +516,7 @@ import { formattedDate, setAxiosErrors } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import { EyeIcon } from '@heroicons/vue/24/outline';
 import { Toaster } from 'vue-sonner';
-import { notify } from '@/Components/Notification';
+import { notify, notifyError } from '@/Components/Notification';
 
 const { material, auth, searchCondition, type } = defineProps({
     material: Object,
@@ -586,8 +586,13 @@ function openEditSotModal(item, feasibility_materials, project_name, cpe) {
 async function submit() {
     let url = cicsa_material_id.value ? route('material.update', { cicsa_material_id: cicsa_material_id.value }) : route('material.store')
     let action = cicsa_material_id.value ? false : true
+    let method = cicsa_material_id.value ? 'put' : 'post'
     try {
-        const response = await axios.put(url, form)
+        const response = await axios({
+            method: method, // Dinámico según el caso
+            url: url,
+            data: form,
+        });
         updateMaterial(action, response.data)
         closeAddMaterialModal()
         // confirmUpdateMaterial.value = true
@@ -595,6 +600,7 @@ async function submit() {
         //     confirmUpdateMaterial.value = false
         // }, 1500)
     } catch (error) {
+        console.log(error)
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, form)

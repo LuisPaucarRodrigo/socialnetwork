@@ -24,28 +24,27 @@ use Inertia\Response;
 class ProfileController extends Controller
 {
     public function allFine(){
-        DB::beginTransaction();
-        try {
-            $costs = PextProjectExpense::with('project')->get();
-            foreach($costs as $item) {
-                $ge = GeneralExpense::create([
-                    'zone' => $item->zone,
-                    'expense_type' => $item->expense_type,
-                    'location' => $item?->project?->description ?? 'Sin descripción',
-                    'amount' => $item->amount,
-                    'operation_number' => $item->operation_number,
-                    'operation_date' => $item->operation_date,
-                    'account_statement_id' => $item?->account_statement_id,
-                ]);
-                $item->update(['general_expense_id'=>$ge->id]);
-            }
-            DB::commit();
+        $costs = AdditionalCost::with('general_expense')->get();
+        foreach($costs as $item) {
+            $ge = $item->general_expense;
+            $ge->update([
+                'type_doc' => $item->type_doc,
+            ]);
         }
-        catch (Exception $e) {
-            DB::rollBack();
-            return $e->getMessage();
+        $costs2 = StaticCost::with('general_expense')->get();
+        foreach($costs2 as $item) {
+            $ge = $item->general_expense;
+            $ge->update([
+                'type_doc' => $item->type_doc,
+            ]);
         }
-        
+        $costs3 = PextProjectExpense::with('general_expense')->get();
+        foreach($costs3 as $item) {
+            $ge = $item->general_expense;
+            $ge->update([
+                'type_doc' => $item->type_doc,
+            ]);
+        }
         return response()->json('siuuu');
     }
 

@@ -13,33 +13,12 @@ class ProjectConstants
         throw new \Exception("La constante '$name' no existe.");
     }
 
-    // costs pint types
-    public const PEXT_MANTTO = 'PEXT_MANTTO';
-    public const PEXT_ADDITIONAL = 'PEXT_ADDITIONAL';
-    public const PINT_MANTTO = 'PINT_MANTTO';
-    public const PINT_ADDITIONAL = 'PINT_ADDITIONAL';
+    //expenses constants
+    public const EXP_TYPE_ADDITIONAL = 'additional';
+    public const EXP_TYPE_STATIC = 'static';
+    public const EXP_TYPE_PAYROLL = 'payroll';
+    public const EXP_TYPE_HMONTHLY = 'huawei_monthly';
+    public const EXP_TYPE_PEXTEXP = 'pext_expense';
 
-    public static function projectTypes(): array
-    {
-        return [
-            self::PEXT_MANTTO,
-            self::PEXT_ADDITIONAL,
-            self::PINT_MANTTO,
-            self::PINT_ADDITIONAL,
-           
-        ];
-    }
 
-    public static function pintProjectTypes(): array {
-        return [
-            self::PINT_MANTTO => 'Pint Mantenimiento',
-            self::PINT_ADDITIONAL => 'Pint Adicional',
-        ];
-    }
-    public static function pextProjectTypes(): array {
-        return [
-            self::PEXT_MANTTO => 'Pext Mantenimiento',
-            self::PEXT_ADDITIONAL => 'Pext Adicional',
-        ];
-    }
 }

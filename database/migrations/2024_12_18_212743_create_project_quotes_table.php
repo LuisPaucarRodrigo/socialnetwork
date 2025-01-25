@@ -16,7 +16,9 @@ return new class extends Migration
             $table->string('delivery_place');
             $table->integer('delivery_time');
             $table->text('observations');
+            $table->boolean('fee');
             $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
         });
     }
