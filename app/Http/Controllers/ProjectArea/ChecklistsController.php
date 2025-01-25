@@ -398,7 +398,7 @@ class ChecklistsController extends Controller
                 "MDD"
             ],
             'docTypes' => [
-                "Efectivo",
+                "Sin Comprobante",
                 "RH(Recibo por Honorarios)",
                 "Factura",
                 "Boleta",
@@ -411,7 +411,7 @@ class ChecklistsController extends Controller
                 "Peaje",
                 "Taxis y Pasajes",
                 "Encomienda",
-                "Consumibles",
+                "Combustible UM",
                 "Bandeos",
                 "Herramientas",
                 "Equipos",

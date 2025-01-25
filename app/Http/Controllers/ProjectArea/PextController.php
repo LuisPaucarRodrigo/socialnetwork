@@ -581,8 +581,24 @@ class PextController extends Controller
 
         if ($type == 2) {
             $cicsa_assignation = CicsaAssignation::select('id', 'project_name', 'project_id', 'zone')
-                ->when($zone, function ($query, $zone) {
-                    return $query->where('zone', $zone);
+                ->where('zone', $zone)
+                ->whereHas('project', function ($query) {
+                    $query->where('cost_line_id', 2)
+                        ->whereHas('cost_center', function ($subQuery) {
+                            $subQuery->where('name', 'not like', '%Mantto%');
+                        });
+                })
+                ->where(function ($query) {
+                    $query->whereHas('cicsa_charge_area', function ($subQuery) {
+                        $subQuery->select('id', 'cicsa_assignation_id', 'invoice_number', 'invoice_date', 'amount', 'deposit_date')
+                            ->where(function ($subSubQuery) {
+                                $subSubQuery->whereNull('invoice_number')
+                                    ->orWhereNull('invoice_date')
+                                    ->orWhereNull('amount');
+                            })
+                            ->whereNull('deposit_date');
+                    })
+                        ->orDoesntHave('cicsa_charge_area');
                 })
                 ->get();
         }

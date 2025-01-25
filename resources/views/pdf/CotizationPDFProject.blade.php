@@ -52,8 +52,27 @@
     <p style="font-size: 18px; font-weight: bold; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">“Innovación y tecnología al alcance de la sociedad”</p>
   </div>
   @php
-  $jefe = $project->cost_line_id === 1 ? 'Luis Herrera':'prueba2';
-  $supervisor = $project->cost_line_id === 1 ? 'Carlos Caceres':'suerpprueba2';
+  if ($project->cost_line_id === 1) {
+    $jefe = 'Luis Herrera';
+    $supervisor = 'Carlos Caceres';
+  } elseif ($project->cost_line_id === 2) {
+    if (in_array($project->cost_center_id, [4, 5])) {
+        $jefe = 'Julio Morales';
+        $supervisor = 'Julio Morales';
+      } elseif (in_array($project->cost_center_id, [6, 7])) {
+        $jefe = 'Christian Zevallos';
+        $supervisor = 'Miguel Montalvo';
+      } elseif($project->cost_center_id === 8) {
+        $jefe = 'Jefe Densificacion';
+        $supervisor = 'Supervisor Densificacion';
+      } elseif($project->cost_center_id === 9) {
+        $jefe = 'Jefe Adicionales';
+        $supervisor = 'Supervisor Adicionales';
+      }
+  } else {
+    $jefe = 'Valor por defecto jefe';
+    $supervisor = 'Valor por defecto supervisor';
+  }
   @endphp
   <table>
     <tbody>

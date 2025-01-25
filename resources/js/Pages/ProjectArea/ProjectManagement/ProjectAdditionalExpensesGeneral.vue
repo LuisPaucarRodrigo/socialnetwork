@@ -418,7 +418,7 @@
                 <form @submit.prevent="submit">
                     <div class="space-y-12 mt-4">
                         <div class="grid sm:grid-cols-2 gap-6 pb-6">
-                            <div>
+                            <div v-if="!form.id">
                                 <InputLabel for="project_id" class="font-medium leading-6 text-gray-900">Zona
                                 </InputLabel>
                                 <div class="mt-2">
@@ -434,7 +434,7 @@
                                     <InputError :message="form.errors.project_id" />
                                 </div>
                             </div>
-                            <div>
+                            <div v-if="!form.id">
                                 <InputLabel for="project_id" class="font-medium leading-6 text-gray-900">Proyectos Cicsa
                                 </InputLabel>
                                 <div class="mt-2">
@@ -443,8 +443,8 @@
                                         <option disabled value="">
                                             Seleccionar Proyecto
                                         </option>
-                                        <option v-for="op in cicsaAssignation" :value="op.project_id">{{ op.project_name
-                                            }}
+                                        <option v-for="op in cicsaAssignation" :value="op.project_id">
+                                            {{ op.project_name }}
                                         </option>
                                     </select>
                                     <InputError :message="form.errors.project_id" />
@@ -933,7 +933,7 @@ async function getProject() {
     let data = { type: props.type, zone: form.zone}
     try {
         let response = await axios.post(url, data);
-        cicsaAssignation.value = response
+        cicsaAssignation.value = response.data
     } catch (error) {
         notifyError(error)
     }
