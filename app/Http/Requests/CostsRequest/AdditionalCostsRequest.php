@@ -38,7 +38,7 @@ class AdditionalCostsRequest extends FormRequest
             'description' => 'required|string',
             'photo' => 'nullable',
             'igv' => 'required',
-            'project_id' => 'nullable' // Cambiar 'required' a 'nullable'
+            'project_id' => 'nullable'
         ];
 
         if ($this->has('project_id')) {
