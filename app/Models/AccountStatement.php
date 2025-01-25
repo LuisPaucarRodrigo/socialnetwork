@@ -15,7 +15,10 @@ class AccountStatement extends Model
         'description',
         'charge',
         'payment',
-    ];
+    ]; 
+    
+
+
 
     public function general_expenses()
     {
@@ -25,7 +28,6 @@ class AccountStatement extends Model
 
     public function getStateAttribute()
     {
-        
         if ($this->operation_number === null) {
             return 'Validado';
         }

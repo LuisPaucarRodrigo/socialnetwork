@@ -21,6 +21,8 @@ Route::middleware('permission:FinanceManager')->group(function () {
     //Payment
     Route::post('/finance/payment/pay', [PaymentController::class, 'payment_pay'])->name('payment.pay');
 
+
+
     //Account Status
     Route::get('/finance/account_statement', [AccountStatementController::class, 'index'])->name('finance.account_statement');
     Route::get('/finance/account_statement/search_costs', [AccountStatementController::class, 'searchCosts'])->name('finance.search_costs');
@@ -30,6 +32,9 @@ Route::middleware('permission:FinanceManager')->group(function () {
     Route::post('/finance/account_statement_import', [AccountStatementController::class, 'importExcel'])->name('finance.account_statement.import');
     Route::get('/finance/account_statement_costs/{as_id}', [AccountStatementController::class, 'searchStatementsCosts'])->name('finance.account_statement.costs');
     Route::post('/finance/account_statement_massive_delete', [AccountStatementController::class, 'masiveDestroy'])->name('finance.account_statement.masivedelete');
+
+    ///tests routes
+    // Route::get('/test_acount/{month}/{all?}', [AccountStatementController::class, 'previousBalance'])->name('finance.account_statement.testgetprincipalvar');
 
 
     //Sunata SIRE

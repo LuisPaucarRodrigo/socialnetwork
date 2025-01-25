@@ -56,7 +56,7 @@ class ProviderController extends Controller
     public function destroy($id)
     {
         Provider::destroy($id);
-        return response()->noContent();
+        return response()->json(['msg' => 'allfine']);
     }
 
     public function category_provider(Request $request)

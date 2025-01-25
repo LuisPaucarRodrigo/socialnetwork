@@ -20,16 +20,15 @@ use Carbon\Carbon;
 
 class AccountStatementController extends Controller
 {
-    public function index()
-    {
+    public function index() {
         return Inertia::render(
             'Finance/AccountStatement/AccountStatement',
             $this->getAccountVariables()
         );
     }
 
-    public function store(AccountStatementRequest $request, $as_id = null)
-    {
+
+    public function store(AccountStatementRequest $request, $as_id = null) {
         $data = $request->validated();
         $geIds = $data["geData"];
         $rg = AccountStatement::updateOrCreate(['id' => $as_id], $data);
@@ -40,8 +39,8 @@ class AccountStatementController extends Controller
         return response()->json(['dataToRender'=>$data, 'month'=>$month], 200);
     }
 
-    public function destroy(Request $request, $as_id)
-    {
+
+    public function destroy(Request $request, $as_id){
         $as = AccountStatement::findOrFail($as_id);
         $as->delete();
         $data = $this->getAccountVariables($request->month, $request->endMonth,$request->all);
@@ -49,14 +48,14 @@ class AccountStatementController extends Controller
     }
 
     
-    public function searchStatements(Request $request)
-    {
+    public function searchStatements(Request $request) {
         $data = $this->getAccountVariables($request->month, $request->endMonth,$request->all);
         return response()->json($data, 200);
     }
 
 
-    public function importExcel (AccountStatementImportRequest $request){
+
+    public function importExcel (AccountStatementImportRequest $request){ 
         $data = $request->validated();
         try{
             Excel::import(new AccountStatementImport, $data['excel_file']);
@@ -69,8 +68,7 @@ class AccountStatementController extends Controller
         }
     }
 
-    public function masiveDestroy(Request $request)
-    {
+    public function masiveDestroy(Request $request) {
         $data = $request->validate([
             'ids' => 'required | array | min:1',
             'ids.*' => 'integer'
@@ -84,8 +82,7 @@ class AccountStatementController extends Controller
 
 
 
-    public function searchCosts(Request $request)
-    {
+    public function searchCosts(Request $request) {
         $od = $request->operation_date;
         $on = $request->operation_number;
         $geData =  GeneralExpense::select('id', 'zone', 'expense_type', 'location', 'amount', 'account_statement_id')
@@ -95,15 +92,15 @@ class AccountStatementController extends Controller
         return response()->json(['geData' => $geData]);
     }
 
-    public function searchStatementsCosts($as_id)
-    {
+
+    public function searchStatementsCosts($as_id) {
         $geData = GeneralExpense::select('id', 'zone', 'expense_type', 'location', 'amount', 'account_statement_id')->where('account_statement_id', $as_id)->get();
         return response()->json(['geData' => $geData]);
     }
 
 
-    public function syncOneToMany($parentModel, $childModelClass, array $childIds, $foreignKey)
-    {
+
+    public function syncOneToMany($parentModel, $childModelClass, array $childIds, $foreignKey) {
         $childModelClass = "App\Models\\" . $childModelClass;
         $childModelClass::where($foreignKey, $parentModel->id)
             ->whereNotIn('id', $childIds)
@@ -114,8 +111,7 @@ class AccountStatementController extends Controller
 
 
 
-    private function previousBalance($month = null, $all = false)
-    {
+    private function previousBalance($month = null, $all = false) {
         if ($all)
             return 0;
         if ($month) {
@@ -140,8 +136,8 @@ class AccountStatementController extends Controller
     }
 
 
-    private function getAccountVariables($month = null, $endMonth = null, $all = false)
-    {
+
+    private function getAccountVariables($month = null, $endMonth = null, $all = false) {
         if ($month) {
             $currentMonth = Carbon::parse($month)->month;
             $currentYear = Carbon::parse($month)->year;
@@ -149,7 +145,6 @@ class AccountStatementController extends Controller
             $currentMonth = Carbon::now()->month;
             $currentYear = Carbon::now()->year;
         }
-
         if($endMonth) {
             $inputEndMonth = Carbon::parse($endMonth)->month;
             $inputEndYear = Carbon::parse($endMonth)->year;
