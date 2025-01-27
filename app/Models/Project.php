@@ -238,8 +238,12 @@ class Project extends Model
     public function getSerializedCodeAttribute()
     {
         $prev = '';
-        if($this->cost_line_id == 2){ $prev = 'CCIP-PEXT-'; }
-        if($this->cost_line_id == 1){ $prev = 'CCIP-PINT-'; }
+        if ($this->cost_line_id == 2) {
+            $prev = 'CCIP-PEXT-';
+        }
+        if ($this->cost_line_id == 1) {
+            $prev = 'CCIP-PINT-';
+        }
         return $prev . $this->year . '-' . str_pad($this->position, 4, '0', STR_PAD_LEFT);
     }
 
@@ -323,8 +327,13 @@ class Project extends Model
     protected static function booted()
     {
         static::creating(function ($project) {
-            $currentYear = date('Y'); 
-            $lastProject = Project::where('year', $currentYear)->orderBy('position', 'desc')->first();
+            $currentYear = date('Y');
+            $costLineId = $project->cost_line_id;
+            $lastProject = Project::where('year', $currentYear)
+                ->where('cost_line_id', $costLineId)
+                ->orderBy('position', 'desc')
+                ->first();
+
             $project->position = $lastProject ? $lastProject->position + 1 : 1;
         });
     }
