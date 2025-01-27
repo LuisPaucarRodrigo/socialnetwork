@@ -35,6 +35,8 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::post('/huawei/inventory/details/refunds/post/{equipment?}', [HuaweiManagementController::class, 'refund'])->name('huawei.inventory.details.refund');
     Route::get('/huawei/inventory/refunds/view/get/{warehouse}/{equipment?}', [HuaweiManagementController::class, 'getRefunds'])->name('huawei.inventory.refunds');
     Route::get('/huawei/inventory/refunds/view/search/{warehouse}/{request}/{equipment?}', [HuaweiManagementController::class, 'searchRefunds'])->name('huawei.inventory.refunds.search');
+    Route::get('/huawei/inventory/show_guide/{entry}/get', [HuaweiManagementController::class, 'showGuide'])->name('huawei.inventory.showguide');
+    
     //Route::get('huawei/inventory/antiquation/get', [HuaweiManagementController::class, 'antiquation'])->name('huawei.inventory.antiquation');
     Route::post('/huawei/inventory/details/assign_diu/post', [HuaweiManagementController::class, 'assignDIU'])->name('huawei.inventory.details.assigndiu');
     Route::get('/huawei/inventory/export/general/export/get', [HuaweiManagementController::class, 'exportInventory'])->name('huawei.inventory.export');
