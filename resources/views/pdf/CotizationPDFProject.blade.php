@@ -228,22 +228,6 @@
         <td class="td-custom" style="width: 500.5px">002-21500262281600620</td>
       </tr>
       <tr>
-        <td class="td-custom" style="width: 200px">Caja Municipal Arequipa (Soles)</td>
-        <td class="td-custom" style="width: 500.5px">001-44342902100001001</td>
-      </tr>
-      <tr>
-        <td class="td-custom" style="width: 200px">CCI</td>
-        <td class="td-custom" style="width: 500.5px">803-001-001443429001-72</td>
-      </tr>
-      <tr>
-        <td class="td-custom" style="width: 200px">Caja Municipal Arequipa (Dólares)</td>
-        <td class="td-custom" style="width: 500.5px">001-44342902110102001</td>
-      </tr>
-      <tr>
-        <td class="td-custom" class="td-custom" style="width: 200px">CCI</td>
-        <td class="td-custom" style="width: 500.5px">803-001-001443429002-70</td>
-      </tr>
-      <tr>
         <td class="td-custom" colspan="2" style="text-align: center; background: #2e75b5; font-weight: normal;">Cuenta de detracciones</td>
       </tr>
       <tr>
