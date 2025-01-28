@@ -272,7 +272,6 @@ class ChecklistsController extends Controller
     public function expenseStore(AdditionalCostsApiRequest $request)
     {
         $data = $request->validated();
-        // return response()->json($data);
         $isStatic = $data['expense_type'] === PintConstants::COMBUSTIBLE_UM;
         $isGEP = $data['expense_type'] === PintConstants::COMBUSTIBLE_GEP;
         $isAdditional = !$isStatic && !$isGEP;

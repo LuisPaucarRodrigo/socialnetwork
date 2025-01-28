@@ -739,7 +739,6 @@ function updatePext(pext, action) {
 function openQuickQuote(project) {
     const defaultData = project.project_quote || initialStateQuote;
     defaultData.fee = defaultData.fee ? true : false
-    console.log('data', defaultData)
     formQuote.defaults({ ...defaultData, project_id: project.id });
     formQuote.reset();
     showQuickQuote.value = !showQuickQuote.value;
@@ -783,7 +782,6 @@ async function submitQuickQuote() {
         closeQuickQuote()
         updatePext(response.data, 'updateQuote')
     } catch (error) {
-        console.log(error)
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, formQuote)
@@ -797,7 +795,7 @@ async function submitQuickQuote() {
 }
 
 function deleteValoration(index) {
-    formQuote.valuations.splice(index, 1)
+    formQuote.project_quote_valuations.splice(index, 1)
 }
 
 async function rejectAdditionalProject(id) {
