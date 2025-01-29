@@ -90,6 +90,8 @@ class PintConstants
             self::COCHERAS,
             self::APOYOS,
             self::ACARREOS,
+            self::COMBUSTIBLE_UM,
+            self::COMBUSTIBLE_GEP,
             self::OTROS
         ];
     }

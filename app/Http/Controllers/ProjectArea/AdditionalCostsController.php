@@ -367,10 +367,20 @@ class AdditionalCostsController extends Controller
         } else {
             $data = ['is_accepted' => $request->is_accepted];
         }
-        $ac = AdditionalCost::with('project', 'provider')
-            ->find($ac_id);
-        $ac->update($data);
-        return response()->json(['additional_cost' => $ac], 200);
+
+        $isUMorGEP = $data["expense_type"] === PintConstants::COMBUSTIBLE_GEP 
+                || $data["expense_type"] === PintConstants::COMBUSTIBLE_UM;
+
+        // if ($isUMorGEP) {
+        //     StaticCost::create
+        // } else {
+            $ac = AdditionalCost::with('project', 'provider')
+                ->find($ac_id);
+            $ac->update($data);
+            return response()->json(['additional_cost' => $ac], 200);
+        // }
+        
+
     }
 
 
