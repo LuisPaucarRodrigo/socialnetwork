@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('unit');
             $table->string('type');
             $table->integer('total_quantity')->nullable();
-            $table->integer('quantity');
+            $table->float('quantity');
             $table->timestamps();
         });
     }

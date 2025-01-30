@@ -20,6 +20,8 @@ class Project extends Model
         'cost_center_id',
         'cost_line_id',
         'initial_budget',
+        'position',
+        'year',
         'is_accepted',
     ];
 
@@ -235,11 +237,14 @@ class Project extends Model
 
     public function getSerializedCodeAttribute()
     {
-        $currentYear = now()->year;
         $prev = '';
-        if($this->cost_line_id == 2){ $prev = 'CCIP-PEXT-'; }
-        if($this->cost_line_id == 1){ $prev = 'CCIP-PINT-'; }
-        return $prev . $currentYear . '-' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
+        if ($this->cost_line_id == 2) {
+            $prev = 'CCIP-PEXT-';
+        }
+        if ($this->cost_line_id == 1) {
+            $prev = 'CCIP-PINT-';
+        }
+        return $prev . $this->year . '-' . str_pad($this->position, 4, '0', STR_PAD_LEFT);
     }
 
 
@@ -317,5 +322,21 @@ class Project extends Model
     public function project_quote()
     {
         return $this->hasOne(ProjectQuote::class);
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($project) {
+            $currentYear = date('Y');
+            $listCost = [3, 6, 7, 8, 9];
+            $lastProject = Project::select('id', 'position', 'cost_center_id')
+                ->where('year', $currentYear)
+                ->whereIn('cost_center_id', $listCost)
+                ->orderBy('position','desc')
+                ->first();
+
+            $project->position = $lastProject ? $lastProject->position + 1 : 1;
+            $project->year = $currentYear; 
+        });
     }
 }

@@ -132,7 +132,7 @@ class AdditionalCostsApiRequest extends FormRequest
             'zone' => 'required',
             'provider_id' => 'nullable',
             'description' => 'required|string',
-            'photo' => 'nullable',
+            'photo' => 'required',
         ];
 
         return $rules;

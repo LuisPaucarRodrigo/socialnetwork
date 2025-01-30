@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Proyectos" />
-    <AuthenticatedLayout :redirectRoute="type ==2 ?'projectmanagement.pext.index': 'projectmanagement.index'">
+    <AuthenticatedLayout :redirectRoute="type == 2 ? 'projectmanagement.pext.index' : 'projectmanagement.index'">
         <template #header>
             Proyectos Adicionales
         </template>
@@ -18,16 +18,17 @@
                         </svg>
                     </PrimaryButton>
                     <div id="add_monthly_project" role="tooltip"
-                    class="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                    + Agregar Proyecto
-                    <div class="tooltip-arrow" data-popper-arrow></div>
-                </div>
-                <PrimaryButton data-tooltip-target="add_monthly_project" v-if="hasPermission('ProjectManager')"
-                    @click="()=>{router.visit(route('projectmanagement.pext.additional.index_rejected', {type}))}" type="button" customColor="bg-red-600 hover:bg-red-500">
-                    No Proceden
-                </PrimaryButton>
+                        class="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        + Agregar Proyecto
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
+                    <PrimaryButton data-tooltip-target="add_monthly_project" v-if="hasPermission('ProjectManager')"
+                        @click="() => { router.visit(route('projectmanagement.pext.additional.index_rejected', { type })) }"
+                        type="button" customColor="bg-red-600 hover:bg-red-500">
+                        No Proceden
+                    </PrimaryButton>
 
-                    
+
 
                 </div>
 
@@ -144,7 +145,8 @@
                     </div>
                     <div>
                         <div class="grid grid-cols-1 gap-y-1">
-                            <Link :href="route('pext.additional.expense.general.index', { fixedOrAdditional: false, type })"
+                            <Link
+                                :href="route('pext.additional.expense.general.index', { fixedOrAdditional: false, type })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                             Compras y Gastos
                             </Link>
@@ -160,8 +162,10 @@
                         </p>
                         <div v-if="hasPermission('ProjectManager')" class="inline-flex justify-end items-start gap-x-2">
                             <button type="button" @click="rejectAdditionalProject(item.project.id)">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                 </svg>
 
                             </button>
@@ -278,7 +282,7 @@
                                     <option value="">Seleccionar Centro de Costo</option>
                                     <option v-for="item in cost_line.cost_center" :key="item.id" :value="item.id">{{
                                         item.name
-                                    }}
+                                        }}
                                     </option>
                                 </select>
                                 <InputError :message="form.errors.cost_center_id" />
@@ -458,12 +462,22 @@
                                                     item.days }}</td>
                                             <td
                                                 class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                                                {{
-                                                    item.metrado }}</td>
+                                                <div class="flex justify-center">
+                                                    <input required type="number" min="0"
+                                                        v-model="formQuote.project_quote_valuations[index]['metrado']"
+                                                        autocomplete="off"
+                                                        class="block text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                                </div>
+                                            </td>
                                             <td
                                                 class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                                                {{
-                                                    item.unit_value }}</td>
+                                                <div class="flex justify-center">
+                                                    <input required type="number" min="0"
+                                                        v-model="formQuote.project_quote_valuations[index]['unit_value']"
+                                                        autocomplete="off"
+                                                        class="block  text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                                </div>
+                                            </td>
                                             <td
                                                 class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                                                 {{
@@ -595,8 +609,6 @@ const { project, auth, userPermissions, searchCondition, cost_line, type } = def
     },
 })
 
-console.log(auth)
-
 const initialState = {
     id: null,
     user_id: auth.user.id,
@@ -614,6 +626,7 @@ const initialState = {
 }
 
 const initialStateQuote = {
+    id: null,
     project_id: '',
     delivery_place: '',
     delivery_time: null,
@@ -681,7 +694,7 @@ const createOrEditModal = () => {
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('projectmanagement.pext.additional.index', {type}), { searchQuery: $search });
+        const response = await axios.post(route('projectmanagement.pext.additional.index', { type }), { searchQuery: $search });
         projects.value = response.data;
     } catch (error) {
         notifyError('Error searching:', error);
@@ -691,10 +704,11 @@ const search = async ($search) => {
 async function submit() {
     let url = route('projectmanagement.pext.additional.store', { 'cicsa_assignation_id': form.id ?? null })
     try {
-        let response = await axios.post(url, {...form.data()})
+        let response = await axios.post(url, { ...form.data() })
         let action = form.id ? 'update' : 'create'
         updatePext(response.data, action)
     } catch (error) {
+        console.log(error)
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, form)
@@ -734,9 +748,9 @@ function updatePext(pext, action) {
 }
 
 function openQuickQuote(project) {
+    console.log("primer", formQuote)
     const defaultData = project.project_quote || initialStateQuote;
-    defaultData.fee = defaultData.fee ? true : false 
-    console.log('data',defaultData)
+    defaultData.fee = defaultData.fee ? true : false
     formQuote.defaults({ ...defaultData, project_id: project.id });
     formQuote.reset();
     showQuickQuote.value = !showQuickQuote.value;
@@ -780,32 +794,32 @@ async function submitQuickQuote() {
         closeQuickQuote()
         updatePext(response.data, 'updateQuote')
     } catch (error) {
-        console.log(error)
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, formQuote)
             } else {
-                notifyError("Server error:", error.response.data)
+                notifyError("Server error:", error.response.data.message)
             }
         } else {
             notifyError("Network or other error:", error)
         }
     }
+    console.log(formQuote)
 }
 
 function deleteValoration(index) {
-    formQuote.valuations.splice(index, 1)
+    formQuote.project_quote_valuations.splice(index, 1)
 }
 
-async function rejectAdditionalProject (id) {
-    try{
-        const res = await axios.post(route('projectmanagement.pext.additional.reject', {pa_id: id}))
-        if(res.data.msg) {
+async function rejectAdditionalProject(id) {
+    try {
+        const res = await axios.post(route('projectmanagement.pext.additional.reject', { pa_id: id }))
+        if (res.data.msg) {
             const validations = projects.value.data || projects.value
             let index = validations.findIndex(item => item.project.id === id)
             validations.splice(index, 1)
         }
-    }catch (e) {
+    } catch (e) {
         console.log(e)
         notifyError('Server Error')
     }

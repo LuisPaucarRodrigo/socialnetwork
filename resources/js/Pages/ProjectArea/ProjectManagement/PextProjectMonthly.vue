@@ -453,7 +453,7 @@ const { cicsa_assignation, userPermissions, auth } = defineProps({
     userPermissions: Array,
     auth: Object,
 })
-console.log(cicsa_assignation);
+
 const initialState = {
     id: "",
     user_id: auth.user.id,

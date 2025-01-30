@@ -195,7 +195,20 @@ class PextController extends Controller
                         $query->where('is_accepted', 1);
                     })
                     ->whereHas('project.cost_center', function ($query) use ($text) {
-                        $query->where('name', 'not like', "%$text%")->where('cost_line_id', 2);
+                        $query->where('name', 'not like', "%$text%")
+                        ->where('cost_line_id', 2);
+                    })
+                    ->where(function ($query) {
+                        $query->whereHas('cicsa_charge_area', function ($subQuery) {
+                            $subQuery->select('id', 'cicsa_assignation_id', 'invoice_number', 'invoice_date', 'amount', 'deposit_date')
+                                ->where(function ($subSubQuery) {
+                                    $subSubQuery->whereNull('invoice_number')
+                                        ->orWhereNull('invoice_date')
+                                        ->orWhereNull('amount');
+                                })
+                                ->whereNull('deposit_date');
+                        })
+                            ->orDoesntHave('cicsa_charge_area');
                     })
                     ->whereDoesntHave('project.preproject')
                     ->orderBy('created_at', 'desc')
@@ -240,7 +253,19 @@ class PextController extends Controller
                     })
                     ->whereHas('project.cost_center', function ($query) use ($text) {
                         $query->where('name', 'not like', "%$text%");
-                    })->whereDoesntHave('project.preproject');
+                    })->where(function ($query) {
+                        $query->whereHas('cicsa_charge_area', function ($subQuery) {
+                            $subQuery->select('id', 'cicsa_assignation_id', 'invoice_number', 'invoice_date', 'amount', 'deposit_date')
+                                ->where(function ($subSubQuery) {
+                                    $subSubQuery->whereNull('invoice_number')
+                                        ->orWhereNull('invoice_date')
+                                        ->orWhereNull('amount');
+                                })
+                                ->whereNull('deposit_date');
+                        })
+                            ->orDoesntHave('cicsa_charge_area');
+                    })
+                    ->whereDoesntHave('project.preproject');
             }
             if ($type == 1) {
                 $project = CicsaAssignation::with('project.cost_center', 'project.project_quote.project_quote_valuations')
@@ -581,8 +606,24 @@ class PextController extends Controller
 
         if ($type == 2) {
             $cicsa_assignation = CicsaAssignation::select('id', 'project_name', 'project_id', 'zone')
-                ->when($zone, function ($query, $zone) {
-                    return $query->where('zone', $zone);
+                ->where('zone', $zone)
+                ->whereHas('project', function ($query) {
+                    $query->where('cost_line_id', 2)
+                        ->whereHas('cost_center', function ($subQuery) {
+                            $subQuery->where('name', 'not like', '%Mantto%');
+                        });
+                })
+                ->where(function ($query) {
+                    $query->whereHas('cicsa_charge_area', function ($subQuery) {
+                        $subQuery->select('id', 'cicsa_assignation_id', 'invoice_number', 'invoice_date', 'amount', 'deposit_date')
+                            ->where(function ($subSubQuery) {
+                                $subSubQuery->whereNull('invoice_number')
+                                    ->orWhereNull('invoice_date')
+                                    ->orWhereNull('amount');
+                            })
+                            ->whereNull('deposit_date');
+                    })
+                        ->orDoesntHave('cicsa_charge_area');
                 })
                 ->get();
         }

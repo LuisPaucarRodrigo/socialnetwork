@@ -1824,7 +1824,7 @@ const { auth, projects, center_list, type } = defineProps({
     auth: Object,
     projects: Object,
     center_list: Object,
-    type: Number
+    type: String
 });
 
 const dataToRender = ref(projects.data);
@@ -2166,7 +2166,7 @@ function reverseWordsWithBreaks(columnTitle) {
 function openExportExcel() {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
     const url =
-        route("cicsa.export", { stages: filterForm.value.typeStages }) +
+        route("cicsa.export", { type : type ,stages: filterForm.value.typeStages }) +
         "?" +
         uniqueParam;
     window.location.href = url;

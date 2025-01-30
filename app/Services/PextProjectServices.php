@@ -15,9 +15,10 @@ class PextProjectServices
     {
         $query = CicsaAssignation::with('project.cost_center', 'project.preproject')
             ->whereHas('project', function ($query) {
-                $query->whereHas('cost_center', function ($costCenterQuery) {
-                    $costCenterQuery->where('name', 'like', "%Mantto%");
-                })->whereHas('preproject');
+                $query->where('cost_line_id', 2)
+                    ->whereHas('cost_center', function ($costCenterQuery) {
+                        $costCenterQuery->where('name', 'like', "%Mantto%");
+                    })->whereHas('preproject');
             });
         return $query;
     }

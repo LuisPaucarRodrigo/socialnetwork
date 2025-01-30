@@ -272,7 +272,6 @@ class ChecklistsController extends Controller
     public function expenseStore(AdditionalCostsApiRequest $request)
     {
         $data = $request->validated();
-        // return response()->json($data);
         $isStatic = $data['expense_type'] === PintConstants::COMBUSTIBLE_UM;
         $isGEP = $data['expense_type'] === PintConstants::COMBUSTIBLE_GEP;
         $isAdditional = !$isStatic && !$isGEP;
@@ -398,7 +397,7 @@ class ChecklistsController extends Controller
                 "MDD"
             ],
             'docTypes' => [
-                "Efectivo",
+                "Sin Comprobante",
                 "RH(Recibo por Honorarios)",
                 "Factura",
                 "Boleta",
@@ -411,7 +410,7 @@ class ChecklistsController extends Controller
                 "Peaje",
                 "Taxis y Pasajes",
                 "Encomienda",
-                "Consumibles",
+                "Combustible UM",
                 "Bandeos",
                 "Herramientas",
                 "Equipos",
