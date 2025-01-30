@@ -44,24 +44,15 @@ class PextProjectServices
         return $cicsaAssignation;
     }
 
-    public function getProjectOrProject($type): Object
+    public function getProjectOrProject(): Object
     {
-        if ($type === 'Proyectos') {
-            $pro = Project::select('id', 'preproject_id', 'cost_line_id')
-                ->with(['preproject:id,code'])
-                ->whereNotNull('preproject_id')
-                ->where('cost_line_id', 2)
-                ->whereDoesntHave('cicsa_assignation')
-                ->get();
-        } else {
-            $pro = Preproject::where('cost_line_id', 2)
-                ->where('status', 1)
-                ->whereHas('cost_center', function ($query) {
-                    $query->where('name', 'not like', "%Mantto%");
-                })
-                ->whereDoesntHave('project')
-                ->get();
-        }
+        $pro = Preproject::where('cost_line_id', 2)
+            ->where('status', 1)
+            ->whereHas('cost_center', function ($query) {
+                $query->where('name', 'not like', "%Mantto%");
+            })
+            ->whereDoesntHave('project')
+            ->get();
         $pro->each->setAppends([]);
         return $pro;
     }

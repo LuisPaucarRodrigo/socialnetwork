@@ -167,7 +167,6 @@
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                 </svg>
-
                             </button>
                             <button type="button" @click="editProject(item)">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -282,7 +281,7 @@
                                     <option value="">Seleccionar Centro de Costo</option>
                                     <option v-for="item in cost_line.cost_center" :key="item.id" :value="item.id">{{
                                         item.name
-                                        }}
+                                    }}
                                     </option>
                                 </select>
                                 <InputError :message="form.errors.cost_center_id" />
@@ -458,24 +457,29 @@
                                                     item.unit }}</td>
                                             <td
                                                 class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                                                {{
-                                                    item.days }}</td>
-                                            <td
-                                                class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                                                 <div class="flex justify-center">
                                                     <input required type="number" min="0"
-                                                        v-model="formQuote.project_quote_valuations[index]['metrado']"
+                                                        v-model="formQuote.project_quote_valuations[index]['days']"
                                                         autocomplete="off"
-                                                        class="block text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                                        class="w-20 block text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                                 </div>
                                             </td>
                                             <td
                                                 class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                                                 <div class="flex justify-center">
-                                                    <input required type="number" min="0"
+                                                    <input required type="number" min="0" step="0.01"
+                                                        v-model="formQuote.project_quote_valuations[index]['metrado']"
+                                                        autocomplete="off"
+                                                        class="w-20 block text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                                </div>
+                                            </td>
+                                            <td
+                                                class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                                                <div class="flex justify-center">
+                                                    <input required type="number" min="0" step="0.01"
                                                         v-model="formQuote.project_quote_valuations[index]['unit_value']"
                                                         autocomplete="off"
-                                                        class="block  text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                                        class="w-20 block  text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                                 </div>
                                             </td>
                                             <td
@@ -551,7 +555,7 @@
                     <div class="">
                         <InputLabel for="metrado">Metrado</InputLabel>
                         <div class="mt-2">
-                            <input type="number" v-model="valuation.metrado" autocomplete="off" id="metrado"
+                            <input type="number" v-model="valuation.metrado" autocomplete="off" id="metrado" step="0.01"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
 
                         </div>
@@ -559,7 +563,7 @@
                     <div class="">
                         <InputLabel for="unit_value">Valor Unitario</InputLabel>
                         <div class="mt-2">
-                            <input type="number" v-model="valuation.unit_value" autocomplete="off" id="unit_value"
+                            <input type="number" v-model="valuation.unit_value" autocomplete="off" id="unit_value" step="0.01"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
 
                         </div>
@@ -608,7 +612,7 @@ const { project, auth, userPermissions, searchCondition, cost_line, type } = def
         Required: false
     },
 })
-
+console.log(project)
 const initialState = {
     id: null,
     user_id: auth.user.id,
@@ -696,6 +700,7 @@ const search = async ($search) => {
     try {
         const response = await axios.post(route('projectmanagement.pext.additional.index', { type }), { searchQuery: $search });
         projects.value = response.data;
+        console.log(projects.value)
     } catch (error) {
         notifyError('Error searching:', error);
     }
@@ -813,7 +818,7 @@ function deleteValoration(index) {
 
 async function rejectAdditionalProject(id) {
     try {
-        const res = await axios.post(route('projectmanagement.pext.additional.reject', { pa_id: id }))
+        const res = await axios.post(route('projectmanagement.pext.additional.reject', { pa_id: id }), { action: 'rejected' })
         if (res.data.msg) {
             const validations = projects.value.data || projects.value
             let index = validations.findIndex(item => item.project.id === id)
@@ -824,8 +829,6 @@ async function rejectAdditionalProject(id) {
         notifyError('Server Error')
     }
 }
-
-
 if (searchCondition) {
     search(searchCondition)
 }

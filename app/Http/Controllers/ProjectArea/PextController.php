@@ -54,9 +54,9 @@ class PextController extends Controller
         return response()->json($project, 200);
     }
 
-    public function requestProjectOrPreproject($type)
+    public function requestProjectOrPreproject()
     {
-        $pro = $this->pextServices->getProjectOrProject($type);
+        $pro = $this->pextServices->getProjectOrProject();
         return response()->json($pro, 200);
     }
 
@@ -196,23 +196,19 @@ class PextController extends Controller
                     })
                     ->whereHas('project.cost_center', function ($query) use ($text) {
                         $query->where('name', 'not like', "%$text%")
-                        ->where('cost_line_id', 2);
-                    })
-                    ->where(function ($query) {
-                        $query->whereHas('cicsa_charge_area', function ($subQuery) {
-                            $subQuery->select('id', 'cicsa_assignation_id', 'invoice_number', 'invoice_date', 'amount', 'deposit_date')
-                                ->where(function ($subSubQuery) {
-                                    $subSubQuery->whereNull('invoice_number')
-                                        ->orWhereNull('invoice_date')
-                                        ->orWhereNull('amount');
-                                })
-                                ->whereNull('deposit_date');
-                        })
-                            ->orDoesntHave('cicsa_charge_area');
+                            ->where('cost_line_id', 2);
                     })
                     ->whereDoesntHave('project.preproject')
                     ->orderBy('created_at', 'desc')
-                    ->paginate();
+                    ->get();
+                $project->each(function ($item) {
+                    $item->setAppends([
+                        'cicsa_charge_status',
+                    ]);
+                });
+                $project = $project->filter(function ($item) {
+                    return $item->cicsa_charge_status === 'Completado';
+                });
             }
 
             if ($type == 1) {
@@ -253,19 +249,7 @@ class PextController extends Controller
                     })
                     ->whereHas('project.cost_center', function ($query) use ($text) {
                         $query->where('name', 'not like', "%$text%");
-                    })->where(function ($query) {
-                        $query->whereHas('cicsa_charge_area', function ($subQuery) {
-                            $subQuery->select('id', 'cicsa_assignation_id', 'invoice_number', 'invoice_date', 'amount', 'deposit_date')
-                                ->where(function ($subSubQuery) {
-                                    $subSubQuery->whereNull('invoice_number')
-                                        ->orWhereNull('invoice_date')
-                                        ->orWhereNull('amount');
-                                })
-                                ->whereNull('deposit_date');
-                        })
-                            ->orDoesntHave('cicsa_charge_area');
-                    })
-                    ->whereDoesntHave('project.preproject');
+                    })->whereDoesntHave('project.preproject');
             }
             if ($type == 1) {
                 $project = CicsaAssignation::with('project.cost_center', 'project.project_quote.project_quote_valuations')
@@ -282,6 +266,16 @@ class PextController extends Controller
 
                 ->orderBy('created_at', 'desc')
                 ->get();
+
+            $project = $project->each(function ($item) {
+                $item->setAppends([
+                    'cicsa_charge_status',
+                ]);
+            });
+            // $project = $project->filter(function ($item) {
+            //     return $item->cicsa_charge_status !== 'Completado';
+            // });
+            // dd($project);
             return response()->json($project, 200);
         }
     }
@@ -363,11 +357,11 @@ class PextController extends Controller
         }
     }
 
-
-    public function rejectProjectAdditional($pa_id)
+    public function rejectProjectAdditional(Request $request, $pa_id)
     {
+        $is_accepted = $request->action === "rejected" ? 0 : 1;
         $rg = Project::find($pa_id);
-        $rg->update(['is_accepted' => 0]);
+        $rg->update(['is_accepted' => $is_accepted]);
         return response()->json(['msg' => true]);
     }
 
