@@ -307,7 +307,7 @@
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                             <div class="flex justify-center">
-                                                <input required type="number" min="0"
+                                                <input required type="number" min="0" step="0.01"
                                                     v-model="form.cicsa_material_items[i]['quantity']"
                                                     autocomplete="off"
                                                     class="block  text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
@@ -396,7 +396,7 @@
                         <InputLabel for="quantity">Cantidad
                         </InputLabel>
                         <div class="mt-2">
-                            <TextInput required type="number" v-model="material_item.quantity" id="quantity" />
+                            <TextInput required type="number" v-model="material_item.quantity" id="quantity" step="0.01" />
                         </div>
                     </div>
                 </div>

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('priority');
             $table->text('description');
             $table->string('status')->nullable();
-            $table->string('position')->nullable();
+            $table->integer('position')->nullable()->unsigned();
             $table->string('year')->nullable();
             $table->double('initial_budget', 8, 2)->default(0);
             $table->foreignId('preproject_id')->nullable()->constrained()->onDelete('cascade');

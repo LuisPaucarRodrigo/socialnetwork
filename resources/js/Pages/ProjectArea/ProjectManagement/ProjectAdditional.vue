@@ -462,12 +462,22 @@
                                                     item.days }}</td>
                                             <td
                                                 class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                                                {{
-                                                    item.metrado }}</td>
+                                                <div class="flex justify-center">
+                                                    <input required type="number" min="0"
+                                                        v-model="formQuote.project_quote_valuations[index]['metrado']"
+                                                        autocomplete="off"
+                                                        class="block text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                                </div>
+                                            </td>
                                             <td
                                                 class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                                                {{
-                                                    item.unit_value }}</td>
+                                                <div class="flex justify-center">
+                                                    <input required type="number" min="0"
+                                                        v-model="formQuote.project_quote_valuations[index]['unit_value']"
+                                                        autocomplete="off"
+                                                        class="block  text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                                </div>
+                                            </td>
                                             <td
                                                 class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                                                 {{
@@ -616,6 +626,7 @@ const initialState = {
 }
 
 const initialStateQuote = {
+    id: null,
     project_id: '',
     delivery_place: '',
     delivery_time: null,
@@ -737,6 +748,7 @@ function updatePext(pext, action) {
 }
 
 function openQuickQuote(project) {
+    console.log("primer", formQuote)
     const defaultData = project.project_quote || initialStateQuote;
     defaultData.fee = defaultData.fee ? true : false
     formQuote.defaults({ ...defaultData, project_id: project.id });
@@ -792,6 +804,7 @@ async function submitQuickQuote() {
             notifyError("Network or other error:", error)
         }
     }
+    console.log(formQuote)
 }
 
 function deleteValoration(index) {

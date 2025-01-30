@@ -56,10 +56,8 @@ const props = defineProps({
         type: String,
         required: true
     },
-    type: Number
+    type: String
 });
-
-console.log(props.type)
 
 const selectedOption = ref(props.currentSelect);
 
