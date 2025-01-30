@@ -435,12 +435,12 @@
                         </tbody>
                     </table>
                 </div>
-                <div
+                <!-- <div
                     v-if="!props.search && !filterMode"
                     class="flex flex-col items-center border-t bg-white px-4 py-3 xs:flex-row xs:justify-between"
                 >
-                    <pagination :links="props.equipments.links" />
-                </div>
+                    <pagination :links="dataToRender.links" />
+                </div> -->
             </div>
         </div>
 
@@ -598,6 +598,7 @@ import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import axios from "axios";
 import Dropdown from "@/Components/Dropdown.vue";
 import { Toaster } from "vue-sonner";
+import { data } from "autoprefixer";
 
 const props = defineProps({
     equipments: Object,
@@ -615,6 +616,9 @@ const isFetching = ref(false);
 const showOpNuDatModal = ref(false);
 const noDU = ref(false);
 
+console.log(dataToRender.value)
+console.log(props.search);
+console.log(filterMode.value)
 const refundForm = useForm({
     huawei_entry_detail_id: "",
     quantity: "",
