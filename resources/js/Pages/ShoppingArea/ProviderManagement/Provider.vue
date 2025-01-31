@@ -5,7 +5,7 @@
         <template #header>
             Proveedores
         </template>
-
+        <Toaster richColors/>
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <div class="flex justify-between items-center gap-4">
                 <button v-if="hasPermission('PurchasingManager')" @click="add_information(initialStateForm)"
@@ -353,6 +353,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import { setAxiosErrors } from '@/utils/utils';
 import { notify, notifyError } from '@/Components/Notification';
+import { Toaster } from 'vue-sonner';
 
 const { provider, auth, userPermissions, category } = defineProps({
     provider: Object,
@@ -535,20 +536,16 @@ function updateCategoryOrSegment(item, cs) {
 
 function updateProvider(provider, operation) {
     const validations = providers.value.data || providers.value;
-    const index = validations.findIndex(item => item.id = provider.id ?? provider)
+    const index = validations.findIndex(item => item.id == provider?.id)
     if (operation === 'update') {
         validations[index] = provider
         notify('Proveedor Actualizado')
     } else if (operation === 'store') {
-        validations.push(provider);
+        validations.unshift(provider);
         notify('Proveedor Creado')
     } else if (operation === 'delete') {
         validations.splice(index, 1)
         notify('Proveedor Eliminado')
-    }
-
-    if (validations.length > validations.value.per_page) {
-        validations.pop();
     }
 }
 
