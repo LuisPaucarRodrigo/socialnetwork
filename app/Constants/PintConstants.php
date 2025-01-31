@@ -213,7 +213,6 @@ class PintConstants
             self::ENCOMIENDA,
             self::CONSUMIBLES,
             self::BANDEOS,
-            self::BANDEOS,
             self::OTROS,
         ];
     }

@@ -1393,6 +1393,12 @@ async function validateRegister(ac_id, is_accepted) {
             route("projectmanagement.validateAdditionalCost", { ac_id }),
             { is_accepted }
         );
+        if(!res?.data?.additional_cost) {
+            let index = dataToRender.value.findIndex(
+                (item) => item.id == ac_id
+            );
+            dataToRender.value.splice(index, 1);
+        }
         if (res?.data?.additional_cost?.is_accepted == true) {
             let index = dataToRender.value.findIndex(
                 (item) => item.id == res.data.additional_cost.id
@@ -1404,12 +1410,9 @@ async function validateRegister(ac_id, is_accepted) {
             );
             dataToRender.value.splice(index, 1);
         }
-        confirmValidation.value = true;
-        setTimeout(() => {
-            confirmValidation.value = false;
-        }, 1000);
+        notify(res.data.msg)
     } catch (e) {
-        console.log(e);
+        notifyError('Server Error')
     }
 }
 
@@ -1461,8 +1464,10 @@ const submitOpNuDatModal = async () => {
                 notifyError("Server Error");
             }
         });
-
-    const originalMap = new Map(dataToRender.value.map(item => [item.id, item]));
+    const resIds = res.data.map(item=>item.id);
+    const rgsToRemove = actionForm.value.ids.filter(id=>!resIds.includes(id))
+    const originalMap = new Map(dataToRender.value.filter(item=>!rgsToRemove.includes(item.id)).
+        map(item => [item.id, item]));
     res.data.forEach(update => {
         if (originalMap.has(update.id)) {
             originalMap.set(update.id, update);
@@ -1470,8 +1475,12 @@ const submitOpNuDatModal = async () => {
     });
     const updatedArray = Array.from(originalMap.values());
     dataToRender.value = updatedArray
+    actionForm.value.ids = resIds
     closeOpNuDatModal();
-    notify("Registros Seleccionados Actualizados");
+    notify("Registros Seleccionados Actualizados")
+    setTimeout(()=>{
+        if(rgsToRemove.length>0) notify("Algunos fueron movidos a gastos fijos y/o proyecto GEP")
+    }, 1000)
 }
 
 
@@ -1502,13 +1511,17 @@ async function submitAcceptModal () {
                 notifyError("Server Error");
             }
         });
-    let index = dataToRender.value.findIndex((item) => item.id == res.data.additional_cost.id);
-    dataToRender.value[index] = res.data.additional_cost;
+    if(!res?.data?.additional_cost) {
+        let index = dataToRender.value.findIndex(
+            (item) => item.id == itemToAccept.value.id
+        );
+        dataToRender.value.splice(index, 1);
+    } else {
+        let index = dataToRender.value.findIndex((item) => item.id == res.data.additional_cost.id);
+        dataToRender.value[index] = res.data.additional_cost;
+    }
     closeAcceptModal();
-    confirmValidation.value = true;
-    setTimeout(() => {
-        confirmValidation.value = false;
-    }, 1000);
+    notify(res.data.msg)
 }
 
 

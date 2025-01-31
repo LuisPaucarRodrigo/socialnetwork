@@ -28,7 +28,7 @@ class StaticCostsRequest extends FormRequest
         $rules = [
             'expense_type' => 'required|string',
             'ruc' => 'required|numeric|digits:11',
-            'type_doc' => 'required|string|in:Efectivo,Deposito,Factura,Boleta,Voucher de Pago,Sin Comprobante',
+            'type_doc' => 'required',
             "operation_number" => 'nullable|min:6',
             "operation_date" => 'nullable|date',
             'doc_number' => 'nullable|string',

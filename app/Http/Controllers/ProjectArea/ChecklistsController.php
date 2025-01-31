@@ -355,7 +355,7 @@ class ChecklistsController extends Controller
     {
         $data = $request->validated();
 
-        if($data['expense_type'] === PintConstants::COMBUSTIBLE_GEP) {
+        if($data['expense_type'] !== PintConstants::COMBUSTIBLE_GEP) {
             $isStaticOrAdditional = true;
         } else {
             $isGEP = true;
@@ -398,7 +398,6 @@ class ChecklistsController extends Controller
             if (!$projectId) {
                 return response()->json(['error' => "No se encontraron preproyectos pint para este mes."], 404);
             }
-
 
             //Format fields to insert
             $data['project_id'] = $projectId->id;

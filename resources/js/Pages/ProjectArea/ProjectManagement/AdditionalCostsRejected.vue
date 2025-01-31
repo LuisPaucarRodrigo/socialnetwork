@@ -1475,10 +1475,7 @@ async function submitAcceptModal () {
     let index = dataToRender.value.findIndex((item) => item.id == res.data.additional_cost.id);
     dataToRender.value.splice(index, 1);
     closeAcceptModal();
-    confirmValidation.value = true;
-    setTimeout(() => {
-        confirmValidation.value = false;
-    }, 1000);
+    notify(res.data.msg)
 }
 
 
