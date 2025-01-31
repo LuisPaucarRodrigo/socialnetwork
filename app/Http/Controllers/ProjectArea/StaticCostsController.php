@@ -138,7 +138,7 @@ class StaticCostsController extends Controller
         $data = $request->validate([
             'expense_type' => 'required|string',
             'ruc' => 'required|numeric|digits:11',
-            'type_doc' => 'required|string|in:Efectivo,Deposito,Factura,Boleta,Voucher de Pago',
+            'type_doc' => 'required',
             'operation_number' => 'nullable|string',
             'operation_date' => 'nullable|date',
             'doc_number' => 'nullable|string',

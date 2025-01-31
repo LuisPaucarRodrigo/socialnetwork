@@ -687,16 +687,16 @@ class HuaweiManagementController extends Controller
             'latest_huawei_project_resource'
         ])
         ->orderBy('created_at', 'desc')
-        ->paginate(20);
+        ->get();
 
-        $equipments->getCollection()->makeHidden([
+        $equipments->makeHidden([
             'available_quantity',
             'huawei_project_resources',
             'project_quantity',
             'refund_quantity'
         ]);
 
-        $equipments->getCollection()->each(function ($equipment) {
+        $equipments->each(function ($equipment) {
             $equipment->huawei_equipment_serie->huawei_equipment->makeHidden(['available_quantity', 'quantity']);
             if ($equipment->latest_huawei_project_resource){
                 $equipment->latest_huawei_project_resource->makeHidden(['liquidated_quantity']);
