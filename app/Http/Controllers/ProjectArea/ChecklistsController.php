@@ -361,6 +361,7 @@ class ChecklistsController extends Controller
             $isGEP = true;
         }
 
+
         try {
             $doc_date = Carbon::createFromFormat('d/m/Y', $data['doc_date']);
             $startOfMonth = $doc_date->startOfMonth()->format('Y-m-d');
@@ -480,7 +481,7 @@ class ChecklistsController extends Controller
                 "MDD"
             ],
             'docTypes' => [
-                "Efectivo",
+                "Sin Comprobante",
                 "RH(Recibo por Honorarios)",
                 "Factura",
                 "Boleta",
@@ -493,7 +494,7 @@ class ChecklistsController extends Controller
                 "Peaje",
                 "Taxis y Pasajes",
                 "Encomienda",
-                "Consumibles",
+                "Combustible UM",
                 "Bandeos",
                 "Herramientas",
                 "Equipos",

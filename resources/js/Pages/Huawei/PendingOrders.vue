@@ -2,6 +2,8 @@
     <Head title="Huawei" />
     <AuthenticatedLayout :redirectRoute="{route: 'huawei.inventory.show', params: {warehouse: 1}}">
         <template #header> Pedidos Pendientes </template>
+        <Toaster richColors />
+
         <div class="min-w-full rounded-lg shadow">
             <div>
                 <div>
@@ -407,6 +409,14 @@
                             />
                         </div>
                         <div class="col-span-2">
+                            <label for="archive" class="block text-sm font-medium text-gray-700">Guía</label>
+                            <InputFile v-model="form.archive"
+                            id="archive"
+                            class="block w-full rounded-md border-0 mt-1 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                            />
+                            <InputError :message="form.errors.archive" />
+                        </div>
+                        <div class="col-span-2">
                             <InputLabel class="mb-1" for="observation"
                                 >Observación</InputLabel
                             >
@@ -457,6 +467,10 @@ import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
+import InputFile from "@/Components/InputFile.vue";
+import { notifyError } from "@/Components/Notification";
+import { Toaster } from "vue-sonner";
+import { setAxiosErrors } from "@/utils/utils";
 
 const props = defineProps({
     pending_orders: Object,
@@ -498,19 +512,37 @@ const closeEquipments = () => {
 };
 
 const assignGuide = async () => {
-    const url = route('huawei.inventory.pendingorders.assignguide', {order: orderToUpdate.value});
+    const url = route('huawei.inventory.pendingorders.assignguide', { order: orderToUpdate.value });
+
+    const formData = new FormData();
+    formData.append('guide_number', form.guide_number);
+    formData.append('entry_date', form.entry_date);
+    formData.append('archive', form.archive); // Asegúrate de que sea un archivo válido
+    formData.append('observation', form.observation);
+
     try {
-        let response = await axios.post(url, form);
+        let response = await axios.post(url, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
         dataToRender.value.data = response.data.orders;
         closeGuideModal();
         successModal.value = true;
         setTimeout(() => {
-            successModal.value = false
+            successModal.value = false;
         }, 2000);
     } catch (error) {
         console.error(error);
+        if (error.response?.data?.errors) {
+            setAxiosErrors(error.response.data.errors, form);
+        } else {
+            notifyError('Server Error');
+        }
     }
 };
+
 
 const filterForm = ref({
     selectedOrderNumbers: props.order_numbers,
@@ -542,6 +574,7 @@ function sanitizeText(text) {
 const form = useForm({
     guide_number: "",
     entry_date: "",
+    archive: "",
     observation: "",
 });
 

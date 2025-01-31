@@ -52,8 +52,27 @@
     <p style="font-size: 18px; font-weight: bold; font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">“Innovación y tecnología al alcance de la sociedad”</p>
   </div>
   @php
-  $jefe = $project->cost_line_id === 1 ? 'Luis Herrera':'prueba2';
-  $supervisor = $project->cost_line_id === 1 ? 'Carlos Caceres':'suerpprueba2';
+  if ($project->cost_line_id === 1) {
+    $jefe = 'Luis Herrera';
+    $supervisor = 'Carlos Caceres';
+  } elseif ($project->cost_line_id === 2) {
+    if (in_array($project->cost_center_id, [4, 5])) {
+        $jefe = 'Julio Morales';
+        $supervisor = 'Julio Morales';
+      } elseif (in_array($project->cost_center_id, [6, 7])) {
+        $jefe = 'Christian Zevallos';
+        $supervisor = 'Miguel Montalvo';
+      } elseif($project->cost_center_id === 8) {
+        $jefe = 'Jefe Densificacion';
+        $supervisor = 'Supervisor Densificacion';
+      } elseif($project->cost_center_id === 9) {
+        $jefe = 'Jefe Adicionales';
+        $supervisor = 'Supervisor Adicionales';
+      }
+  } else {
+    $jefe = 'Valor por defecto jefe';
+    $supervisor = 'Valor por defecto supervisor';
+  }
   @endphp
   <table>
     <tbody>
@@ -207,22 +226,6 @@
       <tr>
         <td class="td-custom" style="width: 200px">CCI</td>
         <td class="td-custom" style="width: 500.5px">002-21500262281600620</td>
-      </tr>
-      <tr>
-        <td class="td-custom" style="width: 200px">Caja Municipal Arequipa (Soles)</td>
-        <td class="td-custom" style="width: 500.5px">001-44342902100001001</td>
-      </tr>
-      <tr>
-        <td class="td-custom" style="width: 200px">CCI</td>
-        <td class="td-custom" style="width: 500.5px">803-001-001443429001-72</td>
-      </tr>
-      <tr>
-        <td class="td-custom" style="width: 200px">Caja Municipal Arequipa (Dólares)</td>
-        <td class="td-custom" style="width: 500.5px">001-44342902110102001</td>
-      </tr>
-      <tr>
-        <td class="td-custom" class="td-custom" style="width: 200px">CCI</td>
-        <td class="td-custom" style="width: 500.5px">803-001-001443429002-70</td>
       </tr>
       <tr>
         <td class="td-custom" colspan="2" style="text-align: center; background: #2e75b5; font-weight: normal;">Cuenta de detracciones</td>

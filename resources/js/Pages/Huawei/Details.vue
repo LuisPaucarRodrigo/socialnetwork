@@ -192,7 +192,7 @@
                                         </template>
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.assigned_diu }}</td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry?.guide_number }}</td>
+                                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"><button class="text-blue-600 hover:underline" @click="openGuide(item.huawei_entry?.id)">{{ item.huawei_entry?.guide_number }}</button></td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.huawei_entry ? item.huawei_entry.entry_date : item.order_date) }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : '-' }}</td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.order_number }}</td>
@@ -274,7 +274,7 @@
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.refund_quantity }}</td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.project_quantity }}</td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.available_quantity }}</td>
-                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.huawei_entry?.guide_number }}</td>
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"><button class="text-blue-600 hover:underline" @click="openGuide(item.huawei_entry?.id)">{{ item.huawei_entry?.guide_number }}</button></td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.huawei_entry ? item.huawei_entry.entry_date : item.order_date) }}</td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? 'S/. ' + item.unit_price.toFixed(2) : '-' }}</td>
                                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.order_number }}</td>
@@ -795,4 +795,9 @@
     closeOpNuDatModal();
     notify("Registros Seleccionados Actualizados");
 };
+
+const openGuide = (id) => {
+    const routeToShow = route('huawei.inventory.showguide', {entry: id});
+    window.open(routeToShow, '_blank');
+}
 </script>
