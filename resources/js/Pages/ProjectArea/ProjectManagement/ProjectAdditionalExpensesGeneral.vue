@@ -912,7 +912,7 @@ const initialFilterFormState = {
     fixedOrAdditional: props.fixedOrAdditional,
     rejected: true,
     search: "",
-    selectedZones: zones,
+    selectedZones: props.zones,
     selectedExpenseTypes: expenseTypes,
     selectedDocTypes: props.documentsType,
     selectedStateTypes: stateTypes,

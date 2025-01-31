@@ -68,8 +68,28 @@ class BudgetUpdateController extends Controller
 
     public function selectProject()
     {
+        $projects = Project::where('status', null)->select(
+            'id',
+            'description',
+            'status',
+            'preproject_id',
+            'cost_center_id',
+        )
+            ->where(function ($query) {
+                $query->whereIn('cost_center_id', [1])
+                    ->orWhere(function ($subQuery) {
+                        $subQuery->whereIn('cost_center_id', [4, 5, 6, 7, 8])
+                            ->whereHas('preproject', function ($item) {
+                                $item->select('id')
+                                    ->where('status', 1);
+                            });
+                    });
+            })
+            ->get();
+        // dd($projects);
         return Inertia::render('Finance/Budget/SelectProject', [
-            'projects' => Project::where('status', null)->whereIn('cost_center_id', [1,4,5])->get(),
+            // 'projects' => Project::where('status', null)->whereIn('cost_center_id', [1,4,5])->get(),
+            'projects' => $projects,
             'costLines' => CostLine::all(),
         ]);
     }
