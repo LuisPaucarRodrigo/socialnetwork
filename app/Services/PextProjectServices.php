@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\CicsaAssignation;
+use App\Models\CostLine;
 use App\Models\PextProjectExpense;
 use App\Models\Preproject;
 use App\Models\Project;
@@ -13,21 +14,20 @@ class PextProjectServices
 {
     private function baseCicsaAssignation(): Builder
     {
-        $query = CicsaAssignation::with('project.cost_center', 'project.preproject')
+        $query = CicsaAssignation::with('project.cost_center','project.preproject')
             ->whereHas('project', function ($query) {
                 $query->where('cost_line_id', 2)
                     ->whereHas('cost_center', function ($costCenterQuery) {
                         $costCenterQuery->where('name', 'like', "%Mantto%");
                     })->whereHas('preproject');
-            });
+            })
+            ->orderBy('created_at', 'desc');
         return $query;
     }
 
     public function getCicsaAssignation()
     {
-        $cicsaAssignation = $this->baseCicsaAssignation();
-        $cicsaAssignation = $cicsaAssignation->orderBy('created_at', 'desc')
-            ->paginate();
+        $cicsaAssignation = $this->baseCicsaAssignation()->paginate();
         return $cicsaAssignation;
     }
 
@@ -39,7 +39,6 @@ class PextProjectServices
                 ->orWhere('project_code', 'like', "%$searchQuery%")
                 ->orWhere('cpe', 'like', "%$searchQuery%");
         })
-            ->orderBy('created_at', 'desc')
             ->get();
         return $cicsaAssignation;
     }
@@ -174,5 +173,11 @@ class PextProjectServices
             })->values()->all();
         }
         return $expense;
+    }
+
+    public function getCostLine(String $cost_line_id): Object
+    {
+        $cost_line = CostLine::with('cost_center')->find($cost_line_id);
+        return $cost_line;
     }
 }

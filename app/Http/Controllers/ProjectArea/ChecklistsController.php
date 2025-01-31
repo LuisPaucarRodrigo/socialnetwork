@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ProjectArea;
 
+use App\Constants\PextConstants;
 use App\Constants\PintConstants;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ChecklistRequest\ChecklistCarRequest;
@@ -388,36 +389,9 @@ class ChecklistsController extends Controller
     public function getPextMobileConstants()
     {
         return response()->json([
-            'zones' => [
-                "Arequipa",
-                "Moquegua",
-                "Tacna",
-                "Cuzco",
-                "Puno",
-                "MDD"
-            ],
-            'docTypes' => [
-                "Sin Comprobante",
-                "RH(Recibo por Honorarios)",
-                "Factura",
-                "Boleta",
-                "Ticket",
-                "Yape-Plin"
-            ],
-            'expenseTypes' => [
-                "Hospedaje",
-                "Pasaje Interprovincial",
-                "Peaje",
-                "Taxis y Pasajes",
-                "Encomienda",
-                "Combustible UM",
-                "Bandeos",
-                "Herramientas",
-                "Equipos",
-                "Epps",
-                "Seguro y Pólizas",
-                "Otros"
-            ],
+            'zones' => PextConstants::getZone(),
+            'docTypes' => PextConstants::getDocumentsType(),
+            'expenseTypes' => PextConstants::getExpenseType(),
         ]);
     }
 }
