@@ -215,15 +215,6 @@ class PextController extends Controller
                     ->get();
             }
 
-            $project = $project->each(function ($item) {
-                $item->setAppends([
-                    'cicsa_charge_status',
-                ]);
-            });
-            $project = $project->filter(function ($item) {
-                return $item->cicsa_charge_status !== 'Completado';
-            });
-
             if ($type == 1) {
                 $project = CicsaAssignation::with('project.cost_center',  'project.project_quote.project_quote_valuations')
                     ->whereHas('project', function ($query) {
@@ -232,6 +223,16 @@ class PextController extends Controller
                     ->orderBy('created_at', 'desc')
                     ->paginate();
             }
+
+            $project = $project->each(function ($item) {
+                $item->setAppends([
+                    'cicsa_charge_status',
+                ]);
+            });
+            
+            $project = $project->filter(function ($item) {
+                return $item->cicsa_charge_status !== 'Completado';
+            });
 
             $cost_line = null;
 
@@ -405,7 +406,7 @@ class PextController extends Controller
             ['id' => $cicsa_assignation_id],
             $validateData
         );
-        $cicsaAssignation->load('project.cost_center');
+        $cicsaAssignation->load('project.cost_center','project.project_quote.project_quote_valuations');
         return response()->json($cicsaAssignation, 200);
     }
 
