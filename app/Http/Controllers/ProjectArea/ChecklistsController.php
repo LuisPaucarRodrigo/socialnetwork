@@ -355,7 +355,8 @@ class ChecklistsController extends Controller
     public function expenseStore(AdditionalCostsApiRequest $request)
     {
         $data = $request->validated();
-
+		  $isGEP = false;
+        $isStaticOrAdditional = false;
         if($data['expense_type'] !== PintConstants::COMBUSTIBLE_GEP) {
             $isStaticOrAdditional = true;
         } else {
@@ -433,39 +434,43 @@ class ChecklistsController extends Controller
 
 
 
-    public function expenseIndex()
-    {
-        try {
-            $startOfMonth = Carbon::now()->startOfMonth()->format('Y-m-d');
-            $endOfMonth = Carbon::now()->endOfMonth()->format('Y-m-d');
+  public function expenseIndex()
+{
+    try {
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMonth = Carbon::now()->endOfMonth();
 
-            $userId = Auth::user()->id;
+        $userId = Auth::user()->id;
 
-            $expense = AdditionalCost::where('user_id', $userId)
-                ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
-                ->select('zone', 'expense_type', 'amount', 'is_accepted', 'description', 'created_at')
-                ->get();
-            $expense2 = StaticCost::where('user_id', $userId)
-                ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
-                ->select('zone', 'expense_type', 'amount', 'is_accepted', 'description', 'created_at')
-                ->get();
-            $expense3 = PextProjectExpense::where('user_id', $userId)
-                ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
-                ->select('zone', 'expense_type', 'amount', 'is_accepted', 'description', 'created_at')
-                ->get();
+        $expense = AdditionalCost::where('user_id', $userId)
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->select('zone', 'expense_type', 'amount', 'is_accepted', 'description', 'created_at', 'general_expense_id')
+            ->get()
+            ->toArray(); 
+        $expense2 = StaticCost::where('user_id', $userId)
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->select('zone', 'expense_type', 'amount', 'description', 'created_at', 'general_expense_id')
+            ->get()
+            ->toArray(); 
+        $expense3 = PextProjectExpense::where('user_id', $userId)
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->select('zone', 'expense_type', 'amount', 'is_accepted', 'description', 'created_at', 'general_expense_id')
+            ->get()
+            ->toArray();
+        $allExpenses = array_merge($expense, $expense2, $expense3);
 
-            $mergedExpenses = $expense->merge($expense2)->merge($expense3);
-            $sortedExpenses = $mergedExpenses->sortByDesc('created_at');
-            $sortedExpensesArray = $sortedExpenses->values()->toArray();
+        usort($allExpenses, function($a, $b) {
+            return strtotime($b['created_at']) - strtotime($a['created_at']);
+        });
 
-            return response()->json($sortedExpensesArray, 200);
-        } catch (Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+        return response()->json($allExpenses, 200);
+        
+    } catch (Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+        ], 500);
     }
-
+}
     public function getPintMobileConstants()
     {
         return response()->json([
