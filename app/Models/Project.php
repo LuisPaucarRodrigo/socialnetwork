@@ -332,7 +332,7 @@ class Project extends Model
             $lastProject = Project::select('id', 'position', 'cost_center_id')
                 ->where('year', $currentYear)
                 ->whereIn('cost_center_id', $listCost)
-                ->latest('position')
+                ->orderBy('position','desc')
                 ->first();
 
             $project->position = $lastProject ? $lastProject->position + 1 : 1;

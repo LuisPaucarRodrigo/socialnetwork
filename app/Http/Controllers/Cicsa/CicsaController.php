@@ -74,16 +74,6 @@ class CicsaController extends Controller
                     });
                 });
         });
-        // ->with(
-        //     'cicsa_feasibility.cicsa_feasibility_materials',
-        //     'cicsa_materials.cicsa_material_items',
-        //     'cicsa_installation.cicsa_installation_materials',
-        //     'cicsa_purchase_order',
-        //     'cicsa_purchase_order_validation',
-        //     'cicsa_service_order',
-        //     'cicsa_charge_area',
-        //     'project.cost_center'
-        // )
         $projects = $this->cicsaService->addRelations($projects);
         $projects = $projects->paginate(15);
 

@@ -32,7 +32,6 @@ class StoreOrUpdateAssignationRequest extends FormRequest
             'manager' => 'required|string',
             'user_name' => 'required|string',
             'user_id' => 'required|numeric',
-            'project_id' => 'nullable|numeric',
             'pre_project_id' => 'nullable|numeric',
             'cost_line_id' => 'sometimes|required|exists:cost_centers,id',
             'cost_center_id' => 'sometimes|required|numeric'

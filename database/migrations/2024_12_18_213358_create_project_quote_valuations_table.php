@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('days');
             $table->string('unit');
-            $table->integer('metrado');
+            $table->float('metrado');
             $table->float('unit_value');
             $table->text('description');
             $table->foreignId('project_quote_id')->constrained('project_quotes')->onDelete('cascade');

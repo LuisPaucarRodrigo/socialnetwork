@@ -238,7 +238,7 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
 
     //Project Pext
     Route::any('/projectPext/index', [PextController::class, 'index'])->name('projectmanagement.pext.index');
-    Route::get('/projectPext/projectOrPreproject/{type}', [PextController::class, 'requestProjectOrPreproject'])->name('projectmanagement.pext.requestProjectOrPreproject');
+    Route::get('/projectPext/projectOrPreproject', [PextController::class, 'requestProjectOrPreproject'])->name('projectmanagement.pext.requestProjectOrPreproject');
     // Route::get('/projectPext/export/expenses', [PextController::class, 'export_expenses'])->name('projectmanagement.pext.export.expenses');
 
     Route::get('/projectPext/expenses/monthly/{project_id}/index/{fixedOrAdditional}', [PextController::class, 'index_expenses'])->name('projectmanagement.pext.expenses.index');
