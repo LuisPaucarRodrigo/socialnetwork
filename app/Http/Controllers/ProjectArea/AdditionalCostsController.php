@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CostsRequest\AdditionalCostsRequest;
 use App\Imports\CostsImport;
 use App\Models\AccountStatement;
+use App\Models\PextProjectExpense;
 use App\Models\Provider;
 use App\Models\StaticCost;
 use Illuminate\Http\Request;
@@ -30,6 +31,7 @@ class AdditionalCostsController extends Controller
         $docTypes = PintConstants::acDocTypes();
         $zones = PintConstants::acZones();
         $stateTypes = PintConstants::acStatesPenAccep();
+        $additionalProjects = Project::where('cost_line_id', 1)->where('cost_center_id', 3)->select('id', 'description')->where('is_accepted', true)->orderBy('description')->get();
 
         $additional_costs = AdditionalCost::where('project_id', $project_id->id)
             ->where(function ($query) {
@@ -56,6 +58,7 @@ class AdditionalCostsController extends Controller
             'expenseTypes' => $expenseTypes,
             'docTypes' => $docTypes,
             'stateTypes' => $stateTypes,
+            'additional_projects' => $additionalProjects,
         ]);
     }
     public function indexRejected(Project $project_id)
@@ -339,6 +342,24 @@ class AdditionalCostsController extends Controller
         return response()->json(true, 200);
     }
 
+    public function swapCostsToAdditionalProject(Request $request)
+    {
+        $data = $request->validate([
+            'ids' => 'required | array | min:1',
+            'project_id' => 'required'
+        ]);
+        foreach ($data['ids'] as $id) {
+            $ac = AdditionalCost::find($id);
+            $newData = collect($ac->toArray())->except(['id', 'project_id'])->toArray();
+            $newData['project_id'] = $data['project_id'];
+            $ac->photo && $this->file_move_toAdditional($ac->photo);
+            $newData['fixedOrAdditional'] = ($ac->expense_type === PintConstants::COMBUSTIBLE_GEP || $ac->expense_type === PintConstants::COMBUSTIBLE_UM) ? true : false;
+            PextProjectExpense::create($newData);
+        }
+        AdditionalCost::whereIn('id', $data['ids'])->delete();
+        return response()->json(true, 200);
+    }
+
 
 
 
@@ -375,6 +396,16 @@ class AdditionalCostsController extends Controller
     {
         $sourcePath = public_path('documents/additionalcosts/' . $fileName);
         $destinationPath = public_path('documents/staticcosts/' . $fileName);
+        if (file_exists($sourcePath)) {
+            rename($sourcePath, $destinationPath);
+            return true;
+        }
+        return true;
+    }
+    public function file_move_toAdditional($fileName)
+    {
+        $sourcePath = public_path('documents/additionalcosts/' . $fileName);
+        $destinationPath = public_path('documents/expensesPext/' . $fileName);
         if (file_exists($sourcePath)) {
             rename($sourcePath, $destinationPath);
             return true;

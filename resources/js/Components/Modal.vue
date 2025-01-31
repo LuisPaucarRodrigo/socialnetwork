@@ -13,7 +13,7 @@ const props = defineProps({
     },
     closeable: {
         type: Boolean,
-        default: true,
+        default: false,
     },
 });
 
