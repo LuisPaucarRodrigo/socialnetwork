@@ -14,6 +14,7 @@ use App\Models\ChecklistCar;
 use App\Models\ChecklistDailytoolkit;
 use App\Models\ChecklistEpp;
 use App\Models\ChecklistToolkit;
+use App\Models\PextProjectExpense;
 use App\Models\Preproject;
 use App\Models\Project;
 use App\Models\StaticCost;
@@ -435,23 +436,29 @@ class ChecklistsController extends Controller
     public function expenseIndex()
     {
         try {
-            $startOfMonth = Carbon::now()->startOfMonth()->toDateString();
-            $endOfMonth = Carbon::now()->endOfMonth()->toDateString();
+            $startOfMonth = Carbon::now()->startOfMonth()->format('Y-m-d');
+            $endOfMonth = Carbon::now()->endOfMonth()->format('Y-m-d');
 
-            $preprojectId = Preproject::where('date', '>=', $startOfMonth)
-                ->where('date', '<=', $endOfMonth)
-                ->where('customer_id', 1)
-                ->select('id')
-                ->first();
-            $projectId = Project::where('preproject_id', $preprojectId->id)->select('id')->first();
-            if (!$projectId) {
-                return response()->json([
-                    'error' => $preprojectId
-                ], 404);
-            }
             $userId = Auth::user()->id;
-            $expense = AdditionalCost::where('user_id', $userId)->where('project_id', $projectId->id)->select('zone', 'expense_type', 'amount', 'is_accepted', 'description')->get();
-            return response()->json($expense, 200);
+
+            $expense = AdditionalCost::where('user_id', $userId)
+                ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+                ->select('zone', 'expense_type', 'amount', 'is_accepted', 'description', 'created_at')
+                ->get();
+            $expense2 = StaticCost::where('user_id', $userId)
+                ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+                ->select('zone', 'expense_type', 'amount', 'is_accepted', 'description', 'created_at')
+                ->get();
+            $expense3 = PextProjectExpense::where('user_id', $userId)
+                ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+                ->select('zone', 'expense_type', 'amount', 'is_accepted', 'description', 'created_at')
+                ->get();
+
+            $mergedExpenses = $expense->merge($expense2)->merge($expense3);
+            $sortedExpenses = $mergedExpenses->sortByDesc('created_at');
+            $sortedExpensesArray = $sortedExpenses->values()->toArray();
+
+            return response()->json($sortedExpensesArray, 200);
         } catch (Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
