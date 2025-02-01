@@ -9,6 +9,7 @@ Route::middleware('permission:CarManager')->group(function () {
     Route::put('/fleet_cars/update/{car}', [CarsController::class, 'update'])->name('fleet.cars.update');
     Route::delete('/fleet_cars/destroy/{car}', [CarsController::class, 'destroy'])->name('fleet.cars.destroy');
 
+    Route::get('/fleet_cars/show_documents/{car}', [CarsController::class, 'showDocuments'])->name('fleet.cars.show_documents');
     Route::post('/fleet_cars/store_document/{car}', [CarsController::class, 'storeDocument'])->name('fleet.cars.store_document');
     Route::post('/fleet_cars/update_document/{car_document}', [CarsController::class, 'updateDocument'])->name('fleet.cars.update_document');
     Route::delete('/fleet_cars/destroy_document/{car_document}', [CarsController::class, 'destroyDocument'])->name('fleet.cars.destroy_document');

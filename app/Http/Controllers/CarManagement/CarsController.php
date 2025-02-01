@@ -55,6 +55,15 @@ class CarsController extends Controller
     }
 
     //documents
+    public function showDocuments(Car $car)
+    {
+        $carDocument = $car->car_document;
+        return Inertia::render('FleetCar/CarDocuments', [
+            'car' => $car,
+            'carDocument' => $carDocument
+        ]);
+    }
+
     public function storeDocument(FleetCarDocumentRequest $request, Car $car)
     {
         $data = $request->validated();
