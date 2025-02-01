@@ -9,8 +9,8 @@
         <div class="min-w-full rounded-lg shadow">
             <div class="mt-6 sm:flex sm:gap-4 sm:justify-between">
                 <div class="flex items-center justify-between gap-x-3 w-full">
-                    <div v-if="hasPermission('HumanResourceManager')" class="hidden sm:flex sm:items-center space-x-3">
-                        <PrimaryButton @click="add_information" type="button">
+                    <div class="hidden sm:flex sm:items-center space-x-3">
+                        <PrimaryButton  type="button">
                             + Agregar
                         </PrimaryButton>
                     </div>
@@ -189,9 +189,9 @@
                     </tbody>
                 </table>
             </div>
-            <div v-if="employees.data"
+            <div v-if="cars.data"
                 class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-                <pagination :links="employees.links" />
+                <pagination :links="cars.links" />
             </div>
         </div>
 
