@@ -19,7 +19,7 @@ class Car extends Model
         'type',
         'photo',
         'user_id',
-        'costline_id',
+        'cost_line_id',
     ];
 
     //relations
@@ -30,7 +30,7 @@ class Car extends Model
 
     public function costline()
     {
-        return $this->belongsTo(CostLine::class, 'costline_id');
+        return $this->belongsTo(CostLine::class, 'cost_line_id');
     }
 
     public function car_document()

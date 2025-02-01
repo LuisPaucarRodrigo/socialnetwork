@@ -16,11 +16,11 @@ return new class extends Migration
             $table->string('brand');
             $table->string('model');
             $table->string('plate');
-            $table->integer('year');
+            $table->string('year');
             $table->string('type');
             $table->string('photo')->nullable();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('costline_id')->constrained('cost_lines')->onDelete('cascade');
+            $table->foreignId('cost_line_id')->constrained('cost_lines')->onDelete('cascade');
             $table->timestamps();
         });
     }

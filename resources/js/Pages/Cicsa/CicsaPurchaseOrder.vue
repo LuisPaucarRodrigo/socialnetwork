@@ -7,7 +7,6 @@
         <template #header>
             {{ type==1 ? 'Pint' : 'Pext' }} - Orden de Compra
         </template>
-        <Toaster richColors />
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
@@ -412,7 +411,6 @@ function openEditModal(item, project_name, cpe) {
 }
 
 async function submit() {
-    console.log(form)
     let url = cicsa_purchase_order_id.value ? route('purchaseOrder.storeOrUpdate', { cicsa_purchase_order_id: cicsa_purchase_order_id.value }) : route('purchaseOrder.storeOrUpdate')
     try {
         let formData = toFormData(form)

@@ -17,7 +17,7 @@ class CarsController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $cars = Car::where('user_id', $user->id)->get();
+        $cars = Car::where('user_id', $user->id)->with('user','costline')->get();
         return Inertia::render('FleetCar/Index', [
             'car' => $cars,
             'costLine' => CostLine::all()
@@ -36,7 +36,8 @@ class CarsController extends Controller
     {
         $data = $request->validated();
         $car = Car::create($data);
-        return response()->json($car);
+        $car->load('user','costline');
+        return response()->json($car,200);
     }
 
     public function update(FleetCarRequest $request, Car $car)
