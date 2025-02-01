@@ -40,7 +40,8 @@ class DatabaseSeeder extends Seeder
             'PurchasingManager' => 'Permite acceso a la mayoria de funciones del Area de Compras',
             'Purchasing' => 'Solo podra visualizarl Area de Compras',
             'HuaweiManager' => 'Permite acceso al Área de Huawei',
-            'DocumentGestion' => 'Permite acceso al área de Gestión Documentaria'
+            'DocumentGestion' => 'Permite acceso al área de Gestión Documentaria',
+            'CarManager' => 'Permite acceso al área de Gestión de Autos'
         ];
 
         // Permissions Admin
@@ -122,15 +123,15 @@ class DatabaseSeeder extends Seeder
             ["name" => "HUAWEI"],
         ];
         $costCenterData = [
-            ["name" => "Mantto pint CLARO", "cost_line_id" => 1, "percentage"=> "20"],
-            ["name" => "Combustible pint CLARO", "cost_line_id" => 1, "percentage"=> "40"] ,
-            ["name" => "Adicionales pint CLARO", "cost_line_id" => 1, "percentage"=> "40"],
-            ["name" => "Mantto pext CLARO", "cost_line_id" => 2, "percentage"=> "10"],
-            ["name" => "Mantto pext GTD", "cost_line_id" => 2, "percentage"=> "10"],
-            ["name" => "Instalaciones CLARO", "cost_line_id" => 2, "percentage"=> "30"],
-            ["name" => "Instalaciones GTD", "cost_line_id" => 2, "percentage"=> "20"],
-            ["name" => "Densificaion", "cost_line_id" => 2, "percentage"=> "20"],
-            ["name" => "Adicionales", "cost_line_id" => 2, "percentage"=> "10"],
+            ["name" => "Mantto pint CLARO", "cost_line_id" => 1, "percentage" => "20"],
+            ["name" => "Combustible pint CLARO", "cost_line_id" => 1, "percentage" => "40"],
+            ["name" => "Adicionales pint CLARO", "cost_line_id" => 1, "percentage" => "40"],
+            ["name" => "Mantto pext CLARO", "cost_line_id" => 2, "percentage" => "10"],
+            ["name" => "Mantto pext GTD", "cost_line_id" => 2, "percentage" => "10"],
+            ["name" => "Instalaciones CLARO", "cost_line_id" => 2, "percentage" => "30"],
+            ["name" => "Instalaciones GTD", "cost_line_id" => 2, "percentage" => "20"],
+            ["name" => "Densificaion", "cost_line_id" => 2, "percentage" => "20"],
+            ["name" => "Adicionales", "cost_line_id" => 2, "percentage" => "10"],
         ];
 
         CostLine::insert($costLinesData);
