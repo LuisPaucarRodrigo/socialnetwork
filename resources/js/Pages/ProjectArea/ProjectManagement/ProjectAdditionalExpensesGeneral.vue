@@ -181,7 +181,7 @@
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Documento" :options="docTypes"
+                            <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Documento" :options="documentsType"
                                 v-model="filterForm.selectedDocTypes" width="w-40" />
                         </th>
                         <th
@@ -701,6 +701,10 @@ const props = defineProps({
     type: Number,
     acExpensesAmounts: Array,
     scExpensesAmounts: Array,
+    zones:Array,
+    expenseType:Array,
+    documentsType:Array,
+    expenseTypeFixed:Array
 });
 
 const expenses = ref(props.expense);
@@ -837,66 +841,66 @@ function handlerPreview(id) {
     );
 }
 
-const initialExpenseFixed = [
-    'Alquiler de Vehículos',
-    'Alquiler de Locales',
-    'Combustible',
-    'Celulares',
-    'Terceros',
-    'Viáticos',
-    'Seguros y Pólizas',
-    'Gastos de Representación',
-    'Reposición de Equipo',
-    'Herramientas',
-    'Equipos',
-    'EPPs',
-    'Adicionales',
-    'Daños de Vehículos',
-    'Planilla',
-    'Otros',
-    'Adicionales',
-    'Daños de Vehículos',
-    'Planilla',
-    'Otros',
-]
+// const initialExpenseFixed = [
+//     'Alquiler de Vehículos',
+//     'Alquiler de Locales',
+//     'Combustible',
+//     'Celulares',
+//     'Terceros',
+//     'Viáticos',
+//     'Seguros y Pólizas',
+//     'Gastos de Representación',
+//     'Reposición de Equipo',
+//     'Herramientas',
+//     'Equipos',
+//     'EPPs',
+//     'Adicionales',
+//     'Daños de Vehículos',
+//     'Planilla',
+//     'Otros',
+//     'Adicionales',
+//     'Daños de Vehículos',
+//     'Planilla',
+//     'Otros',
+// ]
 
-const initialExpenseAdditional = [
-    "Hospedaje",
-    "Mensajería",
-    "Consumibles",
-    "Pasaje Interprovincial",
-    "Taxis y Pasajes",
-    "Bandeos",
-    "Peaje",
-    "Herramientas",
-    "Equipos",
-    "EPPs",
-    "Seguros y Pólizas",
-    "Otros",
-]
+// const initialExpenseAdditional = [
+//     "Hospedaje",
+//     "Mensajería",
+//     "Consumibles",
+//     "Pasaje Interprovincial",
+//     "Taxis y Pasajes",
+//     "Bandeos",
+//     "Peaje",
+//     "Herramientas",
+//     "Equipos",
+//     "EPPs",
+//     "Seguros y Pólizas",
+//     "Otros",
+// ]
 
 const expenseTypes = props.fixedOrAdditional
-    ? initialExpenseFixed
-    : initialExpenseAdditional;
+    ? props.expenseTypeFixed
+    : props.expenseType;
 // const costCenter = props.cost_center.map(item => item.name)
 
-const zones = [
-    "Arequipa",
-    "Moquegua",
-    "Tacna",
-    "Cuzco",
-    "Puno",
-    "MDD"
-];
+// const zones = [
+//     "Arequipa",
+//     "Moquegua",
+//     "Tacna",
+//     "Cuzco",
+//     "Puno",
+//     "MDD"
+// ];
 
-const docTypes = [
-    "Efectivo",
-    "Deposito",
-    "Factura",
-    "Boleta",
-    "Ticket",
-    "Yape-Plin"
-];
+// const docTypes = [
+//     "Efectivo",
+//     "Deposito",
+//     "Factura",
+//     "Boleta",
+//     "Ticket",
+//     "Yape-Plin"
+// ];
 
 const stateTypes = [
     "Pendiente",
@@ -908,9 +912,9 @@ const initialFilterFormState = {
     fixedOrAdditional: props.fixedOrAdditional,
     rejected: true,
     search: "",
-    selectedZones: zones,
+    selectedZones: props.zones,
     selectedExpenseTypes: expenseTypes,
-    selectedDocTypes: docTypes,
+    selectedDocTypes: props.documentsType,
     selectedStateTypes: stateTypes,
     opStartDate: "",
     opEndDate: "",

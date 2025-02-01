@@ -156,9 +156,9 @@ class ProjectPintController extends Controller
                 "cpe"=> $preproject->cpe,
                 "zone"=> 'Arequipa',
                 "zone2"=> null,
-                "manager"=> 'Nikol Sheyla Rondón Neyra',
-                "user_name"=> 'Nikol Sheyla Rondón Neyra',
-                "user_id"=> 17,
+                "manager"=> 'Valery Joana Montalvan Huillca',
+                "user_name"=> 'Valery Joana Montalvan Huillca',
+                "user_id"=> 9,
                 "project_id"=> $project->id,
             ]);
 

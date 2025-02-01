@@ -450,7 +450,7 @@
                             <td
                                 class="border-b border-gray-200 px-2 py-1 text-right text-[13px] tabular-nums whitespace-nowrap"
                             >
-                                S/. {{ item.balance.toFixed(2) }}
+                                S/. {{ item.balance ? item.balance.toFixed(2) : 0 }}
                             </td>
                             <td
                                 class="border-b border-gray-200 px-2 py-1 text-right text-[13px] tabular-nums whitespace-nowrap"
@@ -1102,8 +1102,8 @@ const handleSearch = async (month = null, endMonth = null, all = null) => {
     const res = await axios
         .get(route("finance.account_statement.search", { month, endMonth, all }))
         .catch((e) => console.error(e));
-    dataToRender.value = res.data;
     notifyWarning(`Registros Encontrados ${res.data.accountStatements.length}`);
+    dataToRender.value = res.data;
 };
 
 //search costs

@@ -28,6 +28,7 @@ class StaticCost extends Model
         'provider_id',
         'igv',
         'photo',
+        'user_id',
         'general_expense_id',
         'account_statement_id',
     ];

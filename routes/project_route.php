@@ -123,6 +123,7 @@ Route::middleware('permission:ProjectManager')->group(function () {
     //massive costs actions
     Route::post('/project/additional_costs_massive_update/', [AdditionalCostsController::class, 'masiveUpdate'])->name('projectmanagement.additionalCosts.massiveUpdate');
     Route::post('/project/static_costs_massive_swap/', [AdditionalCostsController::class, 'swapCosts'])->name('projectmanagement.additionalCosts.swapCosts');
+    Route::post('/project/additionals_to_addproject_massive_swap/', [AdditionalCostsController::class, 'swapCostsToAdditionalProject'])->name('projectmanagement.addctoaddproject.swapCosts');
     Route::post('/project/static_costs_massive_update/', [StaticCostsController::class, 'masiveUpdate'])->name('projectmanagement.staticCosts.massiveUpdate');
 
 
@@ -237,7 +238,7 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
 
     //Project Pext
     Route::any('/projectPext/index', [PextController::class, 'index'])->name('projectmanagement.pext.index');
-    Route::get('/projectPext/projectOrPreproject/{type}', [PextController::class, 'requestProjectOrPreproject'])->name('projectmanagement.pext.requestProjectOrPreproject');
+    Route::get('/projectPext/projectOrPreproject', [PextController::class, 'requestProjectOrPreproject'])->name('projectmanagement.pext.requestProjectOrPreproject');
     // Route::get('/projectPext/export/expenses', [PextController::class, 'export_expenses'])->name('projectmanagement.pext.export.expenses');
 
     Route::get('/projectPext/expenses/monthly/{project_id}/index/{fixedOrAdditional}', [PextController::class, 'index_expenses'])->name('projectmanagement.pext.expenses.index');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ProjectArea;
 
+use App\Constants\PextConstants;
 use App\Constants\PintConstants;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ChecklistRequest\ChecklistCarRequest;
@@ -14,6 +15,7 @@ use App\Models\ChecklistCar;
 use App\Models\ChecklistDailytoolkit;
 use App\Models\ChecklistEpp;
 use App\Models\ChecklistToolkit;
+use App\Models\PextProjectExpense;
 use App\Models\Preproject;
 use App\Models\Project;
 use App\Models\StaticCost;
@@ -269,12 +271,100 @@ class ChecklistsController extends Controller
         abort(404, 'Documento no encontrado');
     }
 
+    // public function expenseStore(AdditionalCostsApiRequest $request)
+    // {
+    //     $data = $request->validated();
+    //     $isStatic = $data['expense_type'] === PintConstants::COMBUSTIBLE_UM;
+    //     $isGEP = $data['expense_type'] === PintConstants::COMBUSTIBLE_GEP;
+    //     $isAdditional = !$isStatic && !$isGEP;
+    //     try {
+    //         $doc_date = Carbon::createFromFormat('d/m/Y', $data['doc_date']);
+    //         $startOfMonth = $doc_date->startOfMonth()->format('Y-m-d');
+    //         $endOfMonth = $doc_date->endOfMonth()->format('Y-m-d');
+
+    //         $projectId = null;
+
+    //         //MantoPINT
+    //         if ($isStatic || $isAdditional) {
+    //             $preprojectId = Preproject::where('date', '>=', $startOfMonth)
+    //                 ->where('cost_center_id', 1)
+    //                 ->where('cost_line_id', 1)
+    //                 ->where('date', '<=', $endOfMonth)
+    //                 ->where('customer_id', 1)
+    //                 ->select('id')
+    //                 ->first();
+    //             $projectId = Project::where('preproject_id', $preprojectId->id)->select('id')->first();
+    //         }
+    //         //GEPPINT
+    //         if ($isGEP) {
+    //             $preprojectId = Preproject::where('date', '>=', $startOfMonth)
+    //                 ->where('cost_center_id', 2)
+    //                 ->where('cost_line_id', 1)
+    //                 ->where('date', '<=', $endOfMonth)
+    //                 ->where('customer_id', 1)
+    //                 ->select('id')
+    //                 ->first();
+    //             $projectId = Project::where('preproject_id', $preprojectId->id)->select('id')->first();
+    //         }
+
+
+
+    //         //Errror if neither exists
+    //         if (!$projectId) {
+    //             return response()->json(['error' => "No se encontraron preproyectos pint para este mes."], 404);
+    //         }
+
+
+    //         //Format fields to insert
+    //         $data['project_id'] = $projectId->id;
+    //         $docDate = Carbon::createFromFormat('d/m/Y', $data['doc_date']);
+    //         $data['doc_date'] = $docDate->format('Y-m-d');
+    //         if (($data['zone'] !== PintConstants::MDD1_PM
+    //                 && $data['zone'] !== PintConstants::MDD2_MAZ)
+    //             && $data['type_doc'] === PintConstants::FACTURA
+    //         ) {
+    //             $data['igv'] = 18;
+    //         }
+    //         $newDesc = Auth::user()->name . ", " . $data['description'];
+    //         $data['description'] = $newDesc;
+    //         if (isset($data['photo'])) {
+    //             if ($isStatic || $isGEP) {
+    //                 $data['photo'] = $this->storeBase64Image($data['photo'], 'documents/staticcosts', 'Gasto');
+    //             }
+    //             if ($isAdditional) {
+    //                 $data['photo'] = $this->storeBase64Image($data['photo'], 'documents/additionalcosts', 'Gasto');
+    //             }
+    //         }
+    //         $data['user_id'] = Auth::user()->id;
+
+
+    //         //saving data
+    //         if ($isStatic || $isGEP) StaticCost::create($data);
+    //         if ($isAdditional) AdditionalCost::create($data);
+
+    //         return response()->json(['msg' => "saved"], 200);
+    //     } catch (Exception $e) {
+    //         return response()->json([
+    //             'error' => $e->getMessage(),
+    //             'message' => $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
+
+
+
     public function expenseStore(AdditionalCostsApiRequest $request)
     {
         $data = $request->validated();
-        $isStatic = $data['expense_type'] === PintConstants::COMBUSTIBLE_UM;
-        $isGEP = $data['expense_type'] === PintConstants::COMBUSTIBLE_GEP;
-        $isAdditional = !$isStatic && !$isGEP;
+		  $isGEP = false;
+        $isStaticOrAdditional = false;
+        if($data['expense_type'] !== PintConstants::COMBUSTIBLE_GEP) {
+            $isStaticOrAdditional = true;
+        } else {
+            $isGEP = true;
+        }
+
+
         try {
             $doc_date = Carbon::createFromFormat('d/m/Y', $data['doc_date']);
             $startOfMonth = $doc_date->startOfMonth()->format('Y-m-d');
@@ -283,7 +373,7 @@ class ChecklistsController extends Controller
             $projectId = null;
 
             //MantoPINT
-            if ($isStatic || $isAdditional) {
+            if ($isStaticOrAdditional) {
                 $preprojectId = Preproject::where('date', '>=', $startOfMonth)
                     ->where('cost_center_id', 1)
                     ->where('cost_line_id', 1)
@@ -312,7 +402,6 @@ class ChecklistsController extends Controller
                 return response()->json(['error' => "No se encontraron preproyectos pint para este mes."], 404);
             }
 
-
             //Format fields to insert
             $data['project_id'] = $projectId->id;
             $docDate = Carbon::createFromFormat('d/m/Y', $data['doc_date']);
@@ -326,20 +415,15 @@ class ChecklistsController extends Controller
             $newDesc = Auth::user()->name . ", " . $data['description'];
             $data['description'] = $newDesc;
             if (isset($data['photo'])) {
-                if ($isStatic || $isGEP) {
-                    $data['photo'] = $this->storeBase64Image($data['photo'], 'documents/staticcosts', 'Gasto');
-                }
-                if ($isAdditional) {
-                    $data['photo'] = $this->storeBase64Image($data['photo'], 'documents/additionalcosts', 'Gasto');
-                }
+                $data['photo'] = $this->storeBase64Image(
+                    $data['photo'], 'documents/additionalcosts', 
+                    'Gasto'
+                );
+                
             }
             $data['user_id'] = Auth::user()->id;
-
-
-            //saving data
-            if ($isStatic || $isGEP) StaticCost::create($data);
-            if ($isAdditional) AdditionalCost::create($data);
-
+            
+            AdditionalCost::create($data);
             return response()->json(['msg' => "saved"], 200);
         } catch (Exception $e) {
             return response()->json([
@@ -349,33 +433,45 @@ class ChecklistsController extends Controller
         }
     }
 
-    public function expenseIndex()
-    {
-        try {
-            $startOfMonth = Carbon::now()->startOfMonth()->toDateString();
-            $endOfMonth = Carbon::now()->endOfMonth()->toDateString();
 
-            $preprojectId = Preproject::where('date', '>=', $startOfMonth)
-                ->where('date', '<=', $endOfMonth)
-                ->where('customer_id', 1)
-                ->select('id')
-                ->first();
-            $projectId = Project::where('preproject_id', $preprojectId->id)->select('id')->first();
-            if (!$projectId) {
-                return response()->json([
-                    'error' => $preprojectId
-                ], 404);
-            }
-            $userId = Auth::user()->id;
-            $expense = AdditionalCost::where('user_id', $userId)->where('project_id', $projectId->id)->select('zone', 'expense_type', 'amount', 'is_accepted', 'description')->get();
-            return response()->json($expense, 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+
+  public function expenseIndex()
+{
+    try {
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMonth = Carbon::now()->endOfMonth();
+
+        $userId = Auth::user()->id;
+
+        $expense = AdditionalCost::where('user_id', $userId)
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->select('zone', 'expense_type', 'amount', 'is_accepted', 'description', 'created_at', 'general_expense_id')
+            ->get()
+            ->toArray(); 
+        $expense2 = StaticCost::where('user_id', $userId)
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->select('zone', 'expense_type', 'amount', 'description', 'created_at', 'general_expense_id')
+            ->get()
+            ->toArray(); 
+        $expense3 = PextProjectExpense::where('user_id', $userId)
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->select('zone', 'expense_type', 'amount', 'is_accepted', 'description', 'created_at', 'general_expense_id')
+            ->get()
+            ->toArray();
+        $allExpenses = array_merge($expense, $expense2, $expense3);
+
+        usort($allExpenses, function($a, $b) {
+            return strtotime($b['created_at']) - strtotime($a['created_at']);
+        });
+
+        return response()->json($allExpenses, 200);
+        
+    } catch (Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+        ], 500);
     }
-
+}
     public function getPintMobileConstants()
     {
         return response()->json([
@@ -388,36 +484,9 @@ class ChecklistsController extends Controller
     public function getPextMobileConstants()
     {
         return response()->json([
-            'zones' => [
-                "Arequipa",
-                "Moquegua",
-                "Tacna",
-                "Cuzco",
-                "Puno",
-                "MDD"
-            ],
-            'docTypes' => [
-                "Sin Comprobante",
-                "RH(Recibo por Honorarios)",
-                "Factura",
-                "Boleta",
-                "Ticket",
-                "Yape-Plin"
-            ],
-            'expenseTypes' => [
-                "Hospedaje",
-                "Pasaje Interprovincial",
-                "Peaje",
-                "Taxis y Pasajes",
-                "Encomienda",
-                "Combustible UM",
-                "Bandeos",
-                "Herramientas",
-                "Equipos",
-                "Epps",
-                "Seguro y Pólizas",
-                "Otros"
-            ],
+            'zones' => PextConstants::getZone(),
+            'docTypes' => PextConstants::getDocumentsType(),
+            'expenseTypes' => PextConstants::getExpenseType(),
         ]);
     }
 }

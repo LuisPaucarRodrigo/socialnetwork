@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CostsRequest\AdditionalCostsRequest;
 use App\Imports\CostsImport;
 use App\Models\AccountStatement;
+use App\Models\PextProjectExpense;
 use App\Models\Provider;
 use App\Models\StaticCost;
 use Illuminate\Http\Request;
@@ -30,6 +31,7 @@ class AdditionalCostsController extends Controller
         $docTypes = PintConstants::acDocTypes();
         $zones = PintConstants::acZones();
         $stateTypes = PintConstants::acStatesPenAccep();
+        $additionalProjects = Project::where('cost_line_id', 1)->where('cost_center_id', 3)->select('id', 'description')->where('is_accepted', true)->orderBy('description')->get();
 
         $additional_costs = AdditionalCost::where('project_id', $project_id->id)
             ->where(function ($query) {
@@ -56,6 +58,7 @@ class AdditionalCostsController extends Controller
             'expenseTypes' => $expenseTypes,
             'docTypes' => $docTypes,
             'stateTypes' => $stateTypes,
+            'additional_projects' => $additionalProjects,
         ]);
     }
     public function indexRejected(Project $project_id)
@@ -188,7 +191,7 @@ class AdditionalCostsController extends Controller
         $data = $request->validate([
             'expense_type' => 'required|string',
             'ruc' => 'required|numeric|digits:11',
-            'type_doc' => 'required|string|in:Efectivo,Deposito,Factura,Boleta,Voucher de Pago',
+            'type_doc' => 'required',
             'operation_number' => 'nullable | min:6',
             'operation_date' => 'nullable|date',
             'doc_number' => 'nullable|string',
@@ -230,7 +233,6 @@ class AdditionalCostsController extends Controller
                 $this->file_delete($filename, 'documents/additionalcosts/');
             }
         }
-
         $additional_cost->update($data);
         $additional_cost->load('project', 'provider:id,company_name');
         $additional_cost->project->setAppends([]);
@@ -260,6 +262,42 @@ class AdditionalCostsController extends Controller
                 'account_statement_id' => $data['account_statement_id'],
                 'is_accepted' => 1,
             ]);
+
+            //Automatic swap
+            if ($cost->is_accepted) {
+                $project = Project::with('preproject.quote')->find($cost->project_id);
+                if ($cost->expense_type === PintConstants::COMBUSTIBLE_UM) {
+                    $newdata = collect($cost->toArray())->except(['id', 'is_accepted'])->toArray();
+                    StaticCost::create($newdata);
+                    $cost->photo && $this->file_move($cost->photo);
+                    $cost->delete();
+                }
+                if ($cost->expense_type === PintConstants::COMBUSTIBLE_GEP) {
+                    if ($project->cost_line_id === 1 && $project->cost_center_id === 2) {
+                        $newdata = collect($cost->toArray())->except(['id', 'is_accepted'])->toArray();
+                        StaticCost::create($newdata);
+                        $cost->photo && $this->file_move($cost->photo);
+                        $cost->delete();
+                    } else {
+                        //find mantto project}
+                        $projectGEP = Project::where('cost_line_id', 1)->where('cost_center_id', 2)
+                            ->whereHas('preproject', function ($query) use ($project) {
+                                $query->whereHas('quote', function ($subquery) use ($project) {
+                                    $subquery->where('date', $project->preproject?->quote?->date)
+                                        ->where('deliverable_time', $project->preproject?->quote?->deliverable_time);
+                                });
+                            })
+                            ->first();
+                        if ($projectGEP) {
+                            $newdata = collect($cost->toArray())->except(['id', 'is_accepted'])->toArray();
+                            $newdata['project_id'] = $projectGEP->id;
+                            StaticCost::create($newdata);
+                            $cost->photo && $this->file_move($cost->photo);
+                            $cost->delete();
+                        }
+                    }
+                }
+            }
         }
         $updatedCosts = AdditionalCost::whereIn('id', $data['ids'])
             ->with(['project', 'provider:id,company_name'])
@@ -270,6 +308,10 @@ class AdditionalCostsController extends Controller
         });
         return response()->json($updatedCosts, 200);
     }
+
+
+
+
     public function swapCosts(Request $request)
     {
         $data = $request->validate([
@@ -295,6 +337,24 @@ class AdditionalCostsController extends Controller
                 'photo' => $ac->photo,
                 'account_statement_id' => $ac->account_statement_id,
             ]);
+        }
+        AdditionalCost::whereIn('id', $data['ids'])->delete();
+        return response()->json(true, 200);
+    }
+
+    public function swapCostsToAdditionalProject(Request $request)
+    {
+        $data = $request->validate([
+            'ids' => 'required | array | min:1',
+            'project_id' => 'required'
+        ]);
+        foreach ($data['ids'] as $id) {
+            $ac = AdditionalCost::find($id);
+            $newData = collect($ac->toArray())->except(['id', 'project_id'])->toArray();
+            $newData['project_id'] = $data['project_id'];
+            $ac->photo && $this->file_move_toAdditional($ac->photo);
+            $newData['fixedOrAdditional'] = ($ac->expense_type === PintConstants::COMBUSTIBLE_GEP || $ac->expense_type === PintConstants::COMBUSTIBLE_UM) ? true : false;
+            PextProjectExpense::create($newData);
         }
         AdditionalCost::whereIn('id', $data['ids'])->delete();
         return response()->json(true, 200);
@@ -342,6 +402,16 @@ class AdditionalCostsController extends Controller
         }
         return true;
     }
+    public function file_move_toAdditional($fileName)
+    {
+        $sourcePath = public_path('documents/additionalcosts/' . $fileName);
+        $destinationPath = public_path('documents/expensesPext/' . $fileName);
+        if (file_exists($sourcePath)) {
+            rename($sourcePath, $destinationPath);
+            return true;
+        }
+        return true;
+    }
 
     public function export($project_id)
     {
@@ -367,10 +437,52 @@ class AdditionalCostsController extends Controller
         } else {
             $data = ['is_accepted' => $request->is_accepted];
         }
+
         $ac = AdditionalCost::with('project', 'provider')
             ->find($ac_id);
         $ac->update($data);
-        return response()->json(['additional_cost' => $ac], 200);
+        
+        //Automatic swap
+        if ($ac->is_accepted) {
+            $project = Project::with('preproject.quote')->find($ac->project_id);
+            if ($ac->expense_type === PintConstants::COMBUSTIBLE_UM) {
+                $newdata = collect($ac->toArray())->except(['id', 'is_accepted'])->toArray();
+                StaticCost::create($newdata);
+                $ac->photo && $this->file_move($ac->photo);
+                $ac->delete();
+                return response()->json(['additional_cost' => null, 'msg' => 'Validación de gasto exitosa (fue movido a los gastos fijos)'], 200);
+            }
+            if ($ac->expense_type === PintConstants::COMBUSTIBLE_GEP) {
+                if ($project->cost_line_id === 1 && $project->cost_center_id === 2) {
+                    $newdata = collect($ac->toArray())->except(['id', 'is_accepted'])->toArray();
+                    StaticCost::create($newdata);
+                    $ac->photo && $this->file_move($ac->photo);
+                    $ac->delete();
+                    return response()->json(['additional_cost' => null, 'msg' => 'Validación de gasto exitosa (fue movido a los gastos fijos de GEP)'], 200);
+                } else {
+                    //find mantto project}
+                    $projectGEP = Project::where('cost_line_id', 1)->where('cost_center_id', 2)
+                        ->whereHas('preproject', function ($query) use ($project) {
+                            $query->whereHas('quote', function ($subquery) use ($project) {
+                                $subquery->where('date', $project->preproject?->quote?->date)
+                                    ->where('deliverable_time', $project->preproject?->quote?->deliverable_time);
+                            });
+                        })
+                        ->first();
+                    if ($projectGEP) {
+                        $newdata = collect($ac->toArray())->except(['id', 'is_accepted'])->toArray();
+                        $newdata['project_id'] = $projectGEP->id;
+                        StaticCost::create($newdata);
+                        $ac->photo && $this->file_move($ac->photo);
+                        $ac->delete();
+                        return response()->json(['additional_cost' => null, 'msg' => 'Validación de gasto exitosa (fue movido a los gastos fijos de GEP)'], 200);
+                    }
+                }
+            }
+        }
+        return response()->json(['additional_cost' => $ac, 'msg' => 'Validación de gasto exitosa'], 200);
+
+
     }
 
 

@@ -3,7 +3,7 @@
     <Head title="Proyectos" />
     <AuthenticatedLayout :redirectRoute="{
         route: 'projectmanagement.pext.additional.index',
-        params: {type:type}
+        params: { type: type }
     }">
         <template #header>
             Proyectos Adicionales - No Proceden
@@ -22,7 +22,7 @@
                 </div>
             </div>
             <br>
-           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 <div v-for="item in projects.data || projects" :key="item.id"
                     class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
                     <div class="grid grid-cols-2">
@@ -30,6 +30,13 @@
                             Nombre: {{ item.project_name }}
                         </p>
                         <div v-if="hasPermission('ProjectManager')" class="inline-flex justify-end items-start gap-x-2">
+                            <button type="button" @click="approveAdditionalProject(item.project.id)">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-500">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
+                            </button>
                             <button type="button" @click="editProject(item)">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
@@ -540,7 +547,7 @@ const createOrEditModal = () => {
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('projectmanagement.pext.additional.index_rejected', {type}), { searchQuery: $search });
+        const response = await axios.post(route('projectmanagement.pext.additional.index_rejected', { type }), { searchQuery: $search });
         projects.value = response.data;
     } catch (error) {
         notifyError('Error searching:', error);
@@ -550,7 +557,7 @@ const search = async ($search) => {
 async function submit() {
     let url = route('projectmanagement.pext.additional.store', { 'cicsa_assignation_id': form.id ?? null })
     try {
-        let response = await axios.post(url, {...form.data()})
+        let response = await axios.post(url, { ...form.data() })
         let action = form.id ? 'update' : 'create'
         updatePext(response.data, action)
     } catch (error) {
@@ -594,7 +601,7 @@ function updatePext(pext, action) {
 
 function openQuickQuote(project) {
     const defaultData = project.project_quote || initialStateQuote;
-    defaultData.fee = defaultData.fee ? true : false 
+    defaultData.fee = defaultData.fee ? true : false
     formQuote.defaults({ ...defaultData, project_id: project.id });
     formQuote.reset();
     showQuickQuote.value = !showQuickQuote.value;
@@ -655,7 +662,19 @@ function deleteValoration(index) {
     formQuote.valuations.splice(index, 1)
 }
 
-
+async function approveAdditionalProject(id) {
+    try {
+        const res = await axios.post(route('projectmanagement.pext.additional.reject', { pa_id: id }), { action: 'approve' })
+        if (res.data.msg) {
+            const validations = projects.value.data || projects.value
+            let index = validations.findIndex(item => item.project.id === id)
+            validations.splice(index, 1)
+        }
+    } catch (e) {
+        console.log(e)
+        notifyError('Server Error')
+    }
+}
 
 // function modalExportExcel() {
 //     modalExport.value = !modalExport.value

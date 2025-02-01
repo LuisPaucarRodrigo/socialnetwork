@@ -20,7 +20,8 @@ class CicsaServices
         $query = CicsaAssignation::whereHas('project', function ($subQuery) use ($type) {
             $subQuery->where('cost_line_id', $type)
                 ->where('is_accepted', 1);
-        });
+        })
+            ->orderBy('created_at', 'desc');
         return $query;
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ProjectArea;
 
+use App\Constants\PextConstants;
 use App\Exports\PextExpenseExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PextProjectRequest\StoreOrUpdateAssignationRequest;
@@ -54,9 +55,9 @@ class PextController extends Controller
         return response()->json($project, 200);
     }
 
-    public function requestProjectOrPreproject($type)
+    public function requestProjectOrPreproject()
     {
-        $pro = $this->pextServices->getProjectOrProject($type);
+        $pro = $this->pextServices->getProjectOrProject();
         return response()->json($pro, 200);
     }
 
@@ -196,23 +197,22 @@ class PextController extends Controller
                     })
                     ->whereHas('project.cost_center', function ($query) use ($text) {
                         $query->where('name', 'not like', "%$text%")
-                        ->where('cost_line_id', 2);
+                            ->where('cost_line_id', 2);
                     })
                     ->where(function ($query) {
                         $query->whereHas('cicsa_charge_area', function ($subQuery) {
-                            $subQuery->select('id', 'cicsa_assignation_id', 'invoice_number', 'invoice_date', 'amount', 'deposit_date')
-                                ->where(function ($subSubQuery) {
-                                    $subSubQuery->whereNull('invoice_number')
-                                        ->orWhereNull('invoice_date')
-                                        ->orWhereNull('amount');
-                                })
+                            $subQuery->where(function ($subSubQuery) {
+                                $subSubQuery->whereNull('invoice_number')
+                                    ->orWhereNull('invoice_date')
+                                    ->orWhereNull('amount');
+                            })
                                 ->whereNull('deposit_date');
                         })
                             ->orDoesntHave('cicsa_charge_area');
                     })
                     ->whereDoesntHave('project.preproject')
                     ->orderBy('created_at', 'desc')
-                    ->paginate();
+                    ->get();
             }
 
             if ($type == 1) {
@@ -223,6 +223,16 @@ class PextController extends Controller
                     ->orderBy('created_at', 'desc')
                     ->paginate();
             }
+
+            $project = $project->each(function ($item) {
+                $item->setAppends([
+                    'cicsa_charge_status',
+                ]);
+            });
+            
+            $project = $project->filter(function ($item) {
+                return $item->cicsa_charge_status !== 'Completado';
+            });
 
             $cost_line = null;
 
@@ -245,6 +255,7 @@ class PextController extends Controller
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->searchQuery;
+            $statusProject = $request->statusProject;
             $project = null;
             if ($type == 2) {
                 $project = CicsaAssignation::with('project.cost_center', 'project.project_quote.project_quote_valuations')
@@ -253,19 +264,7 @@ class PextController extends Controller
                     })
                     ->whereHas('project.cost_center', function ($query) use ($text) {
                         $query->where('name', 'not like', "%$text%");
-                    })->where(function ($query) {
-                        $query->whereHas('cicsa_charge_area', function ($subQuery) {
-                            $subQuery->select('id', 'cicsa_assignation_id', 'invoice_number', 'invoice_date', 'amount', 'deposit_date')
-                                ->where(function ($subSubQuery) {
-                                    $subSubQuery->whereNull('invoice_number')
-                                        ->orWhereNull('invoice_date')
-                                        ->orWhereNull('amount');
-                                })
-                                ->whereNull('deposit_date');
-                        })
-                            ->orDoesntHave('cicsa_charge_area');
-                    })
-                    ->whereDoesntHave('project.preproject');
+                    })->whereDoesntHave('project.preproject');
             }
             if ($type == 1) {
                 $project = CicsaAssignation::with('project.cost_center', 'project.project_quote.project_quote_valuations')
@@ -282,6 +281,25 @@ class PextController extends Controller
 
                 ->orderBy('created_at', 'desc')
                 ->get();
+
+            $project = $project->each(function ($item) {
+                $item->setAppends([
+                    'cicsa_charge_status',
+                ]);
+            });
+            if ($statusProject) {
+                $project = $project->filter(function ($item) {
+                    return $item->cicsa_charge_status === 'Completado';
+                });
+            } else {
+                $project = $project->filter(function ($item) {
+                    return $item->cicsa_charge_status !== 'Completado';
+                });
+            }
+
+
+
+
             return response()->json($project, 200);
         }
     }
@@ -363,11 +381,11 @@ class PextController extends Controller
         }
     }
 
-
-    public function rejectProjectAdditional($pa_id)
+    public function rejectProjectAdditional(Request $request, $pa_id)
     {
+        $is_accepted = $request->action === "rejected" ? 0 : 1;
         $rg = Project::find($pa_id);
-        $rg->update(['is_accepted' => 0]);
+        $rg->update(['is_accepted' => $is_accepted]);
         return response()->json(['msg' => true]);
     }
 
@@ -388,7 +406,7 @@ class PextController extends Controller
             ['id' => $cicsa_assignation_id],
             $validateData
         );
-        $cicsaAssignation->load('project.cost_center');
+        $cicsaAssignation->load('project.cost_center','project.project_quote.project_quote_valuations');
         return response()->json($cicsaAssignation, 200);
     }
 
@@ -514,6 +532,10 @@ class PextController extends Controller
                 'type' => $type,
                 'acExpensesAmounts' => $acExpensesAmounts,
                 'scExpensesAmounts' => $scExpensesAmounts,
+                'zones' => PextConstants::getZone(),
+                'expenseType' => PextConstants::getExpenseType(),
+                'expenseTypeFixed' => PextConstants::getExpenseTypeFixed(),
+                'documentsType' => PextConstants::getDocumentsType()
             ]
         );
     }
@@ -566,13 +588,13 @@ class PextController extends Controller
 
         $providers = Provider::select('id', 'ruc', 'company_name')->get();
 
-        $cost_line = null;
-        if ($type == 2) {
-            $cost_line = CostLine::where('name', 'PEXT')->with('cost_center')->first();
-        }
-        if ($type == 1) {
-            $cost_line = CostLine::where('name', 'PINT')->with('cost_center')->first();
-        }
+        $cost_line = $this->pextServices->getCostLine($type);
+        // if ($type == 2) {
+        //     $cost_line = CostLine::where('name', 'PEXT')->with('cost_center')->first();
+        // }
+        // if ($type == 1) {
+        //     $cost_line = CostLine::where('name', 'PINT')->with('cost_center')->first();
+        // }
 
         // $cicsa_assignation = null;
         // if($type == 2){$cicsa_assignation = CicsaAssignation::select('id', 'project_name', 'project_id', 'zone')->get();}
@@ -594,6 +616,10 @@ class PextController extends Controller
                 'type' => $type,
                 'acExpensesAmounts' => $acExpensesAmounts,
                 'scExpensesAmounts' => $scExpensesAmounts,
+                'zones' => PextConstants::getZone(),
+                'expenseType' => PextConstants::getExpenseType(),
+                'expenseTypeFixed' => PextConstants::getExpenseTypeFixed(),
+                'documentsType' => PextConstants::getDocumentsType()
             ]
         );
     }
