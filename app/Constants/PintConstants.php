@@ -30,6 +30,7 @@ class PintConstants
     public const COCHERAS = 'Cocheras';
     public const APOYOS = 'Apoyos';
     public const ACARREOS = 'Acarreos';
+    public const ACTIVOS = 'Activos';
     public const OTROS = 'Otros';
 
     public const ALQUILER_DE_VEHICULOS = 'Alquiler de Vehículos';
@@ -70,6 +71,7 @@ class PintConstants
     public const MDD2 = "MDD2";
     public const MDD1_PM = "MDD1-PM";
     public const MDD2_MAZ = "MDD2-MAZ";
+    public const SANDIA = "Sandia";
     public const OFICINA = "Oficina";
 
 
@@ -132,6 +134,7 @@ class PintConstants
             self::TACNA,
             self::MDD1_PM,
             self::MDD2_MAZ,
+            self::SANDIA,
             self::OFICINA,
         ];
     }
@@ -155,6 +158,7 @@ class PintConstants
             self::ADICIONALES,
             self::FILTROS_Y_ACEITES,
             self::DANOS_DE_VEHICULOS,
+            self::ACTIVOS,
             self::PLANILLA,
             self::OTROS,
         ];
@@ -180,6 +184,7 @@ class PintConstants
             self::TACNA,
             self::MDD1_PM,
             self::MDD2_MAZ,
+            self::SANDIA,
             self::OFICINA,
         ];
     }

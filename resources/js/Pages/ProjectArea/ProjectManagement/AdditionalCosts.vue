@@ -243,7 +243,9 @@
                             </label>
                         </th>
                         <th
-                            class="sm:sticky sm:left-14 sm:z-10 border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            class="sm:sticky sm:left-14 sm:z-10 border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
+                            
+                            >
                             <TableHeaderFilter labelClass="text-[11px]" label="Zona" :options="zones"
                                 v-model="filterForm.selectedZones" width="w-32" />
                         </th>
@@ -1424,7 +1426,7 @@ function openExportPhoto() {
 watch([() => form.type_doc, () => form.zone], () => {
     if (
         form.type_doc === "Factura" &&
-        !["", "MDD1", "MDD2"].includes(form.zone)
+        !["", "MDD1-PM", "MDD2-MAZ"].includes(form.zone)
     ) {
         form.igv = form.igv ? form.igv : 18;
     } else {
