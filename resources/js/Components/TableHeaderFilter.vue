@@ -1,6 +1,6 @@
 <template>
     <div :class="['relative flex justify-center items-center gap-x-3', widthClass]" ref="popup">
-        <p :class="labelClass" v-html="reverse ? reverseWordsWithBreaks(label) : label" ></p>
+        <p :class="{labelClass, 'text-purple-700 border border-purple-700 px-1': isActive}" v-html="reverse ? reverseWordsWithBreaks(label) : label" ></p>
         <button @click="togglePopup">
             <BarsArrowDownIcon class="h-5 w-5" />
         </button>
@@ -34,7 +34,7 @@ const props = defineProps({
     },
     labelClass: {
         type: String,
-        default: 'text-xs font-semibold'
+        default: 'text-xs font-semibold px-1'
     },
     options: {
         type: Array,
@@ -60,6 +60,7 @@ const emit = defineEmits(['update:modelValue']);
 const showPopup = ref(false);
 const selectedOptions = ref([...props.modelValue]);
 const selectAll = ref(true);
+const isActive = ref(false);
 const popup = ref(null);
 
 
@@ -92,6 +93,12 @@ watch(selectedOptions, (newSelectedOptions) => {
         selectAll.value = false;
     }
 });
+
+//checkactive
+watch(selectAll, (newVal)=>{
+    if (newVal === true) isActive.value = false
+    else isActive.value = true
+})
 
 watch(()=>props.modelValue, (newVal) => {
     //si viene del hijo el newVal es lo mismo que el newSelectedOptions

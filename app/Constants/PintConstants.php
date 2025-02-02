@@ -30,6 +30,7 @@ class PintConstants
     public const COCHERAS = 'Cocheras';
     public const APOYOS = 'Apoyos';
     public const ACARREOS = 'Acarreos';
+    public const ACTIVOS = 'Activos';
     public const OTROS = 'Otros';
 
     public const ALQUILER_DE_VEHICULOS = 'Alquiler de Vehículos';
@@ -155,6 +156,7 @@ class PintConstants
             self::ADICIONALES,
             self::FILTROS_Y_ACEITES,
             self::DANOS_DE_VEHICULOS,
+            self::ACTIVOS,
             self::PLANILLA,
             self::OTROS,
         ];
