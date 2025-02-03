@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('permission:CarManager')->group(function () {
     Route::get('/fleet_cars/index', [CarsController::class, 'index'])->name('fleet.cars.index');
+    Route::post('/fleet_cars/search', [CarsController::class, 'search'])->name('fleet.cars.search');
     Route::post('/fleet_cars/store', [CarsController::class, 'store'])->name('fleet.cars.store');
     Route::put('/fleet_cars/update/{car}', [CarsController::class, 'update'])->name('fleet.cars.update');
     Route::delete('/fleet_cars/destroy/{car}', [CarsController::class, 'destroy'])->name('fleet.cars.destroy');

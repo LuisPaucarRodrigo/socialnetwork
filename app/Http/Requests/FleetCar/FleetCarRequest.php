@@ -29,7 +29,7 @@ class FleetCarRequest extends FormRequest
             'type' => 'required',
             'photo' => 'nullable',
             'user_id' => 'required',
-            'costline_id' => 'required',
+            'cost_line_id' => 'required',
         ];
     }
 }

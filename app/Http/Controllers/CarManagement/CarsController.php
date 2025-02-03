@@ -19,11 +19,41 @@ class CarsController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $cars = Car::where('user_id', $user->id)->with(['car_document', 'car_changelogs.car_changelog_items'])->get();
+        $cars = Car::with('user', 'costline');
+
+        if ($user->role_id !== 1) {
+            $cars->where('user_id', $user->id);
+        }
+        
+        $cars = $cars->get();
         return Inertia::render('FleetCar/Index', [
             'car' => $cars,
             'costLine' => CostLine::all()
         ]);
+    }
+
+    public function search(Request $request)
+    {
+        $user = Auth::user();
+        $cost_line = $request->cost_line;
+        $search = $request->search;
+        $cars = Car::with('user', 'costline')
+            ->where(function ($query) use ($search) {
+                $query->where('plate', 'like', "%$search%")
+                    ->orWhere('brand', 'like', "%$search%")
+                    ->orWhere('model', 'like', "%$search%")
+                    ->orWhere('type', 'like', "%$search%");
+            });
+        if ($user->role_id !== 1) {
+            $cars->where('user_id', $user->id);
+        }
+        if (count($cost_line) < 3) {
+            $cars->whereHas('costline', function ($query) use ($cost_line) {
+                $query->whereIn('name', $cost_line);
+            });
+        }
+        $cars = $cars->get();
+        return response()->json($cars, 200);
     }
 
     public function indexAdmin()
@@ -38,13 +68,15 @@ class CarsController extends Controller
     {
         $data = $request->validated();
         $car = Car::create($data);
-        return response()->json($car);
+        $car->load('user', 'costline');
+        return response()->json($car, 200);
     }
 
     public function update(FleetCarRequest $request, Car $car)
     {
         $data = $request->validated();
         $car->update($data);
+        $car->load('user', 'costline');
         return response()->json($car);
     }
 
@@ -88,7 +120,7 @@ class CarsController extends Controller
             if ($request->hasFile($archive)) {
                 $fileName = $carDocument->$archive;
                 $file_path = "documents/fleetcar/car_documents/$fileName";
-                if (file_exists(public_path($file_path))){
+                if (file_exists(public_path($file_path))) {
                     unlink(public_path($file_path));
                 }
                 $document = $request->file($archive);
@@ -107,7 +139,7 @@ class CarsController extends Controller
         foreach ($archives as $archive) {
             $fileName = $carDocument->$archive;
             $file_path = "documents/fleetcar/car_documents/$fileName";
-            if (file_exists(public_path($file_path))){
+            if (file_exists(public_path($file_path))) {
                 unlink(public_path($file_path));
             }
         }
@@ -129,7 +161,7 @@ class CarsController extends Controller
             $carChangelog->car_changelog_items()->delete();
             $carChangelog->car_changelog_items()->createMany($data['items']);
         }
-    
+
         return response()->json($carChangelog->load('car_changelog_items'));
     }
 
@@ -139,7 +171,7 @@ class CarsController extends Controller
         $fileName = $carChangelog->invoice;
         $file_path = "documents/fleetcar/invoices/$fileName";
         if ($request->hasFile('invoice')) {
-            if (file_exists(public_path($file_path))){
+            if (file_exists(public_path($file_path))) {
                 unlink(public_path($file_path));
             }
             $document = $request->file('invoice');
@@ -151,15 +183,15 @@ class CarsController extends Controller
             $carChangelog->car_changelog_items()->delete();
             $carChangelog->car_changelog_items()->createMany($data['items']);
         }
-    
+
         return response()->json($carChangelog->load('car_changelog_items'));
-     }
+    }
 
     public function destroyChangelog(CarChangelog $carChangelog)
     {
         $fileName = $carChangelog->invoice;
         $file_path = "documents/fleetcar/invoices/$fileName";
-        if (file_exists(public_path($file_path))){
+        if (file_exists(public_path($file_path))) {
             unlink(public_path($file_path));
         }
         $carChangelog->delete();
@@ -170,7 +202,7 @@ class CarsController extends Controller
     {
         $fileName = $carChangelog->invoice;
         $file_path = "documents/fleetcar/invoices/$fileName";
-        if (file_exists(public_path($file_path))){
+        if (file_exists(public_path($file_path))) {
             ob_end_clean();
             return response()->file(public_path($file_path));
         }
