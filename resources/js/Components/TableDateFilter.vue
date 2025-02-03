@@ -1,21 +1,48 @@
 <template>
-    <div :class="['relative flex justify-center items-center gap-x-3', widthClass]" ref="popup">
-        <p :class="labelClass" v-html="reverse ? reverseWordsWithBreaks(label) : label"></p>
+    <div
+        :class="[
+            'relative flex justify-center items-center gap-x-3',
+            widthClass,
+        ]"
+        ref="popup"
+    >
+        <p
+            :class="{
+                labelClass,
+                'text-purple-700 border border-purple-700 px-1': isActive,
+            }"
+            v-html="reverse ? reverseWordsWithBreaks(label) : label"
+        ></p>
         <button @click="togglePopup" class="cursor-pointer">
             <BarsArrowDownIcon class="h-5 w-5" />
         </button>
-        <div v-if="showPopup" :class="[
-            'absolute z-40 top-8 right-0 mt-0 bg-white border border-gray-300 shadow-lg p-4 rounded-md',
-            widthClass,
-        ]">
+        <div
+            v-if="showPopup"
+            :class="[
+                'absolute z-40 top-8 right-0 mt-0 bg-white border border-gray-300 shadow-lg p-4 rounded-md',
+                widthClass,
+            ]"
+        >
             <div class="font-normal items-center flex flex-col gap-4">
-                <input type="date" v-model="localStartDate" @input="handleDateInput('start')"
-                    class="text-sm border border-gray-300 rounded px-1 py-1" />
-                <input type="date" v-model="localEndDate" @input="handleDateInput('end')"
-                    class="text-sm border border-gray-300 rounded px-1 py-1" />
+                <input
+                    type="date"
+                    v-model="localStartDate"
+                    @input="handleDateInput('start')"
+                    class="text-sm border border-gray-300 rounded px-1 py-1"
+                />
+                <input
+                    type="date"
+                    v-model="localEndDate"
+                    @input="handleDateInput('end')"
+                    class="text-sm border border-gray-300 rounded px-1 py-1"
+                />
                 <label class="flex gap-2 items-center">
-                    <input type="checkbox" v-model="localNoDate" @change="handleNoDate"
-                        class="focus:ring-0 outline-none" />
+                    <input
+                        type="checkbox"
+                        v-model="localNoDate"
+                        @change="handleNoDate"
+                        class="focus:ring-0 outline-none"
+                    />
                     Sin Fecha
                 </label>
             </div>
@@ -34,7 +61,7 @@ const props = defineProps({
     },
     labelClass: {
         type: String,
-        default: "text-xs font-semibold",
+        default: "text-xs font-semibold px-1",
     },
     startDate: {
         type: String,
@@ -54,8 +81,8 @@ const props = defineProps({
     },
     reverse: {
         type: Boolean,
-        default: false
-    }
+        default: false,
+    },
 });
 
 const emit = defineEmits([
@@ -68,9 +95,8 @@ const showPopup = ref(false);
 const popup = ref(null);
 const localStartDate = ref(props.startDate);
 const localEndDate = ref(props.endDate);
-const inputsDatesDisabled = ref(false);
 const localNoDate = ref(props.noDate);
-
+const isActive = ref(false);
 const widthClass = computed(() => props.width);
 
 const togglePopup = () => {
@@ -97,13 +123,10 @@ const handleDateInput = (type) => {
 
 const handleNoDate = () => {
     if (localNoDate.value) {
-        inputsDatesDisabled.value = true;
         localStartDate.value = "";
         localEndDate.value = "";
         emit("update:startDate", "");
         emit("update:endDate", "");
-    } else {
-        inputsDatesDisabled.value = false;
     }
     emit("update:noDate", localNoDate.value);
 };
@@ -129,6 +152,15 @@ watch(
     }
 );
 
+watch([localStartDate, localEndDate, localNoDate], () => {
+    if (
+        localStartDate.value ||
+        localEndDate.value ||
+        localNoDate.value === true
+    ) isActive.value = true;
+    else isActive.value = false;
+});
+
 onMounted(() => {
     document.addEventListener("click", closePopup);
 });
@@ -140,5 +172,4 @@ onUnmounted(() => {
 function reverseWordsWithBreaks(columnTitle) {
     return columnTitle.split(" ").reverse().join("<br>");
 }
-
 </script>
