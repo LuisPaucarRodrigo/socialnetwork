@@ -10,6 +10,7 @@ use App\Models\Car;
 use App\Models\CarChangelog;
 use App\Models\CarDocument;
 use App\Models\CostLine;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -19,12 +20,12 @@ class CarsController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $cars = Car::with('user', 'costline');
+        $cars = Car::with('user', 'costline','car_document');
 
         if ($user->role_id !== 1) {
             $cars->where('user_id', $user->id);
         }
-        
+
         $cars = $cars->get();
         return Inertia::render('FleetCar/Index', [
             'car' => $cars,
@@ -87,29 +88,36 @@ class CarsController extends Controller
     }
 
     //documents
-    public function showDocuments(Car $car)
+    public function showDocuments(CarDocument $car_document,$fieldName)
     {
-        $carDocument = $car->car_document;
-        return Inertia::render('FleetCar/CarDocuments', [
-            'car' => $car,
-            'carDocument' => $carDocument
-        ]);
+        $fileName = $car_document->$fieldName;
+        $file_path = "documents/fleetcar/car_documents/$fileName";
+        if (file_exists(public_path($file_path))) {
+            ob_end_clean();
+            return response()->file(public_path($file_path));
+        }
+        abort(404, 'Archivo no encontrada');
     }
 
     public function storeDocument(FleetCarDocumentRequest $request, Car $car)
     {
         $data = $request->validated();
-        $archives = ['ownership_card', 'technical_review', 'soat', 'insurance'];
-        foreach ($archives as $archive) {
-            if ($request->hasFile($archive)) {
-                $document = $request->file($archive);
-                $data[$archive] = time() . '_' . $document->getClientOriginalName();
-                $document->move(public_path('documents/fleetcar/car_documents/'), $data[$archive]);
+        try {
+            
+            $archives = ['ownership_card', 'technical_review', 'soat', 'insurance'];
+            foreach ($archives as $archive) {
+                if ($request->hasFile($archive)) {
+                    $document = $request->file($archive);
+                    $data[$archive] = time() . '_' . $document->getClientOriginalName();
+                    $document->move(public_path('documents/fleetcar/car_documents/'), $data[$archive]);
+                }
             }
+            $data['car_id'] = $car->id;
+            $carDocument = CarDocument::create($data);
+            return response()->json($carDocument);
+        } catch (Exception $e) {
+            return response()->json($e->getMessage(), 500);
         }
-        $data['car_id'] = $car->id;
-        $carDocument = CarDocument::create($data);
-        return response()->json($carDocument);
     }
 
     public function updateDocument(FleetCarDocumentRequest $request, CarDocument $carDocument)
