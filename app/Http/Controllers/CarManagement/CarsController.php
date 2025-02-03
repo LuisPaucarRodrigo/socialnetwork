@@ -20,7 +20,7 @@ class CarsController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $cars = Car::with('user', 'costline','car_document');
+        $cars = Car::with('user', 'costline', 'car_document');
 
         if ($user->role_id !== 1) {
             $cars->where('user_id', $user->id);
@@ -88,7 +88,7 @@ class CarsController extends Controller
     }
 
     //documents
-    public function showDocuments(CarDocument $car_document,$fieldName)
+    public function showDocuments(CarDocument $car_document, $fieldName)
     {
         $fileName = $car_document->$fieldName;
         $file_path = "documents/fleetcar/car_documents/$fileName";
@@ -103,7 +103,7 @@ class CarsController extends Controller
     {
         $data = $request->validated();
         try {
-            
+
             $archives = ['ownership_card', 'technical_review', 'soat', 'insurance'];
             foreach ($archives as $archive) {
                 if ($request->hasFile($archive)) {
@@ -127,9 +127,11 @@ class CarsController extends Controller
         foreach ($archives as $archive) {
             if ($request->hasFile($archive)) {
                 $fileName = $carDocument->$archive;
-                $file_path = "documents/fleetcar/car_documents/$fileName";
-                if (file_exists(public_path($file_path))) {
-                    unlink(public_path($file_path));
+                if ($fileName) {
+                    $file_path = "documents/fleetcar/car_documents/$fileName";
+                    if (file_exists(public_path($file_path))) {
+                        unlink(public_path($file_path));
+                    }
                 }
                 $document = $request->file($archive);
                 $data[$archive] = time() . '_' . $document->getClientOriginalName();

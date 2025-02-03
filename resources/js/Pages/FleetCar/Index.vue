@@ -267,46 +267,68 @@
                             <InputLabel for="ownership_card">Tarjeta de Propiedad
                             </InputLabel>
                             <div class="mt-2">
-                                <InputFile id="ownership_card" v-model="formDocument.ownership_card" />
+                                <InputFile id="ownership_card" accept=".pdf" v-model="formDocument.ownership_card" />
                                 <InputError :message="formDocument.errors.ownership_card" />
                             </div>
+                            <div v-if="formDocument.ownership_card" class="flex items-center">
+                                <span>Archivo: </span>
+                                <a target="_blank"
+                                    :href="route('fleet.cars.show_documents', { car_document: formDocument.id, fieldName: 'ownership_card' })">
+                                    <EyeIcon class="w-5 h-5 text-green-600" />
+                                </a>
+                            </div>
+
                         </div>
-                        <a v-if="formDocument.ownership_card" target="_blank" :href="route('fleet.cars.show_documents',{car_document:formDocument.id , fieldName : 'ownership_card'})">
-                            <EyeIcon class="w-5 h-5 text-green-600" />
-                        </a>
+
                         <div class="mt-2">
                             <InputLabel for="technical_review">Revision Tecnica
                             </InputLabel>
                             <div class="mt-2">
-                                <InputFile id="technical_review" v-model="formDocument.technical_review" />
+                                <InputFile id="technical_review" accept=".pdf"
+                                    v-model="formDocument.technical_review" />
                                 <InputError :message="formDocument.errors.technical_review" />
                             </div>
+
+                            <div v-if="formDocument.technical_review" class="flex items-center">
+                                <span>Archivo: </span>
+                                <a target="_blank"
+                                    :href="route('fleet.cars.show_documents', { car_document: formDocument.id, fieldName: 'technical_review' })">
+                                    <EyeIcon class="w-5 h-5 text-green-600" />
+                                </a>
+                            </div>
                         </div>
-                        <a v-if="formDocument.technical_review" target="_blank" :href="route('fleet.cars.show_documents',{car_document:formDocument.id , fieldName : 'technical_review'})">
-                            <EyeIcon class="w-5 h-5 text-green-600" />
-                        </a>
                         <div class="mt-6">
                             <InputLabel for="soat">SOAT
                             </InputLabel>
                             <div class="mt-2">
-                                <InputFile id="soat" v-model="formDocument.soat" />
+                                <InputFile id="soat" accept=".pdf" v-model="formDocument.soat" />
                                 <InputError :message="formDocument.errors.soat" />
                             </div>
+
+                            <div v-if="formDocument.soat" class="flex items-center">
+                                <span>Archivo: </span>
+                                <a target="_blank"
+                                    :href="route('fleet.cars.show_documents', { car_document: formDocument.id, fieldName: 'soat' })">
+                                    <EyeIcon class="w-5 h-5 text-green-600" />
+                                </a>
+                            </div>
                         </div>
-                        <a v-if="formDocument.soat" target="_blank" :href="route('fleet.cars.show_documents',{car_document:formDocument.id , fieldName : 'soat'})">
-                            <EyeIcon class="w-5 h-5 text-green-600" />
-                        </a>
                         <div class="mt-6">
                             <InputLabel for="insurance">Seguro
                             </InputLabel>
                             <div class="mt-2">
-                                <InputFile id="insurance" v-model="formDocument.insurance" />
+                                <InputFile id="insurance" accept=".pdf" v-model="formDocument.insurance" />
                                 <InputError :message="formDocument.errors.insurance" />
                             </div>
+
+                            <div v-if="formDocument.insurance" class="flex items-center">
+                                <span>Archivo: </span>
+                                <a target="_blank"
+                                    :href="route('fleet.cars.show_documents', { car_document: formDocument.id, fieldName: 'insurance' })">
+                                    <EyeIcon class="w-5 h-5 text-green-600" />
+                                </a>
+                            </div>
                         </div>
-                        <a v-if="formDocument.insurance" target="_blank" :href="route('fleet.cars.show_documents',{car_document:formDocument.id , fieldName : 'insurance'})">
-                            <EyeIcon class="w-5 h-5 text-green-600" />
-                        </a>
                     </div>
                     <div class="mt-6 flex items-center justify-end gap-x-3">
                         <SecondaryButton @click="openModalDocument"> Cancel </SecondaryButton>
@@ -415,6 +437,7 @@ const formSearch = ref({ ...initialFormSearch })
 
 function openModalCar() {
     showModalCar.value = !showModalCar.value
+    form.clearErrors()
 }
 
 function openModalCreate() {
@@ -430,6 +453,9 @@ function openModalEdit(item) {
 }
 
 function openModalDocument() {
+    formDocument.clearErrors()
+    formDocument.defaults({ ...initialFormDocument })
+    formDocument.reset()
     showModalDocumentCar.value = !showModalDocumentCar.value
 }
 
@@ -437,7 +463,6 @@ function openModalCreateDocument(item) {
     openModalDocument()
     formDocument.defaults({ ...item.car_document ?? initialFormDocument, car_id: item.id })
     formDocument.reset()
-    console.log(formDocument)
 }
 
 function openModalDeleteCars(id) {
@@ -498,7 +523,6 @@ async function submit() {
 }
 
 async function submitDocument() {
-    formDocument.clearErrors()
     let url = formDocument.car_id ? route('fleet.cars.update_document', { car_document: formDocument.id }) : route('fleet.cars.store_document', { car: formDocument.car_id })
     let method = 'post'
     let formData = toFormData(formDocument)
@@ -508,8 +532,9 @@ async function submitDocument() {
             method: method,
             data: formData
         });
+        updateCar(response.data, 'udpateDocument')
     } catch (error) {
-        console.error(error)
+        console.log(error)
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, formDocument)
@@ -538,6 +563,11 @@ function updateCar(data, action) {
         validations.splice(index)
         openModalDeleteCars(null)
         notify('Eliminacion Exitosa')
+    } else if (action === 'udpateDocument') {
+        let index = validations.findIndex(item => item.id === formDocument.car_id)
+        validations[index].car_document = data
+        openModalDocument()
+        notify('Acciòn Exitosa')
     }
 }
 
