@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Gestion de Empleados" />
-    <AuthenticatedLayout :redirectRoute="'management.employees'">
+    <AuthenticatedLayout :redirectRoute="'fleet.cars.index'">
         <Toaster richColors />
         <template #header>
             Vehiculos
@@ -11,7 +11,7 @@
             <div class="mt-6 sm:flex sm:gap-4 sm:justify-between">
                 <div class="flex items-center justify-between gap-x-3 w-full">
                     <div class="hidden sm:flex sm:items-center space-x-3">
-                        <PrimaryButton @click="openModalCar()" type="button">
+                        <PrimaryButton @click="openModalCreate()" type="button">
                             + Agregar
                         </PrimaryButton>
                     </div>
@@ -60,7 +60,7 @@
                     <thead class="sticky top-0 z-20">
                         <tr
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 w-auto">
-                            <th
+                            <th v-if="hasPermission(UserManager)"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 <div class="w-[190px]">
                                     <TableHeaderCicsaFilter label="Linea de Negocio" labelClass="text-gray-600"
@@ -115,7 +115,8 @@
                             <!-- <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
                                 <img :src="car.cropped_image" alt="Empleado" class="w-12 h-13 rounded-full">
                             </td> -->
-                            <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
+                            <td v-if="hasPermission(UserManager)"
+                                class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
                                 <p class="text-gray-900">{{ car.costline?.name }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
@@ -141,6 +142,14 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
                                 <div class="flex space-x-3 justify-center">
+                                    <Link v-if="hasPermission('CarManager')"
+                                        :href="route('fleet.cars.show_documents', { car: car.id })" class="text-blue-900">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-blue-400">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+                                    </svg>
+                                    </Link>
                                     <button v-if="hasPermission('CarManager')" type="button" @click="openModalEdit(car)"
                                         class="text-blue-900">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -149,8 +158,8 @@
                                                 d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                         </svg>
                                     </button>
-                                    <button v-if="hasPermission('CarManager')" type="button" @click="confirmFired()"
-                                        class="text-blue-900">
+                                    <button v-if="hasPermission('UserManager')" type="button"
+                                        @click="openModalDeleteCars(car.id)" class="text-blue-900">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -247,10 +256,65 @@
                 </form>
             </div>
         </Modal>
-        <!-- <ConfirmDeleteModal :confirmingDeletion="confirmingUserDeletion" itemType="empleado"
-            :deleteText="deleteButtonText" :deleteFunction="deleteEmployee" @closeModal="closeModal" />
-        <ConfirmCreateModal :confirmingcreation="createSchedule" itemType="Horario" />
-        <ConfirmUpdateModal :confirmingupdate="updateSchedule" itemType="Horario" /> --> -->
+        <Modal :show="showModalCar">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900">
+                    {{ form.id ? "Editar UM" : "Nueva UM" }}
+                </h2>
+                <form @submit.prevent="submit">
+                    <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
+                        <div class="mt-2">
+                            <InputLabel for="cost_line_id">Linea de Costo
+                            </InputLabel>
+                            <div class="mt-2">
+                                <select id="zone" v-model="form.cost_line_id" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="">Seleccionar Linea de Costo</option>
+                                    <option v-for="item in costLine" :value="item.id">{{ item.name }}</option>
+                                </select>
+                                <InputError :message="form.errors.cost_line_id" />
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <InputLabel for="plate">Placa
+                            </InputLabel>
+                            <div class="mt-2">
+                                <InputFile id="plate" v-model="form.plate" />
+                                <InputError :message="form.errors.plate" />
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <InputLabel for="model">Modelo
+                            </InputLabel>
+                            <div class="mt-2">
+                                <InputFile id="model" v-model="form.model" />
+                                <InputError :message="form.errors.model" />
+                            </div>
+                        </div>
+
+                        <div class="mt-6">
+                            <InputLabel for="brand">Marca
+                            </InputLabel>
+                            <div class="mt-2">
+                                <InputFile id="brand" v-model="form.brand" />
+                                <InputError :message="form.errors.brand" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex items-center justify-end gap-x-3">
+                        <SecondaryButton @click="openModalCar"> Cancel </SecondaryButton>
+                        <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
+                            Guardar
+                        </PrimaryButton>
+                    </div>
+
+                </form>
+            </div>
+        </Modal>
+        <ConfirmDeleteModal :confirmingDeletion="showModalDeleteCars" itemType="vehiculo" :deleteFunction="deleteCars"
+            @closeModal="openModalDeleteCars(null)" />
+        <!-- <ConfirmCreateModal :confirmingcreation="createSchedule" itemType="Horario" />
+        <ConfirmUpdateModal :confirmingupdate="updateSchedule" itemType="Horario" /> -->
     </AuthenticatedLayout>
 </template>
 
@@ -269,11 +333,12 @@ import { ref, watch } from 'vue';
 import InputError from '@/Components/InputError.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
-import { formattedDate, realNumeration, toFormData } from '@/utils/utils';
+import { formattedDate, realNumeration, setAxiosErrors, toFormData } from '@/utils/utils';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { notify, notifyError } from '@/Components/Notification';
 import TableHeaderCicsaFilter from '@/Components/TableHeaderCicsaFilter.vue';
 import { Toaster } from 'vue-sonner';
+import InputFile from '@/Components/InputFile.vue';
 
 // const confirmingUserDeletion = ref(false);
 // const deleteButtonText = 'Eliminar';
@@ -295,6 +360,8 @@ const props = defineProps({
 const cars = ref(props.car)
 const showModalCar = ref(false)
 const typeCreate = ref(null)
+const showModalDeleteCars = ref(false)
+const car_id = ref(null)
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
@@ -327,6 +394,10 @@ const formSearch = ref({ ...initialFormSearch })
 
 function openModalCar() {
     showModalCar.value = !showModalCar.value
+}
+
+function openModalCreate() {
+    openModalCar()
     form.defaults({ ...initialForm })
     form.reset()
 }
@@ -337,6 +408,21 @@ function openModalEdit(item) {
     form.defaults({ ...item })
     form.reset()
 }
+
+function openModalDeleteCars(id) {
+    car_id.value = id
+    showModalDeleteCars.value = !showModalDeleteCars.value
+}
+
+async function deleteCars() {
+    let url = route('fleet.cars.destroy', { car: car_id.value })
+    try {
+        await axios.delete(url)
+        updateCar(car_id.value, "delete")
+    } catch (error) {
+        console.log(error)
+    }
+}
 // function reentry() {
 //     if (formSearch.value.state === 'Active') {
 //         formSearch.value.state = 'Inactive'
@@ -345,32 +431,59 @@ function openModalEdit(item) {
 //     }
 // }
 
-// watch(
-//     () => [
-//         formSearch.value.state,
-//         formSearch.value.cost_line,
-//         formSearch.value.search,
-//     ],
-//     () => {
-//         search();
-//     },
-//     { deep: true }
-// );
+watch(
+    () => [
+        formSearch.value.cost_line,
+        formSearch.value.search,
+    ],
+    () => {
+        search();
+    },
+    { deep: true }
+);
 
 async function submit() {
-    let url = typeCreate.value === "edit" ? route('fleet.cars.store') : route('fleet.cars.store')
-    let formData = toFormData(form)
+    let url = typeCreate.value === "edit" ? route('fleet.cars.update', { car: form.id }) : route('fleet.cars.store')
+    let method = typeCreate.value === "edit" ? 'put' : 'post'
     try {
-        let response = await axios.post(url, formData)
-        const validations = cars.value.data || cars.value
-        validations.unshift(response.data)
-        openModalCar()
-        notify('Actualización Exitosa')
+        let response = await axios({
+            url: url,
+            method: method,
+            data: form
+        });
+        updateCar(response.data, typeCreate.value)
     } catch (error) {
         console.log(error)
+        if (error.response) {
+            if (error.response.data.errors) {
+                setAxiosErrors(error.response.data.errors, form)
+            } else {
+                notifyError("Server error:", error.response.data)
+            }
+        } else {
+            notifyError("Network or other error:", error)
+        }
     }
 }
 
+function updateCar(data, action) {
+    const validations = cars.value.data || cars.value
+    if (action === "create") {
+        validations.unshift(data)
+        openModalCar()
+        notify('Creaciòn Exitosa')
+    } else if (action === "edit") {
+        let index = validations.findIndex(item => item.id === data.id)
+        validations[index] = data
+        openModalCar()
+        notify('Actualización Exitosa')
+    } else if (action === "delete") {
+        let index = validations.findIndex(item => item.id === data)
+        validations.splice(index)
+        openModalDeleteCars(null)
+        notify('Eliminacion Exitosa')
+    }
+}
 // const confirmUserDeletion = (employeeId) => {
 //     employeeToDelete.value = employeeId;
 //     confirmingUserDeletion.value = true;
@@ -411,18 +524,21 @@ async function submit() {
 //     showModalReentry.value = false;
 // };
 
-// async function search() {
-//     let url = route('management.employees.search')
-//     try {
-//         let response = await axios.post(url, formSearch.value)
-//         employees.value = response.data
-//     } catch (error) {
-//         if (error.response.data) {
-//             notifyError('Server error', error.response.data)
-//         } else {
-//             notifyError("Network or other error:", error)
-//         }
-//     }
-// }
+async function search() {
+    console.log(formSearch.value)
+    let url = route('fleet.cars.search')
+    try {
+        let response = await axios.post(url, formSearch.value)
+        cars.value = response.data
+        console.log(response.data)
+    } catch (error) {
+        console.log(error)
+        if (error.response.data) {
+            notifyError('Server error', error.response.data)
+        } else {
+            notifyError("Network or other error:", error)
+        }
+    }
+}
 
 </script>
