@@ -60,7 +60,7 @@
                     <thead class="sticky top-0 z-20">
                         <tr
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 w-auto">
-                            <th v-if="hasPermission(UserManager)"
+                            <th v-if="hasPermission('UserManager')"
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 <div class="w-[190px]">
                                     <TableHeaderCicsaFilter label="Linea de Negocio" labelClass="text-gray-600"
@@ -115,7 +115,7 @@
                             <!-- <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
                                 <img :src="car.cropped_image" alt="Empleado" class="w-12 h-13 rounded-full">
                             </td> -->
-                            <td v-if="hasPermission(UserManager)"
+                            <td v-if="hasPermission('UserManager')"
                                 class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
                                 <p class="text-gray-900">{{ car.costline?.name }}</p>
                             </td>
@@ -142,14 +142,14 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
                                 <div class="flex space-x-3 justify-center">
-                                    <Link v-if="hasPermission('CarManager')"
-                                        :href="route('fleet.cars.show_documents', { car: car.id })" class="text-blue-900">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-blue-400">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
-                                    </svg>
-                                    </Link>
+                                    <button v-if="hasPermission('CarManager')" @click="openModalCreateDocument(car)"
+                                        class="text-blue-900">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-blue-400">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+                                        </svg>
+                                    </button>
                                     <button v-if="hasPermission('CarManager')" type="button" @click="openModalEdit(car)"
                                         class="text-blue-900">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -256,61 +256,90 @@
                 </form>
             </div>
         </Modal>
-        <Modal :show="showModalCar">
+        <Modal :show="showModalDocumentCar">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
-                    {{ form.id ? "Editar UM" : "Nueva UM" }}
+                    {{ formDocument.id ? "Editar " : "Nueva " }}Documentaciòn UM
                 </h2>
-                <form @submit.prevent="submit">
+                <form @submit.prevent="submitDocument">
                     <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
                         <div class="mt-2">
-                            <InputLabel for="cost_line_id">Linea de Costo
+                            <InputLabel for="ownership_card">Tarjeta de Propiedad
                             </InputLabel>
                             <div class="mt-2">
-                                <select id="zone" v-model="form.cost_line_id" autocomplete="off"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option value="">Seleccionar Linea de Costo</option>
-                                    <option v-for="item in costLine" :value="item.id">{{ item.name }}</option>
-                                </select>
-                                <InputError :message="form.errors.cost_line_id" />
+                                <InputFile id="ownership_card" accept=".pdf" v-model="formDocument.ownership_card" />
+                                <InputError :message="formDocument.errors.ownership_card" />
                             </div>
-                        </div>
-                        <div class="mt-2">
-                            <InputLabel for="plate">Placa
-                            </InputLabel>
-                            <div class="mt-2">
-                                <InputFile id="plate" v-model="form.plate" />
-                                <InputError :message="form.errors.plate" />
+                            <div v-if="formDocument.ownership_card" class="flex items-center">
+                                <span>Archivo: </span>
+                                <a target="_blank"
+                                    :href="route('fleet.cars.show_documents', { car_document: formDocument.id, fieldName: 'ownership_card' })">
+                                    <EyeIcon class="w-5 h-5 text-green-600" />
+                                </a>
                             </div>
-                        </div>
-                        <div class="mt-6">
-                            <InputLabel for="model">Modelo
-                            </InputLabel>
-                            <div class="mt-2">
-                                <InputFile id="model" v-model="form.model" />
-                                <InputError :message="form.errors.model" />
-                            </div>
+
                         </div>
 
-                        <div class="mt-6">
-                            <InputLabel for="brand">Marca
+                        <div class="mt-2">
+                            <InputLabel for="technical_review">Revision Tecnica
                             </InputLabel>
                             <div class="mt-2">
-                                <InputFile id="brand" v-model="form.brand" />
-                                <InputError :message="form.errors.brand" />
+                                <InputFile id="technical_review" accept=".pdf"
+                                    v-model="formDocument.technical_review" />
+                                <InputError :message="formDocument.errors.technical_review" />
+                            </div>
+
+                            <div v-if="formDocument.technical_review" class="flex items-center">
+                                <span>Archivo: </span>
+                                <a target="_blank"
+                                    :href="route('fleet.cars.show_documents', { car_document: formDocument.id, fieldName: 'technical_review' })">
+                                    <EyeIcon class="w-5 h-5 text-green-600" />
+                                </a>
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <InputLabel for="soat">SOAT
+                            </InputLabel>
+                            <div class="mt-2">
+                                <InputFile id="soat" accept=".pdf" v-model="formDocument.soat" />
+                                <InputError :message="formDocument.errors.soat" />
+                            </div>
+
+                            <div v-if="formDocument.soat" class="flex items-center">
+                                <span>Archivo: </span>
+                                <a target="_blank"
+                                    :href="route('fleet.cars.show_documents', { car_document: formDocument.id, fieldName: 'soat' })">
+                                    <EyeIcon class="w-5 h-5 text-green-600" />
+                                </a>
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <InputLabel for="insurance">Seguro
+                            </InputLabel>
+                            <div class="mt-2">
+                                <InputFile id="insurance" accept=".pdf" v-model="formDocument.insurance" />
+                                <InputError :message="formDocument.errors.insurance" />
+                            </div>
+
+                            <div v-if="formDocument.insurance" class="flex items-center">
+                                <span>Archivo: </span>
+                                <a target="_blank"
+                                    :href="route('fleet.cars.show_documents', { car_document: formDocument.id, fieldName: 'insurance' })">
+                                    <EyeIcon class="w-5 h-5 text-green-600" />
+                                </a>
                             </div>
                         </div>
                     </div>
                     <div class="mt-6 flex items-center justify-end gap-x-3">
-                        <SecondaryButton @click="openModalCar"> Cancel </SecondaryButton>
-                        <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
+                        <SecondaryButton @click="openModalDocument"> Cancel </SecondaryButton>
+                        <PrimaryButton type="submit" :class="{ 'opacity-25': formDocument.processing }">
                             Guardar
                         </PrimaryButton>
                     </div>
-
                 </form>
             </div>
         </Modal>
+
         <ConfirmDeleteModal :confirmingDeletion="showModalDeleteCars" itemType="vehiculo" :deleteFunction="deleteCars"
             @closeModal="openModalDeleteCars(null)" />
         <!-- <ConfirmCreateModal :confirmingcreation="createSchedule" itemType="Horario" />
@@ -339,6 +368,7 @@ import { notify, notifyError } from '@/Components/Notification';
 import TableHeaderCicsaFilter from '@/Components/TableHeaderCicsaFilter.vue';
 import { Toaster } from 'vue-sonner';
 import InputFile from '@/Components/InputFile.vue';
+import { EyeIcon } from '@heroicons/vue/24/outline';
 
 // const confirmingUserDeletion = ref(false);
 // const deleteButtonText = 'Eliminar';
@@ -359,9 +389,9 @@ const props = defineProps({
 
 const cars = ref(props.car)
 const showModalCar = ref(false)
-const typeCreate = ref(null)
 const showModalDeleteCars = ref(false)
 const car_id = ref(null)
+const showModalDocumentCar = ref(false)
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
@@ -379,8 +409,21 @@ const initialForm = {
     cost_line_id: '',
 }
 
+const initialFormDocument = {
+    id: '',
+    ownership_card: '',
+    technical_review: '',
+    soat: '',
+    insurance: '',
+    car_id: '',
+}
+
 const form = useForm({
     ...initialForm
+})
+
+const formDocument = useForm({
+    ...initialFormDocument
 })
 
 const cost_line = props.costLine.map(item => item.name)
@@ -394,6 +437,7 @@ const formSearch = ref({ ...initialFormSearch })
 
 function openModalCar() {
     showModalCar.value = !showModalCar.value
+    form.clearErrors()
 }
 
 function openModalCreate() {
@@ -403,10 +447,22 @@ function openModalCreate() {
 }
 
 function openModalEdit(item) {
-    typeCreate.value = "edit"
     openModalCar()
     form.defaults({ ...item })
     form.reset()
+}
+
+function openModalDocument() {
+    formDocument.clearErrors()
+    formDocument.defaults({ ...initialFormDocument })
+    formDocument.reset()
+    showModalDocumentCar.value = !showModalDocumentCar.value
+}
+
+function openModalCreateDocument(item) {
+    openModalDocument()
+    formDocument.defaults({ ...item.car_document ?? initialFormDocument, car_id: item.id })
+    formDocument.reset()
 }
 
 function openModalDeleteCars(id) {
@@ -443,20 +499,45 @@ watch(
 );
 
 async function submit() {
-    let url = typeCreate.value === "edit" ? route('fleet.cars.update', { car: form.id }) : route('fleet.cars.store')
-    let method = typeCreate.value === "edit" ? 'put' : 'post'
+    let url = form.id ? route('fleet.cars.update', { car: form.id }) : route('fleet.cars.store')
+    let method = form.id ? 'put' : 'post'
     try {
         let response = await axios({
             url: url,
             method: method,
             data: form
         });
-        updateCar(response.data, typeCreate.value)
+        let action = form.id ? 'edit' : 'create';
+        updateCar(response.data, action)
+    } catch (error) {
+        if (error.response) {
+            if (error.response.data.errors) {
+                setAxiosErrors(error.response.data.errors, form)
+            } else {
+                notifyError("Server error:", error.response.data)
+            }
+        } else {
+            notifyError("Network or other error:", error)
+        }
+    }
+}
+
+async function submitDocument() {
+    let url = formDocument.car_id ? route('fleet.cars.update_document', { car_document: formDocument.id }) : route('fleet.cars.store_document', { car: formDocument.car_id })
+    let method = 'post'
+    let formData = toFormData(formDocument)
+    try {
+        let response = await axios({
+            url: url,
+            method: method,
+            data: formData
+        });
+        updateCar(response.data, 'udpateDocument')
     } catch (error) {
         console.log(error)
         if (error.response) {
             if (error.response.data.errors) {
-                setAxiosErrors(error.response.data.errors, form)
+                setAxiosErrors(error.response.data.errors, formDocument)
             } else {
                 notifyError("Server error:", error.response.data)
             }
@@ -482,47 +563,13 @@ function updateCar(data, action) {
         validations.splice(index)
         openModalDeleteCars(null)
         notify('Eliminacion Exitosa')
+    } else if (action === 'udpateDocument') {
+        let index = validations.findIndex(item => item.id === formDocument.car_id)
+        validations[index].car_document = data
+        openModalDocument()
+        notify('Acciòn Exitosa')
     }
 }
-// const confirmUserDeletion = (employeeId) => {
-//     employeeToDelete.value = employeeId;
-//     confirmingUserDeletion.value = true;
-// };
-
-// const confirmFired = (firedId) => {
-//     employeeToFired.value = firedId
-//     showModalFired.value = true
-// }
-
-// const closeFiredModal = () => {
-//     showModalFired.value = false
-// }
-
-// const deleteEmployee = () => {
-//     const employeeId = employeeToDelete.value;
-//     if (employeeId) {
-//         router.delete(route('management.employees.destroy', { id: employeeId }), {
-//             onSuccess: () => closeModal()
-//         });
-//     }
-// };
-
-// const closeModal = () => {
-//     confirmingUserDeletion.value = false;
-// };
-
-// const add_information = () => {
-//     router.get(route('management.employees.create'));
-// };
-
-// const employee_fired_date = ($id) => {
-//     employeeReentry.value = $id
-//     showModalReentry.value = true
-// };
-
-// const closeReentryModal = () => {
-//     showModalReentry.value = false;
-// };
 
 async function search() {
     console.log(formSearch.value)
