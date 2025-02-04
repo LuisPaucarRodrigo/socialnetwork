@@ -8,6 +8,7 @@ use App\Http\Requests\FleetCar\FleetCarDocumentRequest;
 use App\Http\Requests\FleetCar\FleetCarRequest;
 use App\Models\Car;
 use App\Models\CarChangelog;
+use App\Models\CarChangelogItem;
 use App\Models\CarDocument;
 use App\Models\CostLine;
 use Exception;
@@ -20,7 +21,7 @@ class CarsController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $cars = Car::with('user', 'costline', 'car_document');
+        $cars = Car::with(['user', 'costline', 'car_document', 'car_changelogs.car_changelog_items']);
 
         if ($user->role_id !== 1) {
             $cars->where('user_id', $user->id);
@@ -168,8 +169,12 @@ class CarsController extends Controller
         $data['car_id'] = $car->id;
         $carChangelog = CarChangelog::create($data);
         if (!empty($data['items']) && is_array($data['items'])) {
-            $carChangelog->car_changelog_items()->delete();
-            $carChangelog->car_changelog_items()->createMany($data['items']);
+            foreach ($data['items'] as $item) {
+                CarChangelogItem::create([
+                    'name' => $item,
+                    'car_changelog_id' => $carChangelog->id
+                ]);
+            }
         }
 
         return response()->json($carChangelog->load('car_changelog_items'));

@@ -13,7 +13,7 @@ class CarChangelogItem extends Model
 
     protected $fillable = [
         'name',
-        'observation',
+        'car_changelog_id'
     ];
 
     //relations

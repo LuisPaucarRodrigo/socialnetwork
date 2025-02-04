@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('car_changelog_items', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('observation');
-            $table->foreignId('car_changelog_id')->constrained('car_changelogs')->onDelete('cascade');
+            $table->foreignId(column: 'car_changelog_id')->constrained('car_changelogs')->onDelete('cascade');
             $table->timestamps();
         });
     }
