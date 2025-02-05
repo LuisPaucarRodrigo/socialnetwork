@@ -273,7 +273,7 @@
                                             </svg>
                                         </button>
                                         <button
-                                            v-if="car.car_changelogs"
+                                            v-if="car.car_changelogs.length  > 0"
                                             type="button"
                                             @click="toogleChangelog(car)"
                                             class="text-blue-900 whitespace-no-wrap"
@@ -412,7 +412,20 @@
                                     </th>
                                     <th
                                         class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
-                                    ></th>
+                                    ><div class="flex justify-center items-center gap-2">
+                                        <button type="button" @click="openEditChangelog(changelog)">
+                                                <PencilSquareIcon
+                                                    class="w-5 h-5 text-yellow-400"
+                                                ></PencilSquareIcon>
+                                            </button>
+                                        <button type="button" @click="openModalDeleteChangelog(changelog.id)">
+                                                <TrashIcon
+                                                    class="w-5 h-5 text-red-600"
+                                                ></TrashIcon>
+                                            </button>
+
+                                    </div>
+                                    </th>
                                 </tr>
                             </template>
                         </template>
@@ -933,6 +946,13 @@
             :deleteFunction="deleteCars"
             @closeModal="openModalDeleteCars(null)"
         />
+
+        <ConfirmDeleteModal
+            :confirmingDeletion="showModalDeleteChangelog"
+            itemType="registro de cambios"
+            :deleteFunction="deleteChangelog"
+            @closeModal="openModalDeleteChangelog(null)"
+        />
         <!-- <ConfirmCreateModal :confirmingcreation="createSchedule" itemType="Horario" />
         <ConfirmUpdateModal :confirmingupdate="updateSchedule" itemType="Horario" /> -->
     </AuthenticatedLayout>
@@ -964,7 +984,7 @@ import { notify, notifyError } from "@/Components/Notification";
 import TableHeaderCicsaFilter from "@/Components/TableHeaderCicsaFilter.vue";
 import { Toaster } from "vue-sonner";
 import InputFile from "@/Components/InputFile.vue";
-import { EyeIcon, TrashIcon, DocumentIcon } from "@heroicons/vue/24/outline";
+import { EyeIcon, TrashIcon, DocumentIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
 
 // const confirmingUserDeletion = ref(false);
 // const deleteButtonText = 'Eliminar';
@@ -993,6 +1013,8 @@ const newItem = ref("");
 const carId = ref(null);
 const itemModal = ref(false);
 const showitems = ref([]);
+const changelogToDelete = ref(null);
+const showModalDeleteChangelog = ref(false);
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
@@ -1097,6 +1119,18 @@ function openCreateModalChangelog(item, id) {
     formChangelog.reset();
 }
 
+function openEditChangelog(item) {
+    openModalChangelog();
+    formChangelog.defaults({ ...item });
+    formChangelog.reset();
+    formChangelog.items = item.car_changelog_items?.map((i) => i.name) ?? [];
+}
+
+function openModalDeleteCars(id) {
+    car_id.value = id
+    showModalDeleteCars.value = !showModalDeleteCars.value
+}
+
 function addItem() {
     if (newItem.value.trim() === "") {
         return;
@@ -1115,9 +1149,21 @@ function closeItemModal(){
     itemModal.value = false;
 }
 
-function openModalDeleteCars(id) {
-    car_id.value = id;
-    showModalDeleteCars.value = !showModalDeleteCars.value;
+function openModalDeleteChangelog(id) {
+    changelogToDelete.value = id ?? null;
+    showModalDeleteChangelog.value = !showModalDeleteChangelog.value;
+}
+
+async function deleteChangelog() {
+    const docId = changelogToDelete.value;
+    if (docId) {
+        const response = await axios.delete(route("fleet.cars.destroy_changelog", { car_changelog: docId }));
+        if (response.data){
+            updateCar(response.data, "deleteChangelog");
+        }else{
+            notifyError("Error al eliminar el registro de cambios");
+        }
+    }
 }
 
 async function deleteCars() {
@@ -1270,12 +1316,19 @@ function updateCar(data, action) {
         openModalDocument();
         notify("Acciòn Exitosa");
     } else if (action === "createChangelog") {
-        let index = validations.findIndex((item) => item.id === car_id.value);
-        validations[index].car_changelog = data;
+        let index = validations.findIndex((item) => item.id === data.id);
+        validations[index] = data;
         openModalChangelog();
         notify("Acción Exitosa");
+    } else if (action === "deleteChangelog") {
+        let index = validations.findIndex((item) => item.id === data.id);
+        validations[index] = data;
+        openModalDeleteChangelog(null);
+        carId.value = null;
+        notify("Eliminación Exitosa");
     }
 }
+
 
 async function search() {
     console.log(formSearch.value);

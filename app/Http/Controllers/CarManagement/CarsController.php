@@ -70,7 +70,7 @@ class CarsController extends Controller
     {
         $data = $request->validated();
         $car = Car::create($data);
-        $car->load('user', 'costline');
+        $car->load(relations: ['user', 'costline', 'car_changelogs.car_changelog_items']);
         return response()->json($car, 200);
     }
 
@@ -78,7 +78,7 @@ class CarsController extends Controller
     {
         $data = $request->validated();
         $car->update($data);
-        $car->load('user', 'costline');
+        $car->load(['user', 'costline', 'car_changelogs.car_changelog_items']);
         return response()->json($car);
     }
 
@@ -177,7 +177,7 @@ class CarsController extends Controller
             }
         }
 
-        return response()->json($carChangelog->load('car_changelog_items'));
+        return response()->json($car->load(['user', 'costline', 'car_changelogs.car_changelog_items']));
     }
 
     public function updateChangelog(FleetCarChangelogRequest $request, CarChangelog $carChangelog)
@@ -194,23 +194,30 @@ class CarsController extends Controller
             $document->move(public_path('documents/fleetcar/invoices'), $data['invoice']);
         }
         $carChangelog->update($data);
-        if (!empty($data['items']) && is_array($data['items'])) {
-            $carChangelog->car_changelog_items()->delete();
-            $carChangelog->car_changelog_items()->createMany($data['items']);
-        }
 
-        return response()->json($carChangelog->load('car_changelog_items'));
+        if (!empty($data['items']) && is_array($data['items'])) {
+            CarChangelogItem::where('car_changelog_id', $carChangelog->id)->delete();
+            foreach ($data['items'] as $item) {
+                CarChangelogItem::create([
+                    'name' => $item,
+                    'car_changelog_id' => $carChangelog->id
+                ]);
+            }
+        }
+        $car = Car::find($carChangelog->car_id);
+        return response()->json($car->load(['user', 'costline', 'car_changelogs.car_changelog_items']));
     }
 
     public function destroyChangelog(CarChangelog $carChangelog)
     {
+        $car = Car::find($carChangelog->car_id);
         $fileName = $carChangelog->invoice;
         $file_path = "documents/fleetcar/invoices/$fileName";
         if (file_exists(public_path($file_path))) {
             unlink(public_path($file_path));
         }
         $carChangelog->delete();
-        return response()->json(true);
+        return response()->json($car->load(['user', 'costline', 'car_changelogs.car_changelog_items']));
     }
 
     public function showChangelogInvoice(CarChangelog $carChangelog)
