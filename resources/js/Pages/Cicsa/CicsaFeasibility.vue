@@ -2,19 +2,19 @@
 
     <Head title="CICSA Factibilidad" />
 
-    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
+    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: { type } }">
         <template #header>
-            {{ type==1 ? 'Pint' : 'Pext' }} - Factibilidad PINT y PEXT
+            {{ type == 1 ? 'Pint' : 'Pext' }} - Factibilidad PINT y PEXT
         </template>
         <Toaster richColors />
         <div class="min-w-full rounded-lg shadow">
             <div class="flex justify-between">
-                <a :href="route('feasibilities.export', {type}) + '?' + uniqueParam"
+                <a :href="route('feasibilities.export', { type }) + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
                         placeholder="Buscar ..." />
-                    <SelectCicsaComponent currentSelect="Factibilidad PINT y PEXT" :type="type"/>
+                    <SelectCicsaComponent currentSelect="Factibilidad PINT y PEXT" :type="type" />
                     <div id="search_fields" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Nombre,Codigo,CPE
@@ -146,15 +146,15 @@
                                     <option value="" disabled>Seleccionar Coordinador</option>
                                     <option v-for="opt in (
                                         type == 2
-                                            ? [ 'Valery Joana', 
-                                                'Maria Moscoso', 
-                                                'Angela Mayela'] 
-                                            : 
-                                        type == 1
-                                            ? [ 'Sheyla Rondón'] 
-                                            : []
-                                        )" :key="opt">
-                                            {{ opt }}
+                                            ? ['Valery Joana',
+                                                'Maria Moscoso',
+                                                'Angela Mayela']
+                                            :
+                                            type == 1
+                                                ? ['Sheyla Rondón']
+                                                : []
+                                    )" :key="opt">
+                                        {{ opt }}
                                     </option>
                                 </select>
                                 <InputError :message="form.errors.coordinator" />
@@ -367,6 +367,7 @@ const feasibilitys = ref(feasibility)
 const arrayFeasibilitys = ref([])
 
 const initialState = {
+    id: '',
     user_id: auth.user.id,
     coordinator: '',
     feasibility_date: '',
@@ -473,7 +474,7 @@ function modifyQuantity(id, event) {
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('feasibilities.index', {type}), { searchQuery: $search });
+        const response = await axios.post(route('feasibilities.index', { type }), { searchQuery: $search });
         feasibilitys.value = response.data.feasibility;
     } catch (error) {
         console.error('Error searching:', error);
