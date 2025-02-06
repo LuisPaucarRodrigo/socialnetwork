@@ -445,29 +445,28 @@
                     {{ form.id ? "Editar UM" : "Nueva UM" }}
                 </h2>
                 <form @submit.prevent="submit">
-                    <div
-                        class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2"
-                    >
+                    <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
+                        <div v-if="!form.id && hasPermission('UserManager')" class="mt-2">
+                            <InputLabel for="user_id">Usuario
+                            </InputLabel>
+                            <div class="mt-2">
+                                <select id="user_id" v-model="form.user_id" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="">Seleccionar Usuario</option>
+                                    <option v-for="item in users" :value="item.id">{{ item.name }} - {{ item.dni }}</option>
+                                </select>
+                                <InputError :message="form.errors.user_id" />
+                            </div>
+                        </div>
                         <div class="mt-2">
                             <InputLabel for="cost_line_id"
                                 >Linea de Costo
                             </InputLabel>
                             <div class="mt-2">
-                                <select
-                                    id="zone"
-                                    v-model="form.cost_line_id"
-                                    autocomplete="off"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                >
-                                    <option value="">
-                                        Seleccionar Linea de Costo
-                                    </option>
-                                    <option
-                                        v-for="item in costLine"
-                                        :value="item.id"
-                                    >
-                                        {{ item.name }}
-                                    </option>
+                                <select id="cost_line_id" v-model="form.cost_line_id" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="">Seleccionar Linea de Costo</option>
+                                    <option v-for="item in costLine" :value="item.id">{{ item.name }}</option>
                                 </select>
                                 <InputError
                                     :message="form.errors.cost_line_id"
@@ -533,24 +532,16 @@
                         <div class="mt-6">
                             <InputLabel for="photo">Foto </InputLabel>
                             <div class="mt-2">
-                                <TextInput
-                                    type="text"
-                                    id="photo"
-                                    v-model="form.photo"
-                                />
+                                <!-- <TextInput type="text" id="photo" v-model="form.photo" /> -->
+                                <InputFile id="photo" accept=".jpeg, .jpg, .png" v-model="form.photo"/>
                                 <InputError :message="form.errors.photo" />
                             </div>
                         </div>
                     </div>
                     <div class="mt-6 flex items-center justify-end gap-x-3">
-                        <SecondaryButton @click="openModalCar">
-                            Cancel
-                        </SecondaryButton>
-                        <PrimaryButton
-                            type="submit"
-                            :class="{ 'opacity-25': form.processing }"
-                        >
-                            Guardar
+                        <SecondaryButton @click="openModalCar"> Cancel </SecondaryButton>
+                        <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
+                            {{ form.id ? "Actualizar":"Crear" }}
                         </PrimaryButton>
                     </div>
                 </form>
@@ -699,14 +690,9 @@
                         </div>
                     </div>
                     <div class="mt-6 flex items-center justify-end gap-x-3">
-                        <SecondaryButton @click="openModalDocument">
-                            Cancel
-                        </SecondaryButton>
-                        <PrimaryButton
-                            type="submit"
-                            :class="{ 'opacity-25': formDocument.processing }"
-                        >
-                            Guardar
+                        <SecondaryButton @click="openModalDocument"> Cancel </SecondaryButton>
+                        <PrimaryButton type="submit" :class="{ 'opacity-25': formDocument.processing }">
+                            {{ formDocument.id ? "Actualizar":"Crear" }}
                         </PrimaryButton>
                     </div>
                 </form>
@@ -1000,8 +986,8 @@ const props = defineProps({
     car: Object,
     userPermissions: Array,
     costLine: Object,
-    auth: Object,
-});
+    users: Object
+})
 
 const cars = ref(props.car);
 const showModalCar = ref(false);
@@ -1021,16 +1007,16 @@ const hasPermission = (permission) => {
 };
 
 const initialForm = {
-    id: "",
-    brand: "",
-    model: "",
-    plate: "",
-    year: "",
-    type: "",
-    photo: "",
-    user_id: props.auth.user.id,
-    cost_line_id: "",
-};
+    id: '',
+    brand: '',
+    model: '',
+    plate: '',
+    year: '',
+    type: '',
+    photo: '',
+    user_id: '',
+    cost_line_id: '',
+}
 
 const initialFormDocument = {
     id: "",
@@ -1192,20 +1178,20 @@ watch(
 );
 
 async function submit() {
-    let url = form.id
-        ? route("fleet.cars.update", { car: form.id })
-        : route("fleet.cars.store");
-    let method = form.id ? "put" : "post";
+
+    let url = form.id ? route('fleet.cars.update', { car: form.id }) : route('fleet.cars.store')
+    let method = 'post'
+    let data = toFormData(form)
     try {
         let response = await axios({
             url: url,
             method: method,
-            data: form,
+            data: data
         });
         let action = form.id ? "edit" : "create";
         updateCar(response.data, action);
     } catch (error) {
-        console.error(error);
+        console.log(error)
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, form);
@@ -1333,12 +1319,10 @@ function updateCar(data, action) {
 
 
 async function search() {
-    console.log(formSearch.value);
-    let url = route("fleet.cars.search");
+    let url = route('fleet.cars.search')
     try {
-        let response = await axios.post(url, formSearch.value);
-        cars.value = response.data;
-        console.log(response.data);
+        let response = await axios.post(url, formSearch.value)
+        cars.value = response.data
     } catch (error) {
         console.log(error);
         if (error.response.data) {

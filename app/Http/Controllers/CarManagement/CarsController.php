@@ -11,6 +11,7 @@ use App\Models\CarChangelog;
 use App\Models\CarChangelogItem;
 use App\Models\CarDocument;
 use App\Models\CostLine;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,16 +22,18 @@ class CarsController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $cars = Car::with(['user', 'costline', 'car_document', 'car_changelogs.car_changelog_items']);
-
+        $cars = Car::with('user', 'costline', 'car_document');
+        $users = User::where('role_id', 2)
+            ->get();
         if ($user->role_id !== 1) {
             $cars->where('user_id', $user->id);
         }
 
-        $cars = $cars->get();
+        $cars = $cars->orderby('created_at','desc')->get();
         return Inertia::render('FleetCar/Index', [
             'car' => $cars,
-            'costLine' => CostLine::all()
+            'costLine' => CostLine::all(),
+            'users' => $users
         ]);
     }
 
@@ -69,17 +72,56 @@ class CarsController extends Controller
     public function store(FleetCarRequest $request)
     {
         $data = $request->validated();
-        $car = Car::create($data);
-        $car->load(relations: ['user', 'costline', 'car_changelogs.car_changelog_items']);
-        return response()->json($car, 200);
+        try {
+            if ($request->hasFile('photo')) {
+                $data['photo'] = $this->saveImage($request->file('photo'), 'image/car/', 'car');
+            }
+            $car = Car::create($data);
+            $car->load(['user', 'costline', 'car_changelogs.car_changelog_items']);
+            return response()->json($car, 200);
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), 500);
+        }
+    }
+
+    public function saveImage($photo, $path, $name): String
+    {
+        try {
+            $imagename = time() . '_' . $name . $photo->getClientOriginalName();
+            $photo->move(public_path($path), $imagename);
+            return $imagename;
+        } catch (Exception $e) {
+            abort(500, 'something went wrong');
+        }
     }
 
     public function update(FleetCarRequest $request, Car $car)
     {
         $data = $request->validated();
+        if ($request->hasFile('photo')) {
+            $fileName = $car->photo;
+            if ($fileName) {
+                $file_path = "image/car/$fileName";
+                if (file_exists(public_path($file_path))) {
+                    unlink(public_path($file_path));
+                }
+            }
+            $data['photo'] = $this->saveImage($request->file('photo'), 'image/car/', 'car');
+        }
         $car->update($data);
         $car->load(['user', 'costline', 'car_changelogs.car_changelog_items']);
         return response()->json($car);
+    }
+
+    public function showImage(Car $car)
+    {
+        $fileName = $car->photo;
+        $file_path = "image/car/$fileName";
+        if (file_exists(public_path($file_path))) {
+            ob_end_clean();
+            return response()->file(public_path($file_path));
+        }
+        abort(404, 'Archivo no encontrada');
     }
 
     public function destroy(Car $car)
@@ -104,7 +146,6 @@ class CarsController extends Controller
     {
         $data = $request->validated();
         try {
-
             $archives = ['ownership_card', 'technical_review', 'soat', 'insurance'];
             foreach ($archives as $archive) {
                 if ($request->hasFile($archive)) {

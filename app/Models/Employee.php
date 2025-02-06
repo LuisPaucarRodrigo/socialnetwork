@@ -24,6 +24,7 @@ class Employee extends Model
         'l_policy',
         'sctr_exp_date',
         'policy_exp_date',
+        'user_id',
     ];
 
     protected $appends = [
@@ -33,6 +34,11 @@ class Employee extends Model
     ];
 
     //RELATIONS
+
+    public function user()
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
 
     public function contract()
     {
@@ -80,8 +86,6 @@ class Employee extends Model
     {
         return $this->hasMany(Document::class, 'employee_id');
     }
-
-
 
     public function projects()
     {

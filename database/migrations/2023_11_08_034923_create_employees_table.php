@@ -29,6 +29,8 @@ return new class extends Migration
             $table->boolean('l_policy')->nullable();
             $table->date('sctr_exp_date')->nullable();
             $table->date('policy_exp_date')->nullable();
+
+            $table->foreignId('user_id')->nullable();
             $table->timestamps();
         });
     }
