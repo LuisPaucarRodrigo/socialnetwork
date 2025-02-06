@@ -18,12 +18,12 @@ return new class extends Migration
             $table->string('user_name');
             $table->string('additionalEmployees')->nullable();
             $table->string('zone');
-            $table->integer('km');
+            // $table->integer('km');
             
             $table->string('plate');
-            $table->string('circulation');
-            $table->string('technique');
-            $table->string('soat');
+            // $table->string('circulation');
+            // $table->string('technique');
+            // $table->string('soat');
             $table->string('hornState');
             $table->string('brakesState');
             $table->string('headlightsState');

@@ -1,7 +1,7 @@
     <?php
 
     use App\Http\Controllers\ApiController;
-use App\Http\Controllers\ProjectArea\ChecklistsController;
+    use App\Http\Controllers\ProjectArea\ChecklistsController;
     use Illuminate\Support\Facades\Route;
 
     Route::post('/login', [ApiController::class, 'login']);
@@ -52,7 +52,7 @@ use App\Http\Controllers\ProjectArea\ChecklistsController;
         Route::get('/cicsaProcessList/{zone}', [ApiController::class, 'cicsaProcess']);
         Route::post('/expensePext/store', [ApiController::class, 'storeExpensesPext']);
         Route::get('/expensePext/history', [ApiController::class, 'historyExpensesPext']);
-
+        Route::get('/employees/cost_line/{cost_line_id}', [ApiController::class, 'employee_cost_line']);
         //pint constants
         Route::get('/pintconstants/mobile', [ChecklistsController::class, 'getPintMobileConstants']);
         Route::get('/pextconstants/mobile', [ChecklistsController::class, 'getPextMobileConstants']);

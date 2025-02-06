@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Http\Controllers\FleetCar;
 
@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Http\Requests\FleetCar\FleetCarRequest;
+use App\Models\User;
 
 class FleetCarController extends Controller
 {
@@ -17,12 +18,15 @@ class FleetCarController extends Controller
     {
         $user = Auth::user();
         $cars = Car::where('user_id', $user->id)->get();
+        $users = User::where('role_id',2)
+            ->get();
         return Inertia::render('FleetCar/Index', [
-            'cars' => $cars
+            'cars' => $cars,
+            'users' => $users
         ]);
     }
 
-    public function indexAdmin ()
+    public function indexAdmin()
     {
         $cars = Car::all();
         return Inertia::render('FleetCar/Index', [
