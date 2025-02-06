@@ -22,7 +22,7 @@ class CarsController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $cars = Car::with('user', 'costline', 'car_document');
+        $cars = Car::with(['user', 'costline', 'car_document', 'car_changelogs.car_changelog_items']);
         $users = User::where('role_id', 2)
             ->get();
         if ($user->role_id !== 1) {
@@ -42,7 +42,7 @@ class CarsController extends Controller
         $user = Auth::user();
         $cost_line = $request->cost_line;
         $search = $request->search;
-        $cars = Car::with('user', 'costline')
+        $cars = Car::with(['user', 'costline', 'car_changelogs.car_changelog_items'])
             ->where(function ($query) use ($search) {
                 $query->where('plate', 'like', "%$search%")
                     ->orWhere('brand', 'like', "%$search%")
