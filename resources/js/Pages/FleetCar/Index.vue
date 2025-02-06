@@ -1324,7 +1324,9 @@ function updateCar(data, action) {
         let index = validations.findIndex((item) => item.id === data.id);
         validations[index] = data;
         openModalDeleteChangelog(null);
-        carId.value = null;
+        if (validations[index].car_changelogs.length === 0) {
+            carId.value = null;
+        }
         notify("Eliminación Exitosa");
     }
 }
