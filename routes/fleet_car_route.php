@@ -20,4 +20,6 @@ Route::middleware('permission:CarManager')->group(function () {
     Route::post('/fleet_cars/update_changelog/{car_changelog}', [CarsController::class, 'updateChangelog'])->name('fleet.cars.update_changelog');
     Route::delete('/fleet_cars/destroy_changelog/{car_changelog}', [CarsController::class, 'destroyChangelog'])->name('fleet.cars.destroy_changelog');
     Route::get('/fleet_cars/show_invoice/{car_changelog}', [CarsController::class, 'showChangelogInvoice'])->name('fleet.cars.show_invoice');
+
+    Route::get('/fleet_cars/show_checklist/{car}', [CarsController::class, 'showChecklist'])->name('fleet.cars.show_checklist');
 });

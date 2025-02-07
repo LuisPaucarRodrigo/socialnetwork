@@ -10,6 +10,7 @@ use App\Models\Car;
 use App\Models\CarChangelog;
 use App\Models\CarChangelogItem;
 use App\Models\CarDocument;
+use App\Models\ChecklistCar;
 use App\Models\CostLine;
 use App\Models\User;
 use Exception;
@@ -22,7 +23,7 @@ class CarsController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $cars = Car::with(['user', 'costline', 'car_document', 'car_changelogs.car_changelog_items']);
+        $cars = Car::with(['user', 'costline', 'car_document', 'car_changelogs.car_changelog_items', 'checklist']);
         $users = User::where('role_id', 2)
             ->get();
         if ($user->role_id !== 1) {
@@ -42,7 +43,7 @@ class CarsController extends Controller
         $user = Auth::user();
         $cost_line = $request->cost_line;
         $search = $request->search;
-        $cars = Car::with(['user', 'costline', 'car_changelogs.car_changelog_items'])
+        $cars = Car::with(['user', 'costline', 'car_changelogs.car_changelog_items', 'checklist'])
             ->where(function ($query) use ($search) {
                 $query->where('plate', 'like', "%$search%")
                     ->orWhere('brand', 'like', "%$search%")
@@ -63,7 +64,7 @@ class CarsController extends Controller
 
     public function indexAdmin()
     {
-        $cars = Car::with(['car_document', 'car_changelogs.car_changelog_items'])->get();
+        $cars = Car::with(['car_document', 'car_changelogs.car_changelog_items', 'checklist'])->get();
         return Inertia::render('FleetCar/Index', [
             'cars' => $cars
         ]);
@@ -77,7 +78,7 @@ class CarsController extends Controller
                 $data['photo'] = $this->saveImage($request->file('photo'), 'image/car/', 'car');
             }
             $car = Car::create($data);
-            $car->load(['user', 'costline', 'car_changelogs.car_changelog_items']);
+            $car->load(['user', 'costline', 'car_changelogs.car_changelog_items', 'checklist']);
             return response()->json($car, 200);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 500);
@@ -109,7 +110,7 @@ class CarsController extends Controller
             $data['photo'] = $this->saveImage($request->file('photo'), 'image/car/', 'car');
         }
         $car->update($data);
-        $car->load(['user', 'costline', 'car_changelogs.car_changelog_items']);
+        $car->load(['user', 'costline', 'car_changelogs.car_changelog_items', 'checklist']);
         return response()->json($car);
     }
 
@@ -218,7 +219,7 @@ class CarsController extends Controller
             }
         }
 
-        return response()->json($car->load(['user', 'costline', 'car_changelogs.car_changelog_items']));
+        return response()->json($car->load(['user', 'costline', 'car_changelogs.car_changelog_items', 'checklist']));
     }
 
     public function updateChangelog(FleetCarChangelogRequest $request, CarChangelog $carChangelog)
@@ -246,7 +247,7 @@ class CarsController extends Controller
             }
         }
         $car = Car::find($carChangelog->car_id);
-        return response()->json($car->load(['user', 'costline', 'car_changelogs.car_changelog_items']));
+        return response()->json($car->load(['user', 'costline', 'car_changelogs.car_changelog_items', 'checklist']));
     }
 
     public function destroyChangelog(CarChangelog $carChangelog)
@@ -258,7 +259,7 @@ class CarsController extends Controller
             unlink(public_path($file_path));
         }
         $carChangelog->delete();
-        return response()->json($car->load(['user', 'costline', 'car_changelogs.car_changelog_items']));
+        return response()->json($car->load(['user', 'costline', 'car_changelogs.car_changelog_items', 'checklist']));
     }
 
     public function showChangelogInvoice(CarChangelog $carChangelog)
@@ -270,5 +271,14 @@ class CarsController extends Controller
             return response()->file(public_path($file_path));
         }
         abort(404, 'Factura no encontrada');
+    }
+
+    public function showChecklist(Car $car)
+    {
+        $checklist = ChecklistCar::where('car_id', $car->id)->first();
+        return Inertia::render('FleetCar/CheckList', [
+            'car' => $car,
+            'checklist' => $checklist
+        ]);
     }
 }

@@ -42,4 +42,9 @@ class Car extends Model
     {
         return $this->hasMany(CarChangelog::class, 'car_id');
     }
+
+    public function checklist()
+    {
+        return $this->hasOne(ChecklistCar::class, 'car_id');
+    }
 }
