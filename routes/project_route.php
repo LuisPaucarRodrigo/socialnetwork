@@ -119,6 +119,7 @@ Route::middleware('permission:ProjectManager')->group(function () {
 
     //months of year of project
     Route::get('/project_last12_utilitites/{project_id}', [ProjectManagementController::class, 'projects_year_profit'])->name('projectmanagement.last12.utilities');
+    Route::get('/project_zone_expenses_chart/{project_id}', [ProjectManagementController::class, 'project_zone_expenses'])->name('projectmanagement.zoneexpenses.chart');
 
 
 
