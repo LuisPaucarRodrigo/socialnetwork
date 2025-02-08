@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Constants\PintConstants;
+use Carbon\Carbon;
 
 class ProjectManagementController extends Controller
 {
@@ -202,13 +203,16 @@ class ProjectManagementController extends Controller
     {
         $project = Project::with('employees')->find($project_id);
         $request->validate([
-            'employee.id' => ['required', function ($attribute, $value, $fail)  use ($project) {
-                foreach ($project->employees as $emp) {
-                    if ($emp->id == $value) {
-                        $fail('El trabajador ya se encuentra en el proyecto');
+            'employee.id' => [
+                'required',
+                function ($attribute, $value, $fail) use ($project) {
+                    foreach ($project->employees as $emp) {
+                        if ($emp->id == $value) {
+                            $fail('El trabajador ya se encuentra en el proyecto');
+                        }
                     }
                 }
-            }]
+            ]
         ]);
         $employee = Employee::find($request->input('employee.id'));
         $project->employees()->attach($request->input('employee.id'), [
@@ -307,7 +311,7 @@ class ProjectManagementController extends Controller
             ->first();
         $current_budget = $last_update ? $last_update->new_budget : $project_id->initial_budget;
 
-        $additionalCosts = $project_id->additionalCosts()->where('is_accepted', 1)->get()->sum('real_amount');
+        $additionalCosts = $project_id->additionalCosts()->where('is_accepted', 1)->whereNotIn('expense_type', PintConstants::acExpensesThatDontCount())->get()->sum('real_amount');
         $acArr = $project_id->additionalCosts()
             ->select('expense_type', DB::raw('SUM(amount/(1+igv/100)) as total_amount'))
             ->groupBy('expense_type')
@@ -320,7 +324,7 @@ class ProjectManagementController extends Controller
             ];
         })->toArray();
 
-        $staticCosts =  $project_id->staticCosts()->whereNotIn('expense_type', PintConstants::scExpensesThatDontCount())->get()
+        $staticCosts = $project_id->staticCosts()->whereNotIn('expense_type', PintConstants::scExpensesThatDontCount())->get()
             ->sum('real_amount');
         $scArr = $project_id->staticCosts()
             ->select('expense_type', DB::raw('SUM(amount/(1+igv/100)) as total_amount'))
@@ -350,8 +354,55 @@ class ProjectManagementController extends Controller
             'scExpensesAmounts' => $scExpensesAmounts,
             'staticCosts' => $staticCosts,
             'scExpensesThatDontCount' => PintConstants::scExpensesThatDontCount(),
+            'acExpensesThatDontCount' => PintConstants::acExpensesThatDontCount(),
         ]);
     }
+
+
+    public function projects_year_profit($project_id)
+    {
+        $currProject = Project::with('preproject')->find($project_id);
+        if (!$currProject || !$currProject->preproject) {
+            return response()->json(['error' => 'Proyecto no encontrado o sin preproyecto'], 404);
+        }
+        $currDate = Carbon::parse($currProject->preproject->date);
+    
+        $otherProjects = Project::with('preproject.quote')
+        ->join('preprojects', 'projects.preproject_id', '=', 'preprojects.id') // Unir con preprojects
+        ->where('preprojects.date', '<=', $currDate) // Solo proyectos anteriores
+        ->where('projects.cost_line_id', 1)
+        ->where('projects.cost_center_id', 1)
+        ->orderByDesc('preprojects.date') // Ordenar por fecha más reciente primero
+        ->select('projects.*') // Seleccionar solo los proyectos
+        ->limit(12) // Solo los últimos 12
+        ->get();
+    
+        $months = [];
+        $utilities = [];
+        $names = [];
+    
+        foreach ($otherProjects as $itemProject) {
+            if (!$itemProject->preproject || !$itemProject->preproject->date) {
+                continue;
+            }
+            $monthName = Carbon::parse($itemProject->preproject->date)->translatedFormat('F');
+            $income = optional($itemProject->preproject->quote)->total_amount ?? 0;
+            $outcome = ($itemProject->additional_costs_total ?? 0) + ($itemProject->static_costs_total ?? 0);
+            
+            $names[] = $itemProject->description;
+            $months[] = ucfirst($monthName);
+            $utilities[] = $income - $outcome;
+        }
+    
+        return response()->json([
+            'months' => array_reverse($months),
+            'utilities' => array_reverse($utilities),
+            'names' => array_reverse($names),
+        ]);
+    }
+    
+
+
 
     public function project_expense_details(Request $request)
     {

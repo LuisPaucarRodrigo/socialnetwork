@@ -199,6 +199,13 @@ class PintConstants
     public static function scExpensesThatDontCount (): array { 
         return [
         PintConstants::COMBUSTIBLE_GEP,
+        PintConstants::ACTIVOS,
+        PintConstants::REPOSICION_DE_EQUIPO,
+    ];}
+    public static function acExpensesThatDontCount (): array { 
+        return [
+        PintConstants::COMBUSTIBLE_GEP,
+        PintConstants::ACTIVOS,
         PintConstants::REPOSICION_DE_EQUIPO,
     ];}
 

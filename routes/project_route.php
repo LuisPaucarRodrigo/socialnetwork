@@ -116,6 +116,12 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::post('/project/additional_cost/validate/{ac_id}', [AdditionalCostsController::class, 'validateRegister'])->name('projectmanagement.validateAdditionalCost');
     Route::get('/project/expenses/{project_id}', [ProjectManagementController::class, 'project_expenses'])->name('projectmanagement.expenses');
 
+
+    //months of year of project
+    Route::get('/project_last12_utilitites/{project_id}', [ProjectManagementController::class, 'projects_year_profit'])->name('projectmanagement.last12.utilities');
+
+
+
     Route::get('/descargar_zip_add/{project_id}', [AdditionalCostsController::class, 'downloadImages'])->name('zip.additional.descargar');
     Route::get('/descargar_zip_static/{project_id}', [StaticCostsController::class, 'downloadImages'])->name('zip.static.descargar');
 
