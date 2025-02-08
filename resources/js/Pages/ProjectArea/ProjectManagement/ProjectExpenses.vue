@@ -29,114 +29,20 @@
                 }"
             />
 
-            <div
+            <div v-if="project.cost_center_id == 1"
                 class="w-full h-auto py-6 shadow-md rounded-lg border border-gray-200 bg-white bg-opacity-30"
             >
-                <div class="grid grid-cols-1 lg:grid-cols-2">
+                <div  class="grid grid-cols-1 lg:grid-cols-2">
                     <PastProjectUtilities
-                        v-if="project.cost_center_id == 1"
                         :project_id="project.id"
                     />
-                    <div class="p-4">
-                        <div class="overflow-x-auto ring-1 ring-gray-200">
-                            <table class="w-full whitespace-no-wrap">
-                                <thead>
-                                    <tr
-                                        class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
-                                    >
-                                        <th
-                                            colspan="3"
-                                            class="border-b-2 border-gray-200 bg-gray-700 px-3 py-3 text-center text-sm font-semibold uppercase tracking-wider text-gray-200"
-                                        >
-                                            Balance
-                                        </th>
-                                    </tr>
-                                    <tr
-                                        class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
-                                    >
-                                        <th
-                                            class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
-                                        >
-                                            
-                                        </th>
-                                        <th
-                                            class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-right text-sm font-semibold uppercase tracking-wider text-gray-600"
-                                        >
-                                            Sin IGV
-                                        </th>
-                                        <th
-                                            class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-right text-sm font-semibold uppercase tracking-wider text-gray-600"
-                                        >
-                                            Con IGV
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr
-                                        class="text-gray-700"
-                                    >
-                                        <td
-                                            class="border-b border-gray-200 bg-white px-3 py-3 text-center"
-                                        >
-                                           <span class="text-lg text-orange-500 font-semibold">S/.</span>
-                                        </td>
-                                        <td
-                                            class="border-b border-gray-200 bg-white px-3 py-3 text-base whitespace-nowrap text-right tabular-nums"
-                                        >
-                                            {{ '' }}
-                                        </td>
-                                        <td
-                                            class="border-b border-gray-200 bg-white px-3 py-3 text-base whitespace-nowrap text-right tabular-nums"
-                                        >
-                                            S/.
-                                            s
-                                        </td>
-                                       
-                                    </tr>
-                                    <tr
-                                        class="text-gray-700"
-                                    >
-                                        <td
-                                            class="border-b border-gray-200 bg-white px-3 py-3 text-center"
-                                        >
-                                           <span class="text-base text-indigo-500 font-semibold">IGRESOS</span>
-                                        </td>
-                                        <td
-                                            class="border-b border-gray-200 bg-white px-3 py-3 text-base whitespace-nowrap text-right tabular-nums"
-                                        >
-                                            S/. {{ (project?.preproject.quote?.total_amount).toFixed(2) }}
-                                        </td>
-                                        <td
-                                            class="border-b border-gray-200 bg-white px-3 py-3 text-base whitespace-nowrap text-right tabular-nums"
-                                        >
-                                            S/. {{ (project?.preproject?.quote?.total_amount * 1.18).toFixed(2) }}
-                                        </td>
-                                       
-                                    </tr>
-                                    <tr
-                                        class="text-gray-700"
-                                    >
-                                        <td
-                                            class="border-b border-gray-200 bg-white px-3 py-3 text-center"
-                                        >
-                                           <span class="text-base text-gray-500 font-semibold">SALIDAS</span>
-                                        </td>
-                                        <td
-                                            class="border-b border-gray-200 bg-white px-3 py-3 text-base whitespace-nowrap text-right tabular-nums"
-                                        >
-                                            S/. {{ (additionalCosts + staticCosts).toFixed(2) }}
-                                        </td>
-                                        <td
-                                            class="border-b border-gray-200 bg-white px-3 py-3 text-base whitespace-nowrap text-right tabular-nums"
-                                        >
-                                            S/.
-                                            s
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                    <ProjectBalance
+                      :project="project"
+                      :additionalCosts="additionalCosts"
+                      :additionalCostsIgv="additionalCostsIgv"
+                      :staticCosts="staticCosts"
+                      :staticCostsIgv="staticCostsIgv"
+                    />
                 </div>
             </div>
             <div
@@ -539,12 +445,15 @@ import { InformationCircleIcon } from "@heroicons/vue/24/outline";
 import MarginProfit from "@/Components/ProjectExpenses/MarginProfit.vue";
 import Modal from "@/Components/Modal.vue";
 import PastProjectUtilities from "@/Components/ProjectExpenses/PastProjectUtilities.vue";
+import ProjectBalance from "@/Components/ProjectExpenses/ProjectBalance.vue";
 
 const {
     project,
     current_budget,
     additionalCosts,
     staticCosts,
+    additionalCostsIgv,
+    staticCostsIgv,
     acExpensesAmounts,
     scExpensesAmounts,
     scExpensesThatDontCount,
@@ -554,6 +463,8 @@ const {
     current_budget: Number,
     additionalCosts: Number,
     staticCosts: Number,
+    additionalCostsIgv: Number,
+    staticCostsIgv: Number,
     acExpensesAmounts: Array,
     scExpensesAmounts: Array,
     scExpensesThatDontCount: Array,

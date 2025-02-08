@@ -80,7 +80,7 @@ onMounted(() => {
 
 <template>
     <div class="overflow-auto p-4">
-        <h4 class="text-2xl font-medium text-gray-700 text-center">Utilidad en S/.</h4>
+        <h4 class="text-2xl font-medium text-gray-700 text-center">Utilidad en S/. (sin igv)</h4>
         <div class="w-auto h-96">
             <canvas ref="chartRef"></canvas>
         </div>

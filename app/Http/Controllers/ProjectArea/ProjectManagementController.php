@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ProjectArea;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectRequest\CreateProjectRequest;
+use App\Models\AdditionalCost;
 use App\Models\Employee;
 use App\Models\Project;
 use App\Models\BudgetUpdate;
@@ -12,6 +13,7 @@ use App\Models\Inventory;
 use App\Models\PreprojectQuoteService;
 use App\Models\Purchasing_request;
 use App\Models\ResourceEntry;
+use App\Models\StaticCost;
 use App\Models\Warehouse;
 use App\Models\Preproject;
 use App\Models\ProjectEntry;
@@ -312,6 +314,7 @@ class ProjectManagementController extends Controller
         $current_budget = $last_update ? $last_update->new_budget : $project_id->initial_budget;
 
         $additionalCosts = $project_id->additionalCosts()->where('is_accepted', 1)->whereNotIn('expense_type', PintConstants::acExpensesThatDontCount())->get()->sum('real_amount');
+        $additionalCostsIgv = $project_id->additionalCosts()->where('is_accepted', 1)->whereNotIn('expense_type', PintConstants::acExpensesThatDontCount())->get()->sum('amount');
         $acArr = $project_id->additionalCosts()
             ->select('expense_type', DB::raw('SUM(amount/(1+igv/100)) as total_amount'))
             ->groupBy('expense_type')
@@ -326,6 +329,8 @@ class ProjectManagementController extends Controller
 
         $staticCosts = $project_id->staticCosts()->whereNotIn('expense_type', PintConstants::scExpensesThatDontCount())->get()
             ->sum('real_amount');
+        $staticCostsIgv = $project_id->staticCosts()->whereNotIn('expense_type', PintConstants::scExpensesThatDontCount())->get()
+            ->sum('amount');
         $scArr = $project_id->staticCosts()
             ->select('expense_type', DB::raw('SUM(amount/(1+igv/100)) as total_amount'))
             ->groupBy('expense_type')
@@ -349,10 +354,12 @@ class ProjectManagementController extends Controller
         return Inertia::render('ProjectArea/ProjectManagement/ProjectExpenses', [
             'current_budget' => $current_budget,
             'project' => $project_id,
-            'additionalCosts' => $additionalCosts,
             'acExpensesAmounts' => $acExpensesAmounts,
             'scExpensesAmounts' => $scExpensesAmounts,
+            'additionalCosts' => $additionalCosts,
             'staticCosts' => $staticCosts,
+            'additionalCostsIgv' => $additionalCostsIgv,
+            'staticCostsIgv' => $staticCostsIgv,
             'scExpensesThatDontCount' => PintConstants::scExpensesThatDontCount(),
             'acExpensesThatDontCount' => PintConstants::acExpensesThatDontCount(),
         ]);
@@ -400,6 +407,92 @@ class ProjectManagementController extends Controller
         ]);
     }
     
+
+    public function project_zone_expenses ($project_id) {
+        $currProject = Project::with('preproject')->find($project_id);
+        $zones = PintConstants::allZones();
+        $currDate = Carbon::parse($currProject->preproject->date);
+        $prevDate = $currDate->copy()->subMonthNoOverflow();
+
+
+        $acArray = [];
+        $scArray = [];
+        foreach($zones as $zone){
+            $acAmount = AdditionalCost::where('zone', $zone)
+            ->selectRaw('SUM(amount / (1 + igv / 100)) as total_amount')
+            ->where('project_id', $project_id)
+            ->value('total_amount');
+            $scAmount = StaticCost::where('zone', $zone)
+            ->selectRaw('SUM(amount / (1 + igv / 100)) as total_amount')
+            ->where('project_id', $project_id)
+            ->value('total_amount');
+            $acArray[] = $acAmount;
+            $scArray[] = $scAmount;
+        }
+
+        $prevProject = Project::with('preproject')
+            ->where('cost_line_id', 1)
+            ->where('cost_center_id', 1)
+            ->whereHas('preproject', function ($query) use ($prevDate) {
+                $query->whereMonth('date', $prevDate->month)
+                    ->whereYear('date', $prevDate->year)
+                    ->whereDay('date', 1); 
+            })
+            ->first();
+        $prevAcArray = [];
+        $prevScArray = [];
+        foreach($zones as $zone){
+            $acAmount = AdditionalCost::where('zone', $zone)
+            ->selectRaw('SUM(amount / (1 + igv / 100)) as total_amount')
+            ->where('project_id', $prevProject->id)
+            ->value('total_amount');
+            $scAmount = StaticCost::where('zone', $zone)
+            ->selectRaw('SUM(amount / (1 + igv / 100)) as total_amount')
+            ->where('project_id', $prevProject->id)
+            ->value('total_amount');
+            $prevAcArray[] = $acAmount;
+            $prevScArray[] = $scAmount;
+        }
+
+        $yearProjectsIds = Project::with('preproject')
+            ->where('cost_line_id', 1)
+            ->where('cost_center_id', 1)
+            ->whereHas('preproject', function ($query) use ($currDate) {
+                $query->whereYear('date', $currDate->year)
+                    ->whereDay('date', 1); 
+            })
+            ->pluck('id')->toArray();
+        $yearAcArray = [];
+        $yearScArray = [];
+        foreach($zones as $zone){
+            $acAmount = AdditionalCost::where('zone', $zone)
+            ->selectRaw('SUM(amount / (1 + igv / 100)) as total_amount')
+            ->whereIn('project_id', $yearProjectsIds)
+            ->value('total_amount');
+            $scAmount = StaticCost::where('zone', $zone)
+            ->selectRaw('SUM(amount / (1 + igv / 100)) as total_amount')
+            ->whereIn('project_id', $yearProjectsIds)
+            ->value('total_amount');
+            $yearAcArray[] = $acAmount;
+            $yearScArray[] = $scAmount;
+        }
+
+        return response()->json([
+            'current' => [
+                'additionals'=> $acArray,
+                'statics'=> $scArray,
+            ],
+            'previous' => [
+                'additionals'=> $prevAcArray,
+                'statics'=> $prevScArray,
+            ],
+            'year' => [
+                'additionals'=> $yearAcArray,
+                'statics'=> $yearScArray,
+            ],
+        ]);
+
+    }
 
 
 

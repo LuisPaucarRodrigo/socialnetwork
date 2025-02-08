@@ -252,6 +252,20 @@ class PintConstants
     }
 
 
+    public static function allZones (): array {
+        return [
+            self::AREQUIPA,
+            self::CHALA,
+            self::MOQUEGUA,
+            self::TACNA,
+            self::MDD1_PM,
+            self::MDD2_MAZ,
+            self::SANDIA,
+            self::OFICINA,
+        ];
+    }
+
+
     public static function countAcExpenseTypes(): int{return count(self::acExpenseTypes());}
     public static function countAcDocTypes(): int{return count(self::acDocTypes());}
     public static function countAcZones(): int{return count(self::acZones());}

@@ -172,8 +172,8 @@ onMounted(() => {
                 </div>
             </div>
         </div>
-        <div class="text-xs w-full text-gray-600 text-center p-2">
-            <span>*El gráfico se muestra en base a un margen total de 100%*</span>
+        <div class="text-sm w-full text-gray-600 text-center p-2">
+            <span>** Cálculo realizado en base al INGRESO CON IGV **</span>
         </div>
     </div>
 
