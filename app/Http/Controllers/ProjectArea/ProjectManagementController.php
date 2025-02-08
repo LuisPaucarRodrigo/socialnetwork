@@ -487,7 +487,7 @@ class ProjectManagementController extends Controller
                 'additionals'=> $prevAcArray,
                 'statics'=> $prevScArray,
             ],
-            'year' => [
+            'years' => [
                 'additionals'=> $yearAcArray,
                 'statics'=> $yearScArray,
             ],
