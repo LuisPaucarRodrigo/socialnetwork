@@ -366,15 +366,14 @@ class ProjectManagementController extends Controller
             return response()->json(['error' => 'Proyecto no encontrado o sin preproyecto'], 404);
         }
         $currDate = Carbon::parse($currProject->preproject->date);
-    
         $otherProjects = Project::with('preproject.quote')
-        ->join('preprojects', 'projects.preproject_id', '=', 'preprojects.id') // Unir con preprojects
-        ->where('preprojects.date', '<=', $currDate) // Solo proyectos anteriores
+        ->join('preprojects', 'projects.preproject_id', '=', 'preprojects.id') 
+        ->where('preprojects.date', '<=', $currDate) 
         ->where('projects.cost_line_id', 1)
         ->where('projects.cost_center_id', 1)
-        ->orderByDesc('preprojects.date') // Ordenar por fecha más reciente primero
-        ->select('projects.*') // Seleccionar solo los proyectos
-        ->limit(12) // Solo los últimos 12
+        ->orderByDesc('preprojects.date') 
+        ->select('projects.*')
+        ->limit(12) 
         ->get();
     
         $months = [];
