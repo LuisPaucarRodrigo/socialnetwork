@@ -29,22 +29,27 @@
                 }"
             />
 
-            <div v-if="project.cost_center_id == 1"
+            <div
+                v-if="project.cost_center_id == 1"
                 class="w-full h-auto py-6 shadow-md rounded-lg border border-gray-200 bg-white bg-opacity-30"
             >
-                <div  class="grid grid-cols-1 lg:grid-cols-2">
-                    <PastProjectUtilities
-                        :project_id="project.id"
-                    />
+                <div class="grid grid-cols-1 lg:grid-cols-2">
+                    <PastProjectUtilities :project_id="project.id" />
                     <ProjectBalance
-                      :project="project"
-                      :additionalCosts="additionalCosts"
-                      :additionalCostsIgv="additionalCostsIgv"
-                      :staticCosts="staticCosts"
-                      :staticCostsIgv="staticCostsIgv"
+                        :project="project"
+                        :additionalCosts="additionalCosts"
+                        :additionalCostsIgv="additionalCostsIgv"
+                        :staticCosts="staticCosts"
+                        :staticCostsIgv="staticCostsIgv"
                     />
                 </div>
             </div>
+
+            <ProjectZoneExpenses
+                v-if="project.cost_center_id == 1"
+                :project_id="project.id"
+            />
+
             <div
                 class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0"
             >
@@ -446,6 +451,7 @@ import MarginProfit from "@/Components/ProjectExpenses/MarginProfit.vue";
 import Modal from "@/Components/Modal.vue";
 import PastProjectUtilities from "@/Components/ProjectExpenses/PastProjectUtilities.vue";
 import ProjectBalance from "@/Components/ProjectExpenses/ProjectBalance.vue";
+import ProjectZoneExpenses from "@/Components/ProjectExpenses/ProjectZoneExpenses.vue";
 
 const {
     project,

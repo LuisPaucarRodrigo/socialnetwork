@@ -20,6 +20,17 @@ let chartInstance = null;
 const labels = ref([]);
 const data = ref([]);
 
+const createGradient = (ctx, chartArea) => {
+    const { left, right, top, bottom } = chartArea;
+    const width = right - left;
+    const height = bottom - top;
+
+    const gradient = ctx.createLinearGradient(0, top, width, bottom);
+    gradient.addColorStop(0, "#515fed"); // Azul en la parte superior
+    gradient.addColorStop(1, "#9b59b6"); // Morado en la parte inferior
+
+    return gradient;
+};
 // Función para crear el gráfico vacío
 const createChart = () => {
     if (chartRef.value) {
@@ -31,7 +42,11 @@ const createChart = () => {
                     {
                         label: "Utilidad",
                         data: data.value,
-                        backgroundColor: "#5eace5",
+                        backgroundColor: (context) => {
+                            const chart = context.chart;
+                            if (!chart.chartArea) return "#5eace5"; // Color base si aún no hay área definida
+                            return createGradient(chart.ctx, chart.chartArea);
+                        },
                         borderRadius: 2,
                     },
                 ],
@@ -80,7 +95,9 @@ onMounted(() => {
 
 <template>
     <div class="overflow-auto p-4">
-        <h4 class="text-2xl font-medium text-gray-700 text-center">Utilidad en S/. (sin igv)</h4>
+        <h4 class="text-2xl font-medium text-gray-700 text-center">
+            Utilidad en S/. (sin igv)
+        </h4>
         <div class="w-auto h-96">
             <canvas ref="chartRef"></canvas>
         </div>
