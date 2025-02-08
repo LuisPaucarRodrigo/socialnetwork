@@ -384,13 +384,13 @@ class ProjectManagementController extends Controller
             if (!$itemProject->preproject || !$itemProject->preproject->date) {
                 continue;
             }
-            $monthName = Carbon::parse($itemProject->preproject->date)->translatedFormat('F');
+            $monthName = Carbon::parse($itemProject->preproject->date)->translatedFormat('F Y');
             $income = optional($itemProject->preproject->quote)->total_amount ?? 0;
             $outcome = ($itemProject->additional_costs_total ?? 0) + ($itemProject->static_costs_total ?? 0);
             
             $names[] = $itemProject->description;
             $months[] = ucfirst($monthName);
-            $utilities[] = $income - $outcome;
+            $utilities[] = round($income - $outcome, 2);
         }
     
         return response()->json([

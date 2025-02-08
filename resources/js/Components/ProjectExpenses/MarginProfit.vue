@@ -135,40 +135,40 @@ onMounted(() => {
 
 <template>
     <div
-        class="w-full h-auto my-6 py-6 shadow-md rounded-lg border border-gray-200 bg-white bg-opacity-30"
+        class="w-full h-auto py-6 shadow-md rounded-lg border border-gray-200 bg-white bg-opacity-30"
     >
         <div class="grid grid-cols-1 lg:grid-cols-3">
             <div class="flex flex-col items-center justify-center">
                 <div class="text-center">
-                    <h4 class="text-2xl font-medium text-gray-700">
+                    <h4 class="text-xl font-medium text-gray-700">
                         Beneficio Neto
                     </h4>
                     <span>(Beneficio Operativo - IGV)</span>
                 </div>
                 <div class="flex items-center justify-center">
-                    <canvas ref="chartRef1" class="w-68 h-68"></canvas>
+                    <canvas ref="chartRef1" class="w-52 h-52"></canvas>
                 </div>
             </div>
             <div class="flex flex-col items-center justify-center">
                 <div class="text-center">
-                    <h4 class="text-2xl font-medium text-gray-700">
+                    <h4 class="text-xl font-medium text-gray-700">
                         Beneficio Operativo
                     </h4>
                     <span>(Beneficio Bruto - CF)</span>
                 </div>
                 <div class="flex items-center justify-center">
-                    <canvas ref="chartRef2" class="w-68 h-68"></canvas>
+                    <canvas ref="chartRef2" class="w-52 h-52"></canvas>
                 </div>
             </div>
             <div class="flex flex-col items-center justify-center">
                 <div class="text-center">
-                    <h4 class="text-2xl font-medium text-gray-700">
+                    <h4 class="text-xl font-medium text-gray-700">
                         Beneficio Bruto
                     </h4>
                     <span>(Ingreso con IGV - CV)</span>
                 </div>
                 <div class="flex items-center justify-center">
-                    <canvas ref="chartRef3" class="w-68 h-68"></canvas>
+                    <canvas ref="chartRef3" class="w-52 h-52"></canvas>
                 </div>
             </div>
         </div>
@@ -176,7 +176,5 @@ onMounted(() => {
             <span>*El gráfico se muestra en base a un margen total de 100%*</span>
         </div>
     </div>
-    <br>
-    <br>
 
 </template>
