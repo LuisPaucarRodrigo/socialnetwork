@@ -138,6 +138,7 @@ class CicsaController extends Controller
                     );
                 }
             }
+            
             $projectsCicsa = $this->cicsaService->filteredAdvance($request, $projectsCicsa);
             $projectsCicsa = $projectsCicsa->get();
 
@@ -319,6 +320,7 @@ class CicsaController extends Controller
             ['id' => $cicsa_material_id],
             $validateData
         );
+        
         if ($cicsaMaterial->cicsa_material_items) {
             CicsaMaterialsItem::where('cicsa_material_id', $cicsaMaterial->id)->delete();
         }

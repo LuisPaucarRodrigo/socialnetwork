@@ -1669,8 +1669,4 @@ const submitSwapAPModal = async () => {
     notify("Registros Movidos con éxito")
 
 }
-
-
-
-
 </script>
