@@ -53,7 +53,8 @@ class DatabaseSeeder extends Seeder
             'ProjectManager',
             'PurchasingManager',
             'HuaweiManager',
-            'DocumentGestion'
+            'DocumentGestion',
+            'CarManager'
         ];
 
         foreach ($permissions as $name => $description) {

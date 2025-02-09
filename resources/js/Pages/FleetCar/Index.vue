@@ -189,7 +189,7 @@
                 <form @submit.prevent="submit">
                     <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
                         <div v-if="!form.id && hasPermission('UserManager')" class="mt-2">
-                            <InputLabel for="user_id">Usuario
+                            <InputLabel for="user_id">Proveedores de UM
                             </InputLabel>
                             <div class="mt-2">
                                 <select id="user_id" v-model="form.user_id" autocomplete="off"
@@ -201,7 +201,7 @@
                             </div>
                         </div>
                         <div class="mt-2">
-                            <InputLabel for="cost_line_id">Linea de Costo
+                            <InputLabel for="cost_line_id">Linea de Negocio
                             </InputLabel>
                             <div class="mt-2">
                                 <select id="cost_line_id" v-model="form.cost_line_id" autocomplete="off"
@@ -287,14 +287,13 @@
                                 <InputFile id="ownership_card" accept=".pdf" v-model="formDocument.ownership_card" />
                                 <InputError :message="formDocument.errors.ownership_card" />
                             </div>
-                            <div v-if="formDocument.ownership_card" class="flex items-center">
+                            <div v-if="archivesDocument.ownership_card" class="flex items-center">
                                 <span>Archivo: </span>
                                 <a target="_blank"
                                     :href="route('fleet.cars.show_documents', { car_document: formDocument.id, fieldName: 'ownership_card' })">
                                     <EyeIcon class="w-5 h-5 text-green-600" />
                                 </a>
                             </div>
-
                         </div>
 
                         <div class="mt-2">
@@ -306,7 +305,7 @@
                                 <InputError :message="formDocument.errors.technical_review" />
                             </div>
 
-                            <div v-if="formDocument.technical_review" class="flex items-center">
+                            <div v-if="archivesDocument.technical_review" class="flex items-center">
                                 <span>Archivo: </span>
                                 <a target="_blank"
                                     :href="route('fleet.cars.show_documents', { car_document: formDocument.id, fieldName: 'technical_review' })">
@@ -322,7 +321,7 @@
                                 <InputError :message="formDocument.errors.soat" />
                             </div>
 
-                            <div v-if="formDocument.soat" class="flex items-center">
+                            <div v-if="archivesDocument.soat" class="flex items-center">
                                 <span>Archivo: </span>
                                 <a target="_blank"
                                     :href="route('fleet.cars.show_documents', { car_document: formDocument.id, fieldName: 'soat' })">
@@ -338,7 +337,7 @@
                                 <InputError :message="formDocument.errors.insurance" />
                             </div>
 
-                            <div v-if="formDocument.insurance" class="flex items-center">
+                            <div v-if="archivesDocument.insurance" class="flex items-center">
                                 <span>Archivo: </span>
                                 <a target="_blank"
                                     :href="route('fleet.cars.show_documents', { car_document: formDocument.id, fieldName: 'insurance' })">
@@ -409,6 +408,7 @@ const showModalCar = ref(false)
 const showModalDeleteCars = ref(false)
 const car_id = ref(null)
 const showModalDocumentCar = ref(false)
+const archivesDocument = ref({})
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
@@ -467,7 +467,6 @@ function openModalEdit(item) {
     openModalCar()
     form.defaults({ ...item })
     form.reset()
-    console.log(form)
 }
 
 function openModalDocument() {
@@ -478,7 +477,9 @@ function openModalDocument() {
 }
 
 function openModalCreateDocument(item) {
+    archivesDocument.value = {}
     openModalDocument()
+    archivesDocument.value = ({ ...item.car_document ?? initialFormDocument})
     formDocument.defaults({ ...item.car_document ?? initialFormDocument, car_id: item.id })
     formDocument.reset()
 }
@@ -519,14 +520,9 @@ watch(
 async function submit() {
 
     let url = form.id ? route('fleet.cars.update', { car: form.id }) : route('fleet.cars.store')
-    let method = 'post'
     let data = toFormData(form)
     try {
-        let response = await axios({
-            url: url,
-            method: method,
-            data: data
-        });
+        let response = await axios.post(url,data);
         let action = form.id ? 'edit' : 'create';
         updateCar(response.data, action)
     } catch (error) {
@@ -544,15 +540,10 @@ async function submit() {
 }
 
 async function submitDocument() {
-    let url = formDocument.car_id ? route('fleet.cars.update_document', { car_document: formDocument.id }) : route('fleet.cars.store_document', { car: formDocument.car_id })
-    let method = 'post'
+    let url = formDocument.id ? route('fleet.cars.update.document', { car_document: formDocument.id }) : route('fleet.cars.store_document')
     let formData = toFormData(formDocument)
     try {
-        let response = await axios({
-            url: url,
-            method: method,
-            data: formData
-        });
+        let response = await axios.post(url,formData);
         updateCar(response.data, 'udpateDocument')
     } catch (error) {
         console.log(error)

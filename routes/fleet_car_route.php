@@ -12,8 +12,8 @@ Route::middleware('permission:CarManager')->group(function () {
     Route::delete('/fleet_cars/destroy/{car}', [CarsController::class, 'destroy'])->name('fleet.cars.destroy');
 
     Route::get('/fleet_cars/show_documents/{car_document}/document_name/{fieldName}', [CarsController::class, 'showDocuments'])->name('fleet.cars.show_documents');
-    Route::post('/fleet_cars/store_document/{car}', [CarsController::class, 'storeDocument'])->name('fleet.cars.store_document');
-    Route::post('/fleet_cars/update_document/{car_document}', [CarsController::class, 'updateDocument'])->name('fleet.cars.update_document');
+    Route::post('/fleet_cars/store_document', [CarsController::class, 'storeDocument'])->name('fleet.cars.store_document');
+    Route::post('/fleet_cars/update_document/{car_document}', [CarsController::class, 'updateDocument'])->name('fleet.cars.update.document');
     Route::delete('/fleet_cars/destroy_document/{car_document}', [CarsController::class, 'destroyDocument'])->name('fleet.cars.destroy_document');
 
     Route::post('/fleet_cars/store_changelog/{car}', [CarsController::class, 'storeChangelog'])->name('fleet.cars.store_changelog');
