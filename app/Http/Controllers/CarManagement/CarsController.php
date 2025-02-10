@@ -281,4 +281,35 @@ class CarsController extends Controller
             'checklist' => $checklist
         ]);
     }
+    public function sendChecklistImages(CheckListCar $checklist)
+    {
+        $basePath = 'image/checklist/checklistcar';
+        $images = [];
+    
+        // Campos y sus traducciones
+        $fields = [
+            'front' => 'Foto Delantera',
+            'leftSide' => 'Foto Lateral Izquierda',
+            'rightSide' => 'Foto Lateral Derecha',
+            'interior' => 'Foto Interior',
+            'rearLeftTire' => 'Foto Llanta Trasera Izquierda',
+            'rearRightTire' => 'Foto Llanta Trasera Derecha',
+            'frontRightTire' => 'Foto Llanta Delantera Derecha',
+            'frontLeftTire' => 'Foto Llanta Delantera Izquierda',
+            'back' => 'Foto Trasera',
+            'dashboard' => 'Foto de Tablero',
+            'rearSeat' => 'Foto de Asiento Trasero'
+        ];
+    
+        foreach ($fields as $field => $translatedName) {
+            $imagePath = public_path($basePath . '/' . $checklist->$field);
+    
+            if (!empty($checklist->$field) && file_exists($imagePath)) {
+                $absolutePath = asset($basePath . '/' . $checklist->$field);
+                $images[] = [$translatedName => $absolutePath];
+            }
+        }
+    
+        return response()->json($images);
+    }    
 }

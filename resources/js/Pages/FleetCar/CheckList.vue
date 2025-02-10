@@ -2,7 +2,7 @@
     <Head title="Gestion de Empleados" />
     <AuthenticatedLayout :redirectRoute="'fleet.cars.index'">
         <template #header> CheckList </template>
-
+        <PrimaryButton @click="openImages">Imágenes</PrimaryButton>
         <div class="min-w-full rounded-lg shadow">
             <div class="grid grid-cols-2 gap-4 p-4">
                 <div class="overflow-x-auto min-h-[72vh] rounded-lg shadow">
@@ -17,7 +17,7 @@
                                     Item
                                 </th>
                                 <th
-                                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
+                                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600"
                                 >
                                     Status
                                 </th>
@@ -37,12 +37,11 @@
                                     </p>
                                 </td>
                                 <td
-                                    class="border-b border-gray-200 bg-white px-5 py-2 text-sm"
+                                    class="border-b border-gray-200 font-black bg-white text-center px-5 py-2 text-sm"
                                 >
-                                    <p class="text-gray-900">
+                                    <p :class="checklist[Object.keys(item)[0]] ? 'text-green-600' : 'text-gray-900'">
                                         {{
-                                            checklist[Object.keys(item)[0]] ||
-                                            "N/A"
+                                            checklist[Object.keys(item)[0]] ? 'OK' : 'N/A'
                                         }}
                                     </p>
                                 </td>
@@ -63,7 +62,7 @@
                                     Item
                                 </th>
                                 <th
-                                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
+                                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600"
                                 >
                                     Status
                                 </th>
@@ -83,12 +82,11 @@
                                     </p>
                                 </td>
                                 <td
-                                    class="border-b border-gray-200 bg-white px-5 py-2 text-sm"
+                                    class="border-b border-gray-200 font-black bg-white text-center px-5 py-2 text-sm"
                                 >
-                                    <p class="text-gray-900">
+                                    <p :class="checklist[Object.keys(item)[0]] ? 'text-green-600' : 'text-gray-900'">
                                         {{
-                                            checklist[Object.keys(item)[0]] ||
-                                            "N/A"
+                                            checklist[Object.keys(item)[0]] ? 'OK' : 'N/A'
                                         }}
                                     </p>
                                 </td>
@@ -98,17 +96,29 @@
                 </div>
             </div>
         </div>
+        <CarouselModal
+            :images="images"
+            :show="isModalOpen"
+            @close="closeModal"
+        />
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head } from "@inertiajs/vue3";
+import { Head, router } from "@inertiajs/vue3";
+import axios from "axios";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import { ref } from "vue";
+import CarouselModal from "@/Components/CarouselModal.vue";
 
 const props = defineProps({
     car: Object,
     checklist: Object,
 });
+
+const images = ref([]);
+const isModalOpen = ref(false);
 
 const first = [
     { beak: "Pico" },
@@ -154,6 +164,19 @@ const second = [
     { batteryState: "Estado de la batería" },
 ];
 
+async function openImages (){
+    await axios.get(route('fleet.cars.show_checklist.send_images', {checklist: props.checklist.id}))
+        .then(res => {
+            images.value = res.data;
+            isModalOpen.value = true;
+        })
+        .catch(e => {
+            console.error(e)
+        });
+}
 
-console.log(props.checklist);
+function closeModal() {
+    images.value = [];
+    isModalOpen.value = false;
+}
 </script>

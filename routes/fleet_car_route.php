@@ -22,4 +22,5 @@ Route::middleware('permission:CarManager')->group(function () {
     Route::get('/fleet_cars/show_invoice/{car_changelog}', [CarsController::class, 'showChangelogInvoice'])->name('fleet.cars.show_invoice');
 
     Route::get('/fleet_cars/show_checklist/{car}', [CarsController::class, 'showChecklist'])->name('fleet.cars.show_checklist');
+    Route::get('/fleet_cars/show_checklist/send_images/{checklist}', [CarsController::class, 'sendChecklistImages'])->name('fleet.cars.show_checklist.send_images');
 });
