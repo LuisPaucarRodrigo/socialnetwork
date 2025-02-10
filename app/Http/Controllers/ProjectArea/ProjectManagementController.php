@@ -421,10 +421,12 @@ class ProjectManagementController extends Controller
             $acAmount = AdditionalCost::where('zone', $zone)
             ->selectRaw('SUM(amount / (1 + igv / 100)) as total_amount')
             ->where('project_id', $project_id)
+            ->whereNotIn('expense_type', PintConstants::acExpensesThatDontCount())
             ->value('total_amount') ?? 0;
             $scAmount = StaticCost::where('zone', $zone)
             ->selectRaw('SUM(amount / (1 + igv / 100)) as total_amount')
             ->where('project_id', $project_id)
+            ->whereNotIn('expense_type', PintConstants::scExpensesThatDontCount())
             ->value('total_amount') ?? 0;
             $acArray[] = round($acAmount, 2);
             $scArray[] = round($scAmount, 2);
@@ -445,10 +447,12 @@ class ProjectManagementController extends Controller
             $acAmount = AdditionalCost::where('zone', $zone)
             ->selectRaw('SUM(amount / (1 + igv / 100)) as total_amount')
             ->where('project_id', $prevProject->id)
+            ->whereNotIn('expense_type', PintConstants::acExpensesThatDontCount())
             ->value('total_amount') ?? 0;
             $scAmount = StaticCost::where('zone', $zone)
             ->selectRaw('SUM(amount / (1 + igv / 100)) as total_amount')
             ->where('project_id', $prevProject->id)
+            ->whereNotIn('expense_type', PintConstants::scExpensesThatDontCount())
             ->value('total_amount') ?? 0;
             $prevAcArray[] = round($acAmount, 2);
             $prevScArray[] = round($scAmount, 2);
@@ -468,10 +472,12 @@ class ProjectManagementController extends Controller
             $acAmount = AdditionalCost::where('zone', $zone)
             ->selectRaw('SUM(amount / (1 + igv / 100)) as total_amount')
             ->whereIn('project_id', $yearProjectsIds)
+            ->whereNotIn('expense_type', PintConstants::acExpensesThatDontCount())
             ->value('total_amount') ?? 0;
             $scAmount = StaticCost::where('zone', $zone)
             ->selectRaw('SUM(amount / (1 + igv / 100)) as total_amount')
             ->whereIn('project_id', $yearProjectsIds)
+            ->whereNotIn('expense_type', PintConstants::scExpensesThatDontCount())
             ->value('total_amount') ?? 0;
             $yearAcArray[] = round($acAmount, 2);
             $yearScArray[] = round($scAmount, 2);
