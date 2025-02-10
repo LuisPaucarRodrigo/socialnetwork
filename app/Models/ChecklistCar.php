@@ -38,9 +38,9 @@ class ChecklistCar extends Model
         'windshieldState',
         'engineState',
         'batteryState',
-        'extinguisher',
-        'firstAidKit',
-        'cones',
+
+
+
         'jack',
         'spareTire',
         'towCable',
@@ -63,12 +63,15 @@ class ChecklistCar extends Model
         'beak',
         'shovel',
         'gps',
+        'extinguisher',
+        'firstAidKit',
         'rollCage',
         'fogLights',
         'protectionCage',
         'hoopInsurance',
         'headlightInsurance',
         'cardProtector',
+        'cones',
         'safetyTriangle',
         'wheelWrench',
         'back',

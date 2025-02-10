@@ -4,7 +4,7 @@
         <template #header> CheckList </template>
 
         <div class="min-w-full rounded-lg shadow">
-            <div class="grid grid-cols-5 gap-4 p-4">
+            <div class="grid grid-cols-2 gap-4 p-4">
                 <div class="overflow-x-auto min-h-[72vh] rounded-lg shadow">
                     <table class="w-full bg-white">
                         <thead class="sticky top-0 z-20">
@@ -113,6 +113,7 @@ const props = defineProps({
 const first = [
     { beak: "Pico" },
     { shovel: "Pala" },
+    { chocks: "Tacos" },
     { spareTire: "Llanta de repuesto" },
     { jack: "Gata y Accesorios" },
     { gps: "GPS" },
@@ -121,6 +122,7 @@ const first = [
     { firstAidKit: "Botiquín" },
     { fogLights: "Luces neblineras" },
     { protectionCage: "Jaula de protección" },
+    { reflector: "Cintas reflectantes" },
     { hoopInsurance: "Seguro de aros" },
     { headlightInsurance: "Seguro de faros" },
     { cardProtector: "Protector de carte" },

@@ -98,6 +98,10 @@ class ChecklistsController extends Controller
             $data['rearRightTire'] = $this->storeBase64Image($data['rearRightTire'], 'image/checklist/checklistcar', 'rearRightTire');
             $data['frontRightTire'] = $this->storeBase64Image($data['frontRightTire'], 'image/checklist/checklistcar', 'frontRightTire');
             $data['frontLeftTire'] = $this->storeBase64Image($data['frontLeftTire'], 'image/checklist/checklistcar', 'frontLeftTire');
+            $data['back'] = $this->storeBase64Image($data['back'], 'image/checklist/checklistcar', 'back');
+            $data['dashboard'] = $this->storeBase64Image($data['dashboard'], 'image/checklist/checklistcar', 'dashboard');
+            $data['rearSeat'] = $this->storeBase64Image($data['rearSeat'], 'image/checklist/checklistcar', 'rearSeat');
+
             $data['user_id'] = Auth::user()->id;
             $data['user_name'] = Auth::user()->name;
             ChecklistCar::create($data);
@@ -163,6 +167,11 @@ class ChecklistsController extends Controller
         $checklistCar->rearRightTire && $this->file_delete($checklistCar->rearRightTire, 'image/checklist/checklistcar');
         $checklistCar->frontRightTire && $this->file_delete($checklistCar->frontRightTire, 'image/checklist/checklistcar');
         $checklistCar->frontLeftTire && $this->file_delete($checklistCar->frontLeftTire, 'image/checklist/checklistcar');
+        
+        $checklistCar->back && $this->file_delete($checklistCar->back, 'image/checklist/checklistcar');
+        $checklistCar->dashboard && $this->file_delete($checklistCar->dashboard, 'image/checklist/checklistcar');
+        $checklistCar->rearSeat && $this->file_delete($checklistCar->rearSeat, 'image/checklist/checklistcar');
+
         $checklistCar->delete();
         return redirect()->back();
     }
