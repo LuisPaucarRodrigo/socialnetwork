@@ -1722,6 +1722,8 @@ const submitSwapAPModal = async () => {
     notify("Registros Movidos con éxito")
 }
 
+
+
 //swapp to open mnto and gep
 const projects_for_swap = ref([])
 function getRegularProjects () {
@@ -1730,8 +1732,6 @@ function getRegularProjects () {
             projects_for_swap.value = res.data
         })
 }
-
-console.log(projects_for_swap)
 
 const swapRPForm = useForm({
     project_id: '',
