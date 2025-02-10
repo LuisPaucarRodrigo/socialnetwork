@@ -199,6 +199,13 @@ class PintConstants
     public static function scExpensesThatDontCount (): array { 
         return [
         PintConstants::COMBUSTIBLE_GEP,
+        PintConstants::ACTIVOS,
+        PintConstants::REPOSICION_DE_EQUIPO,
+    ];}
+    public static function acExpensesThatDontCount (): array { 
+        return [
+        PintConstants::COMBUSTIBLE_GEP,
+        PintConstants::ACTIVOS,
         PintConstants::REPOSICION_DE_EQUIPO,
     ];}
 
@@ -241,6 +248,20 @@ class PintConstants
             self::TACNA,
             self::MDD1_PM,
             self::MDD2_MAZ,
+        ];
+    }
+
+
+    public static function allZones (): array {
+        return [
+            self::AREQUIPA,
+            self::CHALA,
+            self::MOQUEGUA,
+            self::TACNA,
+            self::MDD1_PM,
+            self::MDD2_MAZ,
+            self::SANDIA,
+            self::OFICINA,
         ];
     }
 

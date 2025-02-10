@@ -116,6 +116,13 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::post('/project/additional_cost/validate/{ac_id}', [AdditionalCostsController::class, 'validateRegister'])->name('projectmanagement.validateAdditionalCost');
     Route::get('/project/expenses/{project_id}', [ProjectManagementController::class, 'project_expenses'])->name('projectmanagement.expenses');
 
+
+    //months of year of project
+    Route::get('/project_last12_utilitites/{project_id}', [ProjectManagementController::class, 'projects_year_profit'])->name('projectmanagement.last12.utilities');
+    Route::get('/project_zone_expenses_chart/{project_id}', [ProjectManagementController::class, 'project_zone_expenses'])->name('projectmanagement.zoneexpenses.chart');
+
+
+
     Route::get('/descargar_zip_add/{project_id}', [AdditionalCostsController::class, 'downloadImages'])->name('zip.additional.descargar');
     Route::get('/descargar_zip_static/{project_id}', [StaticCostsController::class, 'downloadImages'])->name('zip.static.descargar');
 
@@ -125,6 +132,9 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::post('/project/static_costs_massive_swap/', [AdditionalCostsController::class, 'swapCosts'])->name('projectmanagement.additionalCosts.swapCosts');
     Route::post('/project/additionals_to_addproject_massive_swap/', [AdditionalCostsController::class, 'swapCostsToAdditionalProject'])->name('projectmanagement.addctoaddproject.swapCosts');
     Route::post('/project/static_costs_massive_update/', [StaticCostsController::class, 'masiveUpdate'])->name('projectmanagement.staticCosts.massiveUpdate');
+
+    Route::get('/project_get_regular_projects', [AdditionalCostsController::class, 'getRegularProjects'])->name('projectmanagement.regularprojects.all');
+    Route::post('/project_swap_regular_projects', [AdditionalCostsController::class, 'swapCostsToRegularProject'])->name('projectmanagement.regularproject.swapCosts');
 
 
 
