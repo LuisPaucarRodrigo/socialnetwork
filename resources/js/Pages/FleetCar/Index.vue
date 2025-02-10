@@ -457,7 +457,7 @@
                 </h2>
                 <form @submit.prevent="submit">
                     <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
-                        <div v-if="!form.id && hasPermission('UserManager')" class="mt-2">
+                        <div v-if="!form.id" class="mt-2">
                             <InputLabel for="user_id">Usuario
                             </InputLabel>
                             <div class="mt-2">
