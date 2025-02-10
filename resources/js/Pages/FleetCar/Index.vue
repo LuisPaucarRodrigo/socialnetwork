@@ -457,8 +457,8 @@
                 </h2>
                 <form @submit.prevent="submit">
                     <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
-                        <div v-if="!form.id" class="mt-2">
-                            <InputLabel for="user_id">Usuario
+                        <div v-if="!form.id && hasPermission('UserManager')" class="mt-2">
+                            <InputLabel for="user_id">Proveedores de UM
                             </InputLabel>
                             <div class="mt-2">
                                 <select id="user_id" v-model="form.user_id" autocomplete="off"
@@ -470,8 +470,7 @@
                             </div>
                         </div>
                         <div class="mt-2">
-                            <InputLabel for="cost_line_id"
-                                >Linea de Costo
+                            <InputLabel for="cost_line_id">Linea de Negocio
                             </InputLabel>
                             <div class="mt-2">
                                 <select id="cost_line_id" v-model="form.cost_line_id" autocomplete="off"
@@ -583,10 +582,7 @@
                                     "
                                 />
                             </div>
-                            <div
-                                v-if="formDocument.ownership_card"
-                                class="flex items-center"
-                            >
+                            <div v-if="archivesDocument.ownership_card" class="flex items-center">
                                 <span>Archivo: </span>
                                 <a
                                     target="_blank"
@@ -619,10 +615,7 @@
                                 />
                             </div>
 
-                            <div
-                                v-if="formDocument.technical_review"
-                                class="flex items-center"
-                            >
+                            <div v-if="archivesDocument.technical_review" class="flex items-center">
                                 <span>Archivo: </span>
                                 <a
                                     target="_blank"
@@ -650,10 +643,7 @@
                                 />
                             </div>
 
-                            <div
-                                v-if="formDocument.soat"
-                                class="flex items-center"
-                            >
+                            <div v-if="archivesDocument.soat" class="flex items-center">
                                 <span>Archivo: </span>
                                 <a
                                     target="_blank"
@@ -681,10 +671,7 @@
                                 />
                             </div>
 
-                            <div
-                                v-if="formDocument.insurance"
-                                class="flex items-center"
-                            >
+                            <div v-if="archivesDocument.insurance" class="flex items-center">
                                 <span>Archivo: </span>
                                 <a
                                     target="_blank"
@@ -1012,6 +999,7 @@ const itemModal = ref(false);
 const showitems = ref([]);
 const changelogToDelete = ref(null);
 const showModalDeleteChangelog = ref(false);
+const archivesDocument = ref({})
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
@@ -1080,9 +1068,9 @@ function openModalCreate() {
 }
 
 function openModalEdit(item) {
-    openModalCar();
-    form.defaults({ ...item });
-    form.reset();
+    openModalCar()
+    form.defaults({ ...item })
+    form.reset()
 }
 
 function openModalDocument() {
@@ -1093,12 +1081,11 @@ function openModalDocument() {
 }
 
 function openModalCreateDocument(item) {
-    openModalDocument();
-    formDocument.defaults({
-        ...(item.car_document ?? initialFormDocument),
-        car_id: item.id,
-    });
-    formDocument.reset();
+    archivesDocument.value = {}
+    openModalDocument()
+    archivesDocument.value = ({ ...item.car_document ?? initialFormDocument})
+    formDocument.defaults({ ...item.car_document ?? initialFormDocument, car_id: item.id })
+    formDocument.reset()
 }
 
 function openModalChangelog() {
@@ -1191,16 +1178,11 @@ watch(
 async function submit() {
 
     let url = form.id ? route('fleet.cars.update', { car: form.id }) : route('fleet.cars.store')
-    let method = 'post'
     let data = toFormData(form)
     try {
-        let response = await axios({
-            url: url,
-            method: method,
-            data: data
-        });
-        let action = form.id ? "edit" : "create";
-        updateCar(response.data, action);
+        let response = await axios.post(url,data);
+        let action = form.id ? 'edit' : 'create';
+        updateCar(response.data, action)
     } catch (error) {
         console.log(error)
         if (error.response) {
@@ -1216,18 +1198,11 @@ async function submit() {
 }
 
 async function submitDocument() {
-    let url = formDocument.car_id
-        ? route("fleet.cars.update_document", { car_document: formDocument.id })
-        : route("fleet.cars.store_document", { car: formDocument.car_id });
-    let method = "post";
-    let formData = toFormData(formDocument);
+    let url = formDocument.id ? route('fleet.cars.update.document', { car_document: formDocument.id }) : route('fleet.cars.store_document')
+    let formData = toFormData(formDocument)
     try {
-        let response = await axios({
-            url: url,
-            method: method,
-            data: formData,
-        });
-        updateCar(response.data, "udpateDocument");
+        let response = await axios.post(url,formData);
+        updateCar(response.data, 'udpateDocument')
     } catch (error) {
         console.log(error);
         if (error.response) {

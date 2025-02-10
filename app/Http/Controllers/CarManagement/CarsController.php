@@ -143,7 +143,7 @@ class CarsController extends Controller
         abort(404, 'Archivo no encontrada');
     }
 
-    public function storeDocument(FleetCarDocumentRequest $request, Car $car)
+    public function storeDocument(FleetCarDocumentRequest $request)
     {
         $data = $request->validated();
         try {
@@ -155,7 +155,7 @@ class CarsController extends Controller
                     $document->move(public_path('documents/fleetcar/car_documents/'), $data[$archive]);
                 }
             }
-            $data['car_id'] = $car->id;
+            // $data['car_id'] = $car->id;
             $carDocument = CarDocument::create($data);
             return response()->json($carDocument);
         } catch (Exception $e) {
