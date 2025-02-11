@@ -5,25 +5,15 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginMobileRequest;
 use App\Http\Requests\PextProjectRequest\ApiStoreExpensesRequest;
 use App\Http\Requests\PreprojectRequest\ImageRequest;
+use App\Models\Car;
 use App\Models\CicsaAssignation;
-use App\Models\CostCenter;
-use App\Models\CostLine;
-use App\Models\CostLineCenterEmployee;
 use App\Models\Employee;
 use App\Models\HuaweiAdditionalCost;
-use App\Models\HuaweiCode;
 use App\Models\HuaweiProject;
-use App\Models\HuaweiProjectCode;
-use App\Models\HuaweiProjectImage;
-use App\Models\HuaweiProjectStage;
 use App\Models\Imagespreproject;
 use App\Models\PreprojectCode;
 use App\Models\PreprojectTitle;
-use App\Models\HuaweiSite;
-use App\Models\PextProject;
 use App\Models\PextProjectExpense;
-use App\Models\Project;
-use App\Models\User;
 use App\Services\ApiServices;
 use Carbon\Carbon;
 use Exception;
@@ -49,20 +39,20 @@ class ApiController extends Controller
             $user = Auth::user();
             if ($request->hasMobileAccess($user)) {
                 $token = $user->createToken('MobileAppToken')->plainTextToken;
-                // $employee = Employee::select('id', 'user_id')
-                //     ->where('user_id', $user->id)
-                //     ->with(['contract:id,cost_line_id'])
-                //     ->first();
+                $employee = Employee::select('id', 'user_id')
+                    ->where('user_id', $user->id)
+                    ->with(['contract:id,cost_line_id,employee_id'])
+                    ->first();
                 return response()->json([
                     'id' => $user->id,
                     'token' => $token,
-                    // 'cost_line_id' => $employee->contract->cost_line_id
+                    'cost_line_id' => $employee->contract->cost_line_id
                 ]);
             } else {
                 return response()->json(['error' => 'Usuario no Autorizado'], 401);
             }
         } else {
-            return response()->json(['error' => 'Credenciales incorrectas'], 401);
+            return response()->json(['error' => 'Credenciales incorrectas'], 422);
         }
     }
 
@@ -694,5 +684,12 @@ class ApiController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function index_car($cost_line_id){
+        $car = Car::select('id','plate')
+        ->where('cost_line_id',$cost_line_id)
+        ->get();
+        return response()->json($car,200);
     }
 }
