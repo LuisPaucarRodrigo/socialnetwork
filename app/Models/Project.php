@@ -43,7 +43,9 @@ class Project extends Model
         'total_sum_task',
         'is_liquidable',
         'total_products_cost_claro_cicsa',
-        'serialized_code'
+        'serialized_code',
+        'static_costs_total',
+        'additional_costs_total',
     ];
 
     // CALCULATED
@@ -111,14 +113,8 @@ class Project extends Model
         }
         $lastUpdate = $this->budget_updates()->latest()->first();
         $currentBudget = $lastUpdate ? $lastUpdate->new_budget : $this->initial_budget;
-        $additionalCosts = $this->additionalCosts()
-            ->where('is_accepted', 1)
-            ->get()
-            ->sum('real_amount');
-        $staticCosts = $this->staticCosts()
-            ->whereNotIn('expense_type', PintConstants::scExpensesThatDontCount())
-            ->get()
-            ->sum('real_amount');
+        $additionalCosts = $this->getAdditionalCostsTotalAttribute();
+        $staticCosts = $this->getStaticCostsTotalAttribute();
         $currentBudget = $currentBudget
             - $this->getTotalProductsCostAttribute()
             - $additionalCosts
@@ -129,6 +125,21 @@ class Project extends Model
         }
         return $currentBudget;
     }
+
+    public function getAdditionalCostsTotalAttribute () {
+        return $this->additionalCosts()
+        ->where('is_accepted', 1)
+        ->whereNotIn('expense_type', PintConstants::acExpensesThatDontCount())
+        ->get()
+        ->sum('real_amount');
+    }
+    public function getStaticCostsTotalAttribute () {
+        return $this->staticCosts()
+        ->whereNotIn('expense_type', PintConstants::scExpensesThatDontCount())
+        ->get()
+        ->sum('real_amount');
+    }
+
 
     public function getCurrentBudgetAttribute()
     {
