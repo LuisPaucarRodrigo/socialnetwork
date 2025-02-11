@@ -533,7 +533,7 @@ const materials = ref(material)
 const arrayMaterials = ref([])
 
 const initialState = {
-    id: null,
+    id: '',
     cicsa_assignation_id: null,
     user_id: auth.user.id,
     pick_date: '',
@@ -600,7 +600,7 @@ async function submit() {
         //     confirmUpdateMaterial.value = false
         // }, 1500)
     } catch (error) {
-        console.log(error)
+        console.error(error)
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, form)

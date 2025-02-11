@@ -272,6 +272,7 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     Route::post('/projectPext/additionalOrFixed/expense/search/{project_id}', [PextController::class, 'search_advance_monthly_or_additional_expense'])->name('pext.monthly.additional.expense.search_advance');
     Route::post('/projectPext/additionalOrFixed/expense/general/search', [PextController::class, 'search_advance_additional_expense_general'])->name('pext.monthly.additional.expense.general.search_advance');
     Route::post('/projectPext/massive_update', [PextController::class, 'masiveUpdate'])->name('projectmanagement.pext.massiveUpdate');
+    Route::post('/projectPext/massive_update_swap', [PextController::class, 'masiveUpdateSwap'])->name('projectmanagement.pext.massiveUpdate.swap');
 
 
     //Project calendar

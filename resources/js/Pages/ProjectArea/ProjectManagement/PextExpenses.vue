@@ -79,10 +79,10 @@
                                             class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                             Actualizar Operación
                                         </button>
-                                        <!-- <button @click="openSwapCostsModal"
+                                        <button @click="openSwapCostsModal"
                                             class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                             Swap
-                                        </button> -->
+                                        </button>
                                         <!-- <button @click=""
                                             class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                             Eliminar
@@ -1071,4 +1071,5 @@ async function submitOpNuDatModal() {
         }
     }
 }
+
 </script>

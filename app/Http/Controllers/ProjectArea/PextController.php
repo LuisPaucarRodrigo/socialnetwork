@@ -199,17 +199,17 @@ class PextController extends Controller
                         $query->where('name', 'not like', "%$text%")
                             ->where('cost_line_id', 2);
                     })
-                    ->where(function ($query) {
-                        $query->whereHas('cicsa_charge_area', function ($subQuery) {
-                            $subQuery->where(function ($subSubQuery) {
-                                $subSubQuery->whereNull('invoice_number')
-                                    ->orWhereNull('invoice_date')
-                                    ->orWhereNull('amount');
-                            })
-                                ->whereNull('deposit_date');
-                        })
-                            ->orDoesntHave('cicsa_charge_area');
-                    })
+                    // ->where(function ($query) {
+                    //     $query->whereHas('cicsa_charge_area', function ($subQuery) {
+                    //         $subQuery->where(function ($subSubQuery) {
+                    //             $subSubQuery->whereNull('invoice_number')
+                    //                 ->orWhereNull('invoice_date')
+                    //                 ->orWhereNull('amount');
+                    //         })
+                    //             ->whereNull('deposit_date');
+                    //     })
+                    //         ->orDoesntHave('cicsa_charge_area');
+                    // })
                     ->whereDoesntHave('project.preproject')
                     ->orderBy('created_at', 'desc')
                     ->get();
@@ -262,19 +262,25 @@ class PextController extends Controller
                     ->whereHas('project', function ($query) {
                         $query->where('is_accepted', 1);
                     })
+                    // ->whereHas('project.cost_center', function ($query) use ($text) {
+                    //     $query->where('name', 'not like', "%$text%");
+                    // })
                     ->whereHas('project.cost_center', function ($query) use ($text) {
-                        $query->where('name', 'not like', "%$text%");
-                    })->whereDoesntHave('project.preproject');
+                        $query->where('name', 'not like', "%$text%")
+                            ->where('cost_line_id', 2);
+                    })
+                    ->whereDoesntHave('project.preproject');
             }
             if ($type == 1) {
                 $project = CicsaAssignation::with('project.cost_center', 'project.project_quote.project_quote_valuations')
                     ->whereHas('project.cost_center', function ($query) {
-                        $query->where('id', 3)->where('is_accepted', 1);
+                        $query->where('id', 3)
+                        ->where('is_accepted', 1);
                     });
             }
 
             $project = $project->where(function ($query) use ($searchQuery) {
-                $query->orWhere('project_name', 'like', "%$searchQuery%")
+                $query->where('project_name', 'like', "%$searchQuery%")
                     ->orWhere('project_code', 'like', "%$searchQuery%")
                     ->orWhere('cpe', 'like', "%$searchQuery%");
             })
@@ -296,10 +302,6 @@ class PextController extends Controller
                     return $item->cicsa_charge_status !== 'Completado';
                 });
             }
-
-
-
-
             return response()->json($project, 200);
         }
     }
@@ -731,5 +733,20 @@ class PextController extends Controller
             $cost->setAppends(['real_amount', 'real_state']);
         });
         return response()->json($updatedCosts, 200);
+    }
+
+    public function masiveUpdateSwap(Request $request)
+    {
+        $data = $request->validate([
+            'ids' => 'required | array | min:1',
+        ]);
+        foreach ($data['ids'] as $id) {
+            $pex = PextProjectExpense::find($id);
+            $pex->update([
+                'fixedOrAdditional' => $pex->fixedOrAdditional == 1 ? 0 : 1
+            ]);
+            
+        }
+        return response()->json(true, 200);
     }
 }
