@@ -5,21 +5,16 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginMobileRequest;
 use App\Http\Requests\PextProjectRequest\ApiStoreExpensesRequest;
 use App\Http\Requests\PreprojectRequest\ImageRequest;
+use App\Models\Car;
 use App\Models\CicsaAssignation;
+use App\Models\Employee;
 use App\Models\HuaweiAdditionalCost;
-use App\Models\HuaweiCode;
 use App\Models\HuaweiProject;
-use App\Models\HuaweiProjectCode;
-use App\Models\HuaweiProjectImage;
-use App\Models\HuaweiProjectStage;
 use App\Models\Imagespreproject;
 use App\Models\PreprojectCode;
 use App\Models\PreprojectTitle;
-use App\Models\HuaweiSite;
-use App\Models\PextProject;
 use App\Models\PextProjectExpense;
-use App\Models\Project;
-use App\Models\User;
+use App\Services\ApiServices;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -30,9 +25,11 @@ class ApiController extends Controller
 {
 
     protected $main_directory;
+    protected $apiService;
 
-    public function __construct()
+    public function __construct(ApiServices $apiService)
     {
+        $this->apiService = $apiService;
         $this->main_directory = 'LocalDrive';
     }
 
@@ -41,38 +38,29 @@ class ApiController extends Controller
         if (Auth::attempt($request->validated())) {
             $user = Auth::user();
             if ($request->hasMobileAccess($user)) {
-
-                // // Buscar si el usuario ya tiene un token
-                // $existingToken = $user->tokens()->first();
-
-                // // Si el usuario ya tiene un token, devolver el token existente
-                // if ($existingToken) {
-                //     return response()->json([
-                //         'id' => $user->id,
-                //         'token' => $existingToken->plainTextToken,
-                //     ]);
-                // }
-
                 $token = $user->createToken('MobileAppToken')->plainTextToken;
+                $employee = Employee::select('id', 'user_id')
+                    ->where('user_id', $user->id)
+                    ->with(['contract:id,cost_line_id,employee_id'])
+                    ->first();
                 return response()->json([
                     'id' => $user->id,
                     'token' => $token,
+                    'cost_line_id' => $employee->contract->cost_line_id
                 ]);
             } else {
                 return response()->json(['error' => 'Usuario no Autorizado'], 401);
             }
         } else {
-            return response()->json(['error' => 'Credenciales incorrectas'], 401);
+            return response()->json(['error' => 'Credenciales incorrectas'], 422);
         }
     }
 
     public function users($id)
     {
         try {
-            $user = User::select('id', 'name', 'dni', 'email')->find($id);
-            if ($user) {
-                return response()->json($user, 200);
-            }
+            $user = $this->apiService->findUser($id);
+            return response()->json($user, 200);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage()
@@ -84,7 +72,7 @@ class ApiController extends Controller
     public function preproject($id)
     {
         try {
-            $user = User::select('id')->find($id);
+            $user = $this->apiService->findUser($id);
             $preprojects = $user->preprojects()
                 ->select('preprojects.id as preproject_id', 'preproject_user.id as pivot_id', 'code', 'description', 'date', 'observation', 'status')
                 ->whereNull('status')
@@ -92,7 +80,7 @@ class ApiController extends Controller
                     $query->where('state', 1);
                 })
                 ->get();
-            return response()->json($preprojects);
+            return response()->json($preprojects, 200);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage()
@@ -109,8 +97,9 @@ class ApiController extends Controller
                 $query->select('id', 'preproject_title_id', 'code_id', 'status');
             }])
                 ->whereNotNull('state')->where('preproject_id', $id)
-                ->select('id', 'type')->get();
-            return response()->json($preprojectTitle);
+                ->select('id', 'type')
+                ->get();
+            return response()->json($preprojectTitle, 200);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage()
@@ -121,13 +110,24 @@ class ApiController extends Controller
     public function codephotospecific($id)
     {
         $data = PreprojectCode::with(['code' => function ($query) {
-            $query->select('id', 'code', 'description')->with('code_images');
+            $query->select('id', 'code', 'description')
+                ->with('code_images');
         }, 'preprojectTitle' => function ($query) {
-            $query->select('id', 'preproject_id');
-            $query->with(['preproject' => function ($query) {
-                $query->select('id', 'code');
-            }]);
-        }])->select('id', 'preproject_title_id', 'code_id')->find($id);
+            $query->select('id', 'preproject_id')
+                ->with(['preproject:id,code']);
+        }])
+            ->select('id', 'preproject_title_id', 'code_id')
+            ->find($id);
+
+        $data = PreprojectCode::select('id', 'preproject_title_id', 'code_id')
+            ->with([
+                'code:id,code,description',
+                'code.code_images',
+                'preprojectTitle:id,preproject_id',
+                'preprojectTitle.preproject:id,code'
+            ])
+            ->find($id);
+
         $images = $data->code->code_images->map(function ($image) {
             $image->image = url('/image/imageCode/' . $image->image);
             return $image;
@@ -148,11 +148,12 @@ class ApiController extends Controller
         $data = $request->validated();
         DB::beginTransaction();
         try {
-            $image = str_replace('data:image/png;base64,', '', $data['photo']);
-            $image = str_replace(' ', '+', $image);
-            $imageContent = base64_decode($image);
-            $data['image'] = time() . '.png';
-            file_put_contents(public_path('image/imagereportpreproject/') . $data['image'], $imageContent);
+            // $image = str_replace('data:image/png;base64,', '', $data['photo']);
+            // $image = str_replace(' ', '+', $image);
+            // $imageContent = base64_decode($image);
+            // $data['image'] = time() . '.png';
+            // file_put_contents(public_path('image/imagereportpreproject/') . $data['image'], $imageContent);
+            $data['image']  = $this->apiService->storeBase64Image($data['photo'], "image/imagereportpreproject/", null);
 
             Imagespreproject::create([
                 'description' => $data['description'],
@@ -183,215 +184,216 @@ class ApiController extends Controller
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
+        return response()->noContent();
     }
 
     //huawei
-    public function indexHuaweiProjectGeneral()
-    {
-        $projects = HuaweiProject::where('status', 1)->with(['huawei_site' => function ($query) {
-            $query->select('id', 'name'); // Selecciona campos específicos del modelo relacionado
-        }])->select('id', 'assigned_diu', 'huawei_site_id')->get()
-            ->makeHidden([
-                'total_earnings',
-                'total_real_earnings',
-                'total_real_earnings_without_deposit',
-                'total_project_cost',
-                'total_employee_costs',
-                'total_essalud_employee_cost',
-                'additional_cost_total',
-                'static_cost_total',
-                'materials_in_project',
-                'equipments_in_project',
-                'materials_liquidated',
-                'equipments_liquidated',
-                'huawei_project_resources',
-                'state'
-            ]);;
+    // public function indexHuaweiProjectGeneral()
+    // {
+    //     $projects = HuaweiProject::where('status', 1)->with(['huawei_site' => function ($query) {
+    //         $query->select('id', 'name'); // Selecciona campos específicos del modelo relacionado
+    //     }])->select('id', 'assigned_diu', 'huawei_site_id')->get()
+    //         ->makeHidden([
+    //             'total_earnings',
+    //             'total_real_earnings',
+    //             'total_real_earnings_without_deposit',
+    //             'total_project_cost',
+    //             'total_employee_costs',
+    //             'total_essalud_employee_cost',
+    //             'additional_cost_total',
+    //             'static_cost_total',
+    //             'materials_in_project',
+    //             'equipments_in_project',
+    //             'materials_liquidated',
+    //             'equipments_liquidated',
+    //             'huawei_project_resources',
+    //             'state'
+    //         ]);;
 
-        return response()->json($projects, 201);
-    }
+    //     return response()->json($projects, 201);
+    // }
 
-    public function storeHuaweiProjectGeneral(Request $request)
-    {
-        $request->validate([
-            'site' => 'required',
-            'diu' => 'required',
-        ]);
+    // public function storeHuaweiProjectGeneral(Request $request)
+    // {
+    //     $request->validate([
+    //         'site' => 'required',
+    //         'diu' => 'required',
+    //     ]);
 
-        $inputSiteName = $request->input('site');
+    //     $inputSiteName = $request->input('site');
 
-        $maxSimilarity = 0;
-        $bestMatch = null;
-        $siteToUse = null;
-        // Retrieve all site names
-        $sites = HuaweiSite::all()->pluck('name')->toArray();
+    //     $maxSimilarity = 0;
+    //     $bestMatch = null;
+    //     $siteToUse = null;
+    //     // Retrieve all site names
+    //     $sites = HuaweiSite::all()->pluck('name')->toArray();
 
-        // Iterate through sites to find the best match
-        foreach ($sites as $site) {
-            similar_text(strtolower($inputSiteName), strtolower($site), $similarity);
+    //     // Iterate through sites to find the best match
+    //     foreach ($sites as $site) {
+    //         similar_text(strtolower($inputSiteName), strtolower($site), $similarity);
 
-            if ($similarity > 70 && $similarity > $maxSimilarity) {
-                $maxSimilarity = $similarity;
-                $bestMatch = $site;
-            }
-        }
+    //         if ($similarity > 70 && $similarity > $maxSimilarity) {
+    //             $maxSimilarity = $similarity;
+    //             $bestMatch = $site;
+    //         }
+    //     }
 
-        if ($bestMatch) {
-            // Found a similar site
-            $siteToUse = HuaweiSite::where('name', $bestMatch)->first();
-        } else {
-            // No similar site found, create a new one
-            $siteToUse = HuaweiSite::create([
-                'name' => $this->sanitizeText($inputSiteName),
-            ]);
-        }
+    //     if ($bestMatch) {
+    //         // Found a similar site
+    //         $siteToUse = HuaweiSite::where('name', $bestMatch)->first();
+    //     } else {
+    //         // No similar site found, create a new one
+    //         $siteToUse = HuaweiSite::create([
+    //             'name' => $this->sanitizeText($inputSiteName),
+    //         ]);
+    //     }
 
-        HuaweiProject::create([
-            'name' => $request->diu,
-            'assigned_diu' => $request->diu,
-            'huawei_site_id' => $siteToUse->id,
-            'status' => 1,
-        ]);
+    //     HuaweiProject::create([
+    //         'name' => $request->diu,
+    //         'assigned_diu' => $request->diu,
+    //         'huawei_site_id' => $siteToUse->id,
+    //         'status' => 1,
+    //     ]);
 
-        return response()->json([], 200);
-    }
+    //     return response()->json([], 200);
+    // }
 
-    private function sanitizeText($text)
-    {
-        $sanitizedText = strtoupper($text);
-        $sanitizedText = str_replace(['-', '_'], ' ', $sanitizedText);
+    // private function sanitizeText($text)
+    // {
+    //     $sanitizedText = strtoupper($text);
+    //     $sanitizedText = str_replace(['-', '_'], ' ', $sanitizedText);
 
-        return $sanitizedText;
-    }
-
-
-    public function getStagesPerProject(HuaweiProject $huawei_project)
-    {
-        $stages = HuaweiProjectStage::where('huawei_project_id', $huawei_project->id)
-            ->where('status', 1)
-            ->with([
-                'huawei_project_codes' => function ($query) {
-                    $query->select('id', 'huawei_project_stage_id', 'huawei_code_id', 'status')
-                        ->with([
-                            'huawei_code' => function ($query) {
-                                $query->select('id', 'code');
-                            }
-                        ]);
-                },
-                'huawei_project_codes.huawei_code' => function ($query) {
-                    $query->select('id', 'code');
-                }
-            ])
-            ->select('id', 'description')
-            ->get();
-
-        // Ocultar los `huawei_project_images` en cada `huawei_project_code`
-        $stages->each(function ($stage) {
-            $stage->huawei_project_codes->each(function ($code) {
-                $code->makeHidden(['huawei_project_images']);
-            });
-        });
-
-        return response()->json(['stages' => $stages], 200);
-    }
+    //     return $sanitizedText;
+    // }
 
 
-    public function storeImagePerCode(HuaweiProjectCode $code, Request $request)
+    // public function getStagesPerProject(HuaweiProject $huawei_project)
+    // {
+    //     $stages = HuaweiProjectStage::where('huawei_project_id', $huawei_project->id)
+    //         ->where('status', 1)
+    //         ->with([
+    //             'huawei_project_codes' => function ($query) {
+    //                 $query->select('id', 'huawei_project_stage_id', 'huawei_code_id', 'status')
+    //                     ->with([
+    //                         'huawei_code' => function ($query) {
+    //                             $query->select('id', 'code');
+    //                         }
+    //                     ]);
+    //             },
+    //             'huawei_project_codes.huawei_code' => function ($query) {
+    //                 $query->select('id', 'code');
+    //             }
+    //         ])
+    //         ->select('id', 'description')
+    //         ->get();
 
-    {
-        $data = $request->validate([
-            'id' => 'required|numeric',
-            'photo' => 'required',
-            'description' => 'nullable',
-            'latitude' => 'required',
-            'longitude' => 'required',
-            'site' => 'required'
-        ]);
+    //     // Ocultar los `huawei_project_images` en cada `huawei_project_code`
+    //     $stages->each(function ($stage) {
+    //         $stage->huawei_project_codes->each(function ($code) {
+    //             $code->makeHidden(['huawei_project_images']);
+    //         });
+    //     });
 
-        DB::beginTransaction();
-        try {
-            $image = str_replace('data:image/png;base64,', '', $data['photo']);
-            $image = str_replace(' ', '+', $image);
-            $imageContent = base64_decode($image);
-            $data['photo'] = time() . '.png';
-            file_put_contents(public_path('documents/huawei/photoreports/') . $data['photo'], $imageContent);
+    //     return response()->json(['stages' => $stages], 200);
+    // }
 
-            HuaweiProjectImage::create([
-                'description' => $data['description'],
-                'image' => $data['photo'],
-                'lat' => $data['latitude'],
-                'lon' => $data['longitude'],
-                'site' => $data['site'],
-                'huawei_project_code_id' => $data['id'],
-            ]);
-            DB::commit();
-            return response()->json([201]);
-        } catch (\Exception $e) {
-            DB::rollback();
-            return response()->json([
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
 
-    public function getImageHistoryPerCode(HuaweiProjectCode $code)
-    {
-        $images = HuaweiProjectImage::where('huawei_project_code_id', $code->id)
-            ->select('id', 'huawei_project_code_id', 'image', 'description', 'observation', 'lat', 'lon', 'state')
-            ->get()
-            ->map(function ($image) {
-                $image->image = asset('documents/huawei/photoreports/' . $image->image);
-                return $image;
-            });
+    // public function storeImagePerCode(HuaweiProjectCode $code, Request $request)
 
-        return response()->json(['images' => $images], 200);
-    }
+    // {
+    //     $data = $request->validate([
+    //         'id' => 'required|numeric',
+    //         'photo' => 'required',
+    //         'description' => 'nullable',
+    //         'latitude' => 'required',
+    //         'longitude' => 'required',
+    //         'site' => 'required'
+    //     ]);
 
-    public function getCodesAndProjectCode($code)
-    {
-        $project_code = HuaweiProjectCode::where('id', $code)
-            ->select('id', 'status', 'huawei_code_id', 'huawei_project_stage_id')
-            ->with([
-                'huawei_project_stage' => function ($query) {
-                    $query->select('id', 'huawei_project_id');
-                },
-                'huawei_project_stage.huawei_project' => function ($query) {
-                    $query->select('id');
-                }
-            ])
-            ->first()
-            ->makeHidden(['huawei_project_images']);
+    //     DB::beginTransaction();
+    //     try {
+    //         $image = str_replace('data:image/png;base64,', '', $data['photo']);
+    //         $image = str_replace(' ', '+', $image);
+    //         $imageContent = base64_decode($image);
+    //         $data['photo'] = time() . '.png';
+    //         file_put_contents(public_path('documents/huawei/photoreports/') . $data['photo'], $imageContent);
 
-        $project_code->huawei_project_stage->huawei_project->makeHidden([
-            'additional_cost_total',
-            'static_cost_total',
-            'state',
-            'materials_in_project',
-            'equipments_in_project',
-            'materials_liquidated',
-            'equipments_liquidated',
-            'total_earnings',
-            'total_real_earnings',
-            'total_real_earnings_without_deposit',
-            'total_project_cost',
-            'total_employee_costs',
-            'total_essalud_employee_cost'
-        ]);
+    //         HuaweiProjectImage::create([
+    //             'description' => $data['description'],
+    //             'image' => $data['photo'],
+    //             'lat' => $data['latitude'],
+    //             'lon' => $data['longitude'],
+    //             'site' => $data['site'],
+    //             'huawei_project_code_id' => $data['id'],
+    //         ]);
+    //         DB::commit();
+    //         return response()->json([201]);
+    //     } catch (\Exception $e) {
+    //         DB::rollback();
+    //         return response()->json([
+    //             'error' => $e->getMessage(),
+    //         ], 500);
+    //     }
+    // }
 
-        $found_code = HuaweiCode::where('id', $project_code->huawei_code_id)
-            ->select('id', 'code', 'description')
-            ->first();
+    // public function getImageHistoryPerCode(HuaweiProjectCode $code)
+    // {
+    //     $images = HuaweiProjectImage::where('huawei_project_code_id', $code->id)
+    //         ->select('id', 'huawei_project_code_id', 'image', 'description', 'observation', 'lat', 'lon', 'state')
+    //         ->get()
+    //         ->map(function ($image) {
+    //             $image->image = asset('documents/huawei/photoreports/' . $image->image);
+    //             return $image;
+    //         });
 
-        $data = [
-            'id' => $code,
-            'scenario' => $found_code->code,
-            'scenario_description' => $found_code->description,
-            'project_code' => $project_code->huawei_project_stage->huawei_project->code,
-            'project_code_state' => $project_code->state
-        ];
+    //     return response()->json(['images' => $images], 200);
+    // }
 
-        return response()->json($data);
-    }
+    // public function getCodesAndProjectCode($code)
+    // {
+    //     $project_code = HuaweiProjectCode::where('id', $code)
+    //         ->select('id', 'status', 'huawei_code_id', 'huawei_project_stage_id')
+    //         ->with([
+    //             'huawei_project_stage' => function ($query) {
+    //                 $query->select('id', 'huawei_project_id');
+    //             },
+    //             'huawei_project_stage.huawei_project' => function ($query) {
+    //                 $query->select('id');
+    //             }
+    //         ])
+    //         ->first()
+    //         ->makeHidden(['huawei_project_images']);
+
+    //     $project_code->huawei_project_stage->huawei_project->makeHidden([
+    //         'additional_cost_total',
+    //         'static_cost_total',
+    //         'state',
+    //         'materials_in_project',
+    //         'equipments_in_project',
+    //         'materials_liquidated',
+    //         'equipments_liquidated',
+    //         'total_earnings',
+    //         'total_real_earnings',
+    //         'total_real_earnings_without_deposit',
+    //         'total_project_cost',
+    //         'total_employee_costs',
+    //         'total_essalud_employee_cost'
+    //     ]);
+
+    //     $found_code = HuaweiCode::where('id', $project_code->huawei_code_id)
+    //         ->select('id', 'code', 'description')
+    //         ->first();
+
+    //     $data = [
+    //         'id' => $code,
+    //         'scenario' => $found_code->code,
+    //         'scenario_description' => $found_code->description,
+    //         'project_code' => $project_code->huawei_project_stage->huawei_project->code,
+    //         'project_code_state' => $project_code->state
+    //     ];
+
+    //     return response()->json($data);
+    // }
 
     public function localDriveIndex(Request $request)
     {
@@ -422,10 +424,10 @@ class ApiController extends Controller
         }
     }
 
-    public function getSites()
-    {
-        return response()->json(['sites' => HuaweiSite::select('id', 'name')->get()], 200);
-    }
+    // public function getSites()
+    // {
+    //     return response()->json(['sites' => HuaweiSite::select('id', 'name')->get()], 200);
+    // }
 
     private function scanFolder($folderPath)
     {
@@ -534,7 +536,7 @@ class ApiController extends Controller
             $newDesc = $user->name . ", " . $validateData['description'];
             $validateData['description'] = $newDesc;
             if ($validateData['photo']) {
-                $validateData['photo'] = $this->storeBase64Image($validateData['photo'], 'documents/expensesPext', 'Gasto Pext');
+                $validateData['photo'] = $this->apiService->storeBase64Image($validateData['photo'], 'documents/expensesPext', 'Gasto Pext');
             }
 
             $validateData['user_id'] = $user->id;
@@ -547,26 +549,23 @@ class ApiController extends Controller
         }
     }
 
-    private function storeBase64Image($photo, $path, $name)
-    {
-        try {
-            $image = str_replace('data:image/png;base64,', '', $photo);
-            $image = str_replace(' ', '+', $image);
-            $imageContent = base64_decode($image);
-            $imagename = time() . $name . '.png';
-            file_put_contents(public_path($path) . "/" . $imagename, $imageContent);
-            return $imagename;
-        } catch (Exception $e) {
-            abort(500, 'something went wrong');
-        }
-    }
-
     public function historyExpensesPext()
-    {   
+    {
         $user = Auth::user();
         $expensesPext = PextProjectExpense::where('user_id', $user->id)
             ->get();
         return response()->json($expensesPext, 200);
+    }
+
+    public function employee_cost_line($cost_line_id)
+    {
+        $employees = Employee::select('id', 'name', 'lastname')
+            ->whereHas('contract', function ($e) use ($cost_line_id) {
+                $e->select('id', 'employee_id')
+                    ->where('cost_line_id', $cost_line_id);
+            })
+            ->get();
+        return response()->json($employees, 200);
     }
 
     //expenses_dus
@@ -667,12 +666,13 @@ class ApiController extends Controller
 
             foreach ($imageFields as $index => $field) {
                 if (isset($data[$field])) {
-                    $image = str_replace('data:image/png;base64,', '', $data[$field]);
-                    $image = str_replace(' ', '+', $image);
-                    $imageContent = base64_decode($image);
-                    $data[$field] = time() . '.png';
-                    file_put_contents(public_path($expenseDirectory) . $data[$field], $imageContent);
-                    $imageUpdates[$field] = $data[$field];
+                    $imageUpdates[$field] = $this->apiService->storeBase64Image($data[$field], $expenseDirectory, null);
+                    // $image = str_replace('data:image/png;base64,', '', $data[$field]);
+                    // $image = str_replace(' ', '+', $image);
+                    // $imageContent = base64_decode($image);
+                    // $data[$field] = time() . '.png';
+                    // file_put_contents(public_path($expenseDirectory) . $data[$field], $imageContent);
+                    // $imageUpdates[$field] = $data[$field];
                 }
             }
             $new_expense->update($imageUpdates);
@@ -684,5 +684,12 @@ class ApiController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function index_car($cost_line_id){
+        $car = Car::select('id','plate')
+        ->where('cost_line_id',$cost_line_id)
+        ->get();
+        return response()->json($car,200);
     }
 }

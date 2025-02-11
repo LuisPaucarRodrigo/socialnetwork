@@ -12,15 +12,11 @@ class ChecklistCar extends Model
     protected $fillable = [
         'reason',
         'user_id',
+        'car_id',
         'user_name',
         'additionalEmployees',
         'zone',
-        'km',
         'plate',
-        'circulation',
-        'technique',
-        'soat',
-
         'hornState',
         'brakesState',
         'headlightsState',
@@ -37,9 +33,9 @@ class ChecklistCar extends Model
         'windshieldState',
         'engineState',
         'batteryState',
-        'extinguisher',
-        'firstAidKit',
-        'cones',
+
+
+
         'jack',
         'spareTire',
         'towCable',
@@ -50,6 +46,7 @@ class ChecklistCar extends Model
         'chocks',
         'ladderHolder',
         'sidePlate',
+
         'front',
         'leftSide',
         'rightSide',
@@ -58,6 +55,26 @@ class ChecklistCar extends Model
         'rearRightTire',
         'frontRightTire',
         'frontLeftTire',
+
+        'beak',
+        'shovel',
+        'gps',
+        'extinguisher',
+        'firstAidKit',
+        'rollCage',
+        'fogLights',
+        'protectionCage',
+        'hoopInsurance',
+        'headlightInsurance',
+        'cardProtector',
+        'cones',
+        'safetyTriangle',
+        'wheelWrench',
+        
+        'back',
+        'dashboard',
+        'rearSeat',
+
         'observation',
     ];
 
@@ -65,4 +82,7 @@ class ChecklistCar extends Model
         return $this->belongsTo(User::class, 'user_id');    
     }
     
+    public function car() {
+        return $this->belongsTo(Car::class, 'car_id');    
+    }
 }

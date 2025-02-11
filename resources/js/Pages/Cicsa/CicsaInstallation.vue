@@ -739,6 +739,7 @@ const form = useForm({ ...initialState });
 
 const materialArray = ref([]);
 const mateiralObject = ref({
+    id: "",
     name: "",
     unit: "",
     quantity: 0,

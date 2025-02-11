@@ -1778,8 +1778,4 @@ const submitSwapRPModal = async () => {
     closeSwapRPModal();
     notify("Registros Movidos con éxito")
 }
-
-
-
-
 </script>

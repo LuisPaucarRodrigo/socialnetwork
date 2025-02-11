@@ -65,6 +65,10 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
+    public function employee(){
+        return $this->hasOne(Employee::class);
+    }
+
     public function role()
     {
         return $this->belongsTo(Role::class, 'role_id');
