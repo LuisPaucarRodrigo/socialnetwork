@@ -21,7 +21,10 @@ use App\Http\Controllers\ShoppingArea\ProviderController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('permission:UserManager')->group(function () {
-    Route::get('users', [UserController::class, 'index_user'])->name('users.index');
+    Route::get('users/index', [UserController::class, 'index_user'])->name('users.index');
+    Route::post('users/search', [UserController::class, 'search'])->name('users.search');
+    Route::get('users/linkEmployee/{user}', [UserController::class, 'linkEmployee'])->name('users.linkEmployee');
+
     Route::get('users/edit/{id}', [UserController::class, 'edit'])->name('users.edit');
     Route::put('users/update/{id}', [UserController::class, 'update'])->name('users.update');
     Route::get('users/details/{id}', [UserController::class, 'details'])->name('users.details');
