@@ -184,7 +184,7 @@ class ApiController extends Controller
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
-        return response()->noContent();
+        return response()->json([],200);
     }
 
     //huawei

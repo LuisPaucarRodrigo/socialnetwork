@@ -248,6 +248,7 @@ class PintConstants
             self::TACNA,
             self::MDD1_PM,
             self::MDD2_MAZ,
+            self::SANDIA
         ];
     }
 

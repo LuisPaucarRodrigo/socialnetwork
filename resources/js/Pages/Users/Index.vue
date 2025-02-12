@@ -1,16 +1,23 @@
 <template>
+
     <Head title="Usuarios" />
 
     <AuthenticatedLayout :redirectRoute="'users.index'">
         <template #header>
             Usuarios
         </template>
+        <Toaster richColors />
         <div class="min-w-full rounded-lg shadow">
-            <PrimaryButton @click="add_users" type="button">
-                + Agregar
-            </PrimaryButton>
-            <div class="overflow-x-auto">
-                <table class="w-full whitespace-no-wrap">
+            <div class="flex justify-between">
+                <PrimaryButton @click="add_users" type="button">
+                    + Agregar
+                </PrimaryButton>
+                <div>
+                    <TextInput v-model="formSearch.searchQuery" placeholder="Nombre,Dni" />
+                </div>
+            </div>
+            <div class="overflow-x-auto h-[72vh]">
+                <table class="w-full">
                     <thead>
                         <tr
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -20,7 +27,8 @@
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Platform
+                                <TableHeaderFilter labelClass="text-[11px]" label="Platform" :options="platforms"
+                                    v-model="formSearch.platform" width="w-44" />
                             </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
@@ -40,24 +48,33 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="user in users.data" :key="user.id" class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <tr v-for="user in users.data || users" :key="user.id" class="text-gray-700">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ user.name }}</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ user.platform }}</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ user.email }}</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ user.dni }}</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ user.phone }}</p>
                             </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-sm">
                                 <div class="flex space-x-3 justify-center">
+                                    <button v-if="(user.platform === 'Web/Movil' || user.platform === 'Movil')
+                                     && !user.employee"
+                                        @click="linkEmployee(user.id)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w=6 h-6 text-green-500">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
+                                        </svg>
+                                    </button>
                                     <Link class="text-blue-900 whitespace-no-wrap"
                                         :href="route('users.details', { id: user.id })">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -91,7 +108,7 @@
                 </table>
             </div>
 
-            <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+            <div v-if="users.data" class="flex flex-col items-center border-t bg-white px-5 py-3 xs:flex-row xs:justify-between">
                 <pagination :links="users.links" />
             </div>
         </div>
@@ -102,7 +119,8 @@
                 </h2>
 
                 <p class="mt-1 text-sm text-gray-600">
-                    Una vez que se elimine la cuenta, todos sus recursos y datos se eliminarán permanentemente. Por favor
+                    Una vez que se elimine la cuenta, todos sus recursos y datos se eliminarán permanentemente. Por
+                    favor
                     ingrese su contraseña para confirmar que desea eliminar permanentemente la cuenta.
                 </p>
 
@@ -137,17 +155,26 @@ import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Link, Head, router, useForm } from '@inertiajs/vue3';
-import { nextTick, ref } from 'vue';
+import { nextTick, ref, watch } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { notify, notifyError } from '@/Components/Notification';
+import TableHeaderFilter from '@/Components/TableHeaderFilter.vue';
+import { Toaster } from 'vue-sonner';
 
 const confirmingUserDeletion = ref(false);
 const usersToDelete = ref(null);
 const passwordInput = ref(null);
 
-const props = defineProps({
-    users: Object
+const { user } = defineProps({
+    user: Object
 })
 
+const users = ref(user)
+const platforms = [
+    'Web',
+    'Web/Movil',
+    'Movil'
+]
 const add_users = () => {
     router.get(route('register'));
 }
@@ -156,10 +183,29 @@ const form = useForm({
     password: '',
 });
 
+const initialSearch = {
+    searchQuery: '',
+    platform: [...platforms]
+}
+
+const formSearch = ref({ ...initialSearch })
+
+watch(formSearch, searchAdvance, { deep: true })
+
+async function searchAdvance() {
+    let url = route('users.search')
+    try {
+        let res = await axios.post(url, formSearch.value);
+        users.value = res.data;
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 const confirmUserDeletion = (userId) => {
     confirmingUserDeletion.value = true;
     usersToDelete.value = userId;
-   
+
 };
 
 const deleteUser = () => {
@@ -174,7 +220,37 @@ const deleteUser = () => {
 
 const closeModal = () => {
     confirmingUserDeletion.value = false;
-
     form.reset();
 };
+
+async function linkEmployee(id) {
+    let url = route('users.linkEmployee', { user: id })
+    try {
+        let response = await axios.get(url)
+        updateFrontEnd("updateRelations",response.data)
+    } catch (error) {
+        console.error("Error al vincular empleado:", error);
+        if (error.response) {
+            if (error.response.status === 404) {
+                notifyError("No se encontró un empleado para vincular.");
+            } else if (error.response.status === 500) {
+                notifyError("Error en el servidor. Inténtalo más tarde.");
+            } else {
+                notifyError(`Error ${error.response.status}: ${error.response.data}`);
+            }
+        } else {
+            notifyError("Error inesperado. Verifica tu conexión.");
+        }
+    }
+}
+
+function updateFrontEnd(action,data){
+    const validations = users.value.data || users.value
+    if(action === "updateRelations"){
+        const index = validations.findIndex(item => item.dni === data.dni)
+        validations[index].employee = data
+        notify(`El vínculo se realizó correctamente con ${data.name}`);
+
+    }
+}
 </script>
