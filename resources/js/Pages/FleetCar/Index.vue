@@ -122,8 +122,9 @@
                         <template
                             v-for="(car, i) in cars.data || cars"
                             :key="car.id"
+                            
                         >
-                            <tr class="text-gray-700">
+                            <tr class="text-gray-700 hover:bg-slate-200" :class="carId === car.id ? 'bg-slate-200' : 'bg-white'">
                                 <!-- <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
                                 <p class="inline-block text-gray-900 whitespace-nowrap text-center w-[22px]">
                                     {{ props.search === undefined ?
@@ -139,51 +140,51 @@
                             </td> -->
                                 <td
                                     v-if="hasPermission('UserManager')"
-                                    class="border-b border-gray-200 bg-white px-5 py-2 text-sm"
+                                    class="border-b border-gray-200 px-5 py-2 text-sm"
                                 >
                                     <p class="text-gray-900">
                                         {{ car.costline?.name }}
                                     </p>
                                 </td>
                                 <td
-                                    class="border-b border-gray-200 bg-white px-5 py-2 text-sm"
+                                    class="border-b border-gray-200 px-5 py-2 text-sm"
                                 >
                                     <p class="text-gray-900">{{ car.plate }}</p>
                                 </td>
                                 <td
-                                    class="border-b border-gray-200 bg-white px-5 py-2 text-sm"
+                                    class="border-b border-gray-200 px-5 py-2 text-sm"
                                 >
                                     <p class="text-gray-900">{{ car.model }}</p>
                                 </td>
                                 <td
-                                    class="border-b border-gray-200 bg-white px-5 py-2 text-sm"
+                                    class="border-b border-gray-200 px-5 py-2 text-sm"
                                 >
                                     <p class="text-gray-900">{{ car.brand }}</p>
                                 </td>
                                 <td
-                                    class="border-b border-gray-200 bg-white px-5 py-2 text-sm"
+                                    class="border-b border-gray-200 px-5 py-2 text-sm"
                                 >
                                     <p class="text-gray-900">{{ car.year }}</p>
                                 </td>
                                 <td
-                                    class="border-b border-gray-200 bg-white px-5 py-2 text-sm"
+                                    class="border-b border-gray-200 px-5 py-2 text-sm"
                                 >
                                     <p class="text-gray-900">{{ car.type }}</p>
                                 </td>
                                 <td
-                                    class="border-b border-gray-200 bg-white px-5 py-2 text-sm"
+                                    class="border-b border-gray-200 px-5 py-2 text-sm"
                                 >
                                     <p class="text-gray-900">{{ car.photo }}</p>
                                 </td>
                                 <td
-                                    class="border-b border-gray-200 bg-white px-5 py-2 text-sm"
+                                    class="border-b border-gray-200 px-5 py-2 text-sm"
                                 >
                                     <p class="text-gray-900">
                                         {{ car.user.name }}
                                     </p>
                                 </td>
                                 <td
-                                    class="border-b border-gray-200 bg-white px-5 py-2 text-sm"
+                                    class="border-b border-gray-200 px-5 py-2 text-sm"
                                 >
                                     <div class="flex space-x-3 justify-center">
                                         <button
