@@ -16,12 +16,7 @@ class ChecklistCar extends Model
         'user_name',
         'additionalEmployees',
         'zone',
-        // 'km',
         'plate',
-        // 'circulation',
-        // 'technique',
-        // 'soat',
-
         'hornState',
         'brakesState',
         'headlightsState',
@@ -51,6 +46,7 @@ class ChecklistCar extends Model
         'chocks',
         'ladderHolder',
         'sidePlate',
+
         'front',
         'leftSide',
         'rightSide',
@@ -74,6 +70,7 @@ class ChecklistCar extends Model
         'cones',
         'safetyTriangle',
         'wheelWrench',
+        
         'back',
         'dashboard',
         'rearSeat',

@@ -67,8 +67,8 @@ Usuarios
                 </a>
                 <MyTransition :transitiondemonstration="showingHumanResource">
                     <div class="relative">
+                        <Link class="w-full" :href="route('management.employees')">Empleados</Link>
                         <button @click="showEmployeeBirthdayAlarms = !showEmployeeBirthdayAlarms">
-                            <Link class="w-full" :href="route('management.employees')">Empleados</Link>
                             <span v-if="employeeBirthdayAlarms.length > 0"
                                 class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
                                 {{ employeeBirthdayAlarms.length }}
@@ -615,7 +615,8 @@ Usuarios
             </template> -->
 
 
-            <template v-if="true">
+            <template
+                v-if="hasPermission('ProjectManager') || hasPermission('Project') || hasPermission('HumanResourceManager') || hasPermission('HumanResource')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#" @click="showCicsa = !showCicsa">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-6 h-6">
@@ -701,16 +702,40 @@ Usuarios
                 </MyTransition>
             </template>
             <template v-if="hasPermission('CarManager')">
-                <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#" @click="showFleetCars = !showFleetCars">
-                    <svg width="23px" height="23px" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" >
+                <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
+                    @click="showFleetCars = !showFleetCars">
+                    <svg width="23px" height="23px" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke-width="1.5" :stroke="documentsCarToExpire.length > 0 ? 'red' : 'currentcolor'">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
                     </svg>
                     <span class="mx-3">Flota de Vehiculos</span>
                 </a>
                 <MyTransition :transitiondemonstration="showFleetCars">
-                    <Link class="w-full" :href="route('fleet.cars.index')">UM</Link>
+                    <div class="relative">
+                        <Link class="w-full" :href="route('fleet.cars.index')">UM</Link>
+                        <button v-if="documentsCarToExpire.length > 0"
+                            @click="showDocumentsCarToExpireAlarms = !showDocumentsCarToExpireAlarms">
+                            <span
+                                class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
+                                {{ documentsCarToExpire.length }}
+                            </span>
+                        </button>
+                    </div>
+                </MyTransition>
+            </template>
+            <template v-if="documentsCarToExpire.length !== 0">
+                <MyTransition v-for="item in documentsCarToExpire" :key="item.id" class="ml-4"
+                    :transitiondemonstration="showDocumentsCarToExpireAlarms">
+                    <!-- <Link class="w-full flex items-center" :href="route('management.employees.show', { id: item.id })">
+                    <svg class="w-4 h-4 mr-2 text-red-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
+                    </svg>
+                    <span>{{ item.plate }}</span>
+                    </Link> -->
+                    <span>Placa: {{ item.plate }}</span>
                 </MyTransition>
             </template>
         </nav>
@@ -761,6 +786,7 @@ export default {
             shoppingPurchases: [],
             shoppingPurchases7: [],
 
+            documentsCarToExpire: [],
             // archiveAlarms: [],
             // archiveAlarms7: [],
 
@@ -798,6 +824,8 @@ export default {
         let showArchivesAlarms = ref(false)
         let showEmployeeBirthdayAlarms = ref(false)
         let showDocumentsToExpireAlarms = ref(false)
+        let showDocumentsCarToExpireAlarms = ref(false)
+
 
         let showDocs = ref(false)
         let showCicsa = ref(false)
@@ -828,6 +856,7 @@ export default {
             showArchivesAlarms,
             showEmployeeBirthdayAlarms,
             showDocumentsToExpireAlarms,
+            showDocumentsCarToExpireAlarms,
             showDocs,
             showCicsa,
             showFleetCars,
@@ -941,6 +970,14 @@ export default {
             }
         },
 
+        async fetchFleetCarCount() {
+            try {
+                const response = await axios.get(route('fleet.cars.alarms'));
+                this.documentsCarToExpire = response.data.documentsCarToExpire;
+            } catch (error) {
+                console.error('Error al obtener el contador de subsecciones:', error);
+            }
+        },
         // async fetchArchiveRequest() {
         //     try {
         //         const response = await axios.get(route('archives.alarms'));
@@ -1019,6 +1056,10 @@ export default {
         // if (this.hasPermission('DocumentGestion')) {
         //     this.fetchArchiveRequest();
         // }
+        if (this.hasPermission('CarManager')) {
+            this.fetchFleetCarCount();
+        }
+
         if (this.hasPermission('HuaweiManager')) {
             this.fetchPendingOrders();
         }
@@ -1032,6 +1073,10 @@ export default {
             }
             if (this.hasPermission('ProjectManager') || this.hasPermission('Project')) {
                 this.fetchCicsaSubSectionsCount();
+            }
+
+            if (this.hasPermission('CarManager')) {
+                this.fetchFleetCarCount();
             }
 
             if (this.hasPermission('PurchasingManager') || this.hasPermission('Purchasing')) {

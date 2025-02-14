@@ -44,6 +44,8 @@
         Route::post('/checklistdailytoolkit', [ChecklistsController::class, 'dailytoolkit_store']);
         Route::post('/checklistepp', [ChecklistsController::class, 'epp_store']);
 
+        Route::get('/vehicle/{cost_line_id}', [ApiController::class, 'index_car']);
+
         Route::get('/checklistHistory', [ChecklistsController::class, 'checklist_history']);
         Route::post('/expense/store', [ChecklistsController::class, 'expenseStore']);
 
@@ -56,4 +58,6 @@
         //pint constants
         Route::get('/pintconstants/mobile', [ChecklistsController::class, 'getPintMobileConstants']);
         Route::get('/pextconstants/mobile', [ChecklistsController::class, 'getPextMobileConstants']);
+
+
     });

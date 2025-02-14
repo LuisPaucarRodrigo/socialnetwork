@@ -28,11 +28,8 @@ class ChecklistCarRequest extends FormRequest
             'reason'=> 'required',
             'additionalEmployees'=> 'nullable',
             'zone'=> 'required',
-            'km'=> 'required',
             'plate'=> 'required',
-            'circulation'=> 'required',
-            'technique'=> 'required',
-            'soat'=> 'required',
+
             'hornState'=> 'required',
             'brakesState'=> 'required',
             'headlightsState'=> 'required',
@@ -71,6 +68,28 @@ class ChecklistCarRequest extends FormRequest
             'rearRightTire'=> 'required',
             'frontRightTire'=> 'required',
             'frontLeftTire'=> 'required',
+            'observation'=> 'nullable',
+
+            'beak'=> 'required',
+            'shovel'=> 'required',
+            'gps'=> 'required',
+            'extinguisher'=> 'required',
+            'firstAidKit'=> 'required',
+            'rollCage'=> 'required',
+            'fogLights'=> 'required',
+            'protectionCage'=> 'required',
+            'hoopInsurance'=> 'required',
+            'headlightInsurance'=> 'required',
+            'cardProtector'=> 'required',
+            'cones'=> 'required',
+            'safetyTriangle'=> 'required',
+            'wheelWrench'=> 'required',
+            
+            'back'=> 'required',
+            'dashboard'=> 'required',
+            'rearSeat'=> 'required',
+
+            'car_id' => 'required',
             'observation'=> 'nullable',
         ];
     }

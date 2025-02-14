@@ -198,7 +198,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import Pagination from "@/Components/Pagination.vue";
 import { ref } from "vue";
 import Modal from "@/Components/Modal.vue";
-import { Head } from "@inertiajs/vue3";
+import { Head, router } from "@inertiajs/vue3";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import { formattedDate } from "@/utils/utils";
 import { EyeIcon } from "@heroicons/vue/24/outline";

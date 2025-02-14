@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Gestion de Empleados" />
     <AuthenticatedLayout :redirectRoute="'fleet.cars.index'">
         <Toaster richColors />
@@ -8,52 +9,16 @@
             <div class="mt-6 sm:flex sm:gap-4 sm:justify-between">
                 <div class="flex items-center justify-between gap-x-3 w-full">
                     <div class="hidden sm:flex sm:items-center space-x-3">
-                        <PrimaryButton @click="openModalCreate()" type="button">
+                        <PrimaryButton v-if="hasPermission('UserManager')" @click="openModalCreate()" type="button">
                             + Agregar
                         </PrimaryButton>
                     </div>
-
-                    <!-- Dropdown para pantallas pequeñas -->
-                    <!-- <div v-if="hasPermission('HumanResourceManager')" class="sm:hidden">
-                        <dropdown align='left'>
-                            <template #trigger>
-                                <button @click="dropdownOpen = !dropdownOpen"
-                                    class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100">
-                                    <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4 6H20M4 12H20M4 18H20" stroke="#000000" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-                                </button>
-                            </template>
-
-                            <template #content class="origin-left">
-                                <div>
-                                    <div class="dropdown">
-                                        <div class="dropdown-menu">
-                                            <button @click="add_information"
-                                                class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                                Agregar
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </template>
-                        </dropdown>
-                    </div> -->
                 </div>
                 <div class="flex items-center mt-4 sm:mt-0">
-                    <TextInput
-                        data-tooltip-target="search_fields"
-                        type="text"
-                        placeholder="Buscar..."
-                        v-model="formSearch.search"
-                    />
-                    <div
-                        id="search_fields"
-                        role="tooltip"
-                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
-                    >
+                    <TextInput data-tooltip-target="search_fields" type="text" placeholder="Buscar..."
+                        v-model="formSearch.search" />
+                    <div id="search_fields" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Placa,Marca,Modelo,Tipo
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
@@ -63,193 +28,111 @@
                 <table class="w-full bg-white">
                     <thead class="sticky top-0 z-20">
                         <tr
-                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 w-auto"
-                        >
-                            <th
-                                v-if="hasPermission('UserManager')"
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
-                            >
+                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 w-auto">
+                            <th v-if="hasPermission('UserManager')"
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 <div class="w-[190px]">
-                                    <TableHeaderCicsaFilter
-                                        label="Linea de Negocio"
-                                        labelClass="text-gray-600"
-                                        :options="cost_line"
-                                        v-model="formSearch.cost_line"
-                                    />
+                                    <TableHeaderCicsaFilter label="Linea de Negocio" labelClass="text-gray-600"
+                                        :options="cost_line" v-model="formSearch.cost_line" />
                                 </div>
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
-                            >
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Placa
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
-                            >
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Modelo
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
-                            >
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Marca
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
-                            >
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Año
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
-                            >
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Tipo
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
-                            >
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Foto
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
-                            >
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Dueño
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
-                            ></th>
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <template
-                            v-for="(car, i) in cars.data || cars"
-                            :key="car.id"
-                            
-                        >
-                            <tr class="text-gray-700 hover:bg-slate-200" :class="carId === car.id ? 'bg-slate-200' : 'bg-white'">
-                                <!-- <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
-                                <p class="inline-block text-gray-900 whitespace-nowrap text-center w-[22px]">
-                                    {{ props.search === undefined ?
-                                        realNumeration(employees.per_page, employees.current_page, i)
-                                        :
-                                        i + 1
-
-                                    }}
-                                </p>
-                            </td> -->
-                                <!-- <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
-                                <img :src="car.cropped_image" alt="Empleado" class="w-12 h-13 rounded-full">
-                            </td> -->
-                                <td
-                                    v-if="hasPermission('UserManager')"
-                                    class="border-b border-gray-200 px-5 py-2 text-sm"
-                                >
+                        <template v-for="(car, i) in cars.data || cars" :key="car.id">
+                            <tr class="text-gray-700">
+                                <td v-if="hasPermission('UserManager')"
+                                    class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
                                     <p class="text-gray-900">
                                         {{ car.costline?.name }}
                                     </p>
                                 </td>
-                                <td
-                                    class="border-b border-gray-200 px-5 py-2 text-sm"
-                                >
+                                <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
                                     <p class="text-gray-900">{{ car.plate }}</p>
                                 </td>
-                                <td
-                                    class="border-b border-gray-200 px-5 py-2 text-sm"
-                                >
+                                <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
                                     <p class="text-gray-900">{{ car.model }}</p>
                                 </td>
-                                <td
-                                    class="border-b border-gray-200 px-5 py-2 text-sm"
-                                >
+                                <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
                                     <p class="text-gray-900">{{ car.brand }}</p>
                                 </td>
-                                <td
-                                    class="border-b border-gray-200 px-5 py-2 text-sm"
-                                >
+                                <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
                                     <p class="text-gray-900">{{ car.year }}</p>
                                 </td>
-                                <td
-                                    class="border-b border-gray-200 px-5 py-2 text-sm"
-                                >
+                                <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
                                     <p class="text-gray-900">{{ car.type }}</p>
                                 </td>
-                                <td
-                                    class="border-b border-gray-200 px-5 py-2 text-sm"
-                                >
-                                    <p class="text-gray-900">{{ car.photo }}</p>
+                                <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
+                                    <a v-if="car.photo" :href="route('fleet.cars.show.image',{car : car.id})" target="blank">
+                                        <EyeIcon class="w-5 h-5 text-green-600"></EyeIcon>
+                                    </a>
                                 </td>
-                                <td
-                                    class="border-b border-gray-200 px-5 py-2 text-sm"
-                                >
+                                <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
                                     <p class="text-gray-900">
                                         {{ car.user.name }}
                                     </p>
                                 </td>
-                                <td
-                                    class="border-b border-gray-200 px-5 py-2 text-sm"
-                                >
+                                <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
                                     <div class="flex space-x-3 justify-center">
-                                        <button
-                                            v-if="hasPermission('CarManager')"
-                                            @click="
-                                                openModalCreateDocument(car)
-                                            "
-                                            class="text-blue-900"
-                                        >
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="w-6 h-6 text-blue-400"
-                                            >
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"
-                                                />
+                                        <button v-if="hasPermission('CarManager')" @click="
+                                            openModalCreateDocument(car)
+                                            " class="text-blue-900">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-blue-400">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
                                             </svg>
                                         </button>
-                                        <button
-                                            v-if="hasPermission('CarManager')"
-                                            @click="
-                                                openCreateModalChangelog(
-                                                    null,
-                                                    car.id
-                                                )
-                                            "
-                                            class="text-blue-900"
-                                        >
-                                            <svg
-                                                viewBox="0 0 1024 1024"
-                                                class="w-6 h-6 icon"
-                                                version="1.1"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                            >
+                                        <button v-if="hasPermission('CarManager')" @click="
+                                            openCreateModalChangelog(
+                                                null,
+                                                car.id
+                                            )
+                                            " class="text-blue-900">
+                                            <svg viewBox="0 0 1024 1024" class="w-6 h-6 icon" version="1.1"
+                                                xmlns="http://www.w3.org/2000/svg">
                                                 <path
                                                     d="M550.208 960H209.28A81.792 81.792 0 0 1 128 877.76V146.24A81.92 81.92 0 0 1 209.344 64h613.632a81.92 81.92 0 0 1 81.28 82.432v405.76a29.824 29.824 0 1 1-59.584 0V146.56a22.272 22.272 0 0 0-21.76-22.656H209.408a22.08 22.08 0 0 0-21.696 22.528v731.52a21.76 21.76 0 0 0 21.44 22.464h341.056a29.824 29.824 0 0 1 0.064 59.584z m196.352-600.96H285.824a29.824 29.824 0 1 1 0-59.712h460.8a29.824 29.824 0 1 1 0 59.712z m-204.8 156.8H285.824a29.824 29.824 0 1 1 0-59.712h255.936a29.824 29.824 0 1 1 0 59.648z m179.2 391.936c-101.12 0-183.424-83.84-183.424-186.624a29.824 29.824 0 1 1 59.712 0c0 70.016 55.552 126.976 123.584 126.976 17.408 0 34.24-3.712 50.048-10.88a29.888 29.888 0 0 1 24.768 54.336c-23.552 10.688-48.64 16.192-74.688 16.192z m153.6-156.8a29.824 29.824 0 0 1-29.824-29.824c0-70.016-55.552-126.976-123.648-126.976-16.32 0-32.384 3.2-47.36 9.6a29.888 29.888 0 0 1-23.424-54.912 180.224 180.224 0 0 1 70.784-14.336c101.12 0 183.424 83.84 183.424 186.624a30.016 30.016 0 0 1-29.952 29.824z m-204.8-104.576h-51.264a29.76 29.76 0 0 1-25.28-14.08 30.144 30.144 0 0 1-1.536-28.928l25.6-52.352a29.696 29.696 0 0 1 53.632 0l25.6 52.352a29.696 29.696 0 0 1-1.472 28.928 29.504 29.504 0 0 1-25.28 14.08z m127.552 269.568h-1.024a29.696 29.696 0 0 1-24.896-14.848l-25.6-44.288a29.888 29.888 0 0 1 23.808-44.672l58.048-4.032c11.392-0.704 22.144 5.12 27.904 14.848a30.016 30.016 0 0 1-1.024 31.616l-32.448 48.256a29.824 29.824 0 0 1-24.768 13.12z"
-                                                    fill="#044d14"
-                                                />
+                                                    fill="#044d14" />
                                             </svg>
                                         </button>
-                                        <button
-                                            v-if="hasPermission('CarManager')"
-                                            type="button"
-                                            @click="openModalEdit(car)"
-                                            class="text-blue-900"
-                                        >
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="w-6 h-6 text-amber-400"
-                                            >
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-                                                />
+                                        <button v-if="hasPermission('UserManager')" type="button"
+                                            @click="openModalEdit(car)" class="text-blue-900">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                             </svg>
                                         </button>
 
@@ -281,25 +164,12 @@
                                             </svg>
                                         </a>
 
-                                        <button
-                                            v-if="hasPermission('UserManager')"
-                                            type="button"
-                                            @click="openModalDeleteCars(car.id)"
-                                            class="text-blue-900"
-                                        >
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="w-6 h-6"
-                                            >
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    d="M9 3.75H6.912a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H15M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859M12 3v8.25m0 0-3-3m3 3 3-3"
-                                                />
+                                        <button v-if="hasPermission('UserManager')" type="button"
+                                            @click="openModalDeleteCars(car.id)" class="text-blue-900">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M9 3.75H6.912a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H15M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859M12 3v8.25m0 0-3-3m3 3 3-3" />
                                             </svg>
                                         </button>
                                         <button
@@ -323,20 +193,11 @@
                                                     d="m19.5 8.25-7.5 7.5-7.5-7.5"
                                                 />
                                             </svg>
-                                            <svg
-                                                v-else
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="w-6 h-6"
-                                            >
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    d="m4.5 15.75 7.5-7.5 7.5 7.5"
-                                                />
+                                            <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                class="w-6 h-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="m4.5 15.75 7.5-7.5 7.5 7.5" />
                                             </svg>
                                         </button>
                                     </div>
@@ -503,10 +364,8 @@
                     </tbody>
                 </table>
             </div>
-            <div
-                v-if="cars.data"
-                class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between"
-            >
+            <div v-if="cars.data"
+                class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="cars.links" />
             </div>
         </div>
@@ -527,20 +386,10 @@
                                 >Proveedores de UM
                             </InputLabel>
                             <div class="mt-2">
-                                <select
-                                    id="user_id"
-                                    v-model="form.user_id"
-                                    autocomplete="off"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                >
-                                    <option value="">
-                                        Seleccionar Usuario
-                                    </option>
-                                    <option
-                                        v-for="item in users"
-                                        :value="item.id"
-                                    >
-                                        {{ item.name }} - {{ item.dni }}
+                                <select id="user_id" v-model="form.user_id" autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                    <option value="">Seleccionar Usuario</option>
+                                    <option v-for="item in users" :value="item.id">{{ item.name }} - {{ item.dni }}
                                     </option>
                                 </select>
                                 <InputError :message="form.errors.user_id" />
@@ -567,30 +416,20 @@
                                         {{ item.name }}
                                     </option>
                                 </select>
-                                <InputError
-                                    :message="form.errors.cost_line_id"
-                                />
+                                <InputError :message="form.errors.cost_line_id" />
                             </div>
                         </div>
                         <div class="mt-2">
                             <InputLabel for="plate">Placa </InputLabel>
                             <div class="mt-2">
-                                <TextInput
-                                    type="text"
-                                    id="plate"
-                                    v-model="form.plate"
-                                />
+                                <TextInput type="text" id="plate" v-model="form.plate" />
                                 <InputError :message="form.errors.plate" />
                             </div>
                         </div>
                         <div class="mt-6">
                             <InputLabel for="model">Modelo </InputLabel>
                             <div class="mt-2">
-                                <TextInput
-                                    type="text"
-                                    id="model"
-                                    v-model="form.model"
-                                />
+                                <TextInput type="text" id="model" v-model="form.model" />
                                 <InputError :message="form.errors.model" />
                             </div>
                         </div>
@@ -598,57 +437,35 @@
                         <div class="mt-6">
                             <InputLabel for="brand">Marca </InputLabel>
                             <div class="mt-2">
-                                <TextInput
-                                    type="text"
-                                    id="brand"
-                                    v-model="form.brand"
-                                />
+                                <TextInput type="text" id="brand" v-model="form.brand" />
                                 <InputError :message="form.errors.brand" />
                             </div>
                         </div>
                         <div class="mt-6">
                             <InputLabel for="year">Año </InputLabel>
                             <div class="mt-2">
-                                <TextInput
-                                    type="text"
-                                    id="year"
-                                    v-model="form.year"
-                                />
+                                <TextInput type="number" id="year" min="1900" :max="new Date().getFullYear()" v-model="form.year" />
                                 <InputError :message="form.errors.year" />
                             </div>
                         </div>
                         <div class="mt-6">
                             <InputLabel for="type">Tipo </InputLabel>
                             <div class="mt-2">
-                                <TextInput
-                                    type="text"
-                                    id="type"
-                                    v-model="form.type"
-                                />
+                                <TextInput type="text" id="type" v-model="form.type" />
                                 <InputError :message="form.errors.type" />
                             </div>
                         </div>
                         <div class="mt-6">
                             <InputLabel for="photo">Foto </InputLabel>
                             <div class="mt-2">
-                                <!-- <TextInput type="text" id="photo" v-model="form.photo" /> -->
-                                <InputFile
-                                    id="photo"
-                                    accept=".jpeg, .jpg, .png"
-                                    v-model="form.photo"
-                                />
+                                <InputFile id="photo" accept=".jpeg, .jpg, .png" v-model="form.photo" />
                                 <InputError :message="form.errors.photo" />
                             </div>
                         </div>
                     </div>
                     <div class="mt-6 flex items-center justify-end gap-x-3">
-                        <SecondaryButton @click="openModalCar">
-                            Cancel
-                        </SecondaryButton>
-                        <PrimaryButton
-                            type="submit"
-                            :class="{ 'opacity-25': form.processing }"
-                        >
+                        <SecondaryButton @click="openModalCar"> Cancel </SecondaryButton>
+                        <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
                             {{ form.id ? "Actualizar" : "Crear" }}
                         </PrimaryButton>
                     </div>
@@ -661,90 +478,66 @@
                     {{ formDocument.id ? "Editar " : "Nueva " }}Documentaciòn UM
                 </h2>
                 <form @submit.prevent="submitDocument">
-                    <div
-                        class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2"
-                    >
+                    <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
                         <div class="mt-2">
-                            <InputLabel for="ownership_card"
-                                >Tarjeta de Propiedad
+                            <InputLabel for="ownership_card">Tarjeta de Propiedad
                             </InputLabel>
                             <div class="mt-2">
-                                <InputFile
-                                    id="ownership_card"
-                                    accept=".pdf"
-                                    v-model="formDocument.ownership_card"
-                                />
-                                <InputError
-                                    :message="
-                                        formDocument.errors.ownership_card
-                                    "
-                                />
+                                <InputFile id="ownership_card" accept=".pdf" v-model="formDocument.ownership_card" />
+                                <InputError :message="formDocument.errors.ownership_card
+                                    " />
                             </div>
                             <div
                                 v-if="archivesDocument.ownership_card"
                                 class="flex items-center"
                             >
                                 <span>Archivo: </span>
-                                <a
-                                    target="_blank"
-                                    :href="
-                                        route('fleet.cars.show_documents', {
-                                            car_document: formDocument.id,
-                                            fieldName: 'ownership_card',
-                                        })
-                                    "
-                                >
+                                <a target="_blank" :href="route('fleet.cars.show_documents', {
+                                    car_document: formDocument.id,
+                                    fieldName: 'ownership_card',
+                                })
+                                    ">
                                     <EyeIcon class="w-5 h-5 text-green-600" />
                                 </a>
                             </div>
                         </div>
 
                         <div class="mt-2">
-                            <InputLabel for="technical_review"
-                                >Revision Tecnica
+                            <InputLabel for="technical_review">Revision Tecnica
                             </InputLabel>
                             <div class="mt-2">
-                                <InputFile
-                                    id="technical_review"
-                                    accept=".pdf"
-                                    v-model="formDocument.technical_review"
-                                />
-                                <InputError
-                                    :message="
-                                        formDocument.errors.technical_review
-                                    "
-                                />
+                                <InputFile id="technical_review" accept=".pdf"
+                                    v-model="formDocument.technical_review" />
+                                <InputError :message="formDocument.errors.technical_review
+                                    " />
                             </div>
-
-                            <div
-                                v-if="archivesDocument.technical_review"
-                                class="flex items-center"
-                            >
+                            <div v-if="archivesDocument.technical_review" class="flex items-center">
                                 <span>Archivo: </span>
-                                <a
-                                    target="_blank"
-                                    :href="
-                                        route('fleet.cars.show_documents', {
-                                            car_document: formDocument.id,
-                                            fieldName: 'technical_review',
-                                        })
-                                    "
-                                >
+                                <a target="_blank" :href="route('fleet.cars.show_documents', {
+                                    car_document: formDocument.id,
+                                    fieldName: 'technical_review',
+                                })
+                                    ">
                                     <EyeIcon class="w-5 h-5 text-green-600" />
                                 </a>
                             </div>
+                            <template v-if="date_technical_review">
+                                <InputLabel for="technical_review">
+                                    Fecha de Revision Tecnica
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <TextInput id="technical_review_date" type="date"
+                                        v-model="formDocument.technical_review_date" />
+                                    <InputError :message="formDocument.errors.technical_review_date
+                                        " />
+                                </div>
+                            </template>
                         </div>
                         <div class="mt-6">
                             <InputLabel for="soat">SOAT </InputLabel>
                             <div class="mt-2">
-                                <InputFile
-                                    id="soat"
-                                    accept=".pdf"
-                                    v-model="formDocument.soat"
-                                />
-                                <InputError
-                                    :message="formDocument.errors.soat"
-                                />
+                                <InputFile id="soat" accept=".pdf" v-model="formDocument.soat" />
+                                <InputError :message="formDocument.errors.soat" />
                             </div>
 
                             <div
@@ -752,30 +545,28 @@
                                 class="flex items-center"
                             >
                                 <span>Archivo: </span>
-                                <a
-                                    target="_blank"
-                                    :href="
-                                        route('fleet.cars.show_documents', {
-                                            car_document: formDocument.id,
-                                            fieldName: 'soat',
-                                        })
-                                    "
-                                >
+                                <a target="_blank" :href="route('fleet.cars.show_documents', {
+                                    car_document: formDocument.id,
+                                    fieldName: 'soat',
+                                })
+                                    ">
                                     <EyeIcon class="w-5 h-5 text-green-600" />
                                 </a>
+                            </div>
+                            <InputLabel for="soat_date">
+                                Fecha de Soat
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput id="soat_date" type="date" v-model="formDocument.soat_date" />
+                                <InputError :message="formDocument.errors.soat_date
+                                    " />
                             </div>
                         </div>
                         <div class="mt-6">
                             <InputLabel for="insurance">Seguro </InputLabel>
                             <div class="mt-2">
-                                <InputFile
-                                    id="insurance"
-                                    accept=".pdf"
-                                    v-model="formDocument.insurance"
-                                />
-                                <InputError
-                                    :message="formDocument.errors.insurance"
-                                />
+                                <InputFile id="insurance" accept=".pdf" v-model="formDocument.insurance" />
+                                <InputError :message="formDocument.errors.insurance" />
                             </div>
 
                             <div
@@ -783,28 +574,27 @@
                                 class="flex items-center"
                             >
                                 <span>Archivo: </span>
-                                <a
-                                    target="_blank"
-                                    :href="
-                                        route('fleet.cars.show_documents', {
-                                            car_document: formDocument.id,
-                                            fieldName: 'insurance',
-                                        })
-                                    "
-                                >
+                                <a target="_blank" :href="route('fleet.cars.show_documents', {
+                                    car_document: formDocument.id,
+                                    fieldName: 'insurance',
+                                })
+                                    ">
                                     <EyeIcon class="w-5 h-5 text-green-600" />
                                 </a>
+                            </div>
+                            <InputLabel for="insurance_date">
+                                Fecha de Soat
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="date" id="insurance_date" v-model="formDocument.insurance_date" />
+                                <InputError :message="formDocument.errors.insurance_date
+                                    " />
                             </div>
                         </div>
                     </div>
                     <div class="mt-6 flex items-center justify-end gap-x-3">
-                        <SecondaryButton @click="openModalDocument">
-                            Cancel
-                        </SecondaryButton>
-                        <PrimaryButton
-                            type="submit"
-                            :class="{ 'opacity-25': formDocument.processing }"
-                        >
+                        <SecondaryButton @click="openModalDocument"> Cancel </SecondaryButton>
+                        <PrimaryButton type="submit" :class="{ 'opacity-25': formDocument.processing }">
                             {{ formDocument.id ? "Actualizar" : "Crear" }}
                         </PrimaryButton>
                     </div>
@@ -819,52 +609,33 @@
                     Cambios
                 </h2>
                 <form @submit.prevent="submitChangelog">
-                    <div
-                        class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2"
-                    >
+                    <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
                         <div class="mt-2">
                             <InputLabel for="date">Fecha </InputLabel>
                             <div class="mt-2">
-                                <input
-                                    type="date"
-                                    id="date"
-                                    v-model="formChangelog.date"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                />
-                                <InputError
-                                    :message="formChangelog.errors.date"
-                                />
+                                <input type="date" id="date" v-model="formChangelog.date"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="formChangelog.errors.date" />
                             </div>
                         </div>
 
                         <div class="mt-2">
                             <InputLabel for="mileage">Kilometraje </InputLabel>
                             <div class="mt-2">
-                                <input
-                                    type="number"
-                                    step="0.01"
-                                    id="mileage"
+                                <input type="number" step="0.01" id="mileage"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    v-model="formChangelog.mileage"
-                                />
-                                <InputError
-                                    :message="formChangelog.errors.mileage"
-                                />
+                                    v-model="formChangelog.mileage" />
+                                <InputError :message="formChangelog.errors.mileage" />
                             </div>
                         </div>
 
                         <div class="mt-2">
                             <InputLabel for="type">Tipo </InputLabel>
                             <div class="mt-2">
-                                <input
-                                    type="text"
-                                    id="type"
+                                <input type="text" id="type"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    v-model="formChangelog.type"
-                                />
-                                <InputError
-                                    :message="formChangelog.errors.type"
-                                />
+                                    v-model="formChangelog.type" />
+                                <InputError :message="formChangelog.errors.type" />
                             </div>
                         </div>
 
@@ -872,30 +643,17 @@
                         <div class="mt-2">
                             <InputLabel for="invoice">Factura </InputLabel>
                             <div class="mt-2">
-                                <InputFile
-                                    id="invoice"
-                                    accept=".pdf"
-                                    v-model="formChangelog.invoice"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                />
-                                <InputError
-                                    :message="formChangelog.errors.invoice"
-                                />
+                                <InputFile id="invoice" accept=".pdf" v-model="formChangelog.invoice"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="formChangelog.errors.invoice" />
                             </div>
 
-                            <div
-                                v-if="formChangelog.invoice && formChangelog.id"
-                                class="flex items-center"
-                            >
+                            <div v-if="formChangelog.invoice && formChangelog.id" class="flex items-center">
                                 <span>Archivo: </span>
-                                <a
-                                    target="_blank"
-                                    :href="
-                                        route('fleet.cars.show_invoice', {
-                                            car_changelog: formChangelog.id,
-                                        })
-                                    "
-                                >
+                                <a target="_blank" :href="route('fleet.cars.show_invoice', {
+                                    car_changelog: formChangelog.id,
+                                })
+                                    ">
                                     <EyeIcon class="w-5 h-5 text-green-600" />
                                 </a>
                             </div>
@@ -916,55 +674,32 @@
                         </div>
 
                         <div class="col-span-1 md:col-span-2">
-                            <InputLabel class="mb-1" for="new_item"
-                                >Agregar Item</InputLabel
-                            >
+                            <InputLabel class="mb-1" for="new_item">Agregar Item</InputLabel>
                             <div class="flex items-center">
-                                <input
-                                    type="text"
-                                    v-model="newItem"
-                                    class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600"
-                                />
-                                <button
-                                    type="button"
-                                    @click="addItem"
-                                    class="ml-2"
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke-width="1.5"
-                                        stroke="currentColor"
-                                        class="w-6 h-6 text-indigo-500"
-                                    >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                                        />
+                                <input type="text" v-model="newItem"
+                                    class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
+                                <button type="button" @click="addItem" class="ml-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                     </svg>
                                 </button>
                             </div>
                             <InputError :message="formChangelog.errors.items" />
                         </div>
 
-                        <div
-                            class="col-span-1 sm:col-span-2 overflow-x-auto mt-3"
-                        >
+                        <div class="col-span-1 sm:col-span-2 overflow-x-auto mt-3">
                             <table class="w-full whitespace-no-wrap">
                                 <thead>
                                     <tr
-                                        class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
-                                    >
+                                        class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                                         <th
-                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
-                                        >
+                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                             Nº
                                         </th>
                                         <th
-                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
-                                        >
+                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                             Nombre
                                         </th>
                                         <th                                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
@@ -972,37 +707,23 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr
-                                        v-for="(
+                                    <tr v-for="(
                                             item, index
-                                        ) in formChangelog.items"
-                                        :key="index"
-                                        class="text-gray-700"
-                                    >
-                                        <td
-                                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
-                                        >
+                                        ) in formChangelog.items" :key="index" class="text-gray-700">
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             {{ index + 1 }}
                                         </td>
-                                        <td
-                                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
-                                        >
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                             {{ item }}
                                         </td>
-                                        <td
-                                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-right"
-                                        >
-                                            <button
-                                                @click.prevent="
-                                                    () => {
-                                                        formChangelog.items.splice(
-                                                            index,
-                                                            1
-                                                        );
-                                                    }
-                                                "
-                                                class="text-red-600 hover:underline"
-                                            >
+                                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-right">
+                                            <button @click.prevent="() => {
+                                                formChangelog.items.splice(
+                                                    index,
+                                                    1
+                                                );
+                                            }
+                                                " class="text-red-600 hover:underline">
                                                 <TrashIcon class="h-5 w-5" />
                                             </button>
                                         </td>
@@ -1015,10 +736,7 @@
                         <SecondaryButton @click="openModalChangelog">
                             Cancelar
                         </SecondaryButton>
-                        <PrimaryButton
-                            type="submit"
-                            :class="{ 'opacity-25': formDocument.processing }"
-                        >
+                        <PrimaryButton type="submit" :class="{ 'opacity-25': formDocument.processing }">
                             Guardar
                         </PrimaryButton>
                     </div>
@@ -1080,21 +798,11 @@
             </div>
         </Modal>
 
-        <ConfirmDeleteModal
-            :confirmingDeletion="showModalDeleteCars"
-            itemType="vehiculo"
-            :deleteFunction="deleteCars"
-            @closeModal="openModalDeleteCars(null)"
-        />
+        <ConfirmDeleteModal :confirmingDeletion="showModalDeleteCars" itemType="vehiculo" :deleteFunction="deleteCars"
+            @closeModal="openModalDeleteCars(null)" />
 
-        <ConfirmDeleteModal
-            :confirmingDeletion="showModalDeleteChangelog"
-            itemType="registro de cambios"
-            :deleteFunction="deleteChangelog"
-            @closeModal="openModalDeleteChangelog(null)"
-        />
-        <!-- <ConfirmCreateModal :confirmingcreation="createSchedule" itemType="Horario" />
-        <ConfirmUpdateModal :confirmingupdate="updateSchedule" itemType="Horario" /> -->
+        <ConfirmDeleteModal :confirmingDeletion="showModalDeleteChangelog" itemType="registro de cambios"
+            :deleteFunction="deleteChangelog" @closeModal="openModalDeleteChangelog(null)" />
     </AuthenticatedLayout>
 </template>
 
@@ -1103,8 +811,6 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Pagination from "@/Components/Pagination.vue";
-import ConfirmCreateModal from "@/Components/ConfirmCreateModal.vue";
-import ConfirmUpdateModal from "@/Components/ConfirmUpdateModal.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import Modal from "@/Components/Modal.vue";
@@ -1131,16 +837,6 @@ import {
     PencilSquareIcon,
 } from "@heroicons/vue/24/outline";
 
-// const confirmingUserDeletion = ref(false);
-// const deleteButtonText = 'Eliminar';
-// const employeeToDelete = ref(null);
-// const employeeToFired = ref(null);
-// const employeeReentry = ref(null);
-// const showModalFired = ref(false);
-// const createSchedule = ref(false);
-// const updateSchedule = ref(false);
-// const showModalReentry = ref(false);
-
 const props = defineProps({
     car: Object,
     userPermissions: Array,
@@ -1160,7 +856,8 @@ const itemModal = ref(false);
 const showitems = ref([]);
 const changelogToDelete = ref(null);
 const showModalDeleteChangelog = ref(false);
-const archivesDocument = ref({});
+const archivesDocument = ref({})
+const date_technical_review = ref(null)
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
@@ -1182,8 +879,11 @@ const initialFormDocument = {
     id: "",
     ownership_card: "",
     technical_review: "",
+    technical_review_date: "",
     soat: "",
+    soat_date: "",
     insurance: "",
+    insurance_date: "",
     car_id: "",
 };
 
@@ -1242,14 +942,12 @@ function openModalDocument() {
 }
 
 function openModalCreateDocument(item) {
-    archivesDocument.value = {};
-    openModalDocument();
-    archivesDocument.value = { ...(item.car_document ?? initialFormDocument) };
-    formDocument.defaults({
-        ...(item.car_document ?? initialFormDocument),
-        car_id: item.id,
-    });
-    formDocument.reset();
+    date_technical_review.value = item.year + 4 <= new Date().getFullYear();
+    archivesDocument.value = {}
+    openModalDocument()
+    archivesDocument.value = ({ ...item.car_document ?? initialFormDocument })
+    formDocument.defaults({ ...item.car_document ?? initialFormDocument, car_id: item.id })
+    formDocument.reset()
 }
 
 function openModalChangelog() {
@@ -1325,13 +1023,6 @@ async function deleteCars() {
         console.log(error);
     }
 }
-// function reentry() {
-//     if (formSearch.value.state === 'Active') {
-//         formSearch.value.state = 'Inactive'
-//     } else {
-//         formSearch.value.state = 'Active'
-//     }
-// }
 
 watch(
     () => [formSearch.value.cost_line, formSearch.value.search],
@@ -1348,8 +1039,8 @@ async function submit() {
     let data = toFormData(form);
     try {
         let response = await axios.post(url, data);
-        let action = form.id ? "edit" : "create";
-        updateCar(response.data, action);
+        let action = form.id ? 'edit' : 'create';
+        updateCar(response.data, action)
     } catch (error) {
         console.log(error);
         if (error.response) {
@@ -1371,7 +1062,7 @@ async function submitDocument() {
     let formData = toFormData(formDocument);
     try {
         let response = await axios.post(url, formData);
-        updateCar(response.data, "udpateDocument");
+        updateCar(response.data, 'udpateDocument')
     } catch (error) {
         console.log(error);
         if (error.response) {
@@ -1389,8 +1080,8 @@ async function submitDocument() {
 async function submitChangelog() {
     let url = formChangelog.id
         ? route("fleet.cars.update_changelog", {
-              car_changelog: formChangelog.id,
-          })
+            car_changelog: formChangelog.id,
+        })
         : route("fleet.cars.store_changelog", { car: car_id.value });
     let method = "post";
     let formData = new FormData();

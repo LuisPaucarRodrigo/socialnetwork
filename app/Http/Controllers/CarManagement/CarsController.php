@@ -13,6 +13,7 @@ use App\Models\CarDocument;
 use App\Models\ChecklistCar;
 use App\Models\CostLine;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,13 +25,13 @@ class CarsController extends Controller
     {
         $user = Auth::user();
         $cars = Car::with(['user', 'costline', 'car_document', 'car_changelogs.car_changelog_items', 'checklist']);
-        $users = User::where('role_id', 2)
+        $users = User::where('role_id', 12)
             ->get();
         if ($user->role_id !== 1) {
             $cars->where('user_id', $user->id);
         }
 
-        $cars = $cars->orderby('created_at','desc')->get();
+        $cars = $cars->orderby('created_at', 'desc')->get();
         return Inertia::render('FleetCar/Index', [
             'car' => $cars,
             'costLine' => CostLine::all(),
@@ -62,12 +63,32 @@ class CarsController extends Controller
         return response()->json($cars, 200);
     }
 
-    public function indexAdmin()
+
+    public function alarms()
     {
-        $cars = Car::with(['car_document', 'car_changelogs.car_changelog_items', 'checklist'])->get();
-        return Inertia::render('FleetCar/Index', [
-            'cars' => $cars
-        ]);
+        $user = Auth::user();
+        $today = Carbon::now();
+        $expirationThreshold = $today->copy()->addDays(7);
+
+        if ($user->role_id == 1) {
+            $cars = Car::whereHas('car_document', function ($query) use ($expirationThreshold) {
+                $query->where('technical_review_date', '<=', $expirationThreshold)
+                    ->orWhere('soat_date', '<=', $expirationThreshold)
+                    ->orWhere('insurance_date', '<=', $expirationThreshold);
+            })->get();
+        } else {
+            $cars = Car::where('user_id', $user->id)
+                ->whereHas('car_document', function ($query) use ($expirationThreshold) {
+                    $query->where('technical_review_date', '<=', $expirationThreshold)
+                        ->orWhere('soat_date', '<=', $expirationThreshold)
+                        ->orWhere('insurance_date', '<=', $expirationThreshold);
+                })->get();
+        }
+
+
+        return response()->json([
+            'documentsCarToExpire' => $cars,
+        ], 200);
     }
 
     public function store(FleetCarRequest $request)
@@ -286,7 +307,7 @@ class CarsController extends Controller
     {
         $basePath = 'image/checklist/checklistcar';
         $images = [];
-    
+
         // Campos y sus traducciones
         $fields = [
             'front' => 'Foto Delantera',
@@ -301,16 +322,16 @@ class CarsController extends Controller
             'dashboard' => 'Foto de Tablero',
             'rearSeat' => 'Foto de Asiento Trasero'
         ];
-    
+
         foreach ($fields as $field => $translatedName) {
             $imagePath = public_path($basePath . '/' . $checklist->$field);
-    
+
             if (!empty($checklist->$field) && file_exists($imagePath)) {
                 $absolutePath = asset($basePath . '/' . $checklist->$field);
                 $images[] = [$translatedName => $absolutePath];
             }
         }
-    
+
         return response()->json($images);
-    }    
+    }
 }

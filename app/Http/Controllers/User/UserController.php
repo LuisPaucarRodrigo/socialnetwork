@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest\UpdateUserRequest;
 use App\Models\Area;
+use App\Models\Employee;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -16,8 +17,37 @@ class UserController extends Controller
     public function index_user()
     {
         return Inertia::render('Users/Index', [
-            'users' => User::paginate()
+            'user' => User::with(['employee:id,user_id'])->paginate(20)
         ]);
+    }
+
+    public function search(Request $request)
+    {
+        $searchQuery = $request->searchQuery;
+        $platform = $request->platform;
+        $user = User::with(['employee:id'])->where(function ($query) use ($searchQuery) {
+            $query->where('name', 'like', "%$searchQuery%")
+                ->orWhere('dni', 'like', "%$searchQuery%");
+        });
+        if (count($platform) < 3) {
+            $user->whereIn('platform', $platform);
+        }
+        $user = $user->get();
+        return response()->json($user, 200);
+    }
+
+    public function linkEmployee(User $user)
+    {
+        $employee = Employee::select('id', 'dni', 'name')
+            ->where('dni', $user->dni)->first();
+        if ($employee) {
+            $employee->update(['user_id' => $user->id]);
+            return response()->json($employee, 200);
+        }
+        return response()->json(
+            "El usuario no tiene un empleado con quien vincular",
+            404
+        );
     }
 
     public function edit($id)
@@ -31,7 +61,7 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request, $id)
     {
-        
+
         $validatedData = $request->validated();
         $user = User::findOrFail($id);
         $user->update($validatedData);

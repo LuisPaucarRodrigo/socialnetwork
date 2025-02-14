@@ -360,6 +360,29 @@ class AdditionalCostsController extends Controller
         return response()->json(true, 200);
     }
 
+    public function getRegularProjects () {
+        $data = Project::where('cost_line_id', 1)
+            ->where(function($query) {
+                $query->where('cost_center_id', 1)
+                    ->orWhere('cost_center_id', 2);
+            })
+            ->get();
+        return response()->json($data);
+    }   
+
+    public function swapCostsToRegularProject(Request $request)
+    {
+        $data = $request->validate([
+            'ids' => 'required | array | min:1',
+            'project_id' => 'required'
+        ]);
+        foreach ($data['ids'] as $id) {
+            $ac = AdditionalCost::find($id);
+            $ac->update(['project_id'=> $data['project_id']]);
+        }
+        return response()->json(true, 200);
+    }
+
 
 
 

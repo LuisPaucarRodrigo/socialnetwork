@@ -82,6 +82,10 @@
                                             class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                             Actualizar Operación
                                         </button>
+                                        <button @click="openSwapCostsModal"
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Swap
+                                        </button>
                                     </div>
                                 </div>
                             </template>
@@ -181,8 +185,8 @@
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Documento" :options="documentsType"
-                                v-model="filterForm.selectedDocTypes" width="w-40" />
+                            <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Documento"
+                                :options="documentsType" v-model="filterForm.selectedDocTypes" width="w-40" />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
@@ -662,6 +666,9 @@
             :deleteFunction="deleteAdditional" @closeModal="closeModalDoc" />
         <!-- <SuccessOperationModal :confirming="confirmValidation" :title="'Validación'"
             :message="'La validación del gasto fue exitosa.'" /> -->
+        <ConfirmateModal :showConfirm="showSwapCostsModal" tittle="Cambio de gastos adicionales a fijos"
+            text="La siguiente acción ya no se podrá revertir, ¿Desea continuar?" :actionFunction="swapCosts"
+            @closeModal="closeSwapCostsModal" />
     </AuthenticatedLayout>
 </template>
 
@@ -701,10 +708,10 @@ const props = defineProps({
     type: Number,
     acExpensesAmounts: Array,
     scExpensesAmounts: Array,
-    zones:Array,
-    expenseType:Array,
-    documentsType:Array,
-    expenseTypeFixed:Array
+    zones: Array,
+    expenseType: Array,
+    documentsType: Array,
+    expenseTypeFixed: Array
 });
 
 const expenses = ref(props.expense);
@@ -745,6 +752,7 @@ const create_additional = ref(false);
 const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
 const showOpNuDatModal = ref(false)
+const showSwapCostsModal = ref(false)
 
 const openCreateAdditionalModal = () => {
     create_additional.value = true;
@@ -934,7 +942,7 @@ watch(() => form.zone, () => {
 
 async function getProject() {
     let url = route('pext.additional.expense.general.getCicsaAssignation')
-    let data = { type: props.type, zone: form.zone}
+    let data = { type: props.type, zone: form.zone }
     try {
         let response = await axios.post(url, data);
         cicsaAssignation.value = response.data
@@ -1113,4 +1121,31 @@ function updateExpense(expense, action, state) {
     }
 }
 
+const closeSwapCostsModal = () => {
+    showSwapCostsModal.value = false
+}
+
+const openSwapCostsModal = () => {
+    if (actionForm.value.ids.length === 0) {
+        notifyWarning("No hay registros seleccionados");
+        return;
+    }
+    showSwapCostsModal.value = true
+}
+
+const swapCosts = async () => {
+    await axios
+        .post(route("projectmanagement.pext.massiveUpdate.swap"), {
+            ...actionForm.value
+        })
+        .catch((e) => {
+            notifyError("Server Error");
+        });
+    expenses.value = expenses.value.filter(
+        (item) => !actionForm.value.ids.includes(item.id)
+    );
+    actionForm.value.ids = []
+    closeSwapCostsModal();
+    notify("Registros Movidos con éxito");
+}
 </script>
