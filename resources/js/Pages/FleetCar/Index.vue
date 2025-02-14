@@ -253,13 +253,31 @@
                                         </button>
 
                                         <a
-                                            v-if="hasPermission('CarManager') && car.checklist"
-                                            :href="route('fleet.cars.show_checklist', { car: car.id })"
+                                            v-if="
+                                                hasPermission('CarManager') &&
+                                                car.checklist
+                                            "
+                                            :href="
+                                                route(
+                                                    'fleet.cars.show_checklist',
+                                                    { car: car.id }
+                                                )
+                                            "
                                             class="text-blue-900"
                                         >
-                                        <svg class="w-6 h-6 text-green-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M8.04832 2.48826C8.33094 2.79108 8.31458 3.26567 8.01176 3.54829L3.72605 7.54829C3.57393 7.69027 3.36967 7.76267 3.1621 7.74818C2.95453 7.7337 2.7623 7.63363 2.63138 7.4719L1.41709 5.9719C1.15647 5.64996 1.20618 5.17769 1.52813 4.91707C1.85007 4.65645 2.32234 4.70616 2.58296 5.0281L3.29089 5.90261L6.98829 2.45171C7.2911 2.16909 7.76569 2.18545 8.04832 2.48826ZM11.25 5C11.25 4.58579 11.5858 4.25 12 4.25H22C22.4142 4.25 22.75 4.58579 22.75 5C22.75 5.41422 22.4142 5.75 22 5.75H12C11.5858 5.75 11.25 5.41422 11.25 5ZM8.04832 9.48826C8.33094 9.79108 8.31458 10.2657 8.01176 10.5483L3.72605 14.5483C3.57393 14.6903 3.36967 14.7627 3.1621 14.7482C2.95453 14.7337 2.7623 14.6336 2.63138 14.4719L1.41709 12.9719C1.15647 12.65 1.20618 12.1777 1.52813 11.9171C1.85007 11.6564 2.32234 11.7062 2.58296 12.0281L3.29089 12.9026L6.98829 9.45171C7.2911 9.16909 7.76569 9.18545 8.04832 9.48826ZM11.25 12C11.25 11.5858 11.5858 11.25 12 11.25H22C22.4142 11.25 22.75 11.5858 22.75 12C22.75 12.4142 22.4142 12.75 22 12.75H12C11.5858 12.75 11.25 12.4142 11.25 12ZM8.04832 16.4883C8.33094 16.7911 8.31458 17.2657 8.01176 17.5483L3.72605 21.5483C3.57393 21.6903 3.36967 21.7627 3.1621 21.7482C2.95453 21.7337 2.7623 21.6336 2.63138 21.4719L1.41709 19.9719C1.15647 19.65 1.20618 19.1777 1.52813 18.9171C1.85007 18.6564 2.32234 18.7062 2.58296 19.0281L3.29089 19.9026L6.98829 16.4517C7.2911 16.1691 7.76569 16.1855 8.04832 16.4883ZM11.25 19C11.25 18.5858 11.5858 18.25 12 18.25H22C22.4142 18.25 22.75 18.5858 22.75 19C22.75 19.4142 22.4142 19.75 22 19.75H12C11.5858 19.75 11.25 19.4142 11.25 19Z" fill="#1C274C"/>
-                                        </svg>
+                                            <svg
+                                                class="w-6 h-6 text-green-600"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                                <path
+                                                    fill-rule="evenodd"
+                                                    clip-rule="evenodd"
+                                                    d="M8.04832 2.48826C8.33094 2.79108 8.31458 3.26567 8.01176 3.54829L3.72605 7.54829C3.57393 7.69027 3.36967 7.76267 3.1621 7.74818C2.95453 7.7337 2.7623 7.63363 2.63138 7.4719L1.41709 5.9719C1.15647 5.64996 1.20618 5.17769 1.52813 4.91707C1.85007 4.65645 2.32234 4.70616 2.58296 5.0281L3.29089 5.90261L6.98829 2.45171C7.2911 2.16909 7.76569 2.18545 8.04832 2.48826ZM11.25 5C11.25 4.58579 11.5858 4.25 12 4.25H22C22.4142 4.25 22.75 4.58579 22.75 5C22.75 5.41422 22.4142 5.75 22 5.75H12C11.5858 5.75 11.25 5.41422 11.25 5ZM8.04832 9.48826C8.33094 9.79108 8.31458 10.2657 8.01176 10.5483L3.72605 14.5483C3.57393 14.6903 3.36967 14.7627 3.1621 14.7482C2.95453 14.7337 2.7623 14.6336 2.63138 14.4719L1.41709 12.9719C1.15647 12.65 1.20618 12.1777 1.52813 11.9171C1.85007 11.6564 2.32234 11.7062 2.58296 12.0281L3.29089 12.9026L6.98829 9.45171C7.2911 9.16909 7.76569 9.18545 8.04832 9.48826ZM11.25 12C11.25 11.5858 11.5858 11.25 12 11.25H22C22.4142 11.25 22.75 11.5858 22.75 12C22.75 12.4142 22.4142 12.75 22 12.75H12C11.5858 12.75 11.25 12.4142 11.25 12ZM8.04832 16.4883C8.33094 16.7911 8.31458 17.2657 8.01176 17.5483L3.72605 21.5483C3.57393 21.6903 3.36967 21.7627 3.1621 21.7482C2.95453 21.7337 2.7623 21.6336 2.63138 21.4719L1.41709 19.9719C1.15647 19.65 1.20618 19.1777 1.52813 18.9171C1.85007 18.6564 2.32234 18.7062 2.58296 19.0281L3.29089 19.9026L6.98829 16.4517C7.2911 16.1691 7.76569 16.1855 8.04832 16.4883ZM11.25 19C11.25 18.5858 11.5858 18.25 12 18.25H22C22.4142 18.25 22.75 18.5858 22.75 19C22.75 19.4142 22.4142 19.75 22 19.75H12C11.5858 19.75 11.25 19.4142 11.25 19Z"
+                                                    fill="#1C274C"
+                                                />
+                                            </svg>
                                         </a>
 
                                         <button
@@ -284,7 +302,7 @@
                                             </svg>
                                         </button>
                                         <button
-                                            v-if="car.car_changelogs.length  > 0"
+                                            v-if="car.car_changelogs.length > 0"
                                             type="button"
                                             @click="toogleChangelog(car)"
                                             class="text-blue-900 whitespace-no-wrap"
@@ -325,118 +343,159 @@
                             </tr>
                             <template v-if="carId == car.id">
                                 <tr
-                                    class="border-b text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
+                                    class="border-b text-left text-xs font-semibold tracking-wide text-gray-500"
                                 >
-                                    <th
-                                        class="border-b-2 border-gray-200 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400"
-                                        colspan="2"
-                                    ></th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
-                                    >
-                                        Fecha
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
-                                    >
-                                        Kilometraje
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
-                                    >
-                                        Tipo
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
-                                    >
-                                        Factura
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
-                                    >
-                                        Items
-                                    </th>
-                                    <th
-                                        class="bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400"
-                                    ></th>
-                                </tr>
-                                <tr
-                                    v-for="changelog in car.car_changelogs"
-                                    :key="changelog.id"
-                                    class="bg-gray-100"
-                                >
-                                    <th
-                                        class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400"
-                                        colspan="2"
-                                    ></th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
-                                    >
-                                        {{ formattedDate(changelog.date) }}
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold tracking-wider text-gray-600 text-center"
-                                    >
-                                        {{ changelog.mileage }}
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold tracking-wider text-gray-600 text-center"
-                                    >
-                                        {{ changelog.type }}
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-xs font-semibold tracking-wider text-gray-600"
-                                    >
-                                        <div
-                                            class="flex justify-center items-center"
-                                        >
-                                            <a
-                                                target="_blank"
-                                                :href="
-                                                    route(
-                                                        'fleet.cars.show_invoice',
-                                                        {
-                                                            car_changelog:
-                                                                changelog.id,
-                                                        }
-                                                    )
-                                                "
-                                            >
-                                                <DocumentIcon
-                                                    class="w-5 h-5 text-blue-600"
-                                                ></DocumentIcon>
-                                            </a>
-                                        </div>
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
-                                    >
-                                        <div
-                                            class="flex justify-center items-center"
-                                        >
-                                            <button type="button" @click="openItemsModal(changelog.car_changelog_items)">
-                                                <EyeIcon
-                                                    class="w-5 h-5 text-green-600"
-                                                ></EyeIcon>
-                                            </button>
-                                        </div>
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
-                                    ><div class="flex justify-center items-center gap-2">
-                                        <button type="button" @click="openEditChangelog(changelog)">
-                                                <PencilSquareIcon
-                                                    class="w-5 h-5 text-yellow-400"
-                                                ></PencilSquareIcon>
-                                            </button>
-                                        <button type="button" @click="openModalDeleteChangelog(changelog.id)">
-                                                <TrashIcon
-                                                    class="w-5 h-5 text-red-600"
-                                                ></TrashIcon>
-                                            </button>
-
-                                    </div>
-                                    </th>
+                                    <td colspan="11" class="py-1 px-2">
+                                        <table class="w-full">
+                                            <thead>
+                                                <tr
+                                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
+                                                >
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600"
+                                                    >
+                                                        Fecha
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600"
+                                                    >
+                                                        Kilometraje
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600"
+                                                    >
+                                                        Tipo
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600"
+                                                    >
+                                                        Observación
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600"
+                                                    >
+                                                        Factura
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600"
+                                                    >
+                                                        Items
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600"
+                                                    ></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr
+                                                    v-for="changelog in car.car_changelogs"
+                                                    :key="changelog.id"
+                                                    class="bg-gray-100"
+                                                >
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                                    >
+                                                        {{
+                                                            formattedDate(
+                                                                changelog.date
+                                                            )
+                                                        }}
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold tracking-wider text-gray-600 text-center"
+                                                    >
+                                                        {{ changelog.mileage }}
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold tracking-wider text-gray-600 text-center"
+                                                    >
+                                                        {{ changelog.type }}
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold tracking-wider text-gray-600 text-center"
+                                                    >
+                                                        {{ changelog.observation }}
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-xs font-semibold tracking-wider text-gray-600"
+                                                    >
+                                                        <div
+                                                            class="flex justify-center items-center"
+                                                        >
+                                                            <a
+                                                                target="_blank"
+                                                                :href="
+                                                                    route(
+                                                                        'fleet.cars.show_invoice',
+                                                                        {
+                                                                            car_changelog:
+                                                                                changelog.id,
+                                                                        }
+                                                                    )
+                                                                "
+                                                            >
+                                                                <DocumentIcon
+                                                                    class="w-5 h-5 text-blue-600"
+                                                                ></DocumentIcon>
+                                                            </a>
+                                                        </div>
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
+                                                    >
+                                                        <div
+                                                            class="flex justify-center items-center"
+                                                        >
+                                                            <button
+                                                                type="button"
+                                                                @click="
+                                                                    openItemsModal(
+                                                                        changelog.car_changelog_items
+                                                                    )
+                                                                "
+                                                            >
+                                                                <EyeIcon
+                                                                    class="w-5 h-5 text-green-600"
+                                                                ></EyeIcon>
+                                                            </button>
+                                                        </div>
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
+                                                    >
+                                                        <div
+                                                            class="flex justify-center items-center gap-2"
+                                                        >
+                                                            <button
+                                                                type="button"
+                                                                @click="
+                                                                    openEditChangelog(
+                                                                        changelog
+                                                                    )
+                                                                "
+                                                            >
+                                                                <PencilSquareIcon
+                                                                    class="w-5 h-5 text-yellow-400"
+                                                                ></PencilSquareIcon>
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                @click="
+                                                                    openModalDeleteChangelog(
+                                                                        changelog.id
+                                                                    )
+                                                                "
+                                                            >
+                                                                <TrashIcon
+                                                                    class="w-5 h-5 text-red-600"
+                                                                ></TrashIcon>
+                                                            </button>
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
                                 </tr>
                             </template>
                         </template>
@@ -456,27 +515,56 @@
                     {{ form.id ? "Editar UM" : "Nueva UM" }}
                 </h2>
                 <form @submit.prevent="submit">
-                    <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
-                        <div v-if="!form.id && hasPermission('UserManager')" class="mt-2">
-                            <InputLabel for="user_id">Proveedores de UM
+                    <div
+                        class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2"
+                    >
+                        <div
+                            v-if="!form.id && hasPermission('UserManager')"
+                            class="mt-2"
+                        >
+                            <InputLabel for="user_id"
+                                >Proveedores de UM
                             </InputLabel>
                             <div class="mt-2">
-                                <select id="user_id" v-model="form.user_id" autocomplete="off"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option value="">Seleccionar Usuario</option>
-                                    <option v-for="item in users" :value="item.id">{{ item.name }} - {{ item.dni }}</option>
+                                <select
+                                    id="user_id"
+                                    v-model="form.user_id"
+                                    autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                >
+                                    <option value="">
+                                        Seleccionar Usuario
+                                    </option>
+                                    <option
+                                        v-for="item in users"
+                                        :value="item.id"
+                                    >
+                                        {{ item.name }} - {{ item.dni }}
+                                    </option>
                                 </select>
                                 <InputError :message="form.errors.user_id" />
                             </div>
                         </div>
                         <div class="mt-2">
-                            <InputLabel for="cost_line_id">Linea de Negocio
+                            <InputLabel for="cost_line_id"
+                                >Linea de Negocio
                             </InputLabel>
                             <div class="mt-2">
-                                <select id="cost_line_id" v-model="form.cost_line_id" autocomplete="off"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option value="">Seleccionar Linea de Costo</option>
-                                    <option v-for="item in costLine" :value="item.id">{{ item.name }}</option>
+                                <select
+                                    id="cost_line_id"
+                                    v-model="form.cost_line_id"
+                                    autocomplete="off"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                >
+                                    <option value="">
+                                        Seleccionar Linea de Costo
+                                    </option>
+                                    <option
+                                        v-for="item in costLine"
+                                        :value="item.id"
+                                    >
+                                        {{ item.name }}
+                                    </option>
                                 </select>
                                 <InputError
                                     :message="form.errors.cost_line_id"
@@ -543,15 +631,24 @@
                             <InputLabel for="photo">Foto </InputLabel>
                             <div class="mt-2">
                                 <!-- <TextInput type="text" id="photo" v-model="form.photo" /> -->
-                                <InputFile id="photo" accept=".jpeg, .jpg, .png" v-model="form.photo"/>
+                                <InputFile
+                                    id="photo"
+                                    accept=".jpeg, .jpg, .png"
+                                    v-model="form.photo"
+                                />
                                 <InputError :message="form.errors.photo" />
                             </div>
                         </div>
                     </div>
                     <div class="mt-6 flex items-center justify-end gap-x-3">
-                        <SecondaryButton @click="openModalCar"> Cancel </SecondaryButton>
-                        <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
-                            {{ form.id ? "Actualizar":"Crear" }}
+                        <SecondaryButton @click="openModalCar">
+                            Cancel
+                        </SecondaryButton>
+                        <PrimaryButton
+                            type="submit"
+                            :class="{ 'opacity-25': form.processing }"
+                        >
+                            {{ form.id ? "Actualizar" : "Crear" }}
                         </PrimaryButton>
                     </div>
                 </form>
@@ -582,7 +679,10 @@
                                     "
                                 />
                             </div>
-                            <div v-if="archivesDocument.ownership_card" class="flex items-center">
+                            <div
+                                v-if="archivesDocument.ownership_card"
+                                class="flex items-center"
+                            >
                                 <span>Archivo: </span>
                                 <a
                                     target="_blank"
@@ -615,7 +715,10 @@
                                 />
                             </div>
 
-                            <div v-if="archivesDocument.technical_review" class="flex items-center">
+                            <div
+                                v-if="archivesDocument.technical_review"
+                                class="flex items-center"
+                            >
                                 <span>Archivo: </span>
                                 <a
                                     target="_blank"
@@ -643,7 +746,10 @@
                                 />
                             </div>
 
-                            <div v-if="archivesDocument.soat" class="flex items-center">
+                            <div
+                                v-if="archivesDocument.soat"
+                                class="flex items-center"
+                            >
                                 <span>Archivo: </span>
                                 <a
                                     target="_blank"
@@ -671,7 +777,10 @@
                                 />
                             </div>
 
-                            <div v-if="archivesDocument.insurance" class="flex items-center">
+                            <div
+                                v-if="archivesDocument.insurance"
+                                class="flex items-center"
+                            >
                                 <span>Archivo: </span>
                                 <a
                                     target="_blank"
@@ -688,9 +797,14 @@
                         </div>
                     </div>
                     <div class="mt-6 flex items-center justify-end gap-x-3">
-                        <SecondaryButton @click="openModalDocument"> Cancel </SecondaryButton>
-                        <PrimaryButton type="submit" :class="{ 'opacity-25': formDocument.processing }">
-                            {{ formDocument.id ? "Actualizar":"Crear" }}
+                        <SecondaryButton @click="openModalDocument">
+                            Cancel
+                        </SecondaryButton>
+                        <PrimaryButton
+                            type="submit"
+                            :class="{ 'opacity-25': formDocument.processing }"
+                        >
+                            {{ formDocument.id ? "Actualizar" : "Crear" }}
                         </PrimaryButton>
                     </div>
                 </form>
@@ -753,6 +867,7 @@
                             </div>
                         </div>
 
+
                         <div class="mt-2">
                             <InputLabel for="invoice">Factura </InputLabel>
                             <div class="mt-2">
@@ -784,6 +899,21 @@
                                 </a>
                             </div>
                         </div>
+
+                        <div class="mt-2 md:col-span-2 col-span-1">
+                            <InputLabel for="observation">Observación </InputLabel>
+                            <div class="mt-2">
+                                <textarea
+                                    id="observation"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    v-model="formChangelog.observation"
+                                />
+                                <InputError
+                                    :message="formChangelog.errors.observation"
+                                />
+                            </div>
+                        </div>
+
                         <div class="col-span-1 md:col-span-2">
                             <InputLabel class="mb-1" for="new_item"
                                 >Agregar Item</InputLabel
@@ -836,7 +966,8 @@
                                         >
                                             Nombre
                                         </th>
-                                        <th></th>
+                                        <th                                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
+                                        ></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -895,33 +1026,57 @@
         </Modal>
 
         <Modal :show="itemModal">
-          <div class="p-6">
-            <h2 class="text-base font-medium leading-7 text-gray-900">Items del Registro de Cambios</h2>
-              <div class="overflow-x-auto mt-3 col-span-2">
-                <table class="w-full whitespace-no-wrap">
-                  <thead>
-                    <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                        N°
-                      </th>
-                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                        Nombre
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(item, index) in showitems" :key="index" class="text-gray-700">
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ index + 1 }}</td>
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.name }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900">
+                    Items del Registro de Cambios
+                </h2>
+                <div class="overflow-x-auto mt-3 col-span-2">
+                    <table class="w-full whitespace-no-wrap">
+                        <thead>
+                            <tr
+                                class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
+                            >
+                                <th
+                                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                >
+                                    N°
+                                </th>
+                                <th
+                                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                >
+                                    Nombre
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                v-for="(item, index) in showitems"
+                                :key="index"
+                                class="text-gray-700"
+                            >
+                                <td
+                                    class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                >
+                                    {{ index + 1 }}
+                                </td>
+                                <td
+                                    class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                >
+                                    {{ item.name }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-              <div class="col-span-2 mt-6 flex items-center justify-end gap-x-6">
-                <SecondaryButton @click="closeItemModal">Cerrar</SecondaryButton>
-              </div>
-          </div>
+                <div
+                    class="col-span-2 mt-6 flex items-center justify-end gap-x-6"
+                >
+                    <SecondaryButton @click="closeItemModal"
+                        >Cerrar</SecondaryButton
+                    >
+                </div>
+            </div>
         </Modal>
 
         <ConfirmDeleteModal
@@ -968,7 +1123,12 @@ import { notify, notifyError } from "@/Components/Notification";
 import TableHeaderCicsaFilter from "@/Components/TableHeaderCicsaFilter.vue";
 import { Toaster } from "vue-sonner";
 import InputFile from "@/Components/InputFile.vue";
-import { EyeIcon, TrashIcon, DocumentIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
+import {
+    EyeIcon,
+    TrashIcon,
+    DocumentIcon,
+    PencilSquareIcon,
+} from "@heroicons/vue/24/outline";
 
 // const confirmingUserDeletion = ref(false);
 // const deleteButtonText = 'Eliminar';
@@ -984,8 +1144,8 @@ const props = defineProps({
     car: Object,
     userPermissions: Array,
     costLine: Object,
-    users: Object
-})
+    users: Object,
+});
 
 const cars = ref(props.car);
 const showModalCar = ref(false);
@@ -999,23 +1159,23 @@ const itemModal = ref(false);
 const showitems = ref([]);
 const changelogToDelete = ref(null);
 const showModalDeleteChangelog = ref(false);
-const archivesDocument = ref({})
+const archivesDocument = ref({});
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
 };
 
 const initialForm = {
-    id: '',
-    brand: '',
-    model: '',
-    plate: '',
-    year: '',
-    type: '',
-    photo: '',
-    user_id: '',
-    cost_line_id: '',
-}
+    id: "",
+    brand: "",
+    model: "",
+    plate: "",
+    year: "",
+    type: "",
+    photo: "",
+    user_id: "",
+    cost_line_id: "",
+};
 
 const initialFormDocument = {
     id: "",
@@ -1068,9 +1228,9 @@ function openModalCreate() {
 }
 
 function openModalEdit(item) {
-    openModalCar()
-    form.defaults({ ...item })
-    form.reset()
+    openModalCar();
+    form.defaults({ ...item });
+    form.reset();
 }
 
 function openModalDocument() {
@@ -1081,11 +1241,14 @@ function openModalDocument() {
 }
 
 function openModalCreateDocument(item) {
-    archivesDocument.value = {}
-    openModalDocument()
-    archivesDocument.value = ({ ...item.car_document ?? initialFormDocument})
-    formDocument.defaults({ ...item.car_document ?? initialFormDocument, car_id: item.id })
-    formDocument.reset()
+    archivesDocument.value = {};
+    openModalDocument();
+    archivesDocument.value = { ...(item.car_document ?? initialFormDocument) };
+    formDocument.defaults({
+        ...(item.car_document ?? initialFormDocument),
+        car_id: item.id,
+    });
+    formDocument.reset();
 }
 
 function openModalChangelog() {
@@ -1111,8 +1274,8 @@ function openEditChangelog(item) {
 }
 
 function openModalDeleteCars(id) {
-    car_id.value = id
-    showModalDeleteCars.value = !showModalDeleteCars.value
+    car_id.value = id;
+    showModalDeleteCars.value = !showModalDeleteCars.value;
 }
 
 function addItem() {
@@ -1123,12 +1286,12 @@ function addItem() {
     newItem.value = "";
 }
 
-function openItemsModal (items){
+function openItemsModal(items) {
     showitems.value = items;
     itemModal.value = true;
 }
 
-function closeItemModal(){
+function closeItemModal() {
     showitems.value = [];
     itemModal.value = false;
 }
@@ -1141,10 +1304,12 @@ function openModalDeleteChangelog(id) {
 async function deleteChangelog() {
     const docId = changelogToDelete.value;
     if (docId) {
-        const response = await axios.delete(route("fleet.cars.destroy_changelog", { car_changelog: docId }));
-        if (response.data){
+        const response = await axios.delete(
+            route("fleet.cars.destroy_changelog", { car_changelog: docId })
+        );
+        if (response.data) {
             updateCar(response.data, "deleteChangelog");
-        }else{
+        } else {
             notifyError("Error al eliminar el registro de cambios");
         }
     }
@@ -1176,15 +1341,16 @@ watch(
 );
 
 async function submit() {
-
-    let url = form.id ? route('fleet.cars.update', { car: form.id }) : route('fleet.cars.store')
-    let data = toFormData(form)
+    let url = form.id
+        ? route("fleet.cars.update", { car: form.id })
+        : route("fleet.cars.store");
+    let data = toFormData(form);
     try {
-        let response = await axios.post(url,data);
-        let action = form.id ? 'edit' : 'create';
-        updateCar(response.data, action)
+        let response = await axios.post(url, data);
+        let action = form.id ? "edit" : "create";
+        updateCar(response.data, action);
     } catch (error) {
-        console.log(error)
+        console.log(error);
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, form);
@@ -1198,11 +1364,13 @@ async function submit() {
 }
 
 async function submitDocument() {
-    let url = formDocument.id ? route('fleet.cars.update.document', { car_document: formDocument.id }) : route('fleet.cars.store_document')
-    let formData = toFormData(formDocument)
+    let url = formDocument.id
+        ? route("fleet.cars.update.document", { car_document: formDocument.id })
+        : route("fleet.cars.store_document");
+    let formData = toFormData(formDocument);
     try {
-        let response = await axios.post(url,formData);
-        updateCar(response.data, 'udpateDocument')
+        let response = await axios.post(url, formData);
+        updateCar(response.data, "udpateDocument");
     } catch (error) {
         console.log(error);
         if (error.response) {
@@ -1303,12 +1471,11 @@ function updateCar(data, action) {
     }
 }
 
-
 async function search() {
-    let url = route('fleet.cars.search')
+    let url = route("fleet.cars.search");
     try {
-        let response = await axios.post(url, formSearch.value)
-        cars.value = response.data
+        let response = await axios.post(url, formSearch.value);
+        cars.value = response.data;
     } catch (error) {
         console.log(error);
         if (error.response.data) {

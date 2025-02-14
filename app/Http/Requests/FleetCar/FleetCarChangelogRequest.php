@@ -26,6 +26,7 @@ class FleetCarChangelogRequest extends FormRequest
             'mileage' => 'required|numeric',
             'type' => 'required|string',
             'invoice' => 'required',
+            'observation' => 'nullable',
             'items' => 'required|array',
         ];
     }

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->double('mileage');
             $table->string('type');
             $table->string('invoice');
+            $table->string('observation')->nullable();
             $table->foreignId('car_id')->constrained('cars')->onDelete('cascade');
             $table->timestamps();
         });
