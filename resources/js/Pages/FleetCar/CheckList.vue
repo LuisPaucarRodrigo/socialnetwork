@@ -164,17 +164,18 @@
             max-width="2xl"
             :closeable="true"
         >
-            <div class="p-6">
+            <div class="py-6 px-3">
                 <h2
-                    class="text-lg font-medium text-gray-800 border-b-2 border-gray-100"
+                    class="px-2 text-lg font-medium text-gray-800 border-b-2 border-gray-100"
                 >
                     Checklist Vehicular
                 </h2>
                 <div class="mt-2">
-                    <div class="flex space-x-5 w-full">
-                        <div class="w-1/2 rounded-lg shadow flex flex-col h-full space-y-5">
-                            <table class="w-full bg-white border-collapse">
-                                <thead class="sticky top-0 z-20">
+                    <div class="flex space-x-2 w-full">
+                        <div class="w-1/2 flex flex-col h-full space-y-5">
+                            <div>
+                                <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
+                                <thead>
                                     <tr
                                         class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 w-auto"
                                     >
@@ -192,17 +193,17 @@
                                             Boolean
                                         )"
                                         :key="index"
-                                        class="text-gray-700"
+                                        class="text-gray-700 text-xs"
                                     >
                                         <td
-                                            class="border-b border-gray-200 bg-white px-5 py-2 text-sm"
+                                            class="border-b border-gray-200 bg-white px-5 py-2"
                                         >
                                             <p class="text-gray-900">
                                                 {{ Object.values(item)[0] }}
                                             </p>
                                         </td>
                                         <td
-                                            class="border-b border-gray-200 font-black bg-white text-center px-5 py-2 text-sm"
+                                            class="border-b border-gray-200 font-black bg-white text-center px-5 py-2"
                                         >
                                             <p
                                                 :class="
@@ -223,11 +224,13 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            </div>
+
                         </div>
 
-                        <div class="w-1/2 rounded-lg shadow flex flex-col h-full space-y-5">
-                            <table class="w-full bg-white">
-                                <thead class="sticky top-0 z-20">
+                        <div class="w-1/2">
+                            <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
+                                <thead>
                                     <tr
                                         class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 w-auto"
                                     >
@@ -245,17 +248,17 @@
                                             Boolean
                                         )"
                                         :key="index"
-                                        class="text-gray-700"
+                                        class="text-gray-700 text-xs"
                                     >
                                         <td
-                                            class="border-b border-gray-200 bg-white px-5 py-2 text-sm"
+                                            class="border-b border-gray-200 bg-white px-5 py-2"
                                         >
                                             <p class="text-gray-900">
                                                 {{ Object.values(item)[0] }}
                                             </p>
                                         </td>
                                         <td
-                                            class="border-b border-gray-200 font-black bg-white text-center px-5 py-2 text-sm"
+                                            class="border-b border-gray-200 font-black bg-white text-center px-5 py-2"
                                         >
                                             <p
                                                 :class="
@@ -307,7 +310,7 @@ const props = defineProps({
     car: Object,
     checklist: Object,
 });
-console.log(props.checklist);
+
 const images = ref([]);
 const isModalOpen = ref(false);
 const show_checklist = ref(null);
