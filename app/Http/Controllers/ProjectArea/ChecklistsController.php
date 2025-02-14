@@ -35,7 +35,7 @@ class ChecklistsController extends Controller
 
     public function car_index()
     {
-        $checklistcar = ChecklistCar::with('user')->paginate(20);
+        $checklistcar = ChecklistCar::with('user')->orderBy('created_at','desc')->paginate(20);
         return Inertia::render(
             'ProjectArea/Checklist/ChecklistCar',
             ['checklists' => $checklistcar]
@@ -53,7 +53,7 @@ class ChecklistsController extends Controller
 
     public function dailytoolkit_index()
     {
-        $checklistdailytoolkit = ChecklistDailytoolkit::with('user')->paginate(20);
+        $checklistdailytoolkit = ChecklistDailytoolkit::with('user')->orderBy('created_at','desc')->paginate(20);
         return Inertia::render(
             'ProjectArea/Checklist/ChecklistDailytoolkit',
             ['checklists' => $checklistdailytoolkit]
@@ -61,7 +61,7 @@ class ChecklistsController extends Controller
     }
     public function epp_index()
     {
-        $checklistepp = ChecklistEpp::with('user')->paginate(20);
+        $checklistepp = ChecklistEpp::with('user')->orderBy('created_at','desc')->paginate(20);
         return Inertia::render(
             'ProjectArea/Checklist/ChecklistEpp',
             ['checklists' => $checklistepp]
@@ -70,7 +70,7 @@ class ChecklistsController extends Controller
 
     public function toolkit_index()
     {
-        $checklisttoolkit = ChecklistToolkit::with('user')->paginate(20);
+        $checklisttoolkit = ChecklistToolkit::with('user')->orderBy('created_at','desc')->paginate(20);
         return Inertia::render(
             'ProjectArea/Checklist/ChecklistToolkit',
             ['checklists' => $checklisttoolkit]

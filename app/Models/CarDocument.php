@@ -14,8 +14,11 @@ class CarDocument extends Model
     protected $fillable = [
         'ownership_card',
         'technical_review',
+        'technical_review_date',
         'soat',
+        'soat_date',
         'insurance',
+        'insurance_date',
         'car_id',
     ];
 

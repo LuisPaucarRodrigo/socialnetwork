@@ -15,8 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('ownership_card')->nullable();
             $table->string('technical_review')->nullable();
+            $table->date('technical_review_date')->nullable();
             $table->string('soat')->nullable();
+            $table->date('soat_date')->nullable();
             $table->string('insurance')->nullable();
+            $table->date('insurance_date')->nullable();
             $table->foreignId('car_id')->constrained('cars')->onDelete('cascade');
             $table->timestamps();
         });

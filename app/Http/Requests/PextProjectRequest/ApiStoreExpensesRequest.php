@@ -27,7 +27,7 @@ class ApiStoreExpensesRequest extends FormRequest
     {
         return [
             'expense_type' => 'required|string',
-            'ruc' => ['required','numeric','digits:11',
+            'ruc' => ['required','string','size:11',
                 function ($attribute, $value, $fail) {
                     $expenseId = $this->route('expense_id');
                     if ($this->doc_number) {
@@ -44,7 +44,7 @@ class ApiStoreExpensesRequest extends FormRequest
                     }
                 }
             ],
-            'type_doc' => 'required|string|in:Efectivo,Deposito,Factura,Boleta,Voucher de Pago',
+            'type_doc' => 'required|string',
             'doc_number' => 'nullable|string',
             'doc_date' => 'sometimes|required|string',
             'amount' => 'required|string',
