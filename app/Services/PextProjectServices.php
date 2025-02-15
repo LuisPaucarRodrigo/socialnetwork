@@ -81,7 +81,7 @@ class PextProjectServices
         return $validateData;
     }
 
-    public function baseSearch($fixedOrAdditional): Builder
+    public function baseSearch($fixedOrAdditional)
     {
         $expense = PextProjectExpense::with(['provider:id,company_name', 'project.cost_center'])
             ->where('fixedOrAdditional', $fixedOrAdditional);
@@ -94,8 +94,8 @@ class PextProjectServices
         return $expense;
     }
 
-    public function rejectedSearch($expense, $rejected): Builder
-    {
+    public function rejectedSearch($expense, $rejected)
+    {   
         $expense = !$rejected ? $expense->where('is_accepted', 0)
             : $expense->where(function ($query) {
                 $query->where('is_accepted', 1)
@@ -104,7 +104,7 @@ class PextProjectServices
         return $expense;
     }
 
-    public function textSearch($expense, $searchTerms): Builder
+    public function textSearch($expense, $searchTerms)
     {
         $expense = $expense->where(function ($query) use ($searchTerms) {
             $query->where('ruc', 'like', "%$searchTerms%")
@@ -115,7 +115,7 @@ class PextProjectServices
         return $expense;
     }
 
-    public function filterAdvance($expense, $request): Object
+    public function filterAdvance($expense, $request)
     {
         if ($request->docNoDate) {
             $expense->where('doc_date', null);
@@ -142,17 +142,17 @@ class PextProjectServices
         }
 
         if ($request->selectedZones && count($request->selectedZones) < 6) {
-            $expense = $expense->whereIn('zone', $request->selectedZones);
+            $expense->whereIn('zone', $request->selectedZones);
         }
 
         if (count($request->selectedExpenseTypes) < 14) {
-            $expense = $expense->whereIn('expense_type', $request->selectedExpenseTypes);
+            $expense->whereIn('expense_type', $request->selectedExpenseTypes);
         }
 
         if (count($request->selectedDocTypes) < 6) {
-            $expense = $expense->whereIn('type_doc', $request->selectedDocTypes);
+            $expense->whereIn('type_doc', $request->selectedDocTypes);
         }
-        $expense = $expense->orderBy('doc_date')->get();
+        $expense->orderBy('doc_date');
         return $expense;
     }
 
@@ -168,7 +168,7 @@ class PextProjectServices
     public function filterCalculatedFields($expense, $selectedStateTypes)
     {
         if (count($selectedStateTypes)) {
-            $expense = $expense->filter(function ($item) use ($selectedStateTypes) {
+            $expense->filter(function ($item) use ($selectedStateTypes) {
                 return in_array($item->real_state, $selectedStateTypes);
             })->values()->all();
         }
