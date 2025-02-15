@@ -2,105 +2,279 @@
     <Head title="Gestion de Empleados" />
     <AuthenticatedLayout :redirectRoute="'fleet.cars.index'">
         <template #header> CheckList </template>
-        <PrimaryButton @click="openImages">Imágenes</PrimaryButton>
-        <div class="min-w-full rounded-lg shadow">
-            <div class="grid grid-cols-2 gap-4 p-4">
-                <div class="overflow-x-auto min-h-[72vh] rounded-lg shadow">
-                    <table class="w-full bg-white">
-                        <thead class="sticky top-0 z-20">
-                            <tr
-                                class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 w-auto"
+        <div class="min-w-full p-3 rounded-lg shadow">
+            <div class="min-w-full overflow-x-auto">
+                <table class="w-full table-auto">
+                    <thead>
+                        <tr
+                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
+                        >
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
                             >
-                                <th
-                                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
-                                >
-                                    Item
-                                </th>
-                                <th
-                                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600"
-                                >
-                                    Status
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-for="(item, index) in first.filter(Boolean)"
-                                :key="index"
-                                class="text-gray-700"
+                                Fecha de Registro
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
                             >
+                                Zona
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
+                            >
+                                Personal 1
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
+                            >
+                                Personal 2
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
+                            >
+                                Motivo
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
+                            >
+                                Checklist
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
+                            >
+                                Imágenes
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
+                            >
+                                Observaciones
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template v-for="item in checklist.data" :key="item.id">
+                            <tr class="text-gray-700 border-b">
                                 <td
-                                    class="border-b border-gray-200 bg-white px-5 py-2 text-sm"
+                                    class="border-b border-gray-200 bg-white px-5 py-5 text-center text-sm"
                                 >
-                                    <p class="text-gray-900">
-                                        {{ Object.values(item)[0] }}
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                        {{ formattedDate(item.created_at) }}
                                     </p>
                                 </td>
                                 <td
-                                    class="border-b border-gray-200 font-black bg-white text-center px-5 py-2 text-sm"
+                                    class="border-b border-gray-200 bg-white px-5 py-5 text-center text-sm"
                                 >
-                                    <p :class="checklist[Object.keys(item)[0]] ? 'text-green-600' : 'text-gray-900'">
-                                        {{
-                                            checklist[Object.keys(item)[0]] ? 'OK' : 'N/A'
-                                        }}
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                        {{ item.zone }}
                                     </p>
                                 </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                                <td
+                                    class="border-b border-gray-200 bg-white px-5 py-5 text-center text-sm"
+                                >
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                        {{ item.user_name }}
+                                    </p>
+                                </td>
+                                <td
+                                    class="border-b border-gray-200 bg-white px-5 py-5 text-center text-sm"
+                                >
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                        {{ item.additionalEmployees }}
+                                    </p>
+                                </td>
+                                <td
+                                    class="border-b border-gray-200 bg-white px-5 py-5 text-center text-sm"
+                                >
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                        {{ item.reason }}
+                                    </p>
+                                </td>
+                                <td
+                                    class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
+                                >
+                                    <div
+                                        class="flex items-center justify-center"
+                                    >
+                                        <button type="button">
+                                            <EyeIcon
+                                                @click="openChecklist(item)"
+                                                class="text-green-500 w-5"
+                                            />
+                                        </button>
+                                    </div>
+                                </td>
+                                <td
+                                    class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
+                                >
+                                    <div
+                                        class="flex items-center justify-center"
+                                    >
+                                        <button type="button">
+                                            <PhotoIcon
+                                                @click="openImages(item.id)"
+                                                class="text-indigo-600 w-5"
+                                            />
+                                        </button>
+                                    </div>
+                                </td>
 
-                <div class="overflow-x-auto min-h-[72vh] rounded-lg shadow">
-                    <table class="w-full bg-white">
-                        <thead class="sticky top-0 z-20">
-                            <tr
-                                class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 w-auto"
-                            >
-                                <th
-                                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
-                                >
-                                    Item
-                                </th>
-                                <th
-                                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600"
-                                >
-                                    Status
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr
-                                v-for="(item, index) in second.filter(Boolean)"
-                                :key="index"
-                                class="text-gray-700"
-                            >
                                 <td
-                                    class="border-b border-gray-200 bg-white px-5 py-2 text-sm"
+                                    class="border-b border-gray-200 bg-white px-5 py-5 text-center text-sm"
                                 >
-                                    <p class="text-gray-900">
-                                        {{ Object.values(item)[0] }}
-                                    </p>
-                                </td>
-                                <td
-                                    class="border-b border-gray-200 font-black bg-white text-center px-5 py-2 text-sm"
-                                >
-                                    <p :class="checklist[Object.keys(item)[0]] ? 'text-green-600' : 'text-gray-900'">
-                                        {{
-                                            checklist[Object.keys(item)[0]] ? 'OK' : 'N/A'
-                                        }}
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                        {{ item.observation }}
                                     </p>
                                 </td>
                             </tr>
-                        </tbody>
-                    </table>
-                </div>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+            <div
+                class="flex flex-col items-center border-t px-5 py-5 xs:flex-row xs:justify-between"
+            >
+                <pagination :links="checklist.links" />
             </div>
         </div>
+
         <CarouselModal
             :images="images"
             :show="isModalOpen"
             @close="closeModal"
         />
+
+        <Modal
+            :show="checklist_modal"
+            @close="openChecklist(null)"
+            max-width="2xl"
+            :closeable="true"
+        >
+            <div class="py-6 px-3">
+                <h2
+                    class="px-2 text-lg font-medium text-gray-800 border-b-2 border-gray-100"
+                >
+                    Checklist Vehicular
+                </h2>
+                <div class="mt-2">
+                    <div class="flex space-x-2 w-full">
+                        <div class="w-1/2 flex flex-col h-full space-y-5">
+                            <div>
+                                <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
+                                <thead>
+                                    <tr
+                                        class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 w-auto"
+                                    >
+                                        <th
+                                            colspan="2"
+                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
+                                        >
+                                            Documentación
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        v-for="(item, index) in first.filter(
+                                            Boolean
+                                        )"
+                                        :key="index"
+                                        class="text-gray-700 text-xs"
+                                    >
+                                        <td
+                                            class="border-b border-gray-200 bg-white px-5 py-2"
+                                        >
+                                            <p class="text-gray-900">
+                                                {{ Object.values(item)[0] }}
+                                            </p>
+                                        </td>
+                                        <td
+                                            class="border-b border-gray-200 font-black bg-white text-center px-5 py-2"
+                                        >
+                                            <p
+                                                :class="
+                                                    show_checklist[
+                                                        Object.keys(item)[0]
+                                                    ]
+                                                        ? 'text-green-600'
+                                                        : 'text-gray-900'
+                                                "
+                                            >
+                                                {{
+                                                    show_checklist[
+                                                        Object.keys(item)[0]
+                                                    ] ?? "N/A"
+                                                }}
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            </div>
+
+                        </div>
+
+                        <div class="w-1/2">
+                            <table class="w-full whitespace-no-wrap border-collapse border border-slate-300">
+                                <thead>
+                                    <tr
+                                        class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 w-auto"
+                                    >
+                                        <th
+                                            colspan="2"
+                                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
+                                        >
+                                            Equipamiento del Vehículo
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        v-for="(item, index) in second.filter(
+                                            Boolean
+                                        )"
+                                        :key="index"
+                                        class="text-gray-700 text-xs"
+                                    >
+                                        <td
+                                            class="border-b border-gray-200 bg-white px-5 py-2"
+                                        >
+                                            <p class="text-gray-900">
+                                                {{ Object.values(item)[0] }}
+                                            </p>
+                                        </td>
+                                        <td
+                                            class="border-b border-gray-200 font-black bg-white text-center px-5 py-2"
+                                        >
+                                            <p
+                                                :class="
+                                                    show_checklist[
+                                                        Object.keys(item)[0]
+                                                    ]
+                                                        ? 'text-green-600'
+                                                        : 'text-gray-900'
+                                                "
+                                            >
+                                                {{
+                                                    show_checklist[
+                                                        Object.keys(item)[0]
+                                                    ] ?? "N/A"
+                                                }}
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="m-6 flex justify-end">
+                <SecondaryButton type="button" @click="openChecklist(null)">
+                    Cerrar
+                </SecondaryButton>
+            </div>
+        </Modal>
     </AuthenticatedLayout>
 </template>
 
@@ -111,6 +285,11 @@ import axios from "axios";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { ref } from "vue";
 import CarouselModal from "@/Components/CarouselModal.vue";
+import { formattedDate } from "@/utils/utils";
+import { TrashIcon, PhotoIcon, EyeIcon } from "@heroicons/vue/24/outline";
+import Pagination from "@/Components/Pagination.vue";
+import Modal from "@/Components/Modal.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 const props = defineProps({
     car: Object,
@@ -119,6 +298,8 @@ const props = defineProps({
 
 const images = ref([]);
 const isModalOpen = ref(false);
+const show_checklist = ref(null);
+const checklist_modal = ref(false);
 
 const first = [
     { beak: "Pico" },
@@ -164,19 +345,25 @@ const second = [
     { batteryState: "Estado de la batería" },
 ];
 
-async function openImages (){
-    await axios.get(route('fleet.cars.show_checklist.send_images', {checklist: props.checklist.id}))
-        .then(res => {
+async function openImages(id) {
+    await axios
+        .get(route("fleet.cars.show_checklist.send_images", { checklist: id }))
+        .then((res) => {
             images.value = res.data;
             isModalOpen.value = true;
         })
-        .catch(e => {
-            console.error(e)
+        .catch((e) => {
+            console.error(e);
         });
 }
 
 function closeModal() {
     images.value = [];
     isModalOpen.value = false;
+}
+
+function openChecklist(item) {
+    show_checklist.value = item ?? null;
+    checklist_modal.value = !checklist_modal.value;
 }
 </script>

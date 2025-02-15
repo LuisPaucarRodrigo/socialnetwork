@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('brand');
             $table->string('model');
             $table->string('plate');
-            $table->string('year');
+            $table->integer('year');
             $table->string('type');
             $table->string('photo')->nullable();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');

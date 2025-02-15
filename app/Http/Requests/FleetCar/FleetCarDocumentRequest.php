@@ -26,6 +26,9 @@ class FleetCarDocumentRequest extends FormRequest
             'technical_review' => 'nullable|required_without_all:ownership_card,soat,insurance',
             'soat' => 'nullable|required_without_all:ownership_card,technical_review,insurance',
             'insurance' => 'nullable|required_without_all:ownership_card,technical_review,soat',
+            'technical_review_date' => 'nullable|date',
+            'soat_date' => 'nullable|date',
+            'insurance_date' => 'nullable|date',
             'car_id' => 'required'
         ];
     }

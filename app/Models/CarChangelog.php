@@ -16,6 +16,7 @@ class CarChangelog extends Model
         'mileage',
         'type',
         'invoice',
+        'observation',
         'car_id',
     ];
 
