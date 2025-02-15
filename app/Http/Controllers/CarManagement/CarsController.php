@@ -294,9 +294,10 @@ class CarsController extends Controller
         abort(404, 'Factura no encontrada');
     }
 
+    //checklist
     public function showChecklist(Car $car)
     {
-        $checklist = ChecklistCar::where('car_id', $car->id)->first();
+        $checklist = ChecklistCar::where('car_id', $car->id)->paginate();
         return Inertia::render('FleetCar/CheckList', [
             'car' => $car,
             'checklist' => $checklist
