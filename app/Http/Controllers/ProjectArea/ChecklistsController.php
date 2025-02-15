@@ -35,7 +35,7 @@ class ChecklistsController extends Controller
 
     public function car_index()
     {
-        $checklistcar = ChecklistCar::with('user')->orderBy('created_at','desc')->paginate(20);
+        $checklistcar = ChecklistCar::with('user')->orderBy('created_at', 'desc')->paginate(20);
         return Inertia::render(
             'ProjectArea/Checklist/ChecklistCar',
             ['checklists' => $checklistcar]
@@ -53,7 +53,7 @@ class ChecklistsController extends Controller
 
     public function dailytoolkit_index()
     {
-        $checklistdailytoolkit = ChecklistDailytoolkit::with('user')->orderBy('created_at','desc')->paginate(20);
+        $checklistdailytoolkit = ChecklistDailytoolkit::with('user')->orderBy('created_at', 'desc')->paginate(20);
         return Inertia::render(
             'ProjectArea/Checklist/ChecklistDailytoolkit',
             ['checklists' => $checklistdailytoolkit]
@@ -61,7 +61,7 @@ class ChecklistsController extends Controller
     }
     public function epp_index()
     {
-        $checklistepp = ChecklistEpp::with('user')->orderBy('created_at','desc')->paginate(20);
+        $checklistepp = ChecklistEpp::with('user')->orderBy('created_at', 'desc')->paginate(20);
         return Inertia::render(
             'ProjectArea/Checklist/ChecklistEpp',
             ['checklists' => $checklistepp]
@@ -70,7 +70,7 @@ class ChecklistsController extends Controller
 
     public function toolkit_index()
     {
-        $checklisttoolkit = ChecklistToolkit::with('user')->orderBy('created_at','desc')->paginate(20);
+        $checklisttoolkit = ChecklistToolkit::with('user')->orderBy('created_at', 'desc')->paginate(20);
         return Inertia::render(
             'ProjectArea/Checklist/ChecklistToolkit',
             ['checklists' => $checklisttoolkit]
@@ -167,7 +167,7 @@ class ChecklistsController extends Controller
         $checklistCar->rearRightTire && $this->file_delete($checklistCar->rearRightTire, 'image/checklist/checklistcar');
         $checklistCar->frontRightTire && $this->file_delete($checklistCar->frontRightTire, 'image/checklist/checklistcar');
         $checklistCar->frontLeftTire && $this->file_delete($checklistCar->frontLeftTire, 'image/checklist/checklistcar');
-        
+
         $checklistCar->back && $this->file_delete($checklistCar->back, 'image/checklist/checklistcar');
         $checklistCar->dashboard && $this->file_delete($checklistCar->dashboard, 'image/checklist/checklistcar');
         $checklistCar->rearSeat && $this->file_delete($checklistCar->rearSeat, 'image/checklist/checklistcar');
@@ -365,9 +365,9 @@ class ChecklistsController extends Controller
     public function expenseStore(AdditionalCostsApiRequest $request)
     {
         $data = $request->validated();
-		  $isGEP = false;
+        $isGEP = false;
         $isStaticOrAdditional = false;
-        if($data['expense_type'] !== PintConstants::COMBUSTIBLE_GEP) {
+        if ($data['expense_type'] !== PintConstants::COMBUSTIBLE_GEP) {
             $isStaticOrAdditional = true;
         } else {
             $isGEP = true;
@@ -425,13 +425,13 @@ class ChecklistsController extends Controller
             $data['description'] = $newDesc;
             if (isset($data['photo'])) {
                 $data['photo'] = $this->storeBase64Image(
-                    $data['photo'], 'documents/additionalcosts', 
+                    $data['photo'],
+                    'documents/additionalcosts',
                     'Gasto'
                 );
-                
             }
             $data['user_id'] = Auth::user()->id;
-            
+
             AdditionalCost::create($data);
             return response()->json(['msg' => "saved"], 200);
         } catch (Exception $e) {
@@ -444,43 +444,45 @@ class ChecklistsController extends Controller
 
 
 
-  public function expenseIndex()
-{
-    try {
-        $startOfMonth = Carbon::now()->startOfMonth();
-        $endOfMonth = Carbon::now()->endOfMonth();
+    public function expenseIndex()
+    {
+        try {
+            $startOfMonth = Carbon::now()->startOfMonth();
+            $endOfMonth = Carbon::now()->endOfMonth();
 
-        $userId = Auth::user()->id;
+            $userId = Auth::user()->id;
 
-        $expense = AdditionalCost::where('user_id', $userId)
-            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
-            ->select('zone', 'expense_type', 'amount', 'is_accepted', 'description', 'created_at', 'general_expense_id')
-            ->get()
-            ->toArray(); 
-        $expense2 = StaticCost::where('user_id', $userId)
-            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
-            ->select('zone', 'expense_type', 'amount', 'description', 'created_at', 'general_expense_id')
-            ->get()
-            ->toArray(); 
-        $expense3 = PextProjectExpense::where('user_id', $userId)
-            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
-            ->select('zone', 'expense_type', 'amount', 'is_accepted', 'description', 'created_at', 'general_expense_id')
-            ->get()
-            ->toArray();
-        $allExpenses = array_merge($expense, $expense2, $expense3);
+            $expense = AdditionalCost::where('user_id', $userId)
+                ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+                ->select('zone', 'expense_type', 'amount', 'is_accepted', 'description', 'created_at', 'general_expense_id')
+                ->get()
+                ->toArray();
+            $expense2 = StaticCost::where('user_id', $userId)
+                ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+                ->select('zone', 'expense_type', 'amount', 'description', 'created_at', 'general_expense_id')
+                ->get()
+                ->toArray();
+            $expense3 = PextProjectExpense::where('user_id', $userId)
+                ->whereHas('project', function ($query) {
+                    $query->where('cost_line_id', 1);
+                })
+                ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+                ->select('zone', 'expense_type', 'amount', 'is_accepted', 'description', 'created_at', 'general_expense_id')
+                ->get()
+                ->toArray();
+            $allExpenses = array_merge($expense, $expense2, $expense3);
 
-        usort($allExpenses, function($a, $b) {
-            return strtotime($b['created_at']) - strtotime($a['created_at']);
-        });
+            usort($allExpenses, function ($a, $b) {
+                return strtotime($b['created_at']) - strtotime($a['created_at']);
+            });
 
-        return response()->json($allExpenses, 200);
-        
-    } catch (Exception $e) {
-        return response()->json([
-            'error' => $e->getMessage(),
-        ], 500);
+            return response()->json($allExpenses, 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
-}
     public function getPintMobileConstants()
     {
         return response()->json([

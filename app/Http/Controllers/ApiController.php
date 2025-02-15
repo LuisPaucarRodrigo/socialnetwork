@@ -184,7 +184,7 @@ class ApiController extends Controller
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
-        return response()->json([],200);
+        return response()->json([], 200);
     }
 
     //huawei
@@ -553,6 +553,9 @@ class ApiController extends Controller
     {
         $user = Auth::user();
         $expensesPext = PextProjectExpense::where('user_id', $user->id)
+            ->whereHas('project', function ($query) {
+                $query->where('cost_line_id', 2);
+            })
             ->get();
         return response()->json($expensesPext, 200);
     }
@@ -686,10 +689,11 @@ class ApiController extends Controller
         }
     }
 
-    public function index_car($cost_line_id){
-        $car = Car::select('id','plate')
-        ->where('cost_line_id',$cost_line_id)
-        ->get();
-        return response()->json($car,200);
+    public function index_car($cost_line_id)
+    {
+        $car = Car::select('id', 'plate')
+            ->where('cost_line_id', $cost_line_id)
+            ->get();
+        return response()->json($car, 200);
     }
 }

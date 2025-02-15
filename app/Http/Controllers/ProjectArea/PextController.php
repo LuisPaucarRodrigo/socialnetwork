@@ -229,7 +229,7 @@ class PextController extends Controller
                     'cicsa_charge_status',
                 ]);
             });
-            
+
             $project = $project->filter(function ($item) {
                 return $item->cicsa_charge_status !== 'Completado';
             });
@@ -275,7 +275,7 @@ class PextController extends Controller
                 $project = CicsaAssignation::with('project.cost_center', 'project.project_quote.project_quote_valuations')
                     ->whereHas('project.cost_center', function ($query) {
                         $query->where('id', 3)
-                        ->where('is_accepted', 1);
+                            ->where('is_accepted', 1);
                     });
             }
 
@@ -408,7 +408,7 @@ class PextController extends Controller
             ['id' => $cicsa_assignation_id],
             $validateData
         );
-        $cicsaAssignation->load('project.cost_center','project.project_quote.project_quote_valuations');
+        $cicsaAssignation->load('project.cost_center', 'project.project_quote.project_quote_valuations');
         return response()->json($cicsaAssignation, 200);
     }
 
@@ -677,12 +677,13 @@ class PextController extends Controller
         $searchTerms = $request->search;
         $selectedStateTypes = $request->selectedStateTypes;
         $expense = $this->pextServices->baseSearch($fixedOrAdditional);
-        $expense = $this->pextServices->differentialSearch($project_id, $expense);
-        $expense = $this->pextServices->rejectedSearch($request, $rejected);
-        $expense = $this->pextServices->textSearch($request, $searchTerms);
-        $expense = $this->pextServices->filterAdvance($request, $expense);
+        $expense = $this->pextServices->differentialSearch($expense, $project_id);
+        $expense = $this->pextServices->rejectedSearch($expense, $rejected);
+        $expense = $this->pextServices->textSearch($expense, $searchTerms);
+        $expense = $this->pextServices->filterAdvance($expense, $request)->get();
         $expense = $this->pextServices->addCalculatedFields($expense);
-        $expense = $this->pextServices->filterCalculatedFields($request, $selectedStateTypes);
+        $expense = $this->pextServices->filterCalculatedFields($expense, $selectedStateTypes);
+
 
         return response()->json($expense, 200);
     }
@@ -696,9 +697,9 @@ class PextController extends Controller
         $expense = $this->pextServices->baseSearch($fixedOrAdditional);
         $expense = $this->pextServices->rejectedSearch($expense, $rejected);
         $expense = $this->pextServices->textSearch($expense, $searchTerms);
-        $expense = $this->pextServices->filterAdvance($expense, $request);
+        $expense = $this->pextServices->filterAdvance($expense, $request)->get();
         $expense = $this->pextServices->addCalculatedFields($expense);
-        $expense = $this->pextServices->filterCalculatedFields($expense, $selectedStateTypes);
+        $expense = $this->pextServices->filterCalculatedFields($expense, $selectedStateTypes)->get();
         return response()->json($expense, 200);
     }
 
@@ -745,7 +746,6 @@ class PextController extends Controller
             $pex->update([
                 'fixedOrAdditional' => $pex->fixedOrAdditional == 1 ? 0 : 1
             ]);
-            
         }
         return response()->json(true, 200);
     }
