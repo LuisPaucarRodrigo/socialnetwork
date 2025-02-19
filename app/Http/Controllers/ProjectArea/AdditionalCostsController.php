@@ -190,11 +190,11 @@ class AdditionalCostsController extends Controller
     {
         $data = $request->validate([
             'expense_type' => 'required|string',
-            'ruc' => 'required|numeric|digits:11',
+            'ruc' => $request->input('type_doc') === PintConstants::SIN_COMPROBANTE ? 'nullable' : 'required|numeric|digits:11',
             'type_doc' => 'required',
             'operation_number' => 'nullable | min:6',
             'operation_date' => 'nullable|date',
-            'doc_number' => 'nullable|string',
+            'doc_number' => $request->input('type_doc') === PintConstants::SIN_COMPROBANTE ? 'nullable' : 'nullable|string',
             'doc_date' => 'required|date',
             'amount' => 'required|numeric',
             'zone' => 'required',

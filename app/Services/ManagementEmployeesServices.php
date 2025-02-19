@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ManagementEmployeesServices
 {
-    public $pensionList = ['Habitad', 'Integra', 'Prima', 'Profuturo', 'HabitadMX', 'IntegraMX', 'PrimaMX', 'ProfuturoMX', 'ONP'];
+    public $pensionList = ['Habitat', 'Integra', 'Prima', 'Profuturo', 'HabitadMX', 'IntegraMX', 'PrimaMX', 'ProfuturoMX', 'ONP'];
 
     private function queryEmployeesCostLine($state): Builder
     {
