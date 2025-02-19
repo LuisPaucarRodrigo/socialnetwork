@@ -156,7 +156,7 @@ const initialState = {
     month: "",
     state: 0,
     pension_system: [
-        { type: "Habitad", values: null, values_seg: "" },
+        { type: "Habitat", values: null, values_seg: "" },
         { type: "Integra", values: "", values_seg: "" },
         { type: "Prima", values: "", values_seg: "" },
         { type: "Profuturo", values: "", values_seg: "" },

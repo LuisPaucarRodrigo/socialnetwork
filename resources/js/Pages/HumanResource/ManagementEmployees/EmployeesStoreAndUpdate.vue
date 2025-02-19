@@ -542,6 +542,7 @@
                                     <option value="AB-">AB-</option>
                                     <option value="O+">O+</option>
                                     <option value="O-">O-</option>
+                                    <option value="O-">RH+</option>
                                 </select>
                                 <InputError :message="form.errors.blood_group" />
                             </div>

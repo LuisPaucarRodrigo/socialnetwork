@@ -56,7 +56,7 @@
                             <div class="tooltip-arrow" data-popper-arrow></div>
                         </div>
                     </div>
-                    <div>
+                    <!-- <div>
                         <button
                             data-tooltip-target="export_register_tooltip"
                             type="button"
@@ -75,7 +75,7 @@
                             Exportar Excel
                             <div class="tooltip-arrow" data-popper-arrow></div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <div>
                         <dropdown align="left">
@@ -134,6 +134,27 @@
                             </template>
                         </dropdown>
                     </div>
+
+                    <div>
+                        <button
+                            data-tooltip-target="ds_dowload_tooltip"
+                            type="button"
+                            @click="downloadDataStructure"
+                            class="p-2 bg-slate-800 rounded-md text-white-900 hover:bg-slate-700"
+                        >
+                            <CloudArrowDownIcon
+                                class="text-white h-5 w-5 font-bold"
+                            />
+                        </button>
+                        <div
+                            id="ds_dowload_tooltip"
+                            role="tooltip"
+                            class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                        >
+                            Estructura de Datos
+                            <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div>
+                    </div>
                 </div>
 
                 <div
@@ -159,9 +180,12 @@
                         type="month"
                         @input="
                             (e) => {
-                                isFetchingAll = true
-                                yearInput = ''
-                                filterForm = { ...initialFilterFormState, month:e.target.value }
+                                isFetchingAll = true;
+                                yearInput = '';
+                                filterForm = {
+                                    ...initialFilterFormState,
+                                    month: e.target.value,
+                                };
                                 handleSearch(e.target.value);
                             }
                         "
@@ -450,7 +474,8 @@
                             <td
                                 class="border-b border-gray-200 px-2 py-1 text-right text-[13px] tabular-nums whitespace-nowrap"
                             >
-                                S/. {{ item.balance ? item.balance.toFixed(2) : 0 }}
+                                S/.
+                                {{ item.balance ? item.balance.toFixed(2) : 0 }}
                             </td>
                             <td
                                 class="border-b border-gray-200 px-2 py-1 text-right text-[13px] tabular-nums whitespace-nowrap"
@@ -1100,7 +1125,9 @@ async function submit() {
 //search month
 const handleSearch = async (month = null, endMonth = null, all = null) => {
     const res = await axios
-        .get(route("finance.account_statement.search", { month, endMonth, all }))
+        .get(
+            route("finance.account_statement.search", { month, endMonth, all })
+        )
         .catch((e) => console.error(e));
     notifyWarning(`Registros Encontrados ${res.data.accountStatements.length}`);
     dataToRender.value = res.data;
@@ -1311,6 +1338,13 @@ const deleteMasiveAS = async () => {
     notify("Registros Seleccionados Eliminados");
 };
 
+const downloadDataStructure = () => {
+    const uniqueParam = `timestamp=${new Date().getTime()}`;
+    const url =
+        route("finance.account_statement.dsdownload") + "?" + uniqueParam;
+    window.location.href = url;
+};
+
 //search for costs in all tables
 watch([() => form.operation_number, () => form.operation_date], async () => {
     if (form.operation_date && form.operation_number) {
@@ -1373,18 +1407,14 @@ watch(
     { deep: true }
 );
 
-
-
 //Year filter
 
-
-const yearInput = ref('')
-watch(yearInput, ()=>{
-    if (yearInput.value){
-        isFetchingAll.value = true
-        filterForm.value.month = ''
+const yearInput = ref("");
+watch(yearInput, () => {
+    if (yearInput.value) {
+        isFetchingAll.value = true;
+        filterForm.value.month = "";
         handleSearch(`${yearInput.value}-01`, `${yearInput.value}-12`, false);
     }
-})
-
+});
 </script>

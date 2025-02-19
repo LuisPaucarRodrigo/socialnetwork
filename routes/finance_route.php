@@ -32,6 +32,7 @@ Route::middleware('permission:FinanceManager')->group(function () {
     Route::post('/finance/account_statement_import', [AccountStatementController::class, 'importExcel'])->name('finance.account_statement.import');
     Route::get('/finance/account_statement_costs/{as_id}', [AccountStatementController::class, 'searchStatementsCosts'])->name('finance.account_statement.costs');
     Route::post('/finance/account_statement_massive_delete', [AccountStatementController::class, 'masiveDestroy'])->name('finance.account_statement.masivedelete');
+    Route::get('/finance/account_statement_ds_download', [AccountStatementController::class, 'dowloadDataStructure'])->name('finance.account_statement.dsdownload');
 
     ///tests routes
     // Route::get('/test_acount/{month}/{all?}', [AccountStatementController::class, 'previousBalance'])->name('finance.account_statement.testgetprincipalvar');

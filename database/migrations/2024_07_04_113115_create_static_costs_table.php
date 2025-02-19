@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('static_costs', function (Blueprint $table) {
             $table->id();
             $table->string('expense_type');
-            $table->string('ruc');
+            $table->string('ruc')->nullable();;
             $table->string('zone');
             $table->string('type_doc');
             $table->string('operation_number')->nullable();

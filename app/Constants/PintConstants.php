@@ -31,6 +31,7 @@ class PintConstants
     public const APOYOS = 'Apoyos';
     public const ACARREOS = 'Acarreos';
     public const ACTIVOS = 'Activos';
+    public const GASTOS_FINANCIEROS = 'Gastos Financieros';
     public const OTROS = 'Otros';
 
     public const ALQUILER_DE_VEHICULOS = 'Alquiler de Vehículos';
@@ -94,6 +95,7 @@ class PintConstants
             self::ACARREOS,
             self::COMBUSTIBLE_UM,
             self::COMBUSTIBLE_GEP,
+            self::GASTOS_FINANCIEROS,
             self::OTROS
         ];
     }
@@ -160,6 +162,7 @@ class PintConstants
             self::DANOS_DE_VEHICULOS,
             self::ACTIVOS,
             self::PLANILLA,
+            self::GASTOS_FINANCIEROS,
             self::OTROS,
         ];
     }
