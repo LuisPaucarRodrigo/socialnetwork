@@ -483,21 +483,4 @@ class ChecklistsController extends Controller
             ], 500);
         }
     }
-    public function getPintMobileConstants()
-    {
-        return response()->json([
-            'expenseTypes' => PintConstants::mobileExpenses(),
-            'docTypes' => PintConstants::mobileDocTypes(),
-            'zones' => PintConstants::mobileZones()
-        ]);
-    }
-
-    public function getPextMobileConstants()
-    {
-        return response()->json([
-            'zones' => PextConstants::getZone(),
-            'docTypes' => PextConstants::getDocumentsType(),
-            'expenseTypes' => PextConstants::getExpenseType(),
-        ]);
-    }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\PextConstants;
+use App\Constants\PintConstants;
 use App\Http\Requests\LoginMobileRequest;
 use App\Http\Requests\PextProjectRequest\ApiStoreExpensesRequest;
 use App\Http\Requests\PreprojectRequest\ImageRequest;
@@ -91,14 +93,14 @@ class ApiController extends Controller
     public function preprojectcodephoto($id)
     {
         try {
-            $preprojectTitle = PreprojectTitle::with(['preprojectCodes.code' => function ($query) {
-                $query->select('id', 'code');
-            }, 'preprojectCodes' => function ($query) {
-                $query->select('id', 'preproject_title_id', 'code_id', 'status');
-            }])
-                ->whereNotNull('state')->where('preproject_id', $id)
-                ->select('id', 'type')
-                ->get();
+            // $preprojectTitle = PreprojectTitle::with(['preprojectCodes.code' => function ($query) {
+            //     $query->select('id', 'code');
+            // }, 'preprojectCodes' => function ($query) {
+            //     $query->select('id', 'preproject_title_id', 'code_id', 'status');
+            // }])
+            //     ->whereNotNull('state')->where('preproject_id', $id)
+            //     ->select('id', 'type')
+            $preprojectTitle = $this->apiService->preprojectTitle($id)->get();
             return response()->json($preprojectTitle, 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -148,11 +150,6 @@ class ApiController extends Controller
         $data = $request->validated();
         DB::beginTransaction();
         try {
-            // $image = str_replace('data:image/png;base64,', '', $data['photo']);
-            // $image = str_replace(' ', '+', $image);
-            // $imageContent = base64_decode($image);
-            // $data['image'] = time() . '.png';
-            // file_put_contents(public_path('image/imagereportpreproject/') . $data['image'], $imageContent);
             $data['image']  = $this->apiService->storeBase64Image($data['photo'], "image/imagereportpreproject/", null);
 
             Imagespreproject::create([
@@ -670,12 +667,6 @@ class ApiController extends Controller
             foreach ($imageFields as $index => $field) {
                 if (isset($data[$field])) {
                     $imageUpdates[$field] = $this->apiService->storeBase64Image($data[$field], $expenseDirectory, null);
-                    // $image = str_replace('data:image/png;base64,', '', $data[$field]);
-                    // $image = str_replace(' ', '+', $image);
-                    // $imageContent = base64_decode($image);
-                    // $data[$field] = time() . '.png';
-                    // file_put_contents(public_path($expenseDirectory) . $data[$field], $imageContent);
-                    // $imageUpdates[$field] = $data[$field];
                 }
             }
             $new_expense->update($imageUpdates);
@@ -695,5 +686,45 @@ class ApiController extends Controller
             ->where('cost_line_id', $cost_line_id)
             ->get();
         return response()->json($car, 200);
+    }
+
+    public function getPintMobileConstants()
+    {
+        return response()->json([
+            'expenseTypes' => PintConstants::mobileExpenses(),
+            'docTypes' => PintConstants::mobileDocTypes(),
+            'zones' => PintConstants::mobileZones()
+        ]);
+    }
+
+    public function getPextMobileConstants()
+    {
+        return response()->json([
+            'zones' => PextConstants::getZone(),
+            'docTypes' => PextConstants::getDocumentsType(),
+            'expenseTypes' => PextConstants::getExpenseType(),
+        ]);
+    }
+
+    public function contantsCheckList($cost_line_id)
+    {
+        $employees = Employee::select('id', 'name', 'lastname')
+            ->whereHas('contract', function ($e) use ($cost_line_id) {
+                $e->select('id', 'employee_id')
+                    ->where('cost_line_id', $cost_line_id);
+            })
+            ->get();
+
+        $zones = $cost_line_id == 1 ? PintConstants::mobileZones() : PextConstants::getZone() ;
+
+        $car = Car::select('id', 'plate')
+            ->where('cost_line_id', $cost_line_id)
+            ->get();
+
+        return response()->json([
+            'zones' => $zones,
+            'employees' => $employees,
+            'car' => $car ,
+        ]);
     }
 }
