@@ -37,14 +37,14 @@ class AccountStatementRequest extends FormRequest
             'description' => 'required',
             'charge' => 'required_without:payment',
             'payment' => 'required_without:charge',
-            'acData' => 'nullable|array',
-            'acData.*' => 'integer',
-            'scData' => 'nullable|array',
-            'scData.*' => 'integer',
-            'peData' => 'nullable|array',
-            'peData.*' => 'integer',
-            'spData' => 'nullable|array',
-            'spData.*' => 'integer',
+            'geData' => 'nullable|array',
+            'geData.*' => 'integer',
+            // 'scData' => 'nullable|array',
+            // 'scData.*' => 'integer',
+            // 'peData' => 'nullable|array',
+            // 'peData.*' => 'integer',
+            // 'spData' => 'nullable|array',
+            // 'spData.*' => 'integer',
         ];
     }
 }

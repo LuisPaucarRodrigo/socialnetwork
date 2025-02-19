@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\CostsRequest;
 
+use App\Constants\PintConstants;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Project;
 
@@ -40,6 +41,11 @@ class AdditionalCostsRequest extends FormRequest
             'igv' => 'required',
             'project_id' => 'nullable'
         ];
+
+        if ($this->input('type_doc') === PintConstants::SIN_COMPROBANTE) {
+            $rules['ruc'] = 'nullable';
+            $rules['doc_number'] = 'nullable';
+        }
 
         if ($this->has('project_id')) {
             $project = Project::find($this->input('project_id'));

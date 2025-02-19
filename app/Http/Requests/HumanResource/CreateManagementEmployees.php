@@ -24,7 +24,7 @@ class CreateManagementEmployees extends FormRequest
     public function rules(): array
     {
         return [
-            'curriculum_vitae' => 'nullable|mimes:pdf|max:2048',
+            'curriculum_vitae' => 'nullable|mimes:pdf|max:51200',
             'cropped_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'name' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
@@ -68,7 +68,7 @@ class CreateManagementEmployees extends FormRequest
             'familyDependents.*.family_name' => 'required|string|max:255',
             'familyDependents.*.family_lastname' => 'required|string|max:255',
 
-            'blood_group' => 'nullable|string|in:A+,A-,B+,B-,AB-,AB+,O+,O-',
+            'blood_group' => 'nullable|string|in:A+,A-,B+,B-,AB-,AB+,O+,O-,RH+',
             'weight' => 'nullable|numeric',
             'height' => 'nullable|numeric',
             'shoe_size' => 'nullable|numeric',

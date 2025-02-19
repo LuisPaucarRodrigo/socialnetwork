@@ -53,6 +53,12 @@ class AccountStatementController extends Controller
         return response()->json($data, 200);
     }
 
+    public function dowloadDataStructure () {
+        $filePath = 'DataStructures/Plantilla_Estado_de_Cuenta.xlsx';
+        ob_end_clean();
+        return response()->download($filePath);
+    }
+
 
 
     public function importExcel (AccountStatementImportRequest $request){ 
