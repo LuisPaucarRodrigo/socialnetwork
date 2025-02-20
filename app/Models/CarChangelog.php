@@ -17,6 +17,7 @@ class CarChangelog extends Model
         'type',
         'invoice',
         'observation',
+        'is_accepted',
         'car_id',
     ];
 

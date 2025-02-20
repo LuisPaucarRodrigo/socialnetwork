@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('type');
             $table->string('invoice');
             $table->string('observation')->nullable();
+            $table->boolean('is_accepted')->nullable();
             $table->foreignId('car_id')->constrained('cars')->onDelete('cascade');
             $table->timestamps();
         });

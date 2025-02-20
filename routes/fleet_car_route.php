@@ -25,4 +25,5 @@ Route::middleware('permission:CarManager')->group(function () {
 
     Route::get('/fleet_cars/show_checklist/{car}', [CarsController::class, 'showChecklist'])->name('fleet.cars.show_checklist');
     Route::get('/fleet_cars/show_checklist/send_images/{checklist}', [CarsController::class, 'sendChecklistImages'])->name('fleet.cars.show_checklist.send_images');
+    Route::put('/fleet_cars/show_checklist/accept_or_decline/{changelog}/{is_accepted}', [CarsController::class, 'acceptOrDecline'])->name('fleet.cars.show_checklist.accept_or_decline');
 });

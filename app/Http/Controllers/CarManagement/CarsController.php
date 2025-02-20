@@ -299,7 +299,7 @@ class CarsController extends Controller
     {
         $checklist = ChecklistCar::where('car_id', $car->id)->paginate();
         return Inertia::render('FleetCar/CheckList', [
-            'car' => $car,
+            'car' => $car->load('user'),
             'checklist' => $checklist
         ]);
     }
@@ -333,5 +333,16 @@ class CarsController extends Controller
         }
 
         return response()->json($images);
+    }
+
+    public function acceptOrDecline(CarChangelog $changelog, $is_accepted)
+    {
+        $user = Auth::user();
+        if ($user->role_id !== 1){
+            abort(403, 'Acción no permitida');
+        }
+        $car = Car::where('id', $changelog->car_id)->with(['user', 'costline', 'car_changelogs.car_changelog_items', 'checklist'])->first();
+        $changelog->update(['is_accepted' => $is_accepted]);
+        return response()->json($car);
     }
 }
