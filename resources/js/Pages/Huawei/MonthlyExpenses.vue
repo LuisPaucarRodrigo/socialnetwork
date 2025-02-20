@@ -16,6 +16,68 @@
                         + Agregar
                     </PrimaryButton>
                     <button
+                        data-tooltip-target="import_tooltip"
+                        type="button"
+                        class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500"
+                        @click="openImportExcel"
+                    >
+                        <svg
+                            class="w-5 h-5"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <title />
+
+                            <g id="Complete">
+                                <g id="upload">
+                                    <g>
+                                        <path
+                                            d="M3,12.3v7a2,2,0,0,0,2,2H19a2,2,0,0,0,2-2v-7"
+                                            fill="none"
+                                            stroke="white"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                        />
+
+                                        <g>
+                                            <polyline
+                                                data-name="Right"
+                                                fill="none"
+                                                id="Right-2"
+                                                points="7.9 6.7 12 2.7 16.1 6.7"
+                                                stroke="white"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                            />
+
+                                            <line
+                                                fill="none"
+                                                stroke="white"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                x1="12"
+                                                x2="12"
+                                                y1="16.3"
+                                                y2="4.8"
+                                            />
+                                        </g>
+                                    </g>
+                                </g>
+                            </g>
+                        </svg>
+                    </button>
+                    <div
+                        id="import_tooltip"
+                        role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                    >
+                        Importar Excel
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
+                    <button
                         data-tooltip-target="export_tooltip"
                         type="button"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500"
@@ -433,7 +495,10 @@
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center whitespace-nowrap text-[13px]"
                         >
-                            {{ item.zone }}
+                            {{
+                                item.zone ??
+                                item.huawei_project?.huawei_site.name
+                            }}
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center whitespace-nowrap text-[13px]"
@@ -1246,6 +1311,213 @@
             </div>
         </Modal>
 
+        <Modal :show="show_import" @close="openImportExcel" :closeable="true">
+            <div class="p-6">
+                <h2 class="text-base font-black leading-7 text-gray-900">
+                    Importar Excel
+                </h2>
+                <h2 class="font-black text-lg mt-4 text-indigo-700">
+                    Consideraciones:
+                </h2>
+                <div
+                    class="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-lg shadow-sm mt-2"
+                >
+                <p class="text-gray-700">
+                        <span class="font-semibold text-indigo-600">•</span>
+                        Descargue la
+                        <a :href="route('huawei.monthlyexpenses.expenses.donwloadtemplate')" class="font-black text-indigo-600 hover:underline">ESTRUCTURA DE DATOS.</a>
+
+                    </p>
+                    <p class="text-gray-700">
+                        <span class="font-semibold text-indigo-600">•</span>
+                        La importación
+                        <span class="font-black text-indigo-600">NO VA A SOBREESCRIBIR</span>
+                        los datos actuales, solo
+                        <span class="font-black text-indigo-600">CREARÁ NUEVOS REGISTROS</span>.
+                    </p>
+                    <p class="text-gray-700">
+                        <span class="font-semibold text-indigo-600">•</span> El
+                        signo (<span class="text-indigo-600 font-semibold"
+                            >*</span
+                        >) indica que el campo es obligatorio.
+                    </p>
+                    <p class="text-gray-700">
+                        <span class="font-semibold text-indigo-600">•</span> Las
+                        columnas
+                        <span class="font-semibold text-indigo-600"
+                            >A, D y N</span
+                        >
+                        tienen validación de datos (usar los datos de la lista
+                        preferiblemente).
+                    </p>
+                    <p class="text-gray-700">
+                        <span class="font-semibold text-indigo-600">•</span>
+                        Escribir las fechas en formato regular, e.j.
+                        <span class="font-mono text-gray-900">20-02-2025</span>.
+                    </p>
+                    <p class="text-gray-700">
+                        <span class="font-semibold text-indigo-600">•</span>
+                        Las fechas de gasto deben pertenecer al mes del proyecto.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+                    <div
+                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
+                    >
+                        <span class="font-black text-indigo-700"
+                            >* Columna A:</span
+                        >
+                        <span class="text-gray-700">Tipo de Gasto</span>
+                    </div>
+                    <div
+                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
+                    >
+                        <span class="font-black text-indigo-700"
+                            >Columna B:</span
+                        >
+                        <span class="text-gray-700">DU del Proyecto</span>
+                    </div>
+                    <div
+                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
+                    >
+                        <span class="font-black text-indigo-700"
+                            >* Columna C:</span
+                        >
+                        <span class="text-gray-700">Empleado</span>
+                    </div>
+                    <div
+                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
+                    >
+                        <span class="font-black text-indigo-700"
+                            >* Columna D:</span
+                        >
+                        <span class="text-gray-700">Tipo de CDP</span>
+                    </div>
+                    <div
+                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
+                    >
+                        <span class="font-black text-indigo-700"
+                            >* Columna E:</span
+                        >
+                        <span class="text-gray-700">Fecha del Gasto</span>
+                    </div>
+                    <div
+                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
+                    >
+                        <span class="font-black text-indigo-700"
+                            >Columna F:</span
+                        >
+                        <span class="text-gray-700">Serie</span>
+                    </div>
+                    <div
+                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
+                    >
+                        <span class="font-black text-indigo-700"
+                            >Columna G:</span
+                        >
+                        <span class="text-gray-700">Correlativo</span>
+                    </div>
+                    <div
+                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
+                    >
+                        <span class="font-black text-indigo-700"
+                            >Columna H:</span
+                        >
+                        <span class="text-gray-700">RUC</span>
+                    </div>
+                    <div
+                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
+                    >
+                        <span class="font-black text-indigo-700"
+                            >* Columna I:</span
+                        >
+                        <span class="text-gray-700">Descripción</span>
+                    </div>
+                    <div
+                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
+                    >
+                        <span class="font-black text-indigo-700"
+                            >* Columna J:</span
+                        >
+                        <span class="text-gray-700">Monto</span>
+                    </div>
+                    <div
+                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
+                    >
+                        <span class="font-black text-indigo-700"
+                            >* Columna K:</span
+                        >
+                        <span class="text-gray-700"
+                            >Fecha de Depósito E.C.</span
+                        >
+                    </div>
+                    <div
+                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
+                    >
+                        <span class="font-black text-indigo-700"
+                            >* Columna L:</span
+                        >
+                        <span class="text-gray-700">N° Operación E.C.</span>
+                    </div>
+                    <div
+                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
+                    >
+                        <span class="font-black text-indigo-700"
+                            >* Columna M:</span
+                        >
+                        <span class="text-gray-700">Monto E.C.</span>
+                    </div>
+                    <div
+                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
+                    >
+                        <span class="font-black text-indigo-700"
+                            >* Columna N:</span
+                        >
+                        <span class="text-gray-700">Estado de Reembolso</span>
+                    </div>
+                </div>
+
+                <form @submit.prevent="importExcel">
+                    <div class="space-y-12 mt-4">
+                        <div class="grid sm:grid-cols-2 gap-6 pb-6">
+                            <div class="md:col-span-2 col-span-1">
+                                <InputLabel
+                                    for="file"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >Archivo</InputLabel
+                                >
+                                <div class="mt-2">
+                                    <InputFile
+                                        type="file"
+                                        v-model="formFile.file"
+                                        accept=".xlsx"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                    <InputError
+                                        :message="formFile.errors.file"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 flex justify-end gap-4">
+                        <SecondaryButton @click="openImportExcel">
+                            Cancelar
+                        </SecondaryButton>
+                        <button
+                            type="submit"
+                            :disabled="isFetching"
+                            :class="{ 'opacity-25': isFetching }"
+                            class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        >
+                            Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </Modal>
+
         <ConfirmDeleteModal
             :confirmingDeletion="confirmingDocDeletion"
             itemType="Gasto"
@@ -1294,7 +1566,7 @@ const props = defineProps({
     expense: Object,
     project: Object,
     search: String,
-    summary: Object
+    summary: Object,
 });
 
 const expenses = ref(props.expense);
@@ -1380,8 +1652,7 @@ const openEditAdditionalModal = async (additional) => {
 const closeModal = () => {
     form.clearErrors();
     form.reset();
-    selectedMacro.value = '',
-    selectedSite.value = ''
+    (selectedMacro.value = ""), (selectedSite.value = "");
     isFetching.value = false;
     create_additional.value = false;
 };
@@ -1446,14 +1717,18 @@ async function deleteAdditional() {
     isFetching.value = true;
     const docId = docToDelete.value;
     if (docId) {
-        const response = await axios.delete(route("huawei.monthlyexpenses.expenses.delete", { expense: docId }));
-        if (response.data == true){
-            const index = expenses.value.data.findIndex(item => item.id === docId);
-                if (index !== -1) {
-                    expenses.value.data.splice(index, 1);
-                    closeModalDoc();
-                    notify("Registro eliminado correctamente");
-                }
+        const response = await axios.delete(
+            route("huawei.monthlyexpenses.expenses.delete", { expense: docId })
+        );
+        if (response.data == true) {
+            const index = expenses.value.data.findIndex(
+                (item) => item.id === docId
+            );
+            if (index !== -1) {
+                expenses.value.data.splice(index, 1);
+                closeModalDoc();
+                notify("Registro eliminado correctamente");
+            }
         }
     }
 }
@@ -1768,8 +2043,8 @@ const massiveValidate = async () => {
 };
 
 const fetchSites = (macro) => {
-    selectedSite.value = '';
-    form.huawei_project_id = '';
+    selectedSite.value = "";
+    form.huawei_project_id = "";
     axios
         .get(
             route("huawei.monthlyexpenses.expenses.fetchsites", {
@@ -1784,8 +2059,10 @@ const fetchSites = (macro) => {
         });
 };
 
+const show_import = ref(false);
+
 const fetchProjects = (site) => {
-    form.huawei_project_id = '';
+    form.huawei_project_id = "";
     axios
         .get(
             route("huawei.monthlyexpenses.expenses.fetchprojects", {
@@ -1799,5 +2076,37 @@ const fetchProjects = (site) => {
         .catch((error) => {
             console.error(error);
         });
+};
+
+const formFile = useForm({
+    file: "",
+});
+
+const openImportExcel = () => {
+    show_import.value = !show_import.value;
+    sites.value = [];
+    projects.value = [];
+};
+
+const importExcel = () => {
+    const url = route("huawei.monthlyexpenses.expenses.import", {
+        monthly_project: props.project.id,
+    });
+    formFile.post(url, {
+        onSuccess: () => {
+            show_import.value = false;
+            notify("Se importó el archivo correctamente");
+            setTimeout(() => {
+                router.visit(
+                    route("huawei.monthlyexpenses.expenses", {
+                        project: props.project.id,
+                    })
+                );
+            }, 2000);
+        },
+        onError: () => {
+            notifyError("Error al importar el archivo");
+        },
+    });
 };
 </script>

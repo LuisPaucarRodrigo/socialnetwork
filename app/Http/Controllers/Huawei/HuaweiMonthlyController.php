@@ -9,10 +9,12 @@ use App\Models\Employee;
 use App\Models\HuaweiMonthlyExpense;
 use App\Models\HuaweiMonthlyProject;
 use App\Models\HuaweiProject;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class HuaweiMonthlyController extends Controller
 {
@@ -160,11 +162,11 @@ class HuaweiMonthlyController extends Controller
         }
         if (count($request->selectedDus) < $summary['assigned_dius'] + 1) {
             $selectedDus = $request->selectedDus;
-            if (!in_array('(vacio)', $selectedDus)){
+            if (!in_array('(vacio)', $selectedDus)) {
                 $expensesQuery->whereNotNull('huawei_project_id')->whereHas('huawei_project', function ($query) use ($selectedDus) {
                     $query->whereIn('assigned_diu', $selectedDus);
                 });
-            }else{
+            } else {
                 $expensesQuery->whereHas('huawei_project', function ($query) use ($selectedDus) {
                     $query->whereIn('assigned_diu', $selectedDus);
                 })->orWhereNull('huawei_project_id');
@@ -314,7 +316,7 @@ class HuaweiMonthlyController extends Controller
 
         $expense->update($validatedData);
 
-        return response()->json([$expense->load('huawei_project')], 200);
+        return response()->json([$expense->load('huawei_project.huawei_site')], 200);
     }
 
     public function exportMonthlyExpenses(HuaweiMonthlyProject $project)
@@ -322,6 +324,102 @@ class HuaweiMonthlyController extends Controller
         return Excel::download(new HuaweiMonthlyExport($project->id), 'Gastos del proyecto ' . $project->description . '.xlsx');
     }
 
+    public function importCosts(HuaweiMonthlyProject $monthly_project, Request $request)
+    {
+        // Validar que el archivo es un Excel
+        $data = $request->validate([
+            'file' => 'required|mimes:xls,xlsx',
+        ]);
+
+        // Manejar la carga del archivo
+        $document = $request->file('file');
+
+        // Leer el archivo Excel directamente desde el stream
+        $spreadsheet = IOFactory::load($document->getRealPath());
+
+        // Obtener la primera hoja
+        /** @var Worksheet $sheet */
+        $sheet = $spreadsheet->getSheet(0);
+
+        // Definir el rango de lectura: A1 hasta la última fila en la columna D
+        $startCell = 'A1';
+        $endCell = 'N' . $sheet->getHighestRow();
+        $range = "$startCell:$endCell";
+
+        // Leer el rango especificado
+        $data = $sheet->rangeToArray($range, null, true, true, true);
+
+        // Array para almacenar los objetos
+        $rowsAsObjects = [];
+
+        // Recorrer las filas y convertir a objetos
+
+        foreach ($data as $index => $row) {
+
+            if ($index === 1)
+                continue;
+
+            $rowObject = (object) [
+                'expense_type' => $this->sanitizeText($row['A'], true),
+                'project_id' => $row['B'] ? HuaweiProject::where('assigned_diu', $row['B'])->first()->id : null,
+                'employee' => $row['C'],
+                'cdp_type' => $this->sanitizeText($row['D'], true),
+                'expense_date' => $this->sanitizeDate($row['E']),
+                'doc_number' => $row['F'],
+                'op_number' => $row['G'],
+                'ruc' => $row['H'],
+                'description' => $row['I'],
+                'amount' => $row['J'],
+                'ec_expense_date' => $this->sanitizeDate($row['K']),
+                'ec_op_number' => $row['L'],
+                'ec_amount' => $row['M'],
+                'refund_status' => $this->sanitizeText($row['N'], false),
+            ];
+
+            $rowsAsObjects[] = $rowObject;
+        }
+
+        DB::beginTransaction();
+        $projectDate = Carbon::parse($monthly_project->date);
+        $startOfMonth = $projectDate->startOfMonth();
+        $endOfMonth = $projectDate->endOfMonth();
+
+        foreach ($rowsAsObjects as $item) {
+            
+            $expenseDate = Carbon::parse($item->expense_date);
+            if ($expenseDate->lt($startOfMonth) || $expenseDate->gt($endOfMonth)) {
+                DB::rollBack();
+                abort(403, 'Una o más fechas de gasto no están dentro del mes del proyecto');
+            }
+
+            HuaweiMonthlyExpense::create([
+                'expense_type' => $item->expense_type,
+                'employee' => $item->employee,
+                'expense_date' => $item->expense_date,
+                'cdp_type' => $item->cdp_type,
+                'doc_number' => $item->doc_number,
+                'op_number' => $item->op_number,
+                'ruc' => $item->ruc,
+                'description' => $item->description,
+                'amount' => $item->amount,
+                'ec_expense_date' => $item->ec_expense_date,
+                'ec_op_number' => $item->ec_op_number,
+                'ec_amount' => $item->ec_amount,
+                'refund_status' => $item->refund_status,
+                'huawei_monthly_project_id' => $monthly_project->id,
+                'huawei_project_id' => $item->project_id,
+            ]);
+        }
+        DB::commit();
+        return redirect()->back();
+    }
+
+    public function downloadTemplate ()
+    {
+        $templatePath = public_path('documents/huawei/resources/Data Structure - Monthly Expenses.xlsx');
+        ob_end_clean();
+        return response()->download($templatePath, 'Estructura de Datos - Gastos Mensuales Huawei.xlsx');
+    }
 
     public function massiveUpdate(Request $request)
     {
@@ -370,7 +468,7 @@ class HuaweiMonthlyController extends Controller
         }
         DB::commit();
         $updatedCosts = HuaweiMonthlyExpense::whereIn('id', $data['ids'])
-            ->with('huawei_project')->get();
+            ->with('huawei_project.huawei_site')->get();
 
         return response()->json($updatedCosts, 200);
     }
@@ -420,4 +518,58 @@ class HuaweiMonthlyController extends Controller
 
         return response()->json($projects, 200);
     }
+
+    private function sanitizeDate($date)
+    {
+        // Verifica si el dato es nulo o vacío
+        if (empty($date) || !is_string($date)) {
+            return null;
+        }
+    
+        // Elimina espacios innecesarios
+        $date = trim($date);
+    
+        // Formatos permitidos
+        $formats = [
+            'd/n/Y', // Soporta días y meses sin ceros a la izquierda
+            'd/m/Y',
+            'Y-m-d',
+            'd-m-Y',
+        ];
+    
+        // Intentar convertir usando cada formato
+        foreach ($formats as $format) {
+            try {
+                $parsedDate = Carbon::createFromFormat($format, $date);
+                
+                // Verifica si la fecha interpretada coincide con la original
+                if ($parsedDate !== false) {
+                    return $parsedDate->format('Y-m-d');
+                }
+            } catch (\Exception $e) {
+                continue;
+            }
+        }
+    
+        return null; // Si no coincide con ningún formato, retorna null
+    }
+    
+    private function sanitizeText($text, $mode)
+    {
+        if ($mode) {
+            $text = mb_convert_case(mb_strtolower($text, 'UTF-8'), MB_CASE_TITLE, 'UTF-8');
+            return $text;
+        } else {
+            $text = strtoupper($text);
+
+            $text = str_replace(
+                ['Á', 'É', 'Í', 'Ó', 'Ú', 'Ñ'],
+                ['A', 'E', 'I', 'O', 'U', 'N'],
+                $text
+            );
+
+            return preg_replace('/\s+/', '', $text);
+        }
+    }
+
 }

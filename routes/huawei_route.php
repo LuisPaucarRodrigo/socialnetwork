@@ -224,6 +224,8 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::post('huawei/monthly_projects/monthly_expenses/massive_validate/post', [HuaweiMonthlyController::class, 'massiveValidate'])->name('huawei.monthlyexpenses.expenses.massivevalidate');
     Route::get('huawei/monthly_projects/monthly_expenses/{macro}/fetch_sites/get', [HuaweiMonthlyController::class, 'fetchSites'])->name('huawei.monthlyexpenses.expenses.fetchsites');
     Route::get('huawei/monthly_projects/monthly_expenses/{macro}/{site_id}/fetch_projects/get', [HuaweiMonthlyController::class, 'fetchProjects'])->name('huawei.monthlyexpenses.expenses.fetchprojects');
+    Route::post('huawei/monthly_projects/monthly_expenses/import_costs/{monthly_project}/post', [HuaweiMonthlyController::class, 'importCosts'])->name('huawei.monthlyexpenses.expenses.import'); 
+    Route::get('huawei/monthly_projects/monthly_expenses/donwload_template/get', [HuaweiMonthlyController::class, 'downloadTemplate'])->name('huawei.monthlyexpenses.expenses.donwloadtemplate');
 });
 
 
