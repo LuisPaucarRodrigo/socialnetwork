@@ -610,8 +610,8 @@
                                                             </thead>
                                                             <tbody>
                                                                 <tr v-for="(item, index) in changelog.car_changelog_items" :key="item.id">
-                                                                    <td class="border-b px-2 py-2 text-center text-[10px] text-gray-600">{{ index + 1 }}</td>
-                                                                    <td class="border-b px-2 py-2 text-center text-[10px] text-gray-600">{{ item.name }}</td>
+                                                                    <td class="border-b px-2 py-2 text-center text-[11px] text-gray-600">{{ index + 1 }}</td>
+                                                                    <td class="border-b px-2 py-2 text-center text-[11px] text-gray-600">{{ item.name }}</td>
                                                                 </tr>
                                                             </tbody>
                                                         </table>

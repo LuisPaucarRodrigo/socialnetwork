@@ -18,7 +18,7 @@ class HuaweiMonthlyExport implements FromView
     public function view():View
     {
         return view('Export/HuaweiMonthlyExport', [
-            'expenses' => HuaweiMonthlyExpense::where('huawei_monthly_project_id', $this->project_id)->where('is_accepted', 1)->get()
+            'expenses' => HuaweiMonthlyExpense::with('huawei_project.huawei_site')->where('huawei_monthly_project_id', $this->project_id)->where('is_accepted', 1)->get()
         ]);
     }
 }
