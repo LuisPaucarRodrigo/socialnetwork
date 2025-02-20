@@ -1691,7 +1691,7 @@ const closeSwapAPModal = () => {
 }
 const openSwapAPModal = () => {
     if (actionForm.value.ids.length === 0) {
-        notifyWarning("No hay registros selccionados");
+        notifyWarning("No hay registros seleccionados");
         return;
     }
     showSwapAPModal.value = true

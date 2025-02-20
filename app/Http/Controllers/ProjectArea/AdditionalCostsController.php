@@ -383,15 +383,6 @@ class AdditionalCostsController extends Controller
         return response()->json(true, 200);
     }
 
-
-
-
-
-
-
-
-
-
     public function destroy(Project $project_id, AdditionalCost $additional_cost)
     {
         $additional_cost->photo && $this->file_delete($additional_cost->photo, 'documents/additionalcosts/');
@@ -466,46 +457,44 @@ class AdditionalCostsController extends Controller
         $ac->update($data);
         
         //Automatic swap
-        if ($ac->is_accepted) {
-            $project = Project::with('preproject.quote')->find($ac->project_id);
-            if ($ac->expense_type === PintConstants::COMBUSTIBLE_UM) {
-                $newdata = collect($ac->toArray())->except(['id', 'is_accepted'])->toArray();
-                StaticCost::create($newdata);
-                $ac->photo && $this->file_move($ac->photo);
-                $ac->delete();
-                return response()->json(['additional_cost' => null, 'msg' => 'Validación de gasto exitosa (fue movido a los gastos fijos)'], 200);
-            }
-            if ($ac->expense_type === PintConstants::COMBUSTIBLE_GEP) {
-                if ($project->cost_line_id === 1 && $project->cost_center_id === 2) {
-                    $newdata = collect($ac->toArray())->except(['id', 'is_accepted'])->toArray();
-                    StaticCost::create($newdata);
-                    $ac->photo && $this->file_move($ac->photo);
-                    $ac->delete();
-                    return response()->json(['additional_cost' => null, 'msg' => 'Validación de gasto exitosa (fue movido a los gastos fijos de GEP)'], 200);
-                } else {
-                    //find mantto project}
-                    $projectGEP = Project::where('cost_line_id', 1)->where('cost_center_id', 2)
-                        ->whereHas('preproject', function ($query) use ($project) {
-                            $query->whereHas('quote', function ($subquery) use ($project) {
-                                $subquery->where('date', $project->preproject?->quote?->date)
-                                    ->where('deliverable_time', $project->preproject?->quote?->deliverable_time);
-                            });
-                        })
-                        ->first();
-                    if ($projectGEP) {
-                        $newdata = collect($ac->toArray())->except(['id', 'is_accepted'])->toArray();
-                        $newdata['project_id'] = $projectGEP->id;
-                        StaticCost::create($newdata);
-                        $ac->photo && $this->file_move($ac->photo);
-                        $ac->delete();
-                        return response()->json(['additional_cost' => null, 'msg' => 'Validación de gasto exitosa (fue movido a los gastos fijos de GEP)'], 200);
-                    }
-                }
-            }
-        }
+        // if ($ac->is_accepted) {
+        //     $project = Project::with('preproject.quote')->find($ac->project_id);
+        //     if ($ac->expense_type === PintConstants::COMBUSTIBLE_UM) {
+        //         $newdata = collect($ac->toArray())->except(['id', 'is_accepted'])->toArray();
+        //         StaticCost::create($newdata);
+        //         $ac->photo && $this->file_move($ac->photo);
+        //         $ac->delete();
+        //         return response()->json(['additional_cost' => null, 'msg' => 'Validación de gasto exitosa (fue movido a los gastos fijos)'], 200);
+        //     }
+        //     if ($ac->expense_type === PintConstants::COMBUSTIBLE_GEP) {
+        //         if ($project->cost_line_id === 1 && $project->cost_center_id === 2) {
+        //             $newdata = collect($ac->toArray())->except(['id', 'is_accepted'])->toArray();
+        //             StaticCost::create($newdata);
+        //             $ac->photo && $this->file_move($ac->photo);
+        //             $ac->delete();
+        //             return response()->json(['additional_cost' => null, 'msg' => 'Validación de gasto exitosa (fue movido a los gastos fijos de GEP)'], 200);
+        //         } else {
+        //             //find mantto project}
+        //             $projectGEP = Project::where('cost_line_id', 1)->where('cost_center_id', 2)
+        //                 ->whereHas('preproject', function ($query) use ($project) {
+        //                     $query->whereHas('quote', function ($subquery) use ($project) {
+        //                         $subquery->where('date', $project->preproject?->quote?->date)
+        //                             ->where('deliverable_time', $project->preproject?->quote?->deliverable_time);
+        //                     });
+        //                 })
+        //                 ->first();
+        //             if ($projectGEP) {
+        //                 $newdata = collect($ac->toArray())->except(['id', 'is_accepted'])->toArray();
+        //                 $newdata['project_id'] = $projectGEP->id;
+        //                 StaticCost::create($newdata);
+        //                 $ac->photo && $this->file_move($ac->photo);
+        //                 $ac->delete();
+        //                 return response()->json(['additional_cost' => null, 'msg' => 'Validación de gasto exitosa (fue movido a los gastos fijos de GEP)'], 200);
+        //             }
+        //         }
+        //     }
+        // }
         return response()->json(['additional_cost' => $ac, 'msg' => 'Validación de gasto exitosa'], 200);
-
-
     }
 
 
