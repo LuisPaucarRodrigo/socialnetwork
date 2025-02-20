@@ -975,7 +975,7 @@ export default {
                 const response = await axios.get(route('fleet.cars.alarms'));
                 this.documentsCarToExpire = response.data.documentsCarToExpire;
             } catch (error) {
-                console.error('Error al obtener el contador de subsecciones:', error);
+                console.error('Error al obtener el contador de carros:', error);
             }
         },
         // async fetchArchiveRequest() {

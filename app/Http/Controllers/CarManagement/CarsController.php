@@ -24,7 +24,7 @@ class CarsController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $cars = Car::with(['user', 'costline', 'car_document', 'car_changelogs.car_changelog_items', 'checklist']);
+        $cars = Car::with(['user', 'costline', 'car_document','car_changelogs' => function ($query) {$query->orderBy('created_at', 'desc');}, 'car_changelogs.car_changelog_items', 'checklist']);
         $users = User::where('role_id', 12)
             ->get();
         if ($user->role_id !== 1) {
@@ -44,7 +44,7 @@ class CarsController extends Controller
         $user = Auth::user();
         $cost_line = $request->cost_line;
         $search = $request->search;
-        $cars = Car::with(['user', 'costline', 'car_changelogs.car_changelog_items', 'checklist'])
+        $cars = Car::with(['user', 'costline', 'car_changelogs' => function ($query) {$query->orderBy('created_at', 'desc');}, 'car_changelogs.car_changelog_items', 'checklist'])
             ->where(function ($query) use ($search) {
                 $query->where('plate', 'like', "%$search%")
                     ->orWhere('brand', 'like', "%$search%")
@@ -75,14 +75,22 @@ class CarsController extends Controller
                 $query->where('technical_review_date', '<=', $expirationThreshold)
                     ->orWhere('soat_date', '<=', $expirationThreshold)
                     ->orWhere('insurance_date', '<=', $expirationThreshold);
-            })->get();
+                })
+                ->orWhereHas('car_changelogs', function ($query) {
+                    $query->whereNull('is_accepted');
+                })
+                ->get();
         } else {
             $cars = Car::where('user_id', $user->id)
                 ->whereHas('car_document', function ($query) use ($expirationThreshold) {
                     $query->where('technical_review_date', '<=', $expirationThreshold)
                         ->orWhere('soat_date', '<=', $expirationThreshold)
                         ->orWhere('insurance_date', '<=', $expirationThreshold);
-                })->get();
+                })
+                ->orWhereHas('car_changelogs', function ($query) {
+                    $query->whereNull('is_accepted');
+                })
+                ->get();
         }
 
 
@@ -240,7 +248,7 @@ class CarsController extends Controller
             }
         }
 
-        return response()->json($car->load(['user', 'costline', 'car_changelogs.car_changelog_items', 'checklist']));
+        return response()->json($car->load(['user', 'costline', 'car_changelogs' => function ($query) {$query->orderBy('created_at', 'desc');}, 'car_changelogs.car_changelog_items', 'checklist']));
     }
 
     public function updateChangelog(FleetCarChangelogRequest $request, CarChangelog $carChangelog)
@@ -268,7 +276,7 @@ class CarsController extends Controller
             }
         }
         $car = Car::find($carChangelog->car_id);
-        return response()->json($car->load(['user', 'costline', 'car_changelogs.car_changelog_items', 'checklist']));
+        return response()->json($car->load(['user', 'costline', 'car_changelogs' => function ($query) {$query->orderBy('created_at', 'desc');}, 'car_changelogs.car_changelog_items', 'checklist']));
     }
 
     public function destroyChangelog(CarChangelog $carChangelog)
@@ -280,7 +288,7 @@ class CarsController extends Controller
             unlink(public_path($file_path));
         }
         $carChangelog->delete();
-        return response()->json($car->load(['user', 'costline', 'car_changelogs.car_changelog_items', 'checklist']));
+        return response()->json($car->load(['user', 'costline', 'car_changelogs' => function ($query) {$query->orderBy('created_at', 'desc');}, 'car_changelogs.car_changelog_items', 'checklist']));
     }
 
     public function showChangelogInvoice(CarChangelog $carChangelog)
@@ -297,7 +305,7 @@ class CarsController extends Controller
     //checklist
     public function showChecklist(Car $car)
     {
-        $checklist = ChecklistCar::where('car_id', $car->id)->paginate();
+        $checklist = ChecklistCar::where('car_id', $car->id)->orderBy('created_at', 'desc')->paginate();
         return Inertia::render('FleetCar/CheckList', [
             'car' => $car->load('user'),
             'checklist' => $checklist
@@ -338,11 +346,24 @@ class CarsController extends Controller
     public function acceptOrDecline(CarChangelog $changelog, $is_accepted)
     {
         $user = Auth::user();
-        if ($user->role_id !== 1){
+        if ($user->role_id !== 1) {
             abort(403, 'Acción no permitida');
         }
-        $car = Car::where('id', $changelog->car_id)->with(['user', 'costline', 'car_changelogs.car_changelog_items', 'checklist'])->first();
+    
+        $car = Car::where('id', $changelog->car_id)
+            ->with([
+                'user',
+                'costline',
+                'car_changelogs' => function ($query) {
+                    $query->orderBy('created_at', 'desc');
+                },
+                'car_changelogs.car_changelog_items',
+                'checklist'
+            ])
+            ->first();
+    
         $changelog->update(['is_accepted' => $is_accepted]);
+    
         return response()->json($car);
-    }
+    }    
 }

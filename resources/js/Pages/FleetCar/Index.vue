@@ -348,6 +348,21 @@
                                                     <th
                                                         class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600"
                                                     >
+                                                        Taller
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600"
+                                                    >
+                                                        Nombre de Contacto
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600"
+                                                    >
+                                                        Teléfono de Contacto
+                                                    </th>
+                                                    <th
+                                                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600"
+                                                    >
                                                         Observación
                                                     </th>
                                                     <th
@@ -366,9 +381,11 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr
+                                                <template
                                                     v-for="changelog in car.car_changelogs"
                                                     :key="changelog.id"
+                                                >
+                                                <tr
                                                     class="bg-gray-100"
                                                 >
                                                     <td
@@ -406,6 +423,21 @@
                                                     <td
                                                         class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold tracking-wider text-gray-600 text-center"
                                                     >
+                                                        {{ changelog.workshop }}
+                                                    </td>
+                                                    <td
+                                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold tracking-wider text-gray-600 text-center"
+                                                    >
+                                                        {{ changelog.contact_name }}
+                                                    </td>
+                                                    <td
+                                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold tracking-wider text-gray-600 text-center"
+                                                    >
+                                                        {{ changelog.contact_phone }}
+                                                    </td>
+                                                    <td
+                                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold tracking-wider text-gray-600 text-center"
+                                                    >
                                                         {{
                                                             changelog.observation
                                                         }}
@@ -434,26 +466,43 @@
                                                             </a>
                                                         </div>
                                                     </td>
-                                                    <td
-                                                        class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
-                                                    >
-                                                        <div
-                                                            class="flex justify-center items-center"
-                                                        >
-                                                            <button
-                                                                type="button"
-                                                                @click="
-                                                                    openItemsModal(
-                                                                        changelog.car_changelog_items
-                                                                    )
-                                                                "
-                                                            >
-                                                                <EyeIcon
-                                                                    class="w-5 h-5 text-green-600"
-                                                                ></EyeIcon>
+                                                    <td class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        <div class="flex flex-col justify-center items-center">
+                                                            <button type="button" @click="toggleVisibility(changelog.id)">
+                                                                <svg
+                                                                    v-if="!visibleChangelogs.has(changelog.id)"
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    fill="none"
+                                                                    viewBox="0 0 24 24"
+                                                                    stroke-width="1.5"
+                                                                    stroke="currentColor"
+                                                                    class="w-6 h-6"
+                                                                >
+                                                                    <path
+                                                                        stroke-linecap="round"
+                                                                        stroke-linejoin="round"
+                                                                        d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                                                                    />
+                                                                </svg>
+                                                                <svg
+                                                                    v-else
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    fill="none"
+                                                                    viewBox="0 0 24 24"
+                                                                    stroke-width="1.5"
+                                                                    stroke="currentColor"
+                                                                    class="w-6 h-6"
+                                                                >
+                                                                    <path
+                                                                        stroke-linecap="round"
+                                                                        stroke-linejoin="round"
+                                                                        d="m4.5 15.75 7.5-7.5 7.5 7.5"
+                                                                    />
+                                                                </svg>
                                                             </button>
                                                         </div>
                                                     </td>
+
                                                     <td
                                                         class="border-b-2 border-gray-200 bg-white px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
                                                     >
@@ -518,7 +567,7 @@
                                                                     </svg>
                                                                 </button>
                                                             <button
-                                                                type="button"
+                                                                type="button" v-if="hasPermission('UserManager')"
                                                                 @click="
                                                                     openEditChangelog(
                                                                         changelog,
@@ -532,6 +581,7 @@
                                                             </button>
                                                             <button
                                                                 type="button"
+                                                                v-if="hasPermission('UserManager')"
                                                                 @click="
                                                                     openModalDeleteChangelog(
                                                                         changelog.id
@@ -545,6 +595,30 @@
                                                         </div>
                                                     </td>
                                                 </tr>
+                                                <tr v-if="visibleChangelogs.has(changelog.id)" class="border-b bg-gray-50">
+                                                    <td colspan="11" class="py-1 px-2">
+                                                        <table class="w-full">
+                                                            <thead>
+                                                                <tr class="border-b text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
+                                                                        N°
+                                                                    </th>
+                                                                    <th class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
+                                                                        Nombre
+                                                                    </th>  
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr v-for="(item, index) in changelog.car_changelog_items" :key="item.id">
+                                                                    <td class="border-b px-2 py-2 text-center text-[10px] text-gray-600">{{ index + 1 }}</td>
+                                                                    <td class="border-b px-2 py-2 text-center text-[10px] text-gray-600">{{ item.name }}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                </template>
+
                                             </tbody>
                                         </table>
                                     </td>
@@ -1005,7 +1079,54 @@
                             </div>
                         </div>
 
-                        <div class="mt-2 md:col-span-2 col-span-1">
+                        <div class="mt-2">
+                            <InputLabel for="workshop">Taller </InputLabel>
+                            <div class="mt-2">
+                                <input
+                                    type="text"
+                                    id="workshop"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    v-model="formChangelog.workshop"
+                                />
+                                <InputError
+                                    :message="formChangelog.errors.workshop"
+                                />
+                            </div>
+                        </div>
+
+                        <div class="mt-2">
+                            <InputLabel for="contact_name">Nombre de Contacto </InputLabel>
+                            <div class="mt-2">
+                                <input
+                                    type="text"
+                                    id="contact_name"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    v-model="formChangelog.contact_name"
+                                />
+                                <InputError
+                                    :message="formChangelog.errors.contact_name"
+                                />
+                            </div>
+                        </div>
+
+                        <div class="mt-2">
+                            <InputLabel for="contact_phone">Teléfono de Contacto </InputLabel>
+                            <div class="mt-2">
+                                <input
+                                    type="text"
+                                    maxlength="9"
+                                    minlength="9"
+                                    id="contact_phone"
+                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    v-model="formChangelog.contact_phone"
+                                />
+                                <InputError
+                                    :message="formChangelog.errors.contact_phone"
+                                />
+                            </div>
+                        </div>
+
+                        <div class="mt-2">
                             <InputLabel for="observation"
                                 >Observación
                             </InputLabel>
@@ -1257,6 +1378,7 @@ const archivesDocument = ref({});
 const date_technical_review = ref(null);
 const show_plate = ref(null);
 const show_owner = ref(null);
+const visibleChangelogs = ref(new Set());
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
@@ -1291,6 +1413,9 @@ const initialFormChangelog = {
     date: "",
     mileage: "",
     type: "",
+    workshop: "",
+    contact_name: "",
+    contact_phone: "",
     invoice: "",
     items: [],
 };
@@ -1602,4 +1727,13 @@ async function validateRegister(changelog_id, is_accepted) {
         console.log(e);
     }
 }
+
+const toggleVisibility = (id) => {
+    if (visibleChangelogs.value.has(id)) {
+        visibleChangelogs.value.delete(id);
+    } else {
+        visibleChangelogs.value.add(id);
+    }
+    visibleChangelogs.value = new Set(visibleChangelogs.value);
+};
 </script>
