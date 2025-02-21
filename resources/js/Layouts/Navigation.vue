@@ -535,12 +535,9 @@ Usuarios
                         </Link>
                     </MyTransition>
                 </template>
-
-
                 <MyTransition :transitiondemonstration="showingFinance">
                     <Link class="w-full" :href="route('finance.account_statement')">Estado de Cuenta</Link>
                 </MyTransition>
-
             </template>
 
 
@@ -689,7 +686,8 @@ Usuarios
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.projects', { status: 1, prefix: 'Claro' })">Proyectos de
-                    Huawei</Link>
+                    Huawei
+                    </Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.monthlyprojects')">Proyectos Mensuales</Link>
@@ -711,6 +709,18 @@ Usuarios
                     </svg>
                     <span class="mx-3">Flota de Vehiculos</span>
                 </a>
+                <MyTransition v-if="hasPermission('UserManager')" :transitiondemonstration="showFleetCars">
+                    <div class="relative">
+                        <Link class="w-full" :href="route('fleet.cars.index.approvel')">Aprovaciòn de Cambios</Link>
+                        <!-- <button v-if="documentsCarToExpire.length > 0"
+                            @click="showDocumentsCarToExpireAlarms = !showDocumentsCarToExpireAlarms">
+                            <span
+                                class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
+                                {{ documentsCarToExpire.length }}
+                            </span>
+                        </button> -->
+                    </div>
+                </MyTransition>
                 <MyTransition :transitiondemonstration="showFleetCars">
                     <div class="relative">
                         <Link class="w-full" :href="route('fleet.cars.index')">UM</Link>
@@ -787,18 +797,16 @@ export default {
             shoppingPurchases7: [],
 
             documentsCarToExpire: [],
-            // archiveAlarms: [],
-            // archiveAlarms7: [],
 
             pending_orders: [],
         };
     },
 
-    computed: {
-        currentAuth() {
-            return this.$page.props.auth;
-        },
-    },
+    // computed: {
+    //     currentAuth() {
+    //         return this.$page.props.auth;
+    //     },
+    // },
 
     setup() {
         let showingUsersAndRols = ref(false)

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('car_documents', function (Blueprint $table) {
+        Schema::create('approval_car_documents', function (Blueprint $table) {
             $table->id();
             $table->string('ownership_card')->nullable();
             $table->string('technical_review')->nullable();
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('address_web')->nullable();
             $table->string('user')->nullable();
             $table->string('password')->nullable();
-            $table->foreignId('car_id')->constrained('cars')->onDelete('cascade');
+            $table->foreignId('car_document_id')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('car_documents');
+        Schema::dropIfExists('approval_car_documents');
     }
 };

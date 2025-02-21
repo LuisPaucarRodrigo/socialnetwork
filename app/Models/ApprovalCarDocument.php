@@ -5,12 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CarDocument extends Model
+class ApprovalCarDocument extends Model
 {
     use HasFactory;
-
-    protected $table = 'car_documents';
-
     protected $fillable = [
         'ownership_card',
         'technical_review',
@@ -22,17 +19,12 @@ class CarDocument extends Model
         'address_web',
         'user',
         'password',
-        'car_id',
+        'car_document_id',
     ];
 
     //relations
-    public function car()
+    public function car_document()
     {
-        return $this->belongsTo(Car::class, 'car_id');
-    }
-
-    public function approvel_car_document()
-    {
-        return $this->hasMany(ApprovalCarDocument::class);
+        return $this->belongsTo(CarDocument::class, 'car_document_id');
     }
 }

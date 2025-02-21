@@ -29,6 +29,9 @@ class FleetCarDocumentRequest extends FormRequest
             'technical_review_date' => 'nullable|date',
             'soat_date' => 'nullable|date',
             'insurance_date' => 'nullable|date',
+            'address_web' => 'required', 
+            'user' => 'required', 
+            'password' => 'required', 
             'car_id' => 'required'
         ];
     }

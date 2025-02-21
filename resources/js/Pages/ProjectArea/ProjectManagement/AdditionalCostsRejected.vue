@@ -1418,26 +1418,26 @@ watch([() => form.type_doc, () => form.zone], () => {
 
 const confirmValidation = ref(false);
 
-async function validateRegister(ac_id, is_accepted) {
-    try {
-        const res = await axios.post(
-            route("projectmanagement.validateAdditionalCost", { ac_id }),
-            { is_accepted }
-        );
-        if (res?.status === 200) {
-            let index = dataToRender.value.findIndex(
-                (item) => item.id == res.data.additional_cost.id
-            );
-            dataToRender.value.splice(index, 1);
-        }
-        confirmValidation.value = true;
-        setTimeout(() => {
-            confirmValidation.value = false;
-        }, 1000);
-    } catch (e) {
-        console.log(e);
-    }
-}
+// async function validateRegister(ac_id, is_accepted) {
+//     try {
+//         const res = await axios.post(
+//             route("projectmanagement.validateAdditionalCost", { ac_id }),
+//             { is_accepted }
+//         );
+//         if (res?.status === 200) {
+//             let index = dataToRender.value.findIndex(
+//                 (item) => item.id == res.data.additional_cost.id
+//             );
+//             dataToRender.value.splice(index, 1);
+//         }
+//         confirmValidation.value = true;
+//         setTimeout(() => {
+//             confirmValidation.value = false;
+//         }, 1000);
+//     } catch (e) {
+//         console.log(e);
+//     }
+// }
 
 
 

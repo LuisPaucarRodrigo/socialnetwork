@@ -419,10 +419,6 @@ async function submit() {
         const response = await axios.put(url, form);
         updateFeasibility(cicsa_assignation_id.value, response.data)
         closeAddFeasibilityModal()
-        // confirmUpdateFeasibility.value = true
-        // setTimeout(() => {
-        //     confirmUpdateFeasibility.value = false
-        // }, 1500)
     } catch (error) {
         if (error.response) {
             if (error.response.data.errors) {
