@@ -31,4 +31,5 @@ Route::middleware('permission:CarManager')->group(function () {
 
     Route::get('/fleet_cars/expiration/alarms',[CarsController::class,'alarms'])->name('fleet.cars.alarms');
     Route::get('/fleet_cars/approve/alarms',[CarsController::class,'approveAlarms'])->name('fleet.cars.approveAlarms');
+    Route::put('/fleet_cars/show_checklist/accept_or_decline/{changelog}/{is_accepted}', [CarsController::class, 'acceptOrDecline'])->name('fleet.cars.show_checklist.accept_or_decline');
 });
