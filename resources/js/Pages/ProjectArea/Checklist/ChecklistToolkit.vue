@@ -316,7 +316,7 @@
         </Modal>
         <ConfirmDeleteModal
             :confirmingDeletion="confirmingDocDeletion"
-            itemType="Checklist Unidad Móvil"
+            itemType="Checklist Herramientas"
             :deleteFunction="deleteAdditional"
             @closeModal="closeModalDoc"
         />

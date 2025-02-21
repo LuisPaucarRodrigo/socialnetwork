@@ -105,7 +105,7 @@ class ChecklistsController extends Controller
             $data['user_id'] = Auth::user()->id;
             $data['user_name'] = Auth::user()->name;
             ChecklistCar::create($data);
-            return response()->json([], 201);
+            return response()->json([], 200);
         } catch (Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
@@ -127,7 +127,7 @@ class ChecklistsController extends Controller
             $data['user_id'] = Auth::user()->id;
             $data['user_name'] = Auth::user()->name;
             ChecklistToolkit::create($data);
-            return response()->json([], 201);
+            return response()->json([], 200);
         } catch (Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
@@ -145,7 +145,7 @@ class ChecklistsController extends Controller
             $data['user_name'] = Auth::user()->name;
             ChecklistDailytoolkit::create($data);
             DB::commit();
-            return response()->json([], 201);
+            return response()->json([], 200);
         } catch (Exception $e) {
             DB::rollback();
             return response()->json([
@@ -200,7 +200,7 @@ class ChecklistsController extends Controller
         $data['user_id'] = Auth::user()->id;
         $data['user_name'] = Auth::user()->name;
         ChecklistEpp::create($data);
-        return response()->json([], 201);
+        return response()->json([], 200);
     }
 
     public function epp_destroy($epp_id)

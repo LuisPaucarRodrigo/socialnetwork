@@ -160,7 +160,7 @@ class ApiController extends Controller
                 'preproject_code_id' => $data['id'],
             ]);
             DB::commit();
-            return response()->json([], 201);
+            return response()->json([], 200);
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json([
@@ -538,7 +538,7 @@ class ApiController extends Controller
 
             $validateData['user_id'] = $user->id;
             PextProjectExpense::create($validateData);
-            return response()->noContent();
+            return response()->json([],200);
         } catch (Exception $e) {
             return response()->json([
                 'error' => $e->getMessage()
@@ -671,7 +671,7 @@ class ApiController extends Controller
             }
             $new_expense->update($imageUpdates);
             DB::commit();
-            return response()->json([201]);
+            return response()->json([],200);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -725,6 +725,6 @@ class ApiController extends Controller
             'zones' => $zones,
             'employees' => $employees,
             'car' => $car ,
-        ]);
+        ],200);
     }
 }

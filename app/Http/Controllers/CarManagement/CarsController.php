@@ -47,7 +47,7 @@ class CarsController extends Controller
         $user = Auth::user();
         $cost_line = $request->cost_line;
         $search = $request->search;
-        $cars = Car::with(['user', 'costline', 'car_changelogs' => function ($query) {
+        $cars = Car::with(['user', 'costline', 'car_document.approvel_car_document','car_changelogs' => function ($query) {
             $query->orderBy('created_at', 'desc');
         }, 'car_changelogs.car_changelog_items', 'checklist'])
             ->where(function ($query) use ($search) {
