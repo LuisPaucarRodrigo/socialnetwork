@@ -228,6 +228,7 @@ class CarsController extends Controller
                     $document->move(public_path('documents/fleetcar/car_documents/'), $data[$archive]);
                 }
             }
+            
             $data['car_document_id'] = $carDocument->id;
             ApprovalCarDocument::create($data);
             return response()->json([], 200);
@@ -451,19 +452,17 @@ class CarsController extends Controller
             abort(403, 'Acción no permitida');
         }
 
-        $car = Car::where('id', $changelog->car_id)
-            ->with([
-                'user',
-                'costline',
-                'car_changelogs' => function ($query) {
-                    $query->orderBy('created_at', 'desc');
-                },
-                'car_changelogs.car_changelog_items',
-                'checklist'
-            ])
-            ->first();
-
         $changelog->update(['is_accepted' => $is_accepted]);
+        $car = Car::with([
+            'user',
+            'costline',
+            'car_changelogs' => function ($query) {
+                $query->orderBy('created_at', 'desc');
+            },
+            'car_changelogs.car_changelog_items',
+            'checklist'
+        ])
+        ->find($changelog->car_id);
 
         return response()->json($car);
     }

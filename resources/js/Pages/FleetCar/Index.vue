@@ -60,7 +60,7 @@
                                     <button v-if="hasPermission('CarManager')" @click="
                                         openCreateModalChangelog(
                                             null,
-                                            car.id
+                                            car
                                         )
                                         " class="text-blue-900">
                                         <svg viewBox="0 0 1024 1024" class="w-6 h-6 icon" version="1.1"
@@ -580,7 +580,7 @@
                                 <InputError :message="formDocument.errors.user" />
 
                                 <InputLabel for="gps_password">Password </InputLabel>
-                                <TextInput type="text" id="gps_password" v-model="formDocument.password" />
+                                <TextInput type="text" id="password" v-model="formDocument.password" />
                                 <InputError :message="formDocument.errors.password" />
                             </div>
                         </div>
@@ -922,6 +922,7 @@ const initialFormChangelog = {
     contact_name: "",
     contact_phone: "",
     invoice: "",
+    observation: "",
     items: [],
 };
 
@@ -993,6 +994,8 @@ function openModalChangelog() {
 }
 
 function openCreateModalChangelog(item, car) {
+    console.log("eduardo y juan traca",item,car)
+
     openModalChangelog();
     formChangelog.defaults({ ...(item ?? initialFormDocument) });
     car_id.value = car.id;
@@ -1123,8 +1126,8 @@ async function submitDocument() {
 async function submitChangelog() {
     let url = formChangelog.id
         ? route("fleet.cars.update_changelog", {
-            car_changelog: formChangelog.id,
-        })
+              car_changelog: formChangelog.id,
+          })
         : route("fleet.cars.store_changelog", { car: car_id.value });
     let method = "post";
     let formData = new FormData();
@@ -1158,6 +1161,7 @@ async function submitChangelog() {
         }
     }
 }
+
 
 function toogleChangelog(item) {
     if (carId.value === item.id) {
@@ -1234,8 +1238,8 @@ async function validateRegister(changelog_id, is_accepted) {
         is_accepted: is_accepted,
     });
     try {
-        await axios.put(url);
-        updateCar(changelog_id, "validateChangelog");
+        const response = await axios.put(url);
+        updateCar(response.data, "validateChangelog");
     } catch (e) {
         console.log(e);
     }
@@ -1250,25 +1254,4 @@ const toggleVisibility = (id) => {
     visibleChangelogs.value = new Set(visibleChangelogs.value);
 };
 
-// async function validateRegister(changelog_id, is_accepted) {
-//     const url = route("fleet.cars.show_checklist.accept_or_decline", {
-//         changelog: changelog_id,
-//         is_accepted: is_accepted,
-//     });
-//     try {
-//         await axios.put(url);
-//         updateCar(changelog_id, "validateChangelog");
-//     } catch (e) {
-//         console.log(e);
-//     }
-// }
-
-// const toggleVisibility = (id) => {
-//     if (visibleChangelogs.value.has(id)) {
-//         visibleChangelogs.value.delete(id);
-//     } else {
-//         visibleChangelogs.value.add(id);
-//     }
-//     visibleChangelogs.value = new Set(visibleChangelogs.value);
-// };
 </script>

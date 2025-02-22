@@ -711,7 +711,7 @@ Usuarios
                 </a>
                 <MyTransition v-if="hasPermission('UserManager')" :transitiondemonstration="showFleetCars">
                     <div class="relative">
-                        <Link class="w-full" :href="route('fleet.cars.index.approvel')">Aprovaciòn de Cambios</Link>
+                        <Link class="w-full" :href="route('fleet.cars.index.approvel')">Aprobaciòn de Cambios</Link>
                         <!-- <button v-if="documentsCarToExpire.length > 0"
                             @click="showDocumentsCarToExpireAlarms = !showDocumentsCarToExpireAlarms">
                             <span

@@ -485,7 +485,7 @@ async function approveImages(code_id) {
     try {
         await axios.get(route('preprojects.codereport.approveImages', { code_id: code_id }));
         titleSuccessImage.value = "Imagenes Aprobadas"
-        messageSuccessImage.value = "Las imagenes se aprovaron Correctamente"
+        messageSuccessImage.value = "Las imagenes se aprobaron Correctamente"
         approve_reject_Image.value = true
         setTimeout(() => {
             approve_reject_Image.value = false

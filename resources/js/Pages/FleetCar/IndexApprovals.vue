@@ -1,9 +1,9 @@
 <template>
 
-    <Head title="Gestion de Aprovaciones" />
+    <Head title="Gestion de Aprobaciones" />
     <AuthenticatedLayout redirectRoute="fleet.cars.index.approvel">
         <Toaster richColors />
-        <template #header> Aprovaciones de cambios de documentos </template>
+        <template #header> Aprobaciones de cambios de documentos </template>
         <div class="w-full">
             <TableStructure>
                 <template #thead>
@@ -74,7 +74,7 @@ const { change } = defineProps({
     change: Object
 })
 const changes = ref(change)
-
+console.log(changes.value)
 async function validate(approve_id) {
     let url = route('fleet.cars.approve.change', { id: approve_id })
     try {
