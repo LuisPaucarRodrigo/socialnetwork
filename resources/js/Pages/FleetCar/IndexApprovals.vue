@@ -74,7 +74,7 @@ const { change } = defineProps({
     change: Object
 })
 const changes = ref(change)
-console.log(changes.value)
+
 async function validate(approve_id) {
     let url = route('fleet.cars.approve.change', { id: approve_id })
     try {

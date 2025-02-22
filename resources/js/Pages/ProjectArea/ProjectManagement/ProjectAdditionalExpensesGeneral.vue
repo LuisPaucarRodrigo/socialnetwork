@@ -477,7 +477,7 @@
                                         <option disabled value="">
                                             Seleccionar Documento
                                         </option>
-                                        <option v-for="op in docTypes">{{ op }}</option>
+                                        <option v-for="op in documentsType">{{ op }}</option>
                                     </select>
                                     <InputError :message="form.errors.type_doc" />
                                 </div>
@@ -849,66 +849,10 @@ function handlerPreview(id) {
     );
 }
 
-// const initialExpenseFixed = [
-//     'Alquiler de Vehículos',
-//     'Alquiler de Locales',
-//     'Combustible',
-//     'Celulares',
-//     'Terceros',
-//     'Viáticos',
-//     'Seguros y Pólizas',
-//     'Gastos de Representación',
-//     'Reposición de Equipo',
-//     'Herramientas',
-//     'Equipos',
-//     'EPPs',
-//     'Adicionales',
-//     'Daños de Vehículos',
-//     'Planilla',
-//     'Otros',
-//     'Adicionales',
-//     'Daños de Vehículos',
-//     'Planilla',
-//     'Otros',
-// ]
-
-// const initialExpenseAdditional = [
-//     "Hospedaje",
-//     "Mensajería",
-//     "Consumibles",
-//     "Pasaje Interprovincial",
-//     "Taxis y Pasajes",
-//     "Bandeos",
-//     "Peaje",
-//     "Herramientas",
-//     "Equipos",
-//     "EPPs",
-//     "Seguros y Pólizas",
-//     "Otros",
-// ]
-
 const expenseTypes = props.fixedOrAdditional
     ? props.expenseTypeFixed
     : props.expenseType;
-// const costCenter = props.cost_center.map(item => item.name)
 
-// const zones = [
-//     "Arequipa",
-//     "Moquegua",
-//     "Tacna",
-//     "Cuzco",
-//     "Puno",
-//     "MDD"
-// ];
-
-// const docTypes = [
-//     "Efectivo",
-//     "Deposito",
-//     "Factura",
-//     "Boleta",
-//     "Ticket",
-//     "Yape-Plin"
-// ];
 
 const stateTypes = [
     "Pendiente",
