@@ -133,6 +133,7 @@ class CarsController extends Controller
     public function update(FleetCarRequest $request, Car $car)
     {
         $data = $request->validated();
+        $data['year'] = intval($data['year']);
         if ($request->hasFile('photo')) {
             $fileName = $car->photo;
             if ($fileName) {
