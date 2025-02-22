@@ -514,7 +514,6 @@
                                                                     null && hasPermission('UserManager')
                                                                 "
                                                                     @click="
-                                                                        () =>
                                                                             validateRegister(
                                                                                 changelog.id,
                                                                                 1
@@ -541,9 +540,7 @@
                                                                     changelog.is_accepted ===
                                                                     null && hasPermission('UserManager')
                                                                 "
-                                                                    @click="
-                                                                        () =>
-                                                                            validateRegister(
+                                                                    @click="                  validateRegister(
                                                                                 changelog.id,
                                                                                 0
                                                                             )
@@ -605,7 +602,7 @@
                                                                     </th>
                                                                     <th class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
                                                                         Nombre
-                                                                    </th>  
+                                                                    </th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
@@ -1721,8 +1718,8 @@ async function validateRegister(changelog_id, is_accepted) {
         is_accepted: is_accepted,
     });
     try {
-        await axios.put(url);
-        updateCar(changelog_id, "validateChangelog");
+        const response = await axios.put(url);
+        updateCar(response.data, "validateChangelog");
     } catch (e) {
         console.log(e);
     }
