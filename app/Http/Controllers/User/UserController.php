@@ -25,7 +25,7 @@ class UserController extends Controller
     {
         $searchQuery = $request->searchQuery;
         $platform = $request->platform;
-        $user = User::with(['employee:id'])->where(function ($query) use ($searchQuery) {
+        $user = User::with(['employee:id,user_id'])->where(function ($query) use ($searchQuery) {
             $query->where('name', 'like', "%$searchQuery%")
                 ->orWhere('dni', 'like', "%$searchQuery%");
         });

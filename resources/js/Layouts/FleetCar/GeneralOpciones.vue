@@ -1,6 +1,6 @@
 <template>
     <div class="my-3 flex justify-between">
-        <PrimaryButton v-if="hasPermission('UserManager')" @click="openModalCreate()" type="button">
+        <PrimaryButton v-if="hasPermission('CarManager')" @click="openModalCreate()" type="button">
             + Agregar
         </PrimaryButton>
         <div>

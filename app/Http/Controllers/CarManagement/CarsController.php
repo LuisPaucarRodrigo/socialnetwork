@@ -24,13 +24,20 @@ class CarsController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
+        
         $cars = Car::with(['user', 'costline', 'car_document.approvel_car_document', 'car_changelogs' => function ($query) {
             $query->orderBy('created_at', 'desc');
         }, 'car_changelogs.car_changelog_items', 'checklist']);
-        $users = User::where('role_id', 12)
-            ->get();
-        if ($user->role_id !== 1) {
+
+        $users = User::whereHas('role.permissions', function ($query) {
+            $query->where('name', 'Car');
+        })->get();
+        
+        $user = Auth::user();
+        // dd($user);
+        $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
+
+        if (!$userHasCarManagerPermission) {
             $cars->where('user_id', $user->id);
         }
 
@@ -47,7 +54,7 @@ class CarsController extends Controller
         $user = Auth::user();
         $cost_line = $request->cost_line;
         $search = $request->search;
-        $cars = Car::with(['user', 'costline', 'car_document.approvel_car_document','car_changelogs' => function ($query) {
+        $cars = Car::with(['user', 'costline', 'car_document.approvel_car_document', 'car_changelogs' => function ($query) {
             $query->orderBy('created_at', 'desc');
         }, 'car_changelogs.car_changelog_items', 'checklist'])
             ->where(function ($query) use ($search) {
@@ -56,7 +63,9 @@ class CarsController extends Controller
                     ->orWhere('model', 'like', "%$search%")
                     ->orWhere('type', 'like', "%$search%");
             });
-        if ($user->role_id !== 1) {
+            $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
+
+        if (!$userHasCarManagerPermission) {
             $cars->where('user_id', $user->id);
         }
         if (count($cost_line) < 3) {
@@ -74,8 +83,9 @@ class CarsController extends Controller
         $user = Auth::user();
         $today = Carbon::now();
         $expirationThreshold = $today->copy()->addDays(7);
+        $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
 
-        if ($user->role_id == 1) {
+        if ($userHasCarManagerPermission) {
             $cars = Car::whereHas('car_document', function ($query) use ($expirationThreshold) {
                 $query->where('technical_review_date', '<=', $expirationThreshold)
                     ->orWhere('soat_date', '<=', $expirationThreshold)
@@ -202,7 +212,9 @@ class CarsController extends Controller
         $data = $request->validated();
         $archives = ['ownership_card', 'technical_review', 'soat', 'insurance'];
         $user = Auth::user();
-        if ($user->role_id == 1) {
+        $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
+
+        if ($userHasCarManagerPermission) {
             foreach ($archives as $archive) {
                 if ($request->hasFile($archive)) {
                     $fileName = $carDocument->$archive;
@@ -228,7 +240,7 @@ class CarsController extends Controller
                     $document->move(public_path('documents/fleetcar/car_documents/'), $data[$archive]);
                 }
             }
-            
+
             $data['car_document_id'] = $carDocument->id;
             ApprovalCarDocument::create($data);
             return response()->json([], 200);
@@ -448,7 +460,9 @@ class CarsController extends Controller
     public function acceptOrDecline(CarChangelog $changelog, $is_accepted)
     {
         $user = Auth::user();
-        if ($user->role_id !== 1) {
+        $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
+
+        if (!$userHasCarManagerPermission) {
             abort(403, 'Acción no permitida');
         }
 
@@ -462,7 +476,7 @@ class CarsController extends Controller
             'car_changelogs.car_changelog_items',
             'checklist'
         ])
-        ->find($changelog->car_id);
+            ->find($changelog->car_id);
 
         return response()->json($car);
     }

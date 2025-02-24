@@ -41,7 +41,9 @@ class DatabaseSeeder extends Seeder
             'Purchasing' => 'Solo podra visualizarl Area de Compras',
             'HuaweiManager' => 'Permite acceso al Área de Huawei',
             'DocumentGestion' => 'Permite acceso al área de Gestión Documentaria',
-            'CarManager' => 'Permite acceso al área de Gestión de Autos'
+            'CarManager' => 'Permite acceso al área de Gestión de Autos',
+            'Car' => 'Funcionalidades limitadas en Gestión de Autos',
+
         ];
 
         // Permissions Admin
@@ -54,7 +56,8 @@ class DatabaseSeeder extends Seeder
             'PurchasingManager',
             'HuaweiManager',
             'DocumentGestion',
-            'CarManager'
+            'CarManager',
+            'Car'
         ];
 
         foreach ($permissions as $name => $description) {

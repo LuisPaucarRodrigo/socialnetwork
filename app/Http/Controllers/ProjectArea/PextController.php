@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\ProjectArea;
 
 use App\Constants\PextConstants;
+use App\Constants\PintConstants;
 use App\Exports\PextExpenseExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PextProjectRequest\StoreOrUpdateAssignationRequest;
@@ -247,11 +248,14 @@ class PextController extends Controller
                 }])->first();
             }
 
+            $zones = $type == 1 ? PintConstants::mobileZones() : PextConstants::getZone();
+
             return Inertia::render('ProjectArea/ProjectManagement/ProjectAdditional', [
                 'project' => $project,
                 'cost_line' => $cost_line,
                 'searchCondition' => $searchCondition,
                 'type' => $type,
+                'optionZones' => $zones
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->searchQuery;
