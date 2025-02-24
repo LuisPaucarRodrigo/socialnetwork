@@ -40,16 +40,21 @@ class ApiController extends Controller
         if (Auth::attempt($request->validated())) {
             $user = Auth::user();
             if ($request->hasMobileAccess($user)) {
-                $token = $user->createToken('MobileAppToken')->plainTextToken;
+
                 $employee = Employee::select('id', 'user_id')
                     ->where('user_id', $user->id)
                     ->with(['contract:id,cost_line_id,employee_id'])
                     ->first();
-                return response()->json([
-                    'id' => $user->id,
-                    'token' => $token,
-                    'cost_line_id' => $employee->contract->cost_line_id
-                ]);
+                if($employee){
+                    $token = $user->createToken('MobileAppToken')->plainTextToken;
+                    return response()->json([
+                        'id' => $user->id,
+                        'token' => $token,
+                        'cost_line_id' => $employee->contract->cost_line_id
+                    ]);
+                } else {
+                    return response()->json(['error' => 'Trabajador no registrado'], 422);
+                }
             } else {
                 return response()->json(['error' => 'Usuario no Autorizado'], 401);
             }
@@ -538,7 +543,7 @@ class ApiController extends Controller
 
             $validateData['user_id'] = $user->id;
             PextProjectExpense::create($validateData);
-            return response()->json([],200);
+            return response()->json([], 200);
         } catch (Exception $e) {
             return response()->json([
                 'error' => $e->getMessage()
@@ -671,7 +676,7 @@ class ApiController extends Controller
             }
             $new_expense->update($imageUpdates);
             DB::commit();
-            return response()->json([],200);
+            return response()->json([], 200);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -715,7 +720,7 @@ class ApiController extends Controller
             })
             ->get();
 
-        $zones = $cost_line_id == 1 ? PintConstants::mobileZones() : PextConstants::getZone() ;
+        $zones = $cost_line_id == 1 ? PintConstants::mobileZones() : PextConstants::getZone();
 
         $car = Car::select('id', 'plate')
             ->where('cost_line_id', $cost_line_id)
@@ -724,7 +729,7 @@ class ApiController extends Controller
         return response()->json([
             'zones' => $zones,
             'employees' => $employees,
-            'car' => $car ,
-        ],200);
+            'car' => $car,
+        ], 200);
     }
 }

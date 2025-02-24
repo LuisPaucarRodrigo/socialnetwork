@@ -314,13 +314,8 @@
                             <div class="mt-2">
                                 <select id="zone" v-model="form.zone" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option value="">Seleccionar Zona</option>
-                                    <option>Arequipa</option>
-                                    <option>Moquegua</option>
-                                    <option>Tacna</option>
-                                    <option>Cuzco</option>
-                                    <option>Puno</option>
-                                    <option>MDD</option>
+                                    <option disabled value="">Seleccionar Zona</option>
+                                    <option v-for="item in  optionZones">{{ item }}</option>
                                 </select>
                                 <InputError :message="form.errors.zone" />
                             </div>
@@ -330,13 +325,8 @@
                             <div class="mt-2">
                                 <select id="zone2" v-model="form.zone2" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option value="">Seleccionar Zona</option>
-                                    <option>Arequipa</option>
-                                    <option>Moquegua</option>
-                                    <option>Tacna</option>
-                                    <option>Cuzco</option>
-                                    <option>Puno</option>
-                                    <option>MDD</option>
+                                    <option disabled value="">Seleccionar Zona</option>
+                                    <option v-for="item in  optionZones">{{ item }}</option>
                                 </select>
                                 <InputError :message="form.errors.zone2" />
                             </div>
@@ -608,7 +598,7 @@ import { formattedDate, setAxiosErrors } from '@/utils/utils';
 import { notifyError, notify } from '@/Components/Notification';
 import { Toaster } from 'vue-sonner';
 
-const { project, auth, userPermissions, searchCondition, cost_line, type } = defineProps({
+const { project, auth, userPermissions, searchCondition, cost_line, type, optionZones } = defineProps({
     project: Object,
     auth: Object,
     userPermissions: Array,
@@ -618,6 +608,7 @@ const { project, auth, userPermissions, searchCondition, cost_line, type } = def
         type: String,
         Required: false
     },
+    optionZones:Array
 })
 
 const initialState = {

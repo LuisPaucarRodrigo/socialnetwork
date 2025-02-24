@@ -699,7 +699,7 @@ Usuarios
                     <Link class="w-full" :href="route('huawei.generalbalance')">Balance General</Link>
                 </MyTransition>
             </template>
-            <template v-if="hasPermission('CarManager')">
+            <template v-if="hasPermission('CarManager')|| this.hasPermission('Car')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
                     @click="showFleetCars = !showFleetCars">
                     <svg width="23px" height="23px" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -709,7 +709,7 @@ Usuarios
                     </svg>
                     <span class="mx-3">Flota de Vehiculos</span>
                 </a>
-                <MyTransition v-if="hasPermission('UserManager')" :transitiondemonstration="showFleetCars">
+                <MyTransition v-if="hasPermission('CarManager')" :transitiondemonstration="showFleetCars">
                     <div class="relative">
                         <Link class="w-full" :href="route('fleet.cars.index.approvel')">Aprobaciòn de Cambios</Link>
                         <!-- <button v-if="documentsCarToExpire.length > 0"
@@ -1064,7 +1064,7 @@ export default {
         // if (this.hasPermission('DocumentGestion')) {
         //     this.fetchArchiveRequest();
         // }
-        if (this.hasPermission('CarManager')) {
+        if (this.hasPermission('CarManager') || this.hasPermission('Car')) {
             this.fetchFleetCarCount();
         }
 
@@ -1083,7 +1083,7 @@ export default {
                 this.fetchCicsaSubSectionsCount();
             }
 
-            if (this.hasPermission('CarManager')) {
+            if (this.hasPermission('CarManager') || this.hasPermission('Car')) {
                 this.fetchFleetCarCount();
             }
 
