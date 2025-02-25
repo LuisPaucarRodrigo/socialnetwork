@@ -296,7 +296,7 @@
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap">
-                            {{ item.operation_date }}
+                            {{ formattedDate(item.operation_date) }}
                         </td>
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums">
                             {{ item.doc_number }}
@@ -413,7 +413,7 @@
             </table>
         </div>
 
-        <div v-if="!expenses"
+        <div v-if="expenses.data"
             class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
             <pagination :links="expenses.links" />
         </div>
@@ -683,7 +683,11 @@ const props = defineProps({
     userPermissions: Array,
     state: String,
     project_id: String,
-    fixedOrAdditional: Boolean
+    fixedOrAdditional: Boolean,
+    zones:Array,
+    docTypes:Array,
+    expenseTypesFixed:Array,
+    expenseTypesAdditional:Array
 });
 
 const expenses = ref(props.expense);
@@ -823,78 +827,23 @@ function handlerPreview(id) {
     );
 }
 
-const zones = [
-    "Arequipa",
-    "Moquegua",
-    "Tacna",
-    "Cuzco",
-    "Puno",
-    "MDD"
-];
-
-const initialExpenseFixed = [
-    'Alquiler de Vehículos',
-    'Alquiler de Locales',
-    'Combustible',
-    'Celulares',
-    'Terceros',
-    'Viáticos',
-    'Seguros y Pólizas',
-    'Gastos de Representación',
-    'Reposición de Equipo',
-    'Herramientas',
-    'Equipos',
-    'EPPs',
-    'Adicionales',
-    'Daños de Vehículos',
-    'Planilla',
-    'Otros',
-    'Adicionales',
-    'Daños de Vehículos',
-    'Planilla',
-    'Otros',
-]
-
-const initialExpenseAdditional = [
-    "Hospedaje",
-    "Mensajería",
-    "Consumibles",
-    "Pasaje Interprovincial",
-    "Taxis y Pasajes",
-    "Bandeos",
-    "Peaje",
-    "Herramientas",
-    "Equipos",
-    "EPPs",
-    "Seguros y Pólizas",
-    "Otros",
-]
-
 const expenseTypes = props.fixedOrAdditional
-    ? initialExpenseFixed
-    : initialExpenseAdditional;
-
-const docTypes = [
-    "Efectivo",
-    "Deposito",
-    "Factura",
-    "Boleta",
-    "Voucher de Pago",
-];
+    ? props.expenseTypesFixed
+    : props.expenseTypesAdditional;
 
 const stateTypes = [
     "Pendiente",
     "Aceptado",
-    "Aceptado-Validado",
+    "Aceptado - Validado",
 ];
 
 const initialFilterFormState = {
     fixedOrAdditional: props.fixedOrAdditional,
     rejected: true,
     search: "",
-    selectedZones: zones,
+    selectedZones: props.zones,
     selectedExpenseTypes: expenseTypes,
-    selectedDocTypes: docTypes,
+    selectedDocTypes: props.docTypes,
     selectedStateTypes: stateTypes,
     opStartDate: "",
     opEndDate: "",

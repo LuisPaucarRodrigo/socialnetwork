@@ -280,7 +280,7 @@
                             <InputLabel for="pint_date">Fecha de PINT</InputLabel>
                             <div class="mt-2">
                                 <TextInput type="date" v-model="form.pint_date" autocomplete="off" id="pint_date" />
-                                <InputError :message="form.errors.projected_amount" />
+                                <InputError :message="form.errors.pint_date" />
                             </div>
                         </div>
                         <div class="sm:col-span-1">

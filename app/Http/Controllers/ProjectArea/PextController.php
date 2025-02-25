@@ -106,6 +106,10 @@ class PextController extends Controller
                 'expense' => $expense,
                 'providers' => $providers,
                 'project_id' => $project_id,
+                'zones' => PextConstants::getZone(),
+                'docTypes' => PextConstants::getDocumentsType(),
+                'expenseTypesFixed' => PextConstants::getExpenseTypeFixed(),
+                'expenseTypesAdditional' => PextConstants::getExpenseType(),
                 'fixedOrAdditional' => json_decode($fixedOrAdditional)
             ]
         );
@@ -703,7 +707,7 @@ class PextController extends Controller
         $expense = $this->pextServices->textSearch($expense, $searchTerms);
         $expense = $this->pextServices->filterAdvance($expense, $request)->get();
         $expense = $this->pextServices->addCalculatedFields($expense);
-        $expense = $this->pextServices->filterCalculatedFields($expense, $selectedStateTypes)->get();
+        $expense = $this->pextServices->filterCalculatedFields($expense, $selectedStateTypes);
         return response()->json($expense, 200);
     }
 

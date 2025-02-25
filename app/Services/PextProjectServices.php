@@ -110,7 +110,8 @@ class PextProjectServices
             $query->where('ruc', 'like', "%$searchTerms%")
                 ->orWhere('doc_date', 'like', "%$searchTerms%")
                 ->orWhere('description', 'like', "%$searchTerms%")
-                ->orWhere('amount', 'like', "%$searchTerms%");
+                ->orWhere('amount', 'like', "%$searchTerms%")
+                ->orWhere('doc_number', 'like', "%$searchTerms%");
         });
         return $expense;
     }
@@ -141,7 +142,7 @@ class PextProjectServices
             $expense->where('operation_date', '<=', $request->opEndDate);
         }
 
-        if ($request->selectedZones && count($request->selectedZones) < 6) {
+        if (count($request->selectedZones) < 7) {
             $expense->whereIn('zone', $request->selectedZones);
         }
 
@@ -152,7 +153,7 @@ class PextProjectServices
         if (count($request->selectedDocTypes) < 6) {
             $expense->whereIn('type_doc', $request->selectedDocTypes);
         }
-        $expense->orderBy('doc_date');
+        $expense->orderBy('created_at', 'desc');
         return $expense;
     }
 
@@ -167,8 +168,8 @@ class PextProjectServices
 
     public function filterCalculatedFields($expense, $selectedStateTypes)
     {
-        if (count($selectedStateTypes)) {
-            $expense->filter(function ($item) use ($selectedStateTypes) {
+        if (count($selectedStateTypes) < 3) {
+            $expense = $expense->filter(function ($item) use ($selectedStateTypes) {
                 return in_array($item->real_state, $selectedStateTypes);
             })->values()->all();
         }

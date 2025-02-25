@@ -35,6 +35,8 @@ use App\Models\CicsaPurchaseOrder;
 use App\Models\CicsaServiceOrder;
 use App\Models\CicsaPurchaseOrderValidation;
 use App\Models\CostLine;
+use App\Models\PextProjectExpense;
+use App\Models\Project;
 use App\Models\ToolsGtd;
 use App\Services\CicsaServices;
 use Inertia\Inertia;
@@ -138,7 +140,7 @@ class CicsaController extends Controller
                     );
                 }
             }
-            
+
             $projectsCicsa = $this->cicsaService->filteredAdvance($request, $projectsCicsa);
             $projectsCicsa = $projectsCicsa->get();
 
@@ -165,8 +167,16 @@ class CicsaController extends Controller
     public function destroy($ca_id)
     {
         try {
-            CicsaAssignation::findOrFail($ca_id)->delete();
-            return response()->noContent();
+            $cicsa = CicsaAssignation::findOrFail($ca_id);
+            $expenses = PextProjectExpense::where('project_id', $cicsa->project_id)->exists();
+            if ($expenses) {
+                return response()->json(
+                    ['errorMessage' => "No se puede eliminar porque hay gastos asociados al proyecto"],
+                    500
+                );
+            }
+            Project::findOrFail($cicsa->project_id)->delete();
+            return response()->json([], 200);
         } catch (Exception $e) {
             return response()->json($e);
         }
@@ -320,7 +330,7 @@ class CicsaController extends Controller
             ['id' => $cicsa_material_id],
             $validateData
         );
-        
+
         if ($cicsaMaterial->cicsa_material_items) {
             CicsaMaterialsItem::where('cicsa_material_id', $cicsaMaterial->id)->delete();
         }
