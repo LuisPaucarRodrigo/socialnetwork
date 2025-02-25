@@ -161,7 +161,6 @@
                 <thead class="sticky top-0 z-20">
                     <tr
                         class=" border-b bg-gray-50 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">
-
                         <th class="bg-gray-100 border-b-2 border-gray-20 sticky left-0 z-10">
                             <div class="w-2"></div>
                         </th>
