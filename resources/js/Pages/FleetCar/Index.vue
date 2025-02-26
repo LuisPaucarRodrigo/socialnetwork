@@ -462,8 +462,9 @@
         <Modal :show="showModalDocumentCar">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
-                    {{ formDocument.id ? "Editar " : "Nueva " }}Documentaciòn UM
+                    {{ formDocument.id ? "Editar " : "Nueva " }}Documentaciòn UM 
                 </h2>
+                <p>Dueño: {{ show_owner }} Placa: {{ show_plate }}</p>
                 <form @submit.prevent="submitDocument">
                     <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
                         <div class="mt-2">
@@ -828,12 +829,11 @@ import Pagination from "@/Components/Pagination.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import Modal from "@/Components/Modal.vue";
-import { Head, Link, router, useForm } from "@inertiajs/vue3";
+import { Head, useForm } from "@inertiajs/vue3";
 import { ref, watch } from "vue";
 import InputError from "@/Components/InputError.vue";
 import {
     formattedDate,
-    realNumeration,
     setAxiosErrors,
     toFormData,
 } from "@/utils/utils";
@@ -861,7 +861,7 @@ const props = defineProps({
 });
 
 const cars = ref(props.car);
-console.log(cars)
+
 const showModalCar = ref(false);
 const showModalDeleteCars = ref(false);
 const car_id = ref(null);
@@ -972,6 +972,8 @@ function openModalDocument() {
 }
 
 function openModalCreateDocument(item) {
+    show_owner.value = item.user.name
+    show_plate.value = item.plate
     date_technical_review.value = item.year + 4 <= new Date().getFullYear();
     archivesDocument.value = {};
     openModalDocument();

@@ -70,14 +70,11 @@
                 </form>
             </div>
         </Modal>
-        <!-- <ConfirmDeleteModal :confirmingDeletion="confirmingUserDeletion" itemType="empleado"
-            :deleteText="deleteButtonText" :deleteFunction="deleteEmployee" @closeModal="closeModal" /> -->
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';

@@ -210,8 +210,7 @@
                 </div>
 
                 <form @submit.prevent="handleSearch" class="flex items-center w-full sm:w-auto">
-                    <TextInput data-tooltip-target="search_fields" type="text" placeholder="Buscar..."
-                        v-model="filterForm.search" :handleEnter="handleSearch" />
+                    <Search v-model:search="filterForm.search" fields="Ruc , Numero de Documento, Numero de Operacion, Descripcion, Monto Total"/>
                     <button type="submit"
                         class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                         <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none"
@@ -221,12 +220,6 @@
                                 stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </button>
-
-                    <div id="search_fields" role="tooltip"
-                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                        Ruc , Numero de Documento, Numero de Operacion, Descripcion, Monto Total
-                        <div class="tooltip-arrow" data-popper-arrow></div>
-                    </div>
                 </form>
             </div>
         </div>
@@ -1175,6 +1168,7 @@ import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
+import Search from "@/Components/Search.vue";
 
 const props = defineProps({
     additional_costs: Object,
@@ -1416,10 +1410,10 @@ async function search_advance(data) {
     }
 }
 
-async function handleSearch() {
-    filterMode.value = true;
-    search_advance(filterForm.value);
-}
+// async function handleSearch() {
+//     filterMode.value = true;
+//     search_advance(filterForm.value);
+// }
 
 //import modal
 const showImportModal = ref(false);
