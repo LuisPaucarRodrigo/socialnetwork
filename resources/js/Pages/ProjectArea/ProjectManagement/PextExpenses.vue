@@ -144,12 +144,7 @@
                     </dropdown>
                 </div>
                 <div class="flex space-x-3">
-                    <TextInput type="text" placeholder="Buscar..." v-model="filterForm.search" class="h-auto" />
-                    <div id="search_fields" role="tooltip"
-                        class="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                        Ruc,Fecha Documento,Descripción,Monto
-                        <div class="tooltip-arrow" data-popper-arrow></div>
-                    </div>
+                    <Search v-model:search="filterForm.search" fields="Ruc,Fecha Documento,Descripción,Monto"/>
                 </div>
             </div>
         </div>
@@ -675,6 +670,7 @@ import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
+import Search from "@/Components/Search.vue";
 
 const props = defineProps({
     expense: Object,

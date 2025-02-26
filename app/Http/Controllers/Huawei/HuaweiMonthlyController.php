@@ -71,7 +71,7 @@ class HuaweiMonthlyController extends Controller
     {
         $expenses = HuaweiMonthlyExpense::where('huawei_monthly_project_id', $project->id)
             ->with('huawei_project.huawei_site')
-            ->orderBy('expense_date');
+            ->orderBy('expense_date', 'desc');
         $filteredExpenses = $expenses->get()->filter(fn($expense) => $expense->huawei_project);
 
         $summary = [
@@ -110,7 +110,7 @@ class HuaweiMonthlyController extends Controller
             });
 
         // Ejecutar la consulta y obtener los resultados
-        $expenses = $expensesQuery->orderBy('expense_date')
+        $expenses = $expensesQuery->orderBy('expense_date', 'desc')
             ->with('huawei_project.huawei_site')
             ->get();
 
@@ -194,6 +194,7 @@ class HuaweiMonthlyController extends Controller
         // Obtener todas las expenses según los filtros de base de datos
         $expenses = $expensesQuery->orderBy('expense_date')
             ->with('huawei_project.huawei_site')
+            ->orderBy('expense_date', 'desc')
             ->get();
 
         // Si se han seleccionado menos de 4 estados, filtrar las expenses por el campo real_state
@@ -343,7 +344,7 @@ class HuaweiMonthlyController extends Controller
 
         // Definir el rango de lectura: A1 hasta la última fila en la columna D
         $startCell = 'A1';
-        $endCell = 'N' . $sheet->getHighestRow();
+        $endCell = 'O' . $sheet->getHighestRow();
         $range = "$startCell:$endCell";
 
         // Leer el rango especificado
@@ -360,36 +361,58 @@ class HuaweiMonthlyController extends Controller
                 continue;
 
             $rowObject = (object) [
-                'expense_type' => $this->sanitizeText($row['A'], true),
+                'employee' => $this->sanitizeText($row['A'], true),
                 'project_id' => $row['B'] ? HuaweiProject::where('assigned_diu', $row['B'])->first()->id : null,
-                'employee' => $row['C'],
+                'expense_date' => $this->sanitizeDate($row['C']),
                 'cdp_type' => $this->sanitizeText($row['D'], true),
-                'expense_date' => $this->sanitizeDate($row['E']),
-                'doc_number' => $row['F'],
-                'op_number' => $row['G'],
-                'ruc' => $row['H'],
+                'doc_number' => $row['E'],
+                'op_number' => $row['F'],
+                'ruc' => $row['G'],
+                'amount' => $this->sanitizeNumber($row['H']),
                 'description' => $row['I'],
-                'amount' => $row['J'],
-                'ec_expense_date' => $this->sanitizeDate($row['K']),
-                'ec_op_number' => $row['L'],
-                'ec_amount' => $row['M'],
-                'refund_status' => $this->sanitizeText($row['N'], false),
+                'expense_type' => $row['J'],
+                'ec_expense_date' => $this->sanitizeDate($row['L']),
+                'ec_op_number' => $row['M'],
+                'ec_amount' => $this->sanitizeNumber($row['N']),
+                'refund_status' => $this->sanitizeText($row['O'], false),
             ];
 
             $rowsAsObjects[] = $rowObject;
         }
 
         DB::beginTransaction();
-        $projectDate = Carbon::parse($monthly_project->date);
-        $startOfMonth = $projectDate->startOfMonth();
-        $endOfMonth = $projectDate->endOfMonth();
-
         foreach ($rowsAsObjects as $item) {
             
-            $expenseDate = Carbon::parse($item->expense_date);
-            if ($expenseDate->lt($startOfMonth) || $expenseDate->gt($endOfMonth)) {
+            if (!empty($item->expense_date)) {
+                try {
+                    $expenseDate = Carbon::parse($item->expense_date);
+            
+                    $year = Carbon::parse($monthly_project->date)->year;
+                    $month = Carbon::parse($monthly_project->date)->month;
+            
+                    $startOfMonth = Carbon::createFromDate($year, $month, 1)->startOfDay();
+                    $endOfMonth = Carbon::createFromDate($year, $month, 1)->endOfMonth()->endOfDay();
+            
+                    if ($expenseDate->lt($startOfMonth) || $expenseDate->gt($endOfMonth)) {
+                        DB::rollBack();
+                        abort(400, 'La fecha del gasto está fuera del mes del proyecto.');
+                    }
+                } catch (\Exception $e) {
+                    DB::rollBack();
+                    abort(400, 'Formato de fecha inválido.');
+                }
+            } else {
                 DB::rollBack();
-                abort(403, 'Una o más fechas de gasto no están dentro del mes del proyecto');
+                abort(400, 'Fecha de gasto requerida.');
+            }
+            
+            if (!$item->expense_type || !$item->expense_date || !$item->cdp_type || !$item->amount || !$item->description) {
+                DB::rollBack();
+                abort(403, 'Llene los campos obligatorios');
+            }
+
+            if (!$item->refund_status){
+                $item->refund_status = 'PENDIENTE';
             }
 
             HuaweiMonthlyExpense::create([
@@ -571,5 +594,24 @@ class HuaweiMonthlyController extends Controller
             return preg_replace('/\s+/', '', $text);
         }
     }
+
+    private function sanitizeNumber($text)
+    {
+        // Remover todos los caracteres que no sean dígitos o puntos
+        $sanitized = preg_replace('/[^0-9.]/', '', $text);
+    
+        // Si hay más de un punto, conservar solo el primero
+        if (substr_count($sanitized, '.') > 1) {
+            $parts = explode('.', $sanitized);
+            $sanitized = array_shift($parts) . '.' . implode('', $parts);
+        }
+    
+        // Eliminar ceros a la izquierda innecesarios
+        $sanitized = ltrim($sanitized, '0');
+    
+        // Si después de limpiar queda vacío, devolver "0"
+        return $sanitized === '' ? '0' : $sanitized;
+    }
+    
 
 }

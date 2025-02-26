@@ -72,13 +72,7 @@
                     </dropdown>
                 </div>
                 <div class="flex space-x-3">
-                    <TextInput data-tooltip-target="search_fields" type="text" v-model="formSearch.search"
-                        placeholder="Buscar ..." />
-                    <div id="search_fields" role="tooltip"
-                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                        Nombre,Codigo,CPE
-                        <div class="tooltip-arrow" data-popper-arrow></div>
-                    </div>
+                    <Search v-model:search="formSearch.search" fields="Nombre,Codigo,CPE"/>
                 </div>
             </div>
             <br>
@@ -597,6 +591,7 @@ import InputError from '@/Components/InputError.vue';
 import { formattedDate, setAxiosErrors } from '@/utils/utils';
 import { notifyError, notify } from '@/Components/Notification';
 import { Toaster } from 'vue-sonner';
+import Search from '@/Components/Search.vue';
 
 const { project, auth, userPermissions, searchCondition, cost_line, type, optionZones } = defineProps({
     project: Object,

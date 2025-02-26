@@ -116,13 +116,7 @@
                     </dropdown>
                 </div>
                 <div class="flex space-x-3">
-                    <TextInput data-tooltip-target="search_fields" type="text" placeholder="Buscar..."
-                        v-model="filterForm.search" class="h-auto" />
-                    <div id="search_fields" role="tooltip"
-                        class="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                        Ruc,Fecha Documento,Descripción,Monto
-                        <div class="tooltip-arrow" data-popper-arrow></div>
-                    </div>
+                    <Search v-model:search="filterForm.search" fields="Ruc,Fecha Documento,Descripción,Monto"/>
                 </div>
             </div>
         </div>
@@ -375,29 +369,20 @@
 
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
-import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
-import SecondaryButton from "@/Components/SecondaryButton.vue";
-import InputError from "@/Components/InputError.vue";
-import InputLabel from "@/Components/InputLabel.vue";
-import Modal from "@/Components/Modal.vue";
 import { ref, watch } from "vue";
-import { Head, useForm, router, Link } from "@inertiajs/vue3";
-import { TrashIcon, PencilSquareIcon, ServerIcon } from "@heroicons/vue/24/outline";
+import { Head, useForm, Link } from "@inertiajs/vue3";
+import { ServerIcon } from "@heroicons/vue/24/outline";
 import { formattedDate } from "@/utils/utils";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import InputFile from "@/Components/InputFile.vue";
 import Pagination from "@/Components/Pagination.vue";
 import { EyeIcon } from "@heroicons/vue/24/outline";
 import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
 import axios from "axios";
-import TextInput from "@/Components/TextInput.vue";
 import Dropdown from "@/Components/Dropdown.vue";
-import { setAxiosErrors, toFormData } from "@/utils/utils";
-import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import ChartsAdditionalExpenses from "./ChartsAdditionalExpenses.vue";
+import Search from "@/Components/Search.vue";
 
 const props = defineProps({
     expense: Object,

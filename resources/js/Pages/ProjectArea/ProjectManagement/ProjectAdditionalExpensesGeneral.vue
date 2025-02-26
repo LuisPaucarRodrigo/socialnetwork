@@ -142,13 +142,7 @@
                     </dropdown>
                 </div>
                 <div class="flex space-x-3">
-                    <TextInput data-tooltip-target="search_fields" type="text" placeholder="Buscar..."
-                        v-model="filterForm.search" class="h-auto" />
-                    <div id="search_fields" role="tooltip"
-                        class="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                        Ruc,Fecha Documento,Descripción,Monto
-                        <div class="tooltip-arrow" data-popper-arrow></div>
-                    </div>
+                    <Search v-model:search="filterForm.search" fields="Ruc,Fecha Documento,Descripción,Monto"/>
                 </div>
             </div>
         </div>
@@ -422,10 +416,10 @@
                     <div class="space-y-12 mt-4">
                         <div class="grid sm:grid-cols-2 gap-6 pb-6">
                             <div v-if="!form.id">
-                                <InputLabel for="project_id" class="font-medium leading-6 text-gray-900">Zona
+                                <InputLabel for="zone" class="font-medium leading-6 text-gray-900">Zona
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <select id="project_id" v-model="form.zone"
+                                    <select id="zone" v-model="form.zone"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         <option disabled value="">
                                             Seleccionar Zona
@@ -434,7 +428,7 @@
                                             {{ zone }}
                                         </option>
                                     </select>
-                                    <InputError :message="form.errors.project_id" />
+                                    <InputError :message="form.errors.zone" />
                                 </div>
                             </div>
                             <div v-if="!form.id">
@@ -663,8 +657,6 @@
 
         <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Gasto"
             :deleteFunction="deleteAdditional" @closeModal="closeModalDoc" />
-        <!-- <SuccessOperationModal :confirming="confirmValidation" :title="'Validación'"
-            :message="'La validación del gasto fue exitosa.'" /> -->
         <ConfirmateModal :showConfirm="showSwapCostsModal" tittle="Cambio de gastos adicionales a fijos"
             text="La siguiente acción ya no se podrá revertir, ¿Desea continuar?" :actionFunction="swapCosts"
             @closeModal="closeSwapCostsModal" />
@@ -674,7 +666,6 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
-import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
@@ -689,13 +680,13 @@ import Pagination from "@/Components/Pagination.vue";
 import { EyeIcon } from "@heroicons/vue/24/outline";
 import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
 import axios from "axios";
-import TextInput from "@/Components/TextInput.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import ChartsAdditionalExpenses from "./ChartsAdditionalExpenses.vue";
+import Search from "@/Components/Search.vue";
 
 const props = defineProps({
     expense: Object,
@@ -878,6 +869,12 @@ const initialFilterFormState = {
 const filterForm = ref({
     ...initialFilterFormState
 });
+
+watch(() => form.project_id, (newval) => {
+    const project = cicsaAssignation.value.find(item => item.project_id == newval);
+    form.description = project ? project.project_name : "";
+});
+
 
 watch(() => form.zone, () => {
     getProject()
