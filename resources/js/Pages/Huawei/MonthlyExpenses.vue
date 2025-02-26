@@ -1341,7 +1341,7 @@
                             >*</span
                         >) indica que el campo es obligatorio.
                     </p>
-                    <p class="text-gray-700">
+                    <!-- <p class="text-gray-700">
                         <span class="font-semibold text-indigo-600">•</span> Las
                         columnas
                         <span class="font-semibold text-indigo-600"
@@ -1349,7 +1349,7 @@
                         >
                         tienen validación de datos (usar los datos de la lista
                         preferiblemente).
-                    </p>
+                    </p> -->
                     <p class="text-gray-700">
                         <span class="font-semibold text-indigo-600">•</span>
                         Escribir las fechas en formato regular, e.j.
@@ -1361,14 +1361,14 @@
                     </p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5 text-[12px]">
                     <div
                         class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
                     >
                         <span class="font-black text-indigo-700"
                             >* Columna A:</span
                         >
-                        <span class="text-gray-700">Tipo de Gasto</span>
+                        <span class="text-gray-700">Personal</span>
                     </div>
                     <div
                         class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
@@ -1384,7 +1384,7 @@
                         <span class="font-black text-indigo-700"
                             >* Columna C:</span
                         >
-                        <span class="text-gray-700">Empleado</span>
+                        <span class="text-gray-700">Fecha del gasto</span>
                     </div>
                     <div
                         class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
@@ -1398,9 +1398,9 @@
                         class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
                     >
                         <span class="font-black text-indigo-700"
-                            >* Columna E:</span
+                            >Columna E:</span
                         >
-                        <span class="text-gray-700">Fecha del Gasto</span>
+                        <span class="text-gray-700">N° de Serie</span>
                     </div>
                     <div
                         class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
@@ -1408,7 +1408,7 @@
                         <span class="font-black text-indigo-700"
                             >Columna F:</span
                         >
-                        <span class="text-gray-700">Serie</span>
+                        <span class="text-gray-700">Correlativo</span>
                     </div>
                     <div
                         class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
@@ -1416,15 +1416,15 @@
                         <span class="font-black text-indigo-700"
                             >Columna G:</span
                         >
-                        <span class="text-gray-700">Correlativo</span>
+                        <span class="text-gray-700">RUC</span>
                     </div>
                     <div
                         class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
                     >
                         <span class="font-black text-indigo-700"
-                            >Columna H:</span
+                            >* Columna H:</span
                         >
-                        <span class="text-gray-700">RUC</span>
+                        <span class="text-gray-700">Monto</span>
                     </div>
                     <div
                         class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
@@ -1440,23 +1440,31 @@
                         <span class="font-black text-indigo-700"
                             >* Columna J:</span
                         >
-                        <span class="text-gray-700">Monto</span>
+                        <span class="text-gray-700">Tipo de gasto</span>
                     </div>
                     <div
                         class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
                     >
                         <span class="font-black text-indigo-700"
-                            >* Columna K:</span
+                            >Columna K:</span
                         >
                         <span class="text-gray-700"
-                            >Fecha de Depósito E.C.</span
+                            >Tipo de cuenta</span
                         >
                     </div>
                     <div
                         class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
                     >
                         <span class="font-black text-indigo-700"
-                            >* Columna L:</span
+                            >Columna L:</span
+                        >
+                        <span class="text-gray-700">Fecha de Depósito E.C.</span>
+                    </div>
+                    <div
+                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
+                    >
+                        <span class="font-black text-indigo-700"
+                            >Columna M:</span
                         >
                         <span class="text-gray-700">N° Operación E.C.</span>
                     </div>
@@ -1464,7 +1472,7 @@
                         class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
                     >
                         <span class="font-black text-indigo-700"
-                            >* Columna M:</span
+                            >Columna N:</span
                         >
                         <span class="text-gray-700">Monto E.C.</span>
                     </div>
@@ -1472,7 +1480,7 @@
                         class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
                     >
                         <span class="font-black text-indigo-700"
-                            >* Columna N:</span
+                            >Columna O:</span
                         >
                         <span class="text-gray-700">Estado de Reembolso</span>
                     </div>
