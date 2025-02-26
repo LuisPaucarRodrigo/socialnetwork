@@ -950,6 +950,7 @@ watch(
         filterForm.value.selectedZones,
         filterForm.value.selectedExpenseTypes,
         filterForm.value.selectedDocTypes,
+        filterForm.value.search,
     ],
     () => {
         filterMode.value = true;
