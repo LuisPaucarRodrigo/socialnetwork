@@ -33,6 +33,7 @@ class PextConstants
             "Equipos",
             "Epps",
             "Seguro y Pólizas",
+            "Consumibles",
             "Otros"
         ];
     }

@@ -47,13 +47,7 @@
                     </div>
                 </div>
                 <div class="flex space-x-4">
-                    <TextInput data-tooltip-target="search_fields" type="text" v-model="filterForm.search"
-                        placeholder="Buscar ..." />
-                    <div id="search_fields" role="tooltip"
-                        class="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                        Nombre,Cliente,Codigo
-                        <div class="tooltip-arrow" data-popper-arrow></div>
-                    </div>
+                    <Search v-model:search="filterForm.search" fields="Nombre,Cliente,Codigo"/>
                     <select v-model="filterForm.typeStages"
                         class="block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
                         <option disabled value="">Seleccionar Etapa</option>
@@ -1868,6 +1862,7 @@ import TextInput from "@/Components/TextInput.vue";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import { notifyError } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
+import Search from "@/Components/Search.vue";
 
 const { auth, projects, center_list, type } = defineProps({
     auth: Object,
