@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Log;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
@@ -221,7 +222,12 @@ class HuaweiMonthlyController extends Controller
     public function storeExpense(HuaweiMonthlyExpenseRequest $request)
     {
         $data = $request->validated();
-        $data['zone'] = HuaweiProject::find($data['huawei_project_id'])->huawei_site->name ?? 'Sin zona';
+
+        // if ($data['huawei_project_id']) {
+        //     $data['zone'] = HuaweiProject::find($data['huawei_project_id'])->huawei_site->name;
+        // }else{
+        //     $data['zone'] = "Sin zona";
+        // }    
         $expense = HuaweiMonthlyExpense::create($data);
 
         $expenseDirectory = 'documents/huawei/monthly_expenses/';
@@ -249,36 +255,41 @@ class HuaweiMonthlyController extends Controller
     public function updateExpense(HuaweiMonthlyExpense $expense, HuaweiMonthlyExpenseRequest $request)
     {
         $data = $request->validated();
-        $data['zone'] = HuaweiProject::find($data['huawei_project_id'])->huawei_site->name ?? 'Sin zona';
+
+        // if ($data['huawei_project_id']) {
+        //     $data['zone'] = HuaweiProject::find($data['huawei_project_id'])->huawei_site->name;
+        // }else{
+        //     $data['zone'] = "Sin zona";
+        // }    
 
         $expenseDirectory = 'documents/huawei/monthly_expenses/';
-
         $imageFields = ['image1', 'image2', 'image3'];
-
-        foreach ($imageFields as $index => $field) {
-            if ($request->hasFile($field)) {
-                if ($expense->$field) {
-                    $oldPath = public_path($expenseDirectory . $expense->$field);
-                    if (file_exists($oldPath)) {
-                        unlink($oldPath);
+        
+            foreach ($imageFields as $index => $field) {
+                if ($request->hasFile($field)) {
+                    // Eliminar imagen anterior si existe
+                    if (!empty($expense->$field)) {
+                        $oldPath = public_path($expenseDirectory . $expense->$field);
+                        if (file_exists($oldPath)) {
+                            unlink($oldPath);
+                        }
                     }
+        
+                    // Guardar nueva imagen
+                    $imageFile = $request->file($field);
+                    $filename = "expense_{$expense->id}_" . ($index + 1) . '_' . time() . '.' . $imageFile->getClientOriginalExtension();
+                    $imageFile->move(public_path($expenseDirectory), $filename);
+                    $data[$field] = $filename;
                 }
-
-                $imageFile = $request->file($field);
-                $filename = "expense_{$expense->id}_" . ($index + 1) . '_' . time() . '.' . $imageFile->getClientOriginalExtension();
-                $imageFile->move(public_path('documents/huawei/monthly_expenses/'), $filename);
-                $data[$field] = $filename;
-            } else {
-                $data[$field] = $expense->$field;
             }
-        }
-
-        $expense->update($data);
-        if ($expense->huawei_project_id) {
+        
+            $expense->update($data);
             $expense->load('huawei_project');
-        }
+
+    
         return response()->json($expense, 200);
     }
+    
 
     public function showImage(HuaweiMonthlyExpense $expense, $image)
     {
@@ -381,37 +392,26 @@ class HuaweiMonthlyController extends Controller
         }
 
         DB::beginTransaction();
+
+        $year = Carbon::parse($monthly_project->date)->year;
+        $month = Carbon::parse($monthly_project->date)->month;
+
+        $startOfMonth = Carbon::createFromDate($year, $month, 1)->startOfDay();
+        $endOfMonth = Carbon::createFromDate($year, $month, 1)->endOfMonth()->endOfDay();
+
         foreach ($rowsAsObjects as $item) {
-            
-            if (!empty($item->expense_date)) {
-                try {
-                    $expenseDate = Carbon::parse($item->expense_date);
-            
-                    $year = Carbon::parse($monthly_project->date)->year;
-                    $month = Carbon::parse($monthly_project->date)->month;
-            
-                    $startOfMonth = Carbon::createFromDate($year, $month, 1)->startOfDay();
-                    $endOfMonth = Carbon::createFromDate($year, $month, 1)->endOfMonth()->endOfDay();
-            
-                    if ($expenseDate->lt($startOfMonth) || $expenseDate->gt($endOfMonth)) {
-                        DB::rollBack();
-                        abort(400, 'La fecha del gasto está fuera del mes del proyecto.');
-                    }
-                } catch (\Exception $e) {
-                    DB::rollBack();
-                    abort(400, 'Formato de fecha inválido.');
-                }
-            } else {
+            $expenseDate = Carbon::parse($item->expense_date);
+            if ($expenseDate->lt($startOfMonth) || $expenseDate->gt($endOfMonth)) {
                 DB::rollBack();
-                abort(400, 'Fecha de gasto requerida.');
+                abort(403, 'La fecha del gasto está fuera del mes del proyecto.');
             }
-            
+
             if (!$item->expense_type || !$item->expense_date || !$item->cdp_type || !$item->amount || !$item->description) {
                 DB::rollBack();
                 abort(403, 'Llene los campos obligatorios');
             }
 
-            if (!$item->refund_status){
+            if (!$item->refund_status) {
                 $item->refund_status = 'PENDIENTE';
             }
 
@@ -437,7 +437,7 @@ class HuaweiMonthlyController extends Controller
         return redirect()->back();
     }
 
-    public function downloadTemplate ()
+    public function downloadTemplate()
     {
         $templatePath = public_path('documents/huawei/resources/Data Structure - Monthly Expenses.xlsx');
         ob_end_clean();
@@ -548,10 +548,10 @@ class HuaweiMonthlyController extends Controller
         if (empty($date) || !is_string($date)) {
             return null;
         }
-    
+
         // Elimina espacios innecesarios
         $date = trim($date);
-    
+
         // Formatos permitidos
         $formats = [
             'd/n/Y', // Soporta días y meses sin ceros a la izquierda
@@ -559,12 +559,12 @@ class HuaweiMonthlyController extends Controller
             'Y-m-d',
             'd-m-Y',
         ];
-    
+
         // Intentar convertir usando cada formato
         foreach ($formats as $format) {
             try {
                 $parsedDate = Carbon::createFromFormat($format, $date);
-                
+
                 // Verifica si la fecha interpretada coincide con la original
                 if ($parsedDate !== false) {
                     return $parsedDate->format('Y-m-d');
@@ -573,10 +573,10 @@ class HuaweiMonthlyController extends Controller
                 continue;
             }
         }
-    
+
         return null; // Si no coincide con ningún formato, retorna null
     }
-    
+
     private function sanitizeText($text, $mode)
     {
         if ($mode) {
@@ -599,19 +599,19 @@ class HuaweiMonthlyController extends Controller
     {
         // Remover todos los caracteres que no sean dígitos o puntos
         $sanitized = preg_replace('/[^0-9.]/', '', $text);
-    
+
         // Si hay más de un punto, conservar solo el primero
         if (substr_count($sanitized, '.') > 1) {
             $parts = explode('.', $sanitized);
             $sanitized = array_shift($parts) . '.' . implode('', $parts);
         }
-    
+
         // Eliminar ceros a la izquierda innecesarios
         $sanitized = ltrim($sanitized, '0');
-    
+
         // Si después de limpiar queda vacío, devolver "0"
         return $sanitized === '' ? '0' : $sanitized;
     }
-    
+
 
 }
