@@ -496,8 +496,7 @@
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center whitespace-nowrap text-[13px]"
                         >
                             {{
-                                item.zone ??
-                                item.huawei_project?.huawei_site.name
+                                item.huawei_project ? item.huawei_project.huawei_site.name : 'SIN ZONA'
                             }}
                         </td>
                         <td
@@ -1320,7 +1319,7 @@
                     Consideraciones:
                 </h2>
                 <div
-                    class="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-lg shadow-sm mt-2"
+                    class="bg-indigo-50 border-l-4 text-sm border-indigo-500 p-4 rounded-lg shadow-sm mt-2"
                 >
                 <p class="text-gray-700">
                         <span class="font-semibold text-indigo-600">•</span>
@@ -1361,7 +1360,7 @@
                     </p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5 text-[12px]">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5 text-sm">
                     <div
                         class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
                     >
@@ -1666,40 +1665,38 @@ const closeModal = () => {
 };
 
 async function submit(update) {
-    if (!update) {
-        isFetching.value = true;
-        const url = route("huawei.monthlyexpenses.expenses.store");
-        const res = await axios.post(url, form.data()).catch((e) => {
-            isFetching.value = false;
-            isFetching.value = false;
-            if (e.response?.data?.errors) {
-                setAxiosErrors(e.response.data.errors, form);
-            } else {
-                notifyError("Server Error");
-            }
-        });
-        const originalMap = new Map(
-            expenses.value.data.map((item) => [item.id, item])
-        );
-        const newExpense = res.data;
-        originalMap.set(newExpense.id, newExpense);
-        expenses.value.data = Array.from(originalMap.values());
-        closeModal();
-        notify("Se creó el registro correctamente");
-    } else {
-        isFetching.value = true;
-        const url = route("huawei.monthlyexpenses.expenses.update", {
-            expense: form.id,
+    isFetching.value = true;
+    const url = update
+        ? route("huawei.monthlyexpenses.expenses.update", { expense: form.id })
+        : route("huawei.monthlyexpenses.expenses.store");
+
+    const formData = new FormData();
+
+    if (update) {
+        formData.append("_method", "POST");
+    }
+
+    for (const key in form) {
+        if (form[key] instanceof File) {
+            formData.append(key, form[key]);
+        } else if (Array.isArray(form[key])) {
+            form[key].forEach((file, index) => {
+                if (file instanceof File) {
+                    formData.append(`${key}[${index}]`, file);
+                } else {
+                    formData.append(key, file);
+                }
+            });
+        } else if (form[key] !== null && form[key] !== undefined) {
+            formData.append(key, form[key]);
+        }
+    }
+
+    try {
+        const res = await axios.post(url, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
         });
 
-        const res = await axios.post(url, form.data()).catch((e) => {
-            isFetching.value = false;
-            if (e.response?.data?.errors) {
-                setAxiosErrors(e.response.data.errors, form);
-            } else {
-                notifyError("Server Error");
-            }
-        });
         const originalMap = new Map(
             expenses.value.data.map((item) => [item.id, item])
         );
@@ -1707,7 +1704,15 @@ async function submit(update) {
         originalMap.set(newExpense.id, newExpense);
         expenses.value.data = Array.from(originalMap.values());
         closeModal();
-        notify("Se actualizó el registro correctamente");
+        notify(update ? "Se actualizó el registro correctamente" : "Se creó el registro correctamente");
+    } catch (e) {
+        console.log(e)
+        isFetching.value = false;
+        if (e.response?.data?.errors) {
+            setAxiosErrors(e.response.data.errors, form);
+        } else {
+            notifyError("Server Error");
+        }
     }
 }
 
@@ -1750,6 +1755,8 @@ const openPreviewDocumentModal = (expense, img) => {
 };
 
 const employees = [
+    "ADITA ALVAREZ ROJAS",
+    "ALAN RAMIRO ALIAGA COAGUILA",
     "ANGIE NICOLE DURAN VILLACORTA",
     "CESAR DAVID NINACANSAYA APAZA",
     "CLINTON LUIS YUCRA PACCO",

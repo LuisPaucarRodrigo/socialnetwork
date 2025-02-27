@@ -37,6 +37,10 @@ class HuaweiMonthlyExpense extends Model
         'huawei_project_id'
     ];
 
+    protected $casts = [
+        'amount' => 'double',
+    ];
+
     protected $appends = [
         'real_state'
     ];
