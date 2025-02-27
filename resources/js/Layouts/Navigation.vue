@@ -685,7 +685,7 @@ Usuarios
                     <Link class="w-full" :href="route('huawei.titles')">Huawei PRO</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showHuawei">
-                    <Link class="w-full" :href="route('huawei.projects', { status: 1, prefix: 'Claro' })">Proyectos de
+                    <Link class="w-full" :href="route('huawei.projects', { status: 1, prefix: 'Claro' })">Proyectos
                     Huawei
                     </Link>
                 </MyTransition>

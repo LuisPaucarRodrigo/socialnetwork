@@ -1567,7 +1567,7 @@ import TextInput from "@/Components/TextInput.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
-import { setAxiosErrors } from "@/utils/utils";
+import { setAxiosErrors, toFormData } from "@/utils/utils";
 
 const props = defineProps({
     expense: Object,
@@ -1670,27 +1670,7 @@ async function submit(update) {
         ? route("huawei.monthlyexpenses.expenses.update", { expense: form.id })
         : route("huawei.monthlyexpenses.expenses.store");
 
-    const formData = new FormData();
-
-    if (update) {
-        formData.append("_method", "POST");
-    }
-
-    for (const key in form) {
-        if (form[key] instanceof File) {
-            formData.append(key, form[key]);
-        } else if (Array.isArray(form[key])) {
-            form[key].forEach((file, index) => {
-                if (file instanceof File) {
-                    formData.append(`${key}[${index}]`, file);
-                } else {
-                    formData.append(key, file);
-                }
-            });
-        } else if (form[key] !== null && form[key] !== undefined) {
-            formData.append(key, form[key]);
-        }
-    }
+    const formData = toFormData(form);
 
     try {
         const res = await axios.post(url, formData, {
@@ -1701,12 +1681,14 @@ async function submit(update) {
             expenses.value.data.map((item) => [item.id, item])
         );
         const newExpense = res.data;
+        newExpense.amount = Number(newExpense.amount)
+        newExpense.ec_amount = Number(newExpense.ec_amount)
+
         originalMap.set(newExpense.id, newExpense);
         expenses.value.data = Array.from(originalMap.values());
         closeModal();
         notify(update ? "Se actualizó el registro correctamente" : "Se creó el registro correctamente");
     } catch (e) {
-        console.log(e)
         isFetching.value = false;
         if (e.response?.data?.errors) {
             setAxiosErrors(e.response.data.errors, form);
@@ -1755,6 +1737,7 @@ const openPreviewDocumentModal = (expense, img) => {
 };
 
 const employees = [
+    "ADMINISTRATIVO",
     "ADITA ALVAREZ ROJAS",
     "ALAN RAMIRO ALIAGA COAGUILA",
     "ANGIE NICOLE DURAN VILLACORTA",
@@ -1771,6 +1754,7 @@ const employees = [
     "JORGE DANIEL MONTOYA RODRIGUEZ",
     "JONATHAN ELISBAN MOLINA YUCRA",
     "JOSE HUMBERTO QUENTA VILLANUEVA",
+    "KONNY EDUARDO CAYLLAHUA",
     "MARIO ALFONSO LLONTOP SOTO",
     "PABLO ENRIQUE LAURA FLORES",
     "REMMILTON CRUZ QUISPE",
