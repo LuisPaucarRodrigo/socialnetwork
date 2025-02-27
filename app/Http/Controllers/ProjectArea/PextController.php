@@ -93,6 +93,9 @@ class PextController extends Controller
                 $query->where('is_accepted', 1)
                     ->orWhere('is_accepted', null);
             })
+            ->whereHas('project', function ($query) {
+                $query->whereDoesntHave('preproject');
+            })
             ->orderBy('created_at', 'desc')
             ->paginate();
         foreach ($expense as $exp) {
@@ -558,7 +561,9 @@ class PextController extends Controller
         ])
             ->where('fixedOrAdditional', json_decode($fixedOrAdditional))
             ->whereHas('project', function ($query) use ($type) {
-                $query->where('cost_line_id', $type);
+                $query->where('cost_line_id', $type)
+                    ->where("id", "!=", 320)
+                    ->whereDoesntHave('preproject');
             })
             ->where(function ($query) {
                 $query->where('is_accepted', 1)
@@ -698,11 +703,13 @@ class PextController extends Controller
 
     public function search_advance_additional_expense_general(Request $request)
     {
+        $type = $request->type;
         $rejected = $request->rejected;
         $fixedOrAdditional = $request->fixedOrAdditional;
         $searchTerms = $request->search;
         $selectedStateTypes = $request->selectedStateTypes;
         $expense = $this->pextServices->baseSearch($fixedOrAdditional);
+        $expense = $this->pextServices->differentialSearchMonthly($expense, $type);
         $expense = $this->pextServices->rejectedSearch($expense, $rejected);
         $expense = $this->pextServices->textSearch($expense, $searchTerms);
         $expense = $this->pextServices->filterAdvance($expense, $request)->get();

@@ -14,7 +14,7 @@ class PextProjectServices
 {
     private function baseCicsaAssignation(): Builder
     {
-        $query = CicsaAssignation::with('project.cost_center','project.preproject')
+        $query = CicsaAssignation::with('project.cost_center', 'project.preproject')
             ->whereHas('project', function ($query) {
                 $query->where('cost_line_id', 2)
                     ->whereHas('cost_center', function ($costCenterQuery) {
@@ -94,8 +94,18 @@ class PextProjectServices
         return $expense;
     }
 
+    public function differentialSearchMonthly($expense, $type)
+    {
+        $expense->whereHas('project', function ($query) use ($type) {
+            $query->where('cost_line_id', $type)
+                ->where('id', '!=', 320)
+                ->whereDoesntHave('preproject');
+        });
+        return $expense;
+    }
+
     public function rejectedSearch($expense, $rejected)
-    {   
+    {
         $expense = !$rejected ? $expense->where('is_accepted', 0)
             : $expense->where(function ($query) {
                 $query->where('is_accepted', 1)
