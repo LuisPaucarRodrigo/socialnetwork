@@ -64,6 +64,7 @@ import TableTitle from '@/Components/TableTitle.vue';
 import TableStructure from '../TableStructure.vue';
 import TableRow from '@/Components/TableRow.vue';
 import TableHeaderFilter from '@/Components/TableHeaderFilter.vue';
+import { Link } from '@inertiajs/vue3';
 
 const { users, formSearch, platforms, linkEmployee, confirmUserDeletion } = defineProps({
     users: Object,

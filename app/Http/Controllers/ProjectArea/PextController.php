@@ -93,9 +93,6 @@ class PextController extends Controller
                 $query->where('is_accepted', 1)
                     ->orWhere('is_accepted', null);
             })
-            ->whereHas('project', function ($query) {
-                $query->whereDoesntHave('preproject');
-            })
             ->orderBy('created_at', 'desc')
             ->paginate();
         foreach ($expense as $exp) {
@@ -207,17 +204,6 @@ class PextController extends Controller
                         $query->where('name', 'not like', "%$text%")
                             ->where('cost_line_id', 2);
                     })
-                    // ->where(function ($query) {
-                    //     $query->whereHas('cicsa_charge_area', function ($subQuery) {
-                    //         $subQuery->where(function ($subSubQuery) {
-                    //             $subSubQuery->whereNull('invoice_number')
-                    //                 ->orWhereNull('invoice_date')
-                    //                 ->orWhereNull('amount');
-                    //         })
-                    //             ->whereNull('deposit_date');
-                    //     })
-                    //         ->orDoesntHave('cicsa_charge_area');
-                    // })
                     ->whereDoesntHave('project.preproject')
                     ->orderBy('created_at', 'desc')
                     ->get();
@@ -763,5 +749,87 @@ class PextController extends Controller
             ]);
         }
         return response()->json(true, 200);
+    }
+
+    public function expense_dashboard($project_id)
+    {
+        $totalsAdditional = PextProjectExpense::where('project_id', $project_id)
+            ->where('fixedOrAdditional', 0)
+            ->select('expense_type', DB::raw('SUM(amount) as total_amount'))
+            ->groupBy('expense_type')
+            ->get();
+        $totalsFixed = PextProjectExpense::where('project_id', $project_id)
+            ->where('fixedOrAdditional', 1)
+            ->select('expense_type', DB::raw('SUM(amount) as total_amount'))
+            ->groupBy('expense_type')
+            ->get();
+
+        $expenses = [
+            'fixed' => $totalsFixed,
+            'additional' => $totalsAdditional
+        ];
+        return Inertia::render('ProjectArea/ProjectManagement/DashboardExpensesPext', [
+            'expenses' => $expenses,
+            'project_id' => $project_id
+        ]);
+    }
+
+    public function barChart($project_id)
+    {
+        // Obtener el proyecto actual
+        $currentProject = Project::findOrFail($project_id);
+
+        // Obtener el proyecto anterior (del mes anterior)
+        $previousProject = Project::whereYear('created_at', $currentProject->created_at->year)
+            ->whereMonth('created_at', $currentProject->created_at->month - 1)
+            ->whereHas('preproject')
+            ->where('cost_line_id', 2)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        // Obtener todos los proyectos del mismo año
+        $annualProjects = Project::whereYear('created_at', $currentProject->created_at->year)
+            ->whereHas('preproject')->where('cost_line_id', 2)->pluck('id')->toArray();
+        // dd($annualProjects);
+        // Función para calcular gastos agrupados por zona
+        $getExpensesByZone = function ($projectIds, $fixedOrAdditional) {
+            return PextProjectExpense::whereIn('project_id', (array) $projectIds)
+                ->where('fixedOrAdditional', $fixedOrAdditional)
+                ->select('zone', DB::raw('SUM(amount) as total_amount'))
+                ->groupBy('zone')
+                ->pluck('total_amount', 'zone'); // 🔥 Devuelve un array asociativo [ 'zona1' => monto1, 'zona2' => monto2, ... ]
+        };
+
+        // Obtener los gastos de cada caso como arrays asociativos
+        $currentExpensesFixed = $getExpensesByZone([$currentProject->id], 0);
+        $currentExpensesAdditional = $getExpensesByZone([$currentProject->id], 1);
+        $previousExpensesFixed = $previousProject ? $getExpensesByZone([$previousProject->id], 0) : collect([]);
+        $previousExpensesAdditional = $previousProject ? $getExpensesByZone([$previousProject->id], 1) : collect([]);
+        $annualExpensesFixed = $getExpensesByZone($annualProjects, 0);
+        $annualExpensesAdditional = $getExpensesByZone($annualProjects, 1);
+
+        // Obtener todas las zonas en orden
+        $zones = PextConstants::getZone();
+
+        // Crear arreglos con montos ordenados según las zonas
+        $formatExpenses = function ($expenses) use ($zones) {
+            return array_map(fn($zone) => $expenses[$zone] ?? 0, $zones);
+        };
+
+        return response()->json([
+            'zones' => $zones,
+            'current' => [
+                'fixed' => $formatExpenses($currentExpensesFixed),
+                'additional' => $formatExpenses($currentExpensesAdditional),
+            ],
+            'previous' => [
+                'fixed' => $formatExpenses($previousExpensesFixed),
+                'additional' => $formatExpenses($previousExpensesAdditional),
+            ],
+            'years' => [
+                'fixed' => $formatExpenses($annualExpensesFixed),
+                'additional' => $formatExpenses($annualExpensesAdditional),
+            ]
+        ]);
     }
 }
