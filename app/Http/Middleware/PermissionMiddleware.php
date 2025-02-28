@@ -55,6 +55,7 @@ class PermissionMiddleware
             'Administration' => '/management_employees',
             'DocumentGestion' => route('documment.management.folders'),
             'CarManager' => route('fleet.cars.index'),
+            'Car' => route('fleet.cars.index'),
             'HuaweiManager' => route('huawei.inventory.show', ['warehouse' => 1])
         ];
 

@@ -1,11 +1,10 @@
 <template>
+
     <Head title="Gestion de Gastos" />
-    <AuthenticatedLayout
-        :redirectRoute="{
-            route: 'projectmanagement.purchases_request.index',
-            params: { id: project.id },
-        }"
-    >
+    <AuthenticatedLayout :redirectRoute="{
+        route: 'projectmanagement.purchases_request.index',
+        params: { id: project.id },
+    }">
         <template #header>
             Resumen de Gastos {{ project.description }}
         </template>
@@ -14,74 +13,54 @@
         <!-- componenteeeeeeeeee -->
 
         <div class="flex flex-col space-y-16">
-            <MarginProfit
-                v-if="project.cost_center_id == 1"
-                :expensesVariables="{
-                    incomeNoTaxes: Number(
-                        project?.preproject?.quote?.total_amount?.toFixed(2)
-                    ),
-                    incomeTaxes:
-                        Number(
-                            project?.preproject?.quote?.total_amount.toFixed(2)
-                        ) * 1.18,
-                    staticCosts,
-                    additionalCosts,
-                }"
-            />
+            <MarginProfit v-if="project.cost_center_id == 1" :expensesVariables="{
+                incomeNoTaxes: Number(
+                    project?.preproject?.quote?.total_amount?.toFixed(2)
+                ),
+                incomeTaxes:
+                    Number(
+                        project?.preproject?.quote?.total_amount.toFixed(2)
+                    ) * 1.18,
+                staticCosts,
+                additionalCosts,
+            }" />
 
-            <div
-                v-if="project.cost_center_id == 1"
-                class="w-full h-auto py-6 shadow-md rounded-lg border border-gray-200 bg-white bg-opacity-30"
-            >
+            <div v-if="project.cost_center_id == 1"
+                class="w-full h-auto py-6 shadow-md rounded-lg border border-gray-200 bg-white bg-opacity-30">
                 <div class="grid grid-cols-1 lg:grid-cols-2">
                     <PastProjectUtilities :project_id="project.id" />
-                    <ProjectBalance
-                        :project="project"
-                        :additionalCosts="additionalCosts"
-                        :additionalCostsIgv="additionalCostsIgv"
-                        :staticCosts="staticCosts"
-                        :staticCostsIgv="staticCostsIgv"
-                    />
+                    <ProjectBalance :project="project" :additionalCosts="additionalCosts"
+                        :additionalCostsIgv="additionalCostsIgv" :staticCosts="staticCosts"
+                        :staticCostsIgv="staticCostsIgv" />
                 </div>
             </div>
 
-            <ProjectZoneExpenses
-                v-if="project.cost_center_id == 1"
-                :project_id="project.id"
-            />
+            <ProjectZoneExpenses v-if="project.cost_center_id == 1" :project_id="project.id" />
 
-            <div
-                class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0"
-            >
+            <div class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
                 <div class="w-full lg:w-1/2">
                     <div class="overflow-x-auto ring-1 ring-gray-200">
                         <table class="w-full whitespace-no-wrap">
                             <thead>
                                 <tr
-                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
-                                >
+                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                                     <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
-                                    >
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                         Nombre
                                     </th>
                                     <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-600"
-                                    >
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-600">
                                         Monto
                                     </th>
                                 </tr>
                             </thead>
                             <tbody class="tabular-nums">
                                 <tr class="text-gray-700">
-                                    <td
-                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm"
-                                    >
+                                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">
                                         Ingreso con IGV
                                     </td>
                                     <td
-                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums"
-                                    >
+                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
                                         S/.
                                         {{
                                             (
@@ -95,14 +74,11 @@
                                     </td>
                                 </tr>
                                 <tr class="text-gray-700">
-                                    <td
-                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm"
-                                    >
+                                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">
                                         Ingreso sin IGV
                                     </td>
                                     <td
-                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums"
-                                    >
+                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
                                         S/.
                                         {{
                                             project?.preproject?.quote?.total_amount?.toFixed(
@@ -112,26 +88,20 @@
                                     </td>
                                 </tr>
                                 <tr class="text-gray-700">
-                                    <td
-                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm"
-                                    >
+                                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">
                                         Presupuesto actual
                                     </td>
                                     <td
-                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums"
-                                    >
+                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
                                         S/. {{ current_budget.toFixed(2) }}
                                     </td>
                                 </tr>
                                 <tr class="text-gray-700">
-                                    <td
-                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm"
-                                    >
+                                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">
                                         Presupuesto restante
                                     </td>
                                     <td
-                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums"
-                                    >
+                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
                                         S/.
                                         {{
                                             project.remaining_budget.toFixed(2)
@@ -139,14 +109,11 @@
                                     </td>
                                 </tr>
                                 <tr class="text-gray-700">
-                                    <td
-                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm"
-                                    >
+                                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">
                                         Total gastos en servicios
                                     </td>
                                     <td
-                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums"
-                                    >
+                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
                                         S/.
                                         {{
                                             project.total_services_cost.toFixed(
@@ -156,14 +123,11 @@
                                     </td>
                                 </tr>
                                 <tr class="text-gray-700">
-                                    <td
-                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm"
-                                    >
+                                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">
                                         Total gastos en productos
                                     </td>
                                     <td
-                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums"
-                                    >
+                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
                                         S/.
                                         {{
                                             project.total_products_cost.toFixed(
@@ -173,30 +137,21 @@
                                     </td>
                                 </tr>
                                 <tr class="text-gray-700">
-                                    <td
-                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm"
-                                    >
+                                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">
                                         <div class="flex gap-3 justify-between">
                                             <p>MOD Operativo</p>
-                                            <button
-                                                @click="
-                                                    openDetailsModal({
-                                                        title: 'MOD Operativo',
-                                                        detArray: operativeMod,
-                                                    })
-                                                "
-                                                type="button"
-                                                class="text-green-500 hover:text-green-300"
-                                            >
-                                                <InformationCircleIcon
-                                                    class="w-5 h-5"
-                                                />
+                                            <button @click="
+                                                openDetailsModal({
+                                                    title: 'MOD Operativo',
+                                                    detArray: operativeMod,
+                                                })
+                                                " type="button" class="text-green-500 hover:text-green-300">
+                                                <InformationCircleIcon class="w-5 h-5" />
                                             </button>
                                         </div>
                                     </td>
                                     <td
-                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums"
-                                    >
+                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
                                         S/.{{
                                             project.total_employee_costs
                                                 .reduce(
@@ -209,26 +164,20 @@
                                     </td>
                                 </tr>
                                 <tr class="text-gray-700">
-                                    <td
-                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm"
-                                    >
+                                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">
                                         Costos Fijos
                                     </td>
                                     <td
-                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums"
-                                    >
+                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
                                         S/. {{ staticCosts.toFixed(2) }}
                                     </td>
                                 </tr>
                                 <tr class="text-gray-700">
-                                    <td
-                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm"
-                                    >
+                                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">
                                         Costos Variables
                                     </td>
                                     <td
-                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums"
-                                    >
+                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
                                         S/. {{ additionalCosts.toFixed(2) }}
                                     </td>
                                 </tr>
@@ -242,70 +191,51 @@
                     </div>
                 </div>
             </div>
-            <div
-                class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0"
-            >
+            <div class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
                 <div class="w-full lg:w-1/2">
                     <div class="overflow-x-auto ring-1 ring-gray-200">
                         <table class="w-full whitespace-no-wrap">
                             <thead>
                                 <tr
-                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
-                                >
+                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                                     <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
-                                    >
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                         Costos Fijos
                                     </th>
                                     <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-600"
-                                    >
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-600">
                                         Monto
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr
-                                    v-for="(item, i) in scExpensesAmounts"
-                                    class="text-gray-700"
-                                >
-                                    <td
-                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm"
-                                    >
+                                <tr v-for="(item, i) in scExpensesAmounts" class="text-gray-700">
+                                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">
                                         <div class="flex gap-3 justify-between">
-                                            <p
-                                                :class="[
-                                                    {
-                                                        'text-red-700':
-                                                            scExpensesThatDontCount.includes(
-                                                                item.expense_type
-                                                            ),
-                                                    },
-                                                ]"
-                                            >
+                                            <p :class="[
+                                                {
+                                                    'text-red-700':
+                                                        scExpensesThatDontCount.includes(
+                                                            item.expense_type
+                                                        ),
+                                                },
+                                            ]">
                                                 {{ item.expense_type }}
                                             </p>
-                                            <button
-                                                @click="
-                                                    prevOpenModal({
-                                                        spMod: 'static',
-                                                        expType:
-                                                            item.expense_type,
-                                                        project_id: project.id,
-                                                    })
-                                                "
-                                                type="button"
-                                                class="text-green-500 hover:text-green-300"
-                                            >
-                                                <InformationCircleIcon
-                                                    class="w-5 h-5"
-                                                />
+                                            <button @click="
+                                                prevOpenModal({
+                                                    spMod: 'static',
+                                                    expType:
+                                                        item.expense_type,
+                                                    project_id: project.id,
+                                                })
+                                                " type="button" class="text-green-500 hover:text-green-300">
+                                                <InformationCircleIcon class="w-5 h-5" />
                                             </button>
                                         </div>
                                     </td>
                                     <td
-                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums"
-                                    >
+                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
                                         S/. {{ item.total_amount.toFixed(2) }}
                                     </td>
                                 </tr>
@@ -319,70 +249,51 @@
                     </div>
                 </div>
             </div>
-            <div
-                class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0"
-            >
+            <div class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
                 <div class="w-full lg:w-1/2">
                     <div class="overflow-x-auto ring-1 ring-gray-200">
                         <table class="w-full whitespace-no-wrap">
                             <thead>
                                 <tr
-                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
-                                >
+                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                                     <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
-                                    >
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                         Costos Variables
                                     </th>
                                     <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-600"
-                                    >
+                                        class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-600">
                                         Monto
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr
-                                    v-for="(item, i) in acExpensesAmounts"
-                                    class="text-gray-700"
-                                >
-                                    <td
-                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm"
-                                    >
+                                <tr v-for="(item, i) in acExpensesAmounts" class="text-gray-700">
+                                    <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">
                                         <div class="flex gap-3 justify-between">
-                                            <p
-                                                :class="[
-                                                    {
-                                                        'text-red-700':
-                                                            acExpensesThatDontCount.includes(
-                                                                item.expense_type
-                                                            ),
-                                                    },
-                                                ]"
-                                            >
+                                            <p :class="[
+                                                {
+                                                    'text-red-700':
+                                                        acExpensesThatDontCount.includes(
+                                                            item.expense_type
+                                                        ),
+                                                },
+                                            ]">
                                                 {{ item.expense_type }}
                                             </p>
-                                            <button
-                                                @click="
-                                                    prevOpenModal({
-                                                        spMod: 'additional',
-                                                        expType:
-                                                            item.expense_type,
-                                                        project_id: project.id,
-                                                    })
-                                                "
-                                                type="button"
-                                                class="text-green-500 hover:text-green-300"
-                                            >
-                                                <InformationCircleIcon
-                                                    class="w-5 h-5"
-                                                />
+                                            <button @click="
+                                                prevOpenModal({
+                                                    spMod: 'additional',
+                                                    expType:
+                                                        item.expense_type,
+                                                    project_id: project.id,
+                                                })
+                                                " type="button" class="text-green-500 hover:text-green-300">
+                                                <InformationCircleIcon class="w-5 h-5" />
                                             </button>
                                         </div>
                                     </td>
                                     <td
-                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums"
-                                    >
+                                        class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
                                         S/. {{ item.total_amount.toFixed(2) }}
                                     </td>
                                 </tr>
@@ -403,34 +314,24 @@
                 <table class="w-full whitespace-nowrap rounded-md shadow-sm">
                     <thead>
                         <tr
-                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
-                        >
+                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
-                            >
+                                class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 {{ detailsStructure.title }}
                             </th>
                             <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-600"
-                            >
+                                class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Monto
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr
-                            v-for="(item, i) in detailsStructure.detArray"
-                            class="text-gray-700"
-                            :key="i"
-                        >
-                            <td
-                                class="border-b border-gray-200 bg-white px-3 py-3 text-sm"
-                            >
+                        <tr v-for="(item, i) in detailsStructure.detArray" class="text-gray-700" :key="i">
+                            <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">
                                 {{ item.spentName }}
                             </td>
                             <td
-                                class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums"
-                            >
+                                class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
                                 S/. {{ item.amount.toFixed(2) }}
                             </td>
                         </tr>
