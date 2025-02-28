@@ -223,11 +223,11 @@ class HuaweiMonthlyController extends Controller
     {
         $data = $request->validated();
 
-        // if ($data['huawei_project_id']) {
-        //     $data['zone'] = HuaweiProject::find($data['huawei_project_id'])->huawei_site->name;
-        // }else{
-        //     $data['zone'] = "Sin zona";
-        // }    
+        if ($data['huawei_project_id']) {
+            $data['zone'] = HuaweiProject::find($data['huawei_project_id'])->huawei_site->name;
+        }else{
+            $data['zone'] = "Sin zona";
+        }    
         $expense = HuaweiMonthlyExpense::create($data);
 
         $expenseDirectory = 'documents/huawei/monthly_expenses/';
@@ -247,7 +247,7 @@ class HuaweiMonthlyController extends Controller
 
         $expense->update($imageUpdates);
         if ($expense->huawei_project_id) {
-            $expense->load('huawei_project');
+            $expense->load('huawei_project.huawei_site');
         }
         return response()->json($expense, 200);
     }
@@ -256,11 +256,11 @@ class HuaweiMonthlyController extends Controller
     {
         $data = $request->validated();
 
-        // if ($data['huawei_project_id']) {
-        //     $data['zone'] = HuaweiProject::find($data['huawei_project_id'])->huawei_site->name;
-        // }else{
-        //     $data['zone'] = "Sin zona";
-        // }    
+        if ($data['huawei_project_id']) {
+            $data['zone'] = HuaweiProject::find($data['huawei_project_id'])->huawei_site->name;
+        }else{
+            $data['zone'] = "Sin zona";
+        }    
 
         $expenseDirectory = 'documents/huawei/monthly_expenses/';
         $imageFields = ['image1', 'image2', 'image3'];
@@ -284,7 +284,7 @@ class HuaweiMonthlyController extends Controller
             }
         
             $expense->update($data);
-            $expense->load('huawei_project');
+            $expense->load('huawei_project.huawei_site');
 
     
         return response()->json($expense, 200);
