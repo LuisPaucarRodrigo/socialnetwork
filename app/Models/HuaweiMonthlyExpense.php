@@ -23,15 +23,11 @@ class HuaweiMonthlyExpense extends Model
         'ruc',
         'description',
         'amount',
-        'image1',
-        'image2',
-        'image3',
+        'image',
         'is_accepted',
-        'refund_status',
         'ec_expense_date',
         'ec_op_number',
         'ec_amount',
-        'huawei_monthly_project_id',
         'account_statement_id',
         'general_expense_id',
         'huawei_project_id'
@@ -39,11 +35,6 @@ class HuaweiMonthlyExpense extends Model
     protected $appends = [
         'real_state'
     ];
-
-    public function huawei_monthly_project ()
-    {
-        return $this->belongsTo(HuaweiMonthlyProject::class, 'huawei_monthly_project_id');
-    }
 
     public function general_expense()
     {

@@ -23,15 +23,11 @@ return new class extends Migration
             $table->string('ruc')->nullable();
             $table->string('description');
             $table->double('amount');
-            $table->string('image1')->nullable();
-            $table->string('image2')->nullable();
-            $table->string('image3')->nullable();
+            $table->string('image')->nullable();
             $table->boolean('is_accepted')->nullable();
-            $table->string('refund_status');
             $table->date('ec_expense_date')->nullable();
             $table->string('ec_op_number')->nullable();
             $table->double('ec_amount')->nullable();
-            $table->foreignId('huawei_monthly_project_id')->constrained('huawei_monthly_projects')->onDelete('cascade');
             $table->foreignId('huawei_project_id')->nullable()->constrained('huawei_projects')->onDelete('set null');
             $table->foreignId('account_statement_id')->nullable()->constrained('account_statements')->onDelete('set null');
             $table->foreignId('general_expense_id')->constrained('general_expenses')->cascadeOnDelete();

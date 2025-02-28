@@ -487,23 +487,23 @@
                 <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.sites')">Sites de Huawei</Link>
                 </MyTransition>
-                <MyTransition :transitiondemonstration="showHuawei">
+                <!-- <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.titles')">Huawei PRO</Link>
-                </MyTransition>
+                </MyTransition> -->
                 <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.projects', { status: 1, prefix: 'Claro' })">Proyectos
                     Huawei
                     </Link>
                 </MyTransition>
-                <MyTransition :transitiondemonstration="showHuawei">
+                <!-- <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.monthlyprojects')">Proyectos Mensuales</Link>
-                </MyTransition>
+                </MyTransition> -->
                 <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.specialrefunds')">Devoluciones Especiales</Link>
                 </MyTransition>
-                <MyTransition :transitiondemonstration="showHuawei">
+                <!-- <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.generalbalance')">Balance General</Link>
-                </MyTransition>
+                </MyTransition> -->
             </template>
             <FleetNavigation :userPermissions="$page.props.userPermissions"/>
         </nav>

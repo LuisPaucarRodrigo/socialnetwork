@@ -19,59 +19,58 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class HuaweiMonthlyController extends Controller
 {
-    public function getProjects()
-    {
-        return Inertia::render('Huawei/MonthlyProjects', [
-            'projects' => HuaweiMonthlyProject::orderBy('created_at', 'desc')
-                ->paginate(10),
-        ]);
-    }
+    // public function getProjects()
+    // {
+    //     return Inertia::render('Huawei/MonthlyProjects', [
+    //         'projects' => HuaweiMonthlyProject::orderBy('created_at', 'desc')
+    //             ->paginate(10),
+    //     ]);
+    // }
 
-    public function searchProjects($searchTerm)
-    {
-        $searchTerm = strtolower($searchTerm);
-        $query = HuaweiMonthlyProject::query();
+    // public function searchProjects($searchTerm)
+    // {
+    //     $searchTerm = strtolower($searchTerm);
+    //     $query = HuaweiMonthlyProject::query();
 
-        $projects = $query->whereRaw('LOWER(description) LIKE ?', ["%{$searchTerm}%"])
-            ->orderBy('created_at', 'desc')
-            ->get();
+    //     $projects = $query->whereRaw('LOWER(description) LIKE ?', ["%{$searchTerm}%"])
+    //         ->orderBy('created_at', 'desc')
+    //         ->get();
 
-        return Inertia::render('Huawei/MonthlyProjects', [
-            'projects' => $projects,
-            'search' => $searchTerm
-        ]);
-    }
+    //     return Inertia::render('Huawei/MonthlyProjects', [
+    //         'projects' => $projects,
+    //         'search' => $searchTerm
+    //     ]);
+    // }
 
 
-    public function storeProject(Request $request)
-    {
-        $data = $request->validate([
-            'date' => 'required',
-            'description' => 'required',
-        ]);
+    // public function storeProject(Request $request)
+    // {
+    //     $data = $request->validate([
+    //         'date' => 'required',
+    //         'description' => 'required',
+    //     ]);
 
-        $project = HuaweiMonthlyProject::create($data);
+    //     $project = HuaweiMonthlyProject::create($data);
 
-        return redirect()->back();
-    }
+    //     return redirect()->back();
+    // }
 
-    public function updateProject(HuaweiMonthlyProject $project, Request $request)
-    {
-        $data = $request->validate([
-            'date' => 'required',
-            'description' => 'required',
-        ]);
+    // public function updateProject(HuaweiMonthlyProject $project, Request $request)
+    // {
+    //     $data = $request->validate([
+    //         'date' => 'required',
+    //         'description' => 'required',
+    //     ]);
 
-        $project->update($data);
+    //     $project->update($data);
 
-        return redirect()->back();
-    }
+    //     return redirect()->back();
+    // }
 
     //expenses
-    public function getExpenses(HuaweiMonthlyProject $project)
+    public function getExpenses()
     {
-        $expenses = HuaweiMonthlyExpense::where('huawei_monthly_project_id', $project->id)
-            ->with('huawei_project.huawei_site')
+        $expenses = HuaweiMonthlyExpense::query()->with('huawei_project.huawei_site')
             ->orderBy('expense_date', 'desc');
         $filteredExpenses = $expenses->get()->filter(fn($expense) => $expense->huawei_project);
 
@@ -83,18 +82,16 @@ class HuaweiMonthlyController extends Controller
                 ->values(),
         ];
         return Inertia::render('Huawei/MonthlyExpenses', [
-            'expense' => $expenses->paginate(15),
-            'project' => $project,
+            'expense' => $expenses->get(),
             'summary' => $summary,
         ]);
     }
 
-    public function searchExpenses(HuaweiMonthlyProject $project, $request)
+    public function searchExpenses($request)
     {
         $searchTerm = strtolower($request);
 
         $expensesQuery = HuaweiMonthlyExpense::query()
-            ->where('huawei_monthly_project_id', $project->id)
             ->where(function ($query) use ($searchTerm) {
                 $query->whereRaw('LOWER(expense_type) LIKE ?', ["%{$searchTerm}%"])
                     ->orWhereRaw('LOWER(zone) LIKE ?', ["%{$searchTerm}%"])
@@ -127,16 +124,15 @@ class HuaweiMonthlyController extends Controller
 
         return Inertia::render('Huawei/MonthlyExpenses', [
             'expense' => $expenses,
-            'project' => $project,
             'search' => $request,
             'summary' => $summary,
         ]);
     }
 
-    public function searchAdvance(HuaweiMonthlyProject $project, Request $request)
+    public function searchAdvance(Request $request)
     {
         // Iniciar la consulta base de expenses
-        $expensesQuery = HuaweiMonthlyExpense::where('huawei_monthly_project_id', $project->id);
+        $expensesQuery = HuaweiMonthlyExpense::orderBy('expense_date', 'desc');
         $filteredExpenses = $expensesQuery->get()->filter(fn($expense) => $expense->huawei_project);
         $summary = [
             'zones' => $expensesQuery->get()->pluck('zone')->unique()->values()->count(),
@@ -149,7 +145,7 @@ class HuaweiMonthlyController extends Controller
         $employeeCount = 10;
 
         // Aplicar filtros de base de datos
-        if (count($request->selectedExpenseTypes) < 9) {
+        if (count($request->selectedExpenseTypes) < 10) {
             $expensesQuery->whereIn('expense_type', $request->selectedExpenseTypes);
         }
         if (count($request->selectedCDPTypes) < 7) {
@@ -195,7 +191,6 @@ class HuaweiMonthlyController extends Controller
         // Obtener todas las expenses según los filtros de base de datos
         $expenses = $expensesQuery->orderBy('expense_date')
             ->with('huawei_project.huawei_site')
-            ->orderBy('expense_date', 'desc')
             ->get();
 
         // Si se han seleccionado menos de 4 estados, filtrar las expenses por el campo real_state
@@ -225,27 +220,20 @@ class HuaweiMonthlyController extends Controller
 
         if ($data['huawei_project_id']) {
             $data['zone'] = HuaweiProject::find($data['huawei_project_id'])->huawei_site->name;
-        }else{
+        } else {
             $data['zone'] = "Sin zona";
-        }    
+        }
         $expense = HuaweiMonthlyExpense::create($data);
 
         $expenseDirectory = 'documents/huawei/monthly_expenses/';
-        $imageFields = ['image1', 'image2', 'image3'];
-        $imageUpdates = [];
 
-        foreach ($imageFields as $index => $field) {
-            if ($request->hasFile($field)) {
-                $image = $request->file($field);
-                $filename = "expense_{$expense->id}_" . ($index + 1) . '_' . time() . '.' . $image->getClientOriginalExtension();
-                $image->move(public_path($expenseDirectory), $filename);
-                $imageUpdates[$field] = $filename;
-            } else {
-                $imageUpdates[$field] = null;
-            }
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $filename = "expense_{$expense->id}_" . time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path($expenseDirectory), $filename);
+            $expense->update(['image' => $filename]);
         }
 
-        $expense->update($imageUpdates);
         if ($expense->huawei_project_id) {
             $expense->load('huawei_project.huawei_site');
         }
@@ -258,43 +246,38 @@ class HuaweiMonthlyController extends Controller
 
         if ($data['huawei_project_id']) {
             $data['zone'] = HuaweiProject::find($data['huawei_project_id'])->huawei_site->name;
-        }else{
+        } else {
             $data['zone'] = "Sin zona";
-        }    
+        }
 
         $expenseDirectory = 'documents/huawei/monthly_expenses/';
-        $imageFields = ['image1', 'image2', 'image3'];
-        
-            foreach ($imageFields as $index => $field) {
-                if ($request->hasFile($field)) {
-                    // Eliminar imagen anterior si existe
-                    if (!empty($expense->$field)) {
-                        $oldPath = public_path($expenseDirectory . $expense->$field);
-                        if (file_exists($oldPath)) {
-                            unlink($oldPath);
-                        }
-                    }
-        
-                    // Guardar nueva imagen
-                    $imageFile = $request->file($field);
-                    $filename = "expense_{$expense->id}_" . ($index + 1) . '_' . time() . '.' . $imageFile->getClientOriginalExtension();
-                    $imageFile->move(public_path($expenseDirectory), $filename);
-                    $data[$field] = $filename;
+
+        if ($request->hasFile('image')) {
+            if ($expense->image) {
+                $oldPath = public_path($expenseDirectory . $expense->image);
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
                 }
             }
-        
-            $expense->update($data);
-            $expense->load('huawei_project.huawei_site');
 
-    
+            $imageFile = $request->file('image');
+            $filename = "expense_{$expense->id}_" . time() . '.' . $imageFile->getClientOriginalExtension();
+            $imageFile->move(public_path($expenseDirectory), $filename);
+            $data['image'] = $filename;
+        }
+
+
+        $expense->update($data);
+        $expense->load('huawei_project.huawei_site');
+
+
         return response()->json($expense, 200);
     }
-    
 
-    public function showImage(HuaweiMonthlyExpense $expense, $image)
+
+    public function showImage(HuaweiMonthlyExpense $expense)
     {
-        $field = 'image' . $image;
-        $imageToShow = $expense->$field;
+        $imageToShow = $expense->image;
         $path = public_path("documents/huawei/monthly_expenses/$imageToShow");
         if (file_exists($path)) {
             ob_end_clean();
@@ -306,16 +289,14 @@ class HuaweiMonthlyController extends Controller
     public function deleteExpense(HuaweiMonthlyExpense $expense)
     {
         $expenseDirectory = 'documents/huawei/monthly_expenses/';
-        $imageFields = ['image1', 'image2', 'image3'];
 
-        foreach ($imageFields as $index => $field) {
-            if ($expense->$field) {
-                $oldPath = public_path($expenseDirectory . $expense->$field);
-                if (file_exists($oldPath)) {
-                    unlink($oldPath);
-                }
+        if ($expense->image) {
+            $oldPath = public_path($expenseDirectory . $expense->image);
+            if (file_exists($oldPath)) {
+                unlink($oldPath);
             }
         }
+
         $expense->delete();
         return response()->json(true, 200);
     }
@@ -327,16 +308,16 @@ class HuaweiMonthlyController extends Controller
         ]);
 
         $expense->update($validatedData);
-
-        return response()->json([$expense->load('huawei_project.huawei_site')], 200);
+        $expenseTo = HuaweiMonthlyExpense::where('id', $expense->id)->with('huawei_project.huawei_site')->first();
+        return response()->json($expenseTo, 200);
     }
 
-    public function exportMonthlyExpenses(HuaweiMonthlyProject $project)
+    public function exportMonthlyExpenses()
     {
-        return Excel::download(new HuaweiMonthlyExport($project->id), 'Gastos del proyecto ' . $project->description . '.xlsx');
+        return Excel::download(new HuaweiMonthlyExport(), 'Gastos Mensuales Huawei.xlsx');
     }
 
-    public function importCosts(HuaweiMonthlyProject $monthly_project, Request $request)
+    public function importCosts(Request $request)
     {
         // Validar que el archivo es un Excel
         $data = $request->validate([
@@ -355,7 +336,7 @@ class HuaweiMonthlyController extends Controller
 
         // Definir el rango de lectura: A1 hasta la última fila en la columna D
         $startCell = 'A1';
-        $endCell = 'O' . $sheet->getHighestRow();
+        $endCell = 'N' . $sheet->getHighestRow();
         $range = "$startCell:$endCell";
 
         // Leer el rango especificado
@@ -385,7 +366,6 @@ class HuaweiMonthlyController extends Controller
                 'ec_expense_date' => $this->sanitizeDate($row['L']),
                 'ec_op_number' => $row['M'],
                 'ec_amount' => $this->sanitizeNumber($row['N']),
-                'refund_status' => $this->sanitizeText($row['O'], false),
             ];
 
             $rowsAsObjects[] = $rowObject;
@@ -393,26 +373,11 @@ class HuaweiMonthlyController extends Controller
 
         DB::beginTransaction();
 
-        $year = Carbon::parse($monthly_project->date)->year;
-        $month = Carbon::parse($monthly_project->date)->month;
-
-        $startOfMonth = Carbon::createFromDate($year, $month, 1)->startOfDay();
-        $endOfMonth = Carbon::createFromDate($year, $month, 1)->endOfMonth()->endOfDay();
-
         foreach ($rowsAsObjects as $item) {
-            $expenseDate = Carbon::parse($item->expense_date);
-            if ($expenseDate->lt($startOfMonth) || $expenseDate->gt($endOfMonth)) {
-                DB::rollBack();
-                abort(403, 'La fecha del gasto está fuera del mes del proyecto.');
-            }
 
             if (!$item->expense_type || !$item->expense_date || !$item->cdp_type || !$item->amount || !$item->description) {
                 DB::rollBack();
                 abort(403, 'Llene los campos obligatorios');
-            }
-
-            if (!$item->refund_status) {
-                $item->refund_status = 'PENDIENTE';
             }
 
             HuaweiMonthlyExpense::create([
@@ -428,8 +393,6 @@ class HuaweiMonthlyController extends Controller
                 'ec_expense_date' => $item->ec_expense_date,
                 'ec_op_number' => $item->ec_op_number,
                 'ec_amount' => $item->ec_amount,
-                'refund_status' => $item->refund_status,
-                'huawei_monthly_project_id' => $monthly_project->id,
                 'huawei_project_id' => $item->project_id,
             ]);
         }

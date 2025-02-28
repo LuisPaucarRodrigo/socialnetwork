@@ -15,7 +15,6 @@
             <td>Fecha de Depósito de E.C.</td>
             <td>N° de Operación de E.C.</td>
             <td>Monto de E.C.</td>
-            <td>Estado de Reembolso</td>
         </tr>
     </thead>
     <tbody>
@@ -43,7 +42,6 @@
             <td>{{ $item->ec_expense_date }}</td>
             <td>{{ $item->ec_op_number }}</td>
             <td>{{ number_format($item->ec_amount, 2) }}</td>
-            <td>{{ $item->refund_status }}</td>
         </tr>
         @endforeach
         <tr>
