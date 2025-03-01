@@ -83,11 +83,11 @@ class CicsaChargeArea extends Model
 
     public function getStateAttribute()
     {
-        if ($this->state_detraction == 0 && $this->checking_account_amount !== null) {
+        if ($this->state_detraction === 0 && $this->checking_account_amount !== null) {
             return 'Pagado';
         }
 
-        if (!$this->deposit_date && Carbon::now() < $this->payment_date) {
+        if ($this->deposit_date === null && Carbon::now() < $this->payment_date) {
             return 'A tiempo';
         }
 
@@ -95,7 +95,7 @@ class CicsaChargeArea extends Model
             return 'Pagado';
         }
 
-        if (!$this->deposit_date && Carbon::now() > $this->payment_date !== null) {
+        if ($this->deposit_date === null && Carbon::now() > $this->payment_date !== null) {
             return 'Con deuda';
         }
 

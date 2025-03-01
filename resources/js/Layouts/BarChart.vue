@@ -14,14 +14,14 @@ import axios from "axios";
 Chart.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend, Title);
 
 const { project_id } = defineProps({
-    project_id: { type: Number, required: true },
+    project_id: { type: String, required: true },
 });
 
 // Datos iniciales vacíos
 const zones = ref([]);
-const current = ref({ additionals: [], statics: [] });
-const previous = ref({ additionals: [], statics: [] });
-const years = ref({ additionals: [], statics: [] });
+const current = ref({ additional: [], fixed: [] });
+const previous = ref({ additional: [], fixed: [] });
+const years = ref({ additional: [], fixed: [] });
 
 const staticColor = "#515fed";
 const additionalColor = "#9b59b6";
@@ -32,6 +32,7 @@ const chartRef1 = ref(null);
 let chartInstance1 = null;
 const createChart1 = () => {
     if (chartRef1.value) {
+    
         chartInstance1 = new Chart(chartRef1.value, {
             type: "bar",
             data: {
@@ -39,14 +40,14 @@ const createChart1 = () => {
                 datasets: [
                     {
                         label: "Costos Fijos",
-                        data: current.value.statics,
+                        data: current.value.fixed,
                         backgroundColor: staticColor,
                         borderRadius: 3,
                         stack: "Costos",
                     },
                     {
                         label: "Costos Variables",
-                        data: current.value.additionals,
+                        data: current.value.additional,
                         backgroundColor: additionalColor,
                         borderRadius: 3,
                         stack: "Costos",
@@ -88,14 +89,14 @@ const createChart2 = () => {
                 datasets: [
                     {
                         label: "Costos Fijos",
-                        data: previous.value.statics,
+                        data: previous.value.fixed,
                         backgroundColor: staticColor,
                         borderRadius: 3,
                         stack: "Costos",
                     },
                     {
                         label: "Costos Variables",
-                        data: previous.value.additionals,
+                        data: previous.value.additional,
                         backgroundColor: additionalColor,
                         borderRadius: 3,
                         stack: "Costos",
@@ -137,14 +138,14 @@ const createChart3 = () => {
                 datasets: [
                     {
                         label: "Costos Fijos",
-                        data: years.value.statics,
+                        data: years.value.fixed,
                         backgroundColor: staticColor,
                         borderRadius: 3,
                         stack: "Costos",
                     },
                     {
                         label: "Costos Variables",
-                        data: years.value.additionals,
+                        data: years.value.additional,
                         backgroundColor: additionalColor,
                         borderRadius: 3,
                         stack: "Costos",
@@ -178,9 +179,9 @@ const createChart3 = () => {
 // Función para obtener los datos y actualizar el gráfico
 async function getZonesExpensesData() {
     const res = await axios.get(
-        route("projectmanagement.zoneexpenses.chart", { project_id })
+        route("projectmanagement.pext.expense_dashboard_bar", { project_id })
     );
-    
+    console.log("dasd",res)
     zones.value = res.data.zones;
     current.value = res.data.current;
     previous.value = res.data.previous;
@@ -188,20 +189,20 @@ async function getZonesExpensesData() {
 
     if (chartInstance1) {
         chartInstance1.data.labels = zones.value;
-        chartInstance1.data.datasets[0].data = current.value.statics;
-        chartInstance1.data.datasets[1].data = current.value.additionals;
+        chartInstance1.data.datasets[0].data = current.value.fixed;
+        chartInstance1.data.datasets[1].data = current.value.additional;
         chartInstance1.update();
     }
     if (chartInstance2) {
         chartInstance2.data.labels = zones.value;
-        chartInstance2.data.datasets[0].data = previous.value.statics;
-        chartInstance2.data.datasets[1].data = previous.value.additionals;
+        chartInstance2.data.datasets[0].data = previous.value.fixed;
+        chartInstance2.data.datasets[1].data = previous.value.additional;
         chartInstance2.update();
     }
     if (chartInstance3) {
         chartInstance3.data.labels = zones.value;
-        chartInstance3.data.datasets[0].data = years.value.statics;
-        chartInstance3.data.datasets[1].data = years.value.additionals;
+        chartInstance3.data.datasets[0].data = years.value.fixed;
+        chartInstance3.data.datasets[1].data = years.value.additional;
         chartInstance3.update();
     }
 }
@@ -210,14 +211,12 @@ onMounted(() => {
     createChart1();
     createChart2();
     createChart3();
-    getZonesExpensesData(); // Obtiene los datos y los actualiza
+    getZonesExpensesData();
 });
 </script>
 
 <template>
-    <div
-        class="w-full h-auto py-6 shadow-md rounded-lg border border-gray-200 bg-white bg-opacity-30"
-    >
+    <div class="w-full h-auto py-6 shadow-md rounded-lg border border-gray-200 bg-white bg-opacity-30">
         <div class="grid grid-cols-1 lg:grid-cols-3">
             <div class="flex flex-col items-center justify-center h-96">
                 <canvas ref="chartRef1"></canvas>

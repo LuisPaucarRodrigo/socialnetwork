@@ -1,7 +1,7 @@
 <template>
     <div class="my-3 sm:flex sm:gap-4 sm:justify-between">
         <div class="flex items-center justify-between gap-x-3 w-full">
-            <div v-if="hasPermission('HumanResourceManager')">
+            <div v-if="hasPermission('HumanResourceManager')" class="hidden sm:flex">
                 <Link :href="route('management.employees.create')"
                     class="bg-indigo-600 hover:bg-indigo-500 rounded-md px-4 py-2 text-center text-sm text-white">
                 + Agregar
@@ -25,10 +25,10 @@
                         <div>
                             <div class="dropdown">
                                 <div class="dropdown-menu">
-                                    <button @click="$emit('add-information')"
+                                    <Link :href="route('management.employees.create')"
                                         class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                        Agregar
-                                    </button>
+                                    + Agregar
+                                    </Link>
                                 </div>
                             </div>
                         </div>
@@ -40,7 +40,7 @@
             </PrimaryButton>
         </div>
         <div class="flex items-center mt-4 sm:mt-0">
-            <Search v-model:search="form.search" fields="Nombre,Apellido,Telefono,Dni"/>
+            <Search v-model:search="form.search" fields="Nombre,Apellido,Telefono,Dni" />
         </div>
     </div>
 </template>
@@ -49,6 +49,7 @@
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Search from '@/Components/Search.vue';
 import { Link } from '@inertiajs/vue3';
+import Dropdown from "@/Components/Dropdown.vue";
 
 const { userPermission, form } = defineProps({
     userPermission: Array,

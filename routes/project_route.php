@@ -138,7 +138,6 @@ Route::middleware('permission:ProjectManager')->group(function () {
 
 
 
-
     //Project product
     Route::get('/project/warehouse_products/{project}/{warehouse}', [ProjectManagementController::class, 'warehouse_products'])->name('projectmanagement.warehouse_products');
     Route::get('/project/inventory_products/{inventory}', [ProjectManagementController::class, 'inventory_products'])->name('projectmanagement.inventory_products');
@@ -274,6 +273,8 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     Route::post('/projectPext/massive_update', [PextController::class, 'masiveUpdate'])->name('projectmanagement.pext.massiveUpdate');
     Route::post('/projectPext/massive_update_swap', [PextController::class, 'masiveUpdateSwap'])->name('projectmanagement.pext.massiveUpdate.swap');
 
+    Route::get('/projectPext/expense_dashboard/{project_id}', [PextController::class, 'expense_dashboard'])->name('projectmanagement.pext.expense_dashboard');
+    Route::get('/projectPext/expense_dashboard_bar/{project_id}', [PextController::class, 'barChart'])->name('projectmanagement.pext.expense_dashboard_bar');
 
     //Project calendar
     Route::get('/calendarProjects', [CalendarController::class, 'index'])->name('projectscalendar.index');

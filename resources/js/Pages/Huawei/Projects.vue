@@ -95,7 +95,58 @@
 
             <br>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                <div v-for="item in (props.search ? props.projects : projects.data)" :key="item.id"
+                
+                <div
+                    class="bg-blue-200 p-3 rounded-md shadow-sm border border-gray-300 items-center">
+                    <div class="grid grid-cols-2">
+                        <h2 class="text-sm font-semibold mb-3 mr-3">
+                            N° 0001
+                        </h2>
+                    </div>
+                    <div class="flex gap-1">
+                        <p class="text-sm font-semibold text-black">Nombre: </p>
+                        <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-1 whitespace-nowrap">
+                            General
+                        </h3>
+                    </div>
+                    <div class="flex gap-1">
+                        <p class="text-sm font-semibold text-black">Site: </p>
+                        <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-1 whitespace-nowrap">
+                            -
+                        </h3>
+                    </div>
+                    <div class="flex gap-1">
+                        <p class="text-sm font-semibold text-black">OT: </p>
+                        <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-1 whitespace-nowrap">
+                            -
+                        </h3>
+                    </div>
+                    <div class="flex gap-1">
+                        <p class="text-sm font-semibold text-black">Macroproyecto: </p>
+                        <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-1 whitespace-nowrap">
+                            -
+                        </h3>
+                    </div>
+                    <div class="flex gap-1">
+                        <p class="text-sm font-semibold text-black">DU: </p>
+                        <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-1 whitespace-nowrap">
+                            -
+                        </h3>
+                    </div>
+
+                    <div
+                        class="text-gray-500 text-sm mt-1">
+                        <div class="grid grid-cols-1 gap-y-1">
+                            <Link
+                                :href="route('huawei.projects.generalbalance')"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                                Gestión de Gastos
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-for="item in props.projects" :key="item.id"
                     class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
                     <div class="grid grid-cols-2">
                         <h2 class="text-sm font-semibold mb-3 mr-3">
@@ -202,9 +253,9 @@
                 </div>
             </div>
             <br>
-            <div v-if="!props.search" class="flex flex-col items-center border-t px-5 py-5 xs:flex-row xs:justify-between">
+            <!-- <div v-if="!props.search" class="flex flex-col items-center border-t px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="props.projects.links" />
-            </div>
+            </div> -->
         </div>
         <Modal :show="liquidateModal" :maxWidth="'md'">
             <!-- Contenido del modal cuando no hay empleados -->
@@ -293,7 +344,7 @@ const hasPermission = (permission) => {
 }
 
 const searchForm = useForm({
-    searchTerm: props.search ? props.search : '',
+    searchTerm: props.search ?? '',
 })
 
 const search = () => {
