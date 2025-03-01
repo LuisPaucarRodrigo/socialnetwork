@@ -138,7 +138,7 @@
                         class="text-gray-500 text-sm mt-1">
                         <div class="grid grid-cols-1 gap-y-1">
                             <Link
-                                :href="route('huawei.projects.general.expenses')"
+                                :href="route('huawei.projects.generalbalance')"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                                 Gestión de Gastos
                             </Link>

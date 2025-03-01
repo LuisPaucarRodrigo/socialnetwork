@@ -1,16 +1,16 @@
 <template>
 
     <Head title="Gestion de Gastos" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :redirectRoute="{route: 'huawei.projects', params: {status: 1, prefix: 'Claro'}}">
       <template #header>
         Resumen de Gastos e Ingresos
       </template>
       <div class="flex gap-2 mb-5">
-        <Link :href="route('huawei.generalbalance.costs.summary')" type="button" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
-            Gastos
+        <Link :href="route('huawei.projects.general.expenses', {mode: 1})" type="button" class="rounded-md bg-gray-500 px-4 py-2 text-center text-sm text-white hover:bg-gray-400 whitespace-nowrap">
+            Gastos Fijos
         </Link>
-        <Link :href="route('huawei.generalbalance.earnings')" type="button" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
-            Ingresos
+        <Link :href="route('huawei.projects.general.expenses')" type="button" class="rounded-md bg-gray-500 px-4 py-2 text-center text-sm text-white hover:bg-gray-400 whitespace-nowrap">
+            Gastos Variables
         </Link>
       </div>
       <div class="flex flex-col space-y-24">

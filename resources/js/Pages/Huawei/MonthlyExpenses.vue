@@ -1,7 +1,7 @@
 <template>
     <Head title="Gestion de Costos" />
-    <AuthenticatedLayout :redirectRoute="{route: 'huawei.projects', params: {status: 1, prefix: 'Claro'}}">
-        <template #header> Gastos del Proyecto </template>
+    <AuthenticatedLayout :redirectRoute="'huawei.projects.generalbalance'">
+        <template #header> Gastos Generales {{ props.mode ? 'Fijos' : 'Variables' }}</template>
         <br />
         <Toaster richColors />
         <div class="inline-block min-w-full mb-4">
@@ -224,7 +224,15 @@
                                         @click="openNuUpdateModal"
                                         class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition ease-in-out"
                                     >
-                                        Actualizar
+                                        Actualizar Operación
+                                    </button>
+                                </div>
+                                <div class="dropdown-menu">
+                                    <button
+                                        @click="openMassiveValidate"
+                                        class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition ease-in-out"
+                                    >
+                                        Actualizar Estado
                                     </button>
                                 </div>
                             </div>
@@ -639,7 +647,6 @@
                                         </svg>
                                     </button>
                                 </div>
-                                <div v-else class="w-1/2"></div>
 
                                 <div class="flex gap-3 justify-center w-1/2">
                                     <button
@@ -1459,7 +1466,10 @@ const props = defineProps({
     expense: Object,
     search: String,
     summary: Object,
+    data: Object,
+    mode: String,
 });
+
 
 const expenses = ref(props.expense);
 const filterMode = ref(false);
@@ -1617,59 +1627,9 @@ const openPreviewDocumentModal = (expense) => {
     window.open(routeToShow, "_blank");
 };
 
-const employees = [
-    "ADMINISTRATIVO",
-    "ADITA ALVAREZ ROJAS",
-    "ALAN RAMIRO ALIAGA COAGUILA",
-    "ANGIE NICOLE DURAN VILLACORTA",
-    "CESAR DAVID NINACANSAYA APAZA",
-    "CLINTON LUIS YUCRA PACCO",
-    "EDUARDO JOHEL HINOJOSA AMUDIO",
-    "EDWIN RICHARD CRUZ CHALCO",
-    "EDWIN RICHARD CRUZ CHALCO",
-    "ENMANUEL EDUARDO JUAN HANCO TEJADA",
-    "GUSTAVO GIOVANNI FLORES LLERENA",
-    "HANS MENDOZA TRUJILLO",
-    "JEAN PAUL HILARION TABOADA",
-    "JHONY PUCHO CCARITA",
-    "JORGE DANIEL MONTOYA RODRIGUEZ",
-    "JONATHAN ELISBAN MOLINA YUCRA",
-    "JOSE HUMBERTO QUENTA VILLANUEVA",
-    "KONNY EDUARDO CAYLLAHUA",
-    "MARIO ALFONSO LLONTOP SOTO",
-    "NASCHELY JOSE RODRIGUEZ TORO",
-    "PABLO ENRIQUE LAURA FLORES",
-    "REMMILTON CRUZ QUISPE",
-    "VICTOR HUGO CACERES CONDORI",
-    "XAVIER ABDUL CALAPUJA FLORES",
-    "YERSON HENRRY LLERENA CONDORI",
-];
-
-const expenseTypes = [
-    "Alimentación",
-    "Adicional Camioneta",
-    "Combustible",
-    "Consumibles",
-    "EPPS",
-    "Fletes",
-    "Herramientas",
-    "Hospedaje",
-    "Materiales",
-    "Movilidad",
-    "Planilla",
-    "Transporte",
-    "Otros",
-];
-
-const cdp_types = [
-    "Efectivo",
-    "Depósito",
-    "Factura",
-    "Boleta",
-    "RH",
-    "Yape",
-    "Pendiente Factura",
-];
+const employees = props.data.employees;
+const expenseTypes = props.mode ? props.data.static_expense_types : props.data.variable_expense_types;
+const cdp_types = props.data.cdp_types;
 
 const filterForm = ref({
     search: "",
@@ -1710,7 +1670,7 @@ watch(
 );
 
 async function search_advance($data) {
-    let url = route("huawei.projects.general.expenses.searchadvance");
+    let url = route("huawei.projects.general.expenses.searchadvance", {mode: props.mode});
     try {
         let response = await axios.post(url, $data);
         expenses.value = response.data.expenses;
@@ -1780,15 +1740,17 @@ const searchForm = useForm({
     searchTerm: props.search ? props.search : "",
 });
 
+
 const search = () => {
     if (searchForm.searchTerm == "") {
         router.visit(
-            route("huawei.projects.general.expenses")
+            route("huawei.projects.general.expenses", {mode: props.mode})
         );
     } else {
         router.visit(
             route("huawei.projects.general.expenses.search", {
                 request: searchForm.searchTerm,
+                mode: props.mode
             })
         );
     }
@@ -1971,8 +1933,8 @@ const importExcel = () => {
                 );
             }, 2000);
         },
-        onError: () => {
-            notifyError("Error al importar el archivo");
+        onError: (e) => {
+            notifyError(e.message);
         },
     });
 };

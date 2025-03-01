@@ -495,7 +495,7 @@ class HuaweiProjectController extends Controller
             similar_text($term, strtolower($site), $similarity);
 
             // Considerar un nombre como "cercano" si la similitud es mayor al 80%
-            if ($similarity > 80) {
+            if ($similarity > 70) {
                 $closeMatchName = $site;
                 break;
             }

@@ -33,7 +33,8 @@ class HuaweiMonthlyExpense extends Model
         'huawei_project_id'
     ];
     protected $appends = [
-        'real_state'
+        'real_state',
+        'type'
     ];
 
     public function general_expense()
@@ -114,4 +115,13 @@ class HuaweiMonthlyExpense extends Model
         }
         return 'Pendiente';
     }
+
+    public function getTypeAttribute()
+    {
+        if (in_array($this->expense_type, ['Planilla', 'Combustible', 'Alimentación'])) {
+            return 'Fijo';
+        }
+        return 'Variable';
+    }
+    
 }

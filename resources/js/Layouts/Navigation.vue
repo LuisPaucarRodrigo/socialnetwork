@@ -435,7 +435,7 @@
                     <Link class="w-full" :href="route('cicsa.index', { type: 2 })">Pext</Link>
                 </MyTransition>
             </template>
-
+            
             <template v-if="hasPermission('HuaweiManager')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#" @click="toogleHUawei">
                     <svg v-if="pending_orders.length == 0" fill="white" width="23px" height="23px" viewBox="0 0 32 32"
@@ -451,8 +451,16 @@
                     <span class="mx-3">Huawei</span>
                 </a>
                 <MyTransition :transitiondemonstration="showHuawei">
+                    <Link class="w-full" :href="route('huawei.sites')">Sites Huawei</Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showHuawei">
+                    <Link class="w-full" :href="route('huawei.projects', { status: 1, prefix: 'Claro' })">Proyectos
+                    Huawei
+                    </Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showHuawei">
                     <div class="relative">
-                        <Link class="w-full" :href="route('huawei.inventory.show', { warehouse: 1 })">Inventario de
+                        <Link class="w-full" :href="route('huawei.inventory.show', { warehouse: 1 })">Inventario
                         Huawei
                         </Link>
                         <button @click="showPendingOrders = !showPendingOrders">
@@ -479,22 +487,16 @@
                 </template>
 
                 <MyTransition :transitiondemonstration="showHuawei">
-                    <Link class="w-full" :href="route('huawei.quickmaterials')">Materiales Internos</Link>
+                    <Link class="w-full" :href="route('huawei.quickmaterials')">Inventario Internos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.internalguides')">Guías Internas</Link>
                 </MyTransition>
-                <MyTransition :transitiondemonstration="showHuawei">
-                    <Link class="w-full" :href="route('huawei.sites')">Sites de Huawei</Link>
-                </MyTransition>
+
                 <!-- <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.titles')">Huawei PRO</Link>
                 </MyTransition> -->
-                <MyTransition :transitiondemonstration="showHuawei">
-                    <Link class="w-full" :href="route('huawei.projects', { status: 1, prefix: 'Claro' })">Proyectos
-                    Huawei
-                    </Link>
-                </MyTransition>
+
                 <!-- <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.monthlyprojects')">Proyectos Mensuales</Link>
                 </MyTransition> -->
