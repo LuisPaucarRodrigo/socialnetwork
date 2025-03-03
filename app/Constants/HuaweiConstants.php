@@ -8,15 +8,17 @@ class HuaweiConstants
 {
     public static function getEmployees(): array
     {
-        return Employee::whereHas('contract.cost_line', function ($query) {
-            $query->where('name', 'HUAWEI');                               
-        })
-        ->orderBy('name')
-        ->selectRaw("UPPER(CONCAT(name, ' ', lastname)) as full_name")
-        ->pluck('full_name')
-        ->toArray();
+        $expenses = Employee::whereHas('contract.cost_line', function ($query) {
+                $query->where('name', 'HUAWEI');
+            })
+            ->orderBy('name')
+            ->selectRaw("UPPER(CONCAT(name, ' ', lastname)) as full_name")
+            ->pluck('full_name')
+            ->toArray();
+        array_unshift($expenses, 'ADMINISTRATIVO');
+        return $expenses;
     }
-    
+
 
     public static function getVariableExpenseTypes(): array
     {
