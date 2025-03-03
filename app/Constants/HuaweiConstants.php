@@ -9,7 +9,8 @@ class HuaweiConstants
     public static function getEmployees(): array
     {
         $employees = Employee::whereHas('contract.cost_line', function ($query) {
-            $query->where('name', 'HUAWEI');
+            $query->where('name', 'HUAWEI')
+                  ->orWhere('name', 'ADMINISTRATIVO');
         })
             ->orderBy('name')
             ->selectRaw("UPPER(CONCAT(name, ' ', lastname)) as full_name")

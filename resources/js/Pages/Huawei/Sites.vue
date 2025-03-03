@@ -54,9 +54,12 @@
                     <div class="text-sm font-medium text-gray-900">{{ site.address }}</div>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-center">
-                    <div class="flex justify-center items-center">
+                    <div class="flex justify-center gap-2 items-center">
                         <button @click="openUpdateSite(site)" class="text-orange-400 hover:underline">
                             <PencilSquareIcon class="h-5 w-5" />
+                        </button>
+                        <button @click="confirmingDeleteSite(site.id)" class="text-red-600 hover:underline">
+                            <TrashIcon class="h-5 w-5" />
                         </button>
                     </div>
                 </td>
@@ -127,7 +130,8 @@
 
         <ConfirmCreateModal :confirmingcreation="showModal" itemType="Site" />
         <ConfirmUpdateModal :confirmingupdate="showModalEdit" itemType="Site" />
-
+        <ConfirmDeleteModal :confirmingDeletion="confirmDeleteSite" itemType="Site" :deleteFunction="deleteSite"
+         @closeModal="closeModalDoc"/>
       </AuthenticatedLayout>
     </div>
   </template>
@@ -136,12 +140,13 @@
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
   import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
   import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
+  import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
   import SecondaryButton from '@/Components/SecondaryButton.vue';
   import InputLabel from '@/Components/InputLabel.vue';
   import TextInput from '@/Components/TextInput.vue';
   import InputError from '@/Components/InputError.vue';
   import { Head, useForm, router } from '@inertiajs/vue3';
-  import { PencilSquareIcon } from '@heroicons/vue/24/outline';
+  import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline';
   import { ref } from 'vue';
   import Modal from '@/Components/Modal.vue';
   import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -167,6 +172,27 @@
   const editingSite = ref(null);
   const showConfirmNameModal = ref(false);
   const foundName = ref(null);
+  const docToDelete = ref(null);
+  const confirmDeleteSite = ref(false);
+
+  const confirmingDeleteSite = (documentId) => {
+    docToDelete.value = documentId;
+    confirmDeleteSite.value = true;
+  }
+
+  const closeModalDoc = () => {
+    confirmDeleteSite.value = false
+  }
+
+  const deleteSite = () => {
+    const docId = docToDelete.value;
+    if (docId){
+        router.delete(route('huawei.sites.delete', {site: docId}), {
+            onSuccess: () => closeModalDoc()
+        })
+    }
+  }
+
   const openCreateModal = () => {
     isCreateModalOpen.value = true;
   };

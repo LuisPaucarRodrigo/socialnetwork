@@ -14,11 +14,14 @@ return new class extends Migration
         Schema::create('huawei_project_earnings', function (Blueprint $table) {
             $table->id();
             $table->string('code');
-            $table->text('description')->nullable();
+            $table->string('description');
+            $table->string('unit');
+            $table->double('unit_price');
             $table->foreignId('huawei_project_id')->constrained('huawei_projects')->onDelete('cascade');
-            $table->double('unit_price')->nullable();
             $table->integer('quantity');
-            $table->string('state');
+            $table->string('observation');
+            $table->string('evidence');
+            $table->string('goal');
             $table->timestamps();
         });
     }

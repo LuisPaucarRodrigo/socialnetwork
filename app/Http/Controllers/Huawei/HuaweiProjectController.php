@@ -8,6 +8,7 @@ use App\Exports\HuaweiProjectRealEarningsExport;
 use App\Exports\HuaweiStaticCostExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Huawei\HuaweiAdditionalRequest;
+use App\Models\CostCenter;
 use App\Models\Employee;
 use App\Models\HuaweiProject;
 use App\Models\HuaweiProjectEmployee;
@@ -152,6 +153,8 @@ class HuaweiProjectController extends Controller
     {
         return Inertia::render('Huawei/ProjectForm', [
             'huawei_sites' => HuaweiSite::orderBy('name')->get(),
+            'cost_centers' => CostCenter::where('cost_line_id', 3)->get(),
+            'price_guides' => HuaweiPriceGuide::all(),
             'employees' => Employee::all()
         ]);
     }
@@ -467,6 +470,12 @@ class HuaweiProjectController extends Controller
         return redirect()->back();
     }
 
+    public function destroySite (HuaweiSite $site)
+    {
+        $site->delete();
+        return redirect()->back();
+    }
+
     public function updateSite (HuaweiSite $site, Request $request)
     {
         $data = $request->validate([
@@ -483,25 +492,20 @@ class HuaweiProjectController extends Controller
     {
         $term = strtolower($request->input('name'));
 
-        // Recuperar todos los nombres de HuaweiSite
         $sites = HuaweiSite::all()->pluck('name')->toArray();
 
-        // Variable para almacenar el nombre de la coincidencia cercana
         $closeMatchName = null;
 
-        // Comparar el término con los nombres existentes
         foreach ($sites as $site) {
             $similarity = 0;
             similar_text($term, strtolower($site), $similarity);
 
-            // Considerar un nombre como "cercano" si la similitud es mayor al 80%
-            if ($similarity > 70) {
+            if ($similarity > 65) {
                 $closeMatchName = $site;
                 break;
             }
         }
 
-        // Verificar si estamos en modo de actualización y el nombre encontrado es el mismo que el nombre actual
         if ($update && $closeMatchName && $closeMatchName === HuaweiSite::find($update)->name) {
             return response()->json([
                 'message' => 'notfound',
@@ -509,7 +513,6 @@ class HuaweiProjectController extends Controller
             ]);
         }
 
-        // Construir la respuesta
         if ($closeMatchName) {
             return response()->json([
                 'message' => 'found',

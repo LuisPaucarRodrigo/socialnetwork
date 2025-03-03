@@ -15,9 +15,17 @@ class HuaweiPriceGuide extends Model
     protected $fillable = [
         'code',
         'description',
+        'unit',
         'b1',
         'b2',
         'b3',
-        'b4'
+        'b4',
+        'cost_center_id',
     ];
+
+    //relations
+    public function costCenter()
+    {
+        return $this->belongsTo(CostCenter::class, 'cost_center_id');
+    }
 }
