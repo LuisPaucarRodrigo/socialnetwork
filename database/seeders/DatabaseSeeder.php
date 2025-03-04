@@ -136,6 +136,8 @@ class DatabaseSeeder extends Seeder
             ["name" => "Instalaciones GTD", "cost_line_id" => 2, "percentage" => "20"],
             ["name" => "Densificaion", "cost_line_id" => 2, "percentage" => "20"],
             ["name" => "Adicionales", "cost_line_id" => 2, "percentage" => "10"],
+            ["name" => 'MBB', 'cost_line_id' => 3, 'percentage' => '50'],
+            ["name" => 'FBB', 'cost_line_id' => 3, 'percentage' => '50'],
         ];
 
         CostLine::insert($costLinesData);

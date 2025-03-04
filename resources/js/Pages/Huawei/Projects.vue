@@ -74,6 +74,7 @@
                 <option disabled>Seleccione Almacén</option>
                 <option>Claro</option>
                 <option>Entel</option>
+                <option>Telefonica</option>
             </select>
         </div>
 

@@ -33,86 +33,11 @@
                             Registrar nuevo proyecto
                         </h2>
                         <br />
-                        <div
-                            v-if="props.huawei_project"
-                            class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mb-4"
-                        >
-                            <div class="sm:col-span-3">
-                                <InputLabel
-                                    class="font-medium leading-6 text-gray-900"
-                                >
-                                    Site
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <InputLabel
-                                        class="font-medium leading-6 text-gray-900"
-                                    >
-                                        {{
-                                            props.huawei_project.huawei_site
-                                                .name
-                                        }}
-                                    </InputLabel>
-                                </div>
-                            </div>
-                            <div class="sm:col-span-3">
-                                <InputLabel
-                                    class="font-medium leading-6 text-gray-900"
-                                >
-                                    Operador
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <InputLabel
-                                        class="font-medium leading-6 text-gray-900"
-                                    >
-                                        {{ props.huawei_project.prefix }}
-                                    </InputLabel>
-                                </div>
-                            </div>
-                            <div class="sm:col-span-3">
-                                <InputLabel
-                                    class="font-medium leading-6 text-gray-900"
-                                >
-                                    OT
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <InputLabel
-                                        class="font-medium leading-6 text-gray-200"
-                                    >
-                                        {{ props.huawei_project.ot }}
-                                    </InputLabel>
-                                </div>
-                            </div>
-                            <div class="sm:col-span-3">
-                                <InputLabel
-                                    class="font-medium leading-6 text-gray-900"
-                                >
-                                    Macroproyecto
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <InputLabel
-                                        class="font-medium leading-6 text-gray-200"
-                                    >
-                                        {{ props.huawei_project.macro_project }}
-                                    </InputLabel>
-                                </div>
-                            </div>
-                            <div class="sm:col-span-3">
-                                <InputLabel
-                                    class="font-medium leading-6 text-gray-900"
-                                >
-                                    Código
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <InputLabel
-                                        class="font-medium leading-6 text-gray-900"
-                                    >
-                                        {{ props.huawei_project.code }}
-                                    </InputLabel>
-                                </div>
-                            </div>
-                        </div>
+
                         <h2 class="font-black">Datos Generales:</h2>
+
                         <div
+                            v-if="!props.huawei_project"
                             class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-5"
                         >
                             <div class="sm:col-span-3">
@@ -131,10 +56,7 @@
                                 </div>
                             </div>
 
-                            <div
-                                v-if="!props.huawei_project"
-                                class="sm:col-span-3"
-                            >
+                            <div class="sm:col-span-3">
                                 <InputLabel
                                     for="cost_center_id"
                                     class="font-medium leading-6 text-gray-900"
@@ -164,10 +86,7 @@
                                 />
                             </div>
 
-                            <div
-                                v-if="!props.huawei_project"
-                                class="sm:col-span-3"
-                            >
+                            <div class="sm:col-span-3">
                                 <InputLabel
                                     for="prefix"
                                     class="font-medium leading-6 text-gray-900"
@@ -185,16 +104,13 @@
                                         </option>
                                         <option>Claro</option>
                                         <option>Entel</option>
-                                        <option>Telefónica</option>
+                                        <option>Telefonica</option>
                                     </select>
                                 </div>
                                 <InputError :message="form.errors.prefix" />
                             </div>
 
-                            <div
-                                v-if="!props.huawei_project"
-                                class="sm:col-span-3"
-                            >
+                            <div class="sm:col-span-3">
                                 <InputLabel
                                     for="prefix"
                                     class="font-medium leading-6 text-gray-900"
@@ -222,16 +138,59 @@
                             </div>
                         </div>
 
+                        <div
+                            v-else
+                            class="grid grid-cols-1 md:grid-cols-2 mt-5 gap-y-2"
+                        >
+                            <div class="flex gap-2 items-center">
+                                <h2 class="font-black text-black">
+                                    Nombre del Proyecto:
+                                </h2>
+                                <div>
+                                    <input
+                                        type="text"
+                                        id="editName"
+                                        v-model="editForm.name"
+                                        class="block w-60 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                    <InputError
+                                        :message="editForm.errors.name"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="flex gap-2 items-center">
+                                <h2 class="font-black text-black">
+                                    Centro de Costos:
+                                </h2>
+                                <p class="text-gray-600 font-medium">
+                                    {{ props.huawei_project.cost_center.name }}
+                                </p>
+                            </div>
+                            <div class="flex gap-2 items-center">
+                                <h2 class="font-black text-black">
+                                    Macroproyecto:
+                                </h2>
+                                <p class="text-gray-600 font-medium">
+                                    {{ props.huawei_project.macro_project }}
+                                </p>
+                            </div>
+                            <div class="flex gap-2 items-center">
+                                <h2 class="font-black text-black">Operador:</h2>
+                                <p class="text-gray-600 font-medium">
+                                    {{ props.huawei_project.prefix }}
+                                </p>
+                            </div>
+                        </div>
+
                         <hr class="border-1 border-gray-500 my-10 black" />
                         <h2 class="font-black">Datos Específicos:</h2>
 
                         <div
+                            v-if="!props.huawei_project"
                             class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-5"
                         >
-                            <div
-                                v-if="!props.huawei_project"
-                                class="sm:col-span-3"
-                            >
+                            <div class="sm:col-span-3">
                                 <InputLabel
                                     for="ot"
                                     class="font-medium leading-6 text-gray-900"
@@ -248,10 +207,7 @@
                                 </div>
                             </div>
 
-                            <div
-                                v-if="!props.huawei_project"
-                                class="sm:col-span-3"
-                            >
+                            <div class="sm:col-span-3">
                                 <InputLabel
                                     for="huawei_site_id"
                                     class="font-medium leading-6 text-gray-900"
@@ -300,10 +256,7 @@
                                 </div>
                             </div>
 
-                            <div
-                                v-if="!props.huawei_project"
-                                class="sm:col-span-3"
-                            >
+                            <div class="sm:col-span-3">
                                 <InputLabel
                                     for="zone"
                                     class="font-medium leading-6 text-gray-900"
@@ -351,57 +304,66 @@
                                     />
                                 </div>
                             </div>
-
-                            <!-- <div class="sm:col-span-3">
-                                <div class="flex gap-2">
-                                    <InputLabel for="trainings" class="font-medium leading-6 text-gray-900">Miembros del
-                                        equipo al proyecto
-                                    </InputLabel>
-                                    <button @click.prevent="showToAddEmployee" type="button">
-                                        <UserPlusIcon class="text-indigo-800 h-6 w-6 hover:text-purple-400" />
-                                    </button>
-                                </div>
-
-                                <div class="mt-2" v-if="props.huawei_project">
-                                    <div v-for="(member, index) in form.employees" :key="index"
-                                        class="grid grid-cols-8 items-center my-2">
-                                        <p class=" text-sm col-span-7 line-clamp-2">{{ member.employee.name }} {{
-                                            member.employee.lastname }}: {{ member.charge }} - S/. {{ member.cost.toFixed(2) }} </p>
-                                        <div class="flex gap-2">
-                                            <button type="button" @click="edit_employee(member, index)"
-                                                class="col-span-1 flex justify-end">
-                                                <PencilSquareIcon class=" text-yellow-500 h-5 w-5 " />
-                                            </button>
-                                            <button type="button" @click="delete_already_employee(member.id, index)"
-                                                class="col-span-1 flex justify-end">
-                                                <TrashIcon class=" text-red-500 h-5 w-5 " />
-                                            </button>
-                                        </div>
-                                        <div class="border-b col-span-8 border-gray-900/10">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="mt-2" v-else>
-                                    <div v-for="(member, index) in form.employees" :key="index"
-                                        class="grid grid-cols-8 items-center my-2">
-                                        <p class=" text-sm col-span-7 line-clamp-2">{{ member.employee.name }} {{
-                                            member.employee.lastname }}: {{ member.charge + ' - ' + member.cost}} </p>
-                                        <button type="button" @click="delete_employee(index)"
-                                            class="col-span-1 flex justify-end">
-                                            <TrashIcon class=" text-red-500 h-4 w-4 " />
-                                        </button>
-                                        <div class="border-b col-span-8 border-gray-900/10">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> -->
                         </div>
+
+                        <div
+                            v-else
+                            class="grid grid-cols-1 md:grid-cols-2 mt-5 gap-y-2"
+                        >
+                            <div class="flex gap-2 items-center">
+                                <h2 class="font-black text-black">PO:</h2>
+                                <p class="text-gray-600 font-medium">
+                                    {{ props.huawei_project.ot }}
+                                </p>
+                            </div>
+                            <div class="flex flex-wrap gap-2 items-center">
+                                <h2 class="font-black text-black">DU:</h2>
+                                <p
+                                    class="text-gray-600 font-medium break-words"
+                                >
+                                    {{ props.huawei_project.assigned_diu }}
+                                </p>
+                            </div>
+
+                            <div class="flex gap-2 items-center">
+                                <h2 class="font-black text-black">Site:</h2>
+                                <p class="text-gray-600 font-medium">
+                                    {{ props.huawei_project.huawei_site.name }}
+                                </p>
+                            </div>
+                            <div class="flex gap-2 items-center">
+                                <h2 class="font-black text-black">Zona:</h2>
+                                <p class="text-gray-600 font-medium">
+                                    {{ props.huawei_project.zone }}
+                                </p>
+                            </div>
+                            <div
+                                class="flex gap-2 items-start"
+                            >
+                                <h2 class="font-black text-black">
+                                    Descripción:
+                                </h2>
+                                <textarea
+                                    id="editDescription"
+                                    v-model="editForm.description"
+                                    class="block w-[80%] rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                />
+                                <InputError
+                                    :message="editForm.errors.description"
+                                />
+                            </div>
+                        </div>
+
                         <hr class="border-1 border-gray-500 my-10 black" />
                         <div class="flex flex-space gap-2">
                             <h2 class="font-black">Líneas Base:</h2>
                             <button
                                 type="button"
-                                v-if="form.cost_center_id && form.zone"
+                                v-if="
+                                    form.cost_center_id &&
+                                    form.zone &&
+                                    !props.huawei_project
+                                "
                                 @click="openBaseLine"
                                 class="px-1"
                             >
@@ -542,7 +504,10 @@
                                         <tr
                                             v-for="(
                                                 item, index
-                                            ) in form.base_lines"
+                                            ) in props.huawei_project
+                                                ? props.huawei_project
+                                                      .huawei_project_earnings
+                                                : form.base_lines"
                                             :key="index"
                                             class="text-gray-700"
                                         >
@@ -575,6 +540,7 @@
                                                 class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
                                             >
                                                 <input
+                                                    v-if="!props.huawei_project"
                                                     type="number"
                                                     v-model="
                                                         form.base_lines[index]
@@ -586,11 +552,18 @@
                                                     class="w-full border border-gray-300 rounded-md text-center p-1 focus:ring focus:ring-indigo-500 focus:border-indigo-500"
                                                     min="0"
                                                 />
+                                                <p v-else>
+                                                    {{ item.quantity }}
+                                                </p>
                                             </td>
                                             <td
                                                 class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
                                             >
-                                                {{ item.total_price }}
+                                                {{
+                                                    props.huawei_project
+                                                        ? item.amount.toFixed(2)
+                                                        : item.total_price
+                                                }}
                                             </td>
                                             <td
                                                 class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
@@ -610,7 +583,10 @@
                                             <td
                                                 class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
                                             >
-                                                <div class="flex items-center">
+                                                <div
+                                                    v-if="!props.huawei_project"
+                                                    class="flex items-center"
+                                                >
                                                     <button
                                                         @click.prevent="
                                                             delete_base_line(
@@ -629,14 +605,16 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <InputError :message="form.errors.base_lines" />
                         </div>
                         <div>
                             <hr class="border-1 border-gray-500 my-10 black" />
                             <div class="flex flex-space gap-2">
                                 <h2 class="font-black">Cronograma:</h2>
                                 <button
+                                    v-if="!props.huawei_project"
                                     type="button"
-                                    @click=""
+                                    @click="open_schedule"
                                     class="px-1"
                                 >
                                     <svg
@@ -656,78 +634,87 @@
                                 </button>
                             </div>
                             <div class="mt-5">
-                            <div class="overflow-x-auto mt-3">
-                                <table class="w-full whitespace-no-wrap">
-                                    <thead>
-                                        <tr
-                                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
-                                        >
-                                            <th
-                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                <div class="overflow-x-auto mt-3">
+                                    <table class="w-full whitespace-no-wrap">
+                                        <thead>
+                                            <tr
+                                                class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
                                             >
-                                                N°
-                                            </th>
-                                            <th
-                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                                <th
+                                                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                                >
+                                                    N°
+                                                </th>
+                                                <th
+                                                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                                >
+                                                    Actividad
+                                                </th>
+                                                <th
+                                                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 w-[400px] text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                                >
+                                                    Días
+                                                </th>
+                                                <th
+                                                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                                ></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr
+                                                v-for="(
+                                                    item, index
+                                                ) in props.huawei_project
+                                                    ? props.huawei_project
+                                                          .huawei_project_schedules
+                                                    : form.schedule"
+                                                :key="index"
+                                                class="text-gray-700"
                                             >
-                                                Actividad
-                                            </th>
-                                            <th
-                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 w-[400px] text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
-                                            >
-                                                Días
-                                            </th>
-                                            <th
-                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
-                                            ></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr
-                                            v-for="(
-                                                item, index
-                                            ) in form.schedule"
-                                            :key="index"
-                                            class="text-gray-700"
-                                        >
-                                            <td
-                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
-                                            >
-                                                {{ index + 1 }}
-                                            </td>
-                                            <td
-                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
-                                            >
-                                                {{ item.activity }}
-                                            </td>
-                                            <td
-                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
-                                            >
-                                                {{ item.days }}
-                                            </td>
-                                            <td
-                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
-                                            >
-                                                <div class="flex items-center">
-                                                    <button
-                                                        @click.prevent="
-                                                            delete_schedule(
-                                                                index
-                                                            )
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                                >
+                                                    {{ index + 1 }}
+                                                </td>
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                                >
+                                                    {{ item.activity }}
+                                                </td>
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                                >
+                                                    {{ item.days }}
+                                                </td>
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                                >
+                                                    <div
+                                                        v-if="
+                                                            !props.huawei_project
                                                         "
-                                                        class="text-red-600 hover:underline mr-2"
+                                                        class="flex items-center"
                                                     >
-                                                        <TrashIcon
-                                                            class="h-5 w-5"
-                                                        />
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                                        <button
+                                                            @click.prevent="
+                                                                delete_schedule(
+                                                                    index
+                                                                )
+                                                            "
+                                                            class="text-red-600 hover:underline mr-2"
+                                                        >
+                                                            <TrashIcon
+                                                                class="h-5 w-5"
+                                                            />
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <InputError :message="form.errors.schedule" />
                             </div>
-                        </div>
                         </div>
                     </div>
                 </div>
@@ -744,157 +731,6 @@
                     </button>
                 </div>
             </form>
-            <Modal :show="showModalMember">
-                <form class="p-6" @submit.prevent="add_employee">
-                    <h2 class="text-lg font-medium text-gray-900">
-                        Agregar un miembro del equipo
-                    </h2>
-                    <div
-                        class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2"
-                    >
-                        <div class="sm:col-span-3">
-                            <InputLabel
-                                for="name"
-                                class="font-medium leading-6 text-gray-900"
-                                >Empleado
-                            </InputLabel>
-                            <div class="mt-2">
-                                <select
-                                    required
-                                    id="type"
-                                    v-model="employeeToAdd.employee"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                >
-                                    <option disabled value="">
-                                        Seleccione uno
-                                    </option>
-                                    <option
-                                        v-for="item in available_employees"
-                                        :key="item.id"
-                                        :value="item"
-                                    >
-                                        {{ item.name }} {{ item.lastname }}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-3">
-                            <InputLabel
-                                class="font-medium leading-6 text-gray-900"
-                                >Rol de la persona</InputLabel
-                            >
-                            <div class="mt-2">
-                                <select
-                                    required
-                                    id="type"
-                                    v-model="employeeToAdd.charge"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                >
-                                    <option disabled value="">
-                                        Seleccione uno
-                                    </option>
-                                    <option value="lider">Lider</option>
-                                    <option value="sublider">Sublider</option>
-                                    <option value="supervisor">
-                                        Supervisor
-                                    </option>
-                                    <option value="trabajador">
-                                        Trabajador
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-3">
-                            <InputLabel
-                                class="font-medium leading-6 text-gray-900"
-                                >Costo de Planilla</InputLabel
-                            >
-                            <div class="mt-2">
-                                <input
-                                    type="number"
-                                    min="0"
-                                    step="0.01"
-                                    v-model="employeeToAdd.cost"
-                                    required
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-6 flex gap-3 justify-end">
-                        <SecondaryButton type="button" @click="closeModal">
-                            Cerrar
-                        </SecondaryButton>
-                        <PrimaryButton type="submit"> Agregar </PrimaryButton>
-                    </div>
-                </form>
-            </Modal>
-
-            <Modal :show="edit_employee_modal">
-                <form class="p-6" @submit.prevent="submit_edit_employee">
-                    <h2 class="text-lg font-medium text-gray-900">
-                        Editar miembro
-                    </h2>
-                    <div
-                        class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2"
-                    >
-                        <div class="sm:col-span-3">
-                            <InputLabel
-                                class="font-medium leading-6 text-gray-900"
-                                >Rol de la persona</InputLabel
-                            >
-                            <div class="mt-2">
-                                <select
-                                    required
-                                    id="type"
-                                    v-model="edit_employee_form.charge"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                >
-                                    <option disabled value="">
-                                        Seleccione uno
-                                    </option>
-                                    <option value="lider">Lider</option>
-                                    <option value="sublider">Sublider</option>
-                                    <option value="supervisor">
-                                        Supervisor
-                                    </option>
-                                    <option value="trabajador">
-                                        Trabajador
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-3">
-                            <InputLabel
-                                class="font-medium leading-6 text-gray-900"
-                                >Costo de Planilla</InputLabel
-                            >
-                            <div class="mt-2">
-                                <input
-                                    type="number"
-                                    min="0"
-                                    step="0.01"
-                                    v-model="edit_employee_form.cost"
-                                    required
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-6 flex gap-3 justify-end">
-                        <SecondaryButton
-                            type="button"
-                            @click="close_edit_employee"
-                        >
-                            Cerrar
-                        </SecondaryButton>
-                        <PrimaryButton type="submit"> Agregar </PrimaryButton>
-                    </div>
-                </form>
-            </Modal>
 
             <Modal :show="baseline_modal" @close="openBaseLine">
                 <div class="p-6">
@@ -1263,6 +1099,74 @@
                     </form>
                 </div>
             </Modal>
+
+            <Modal :show="schedule_modal" @close="open_schedule">
+                <div class="p-6">
+                    <h2 class="text-base font-medium leading-7 text-gray-900">
+                        Ingresar Actividad
+                    </h2>
+                    <form @submit.prevent="add_schedule">
+                        <div class="space-y-12">
+                            <div
+                                class="border-b grid grid-cols-1 md:grid-cols-2 gap-6 border-gray-900/10 pb-12"
+                            >
+                                <div>
+                                    <InputLabel
+                                        for="activity"
+                                        class="font-medium leading-6 text-gray-900"
+                                    >
+                                        Actividad
+                                    </InputLabel>
+                                    <div class="mt-2">
+                                        <input
+                                            type="text"
+                                            id="activity"
+                                            v-model="scheduleForm.activity"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        />
+                                        <InputError
+                                            :message="
+                                                scheduleForm.errors.activity
+                                            "
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <InputLabel
+                                        for="days"
+                                        class="font-medium leading-6 text-gray-900"
+                                    >
+                                        Días
+                                    </InputLabel>
+                                    <div class="mt-2">
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            id="days"
+                                            v-model="scheduleForm.days"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        />
+                                        <InputError
+                                            :message="scheduleForm.errors.days"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-8 flex justify-end gap-4">
+                            <SecondaryButton @click="open_schedule">
+                                Cancelar
+                            </SecondaryButton>
+                            <button
+                                type="submit"
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                            >
+                                Guardar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </Modal>
         </div>
         <ConfirmCreateModal
             :confirmingcreation="showModal"
@@ -1271,27 +1175,6 @@
         <ConfirmUpdateModal
             :confirmingupdate="showUpdateModal"
             itemType="Proyecto de Huawei"
-        />
-
-        <SuccessOperationModal
-            :confirming="showPersonalAddModal"
-            :title="`Personal creado.`"
-            :message="`El personal fue añadido.`"
-        />
-        <SuccessOperationModal
-            :confirming="showPersonalRemoveModal"
-            :title="`Personal removido.`"
-            :message="`El personal fue removido.`"
-        />
-        <SuccessOperationModal
-            :confirming="show_edit_employee"
-            :title="`Personal actualizado.`"
-            :message="`El personal fue actualizado.`"
-        />
-        <ErrorOperationModal
-            :showError="alreadyEmployeeInProject"
-            title="Empleado ya agregado"
-            message="El empleado ya ha sido agregado al proyecto."
         />
     </AuthenticatedLayout>
 </template>
@@ -1305,20 +1188,14 @@ import InputError from "@/Components/InputError.vue";
 import Modal from "@/Components/Modal.vue";
 import { ref, watch } from "vue";
 import { Head, router, useForm } from "@inertiajs/vue3";
-import {
-    UserPlusIcon,
-    TrashIcon,
-    EyeIcon,
-    PencilSquareIcon,
-} from "@heroicons/vue/24/outline";
+import { TrashIcon } from "@heroicons/vue/24/outline";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import ErrorOperationModal from "@/Components/ErrorOperationModal.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputFile from "@/Components/InputFile.vue";
-import { notify, notifyError } from "@/Components/Notification";
+import { notifyError } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
-import { toFormData } from "@/utils/utils";
 
 const showModal = ref(false);
 const showUpdateModal = ref(false);
@@ -1328,7 +1205,6 @@ const props = defineProps({
     cost_centers: Object,
     price_guides: Object,
     huawei_project: Object,
-    employees: Object,
     auth: Object,
     userPermissions: Array,
 });
@@ -1354,24 +1230,12 @@ const initialState = {
     macro_project: "",
 };
 
-const form = useForm({ ...initialState });
+const editForm = useForm({
+    name: props.huawei_project ? props.huawei_project.name : "",
+    description: props.huawei_project ? props.huawei_project.description : "",
+});
 
-if (props.huawei_project) {
-    form.name = props.huawei_project.name || "";
-    form.huawei_site_id = props.huawei_project.huawei_site_id || "";
-    form.description = props.huawei_project.description || "";
-    form.ot = props.huawei_project.ot || "";
-    form.initial_amount = props.huawei_project.initial_amount || "";
-    form.assigned_diu = props.huawei_project.assigned_diu || "";
-    form.employees = props.huawei_project.huawei_project_employees
-        ? props.huawei_project.huawei_project_employees.map((employee) => ({
-              id: employee.id,
-              employee: employee.employee,
-              charge: employee.role,
-              cost: employee.cost,
-          }))
-        : [];
-}
+const form = useForm({ ...initialState });
 
 const submit = () => {
     if (!props.huawei_project) {
@@ -1390,7 +1254,7 @@ const submit = () => {
             },
         });
     } else {
-        form.post(
+        editForm.put(
             route("huawei.projects.update", {
                 huawei_project: props.huawei_project.id,
             }),
@@ -1412,164 +1276,7 @@ const submit = () => {
     }
 };
 
-const showModalMember = ref(false);
-const empInitState = { employee: "", charge: "", cost: "" };
-const employeeToAdd = ref(JSON.parse(JSON.stringify(empInitState)));
-const edit_employee_modal = ref(false);
-const showPersonalAddModal = ref(false);
-const showPersonalRemoveModal = ref(false);
-const editingMember = ref(null);
-const show_edit_employee = ref(false);
-const employee_edit_index = ref(null);
-const available_employees = ref([...props.employees]);
 const baseline_modal = ref(false);
-
-const filterAvailableEmployees = () => {
-    available_employees.value = props.employees.filter(
-        (employee) =>
-            !form.employees.some((emp) => emp.employee.id === employee.id)
-    );
-};
-
-filterAvailableEmployees();
-
-watch(
-    () => form.employees,
-    () => {
-        filterAvailableEmployees();
-    },
-    { deep: true }
-);
-
-const showToAddEmployee = () => {
-    showModalMember.value = true;
-};
-const closeModal = () => {
-    employeeToAdd.value = JSON.parse(JSON.stringify(empInitState));
-    showModalMember.value = false;
-};
-
-const add_employee = () => {
-    if (props.huawei_project) {
-        const employeeExists =
-            props.huawei_project.huawei_project_employees.some((employee) => {
-                return employee.employee_id === employeeToAdd.value.employee.id;
-            });
-        if (employeeExists) {
-            alreadyEmployeeInProject.value = true;
-            setTimeout(() => {
-                alreadyEmployeeInProject.value = false;
-            }, 3000);
-        } else {
-            router.post(
-                route("huawei.projects.addemployee", {
-                    huawei_project: props.huawei_project.id,
-                }),
-                { ...employeeToAdd.value },
-                {
-                    onError: () => {
-                        alert("SERVER ERROR");
-                    },
-                    onSuccess: () => {
-                        showPersonalAddModal.value = true;
-                        setTimeout(() => {
-                            showPersonalAddModal.value = false;
-                        }, 1500);
-                        router.visit(
-                            route("huawei.projects.toupdate", {
-                                huawei_project: props.huawei_project.id,
-                            })
-                        );
-                    },
-                }
-            );
-            showModalMember.value = false;
-        }
-    } else {
-        const employeeExists = form.employees.some((employee) => {
-            return employee.employee.id === employeeToAdd.value.employee.id;
-        });
-        if (employeeExists) {
-            alreadyEmployeeInProject.value = true;
-            setTimeout(() => {
-                alreadyEmployeeInProject.value = false;
-            }, 3000);
-        } else {
-            form.employees.push(
-                JSON.parse(JSON.stringify(employeeToAdd.value))
-            );
-            employeeToAdd.value = JSON.parse(JSON.stringify(empInitState));
-            showModalMember.value = false;
-        }
-    }
-};
-const delete_employee = (index) => {
-    form.employees.splice(index, 1);
-};
-
-const openPreviewPreReport = (projectId) => {
-    const routeToShow = route("huawei.projects.prereport", {
-        huawei_project: projectId,
-    });
-    window.open(routeToShow, "_blank");
-};
-
-const delete_already_employee = (pivot_id, index) => {
-    router.delete(route("huawei.projects.deleteemployee", { id: pivot_id }), {
-        onError: () => {
-            alert("SERVER ERROR");
-        },
-        onSuccess: () => {
-            showPersonalRemoveModal.value = true;
-            setTimeout(() => {
-                showPersonalRemoveModal.value = false;
-            }, 1500);
-            form.employees.splice(index, 1);
-        },
-    });
-};
-
-const edit_employee_form = useForm({
-    id: "",
-    charge: "",
-    cost: "",
-});
-
-const edit_employee = (item, index) => {
-    editingMember.value = JSON.parse(JSON.stringify(item));
-    employee_edit_index.value = index;
-    edit_employee_form.id = editingMember.value.id;
-    edit_employee_form.charge = editingMember.value.charge;
-    edit_employee_form.cost = editingMember.value.cost;
-    edit_employee_modal.value = true;
-};
-
-const close_edit_employee = () => {
-    editingMember.value = null;
-    edit_employee_form.reset();
-    edit_employee_form.clearErrors(), (edit_employee_modal.value = false);
-};
-const submit_edit_employee = () => {
-    edit_employee_form.put(
-        route("huawei.projects.editemployee", {
-            huawei_project: props.huawei_project.id,
-            id: edit_employee_form.id,
-        }),
-        {
-            onSuccess: () => {
-                form.employees[employee_edit_index.value].charge =
-                    edit_employee_form.charge;
-                form.employees[employee_edit_index.value].cost =
-                    edit_employee_form.cost;
-                close_edit_employee();
-                show_edit_employee.value = true;
-                setTimeout(() => {
-                    show_edit_employee.value = false;
-                }, 2000);
-            },
-        }
-    );
-};
 
 //baselines
 const price_guides = ref(null);
@@ -1691,7 +1398,27 @@ const importExcel = async () => {
 };
 
 //schedule
+const schedule_modal = ref(false);
+
+const open_schedule = () => {
+    schedule_modal.value = !schedule_modal.value;
+};
+
 const delete_schedule = (index) => {
     form.schedule.splice(index, 1);
+};
+
+const scheduleForm = useForm({
+    activity: "",
+    days: "",
+});
+
+const add_schedule = () => {
+    if (!scheduleForm.activity || !scheduleForm.days) {
+        notifyError("Todos los campos son requeridos");
+        return;
+    }
+    form.schedule.push({ ...scheduleForm });
+    scheduleForm.reset();
 };
 </script>
