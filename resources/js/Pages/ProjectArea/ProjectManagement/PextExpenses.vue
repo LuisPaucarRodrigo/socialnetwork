@@ -17,7 +17,7 @@
                     <PrimaryButton data-tooltip-target="update_data_tooltip" type="button" @click="() => {
                         filterForm = { ...initialFilterFormState }
                     }
-                        ">
+                    ">
                         <ServerIcon class="w-5 h-5 text-white" />
                     </PrimaryButton>
                     <div id="update_data_tooltip" role="tooltip"
@@ -102,6 +102,10 @@
                         :href="route('projectmanagement.pext.expenses.index', { project_id: project_id, fixedOrAdditional: true })">
                     G.Fijos
                     </Link>
+                    <!-- <Link class="rounded-md px-4 py-2 text-center text-sm text-white bg-green-600 hover:bg-green-500"
+                        :href="route('projectmanagement.pext.expense_dashboard', { project_id: project_id })">
+                    Resumen de Gasto
+                    </Link> -->
                 </div>
 
                 <div v-if="hasPermission('HumanResourceManager')" class="sm:hidden">
@@ -144,12 +148,7 @@
                     </dropdown>
                 </div>
                 <div class="flex space-x-3">
-                    <TextInput type="text" placeholder="Buscar..." v-model="filterForm.search" class="h-auto" />
-                    <div id="search_fields" role="tooltip"
-                        class="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                        Ruc,Fecha Documento,Descripción,Monto
-                        <div class="tooltip-arrow" data-popper-arrow></div>
-                    </div>
+                    <Search v-model:search="filterForm.search" fields="Ruc,Fecha Documento,Descripción,Monto" />
                 </div>
             </div>
         </div>
@@ -296,7 +295,7 @@
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap">
-                            {{ item.operation_date }}
+                            {{ formattedDate(item.operation_date) }}
                         </td>
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums">
                             {{ item.doc_number }}
@@ -341,7 +340,7 @@
                                 <div v-if="item.is_accepted === null" class="flex gap-3 justify-center w-1/2">
                                     <button @click="() =>
                                         validateRegister(item.id, true)
-                                        " class="flex items-center rounded-xl text-blue-500 hover:bg-green-200">
+                                    " class="flex items-center rounded-xl text-blue-500 hover:bg-green-200">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-green-500">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -350,7 +349,7 @@
                                     </button>
                                     <button @click="() =>
                                         validateRegister(item.id, false)
-                                        " type="button"
+                                    " type="button"
                                         class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-red-500">
@@ -363,7 +362,7 @@
 
                                 <div v-if="hasPermission('ProjectManager')" class="flex gap-3 mr-3">
                                     <button v-if="!filterForm.rejected" data-tooltip-target="tooltip-up-ac" @click="() => validateRegister(item.id, true)
-                                        " class="flex items-center rounded-xl text-blue-700 hover:bg-green-200">
+                                    " class="flex items-center rounded-xl text-blue-700 hover:bg-green-200">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -413,7 +412,7 @@
             </table>
         </div>
 
-        <div v-if="!expenses"
+        <div v-if="expenses.data"
             class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
             <pagination :links="expenses.links" />
         </div>
@@ -675,6 +674,7 @@ import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
+import Search from "@/Components/Search.vue";
 
 const props = defineProps({
     expense: Object,
@@ -683,7 +683,11 @@ const props = defineProps({
     userPermissions: Array,
     state: String,
     project_id: String,
-    fixedOrAdditional: Boolean
+    fixedOrAdditional: Boolean,
+    zones: Array,
+    docTypes: Array,
+    expenseTypesFixed: Array,
+    expenseTypesAdditional: Array
 });
 
 const expenses = ref(props.expense);
@@ -823,78 +827,23 @@ function handlerPreview(id) {
     );
 }
 
-const zones = [
-    "Arequipa",
-    "Moquegua",
-    "Tacna",
-    "Cuzco",
-    "Puno",
-    "MDD"
-];
-
-const initialExpenseFixed = [
-    'Alquiler de Vehículos',
-    'Alquiler de Locales',
-    'Combustible',
-    'Celulares',
-    'Terceros',
-    'Viáticos',
-    'Seguros y Pólizas',
-    'Gastos de Representación',
-    'Reposición de Equipo',
-    'Herramientas',
-    'Equipos',
-    'EPPs',
-    'Adicionales',
-    'Daños de Vehículos',
-    'Planilla',
-    'Otros',
-    'Adicionales',
-    'Daños de Vehículos',
-    'Planilla',
-    'Otros',
-]
-
-const initialExpenseAdditional = [
-    "Hospedaje",
-    "Mensajería",
-    "Consumibles",
-    "Pasaje Interprovincial",
-    "Taxis y Pasajes",
-    "Bandeos",
-    "Peaje",
-    "Herramientas",
-    "Equipos",
-    "EPPs",
-    "Seguros y Pólizas",
-    "Otros",
-]
-
 const expenseTypes = props.fixedOrAdditional
-    ? initialExpenseFixed
-    : initialExpenseAdditional;
-
-const docTypes = [
-    "Efectivo",
-    "Deposito",
-    "Factura",
-    "Boleta",
-    "Voucher de Pago",
-];
+    ? props.expenseTypesFixed
+    : props.expenseTypesAdditional;
 
 const stateTypes = [
     "Pendiente",
     "Aceptado",
-    "Aceptado-Validado",
+    "Aceptado - Validado",
 ];
 
 const initialFilterFormState = {
     fixedOrAdditional: props.fixedOrAdditional,
     rejected: true,
     search: "",
-    selectedZones: zones,
+    selectedZones: props.zones,
     selectedExpenseTypes: expenseTypes,
-    selectedDocTypes: docTypes,
+    selectedDocTypes: props.docTypes,
     selectedStateTypes: stateTypes,
     opStartDate: "",
     opEndDate: "",

@@ -102,26 +102,7 @@ const filterForm = ref({...initialFilterFormState});<template>
                         </dropdown>
                     </div>
                 </div>
-
-                <form @submit.prevent="handleSearch" class="flex items-center w-full sm:w-auto">
-                    <TextInput data-tooltip-target="search_fields" type="text" placeholder="Buscar..."
-                        v-model="filterForm.search" :handleEnter="handleSearch" />
-
-                    <button type="submit"
-                        class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                        <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
-                                stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                    </button>
-                    <div id="search_fields" role="tooltip"
-                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                        Ruc , Numero de Documento, Numero de Operacion, Descripcion, Monto Total
-                        <div class="tooltip-arrow" data-popper-arrow></div>
-                    </div>
-                </form>
+                <Search v-model:search="filterForm.search" fields="Ruc , Numero de Documento, Numero de Operacion, Descripcion, Monto Total"/>
             </div>
         </div>
         <div class="overflow-x-auto h-[72vh] z-10">
@@ -822,6 +803,7 @@ import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 
 import Dropdown from "@/Components/Dropdown.vue";
+import Search from "@/Components/Search.vue";
 
 const props = defineProps({
     additional_costs: Object,
@@ -1037,6 +1019,7 @@ watch(
         filterForm.value.docStartDate,
         filterForm.value.docEndDate,
         filterForm.value.docNoDate,
+        filterForm.value.search,
     ],
     () => {
         filterMode.value = true;
@@ -1055,10 +1038,10 @@ async function search_advance(data) {
     notifyWarning(`Se encontraron ${res.data.length} registro(s)`)
 }
 
-async function handleSearch() {
-    filterMode.value = true;
-    search_advance(filterForm.value);
-}
+// async function handleSearch() {
+//     filterMode.value = true;
+//     search_advance(filterForm.value);
+// }
 
 function openExportExcel() {
     const uniqueParam = `timestamp=${new Date().getTime()}`;

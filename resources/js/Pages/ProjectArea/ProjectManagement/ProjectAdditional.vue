@@ -72,13 +72,7 @@
                     </dropdown>
                 </div>
                 <div class="flex space-x-3">
-                    <TextInput data-tooltip-target="search_fields" type="text" v-model="formSearch.search"
-                        placeholder="Buscar ..." />
-                    <div id="search_fields" role="tooltip"
-                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                        Nombre,Codigo,CPE
-                        <div class="tooltip-arrow" data-popper-arrow></div>
-                    </div>
+                    <Search v-model:search="formSearch.search" fields="Nombre,Codigo,CPE"/>
                 </div>
             </div>
             <br>
@@ -314,13 +308,8 @@
                             <div class="mt-2">
                                 <select id="zone" v-model="form.zone" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option value="">Seleccionar Zona</option>
-                                    <option>Arequipa</option>
-                                    <option>Moquegua</option>
-                                    <option>Tacna</option>
-                                    <option>Cuzco</option>
-                                    <option>Puno</option>
-                                    <option>MDD</option>
+                                    <option disabled value="">Seleccionar Zona</option>
+                                    <option v-for="item in  optionZones">{{ item }}</option>
                                 </select>
                                 <InputError :message="form.errors.zone" />
                             </div>
@@ -330,13 +319,8 @@
                             <div class="mt-2">
                                 <select id="zone2" v-model="form.zone2" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option value="">Seleccionar Zona</option>
-                                    <option>Arequipa</option>
-                                    <option>Moquegua</option>
-                                    <option>Tacna</option>
-                                    <option>Cuzco</option>
-                                    <option>Puno</option>
-                                    <option>MDD</option>
+                                    <option disabled value="">Seleccionar Zona</option>
+                                    <option v-for="item in  optionZones">{{ item }}</option>
                                 </select>
                                 <InputError :message="form.errors.zone2" />
                             </div>
@@ -607,8 +591,9 @@ import InputError from '@/Components/InputError.vue';
 import { formattedDate, setAxiosErrors } from '@/utils/utils';
 import { notifyError, notify } from '@/Components/Notification';
 import { Toaster } from 'vue-sonner';
+import Search from '@/Components/Search.vue';
 
-const { project, auth, userPermissions, searchCondition, cost_line, type } = defineProps({
+const { project, auth, userPermissions, searchCondition, cost_line, type, optionZones } = defineProps({
     project: Object,
     auth: Object,
     userPermissions: Array,
@@ -618,6 +603,7 @@ const { project, auth, userPermissions, searchCondition, cost_line, type } = def
         type: String,
         Required: false
     },
+    optionZones:Array
 })
 
 const initialState = {

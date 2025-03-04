@@ -180,7 +180,7 @@ async function getZonesExpensesData() {
     const res = await axios.get(
         route("projectmanagement.zoneexpenses.chart", { project_id })
     );
-
+    
     zones.value = res.data.zones;
     current.value = res.data.current;
     previous.value = res.data.previous;

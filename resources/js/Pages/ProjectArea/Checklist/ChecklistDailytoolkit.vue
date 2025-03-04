@@ -116,7 +116,7 @@
             </div>
             <ConfirmDeleteModal
                 :confirmingDeletion="confirmingDocDeletion"
-                itemType="Checklist Unidad Móvil"
+                itemType="Checklist Diario"
                 :deleteFunction="deleteAdditional"
                 @closeModal="closeModalDoc"
             />

@@ -54,9 +54,9 @@ class HuaweiProjectController extends Controller
             ->where('prefix', $prefix)
             ->with('huawei_site') // Incluye la relación deseada
             ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->get();
 
-            $projects->getCollection()->transform(function ($project) {
+            $projects->transform(function ($project) {
                 return $project->makeHidden([
                     'huawei_additional_costs',    // Reemplaza con los nombres de los campos que deseas ocultar
                     'huawei_project_earnings',
@@ -495,7 +495,7 @@ class HuaweiProjectController extends Controller
             similar_text($term, strtolower($site), $similarity);
 
             // Considerar un nombre como "cercano" si la similitud es mayor al 80%
-            if ($similarity > 80) {
+            if ($similarity > 70) {
                 $closeMatchName = $site;
                 break;
             }

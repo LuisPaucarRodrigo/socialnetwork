@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\FleetCar\FleetCarChangelogRequest;
 use App\Http\Requests\FleetCar\FleetCarDocumentRequest;
 use App\Http\Requests\FleetCar\FleetCarRequest;
+use App\Models\ApprovalCarDocument;
 use App\Models\Car;
 use App\Models\CarChangelog;
 use App\Models\CarChangelogItem;
@@ -23,11 +24,20 @@ class CarsController extends Controller
 {
     public function index()
     {
+        
+        $cars = Car::with(['user', 'costline', 'car_document.approvel_car_document', 'car_changelogs' => function ($query) {
+            $query->orderBy('created_at', 'desc');
+        }, 'car_changelogs.car_changelog_items', 'checklist']);
+
+        $users = User::whereHas('role.permissions', function ($query) {
+            $query->where('name', 'Car');
+        })->get();
+        
         $user = Auth::user();
-        $cars = Car::with(['user', 'costline', 'car_document', 'car_changelogs.car_changelog_items', 'checklist']);
-        $users = User::where('role_id', 12)
-            ->get();
-        if ($user->role_id !== 1) {
+        // dd($user);
+        $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
+
+        if (!$userHasCarManagerPermission) {
             $cars->where('user_id', $user->id);
         }
 
@@ -44,14 +54,18 @@ class CarsController extends Controller
         $user = Auth::user();
         $cost_line = $request->cost_line;
         $search = $request->search;
-        $cars = Car::with(['user', 'costline', 'car_changelogs.car_changelog_items', 'checklist'])
+        $cars = Car::with(['user', 'costline', 'car_document.approvel_car_document', 'car_changelogs' => function ($query) {
+            $query->orderBy('created_at', 'desc');
+        }, 'car_changelogs.car_changelog_items', 'checklist'])
             ->where(function ($query) use ($search) {
                 $query->where('plate', 'like', "%$search%")
                     ->orWhere('brand', 'like', "%$search%")
                     ->orWhere('model', 'like', "%$search%")
                     ->orWhere('type', 'like', "%$search%");
             });
-        if ($user->role_id !== 1) {
+            $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
+
+        if (!$userHasCarManagerPermission) {
             $cars->where('user_id', $user->id);
         }
         if (count($cost_line) < 3) {
@@ -69,20 +83,29 @@ class CarsController extends Controller
         $user = Auth::user();
         $today = Carbon::now();
         $expirationThreshold = $today->copy()->addDays(7);
+        $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
 
-        if ($user->role_id == 1) {
+        if ($userHasCarManagerPermission) {
             $cars = Car::whereHas('car_document', function ($query) use ($expirationThreshold) {
                 $query->where('technical_review_date', '<=', $expirationThreshold)
                     ->orWhere('soat_date', '<=', $expirationThreshold)
                     ->orWhere('insurance_date', '<=', $expirationThreshold);
-            })->get();
+            })
+                ->orWhereHas('car_changelogs', function ($query) {
+                    $query->whereNull('is_accepted');
+                })
+                ->get();
         } else {
             $cars = Car::where('user_id', $user->id)
                 ->whereHas('car_document', function ($query) use ($expirationThreshold) {
                     $query->where('technical_review_date', '<=', $expirationThreshold)
                         ->orWhere('soat_date', '<=', $expirationThreshold)
                         ->orWhere('insurance_date', '<=', $expirationThreshold);
-                })->get();
+                })
+                ->orWhereHas('car_changelogs', function ($query) {
+                    $query->whereNull('is_accepted');
+                })
+                ->get();
         }
 
 
@@ -109,7 +132,7 @@ class CarsController extends Controller
     public function saveImage($photo, $path, $name): String
     {
         try {
-            $imagename = time() . '_' . $name . $photo->getClientOriginalName();
+            $imagename = uniqid() . '_' . time() . '_' . $name . $photo->getClientOriginalName();
             $photo->move(public_path($path), $imagename);
             return $imagename;
         } catch (Exception $e) {
@@ -120,6 +143,7 @@ class CarsController extends Controller
     public function update(FleetCarRequest $request, Car $car)
     {
         $data = $request->validated();
+        $data['year'] = intval($data['year']);
         if ($request->hasFile('photo')) {
             $fileName = $car->photo;
             if ($fileName) {
@@ -172,13 +196,12 @@ class CarsController extends Controller
             foreach ($archives as $archive) {
                 if ($request->hasFile($archive)) {
                     $document = $request->file($archive);
-                    $data[$archive] = time() . '_' . $document->getClientOriginalName();
+                    $data[$archive] = uniqid() . '_' . time() . '_' . $document->getClientOriginalName();
                     $document->move(public_path('documents/fleetcar/car_documents/'), $data[$archive]);
                 }
             }
-            // $data['car_id'] = $car->id;
             $carDocument = CarDocument::create($data);
-            return response()->json($carDocument);
+            return response()->json($carDocument, 200);
         } catch (Exception $e) {
             return response()->json($e->getMessage(), 500);
         }
@@ -188,22 +211,40 @@ class CarsController extends Controller
     {
         $data = $request->validated();
         $archives = ['ownership_card', 'technical_review', 'soat', 'insurance'];
-        foreach ($archives as $archive) {
-            if ($request->hasFile($archive)) {
-                $fileName = $carDocument->$archive;
-                if ($fileName) {
-                    $file_path = "documents/fleetcar/car_documents/$fileName";
-                    if (file_exists(public_path($file_path))) {
-                        unlink(public_path($file_path));
+        $user = Auth::user();
+        $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
+
+        if ($userHasCarManagerPermission) {
+            foreach ($archives as $archive) {
+                if ($request->hasFile($archive)) {
+                    $fileName = $carDocument->$archive;
+                    if ($fileName) {
+                        $file_path = "documents/fleetcar/car_documents/$fileName";
+                        if (file_exists(public_path($file_path))) {
+                            unlink(public_path($file_path));
+                        }
                     }
+                    $document = $request->file($archive);
+                    $data[$archive] = uniqid() . '_' . time() . '_' . $document->getClientOriginalName();
+                    $document->move(public_path('documents/fleetcar/car_documents/'), $data[$archive]);
                 }
-                $document = $request->file($archive);
-                $data[$archive] = time() . '_' . $document->getClientOriginalName();
-                $document->move(public_path('documents/fleetcar/car_documents/'), $data[$archive]);
             }
+            $carDocument->update($data);
+            $carDocument->load("approvel_car_document");
+            return response()->json($carDocument, 200);
+        } else {
+            foreach ($archives as $archive) {
+                if ($request->hasFile($archive)) {
+                    $document = $request->file($archive);
+                    $data[$archive] = uniqid() . '_' . time() . '_' . $document->getClientOriginalName();
+                    $document->move(public_path('documents/fleetcar/car_documents/'), $data[$archive]);
+                }
+            }
+
+            $data['car_document_id'] = $carDocument->id;
+            ApprovalCarDocument::create($data);
+            return response()->json([], 200);
         }
-        $carDocument->update($data);
-        return response()->json($carDocument);
     }
 
     public function destroyDocument(CarDocument $carDocument)
@@ -226,7 +267,7 @@ class CarsController extends Controller
         $data = $request->validated();
         if ($request->hasFile('invoice')) {
             $document = $request->file('invoice');
-            $data['invoice'] = time() . '_' . $document->getClientOriginalName();
+            $data['invoice'] = uniqid() . '_' . time() . '_' . $document->getClientOriginalName();
             $document->move(public_path('documents/fleetcar/invoices'), $data['invoice']);
         }
         $data['car_id'] = $car->id;
@@ -240,7 +281,9 @@ class CarsController extends Controller
             }
         }
 
-        return response()->json($car->load(['user', 'costline', 'car_changelogs.car_changelog_items', 'checklist']));
+        return response()->json($car->load(['user', 'costline', 'car_changelogs' => function ($query) {
+            $query->orderBy('created_at', 'desc');
+        }, 'car_changelogs.car_changelog_items', 'checklist']));
     }
 
     public function updateChangelog(FleetCarChangelogRequest $request, CarChangelog $carChangelog)
@@ -253,7 +296,7 @@ class CarsController extends Controller
                 unlink(public_path($file_path));
             }
             $document = $request->file('invoice');
-            $data['invoice'] = time() . '_' . $document->getClientOriginalName();
+            $data['invoice'] = uniqid() . '_' . time() . '_' . $document->getClientOriginalName();
             $document->move(public_path('documents/fleetcar/invoices'), $data['invoice']);
         }
         $carChangelog->update($data);
@@ -268,7 +311,9 @@ class CarsController extends Controller
             }
         }
         $car = Car::find($carChangelog->car_id);
-        return response()->json($car->load(['user', 'costline', 'car_changelogs.car_changelog_items', 'checklist']));
+        return response()->json($car->load(['user', 'costline', 'car_changelogs' => function ($query) {
+            $query->orderBy('created_at', 'desc');
+        }, 'car_changelogs.car_changelog_items', 'checklist']));
     }
 
     public function destroyChangelog(CarChangelog $carChangelog)
@@ -280,7 +325,9 @@ class CarsController extends Controller
             unlink(public_path($file_path));
         }
         $carChangelog->delete();
-        return response()->json($car->load(['user', 'costline', 'car_changelogs.car_changelog_items', 'checklist']));
+        return response()->json($car->load(['user', 'costline', 'car_changelogs' => function ($query) {
+            $query->orderBy('created_at', 'desc');
+        }, 'car_changelogs.car_changelog_items', 'checklist']));
     }
 
     public function showChangelogInvoice(CarChangelog $carChangelog)
@@ -297,9 +344,9 @@ class CarsController extends Controller
     //checklist
     public function showChecklist(Car $car)
     {
-        $checklist = ChecklistCar::where('car_id', $car->id)->paginate();
+        $checklist = ChecklistCar::where('car_id', $car->id)->orderBy('created_at', 'desc')->paginate();
         return Inertia::render('FleetCar/CheckList', [
-            'car' => $car,
+            'car' => $car->load('user'),
             'checklist' => $checklist
         ]);
     }
@@ -333,5 +380,104 @@ class CarsController extends Controller
         }
 
         return response()->json($images);
+    }
+
+
+    public function indexApprovelCarDocument()
+    {
+        $changes = ApprovalCarDocument::with([
+            'car_document:id,car_id',
+            'car_document.car:id,plate'
+        ])->get();
+        return Inertia::render("FleetCar/IndexApprovals", [
+            'change' => $changes
+        ]);
+    }
+
+    public function approveChanges($id)
+    {
+        $archives = ['ownership_card', 'technical_review', 'soat', 'insurance'];
+        try {
+            $approve_car = ApprovalCarDocument::find($id);
+            if ($approve_car) {
+                $car = CarDocument::find($approve_car->car_document_id);
+                foreach ($archives as $archive) {
+                    if ($car->$archive && $car->$archive !== $approve_car->$archive) {
+                        $fileName = $car->$archive;
+                        $file_path = "documents/fleetcar/car_documents/$fileName";
+                        if (file_exists(public_path($file_path))) {
+                            unlink(public_path($file_path));
+                        }
+                    }
+                }
+                $car->update($approve_car->toArray());
+
+                $approve_car->delete();
+                $pendingApprovals = ApprovalCarDocument::where('car_document_id', $car->id)->get();
+
+                foreach ($pendingApprovals as $approval) {
+                    foreach ($archives as $item) {
+                        if ($approval->$item) {
+                            $file_path = "documents/fleetcar/car_documents/{$approval->file_name}";
+                            if (file_exists(public_path($file_path))) {
+                                unlink(public_path($file_path));
+                            }
+                        }
+                    }
+                    $approval->delete();
+                }
+            }
+            $approve_car->delete();
+            return response()->json([], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function deleteChanges($id)
+    {
+        $archives = ['ownership_card', 'technical_review', 'soat', 'insurance'];
+        $changes = ApprovalCarDocument::find($id);
+        foreach ($archives as $item) {
+            if ($changes->$item) {
+                $file_path = "documents/fleetcar/car_documents/{$changes->$item}";
+                if (file_exists(public_path($file_path))) {
+                    unlink(public_path($file_path));
+                }
+            }
+        }
+        $changes->delete();
+        return response()->json([], 200);
+    }
+
+    public function approveAlarms()
+    {
+        $approval = CarDocument::whereHas('approvel_car_document')->get();
+        return response()->json($approval, 200);
+    }
+    public function acceptOrDecline(CarChangelog $changelog, $is_accepted)
+    {
+        $user = Auth::user();
+        $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
+
+        if (!$userHasCarManagerPermission) {
+            abort(403, 'Acción no permitida');
+        }
+
+        $changelog->update(['is_accepted' => $is_accepted]);
+        $car = Car::with([
+            'user',
+            'costline',
+            'car_changelogs' => function ($query) {
+                $query->orderBy('created_at', 'desc');
+            },
+            'car_changelogs.car_changelog_items',
+            'checklist'
+        ])
+            ->find($changelog->car_id);
+
+        return response()->json($car);
     }
 }

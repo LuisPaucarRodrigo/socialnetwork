@@ -340,13 +340,15 @@ class Project extends Model
         static::creating(function ($project) {
             $currentYear = date('Y');
             $listCost = [3, 6, 7, 8, 9];
-            $lastProject = Project::select('id', 'position', 'cost_center_id')
-                ->where('year', $currentYear)
-                ->whereIn('cost_center_id', $listCost)
-                ->orderBy('position','desc')
-                ->first();
-
-            $project->position = $lastProject ? $lastProject->position + 1 : 1;
+            if (in_array($project->cost_center_id, $listCost)) {
+                $lastProject = Project::select('id', 'position', 'cost_center_id')
+                    ->where('year', $currentYear)
+                    ->where('cost_center_id', $project->cost_center_id)
+                    ->orderBy('position', 'desc')
+                    ->first();
+    
+                $project->position = $lastProject ? $lastProject->position + 1 : 1;
+            }
             $project->year = $currentYear; 
         });
     }

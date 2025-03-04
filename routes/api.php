@@ -56,8 +56,8 @@
         Route::get('/expensePext/history', [ApiController::class, 'historyExpensesPext']);
         Route::get('/employees/cost_line/{cost_line_id}', [ApiController::class, 'employee_cost_line']);
         //pint constants
-        Route::get('/pintconstants/mobile', [ChecklistsController::class, 'getPintMobileConstants']);
-        Route::get('/pextconstants/mobile', [ChecklistsController::class, 'getPextMobileConstants']);
+        Route::get('/pintconstants/mobile', [ApiController::class, 'getPintMobileConstants']);
+        Route::get('/pextconstants/mobile', [ApiController::class, 'getPextMobileConstants']);
 
-
+        Route::get('/constans_checkList/{cost_line_id}', [ApiController::class, 'contantsCheckList']);
     });

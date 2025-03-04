@@ -19,6 +19,9 @@ class CarDocument extends Model
         'soat_date',
         'insurance',
         'insurance_date',
+        'address_web',
+        'user',
+        'password',
         'car_id',
     ];
 
@@ -26,5 +29,10 @@ class CarDocument extends Model
     public function car()
     {
         return $this->belongsTo(Car::class, 'car_id');
+    }
+
+    public function approvel_car_document()
+    {
+        return $this->hasMany(ApprovalCarDocument::class);
     }
 }

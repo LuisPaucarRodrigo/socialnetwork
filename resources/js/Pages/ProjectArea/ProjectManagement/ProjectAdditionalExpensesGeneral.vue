@@ -20,7 +20,7 @@
                     <PrimaryButton data-tooltip-target="update_data_tooltip" type="button" @click="() => {
                         filterForm = { ...initialFilterFormState }
                     }
-                        ">
+                    ">
                         <ServerIcon class="w-5 h-5 text-white" />
                     </PrimaryButton>
                     <div id="update_data_tooltip" role="tooltip"
@@ -142,13 +142,7 @@
                     </dropdown>
                 </div>
                 <div class="flex space-x-3">
-                    <TextInput data-tooltip-target="search_fields" type="text" placeholder="Buscar..."
-                        v-model="filterForm.search" class="h-auto" />
-                    <div id="search_fields" role="tooltip"
-                        class="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                        Ruc,Fecha Documento,Descripción,Monto
-                        <div class="tooltip-arrow" data-popper-arrow></div>
-                    </div>
+                    <Search v-model:search="filterForm.search" fields="Ruc,Fecha Documento,Descripción,Monto" />
                 </div>
             </div>
         </div>
@@ -161,7 +155,6 @@
                 <thead class="sticky top-0 z-20">
                     <tr
                         class=" border-b bg-gray-50 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">
-
                         <th class="bg-gray-100 border-b-2 border-gray-20 sticky left-0 z-10">
                             <div class="w-2"></div>
                         </th>
@@ -336,7 +329,7 @@
                                 <div v-if="item.is_accepted === null" class="flex gap-3 justify-center w-1/2">
                                     <button @click="() =>
                                         validateRegister(item.id, true)
-                                        " class="flex items-center rounded-xl text-blue-500 hover:bg-green-200">
+                                    " class="flex items-center rounded-xl text-blue-500 hover:bg-green-200">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-green-500">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -345,7 +338,7 @@
                                     </button>
                                     <button @click="() =>
                                         validateRegister(item.id, false)
-                                        " type="button"
+                                    " type="button"
                                         class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-red-500">
@@ -358,7 +351,7 @@
 
                                 <div v-if="hasPermission('ProjectManager')" class="flex gap-3 mr-3">
                                     <button v-if="!filterForm.rejected" data-tooltip-target="tooltip-up-ac" @click="() => validateRegister(item.id, true)
-                                        " class="flex items-center rounded-xl text-blue-700 hover:bg-green-200">
+                                    " class="flex items-center rounded-xl text-blue-700 hover:bg-green-200">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -423,10 +416,10 @@
                     <div class="space-y-12 mt-4">
                         <div class="grid sm:grid-cols-2 gap-6 pb-6">
                             <div v-if="!form.id">
-                                <InputLabel for="project_id" class="font-medium leading-6 text-gray-900">Zona
+                                <InputLabel for="zone" class="font-medium leading-6 text-gray-900">Zona
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <select id="project_id" v-model="form.zone"
+                                    <select id="zone" v-model="form.zone"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         <option disabled value="">
                                             Seleccionar Zona
@@ -435,7 +428,7 @@
                                             {{ zone }}
                                         </option>
                                     </select>
-                                    <InputError :message="form.errors.project_id" />
+                                    <InputError :message="form.errors.zone" />
                                 </div>
                             </div>
                             <div v-if="!form.id">
@@ -477,7 +470,7 @@
                                         <option disabled value="">
                                             Seleccionar Documento
                                         </option>
-                                        <option v-for="op in docTypes">{{ op }}</option>
+                                        <option v-for="op in documentsType">{{ op }}</option>
                                     </select>
                                     <InputError :message="form.errors.type_doc" />
                                 </div>
@@ -664,8 +657,6 @@
 
         <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Gasto"
             :deleteFunction="deleteAdditional" @closeModal="closeModalDoc" />
-        <!-- <SuccessOperationModal :confirming="confirmValidation" :title="'Validación'"
-            :message="'La validación del gasto fue exitosa.'" /> -->
         <ConfirmateModal :showConfirm="showSwapCostsModal" tittle="Cambio de gastos adicionales a fijos"
             text="La siguiente acción ya no se podrá revertir, ¿Desea continuar?" :actionFunction="swapCosts"
             @closeModal="closeSwapCostsModal" />
@@ -675,7 +666,6 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
-import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
@@ -690,13 +680,13 @@ import Pagination from "@/Components/Pagination.vue";
 import { EyeIcon } from "@heroicons/vue/24/outline";
 import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
 import axios from "axios";
-import TextInput from "@/Components/TextInput.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import ChartsAdditionalExpenses from "./ChartsAdditionalExpenses.vue";
+import Search from "@/Components/Search.vue";
 
 const props = defineProps({
     expense: Object,
@@ -849,66 +839,10 @@ function handlerPreview(id) {
     );
 }
 
-// const initialExpenseFixed = [
-//     'Alquiler de Vehículos',
-//     'Alquiler de Locales',
-//     'Combustible',
-//     'Celulares',
-//     'Terceros',
-//     'Viáticos',
-//     'Seguros y Pólizas',
-//     'Gastos de Representación',
-//     'Reposición de Equipo',
-//     'Herramientas',
-//     'Equipos',
-//     'EPPs',
-//     'Adicionales',
-//     'Daños de Vehículos',
-//     'Planilla',
-//     'Otros',
-//     'Adicionales',
-//     'Daños de Vehículos',
-//     'Planilla',
-//     'Otros',
-// ]
-
-// const initialExpenseAdditional = [
-//     "Hospedaje",
-//     "Mensajería",
-//     "Consumibles",
-//     "Pasaje Interprovincial",
-//     "Taxis y Pasajes",
-//     "Bandeos",
-//     "Peaje",
-//     "Herramientas",
-//     "Equipos",
-//     "EPPs",
-//     "Seguros y Pólizas",
-//     "Otros",
-// ]
-
 const expenseTypes = props.fixedOrAdditional
     ? props.expenseTypeFixed
     : props.expenseType;
-// const costCenter = props.cost_center.map(item => item.name)
 
-// const zones = [
-//     "Arequipa",
-//     "Moquegua",
-//     "Tacna",
-//     "Cuzco",
-//     "Puno",
-//     "MDD"
-// ];
-
-// const docTypes = [
-//     "Efectivo",
-//     "Deposito",
-//     "Factura",
-//     "Boleta",
-//     "Ticket",
-//     "Yape-Plin"
-// ];
 
 const stateTypes = [
     "Pendiente",
@@ -917,6 +851,7 @@ const stateTypes = [
 ];
 
 const initialFilterFormState = {
+    type: props.type,
     fixedOrAdditional: props.fixedOrAdditional,
     rejected: true,
     search: "",
@@ -935,6 +870,12 @@ const initialFilterFormState = {
 const filterForm = ref({
     ...initialFilterFormState
 });
+
+watch(() => form.project_id, (newval) => {
+    const project = cicsaAssignation.value.find(item => item.project_id == newval);
+    form.description = project ? project.project_name : "";
+});
+
 
 watch(() => form.zone, () => {
     getProject()

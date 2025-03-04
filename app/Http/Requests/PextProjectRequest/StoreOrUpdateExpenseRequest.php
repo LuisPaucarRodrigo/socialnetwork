@@ -45,7 +45,7 @@ class StoreOrUpdateExpenseRequest extends FormRequest
                     }
                 }
             ],
-            'type_doc' => 'required|string|in:Efectivo,Factura,Boleta,Voucher de Pago,Yape-Plin,Sin Comprobante',
+            'type_doc' => 'required|string',
             'operation_number' => 'nullable|string|min:6',
             'operation_date' => 'nullable|date',
             'doc_number' => 'nullable|string',

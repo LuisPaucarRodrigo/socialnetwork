@@ -413,8 +413,6 @@ class ProjectManagementController extends Controller
         $zones = PintConstants::allZones();
         $currDate = Carbon::parse($currProject->preproject->date);
         $prevDate = $currDate->copy()->subMonthNoOverflow();
-
-
         $acArray = [];
         $scArray = [];
         foreach($zones as $zone){

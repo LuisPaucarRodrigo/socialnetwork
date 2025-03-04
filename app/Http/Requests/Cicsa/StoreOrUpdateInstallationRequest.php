@@ -23,9 +23,9 @@ class StoreOrUpdateInstallationRequest extends FormRequest
     {
         return [
             "pext_date" => "required",
-            "pint_date" => "nullable",
+            "pint_date" => "required",
             "pint_amount" => "required|numeric",
-            "pext_amount" => "nullable|numeric",
+            "pext_amount" => "required|numeric",
             "projected_amount" => "nullable|numeric",
             "conformity" => "required",
             "report" => "required",

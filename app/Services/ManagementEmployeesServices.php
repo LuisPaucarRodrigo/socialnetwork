@@ -135,7 +135,7 @@ class ManagementEmployeesServices
             $dates[] = $date->format('m-d');
         }
 
-        $employees = Employee::select('id', 'birthdate')->get();
+        $employees = Employee::select('id', 'name', 'lastname', 'birthdate')->get();
 
         $data = $employees->filter(function ($employee) use ($dates) {
             return in_array(Carbon::parse($employee->birthdate)->format('m-d'), $dates);
