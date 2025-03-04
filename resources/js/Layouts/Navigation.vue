@@ -29,6 +29,7 @@
                     <Link class="w-full" :href="route('rols.index')">Roles</Link>
                 </MyTransition>
             </template>
+            
             <EmployeesNavigation :userPermissions="$page.props.userPermissions"/>
             
             <template v-if="hasPermission('InventoryManager') || hasPermission('Inventory')">
@@ -518,8 +519,8 @@ import MyTransition from '@/Components/MyTransition.vue';
 import { Link, } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import axios from 'axios';
-import FleetNavigation from './FleetNavigation.vue';
-import EmployeesNavigation from './EmployeesNavigation.vue';
+import FleetNavigation from './Navigation/FleetNavigation.vue';
+import EmployeesNavigation from './Navigation/EmployeesNavigation.vue';
 
 export default {
     props: {
