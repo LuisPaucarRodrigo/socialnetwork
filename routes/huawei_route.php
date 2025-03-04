@@ -63,6 +63,8 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     Route::put('huawei/projects/{huawei_project}/cancel/put', [HuaweiProjectController::class, 'cancelProject'])->name('huawei.projects.cancelproject');
     Route::get('huawei/projects/balance/{huawei_project}/get', [HuaweiProjectController::class, 'projectBalance'])->name('huawei.projects.balance');
     Route::put('huawei/projects/stopped/{huawei_project}/put', [HuaweiProjectController::class, 'resumeProject'])->name('huawei.projects.stopped.resume');
+    Route::post('huawei/projects/import_base_lines/{zone}', [HuaweiProjectController::class, 'importBaseLines'])->name('huawei.projects.import.baselines');
+    Route::get('huawei/projects/base_lines/donwload_template/get', [HuaweiProjectController::class, 'downloadTemplate'])->name('huawei.projects.baselines.template');
 
     //sites
     Route::get('huawei/sites/get', [HuaweiProjectController::class, 'getSites'])->name('huawei.sites');

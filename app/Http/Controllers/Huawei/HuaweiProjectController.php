@@ -23,6 +23,7 @@ use App\Models\HuaweiProjectEarning;
 use App\Models\HuaweiProjectLiquidation;
 use App\Models\HuaweiProjectResource;
 use Illuminate\Validation\Rule;
+use Log;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Models\HuaweiPriceGuide;
 use App\Models\HuaweiProjectRealEarning;
@@ -158,6 +159,83 @@ class HuaweiProjectController extends Controller
             'employees' => Employee::all()
         ]);
     }
+
+    public function importBaseLines(Request $request, $zone)
+    {
+        $data = $request->validate([
+            'file' => 'required|mimes:xls,xlsx',
+        ]);
+
+        $document = $request->file('file');
+
+        $spreadsheet = IOFactory::load($document->getRealPath());
+
+        /** @var Worksheet $sheet */
+        $sheet = $spreadsheet->getSheet(0);
+
+        $startCell = 'A1';
+        $endCell = 'E' . $sheet->getHighestRow();
+        $range = "$startCell:$endCell";
+
+        $data = $sheet->rangeToArray($range, null, true, true, true);
+
+        $rowsAsObjects = [];
+
+        foreach ($data as $index => $row) {
+            if ($index === 1)
+                continue;
+            $isEmptyRow = empty($row['A']) && empty($row['B']) && empty($row['C']) && empty($row['D']) &&
+                empty($row['E']);
+
+            if ($isEmptyRow) {
+                break;
+            }
+            $rowObject = (object) [
+                'code' => $row['A'],
+                'quantity' => $row['B'],
+                'evidence' => $row['C'],
+                'goal' => $row['D'],
+                'observation' => $row['E'],
+            ];
+
+            $rowsAsObjects[] = $rowObject;
+        }
+        $response = [];
+
+        foreach ($rowsAsObjects as $item) {
+            if (empty($item->code) || (!isset($item->quantity) && $item->quantity !== 0) || empty($item->evidence) || empty($item->goal)) {
+                return response()->json(['error' => 'Llene todos los campos'], 400);
+            }
+            
+            $price_guide = HuaweiPriceGuide::where('code', $item->code)->first();
+            if (!$price_guide) {
+                return response()->json(['error' => 'Uno de los códigos no existe en la guía de precios'], 400);
+            }
+            $objectTo = [
+                'code' => $item->code,
+                'description' => $price_guide->description,
+                'unit' => $price_guide->unit,
+                'unit_price' => $price_guide->$zone,
+                'quantity' => $item->quantity,
+                'total_price' => $price_guide->$zone * $item->quantity,
+                'evidence' => $item->evidence,
+                'goal' => $item->goal,
+                'observation' => $item->observation,
+            ];
+
+            $response[] = $objectTo;
+        }
+
+        return response()->json(["lines" => $response], 200);
+    }
+
+    public function downloadTemplate()
+    {
+        $templatePath = public_path('documents/huawei/resources/Data Structure - Base Lines.xlsx');
+        ob_end_clean();
+        return response()->download($templatePath, 'Estructura de Datos - Líneas Base Huawei.xlsx');
+    }
+
 
     public function toUpdate($huawei_project)
     {

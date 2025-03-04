@@ -9,7 +9,7 @@
         <template v-if="props.huawei_project" #header>
             Edición de proyecto
         </template>
-        
+
         <template v-else #header> Creación de proyecto </template>
         <Toaster richColors />
 
@@ -476,76 +476,258 @@
                             </button>
                         </div>
 
-                        <div
-                            class="mt-5"
-                        >
-                        <div class="overflow-x-auto mt-3">
-                <table class="w-full whitespace-no-wrap">
-                  <thead>
-                    <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                        <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                        N°
-                      </th>
-                        <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                        Código
-                      </th>
-                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 w-[400px] text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                        Descripción
-                      </th>
-                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                        Unidad
-                      </th>
-                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                        Precio Unitario
-                      </th>
-                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                        Cantidad
-                      </th>
-                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                        Precio Total
-                      </th>
-                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                        Evidencia
-                      </th>
-                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                        Hito
-                      </th>
-                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                        Observación
-                      </th>
-                      <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(item, index) in form.base_lines" :key="index" class="text-gray-700">
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ index + 1 }}</td>
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.code }}</td>
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.description }}</td>
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.unit }}</td>
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.unit_price }}</td>
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
-    <input 
-        type="number"
-        v-model="form.base_lines[index].quantity"
-        @input="updateTotalPrice(index)"
-        class="w-full border border-gray-300 rounded-md text-center p-1 focus:ring focus:ring-indigo-500 focus:border-indigo-500"
-        min="0"
-    />
-</td>
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.total_price }}</td>
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.evidence }}</td>
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.goal }}</td>
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.observation }}</td>
-                      <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
-                        <div class="flex items-center">
-                          <button @click.prevent="delete_base_line(index)" class="text-red-600 hover:underline mr-2"><TrashIcon class="h-5 w-5" /></button>
+                        <div class="mt-5">
+                            <div class="overflow-x-auto mt-3">
+                                <table class="w-full whitespace-no-wrap">
+                                    <thead>
+                                        <tr
+                                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
+                                        >
+                                            <th
+                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                            >
+                                                N°
+                                            </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                            >
+                                                Código
+                                            </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 w-[400px] text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                            >
+                                                Descripción
+                                            </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                            >
+                                                Unidad
+                                            </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                            >
+                                                Precio Unitario
+                                            </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                            >
+                                                Cantidad
+                                            </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                            >
+                                                Precio Total
+                                            </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                            >
+                                                Evidencia
+                                            </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                            >
+                                                Hito
+                                            </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                            >
+                                                Observación
+                                            </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                            ></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr
+                                            v-for="(
+                                                item, index
+                                            ) in form.base_lines"
+                                            :key="index"
+                                            class="text-gray-700"
+                                        >
+                                            <td
+                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                            >
+                                                {{ index + 1 }}
+                                            </td>
+                                            <td
+                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                            >
+                                                {{ item.code }}
+                                            </td>
+                                            <td
+                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                            >
+                                                {{ item.description }}
+                                            </td>
+                                            <td
+                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                            >
+                                                {{ item.unit }}
+                                            </td>
+                                            <td
+                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                            >
+                                                {{ item.unit_price }}
+                                            </td>
+                                            <td
+                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                            >
+                                                <input
+                                                    type="number"
+                                                    v-model="
+                                                        form.base_lines[index]
+                                                            .quantity
+                                                    "
+                                                    @input="
+                                                        updateTotalPrice(index)
+                                                    "
+                                                    class="w-full border border-gray-300 rounded-md text-center p-1 focus:ring focus:ring-indigo-500 focus:border-indigo-500"
+                                                    min="0"
+                                                />
+                                            </td>
+                                            <td
+                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                            >
+                                                {{ item.total_price }}
+                                            </td>
+                                            <td
+                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                            >
+                                                {{ item.evidence }}
+                                            </td>
+                                            <td
+                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                            >
+                                                {{ item.goal }}
+                                            </td>
+                                            <td
+                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                            >
+                                                {{ item.observation }}
+                                            </td>
+                                            <td
+                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                            >
+                                                <div class="flex items-center">
+                                                    <button
+                                                        @click.prevent="
+                                                            delete_base_line(
+                                                                index
+                                                            )
+                                                        "
+                                                        class="text-red-600 hover:underline mr-2"
+                                                    >
+                                                        <TrashIcon
+                                                            class="h-5 w-5"
+                                                        />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+                        <div>
+                            <hr class="border-1 border-gray-500 my-10 black" />
+                            <div class="flex flex-space gap-2">
+                                <h2 class="font-black">Cronograma:</h2>
+                                <button
+                                    type="button"
+                                    @click=""
+                                    class="px-1"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="1.5"
+                                        stroke="currentColor"
+                                        class="w-6 h-6 text-indigo-500"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                        />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="mt-5">
+                            <div class="overflow-x-auto mt-3">
+                                <table class="w-full whitespace-no-wrap">
+                                    <thead>
+                                        <tr
+                                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
+                                        >
+                                            <th
+                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                            >
+                                                N°
+                                            </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                            >
+                                                Actividad
+                                            </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 w-[400px] text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                            >
+                                                Días
+                                            </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                            ></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr
+                                            v-for="(
+                                                item, index
+                                            ) in form.schedule"
+                                            :key="index"
+                                            class="text-gray-700"
+                                        >
+                                            <td
+                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                            >
+                                                {{ index + 1 }}
+                                            </td>
+                                            <td
+                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                            >
+                                                {{ item.activity }}
+                                            </td>
+                                            <td
+                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                            >
+                                                {{ item.days }}
+                                            </td>
+                                            <td
+                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                            >
+                                                <div class="flex items-center">
+                                                    <button
+                                                        @click.prevent="
+                                                            delete_schedule(
+                                                                index
+                                                            )
+                                                        "
+                                                        class="text-red-600 hover:underline mr-2"
+                                                    >
+                                                        <TrashIcon
+                                                            class="h-5 w-5"
+                                                        />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -715,163 +897,360 @@
             </Modal>
 
             <Modal :show="baseline_modal" @close="openBaseLine">
-            <div class="p-6">
-                <h2 class="text-base font-medium leading-7 text-gray-900">
-                    Ingresar Línea
-                </h2>
-                <form @submit.prevent="addBaseLine">
-                    <div class="space-y-12">
-                        <div
-                            class="border-b grid grid-cols-1 md:grid-cols-2 gap-6 border-gray-900/10 pb-12"
-                        >
-                            <div>
-                                <InputLabel for="code" class="font-medium leading-6 text-gray-900">
-                                    Código de Precio
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input
-                                        type="text"
-                                        id="code"
-                                        v-model="baseForm.code"
-                                        @input="(e) => handleAutocomplete(e)"
-                                        list="price_guide_list"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                        placeholder="Seleccione un código"
-                                    />
-                                    <datalist id="price_guide_list">
-                                        <option v-for="pg in price_guides" :key="pg.id" :value="pg.code">
-                                            {{ pg.description }}
-                                        </option>
-                                    </datalist>
-                                    <InputError :message="baseForm.errors.code" />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel class="font-medium leading-6 text-gray-900">
-                                    Descripción
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input
-                                        type="text"
-                                        v-model="baseForm.description"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                        readonly
+                <div class="p-6">
+                    <h2 class="text-base font-medium leading-7 text-gray-900">
+                        Ingresar Línea
+                    </h2>
+                    <form @submit.prevent="addBaseLine">
+                        <div class="space-y-12">
+                            <div
+                                class="border-b grid grid-cols-1 md:grid-cols-2 gap-6 border-gray-900/10 pb-12"
+                            >
+                                <div>
+                                    <InputLabel
+                                        for="code"
+                                        class="font-medium leading-6 text-gray-900"
+                                    >
+                                        Código de Precio
+                                    </InputLabel>
+                                    <div class="mt-2">
+                                        <input
+                                            type="text"
+                                            id="code"
+                                            v-model="baseForm.code"
+                                            @input="
+                                                (e) => handleAutocomplete(e)
+                                            "
+                                            list="price_guide_list"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            placeholder="Seleccione un código"
                                         />
-                                    <InputError :message="baseForm.errors.description" />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel class="font-medium leading-6 text-gray-900">
-                                    Unidad
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input
-                                        type="text"
-                                        v-model="baseForm.unit"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                        readonly
+                                        <datalist id="price_guide_list">
+                                            <option
+                                                v-for="pg in price_guides"
+                                                :key="pg.id"
+                                                :value="pg.code"
+                                            >
+                                                {{ pg.description }}
+                                            </option>
+                                        </datalist>
+                                        <InputError
+                                            :message="baseForm.errors.code"
                                         />
-                                    <InputError :message="baseForm.errors.unit" />
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div>
-                                <InputLabel class="font-medium leading-6 text-gray-900">
-                                    Precio Unitario
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input
-                                        type="number"
-                                        step="0.01"
-                                        v-model="baseForm.unit_price"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                        readonly
+                                <div>
+                                    <InputLabel
+                                        class="font-medium leading-6 text-gray-900"
+                                    >
+                                        Descripción
+                                    </InputLabel>
+                                    <div class="mt-2">
+                                        <input
+                                            type="text"
+                                            v-model="baseForm.description"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            readonly
                                         />
-                                    <InputError :message="baseForm.errors.unit_price" />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">
-                                    Cantidad
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        id="quantity"
-                                        v-model="baseForm.quantity"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        <InputError
+                                            :message="
+                                                baseForm.errors.description
+                                            "
                                         />
-                                    <InputError :message="baseForm.errors.quantity" />
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div>
-                                <InputLabel for="total_price" class="font-medium leading-6 text-gray-900">
-                                    Precio Total
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input
-                                        type="number"
-                                        v-model="baseForm.total_price"
-                                        min="0"
-                                        id="total_price"
-                                        readonly
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                <div>
+                                    <InputLabel
+                                        class="font-medium leading-6 text-gray-900"
+                                    >
+                                        Unidad
+                                    </InputLabel>
+                                    <div class="mt-2">
+                                        <input
+                                            type="text"
+                                            v-model="baseForm.unit"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            readonly
                                         />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel for="evidence" class="font-medium leading-6 text-gray-900">
-                                    Evidencia
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input
-                                        type="text"
-                                        id="evidence"
-                                        v-model="baseForm.evidence"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        <InputError
+                                            :message="baseForm.errors.unit"
                                         />
-                                    <InputError :message="baseForm.errors.evidence" />
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div>
-                                <InputLabel for="goal" class="font-medium leading-6 text-gray-900">
-                                    Hito
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input
-                                        type="text"
-                                        id="goal"
-                                        v-model="baseForm.goal"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                <div>
+                                    <InputLabel
+                                        class="font-medium leading-6 text-gray-900"
+                                    >
+                                        Precio Unitario
+                                    </InputLabel>
+                                    <div class="mt-2">
+                                        <input
+                                            type="number"
+                                            step="0.01"
+                                            v-model="baseForm.unit_price"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            readonly
                                         />
-                                    <InputError :message="baseForm.errors.goal" />
-                                </div>
-                            </div>
-
-                            <div class="col-span-1 md:col-span-2">
-                                <InputLabel for="baseObservation" class="font-medium leading-6 text-gray-900">
-                                    Observación
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <textarea
-                                        id="baseObservation"
-                                        v-model="baseForm.observation"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        <InputError
+                                            :message="
+                                                baseForm.errors.unit_price
+                                            "
                                         />
-                                    <InputError :message="baseForm.errors.observation" />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <InputLabel
+                                        for="quantity"
+                                        class="font-medium leading-6 text-gray-900"
+                                    >
+                                        Cantidad
+                                    </InputLabel>
+                                    <div class="mt-2">
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            id="quantity"
+                                            v-model="baseForm.quantity"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        />
+                                        <InputError
+                                            :message="baseForm.errors.quantity"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <InputLabel
+                                        for="total_price"
+                                        class="font-medium leading-6 text-gray-900"
+                                    >
+                                        Precio Total
+                                    </InputLabel>
+                                    <div class="mt-2">
+                                        <input
+                                            type="number"
+                                            v-model="baseForm.total_price"
+                                            min="0"
+                                            id="total_price"
+                                            readonly
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <InputLabel
+                                        for="evidence"
+                                        class="font-medium leading-6 text-gray-900"
+                                    >
+                                        Evidencia
+                                    </InputLabel>
+                                    <div class="mt-2">
+                                        <input
+                                            type="text"
+                                            id="evidence"
+                                            v-model="baseForm.evidence"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        />
+                                        <InputError
+                                            :message="baseForm.errors.evidence"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <InputLabel
+                                        for="goal"
+                                        class="font-medium leading-6 text-gray-900"
+                                    >
+                                        Hito
+                                    </InputLabel>
+                                    <div class="mt-2">
+                                        <input
+                                            type="text"
+                                            id="goal"
+                                            v-model="baseForm.goal"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        />
+                                        <InputError
+                                            :message="baseForm.errors.goal"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div class="col-span-1 md:col-span-2">
+                                    <InputLabel
+                                        for="baseObservation"
+                                        class="font-medium leading-6 text-gray-900"
+                                    >
+                                        Observación
+                                    </InputLabel>
+                                    <div class="mt-2">
+                                        <textarea
+                                            id="baseObservation"
+                                            v-model="baseForm.observation"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        />
+                                        <InputError
+                                            :message="
+                                                baseForm.errors.observation
+                                            "
+                                        />
+                                    </div>
                                 </div>
                             </div>
-
+                            <div
+                                class="mt-6 flex items-center justify-end gap-x-6"
+                            >
+                                <SecondaryButton @click="openBaseLine">
+                                    Cancelar
+                                </SecondaryButton>
+                                <button
+                                    type="submit"
+                                    class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                >
+                                    Guardar
+                                </button>
+                            </div>
                         </div>
-                        <div class="mt-6 flex items-center justify-end gap-x-6">
-                            <SecondaryButton @click="openBaseLine">
+                    </form>
+                </div>
+            </Modal>
+
+            <Modal
+                :show="show_import"
+                @close="openImportExcel"
+                :closeable="true"
+            >
+                <div class="p-6">
+                    <h2 class="text-base font-black leading-7 text-gray-900">
+                        Importar Excel
+                    </h2>
+                    <h2 class="font-black text-lg mt-4 text-indigo-700">
+                        Consideraciones:
+                    </h2>
+                    <div
+                        class="bg-indigo-50 border-l-4 text-sm border-indigo-500 p-4 rounded-lg shadow-sm mt-2"
+                    >
+                        <p class="text-gray-700">
+                            <span class="font-semibold text-indigo-600">•</span>
+                            Descargue la
+                            <a
+                                :href="
+                                    route('huawei.projects.baselines.template')
+                                "
+                                class="font-black text-indigo-600 hover:underline"
+                                >ESTRUCTURA DE DATOS.</a
+                            >
+                        </p>
+                        <p class="text-gray-700">
+                            <span class="font-semibold text-indigo-600">•</span>
+                            La importación
+                            <span class="font-black text-indigo-600"
+                                >NO VA A GUARDAR</span
+                            >
+                            los datos actuales, para guardar todo el proyecto
+                            debe hacer click en el botón
+                            <span class="font-black text-indigo-600"
+                                >GUARDAR</span
+                            >
+                            al final de la página.
+                        </p>
+                        <p class="text-gray-700">
+                            <span class="font-semibold text-indigo-600">•</span>
+                            La importación
+                            <span class="text-indigo-600 font-semibold"
+                                >NO REEMPLAZARÁ</span
+                            >
+                            los elementos actuales.
+                        </p>
+                        <p class="text-gray-700">
+                            <span class="font-semibold text-indigo-600">•</span>
+
+                            Mantenga la cabecera de la tabla, esta se ignorará
+                            durante la importación.
+                        </p>
+                        <p class="text-gray-700">
+                            <span class="font-semibold text-indigo-600">•</span>
+
+                            Todos los campos son obligatorios.
+                        </p>
+                    </div>
+
+                    <div
+                        class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5 text-sm"
+                    >
+                        <div
+                            class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
+                        >
+                            <span class="font-black text-indigo-700"
+                                >Columna A:</span
+                            >
+                            <span class="text-gray-700">Código</span>
+                        </div>
+                        <div
+                            class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
+                        >
+                            <span class="font-black text-indigo-700"
+                                >Columna B:</span
+                            >
+                            <span class="text-gray-700">Cantidad</span>
+                        </div>
+                        <div
+                            class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
+                        >
+                            <span class="font-black text-indigo-700"
+                                >Columna C:</span
+                            >
+                            <span class="text-gray-700">Evidencia</span>
+                        </div>
+                        <div
+                            class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
+                        >
+                            <span class="font-black text-indigo-700"
+                                >Columna D:</span
+                            >
+                            <span class="text-gray-700">Hito</span>
+                        </div>
+                        <div
+                            class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
+                        >
+                            <span class="font-black text-indigo-700"
+                                >Columna E:</span
+                            >
+                            <span class="text-gray-700">Observación</span>
+                        </div>
+                    </div>
+
+                    <form @submit.prevent="importExcel">
+                        <div class="space-y-12 mt-4">
+                            <div class="grid sm:grid-cols-2 gap-6 pb-6">
+                                <div class="md:col-span-2 col-span-1">
+                                    <InputLabel
+                                        for="file"
+                                        class="font-medium leading-6 text-gray-900"
+                                        >Archivo</InputLabel
+                                    >
+                                    <div class="mt-2">
+                                        <InputFile
+                                            type="file"
+                                            v-model="formFile.file"
+                                            accept=".xlsx"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        />
+                                        <InputError
+                                            :message="formFile.errors.file"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-8 flex justify-end gap-4">
+                            <SecondaryButton @click="openImportExcel">
                                 Cancelar
                             </SecondaryButton>
                             <button
@@ -881,121 +1260,9 @@
                                 Guardar
                             </button>
                         </div>
-                    </div>
-                </form>
-            </div>
-        </Modal>
-
-
-        <Modal :show="show_import" @close="openImportExcel" :closeable="true">
-            <div class="p-6">
-                <h2 class="text-base font-black leading-7 text-gray-900">
-                    Importar Excel
-                </h2>
-                <h2 class="font-black text-lg mt-4 text-indigo-700">
-                    Consideraciones:
-                </h2>
-                <div
-                    class="bg-indigo-50 border-l-4 text-sm border-indigo-500 p-4 rounded-lg shadow-sm mt-2"
-                >
-                <p class="text-gray-700">
-                        <span class="font-semibold text-indigo-600">•</span>
-                        Descargue la
-                        <a :href="route('huawei.projects.general.expenses.donwloadtemplate')" class="font-black text-indigo-600 hover:underline">ESTRUCTURA DE DATOS.</a>
-
-                    </p>
-                    <p class="text-gray-700">
-                        <span class="font-semibold text-indigo-600">•</span>
-                        La importación
-                        <span class="font-black text-indigo-600">NO VA A GUARDAR</span>
-                        los datos actuales, para guardar todo el proyecto debe hacer click en el botón
-                        <span class="font-black text-indigo-600">GUARDAR</span> al final de la página.
-                    </p>
-                    <p class="text-gray-700">
-                        <span class="font-semibold text-indigo-600">•</span> La importación
-                        <span class="text-indigo-600 font-semibold"
-                            >NO REEMPLAZARÁ</span
-                        > los elementos actuales.
-                    </p>
-                    <p class="text-gray-700">
-                        <span class="font-semibold text-indigo-600">•</span>
-
-                        Mantenga la cabecera de la tabla, esta se ignorará durante la importación.
-                    </p>
-                    <p class="text-gray-700">
-                        <span class="font-semibold text-indigo-600">•</span>
-
-                        Todos los campos son obligatorios.
-                    </p>
+                    </form>
                 </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5 text-sm">
-                    <div
-                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
-                    >
-                        <span class="font-black text-indigo-700"
-                            >* Columna A:</span
-                        >
-                        <span class="text-gray-700">Personal</span>
-                    </div>
-                    <div
-                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
-                    >
-                        <span class="font-black text-indigo-700"
-                            >Columna B:</span
-                        >
-                        <span class="text-gray-700">DU del Proyecto</span>
-                    </div>
-                    <div
-                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
-                    >
-                        <span class="font-black text-indigo-700"
-                            >* Columna C:</span
-                        >
-                        <span class="text-gray-700">Fecha del gasto</span>
-                    </div>
-                </div>
-
-                <form @submit.prevent="importExcel">
-                    <div class="space-y-12 mt-4">
-                        <div class="grid sm:grid-cols-2 gap-6 pb-6">
-                            <div class="md:col-span-2 col-span-1">
-                                <InputLabel
-                                    for="file"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >Archivo</InputLabel
-                                >
-                                <div class="mt-2">
-                                    <InputFile
-                                        type="file"
-                                        v-model="formFile.file"
-                                        accept=".xlsx"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError
-                                        :message="formFile.errors.file"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-8 flex justify-end gap-4">
-                        <SecondaryButton @click="openImportExcel">
-                            Cancelar
-                        </SecondaryButton>
-                        <button
-                            type="submit"
-                            :disabled="isFetching"
-                            :class="{ 'opacity-25': isFetching }"
-                            class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                        >
-                            Guardar
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </Modal>
-
+            </Modal>
         </div>
         <ConfirmCreateModal
             :confirmingcreation="showModal"
@@ -1051,6 +1318,7 @@ import TextInput from "@/Components/TextInput.vue";
 import InputFile from "@/Components/InputFile.vue";
 import { notify, notifyError } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
+import { toFormData } from "@/utils/utils";
 
 const showModal = ref(false);
 const showUpdateModal = ref(false);
@@ -1080,6 +1348,7 @@ const initialState = {
     pre_report: null,
     employees: [],
     base_lines: [],
+    schedule: [],
     initial_amount: "",
     assigned_diu: "",
     macro_project: "",
@@ -1306,27 +1575,34 @@ const submit_edit_employee = () => {
 const price_guides = ref(null);
 const show_import = ref(false);
 
-watch(() => form.cost_center_id, (newVal) => {
-  price_guides.value = props.price_guides.filter(pg => pg.cost_center_id === newVal);
-});
+watch(
+    () => form.cost_center_id,
+    (newVal) => {
+        price_guides.value = props.price_guides.filter(
+            (pg) => pg.cost_center_id === newVal
+        );
+    }
+);
 
 const handleAutocomplete = () => {
-  if (!baseForm.code || !price_guides.value?.length) return;
-  const selectedGuide = price_guides.value.find(guide => guide.code === baseForm.code);
+    if (!baseForm.code || !price_guides.value?.length) return;
+    const selectedGuide = price_guides.value.find(
+        (guide) => guide.code === baseForm.code
+    );
 
-  if (selectedGuide) {
-    baseForm.description = selectedGuide.description || '';
-    baseForm.unit = selectedGuide.unit || '';
-    baseForm.quantity = selectedGuide.quantity || '';
+    if (selectedGuide) {
+        baseForm.description = selectedGuide.description || "";
+        baseForm.unit = selectedGuide.unit || "";
+        baseForm.quantity = selectedGuide.quantity || "";
 
-    const zoneKey = form.zone.toLowerCase();
-    baseForm.unit_price = selectedGuide[zoneKey] || 0;
-  } else {
-    baseForm.description = '';
-    baseForm.unit = '';
-    baseForm.quantity = '';
-    baseForm.unit_price = 0;
-  }
+        const zoneKey = form.zone.toLowerCase();
+        baseForm.unit_price = selectedGuide[zoneKey] || 0;
+    } else {
+        baseForm.description = "";
+        baseForm.unit = "";
+        baseForm.quantity = "";
+        baseForm.unit_price = 0;
+    }
 };
 
 const baseForm = useForm({
@@ -1338,44 +1614,84 @@ const baseForm = useForm({
     quantity: "",
     observation: "",
     evidence: "",
-    goal: ""
+    goal: "",
 });
 
-watch(() => baseForm.quantity, (newVal) => {
-  baseForm.total_price = parseFloat((baseForm.unit_price * newVal).toFixed(2));
-});
+watch(
+    () => baseForm.quantity,
+    (newVal) => {
+        baseForm.total_price = parseFloat(
+            (baseForm.unit_price * newVal).toFixed(2)
+        );
+    }
+);
 
 const openBaseLine = () => {
     baseForm.reset();
     baseline_modal.value = !baseline_modal.value;
-}
+};
 
 const addBaseLine = () => {
-    if (!baseForm.code || !baseForm.description || !baseForm.unit || !baseForm.unit_price || !baseForm.quantity || !baseForm.evidence || !baseForm.goal) {
-        notifyError('Todos los campos son requeridos');
+    if (
+        !baseForm.code ||
+        !baseForm.description ||
+        !baseForm.unit ||
+        !baseForm.unit_price ||
+        !baseForm.quantity ||
+        !baseForm.evidence ||
+        !baseForm.goal
+    ) {
+        notifyError("Todos los campos son requeridos");
         return;
     }
-    console.log(baseForm)
-    form.base_lines.push({...baseForm});
+    form.base_lines.push({ ...baseForm });
     baseForm.reset();
     baseline_modal.value = false;
-}
+};
 
 const delete_base_line = (index) => {
     form.base_lines.splice(index, 1);
-}
+};
 const updateTotalPrice = (index) => {
     const line = form.base_lines[index];
     line.total_price = (line.unit_price * line.quantity).toFixed(2);
 };
 
 const formFile = useForm({
-    file: null,
+    file: "",
 });
 
 const openImportExcel = () => {
     formFile.reset();
     show_import.value = !show_import.value;
-}
+};
 
+const importExcel = async () => {
+    const url = route("huawei.projects.import.baselines", {
+        zone: form.zone.toLowerCase(),
+    });
+
+    try {
+        const formData = new FormData();
+        formData.append("file", formFile.file);
+
+        const response = await axios.post(url, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                Accept: "application/json",
+            },
+        });
+        form.base_lines.push(...response.data.lines);
+        openImportExcel();
+    } catch (error) {
+        if (error.response.data.error) {
+            notifyError(error.response.data.error);
+        }
+    }
+};
+
+//schedule
+const delete_schedule = (index) => {
+    form.schedule.splice(index, 1);
+};
 </script>
