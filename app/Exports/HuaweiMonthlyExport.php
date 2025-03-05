@@ -8,17 +8,10 @@ use App\Models\HuaweiMonthlyExpense;
 
 class HuaweiMonthlyExport implements FromView
 {
-    protected $project_id;
-
-    public function __construct($project_id)
-    {
-        $this->project_id = $project_id;
-    }
-
     public function view():View
     {
         return view('Export/HuaweiMonthlyExport', [
-            'expenses' => HuaweiMonthlyExpense::with('huawei_project.huawei_site')->where('huawei_monthly_project_id', $this->project_id)->where('is_accepted', 1)->get()
+            'expenses' => HuaweiMonthlyExpense::with('huawei_project.huawei_site')->where('is_accepted', 1)->get()
         ]);
     }
 }

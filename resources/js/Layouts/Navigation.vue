@@ -29,6 +29,7 @@
                     <Link class="w-full" :href="route('rols.index')">Roles</Link>
                 </MyTransition>
             </template>
+            
             <EmployeesNavigation :userPermissions="$page.props.userPermissions"/>
             
             <template v-if="hasPermission('InventoryManager') || hasPermission('Inventory')">
@@ -435,7 +436,7 @@
                     <Link class="w-full" :href="route('cicsa.index', { type: 2 })">Pext</Link>
                 </MyTransition>
             </template>
-
+            
             <template v-if="hasPermission('HuaweiManager')">
                 <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#" @click="toogleHUawei">
                     <svg v-if="pending_orders.length == 0" fill="white" width="23px" height="23px" viewBox="0 0 32 32"
@@ -451,8 +452,16 @@
                     <span class="mx-3">Huawei</span>
                 </a>
                 <MyTransition :transitiondemonstration="showHuawei">
+                    <Link class="w-full" :href="route('huawei.sites')">Sites Huawei</Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showHuawei">
+                    <Link class="w-full" :href="route('huawei.projects', { status: 1, prefix: 'Claro' })">Proyectos
+                    Huawei
+                    </Link>
+                </MyTransition>
+                <MyTransition :transitiondemonstration="showHuawei">
                     <div class="relative">
-                        <Link class="w-full" :href="route('huawei.inventory.show', { warehouse: 1 })">Inventario de
+                        <Link class="w-full" :href="route('huawei.inventory.show', { warehouse: 1 })">Inventario
                         Huawei
                         </Link>
                         <button @click="showPendingOrders = !showPendingOrders">
@@ -479,31 +488,25 @@
                 </template>
 
                 <MyTransition :transitiondemonstration="showHuawei">
-                    <Link class="w-full" :href="route('huawei.quickmaterials')">Materiales Internos</Link>
+                    <Link class="w-full" :href="route('huawei.quickmaterials')">Inventario Internos</Link>
                 </MyTransition>
                 <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.internalguides')">Guías Internas</Link>
                 </MyTransition>
-                <MyTransition :transitiondemonstration="showHuawei">
-                    <Link class="w-full" :href="route('huawei.sites')">Sites de Huawei</Link>
-                </MyTransition>
-                <MyTransition :transitiondemonstration="showHuawei">
+
+                <!-- <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.titles')">Huawei PRO</Link>
-                </MyTransition>
-                <MyTransition :transitiondemonstration="showHuawei">
-                    <Link class="w-full" :href="route('huawei.projects', { status: 1, prefix: 'Claro' })">Proyectos de
-                    Huawei
-                    </Link>
-                </MyTransition>
-                <MyTransition :transitiondemonstration="showHuawei">
+                </MyTransition> -->
+
+                <!-- <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.monthlyprojects')">Proyectos Mensuales</Link>
-                </MyTransition>
+                </MyTransition> -->
                 <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.specialrefunds')">Devoluciones Especiales</Link>
                 </MyTransition>
-                <MyTransition :transitiondemonstration="showHuawei">
+                <!-- <MyTransition :transitiondemonstration="showHuawei">
                     <Link class="w-full" :href="route('huawei.generalbalance')">Balance General</Link>
-                </MyTransition>
+                </MyTransition> -->
             </template>
             <FleetNavigation :userPermissions="$page.props.userPermissions"/>
         </nav>
@@ -516,8 +519,8 @@ import MyTransition from '@/Components/MyTransition.vue';
 import { Link, } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import axios from 'axios';
-import FleetNavigation from './FleetNavigation.vue';
-import EmployeesNavigation from './EmployeesNavigation.vue';
+import FleetNavigation from './Navigation/FleetNavigation.vue';
+import EmployeesNavigation from './Navigation/EmployeesNavigation.vue';
 
 export default {
     props: {

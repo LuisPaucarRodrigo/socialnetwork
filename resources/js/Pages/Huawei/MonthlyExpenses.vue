@@ -1,7 +1,7 @@
 <template>
     <Head title="Gestion de Costos" />
-    <AuthenticatedLayout redirectRoute="huawei.monthlyprojects">
-        <template #header> Gastos del Proyecto </template>
+    <AuthenticatedLayout :redirectRoute="'huawei.projects.generalbalance'">
+        <template #header> Gastos Generales {{ props.mode ? 'Fijos' : 'Variables' }}</template>
         <br />
         <Toaster richColors />
         <div class="inline-block min-w-full mb-4">
@@ -205,6 +205,14 @@
                                 </div>
                                 <div class="dropdown-menu">
                                     <button
+                                        @click="openImportExcel"
+                                        class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition ease-in-out"
+                                    >
+                                        Importar
+                                    </button>
+                                </div>
+                                <div class="dropdown-menu">
+                                    <button
                                         @click="openExportExcel"
                                         class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition ease-in-out"
                                     >
@@ -216,7 +224,15 @@
                                         @click="openNuUpdateModal"
                                         class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition ease-in-out"
                                     >
-                                        Actualizar
+                                        Actualizar Operación
+                                    </button>
+                                </div>
+                                <div class="dropdown-menu">
+                                    <button
+                                        @click="openMassiveValidate"
+                                        class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition ease-in-out"
+                                    >
+                                        Actualizar Estado
                                     </button>
                                 </div>
                             </div>
@@ -385,17 +401,7 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                            Imagen 1
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
-                        >
-                            Imagen 2
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
-                        >
-                            Imagen 3
+                            Imagen
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
@@ -422,11 +428,6 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                            Estado de Reembolso
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
-                        >
                             <TableAutocompleteFilter
                                 labelClass="text-[11px]"
                                 label="Estado"
@@ -449,9 +450,7 @@
                 </thead>
                 <tbody>
                     <tr
-                        v-for="item in !props.search || !filterMode
-                            ? expenses.data
-                            : expenses"
+                        v-for="item in expenses"
                         :key="item.id"
                         class="text-gray-700"
                     >
@@ -462,11 +461,11 @@
                                     'bg-indigo-500':
                                         item.real_state === 'Pendiente',
                                     'bg-green-500':
-                                        item.real_state == 'Aceptado-Validado',
+                                        item.real_state === 'Aceptado-Validado',
                                     'bg-amber-500':
-                                        item.real_state == 'Aceptado',
+                                        item.real_state === 'Aceptado',
                                     'bg-red-500':
-                                        item.real_state == 'Rechazado',
+                                        item.real_state === 'Rechazado',
                                 },
                             ]"
                         ></td>
@@ -495,9 +494,7 @@
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center whitespace-nowrap text-[13px]"
                         >
-                            {{
-                                item.huawei_project ? item.huawei_project.huawei_site.name : 'SIN ZONA'
-                            }}
+                            {{ item.zone }}
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center whitespace-nowrap text-[13px]"
@@ -549,32 +546,8 @@
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
                         >
                             <button
-                                v-if="item.image1"
-                                @click="openPreviewDocumentModal(item.id, '1')"
-                                class="flex items-center justify-center w-full"
-                            >
-                                <EyeIcon class="h-5 w-5 text-green-400" />
-                            </button>
-                        </td>
-
-                        <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
-                        >
-                            <button
-                                v-if="item.image2"
-                                @click="openPreviewDocumentModal(item.id, '2')"
-                                class="flex items-center justify-center w-full"
-                            >
-                                <EyeIcon class="h-5 w-5 text-green-400" />
-                            </button>
-                        </td>
-
-                        <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
-                        >
-                            <button
-                                v-if="item.image3"
-                                @click="openPreviewDocumentModal(item.id, '3')"
+                                v-if="item.image"
+                                @click="openPreviewDocumentModal(item.id)"
                                 class="flex items-center justify-center w-full"
                             >
                                 <EyeIcon class="h-5 w-5 text-green-400" />
@@ -602,22 +575,17 @@
                         </td>
                         <td
                             class="border-b whitespace-nowrap border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap"
-                        >
-                            {{ item.refund_status }}
-                        </td>
-                        <td
-                            class="border-b whitespace-nowrap border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap"
                             :class="[
                                 'text-center',
                                 {
                                     'text-indigo-500':
                                         item.real_state === 'Pendiente',
                                     'text-green-500':
-                                        item.real_state == 'Aceptado-Validado',
+                                        item.real_state === 'Aceptado-Validado',
                                     'text-amber-500':
-                                        item.real_state == 'Aceptado',
+                                        item.real_state === 'Aceptado',
                                     'text-red-500':
-                                        item.real_state == 'Rechazado',
+                                        item.real_state === 'Rechazado',
                                 },
                             ]"
                         >
@@ -630,7 +598,7 @@
                                 class="flex items-center gap-3 w-full justify-center"
                             >
                                 <div
-                                    v-if="item.is_accepted === null"
+                                    v-if="item.is_accepted == null"
                                     class="flex gap-3 justify-center w-1/2"
                                 >
                                     <button
@@ -679,7 +647,6 @@
                                         </svg>
                                     </button>
                                 </div>
-                                <div v-else class="w-1/2"></div>
 
                                 <div class="flex gap-3 justify-center w-1/2">
                                     <button
@@ -720,19 +687,13 @@
                         >
                             S/.
                             {{
-                                props.search || filterMode.value
-                                    ? expenses
+                                    expenses
                                           ?.reduce(
                                               (a, item) => a + item.amount,
                                               0
                                           )
                                           .toFixed(2)
-                                    : expenses?.data
-                                          ?.reduce(
-                                              (a, item) => a + item.amount,
-                                              0
-                                          )
-                                          .toFixed(2)
+                                    
                             }}
                         </td>
 
@@ -745,12 +706,12 @@
             </table>
         </div>
 
-        <div
+        <!-- <div
             v-if="!filterMode && !props.search"
             class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between"
         >
             <pagination :links="expenses.links" />
-        </div>
+        </div> -->
         <Modal :show="create_additional" @close="closeModal">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
@@ -1036,31 +997,6 @@
 
                             <div>
                                 <InputLabel
-                                    for="refund_status"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >Estado de Reembolso</InputLabel
-                                >
-                                <div class="mt-2">
-                                    <select
-                                        v-model="form.refund_status"
-                                        id="refund_status"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    >
-                                        <option disabled value="">
-                                            Seleccionar Estado de Reembolso
-                                        </option>
-                                        <option>PAGADO</option>
-                                        <option>RECHAZADO</option>
-                                        <option>PENDIENTE</option>
-                                    </select>
-                                    <InputError
-                                        :message="form.errors.refund_status"
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel
                                     for="ec_expense_date"
                                     class="font-medium leading-6 text-gray-900"
                                     >Fecha de Depósito de E.C.</InputLabel
@@ -1122,50 +1058,19 @@
                                 <InputLabel
                                     class="font-medium leading-6 text-gray-900"
                                 >
-                                    Imagen 1
+                                    Imagen
                                 </InputLabel>
                                 <div class="mt-2">
                                     <InputFile
                                         type="file"
-                                        v-model="form.image1"
+                                        v-model="form.image"
                                         accept=".jpeg, .jpg, .png, .pdf"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     />
-                                    <InputError :message="form.errors.image1" />
+                                    <InputError :message="form.errors.image" />
                                 </div>
                             </div>
-                            <div>
-                                <InputLabel
-                                    class="font-medium leading-6 text-gray-900"
-                                >
-                                    Imagen 2
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <InputFile
-                                        type="file"
-                                        v-model="form.image2"
-                                        accept=".jpeg, .jpg, .png, .pdf"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError :message="form.errors.image2" />
-                                </div>
-                            </div>
-                            <div>
-                                <InputLabel
-                                    class="font-medium leading-6 text-gray-900"
-                                >
-                                    Imagen 3
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <InputFile
-                                        type="file"
-                                        v-model="form.image3"
-                                        accept=".jpeg, .jpg, .png, .pdf"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError :message="form.errors.image3" />
-                                </div>
-                            </div>
+
                         </div>
                         <div class="mt-6 flex items-center justify-end gap-x-6">
                             <SecondaryButton @click="closeModal">
@@ -1324,7 +1229,7 @@
                 <p class="text-gray-700">
                         <span class="font-semibold text-indigo-600">•</span>
                         Descargue la
-                        <a :href="route('huawei.monthlyexpenses.expenses.donwloadtemplate')" class="font-black text-indigo-600 hover:underline">ESTRUCTURA DE DATOS.</a>
+                        <a :href="route('huawei.projects.general.expenses.donwloadtemplate')" class="font-black text-indigo-600 hover:underline">ESTRUCTURA DE DATOS.</a>
 
                     </p>
                     <p class="text-gray-700">
@@ -1353,10 +1258,6 @@
                         <span class="font-semibold text-indigo-600">•</span>
                         Escribir las fechas en formato regular, e.j.
                         <span class="font-mono text-gray-900">20-02-2025</span>.
-                    </p>
-                    <p class="text-gray-700">
-                        <span class="font-semibold text-indigo-600">•</span>
-                        Las fechas de gasto deben pertenecer al mes del proyecto.
                     </p>
                 </div>
 
@@ -1475,14 +1376,6 @@
                         >
                         <span class="text-gray-700">Monto E.C.</span>
                     </div>
-                    <div
-                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
-                    >
-                        <span class="font-black text-indigo-700"
-                            >Columna O:</span
-                        >
-                        <span class="text-gray-700">Estado de Reembolso</span>
-                    </div>
                 </div>
 
                 <form @submit.prevent="importExcel">
@@ -1567,14 +1460,16 @@ import TextInput from "@/Components/TextInput.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
-import { setAxiosErrors } from "@/utils/utils";
+import { setAxiosErrors, toFormData } from "@/utils/utils";
 
 const props = defineProps({
     expense: Object,
-    project: Object,
     search: String,
     summary: Object,
+    data: Object,
+    mode: String,
 });
+
 
 const expenses = ref(props.expense);
 const filterMode = ref(false);
@@ -1595,14 +1490,10 @@ const form = useForm({
     ruc: "",
     description: "",
     amount: "",
-    image1: "",
-    image2: "",
-    image3: "",
-    refund_status: "",
+    image: "",
     ec_expense_date: "",
     ec_op_number: "",
     ec_amount: "",
-    huawei_monthly_project_id: props.project.id,
     huawei_project_id: "",
 });
 
@@ -1624,7 +1515,7 @@ const openEditAdditionalModal = async (additional) => {
     if (additional.huawei_project_id) {
         axios
             .get(
-                route("huawei.monthlyexpenses.expenses.fetchsites", {
+                route("huawei.projects.general.expenses.fetchsites", {
                     macro: additional.huawei_project?.macro_project,
                 })
             )
@@ -1637,7 +1528,7 @@ const openEditAdditionalModal = async (additional) => {
 
         axios
             .get(
-                route("huawei.monthlyexpenses.expenses.fetchprojects", {
+                route("huawei.projects.general.expenses.fetchprojects", {
                     macro: additional.huawei_project?.macro_project,
                     site_id: additional.huawei_project?.huawei_site_id,
                 })
@@ -1667,30 +1558,10 @@ const closeModal = () => {
 async function submit(update) {
     isFetching.value = true;
     const url = update
-        ? route("huawei.monthlyexpenses.expenses.update", { expense: form.id })
-        : route("huawei.monthlyexpenses.expenses.store");
+        ? route("huawei.projects.general.expenses.update", { expense: form.id })
+        : route("huawei.projects.general.expenses.store");
 
-    const formData = new FormData();
-
-    if (update) {
-        formData.append("_method", "POST");
-    }
-
-    for (const key in form) {
-        if (form[key] instanceof File) {
-            formData.append(key, form[key]);
-        } else if (Array.isArray(form[key])) {
-            form[key].forEach((file, index) => {
-                if (file instanceof File) {
-                    formData.append(`${key}[${index}]`, file);
-                } else {
-                    formData.append(key, file);
-                }
-            });
-        } else if (form[key] !== null && form[key] !== undefined) {
-            formData.append(key, form[key]);
-        }
-    }
+    const formData = toFormData(form);
 
     try {
         const res = await axios.post(url, formData, {
@@ -1698,15 +1569,18 @@ async function submit(update) {
         });
 
         const originalMap = new Map(
-            expenses.value.data.map((item) => [item.id, item])
+            expenses.value.map((item) => [item.id, item])
         );
         const newExpense = res.data;
+        newExpense.amount = Number(newExpense.amount)
+        newExpense.ec_amount = Number(newExpense.ec_amount)
+
         originalMap.set(newExpense.id, newExpense);
-        expenses.value.data = Array.from(originalMap.values());
+        expenses.value = Array.from(originalMap.values());
         closeModal();
         notify(update ? "Se actualizó el registro correctamente" : "Se creó el registro correctamente");
     } catch (e) {
-        console.log(e)
+        console.error(e)
         isFetching.value = false;
         if (e.response?.data?.errors) {
             setAxiosErrors(e.response.data.errors, form);
@@ -1731,14 +1605,14 @@ async function deleteAdditional() {
     const docId = docToDelete.value;
     if (docId) {
         const response = await axios.delete(
-            route("huawei.monthlyexpenses.expenses.delete", { expense: docId })
+            route("huawei.projects.general.expenses.delete", { expense: docId })
         );
         if (response.data == true) {
-            const index = expenses.value.data.findIndex(
+            const index = expenses.value.findIndex(
                 (item) => item.id === docId
             );
             if (index !== -1) {
-                expenses.value.data.splice(index, 1);
+                expenses.value.splice(index, 1);
                 closeModalDoc();
                 notify("Registro eliminado correctamente");
             }
@@ -1746,63 +1620,16 @@ async function deleteAdditional() {
     }
 }
 
-const openPreviewDocumentModal = (expense, img) => {
-    const routeToShow = route("huawei.monthlyexpenses.expenses.showimage", {
+const openPreviewDocumentModal = (expense) => {
+    const routeToShow = route("huawei.projects.general.expenses.showimage", {
         expense: expense,
-        image: img,
     });
     window.open(routeToShow, "_blank");
 };
 
-const employees = [
-    "ADITA ALVAREZ ROJAS",
-    "ALAN RAMIRO ALIAGA COAGUILA",
-    "ANGIE NICOLE DURAN VILLACORTA",
-    "CESAR DAVID NINACANSAYA APAZA",
-    "CLINTON LUIS YUCRA PACCO",
-    "EDUARDO JOHEL HINOJOSA AMUDIO",
-    "EDWIN RICHARD CRUZ CHALCO",
-    "EDWIN RICHARD CRUZ CHALCO",
-    "ENMANUEL EDUARDO JUAN HANCO TEJADA",
-    "GUSTAVO GIOVANNI FLORES LLERENA",
-    "HANS MENDOZA TRUJILLO",
-    "JEAN PAUL HILARION TABOADA",
-    "JHONY PUCHO CCARITA",
-    "JORGE DANIEL MONTOYA RODRIGUEZ",
-    "JONATHAN ELISBAN MOLINA YUCRA",
-    "JOSE HUMBERTO QUENTA VILLANUEVA",
-    "MARIO ALFONSO LLONTOP SOTO",
-    "PABLO ENRIQUE LAURA FLORES",
-    "REMMILTON CRUZ QUISPE",
-    "VICTOR HUGO CACERES CONDORI",
-    "XAVIER ABDUL CALAPUJA FLORES",
-    "YERSON HENRRY LLERENA CONDORI",
-];
-
-const expenseTypes = [
-    "Alimentación",
-    "Adicional Camioneta",
-    "Combustible",
-    "Consumibles",
-    "Fletes",
-    "Hospedaje",
-    "Materiales",
-    "Movilidad",
-    "Planilla",
-    "Herramientas",
-    "Transporte",
-    "Otros",
-];
-
-const cdp_types = [
-    "Efectivo",
-    "Depósito",
-    "Factura",
-    "Boleta",
-    "RH",
-    "Yape",
-    "Pendiente Factura",
-];
+const employees = props.data.employees;
+const expenseTypes = props.mode ? props.data.static_expense_types : props.data.variable_expense_types;
+const cdp_types = props.data.cdp_types;
 
 const filterForm = ref({
     search: "",
@@ -1843,21 +1670,17 @@ watch(
 );
 
 async function search_advance($data) {
-    let url = route("huawei.monthlyexpenses.expenses.searchadvance", {
-        project: props.project.id,
-    });
+    let url = route("huawei.projects.general.expenses.searchadvance", {mode: props.mode});
     try {
         let response = await axios.post(url, $data);
-        expenses.value.data = response.data.expenses;
+        expenses.value = response.data.expenses;
     } catch (error) {
         console.error("Error en la solicitud:", error);
     }
 }
 
 function openExportExcel() {
-    const url = route("huawei.monthlyexpenses.expenses.export", {
-        project: props.project.id,
-    });
+    const url = route("huawei.projects.general.expenses.export");
     window.location.href = url;
 }
 
@@ -1872,48 +1695,44 @@ watch([() => form.type_doc, () => form.zone], () => {
 const confirmValidation = ref(false);
 
 async function validateRegister(expense_id, is_accepted) {
-    const url = route("huawei.monthlyexpenses.expenses.validate", {
+    const url = route("huawei.projects.general.expenses.validate", {
         expense: expense_id,
     });
     try {
         const response = await axios.put(url, { is_accepted: is_accepted });
-        updateExpense(expense_id, "validate", is_accepted);
-        confirmValidation.value = true;
         const originalMap = new Map(
-            expenses.value.data.map((item) => [item.id, item])
+            expenses.value.map((item) => [item.id, item])
         );
-        response.data.forEach((update) => {
-            if (originalMap.has(update.id)) {
-                originalMap.set(update.id, update);
-            }
-        });
-        const updatedArray = Array.from(originalMap.values());
-        expenses.value.data = updatedArray;
-        setTimeout(() => {
-            confirmValidation.value = false;
-        }, 1000);
+        const newExpense = response.data;
+        newExpense.amount = Number(newExpense.amount)
+        newExpense.ec_amount = Number(newExpense.ec_amount)
+
+        originalMap.set(newExpense.id, newExpense);
+        expenses.value = Array.from(originalMap.values());
+        notify(is_accepted ? "Registro validado correctamente" : "Registro rechazado correctamente");
     } catch (e) {
         console.log(e);
+        notifyError("Error al validar el registro");
     }
 }
 
 function updateExpense(expense, action, state) {
     if (action === "create") {
-        expenses.value.data.unshift(expense);
+        expenses.value.unshift(expense);
         notify("Gasto Guardado");
     } else if (action === "update") {
-        let index = expenses.value.data.findIndex(
+        let index = expenses.value.findIndex(
             (item) => item.id == expense.id
         );
-        expenses.value.data[index] = expense;
+        expenses.value[index] = expense;
         notify("Gasto Actualizado");
     } else if (action === "delete") {
-        let index = expenses.value.data.findIndex((item) => item.id == expense);
-        expenses.value.data.splice(index, 1);
+        let index = expenses.value.findIndex((item) => item.id == expense);
+        expenses.value.splice(index, 1);
         notify("Gasto Eliminado");
     } else if (action === "validate") {
-        let index = expenses.value.data.findIndex((item) => item.id == expense);
-        expenses.value.data[index].is_accepted = state;
+        let index = expenses.value.findIndex((item) => item.id == expense);
+        expenses.value[index].is_accepted = state;
     }
 }
 
@@ -1921,18 +1740,17 @@ const searchForm = useForm({
     searchTerm: props.search ? props.search : "",
 });
 
+
 const search = () => {
     if (searchForm.searchTerm == "") {
         router.visit(
-            route("huawei.monthlyexpenses.expenses", {
-                project: props.project.id,
-            })
+            route("huawei.projects.general.expenses", {mode: props.mode})
         );
     } else {
         router.visit(
-            route("huawei.monthlyexpenses.expenses.search", {
-                project: props.project.id,
+            route("huawei.projects.general.expenses.search", {
                 request: searchForm.searchTerm,
+                mode: props.mode
             })
         );
     }
@@ -1953,7 +1771,7 @@ const validateForm = useForm({
 
 const handleCheckAll = (e) => {
     if (e.target.checked) {
-        actionForm.value.ids = expenses.value.data.map((item) => item.id);
+        actionForm.value.ids = expenses.value.map((item) => item.id);
     } else {
         actionForm.value.ids = [];
     }
@@ -1979,7 +1797,7 @@ const openMassiveValidate = () => {
         return;
     }
     const invalidExpense = actionForm.value.ids.find((id) => {
-        const expense = expenses.value.data.find((exp) => exp.id === id);
+        const expense = expenses.value.find((exp) => exp.id === id);
         return expense && expense.is_accepted !== null;
     });
 
@@ -2000,7 +1818,7 @@ const closeMassiveValidate = () => {
 const submitOpNuDatModal = async () => {
     isFetching.value = true;
     const res = await axios
-        .post(route("huawei.monthlyexpenses.expenses.massiveupdate"), {
+        .post(route("huawei.projects.general.expenses.massiveupdate"), {
             ...opNuDateForm.data(),
             ...actionForm.value,
         })
@@ -2014,7 +1832,7 @@ const submitOpNuDatModal = async () => {
         });
 
     const originalMap = new Map(
-        expenses.value.data.map((item) => [item.id, item])
+        expenses.value.map((item) => [item.id, item])
     );
     res.data.forEach((update) => {
         if (originalMap.has(update.id)) {
@@ -2022,7 +1840,7 @@ const submitOpNuDatModal = async () => {
         }
     });
     const updatedArray = Array.from(originalMap.values());
-    expenses.value.data = updatedArray;
+    expenses.value = updatedArray;
     closeOpNuDatModal();
     notify("Registros Seleccionados Actualizados");
 };
@@ -2030,7 +1848,7 @@ const submitOpNuDatModal = async () => {
 const massiveValidate = async () => {
     isFetching.value = true;
     const res = await axios
-        .post(route("huawei.monthlyexpenses.expenses.massivevalidate"), {
+        .post(route("huawei.projects.general.expenses.massivevalidate"), {
             ...validateForm.data(),
             ...actionForm.value,
         })
@@ -2044,7 +1862,7 @@ const massiveValidate = async () => {
         });
 
     const originalMap = new Map(
-        expenses.value.data.map((item) => [item.id, item])
+        expenses.value.map((item) => [item.id, item])
     );
     res.data.forEach((update) => {
         if (originalMap.has(update.id)) {
@@ -2052,7 +1870,7 @@ const massiveValidate = async () => {
         }
     });
     const updatedArray = Array.from(originalMap.values());
-    expenses.value.data = updatedArray;
+    expenses.value = updatedArray;
     closeMassiveValidate();
     notify("Registros Seleccionados Actualizados");
 };
@@ -2062,7 +1880,7 @@ const fetchSites = (macro) => {
     form.huawei_project_id = "";
     axios
         .get(
-            route("huawei.monthlyexpenses.expenses.fetchsites", {
+            route("huawei.projects.general.expenses.fetchsites", {
                 macro: macro.target.value,
             })
         )
@@ -2080,7 +1898,7 @@ const fetchProjects = (site) => {
     form.huawei_project_id = "";
     axios
         .get(
-            route("huawei.monthlyexpenses.expenses.fetchprojects", {
+            route("huawei.projects.general.expenses.fetchprojects", {
                 macro: selectedMacro.value,
                 site_id: site.target.value,
             })
@@ -2104,23 +1922,19 @@ const openImportExcel = () => {
 };
 
 const importExcel = () => {
-    const url = route("huawei.monthlyexpenses.expenses.import", {
-        monthly_project: props.project.id,
-    });
+    const url = route("huawei.projects.general.expenses.import");
     formFile.post(url, {
         onSuccess: () => {
             show_import.value = false;
             notify("Se importó el archivo correctamente");
             setTimeout(() => {
                 router.visit(
-                    route("huawei.monthlyexpenses.expenses", {
-                        project: props.project.id,
-                    })
+                    route("huawei.projects.general.expenses")
                 );
             }, 2000);
         },
-        onError: () => {
-            notifyError("Error al importar el archivo");
+        onError: (e) => {
+            notifyError(e.message);
         },
     });
 };
