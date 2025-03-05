@@ -367,18 +367,7 @@ class HuaweiManagementController extends Controller
             'observation' => $request->observation
         ]);
 
-        $warehouse = null;
-
-        switch ($request->warehouse){
-            case '1':
-                $warehouse = 'Claro';
-                break;
-            case '2':
-                $warehouse = 'Entel';
-                break;
-            default:
-                abort(403, 'Acción no permitida');
-        }
+        $warehouse = $request->warehouse;
 
         try {
             // Manejar materiales

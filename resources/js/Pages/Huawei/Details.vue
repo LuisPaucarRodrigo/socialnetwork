@@ -1,6 +1,6 @@
 <template>
     <Head title="Detalles"/>
-    <AuthenticatedLayout :redirectRoute="{ route: 'huawei.inventory.show', params: props.equipment ? { warehouse: 1, equipment: 1 } : { warehouse: 1, equipment: null } }">
+    <AuthenticatedLayout :redirectRoute="{ route: 'huawei.inventory.show', params: props.equipment ? { warehouse: 'Claro', equipment: 1 } : { warehouse: 'Claro', equipment: null } }">
         <template #header>
             Detalles
         </template>
@@ -565,8 +565,6 @@
         id: String,
         nodiu: [Number, null]
     });
-
-    console.log(props)
 
     const refundModal = ref(false);
     const showRefundConfirm = ref(false);
