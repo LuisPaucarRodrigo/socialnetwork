@@ -117,6 +117,12 @@
                         </h3>
                     </div>
                     <div class="flex gap-1">
+                        <p class="text-sm font-semibold text-black">Zona: </p>
+                        <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-1 whitespace-nowrap">
+                            -
+                        </h3>
+                    </div>
+                    <div class="flex gap-1">
                         <p class="text-sm font-semibold text-black">PO: </p>
                         <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-1 whitespace-nowrap">
                             -

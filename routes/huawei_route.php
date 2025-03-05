@@ -197,6 +197,7 @@ Route::middleware('permission:HuaweiManager')->group(function () {
 
     //monthly_expenses
     Route::get('huawei/projects/monthly_expenses/general_balance/get', [HuaweiMonthlyController::class, 'getGeneralBalance'])->name('huawei.projects.generalbalance');
+    Route::get('huawei/projects/monthly_expenses/general_balance/expenses_by_zone/{expenseType}', [HuaweiMonthlyController::class, 'getExpensesByZone'])->name('huawei.projects.generalbalance.expensesbyzone');
     Route::get('huawei/projects/general_expenses/get/{mode?}', [HuaweiMonthlyController::class, 'getExpenses'])->name('huawei.projects.general.expenses');
     Route::get('huawei/projects/general_expenses/{request}/search/{mode?}', [HuaweiMonthlyController::class, 'searchExpenses'])->name('huawei.projects.general.expenses.search');
     Route::post('huawei/projects//general_expenses/search_advance/search/{mode?}', [HuaweiMonthlyController::class, 'searchAdvance'])->name(name: 'huawei.projects.general.expenses.searchadvance');

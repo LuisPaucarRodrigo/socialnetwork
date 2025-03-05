@@ -27,22 +27,8 @@ class HuaweiManagementController extends Controller
 {
     public function show ($warehouse, $equipment = null)
     {
-        $prefix = null;
-
-        switch ($warehouse){
-            case '1':
-                $prefix = 'Claro';
-                break;
-            case '2':
-                $prefix = 'Entel';
-                break;
-            default:
-                $prefix = null;
-                abort(403, 'Acción no permitida');
-        }
-
         if ($equipment){
-            $equipments = HuaweiEquipment::select('id','name','claro_code','model_id')->with('brand_model.brand')->where('prefix', $prefix)->paginate(10);
+            $equipments = HuaweiEquipment::select('id','name','claro_code','model_id')->with('brand_model.brand')->where('prefix', $warehouse)->paginate(10);
             foreach ($equipments as $item) {
                 $item->name = $this->sanitizeText2($item->name);
             }
@@ -55,7 +41,7 @@ class HuaweiManagementController extends Controller
                 'warehouse' => $warehouse
             ]);
         } else {
-            $materials = HuaweiMaterial::select('id', 'name', 'claro_code','model_id')->with('brand_model.brand')->where('prefix', $prefix)->paginate(10);
+            $materials = HuaweiMaterial::select('id', 'name', 'claro_code','model_id')->with('brand_model.brand')->where('prefix', $warehouse)->paginate(10);
             $materials->getCollection()->makeHidden(['huawei_entry_details']);
             foreach ($materials as $material) {
                 $material->name = $this->sanitizeText2($material->name);
@@ -72,20 +58,6 @@ class HuaweiManagementController extends Controller
 
     public function searchIndex($warehouse, $request, $equipment = null)
     {
-        $prefix = null;
-
-        switch ($warehouse){
-            case '1':
-                $prefix = 'Claro';
-                break;
-            case '2':
-                $prefix = 'Entel';
-                break;
-            default:
-                $prefix = null;
-                abort(403, 'Acción no permitida');
-        }
-
         $searchTerm = strtolower($request);
 
         if ($equipment) {
@@ -93,7 +65,7 @@ class HuaweiManagementController extends Controller
             $equipmentsQuery = HuaweiEquipment::query();
 
             // Aplicar filtros de búsqueda para equipos
-            $equipmentsQuery->select('id', 'name', 'claro_code','model_id')->where('prefix', $prefix)->where(function ($query) use ($searchTerm) {
+            $equipmentsQuery->select('id', 'name', 'claro_code','model_id')->where('prefix', $warehouse)->where(function ($query) use ($searchTerm) {
                 $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"])
                     ->orWhereRaw('LOWER(claro_code) LIKE ?', ["%{$searchTerm}%"])
                     ->orWhereHas('brand_model.brand', function ($query) use ($searchTerm) {
@@ -124,7 +96,7 @@ class HuaweiManagementController extends Controller
             $materialsQuery = HuaweiMaterial::query();
 
             // Aplicar filtros de búsqueda para materiales
-            $materialsQuery->select('id', 'name', 'claro_code','model_id')->where('prefix', $prefix)->where(function ($query) use ($searchTerm) {
+            $materialsQuery->select('id', 'name', 'claro_code','model_id')->where('prefix', $warehouse)->where(function ($query) use ($searchTerm) {
                 $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"])
                     ->orWhereRaw('LOWER(claro_code) LIKE ?', ["%{$searchTerm}%"]);
             });
@@ -163,20 +135,9 @@ class HuaweiManagementController extends Controller
     {
         $materials = null;
         $equipments = null;
-        switch ($value){
-            case '1':
-                $materials = HuaweiMaterial::select('id','name', 'model_id', 'prefix', 'claro_code', 'unit')->where('prefix', 'Claro')->with('brand_model:id,name,brand_id')->get();
-                $equipments = HuaweiEquipment::select('id','name', 'model_id', 'prefix', 'claro_code', 'unit')->where('prefix', 'Claro')->with('brand_model:id,name,brand_id')->get();
-                break;
 
-            case '2':
-                $materials = HuaweiMaterial::select('id','name', 'model_id', 'prefix', 'claro_code', 'unit')->where('prefix', 'Entel')->with('brand_model:id,name,brand_id')->get();
-                $equipments = HuaweiEquipment::select('id','name', 'model_id', 'prefix', 'claro_code', 'unit')->where('prefix', 'Entel')->with('brand_model:id,name,brand_id')->get();
-                break;
-
-            default:
-                abort(403, 'Acción no permitida');
-        }
+        $materials = HuaweiMaterial::select('id','name', 'model_id', 'prefix', 'claro_code', 'unit')->where('prefix', $value)->with('brand_model:id,name,brand_id')->get();
+        $equipments = HuaweiEquipment::select('id','name', 'model_id', 'prefix', 'claro_code', 'unit')->where('prefix', $value)->with('brand_model:id,name,brand_id')->get();
 
         $materials = $materials->makeHidden(['huawei_entry_details', 'quantity', 'available_quantity'])->transform(function ($material) {
             $material->name = $this->sanitizeText2($material->name);
@@ -238,18 +199,7 @@ class HuaweiManagementController extends Controller
             'archive' => $filename
         ]);
 
-        $warehouse = null;
-
-        switch ($request->warehouse){
-            case '1':
-                $warehouse = 'Claro';
-                break;
-            case '2':
-                $warehouse = 'Entel';
-                break;
-            default:
-                abort(403, 'Acción no permitida');
-        }
+        $warehouse = $request->warehouse;
 
         try {
             // Manejar materiales

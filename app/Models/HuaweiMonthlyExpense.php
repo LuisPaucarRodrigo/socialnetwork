@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Constants\HuaweiConstants;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Constants\ProjectConstants;
@@ -118,7 +119,7 @@ class HuaweiMonthlyExpense extends Model
 
     public function getTypeAttribute()
     {
-        if (in_array($this->expense_type, ['Planilla', 'Combustible', 'Alimentación'])) {
+        if (in_array($this->expense_type, HuaweiConstants::getStaticExpenseTypes())) {
             return 'Fijo';
         }
         return 'Variable';

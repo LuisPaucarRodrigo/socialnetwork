@@ -36,16 +36,68 @@ class HuaweiMonthlyController extends Controller
 
     public function getGeneralBalance()
     {
+        $prevExpense = HuaweiMonthlyExpense::with([
+            'general_expense',
+        ])
+            ->where(function ($query) {
+                $query->where('is_accepted', 1)
+                    ->orWhere('is_accepted', null);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        foreach ($prevExpense as $exp) {
+            $exp->setAppends(['real_state', 'type']);
+        }
+
+        $acExpensesAmounts = $prevExpense->filter(function ($cost) {
+            return $cost->type === 'Variable';
+        })->groupBy('expense_type')->map(function ($group) {
+            return [
+                'expense_type' => $group->first()->expense_type,
+                'total_amount' => $group->sum('amount'),
+            ];
+        })->values()->toArray();
+
+        $scExpensesAmounts = $prevExpense->filter(function ($cost) {
+            return $cost->type === 'Fijo';
+        })->groupBy('expense_type')->map(function ($group) {
+            return [
+                'expense_type' => $group->first()->expense_type,
+                'total_amount' => $group->sum('amount'),
+            ];
+        })->values()->toArray();
+
         return Inertia::render('Huawei/GeneralBalance', [
-            'total_variable_costs' => 1,
-            'total_main_earnings' => 1,
-            'total_detraction' => 1,
-            'total_static_costs' => 1,
-            'total_earnings' => 1,
-            'total_real_earnings' => 1,
-            'total_real_earnings_without_deposit' => 1,
+            'expenses' => $prevExpense,
+            'acExpensesAmounts' => $acExpensesAmounts,
+            'scExpensesAmounts' => $scExpensesAmounts,
         ]);
     }
+
+    public function getExpensesByZone($expenseType)
+    {
+        $prevExpense = HuaweiMonthlyExpense::with([
+            'general_expense',
+        ])
+            ->where(function ($query) {
+                $query->where('is_accepted', 1)
+                    ->orWhere('is_accepted', null);
+            })
+            ->where('expense_type', $expenseType)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $groupedExpenses = $prevExpense->groupBy('zone')->map(function ($group) {
+            return [
+                'zone' => $group->first()->zone,
+                'total_amount' => $group->sum('amount'),
+            ];
+        })->values()->toArray();
+
+        return response()->json($groupedExpenses, 200);
+    }
+
 
     public function getExpenses($mode = null)
     {

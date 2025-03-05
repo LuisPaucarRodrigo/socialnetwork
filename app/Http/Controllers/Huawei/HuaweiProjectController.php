@@ -588,38 +588,76 @@ class HuaweiProjectController extends Controller
 
     public function getCostSummary(HuaweiProject $huawei_project)
     {
-        $additionalCosts = $huawei_project->huawei_additional_costs->sum('amount');
-        $acArr = $huawei_project->huawei_additional_costs()
-            ->select('expense_type', DB::raw('SUM(amount) as total_amount'))
-            ->groupBy('expense_type')
+        $prevExpense = HuaweiMonthlyExpense::with([
+            'general_expense',
+        ])
+            ->where(function ($query) {
+                $query->where('is_accepted', 1)
+                    ->orWhere('is_accepted', null);
+            })
+            ->where('huawei_project_id', $huawei_project->id)
+            ->orderBy('created_at', 'desc')
             ->get();
-        $acExpensesAmounts = $acArr->map(function ($cost) {
-            return [
-                'expense_type' => $cost->expense_type,
-                'total_amount' => $cost->total_amount
-            ];
-        })->toArray();
 
+        foreach ($prevExpense as $exp) {
+            $exp->setAppends(['real_state', 'type']);
+        }
 
-        $staticCosts = $huawei_project->huawei_static_costs->sum('amount');
-        $scArr = $huawei_project->huawei_static_costs()
-            ->select('expense_type', DB::raw('SUM(amount) as total_amount'))
-            ->groupBy('expense_type')
-            ->get();
-        $scExpensesAmounts = $scArr->map(function ($cost) {
+        $acExpensesAmounts = $prevExpense->filter(function ($cost) {
+            return $cost->type === 'Variable';
+        })->groupBy('expense_type')->map(function ($group) {
             return [
-                'expense_type' => $cost->expense_type,
-                'total_amount' => $cost->total_amount,
+                'expense_type' => $group->first()->expense_type,
+                'total_amount' => $group->sum('amount'),
             ];
-        })->toArray();
+        })->values()->toArray();
+
+        $scExpensesAmounts = $prevExpense->filter(function ($cost) {
+            return $cost->type === 'Fijo';
+        })->groupBy('expense_type')->map(function ($group) {
+            return [
+                'expense_type' => $group->first()->expense_type,
+                'total_amount' => $group->sum('amount'),
+            ];
+        })->values()->toArray();
 
         return Inertia::render('Huawei/CostSummary', [
-            'huawei_project' => $huawei_project,
-            'additionalCosts' => $additionalCosts,
+            'expenses' => $prevExpense,
             'acExpensesAmounts' => $acExpensesAmounts,
             'scExpensesAmounts' => $scExpensesAmounts,
-            'staticCosts' => $staticCosts,
+            'huawei_project' => $huawei_project->makeHidden([
+                'huawei_additional_costs',
+                'huawei_project_earnings',
+                'huawei_project_employees',
+                'huawei_project_real_earnings',
+                'huawei_project_resources',
+                'huawei_static_costs'
+            ])
         ]);
+    }
+
+    public function getExpensesByZone($huawei_project_id, $expenseType)
+    {
+        $prevExpense = HuaweiMonthlyExpense::with([
+            'general_expense',
+        ])
+            ->where(function ($query) {
+                $query->where('is_accepted', 1)
+                    ->orWhere('is_accepted', null);
+            })
+            ->where('huawei_project_id', $huawei_project_id)
+            ->where('expense_type', $expenseType)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $groupedExpenses = $prevExpense->groupBy('zone')->map(function ($group) {
+            return [
+                'zone' => $group->first()->zone,
+                'total_amount' => $group->sum('amount'),
+            ];
+        })->values()->toArray();
+
+        return response()->json($groupedExpenses, 200);
     }
 
     //additional costs
