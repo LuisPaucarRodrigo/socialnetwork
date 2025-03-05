@@ -68,10 +68,10 @@
 
         <!-- Select Almacén -->
         <div class="flex flex-col sm:flex-row gap-2 items-center justify-center sm:justify-start">
-            <p>Almacén</p>
+            <p>Operador</p>
             <select v-model="selectedPrefix" id="code" @change="changePrefix($event.target.value)"
                 class="block w-full min-w-[150px] rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                <option disabled>Seleccione Almacén</option>
+                <option disabled>Seleccione Operador</option>
                 <option>Claro</option>
                 <option>Entel</option>
                 <option>Telefonica</option>
@@ -117,7 +117,7 @@
                         </h3>
                     </div>
                     <div class="flex gap-1">
-                        <p class="text-sm font-semibold text-black">OT: </p>
+                        <p class="text-sm font-semibold text-black">PO: </p>
                         <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-1 whitespace-nowrap">
                             -
                         </h3>
@@ -189,7 +189,13 @@
                         </h3>
                     </div>
                     <div class="flex gap-1">
-                        <p class="text-sm font-semibold text-black">OT: </p>
+                        <p class="text-sm font-semibold text-black">Zona: </p>
+                        <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-1 whitespace-nowrap">
+                            {{ item.zone }}
+                        </h3>
+                    </div>
+                    <div class="flex gap-1">
+                        <p class="text-sm font-semibold text-black">PO: </p>
                         <h3 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-1 whitespace-nowrap">
                             {{ item.ot }}
                         </h3>

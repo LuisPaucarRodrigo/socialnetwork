@@ -53,7 +53,7 @@ class HuaweiMonthlyController extends Controller
             ->orderBy('expense_date', 'desc')
             ->with([
                 'huawei_project' => function ($query) {
-                    $query->select('id', 'assigned_diu', 'huawei_site_id');
+                    $query->select('id', 'assigned_diu', 'huawei_site_id', 'macro_project');
                 },
                 'huawei_project.huawei_site'
             ])
@@ -125,7 +125,7 @@ class HuaweiMonthlyController extends Controller
         $expenses = $expensesQuery->orderBy('expense_date', 'desc')
             ->with([
                 'huawei_project' => function ($query) {
-                    $query->select('id', 'assigned_diu', 'huawei_site_id');
+                    $query->select('id', 'assigned_diu', 'huawei_site_id', 'macro_project');
                 },
                 'huawei_project.huawei_site'
             ])
@@ -241,7 +241,7 @@ class HuaweiMonthlyController extends Controller
         $expenses = $expensesQuery->orderBy('expense_date', 'desc')
             ->with([
                 'huawei_project' => function ($query) {
-                    $query->select('id', 'assigned_diu', 'huawei_site_id');
+                    $query->select('id', 'assigned_diu', 'huawei_site_id', 'macro_project');
                 },
                 'huawei_project.huawei_site'
             ])
@@ -386,9 +386,9 @@ class HuaweiMonthlyController extends Controller
         return response()->json($expenseTo, 200);
     }
 
-    public function exportMonthlyExpenses()
+    public function exportMonthlyExpenses($mode = null)
     {
-        return Excel::download(new HuaweiMonthlyExport(), 'Gastos Mensuales Huawei.xlsx');
+        return Excel::download(new HuaweiMonthlyExport($mode), 'Gastos Generales ' . ($mode ? 'Fijos' : 'Variables') . ' Huawei.xlsx');
     }
 
     public function importCosts(Request $request)
