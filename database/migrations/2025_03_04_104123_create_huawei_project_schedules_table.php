@@ -11,17 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('huawei_project_earnings', function (Blueprint $table) {
+        Schema::create('huawei_project_schedules', function (Blueprint $table) {
             $table->id();
-            $table->string('code');
-            $table->string('description');
-            $table->string('unit');
-            $table->double('unit_price');
+            $table->string('activity');
+            $table->integer('days');
             $table->foreignId('huawei_project_id')->constrained('huawei_projects')->onDelete('cascade');
-            $table->integer('quantity');
-            $table->string('observation');
-            $table->string('evidence');
-            $table->string('goal');
             $table->timestamps();
         });
     }
@@ -31,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('huawei_project_earnings');
+        Schema::dropIfExists('huawei_project_schedules');
     }
 };

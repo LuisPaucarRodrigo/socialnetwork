@@ -1,20 +1,19 @@
 <template>
     <Head title="Gestion de Costos" />
-    <AuthenticatedLayout :redirectRoute="{ route: 'huawei.projects', params: {status: 1, prefix: 'Claro'}}">
-        <template #header> Gastos del Proyecto</template>
+    <AuthenticatedLayout :redirectRoute="{ route: 'huawei.projects.additionalcosts.summary', params: {huawei_project: props.project.id} }">
+        <template #header> Gastos {{ props.mode ? 'Fijos' : 'Variables' }} del Proyecto - {{ props.project.name + ' | ' + props.project.code }}</template>
         <br />
         <Toaster richColors />
         <div class="inline-block min-w-full mb-4">
             <div class="flex flex-wrap items-center gap-4">
-                <!-- Botones Agregar y Exportar visibles en pantallas medianas y grandes -->
-                <div class="hidden sm:flex sm:items-center space-x-3">
-                    <PrimaryButton
-                        @click="openCreateAdditionalModal"
-                        type="button"
-                        class="whitespace-nowrap"
+                <div
+                        id="import_tooltip"
+                        role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
                     >
-                        + Agregar
-                    </PrimaryButton>
+                        Importar Excel
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
                     <button
                         data-tooltip-target="export_tooltip"
                         type="button"
@@ -43,118 +42,6 @@
                         Exportar Excel
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
-                    <div>
-                        <dropdown align="left">
-                            <template #trigger>
-                                <button
-                                    data-tooltip-target="action_button_tooltip"
-                                    @click="dropdownOpen = !dropdownOpen"
-                                    class="relative block overflow-hidden rounded-md text-white hover:bg-indigo-400 text-center text-sm bg-indigo-600 p-2"
-                                >
-                                    <svg
-                                        width="20px"
-                                        height="20px"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            d="M4 6H20M4 12H20M4 18H20"
-                                            stroke="#ffffff"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        />
-                                    </svg>
-                                </button>
-                                <div
-                                    id="action_button_tooltip"
-                                    role="tooltip"
-                                    class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700 whitespace-nowrap"
-                                >
-                                    Acciones
-                                    <div
-                                        class="tooltip-arrow"
-                                        data-popper-arrow
-                                    ></div>
-                                </div>
-                            </template>
-
-                            <template #content class="origin-left">
-                                <div>
-                                    <!-- Alineación a la derecha -->
-
-                                    <div class="">
-                                        <button
-                                            @click="openNuUpdateModal"
-                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                                        >
-                                            Actualizar Operación
-                                        </button>
-                                    </div>
-                                </div>
-                            </template>
-                        </dropdown>
-                    </div>
-                </div>
-
-                <!-- Dropdown para pantallas pequeñas -->
-                <div class="sm:hidden flex-shrink-0">
-                    <dropdown align="left">
-                        <template #trigger>
-                            <button
-                                @click="dropdownOpen = !dropdownOpen"
-                                class="block rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-gray-700 hover:bg-gray-100"
-                            >
-                                <svg
-                                    width="25px"
-                                    height="25px"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                        d="M4 6H20M4 12H20M4 18H20"
-                                        stroke="#000000"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    />
-                                </svg>
-                            </button>
-                        </template>
-                        <template #content>
-                            <div class="dropdown">
-                                <div class="dropdown-menu">
-                                    <button
-                                        @click="openCreateAdditionalModal"
-                                        class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition ease-in-out"
-                                    >
-                                        Agregar
-                                    </button>
-                                </div>
-                                <div class="dropdown-menu">
-                                    <button
-                                        @click="openExportExcel"
-                                        class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition ease-in-out"
-                                    >
-                                        Exportar
-                                    </button>
-                                </div>
-                                <div class="dropdown-menu">
-                                    <button
-                                        @click="openNuUpdateModal"
-                                        class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition ease-in-out"
-                                    >
-                                        Actualizar
-                                    </button>
-                                </div>
-                            </div>
-                        </template>
-                    </dropdown>
-                </div>
-
-                <!-- Buscador siempre alineado a la derecha -->
                 <div class="flex-grow sm:flex sm:justify-end">
                     <form
                         @submit.prevent="search"
@@ -203,22 +90,6 @@
                             <div class="w-2"></div>
                         </th>
                         <th
-                            class="sticky left-2 z-10 border-b-2 border-r border-gray-200 bg-gray-100 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 w-12"
-                        >
-                            <label
-                                :for="`check-all`"
-                                class="flex gap-3 justify-center w-full px-2 py-1"
-                            >
-                                <input
-                                    @change="handleCheckAll"
-                                    :id="`check-all`"
-                                    :checked="actionForm.ids.length > 0"
-                                    type="checkbox"
-                                />
-                                {{ actionForm.ids.length ?? "" }}
-                            </label>
-                        </th>
-                        <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
                             <TableAutocompleteFilter
@@ -260,12 +131,12 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                            Número de Documento
+                            Serie
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                            Numero de Operacion
+                            Correlativo
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
@@ -285,17 +156,7 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                            Imagen 1
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
-                        >
-                            Imagen 2
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
-                        >
-                            Imagen 3
+                            Imagen
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
@@ -316,17 +177,18 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                            Estado de Reembolso
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
-                        >
-                            Estado
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
-                        >
-                            Acciones
+                            <TableAutocompleteFilter
+                                labelClass="text-[11px]"
+                                label="Estado"
+                                :options="[
+                                    'Aceptado',
+                                    'Rechazado',
+                                    'Pendiente',
+                                    'Aceptado-Validado',
+                                ]"
+                                v-model="filterForm.selectedStates"
+                                width="w-48"
+                            />
                         </th>
                     </tr>
                 </thead>
@@ -336,31 +198,21 @@
                         :key="item.id"
                         class="text-gray-700"
                     >
-                        <td
+                    <td
                             :class="[
                                 'sticky left-0 z-10 border-b border-gray-200',
                                 {
-                                    'bg-indigo-500': item.is_accepted === null,
-                                    'bg-green-500': item.is_accepted == true,
-                                    'bg-red-500': item.is_accepted == false,
+                                    'bg-indigo-500':
+                                        item.real_state === 'Pendiente',
+                                    'bg-green-500':
+                                        item.real_state === 'Aceptado-Validado',
+                                    'bg-amber-500':
+                                        item.real_state === 'Aceptado',
+                                    'bg-red-500':
+                                        item.real_state === 'Rechazado',
                                 },
                             ]"
                         ></td>
-                        <td
-                            class="sticky left-2 z-10 border-b border-r border-gray-200 bg-amber-100 text-center text-[13px] whitespace-nowrap tabular-nums"
-                        >
-                            <label
-                                :for="`check-${item.id}`"
-                                class="block w-full px-2 py-1"
-                            >
-                                <input
-                                    v-model="actionForm.ids"
-                                    :value="item.id"
-                                    :id="`check-${item.id}`"
-                                    type="checkbox"
-                                />
-                            </label>
-                        </td>
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
                         >
@@ -412,30 +264,8 @@
                         <td
                             class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
                         >
-                            <button v-if="item.image1"
-                                @click="openPreviewDocumentModal(item.id, '1')"
-                                class="flex items-center justify-center w-full"
-                            >
-                                <EyeIcon class="h-5 w-5 text-green-400" />
-                            </button>
-                        </td>
-
-                        <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
-                        >
-                            <button v-if="item.image2"
-                                @click="openPreviewDocumentModal(item.id, '2')"
-                                class="flex items-center justify-center w-full"
-                            >
-                                <EyeIcon class="h-5 w-5 text-green-400" />
-                            </button>
-                        </td>
-
-                        <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap"
-                        >
-                            <button v-if="item.image3"
-                                @click="openPreviewDocumentModal(item.id, '3')"
+                            <button v-if="item.image"
+                                @click="openPreviewDocumentModal(item.id)"
                                 class="flex items-center justify-center w-full"
                             >
                                 <EyeIcon class="h-5 w-5 text-green-400" />
@@ -463,97 +293,21 @@
                         </td>
                         <td
                             class="border-b whitespace-nowrap border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap"
+                            :class="[
+                                'text-center',
+                                {
+                                    'text-indigo-500':
+                                        item.real_state === 'Pendiente',
+                                    'text-green-500':
+                                        item.real_state === 'Aceptado-Validado',
+                                    'text-amber-500':
+                                        item.real_state === 'Aceptado',
+                                    'text-red-500':
+                                        item.real_state === 'Rechazado',
+                                },
+                            ]"
                         >
-                            {{ item.refund_status }}
-                        </td>
-                        <td
-                            class="border-b whitespace-nowrap border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap"
-                        >
-                            {{
-                                item.is_accepted === 1
-                                    ? "Aceptado"
-                                    : item.is_accepted === null
-                                    ? "Pendiente"
-                                    : "Rechazado"
-                            }}
-                        </td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]"
-                        >
-                            <div
-                                class="flex items-center gap-3 w-full justify-between"
-                            >
-                                <div></div>
-                                <div
-                                    v-if="item.is_accepted === null"
-                                    class="flex gap-3 justify-center w-1/2"
-                                >
-                                    <button
-                                        @click="
-                                            () =>
-                                                validateRegister(item.id, true)
-                                        "
-                                        class="flex items-center rounded-xl text-blue-500 hover:bg-green-200"
-                                    >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke-width="1.5"
-                                            stroke="currentColor"
-                                            class="w-5 h-5 text-green-500"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                                            />
-                                        </svg>
-                                    </button>
-                                    <button
-                                        @click="
-                                            () =>
-                                                validateRegister(item.id, false)
-                                        "
-                                        type="button"
-                                        class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200"
-                                    >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke-width="1.5"
-                                            stroke="currentColor"
-                                            class="w-5 h-5 text-red-500"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                                            />
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div class="flex gap-3 justify-center w-1/2">
-                                    <button
-                                        @click="openEditAdditionalModal(item)"
-                                        class="text-amber-600 hover:underline"
-                                    >
-                                        <PencilSquareIcon
-                                            class="h-5 w-5 ml-1"
-                                        />
-                                    </button>
-                                    <button
-                                        @click="
-                                            confirmDeleteAdditional(item.id)
-                                        "
-                                        class="text-red-600 hover:underline"
-                                    >
-                                        <TrashIcon class="h-5 w-5" />
-                                    </button>
-                                </div>
-                                <div></div>
-                            </div>
+                            {{ item.real_state }}
                         </td>
                     </tr>
                     <tr class="sticky bottom-0 z-10 text-gray-700">
@@ -567,7 +321,7 @@
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
-                            colspan="8"
+                            colspan="7"
                         ></td>
                         <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap"
@@ -583,462 +337,11 @@
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
                             colspan="5"
                         ></td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap"
-                        >
-                            S/.
-                            {{
-                                expenses.data
-                                    ?.reduce((a, item) => a + item.ec_amount, 0)
-                                    .toFixed(2)
-                            }}
-                        </td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
-                            colspan="3"
-                        ></td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <div
-            v-if="!filterMode && !props.search"
-            class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between"
-        >
-            <pagination :links="expenses.links" />
-        </div>
-        <Modal :show="create_additional" @close="closeModal">
-            <div class="p-6">
-                <h2 class="text-base font-medium leading-7 text-gray-900">
-                    Agregar Gasto
-                </h2>
-                <form @submit.prevent="form.id ? submit(true) : submit(false)">
-                    <div class="space-y-12 mt-4">
-                        <div class="grid sm:grid-cols-2 gap-6 pb-6">
-                            <div>
-                                <InputLabel
-                                    for="expense_type"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >Tipo de Gasto
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <select
-                                        v-model="form.expense_type"
-                                        id="expense_type"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    >
-                                        <option disabled value="">
-                                            Seleccionar Gasto
-                                        </option>
-                                        <option v-for="op in expenseTypes">
-                                            {{ op }}
-                                        </option>
-                                    </select>
-                                    <InputError
-                                        :message="form.errors.expense_type"
-                                    />
-                                </div>
-                            </div>
-                            <div>
-                                <InputLabel
-                                    for="employee"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >Empleado
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <select
-                                        v-model="form.employee"
-                                        id="employee"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    >
-                                        <option disabled value="">
-                                            Seleccionar Empleado
-                                        </option>
-                                        <option v-for="emp in employees">
-                                            {{ emp }}
-                                        </option>
-                                    </select>
-                                    <InputError
-                                        :message="form.errors.employee"
-                                    />
-                                </div>
-                            </div>
-                            <div>
-                                <InputLabel
-                                    for="cdp_type"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >Tipo de CDP
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <select
-                                        v-model="form.cdp_type"
-                                        id="cdp_type"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    >
-                                        <option disabled value="">
-                                            Seleccionar Tipo de CDP
-                                        </option>
-                                        <option v-for="cdp in cdp_types">
-                                            {{ cdp }}
-                                        </option>
-                                    </select>
-                                    <InputError
-                                        :message="form.errors.cdp_type"
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel
-                                    for="expense_date"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >Fecha de Gasto
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input
-                                        type="date"
-                                        v-model="form.expense_date"
-                                        id="expense_date"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError
-                                        :message="form.errors.expense_date"
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel
-                                    for="doc_number"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >Número de Documento
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input
-                                        type="text"
-                                        v-model="form.doc_number"
-                                        id="doc_number"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError
-                                        :message="form.errors.doc_number"
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel
-                                    for="op_number"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >Número de Operación
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input
-                                        type="text"
-                                        v-model="form.op_number"
-                                        id="op_number"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError
-                                        :message="form.errors.op_number"
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel
-                                    for="ruc"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >RUC
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input
-                                        type="text"
-                                        maxlength="11"
-                                        v-model="form.ruc"
-                                        id="ruc"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError :message="form.errors.ruc" />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel
-                                    for="amount"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >Monto</InputLabel
-                                >
-                                <div class="mt-2">
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        step="0.01"
-                                        v-model="form.amount"
-                                        id="amount"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError :message="form.errors.amount" />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel
-                                    for="refund_status"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >Estado de Reembolso</InputLabel
-                                >
-                                <div class="mt-2">
-                                    <select
-                                        v-model="form.refund_status"
-                                        id="refund_status"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    >
-                                        <option disabled value="">
-                                            Seleccionar Estado de Reembolso
-                                        </option>
-                                        <option>PAGADO</option>
-                                        <option>RECHAZADO</option>
-                                        <option>PENDIENTE</option>
-                                    </select>
-                                    <InputError
-                                        :message="form.errors.refund_status"
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel
-                                    for="ec_expense_date"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >Fecha de Depósito de E.C.</InputLabel
-                                >
-                                <div class="mt-2">
-                                    <input
-                                        type="date"
-                                        v-model="form.ec_expense_date"
-                                        id="ec_expense_date"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError
-                                        :message="form.errors.ec_expense_date"
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel
-                                    for="ec_op_number"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >N° de Operación de E.C.</InputLabel
-                                >
-                                <div class="mt-2">
-                                    <input
-                                        type="text"
-                                        v-model="form.ec_op_number"
-                                        id="ec_op_number"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError
-                                        :message="form.errors.ec_op_number"
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel
-                                    for="ec_amount"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >Monto de E.C.</InputLabel
-                                >
-                                <div class="mt-2">
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        step="0.01"
-                                        v-model="form.ec_amount"
-                                        id="ec_amount"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError
-                                        :message="form.errors.ec_amount"
-                                    />
-                                </div>
-                            </div>
-
-                            <div class="md:col-span-2 col-span-1">
-                                <InputLabel
-                                    for="description"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >Descripción
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <textarea
-                                        type="text"
-                                        v-model="form.description"
-                                        id="description"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError
-                                        :message="form.errors.description"
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel
-                                    class="font-medium leading-6 text-gray-900"
-                                >
-                                    Imagen 1
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <InputFile
-                                        type="file"
-                                        v-model="form.image1"
-                                        accept=".jpeg, .jpg, .png, .pdf"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError :message="form.errors.image1" />
-                                </div>
-                            </div>
-                            <div>
-                                <InputLabel
-                                    class="font-medium leading-6 text-gray-900"
-                                >
-                                    Imagen 2
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <InputFile
-                                        type="file"
-                                        v-model="form.image2"
-                                        accept=".jpeg, .jpg, .png, .pdf"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError :message="form.errors.image2" />
-                                </div>
-                            </div>
-                            <div>
-                                <InputLabel
-                                    class="font-medium leading-6 text-gray-900"
-                                >
-                                    Imagen 3
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <InputFile
-                                        type="file"
-                                        v-model="form.image3"
-                                        accept=".jpeg, .jpg, .png, .pdf"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError :message="form.errors.image3" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-6 flex items-center justify-end gap-x-6">
-                            <SecondaryButton @click="closeModal">
-                                Cancelar
-                            </SecondaryButton>
-                            <button
-                                type="submit"
-                                :disabled="form.processing || isFetching"
-                                :class="{ 'opacity-25': form.processing }"
-                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                            >
-                                Guardar
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </Modal>
-
-        <Modal :show="showOpNuDatModal" @close="closeOpNuDatModal">
-            <div class="p-6">
-                <h2 class="text-base font-medium leading-7 text-gray-900">
-                    Actualización Masiva
-                </h2>
-                <form @submit.prevent="submitOpNuDatModal">
-                    <div class="space-y-12">
-                        <div
-                            class="border-b grid grid-cols-1 gap-6 border-gray-900/10 pb-12"
-                        >
-                            <div>
-                                <InputLabel
-                                    for="operation_date"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >Fecha de Operación E.C.
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input
-                                        type="date"
-                                        v-model="opNuDateForm.ec_expense_date"
-                                        id="operation_date"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError
-                                        :message="
-                                            opNuDateForm.errors.ec_expense_date
-                                        "
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel
-                                    for="operation_number"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >Numero de Operación E.C.
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input
-                                        type="text"
-                                        v-model="opNuDateForm.ec_op_number"
-                                        id="operation_number"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError
-                                        :message="
-                                            opNuDateForm.errors.ec_op_number
-                                        "
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-6 flex items-center justify-end gap-x-6">
-                            <SecondaryButton @click="closeOpNuDatModal">
-                                Cancelar
-                            </SecondaryButton>
-                            <button
-                                type="submit"
-                                :disabled="isFetching"
-                                :class="{ 'opacity-25': isFetching }"
-                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                            >
-                                Guardar
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </Modal>
-
-        <ConfirmDeleteModal
-            :confirmingDeletion="confirmingDocDeletion"
-            itemType="Gasto"
-            :deleteFunction="deleteAdditional"
-            @closeModal="closeModalDoc"
-        />
-        <SuccessOperationModal
-            :confirming="confirmValidation"
-            :title="'Validación'"
-            :message="'La validación del gasto fue exitosa.'"
-        />
-        <SuccessOperationModal
-            :confirming="showSuccessModal"
-            :title="'Éxito'"
-            :message="successMessage"
-        />
     </AuthenticatedLayout>
 </template>
 
@@ -1070,197 +373,37 @@ const props = defineProps({
     expense: Object,
     project: Object,
     search: String,
+    data: Object,
+    mode: String
 });
 
 const expenses = ref(props.expense);
 const filterMode = ref(false);
-const showSuccessModal = ref(false);
-const successMessage = ref("");
-const showOpNuDatModal = ref(false);
-const isFetching = ref(false);
-
-const form = useForm({
-    id: "",
-    expense_type: "",
-    employee: "",
-    expense_date: "",
-    cdp_type: "",
-    doc_number: "",
-    op_number: "",
-    ruc: "",
-    description: "",
-    amount: "",
-    image1: "",
-    image2: "",
-    image3: "",
-    refund_status: "",
-    ec_expense_date: "",
-    ec_op_number: "",
-    ec_amount: "",
-    huawei_monthly_project_id: props.project.id,
-});
-
-const create_additional = ref(false);
-const confirmingDocDeletion = ref(false);
-const docToDelete = ref(null);
-
-const openCreateAdditionalModal = () => {
-    create_additional.value = true;
-};
-
-const openEditAdditionalModal = (additional) => {
-    Object.assign(form, additional);
-    create_additional.value = true;
-};
-
-const closeModal = () => {
-    form.clearErrors();
-    form.reset();
-    isFetching.value = false;
-    create_additional.value = false;
-};
-
-function submit(update) {
-    if (!update) {
-        isFetching.value = true;
-        const url = route("huawei.projects.additionalcosts.store", {huawei_project: props.project.id});
-        form.post(url, {
-            onSuccess: () => {
-                closeModal();
-                successMessage.value = "Se creó el registro correctamente";
-                showSuccessModal.value = true;
-                setTimeout(() => {
-                    showSuccessModal.value = false;
-                    successMessage.value = "";
-                    router.visit(
-                        route("huawei.projects.additionalcosts", {
-                            huawei_project: props.project.id,
-                        })
-                    );
-                }, 2000);
-            },
-            onError: (e) => {
-                isFetching.value = false;
-                console.error(e);
-            },
-        });
-    } else {
-        isFetching.value = true;
-        const url = route("huawei.projects.additionalcosts.update", {
-            huawei_project: props.project.id, huawei_additional_cost: form.id,
-        });
-        form.post(url, {
-            onSuccess: () => {
-                closeModal();
-                successMessage.value = "Se actualizó el registro correctamente";
-                showSuccessModal.value = true;
-                setTimeout(() => {
-                    showSuccessModal.value = false;
-                    successMessage.value = "";
-                    router.visit(
-                        route("huawei.projects.additionalcosts", {
-                            huawei_project: props.project.id,
-                        })
-                    );
-                }, 2000);
-            },
-            onError: (e) => {
-                isFetching.value = false;
-                console.error(e);
-            },
-        });
-    }
-}
-
-const confirmDeleteAdditional = (additionalId) => {
-    docToDelete.value = additionalId;
-    confirmingDocDeletion.value = true;
-};
-
-const closeModalDoc = () => {
-    isFetching.value = false;
-    confirmingDocDeletion.value = false;
-};
-
-async function deleteAdditional() {
-    isFetching.value = true;
-    const docId = docToDelete.value;
-    if (docId) {
-        router.delete(
-            route("huawei.projects.additionalcosts.delete", { huawei_project: props.project.id, huawei_additional_cost: docId }),
-            {
-                onSuccess: () => {
-                    closeModalDoc();
-                    router.visit(
-                        route("huawei.monthlyexpenses.expenses", {
-                            project: props.project.id,
-                        })
-                    );
-                },
-            }
-        );
-    }
-}
 
 const openPreviewDocumentModal = (expense, img) => {
     const routeToShow = route("huawei.projects.additionalcosts.showimage", {
         expense: expense,
-        image: img,
     });
     window.open(routeToShow, "_blank");
 };
 
-const employees = [
-    'JOSE HUMBERTO QUENTA VILLANUEVA',
-    'ENMANUEL EDUARDO JUAN HANCO TEJADA',
-    'VICTOR HUGO CACERES CONDORI',
-    'CESAR DAVID NINACANSAYA APAZA',
-    'REMMILTON CRUZ QUISPE',
-    'YERSON HENRRY LLERENA CONDORI',
-    'KONNY EDUARDO CAYLLAHUA CHOQUE',
-    'XAVIER ABDUL CALAPUJA FLORES',
-    'ELISBAN JONATHAN MOLINA YUCRA',
-    'EDWIN RICHARD CRUZ CHALCO',
-    'MARIO ALFONSO LLONTOP SOTO',
-    'ANGIE NICOLE DURAN VILLACORTA',
-    'EDUARDO JOHEL HINOJOSA AMUDIO',
-    'NASHELY JOSE RODRIGUEZ TORO',
-    'JORGE DANIEL MONTOYA RODRIGUEZ'
-]
+const employees = props.data.employees;
+const expenseTypes = props.mode ? props.data.static_expense_types : props.data.variable_expense_types;
+const cdp_types = props.data.cdp_types;
 
-const expenseTypes = [
-    "Combustible",
-    "Consumibles",
-    "Fletes",
-    "Hospedaje",
-    "Materiales",
-    "Movilidad",
-    "Planilla",
-    "Herramientas",
-    "Otros",
-];
-
-const cdp_types = [
-    "Efectivo",
-    "Depósito",
-    "Factura",
-    "Boleta",
-    "RH",
-    "Yape",
-    "Pendiente Factura",
-];
 
 const filterForm = ref({
     search: "",
     selectedEmployees: employees,
     selectedExpenseTypes: expenseTypes,
     selectedCDPTypes: cdp_types,
-    exStartDate: '',
-    exEndDate: '',
+    exStartDate: "",
+    exEndDate: "",
     exNoDate: false,
-    opStartDate: '',
-    opEndDate: '',
-    opNoDate: false
+    opStartDate: "",
+    opEndDate: "",
+    selectedStates: ["Aceptado", "Rechazado", "Pendiente", "Aceptado-Validado"],
+    opNoDate: false,
 });
 
 watch(
@@ -1274,7 +417,8 @@ watch(
         filterForm.value.exNoDate,
         filterForm.value.opStartDate,
         filterForm.value.opEndDate,
-        filterForm.value.opNoDate
+        filterForm.value.opNoDate,
+        filterForm.value.selectedStates,
     ],
     () => {
         (filterMode.value = true), search_advance(filterForm.value);
@@ -1285,65 +429,13 @@ watch(
 async function search_advance($data) {
     let url = route("huawei.projects.additionalcosts.advancedsearch", {
         huawei_project_id: props.project.id,
+        mode: props.mode ?? null,
     });
     try {
         let response = await axios.post(url, $data);
         expenses.value.data = response.data.expenses;
     } catch (error) {
         console.error("Error en la solicitud:", error);
-    }
-}
-
-function openExportExcel() {
-    const url = route("huawei.projects.additionalcosts.export", {
-        huawei_project: props.project.id,
-    });
-    window.location.href = url;
-}
-
-watch([() => form.type_doc, () => form.zone], () => {
-    if (form.type_doc === "Factura" && !["", "MDD"].includes(form.zone)) {
-        form.igv = form.igv ? form.igv : 18;
-    } else {
-        form.igv = 0;
-    }
-});
-
-const confirmValidation = ref(false);
-
-async function validateRegister(expense_id, is_accepted) {
-    const url = route("huawei.projects.additionalcosts.validate", {
-        expense: expense_id,
-    });
-    try {
-        await axios.put(url, { is_accepted: is_accepted });
-        updateExpense(expense_id, "validate", is_accepted);
-        confirmValidation.value = true;
-        setTimeout(() => {
-            confirmValidation.value = false;
-        }, 1000);
-    } catch (e) {
-        console.log(e);
-    }
-}
-
-function updateExpense(expense, action, state) {
-    if (action === "create") {
-        expenses.value.data.unshift(expense);
-        notify("Gasto Guardado");
-    } else if (action === "update") {
-        let index = expenses.value.data.findIndex(
-            (item) => item.id == expense.id
-        );
-        expenses.value.data[index] = expense;
-        notify("Gasto Actualizado");
-    } else if (action === "delete") {
-        let index = expenses.value.data.findIndex((item) => item.id == expense);
-        expenses.value.data.splice(index, 1);
-        notify("Gasto Eliminado");
-    } else if (action === "validate") {
-        let index = expenses.value.data.findIndex((item) => item.id == expense);
-        expenses.value.data[index].is_accepted = state;
     }
 }
 
@@ -1356,6 +448,7 @@ const search = () => {
         router.visit(
             route("huawei.projects.additionalcosts", {
                 huawei_project: props.project.id,
+                mode: props.mode
             })
         );
     } else {
@@ -1363,69 +456,14 @@ const search = () => {
             route("huawei.projects.additionalcosts.search", {
                 huawei_project: props.project.id,
                 request: searchForm.searchTerm,
+                mode: props.mode
             })
         );
     }
 };
 
-const actionForm = ref({
-    ids: [],
-});
-
-const opNuDateForm = useForm({
-    ec_expense_date: "",
-    ec_op_number: "",
-});
-
-const handleCheckAll = (e) => {
-    if (e.target.checked) {
-        actionForm.value.ids = expenses.value.data.map((item) => item.id);
-    } else {
-        actionForm.value.ids = [];
-    }
-};
-
-const openNuUpdateModal = () => {
-    if (actionForm.value.ids.length === 0) {
-        notifyWarning("No hay registros selccionados");
-        return;
-    }
-    showOpNuDatModal.value = true;
-};
-
-const closeOpNuDatModal = () => {
-    isFetching.value = false;
-    showOpNuDatModal.value = false;
-    opNuDateForm.reset();
-};
-
-const submitOpNuDatModal = async () => {
-    isFetching.value = true;
-    const res = await axios
-        .post(route('huawei.projects.additionalcosts.massiveupdate'), {
-            ...opNuDateForm.data(),
-            ...actionForm.value,
-        })
-        .catch((e) => {
-            isFetching.value = false;
-            if (e.response?.data?.errors) {
-                setAxiosErrors(e.response.data.errors, opNuDateForm);
-            } else {
-                notifyError("Server Error");
-            }
-        });
-
-    const originalMap = new Map(
-        expenses.value.data.map((item) => [item.id, item])
-    );
-    res.data.forEach((update) => {
-        if (originalMap.has(update.id)) {
-            originalMap.set(update.id, update);
-        }
-    });
-    const updatedArray = Array.from(originalMap.values());
-    expenses.value.data = updatedArray;
-    closeOpNuDatModal();
-    notify("Registros Seleccionados Actualizados");
-};
+function openExportExcel() {
+    const url = route("huawei.projects.additionalcosts.export", {huawei_project_id: props.project.id, mode: props.mode});
+    window.location.href = url;
+}
 </script>

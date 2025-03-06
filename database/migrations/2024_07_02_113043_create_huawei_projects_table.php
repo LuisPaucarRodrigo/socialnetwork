@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->foreignId('huawei_site_id')->constrained('huawei_sites')->onDelete('cascade');
+            $table->foreignId('cost_center_id')->constrained('cost_centers')->onDelete('cascade');
             $table->string('description')->nullable();
-            $table->string('ot')->nullable();
-            $table->string('pre_report')->nullable();
-            $table->double('initial_amount')->nullable();
+            $table->string('ot');
             $table->string('assigned_diu');
+            $table->string('zone');
             $table->string('prefix');
             $table->string('macro_project');
             $table->boolean('status')->nullable()->default(true);
