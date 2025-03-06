@@ -484,6 +484,9 @@ class HuaweiMonthlyController extends Controller
             if ($isEmptyRow) {
                 break;
             }
+
+            self::$data;
+
             $rowObject = (object) [
                 'employee' => $this->sanitizeText($row['A'], false),
                 'project_id' => $row['B'] ? HuaweiProject::where('assigned_diu', $row['B'])->first()->id : null,
@@ -494,7 +497,7 @@ class HuaweiMonthlyController extends Controller
                 'ruc' => $row['G'],
                 'amount' => $this->sanitizeNumber($row['H']),
                 'description' => $row['I'],
-                'expense_type' => $row['J'],
+                'expense_type' => $this->getClosestExpenseType($row['J']),
                 'ec_expense_date' => $this->sanitizeDate($row['L']),
                 'ec_op_number' => $row['M'],
                 'ec_amount' => $this->sanitizeNumber($row['N']),
@@ -709,5 +712,22 @@ class HuaweiMonthlyController extends Controller
         return $sanitized === '' ? '0' : $sanitized;
     }
 
-
+    private function getClosestExpenseType($input)
+    {
+        $expenseTypes = array_merge(self::$data['static_expense_types'], self::$data['variable_expense_types']);
+        
+        $bestMatch = null;
+        $highestSimilarity = 0;
+    
+        foreach ($expenseTypes as $type) {
+            similar_text($input, $type, $percent);
+            if ($percent > $highestSimilarity) {
+                $highestSimilarity = $percent;
+                $bestMatch = $type;
+            }
+        }
+    
+        return $bestMatch ?: $input;
+    }
+    
 }
