@@ -1,4 +1,4 @@
-<template v-if="hasPermission('HumanResourceManager') || hasPermission('HumanResource')">
+<template>
     <a v-if="permissionsPorVencer.length + vacationPorVencer3.length + vacationPorVencer7.length > 0 || formationProgramsAlarms.length > 0 || employeeBirthdayAlarms.length > 0 || documentsToExpire.length > 0"
         class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#" @click="showingHumanResource = (showingMembers && showingMembers7)
             ? false
@@ -13,7 +13,7 @@
         </svg>
         <span class="mx-3 ">Recursos Humanos</span>
     </a>
-    <a v-else class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
+    <a  v-else class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
         @click="showingHumanResource = !showingHumanResource">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
             :stroke="'currentColor'" class="w-6 h-6">
@@ -22,7 +22,7 @@
         </svg>
         <span class="mx-3">Recursos Humanos</span>
     </a>
-    <MyTransition :transitiondemonstration="showingHumanResource">
+    <MyTransition v-if="subModulePermission(submodules.hremployees_submodule, userSubModules)"  :transitiondemonstration="showingHumanResource">
         <div class="relative">
             <Link class="w-full" :href="route('management.employees')">Empleados</Link>
             <button @click="showEmployeeBirthdayAlarms = !showEmployeeBirthdayAlarms">
@@ -46,13 +46,13 @@
             </Link>
         </MyTransition>
     </template>
-    <MyTransition :transitiondemonstration="showingHumanResource">
+    <MyTransition v-if="subModulePermission(submodules.hreemployees_submodule, userSubModules)"  :transitiondemonstration="showingHumanResource">
         <Link class="w-full" :href="route('employees.external.index')">Empleados Externos</Link>
     </MyTransition>
     <!-- <MyTransition :transitiondemonstration="showingHumanResource">
         <Link class="w-full" :href="route('controlEmployees.index')">Control de Empleados</Link>
     </MyTransition> -->
-    <MyTransition :transitiondemonstration="showingHumanResource">
+    <MyTransition v-if="subModulePermission(submodules.hrspreedsheet_submodule, userSubModules)" :transitiondemonstration="showingHumanResource">
         <Link class="w-full" :href="route('payroll.index')">Nomina</Link>
     </MyTransition>
 
@@ -146,10 +146,10 @@
             </MyTransition>
         </div>
     </template> -->
-    <MyTransition :transitiondemonstration="showingHumanResource">
+    <MyTransition v-if="subModulePermission(submodules.hrresdoc_submodule, userSubModules)" :transitiondemonstration="showingHumanResource">
         <Link class="w-full" :href="route('documents.index')">Documentos</Link>
     </MyTransition>
-    <MyTransition :transitiondemonstration="showingHumanResource">
+    <MyTransition  v-if="subModulePermission(submodules.hrhrstate_submodule, userSubModules)" :transitiondemonstration="showingHumanResource">
         <div class="relative">
             <button @click="showDocumentsToExpireAlarms = !showDocumentsToExpireAlarms">
                 <span
@@ -184,7 +184,8 @@
 </template>
 <script setup>
 import MyTransition from '@/Components/MyTransition.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
+import { subModulePermission } from '@/utils/roles/roles';
 import { onMounted, ref } from 'vue';
 
 const { userPermissions } = defineProps({
@@ -207,9 +208,8 @@ const formationProgramsAlarms = ref([])
 const vacationPorVencer3 = ref([])
 const vacationPorVencer7 = ref([])
 
-function hasPermission(permission) {
-    return userPermissions.includes(permission)
-}
+const {submodules} = usePage().props
+const {userSubModules} = usePage().props.auth
 
 async function fetchAlarmHappyBirthdayCount() {
     try {
@@ -260,7 +260,7 @@ async function fetchFormationProgramAlarms() {
     }
 }
 onMounted(() => {
-    if (hasPermission('HumanResourceManager') || hasPermission('HumanResource')) {
+
         fetchAlarmHappyBirthdayCount();
         fetchDocumentsToExpireAlarmCount();
         fetchAlarmPermissionsCount();
@@ -273,6 +273,6 @@ onMounted(() => {
             fetchAlarmVacationCount();
             fetchFormationProgramAlarms();
         }, 60000);
-    }
+    
 })
 </script>

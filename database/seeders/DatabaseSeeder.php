@@ -21,10 +21,11 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         //Crear el rol "admin"
-        $adminRole = Role::create([
-            'name' => 'admin',
-            'description' => 'Rol de administrador con todos los permisos de gerente'
-        ]);
+        // $adminRole = Role::create([
+        //     'name' => 'admin',
+        //     'description' => 'Rol de administrador con todos los permisos de gerente'
+        // ]);
+        $adminRole = Role::find(1);
 
         // Crear todos los permisos
         $permissions = [
@@ -138,82 +139,82 @@ class DatabaseSeeder extends Seeder
             // }
         }
 
-        $areasData = [
-            ['name' => 'Gerencia'],
-            ['name' => 'Contabilidad'],
-            ['name' => 'Administración'],
-            ['name' => 'Proyectos'],
-            ['name' => 'Logística'],
-            ['name' => 'I + D'],
-            ['name' => 'Calidad']
+        // $areasData = [
+        //     ['name' => 'Gerencia'],
+        //     ['name' => 'Contabilidad'],
+        //     ['name' => 'Administración'],
+        //     ['name' => 'Proyectos'],
+        //     ['name' => 'Logística'],
+        //     ['name' => 'I + D'],
+        //     ['name' => 'Calidad']
 
-        ];
-        
-        Area::insert($areasData);
+        // ];
 
-        User::factory()->create([
-            'name' => 'Gustavo Flores Llerena',
-            'dni' => '43196970',
-            'email' => 'gflores@ccip.com.pe',
-            'password' => Hash::make('12345678'),
-            'phone' => '992275316',
-            'platform' => 'Web/Movil',
-            'role_id' => '1',
-            'area_id' => 1
-        ]);
+        // Area::insert($areasData);
 
-        $customersData = [
-            ['id' => 1, 'ruc' => 20512780114, 'business_name' => 'CICSA PERU SAC', 'category' => 'Especial', 'address' => 'CALLE AMADOR MERINO REINA 267 OFC 501 LIMA LIMA SAN ISIDRO'],
-            ['id' => 2, 'ruc' => 2, 'business_name' => 'GTD CICSA', 'category' => 'Especial', 'address' => '-'],
-        ];
+        // User::factory()->create([
+        //     'name' => 'Gustavo Flores Llerena',
+        //     'dni' => '43196970',
+        //     'email' => 'gflores@ccip.com.pe',
+        //     'password' => Hash::make('12345678'),
+        //     'phone' => '992275316',
+        //     'platform' => 'Web/Movil',
+        //     'role_id' => '1',
+        //     'area_id' => 1
+        // ]);
 
-        $customersContactData = [
-            ['name' => 'Contacto claro cicsa', 'phone' => '999999999', 'additional_information' => '-', 'customer_id' => 1],
-            ['name' => 'Contacto gtd cicsa', 'phone' => '999999998', 'additional_information' => '-', 'customer_id' => 2],
-        ];
+        // $customersData = [
+        //     ['id' => 1, 'ruc' => 20512780114, 'business_name' => 'CICSA PERU SAC', 'category' => 'Especial', 'address' => 'CALLE AMADOR MERINO REINA 267 OFC 501 LIMA LIMA SAN ISIDRO'],
+        //     ['id' => 2, 'ruc' => 2, 'business_name' => 'GTD CICSA', 'category' => 'Especial', 'address' => '-'],
+        // ];
 
-        $warehousesData = [
-            ['id' => 1, 'name' => 'CLARO CICSA', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Especial'],
-            ['id' => 2, 'name' => 'GTD CICSA', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Especial'],
-            ['id' => 3, 'name' => 'CONPROCO', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Normal'],
-            ['id' => 4, 'name' => 'RECUPEROS', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Normal'],
-            ['id' => 5, 'name' => 'ACTIVOS', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Normal'],
-            ['id' => 6, 'name' => 'SERVICIOS', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Normal'],
-        ];
+        // $customersContactData = [
+        //     ['name' => 'Contacto claro cicsa', 'phone' => '999999999', 'additional_information' => '-', 'customer_id' => 1],
+        //     ['name' => 'Contacto gtd cicsa', 'phone' => '999999998', 'additional_information' => '-', 'customer_id' => 2],
+        // ];
 
-        $warehousesCustomerData = [
-            ['id' => 1, 'customer_id' => 1, 'warehouse_id' => 1],
-            ['id' => 2, 'customer_id' => 1, 'warehouse_id' => 3],
-            ['id' => 3, 'customer_id' => 1, 'warehouse_id' => 4],
-            ['id' => 4, 'customer_id' => 2, 'warehouse_id' => 2],
-            ['id' => 5, 'customer_id' => 2, 'warehouse_id' => 3],
-            ['id' => 6, 'customer_id' => 2, 'warehouse_id' => 4],
-        ];
+        // $warehousesData = [
+        //     ['id' => 1, 'name' => 'CLARO CICSA', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Especial'],
+        //     ['id' => 2, 'name' => 'GTD CICSA', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Especial'],
+        //     ['id' => 3, 'name' => 'CONPROCO', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Normal'],
+        //     ['id' => 4, 'name' => 'RECUPEROS', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Normal'],
+        //     ['id' => 5, 'name' => 'ACTIVOS', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Normal'],
+        //     ['id' => 6, 'name' => 'SERVICIOS', 'description' => '-', 'person_in_charge' => '-', 'category' => 'Normal'],
+        // ];
 
-        $costLinesData = [
-            ["name" => "PINT"],
-            ["name" => "PEXT"],
-            ["name" => "HUAWEI"],
-        ];
-        $costCenterData = [
-            ["name" => "Mantto pint CLARO", "cost_line_id" => 1, "percentage" => "20"],
-            ["name" => "Combustible pint CLARO", "cost_line_id" => 1, "percentage" => "40"],
-            ["name" => "Adicionales pint CLARO", "cost_line_id" => 1, "percentage" => "40"],
-            ["name" => "Mantto pext CLARO", "cost_line_id" => 2, "percentage" => "10"],
-            ["name" => "Mantto pext GTD", "cost_line_id" => 2, "percentage" => "10"],
-            ["name" => "Instalaciones CLARO", "cost_line_id" => 2, "percentage" => "30"],
-            ["name" => "Instalaciones GTD", "cost_line_id" => 2, "percentage" => "20"],
-            ["name" => "Densificaion", "cost_line_id" => 2, "percentage" => "20"],
-            ["name" => "Adicionales", "cost_line_id" => 2, "percentage" => "10"],
-            ["name" => 'MBB', 'cost_line_id' => 3, 'percentage' => '50'],
-            ["name" => 'FBB', 'cost_line_id' => 3, 'percentage' => '50'],
-        ];
+        // $warehousesCustomerData = [
+        //     ['id' => 1, 'customer_id' => 1, 'warehouse_id' => 1],
+        //     ['id' => 2, 'customer_id' => 1, 'warehouse_id' => 3],
+        //     ['id' => 3, 'customer_id' => 1, 'warehouse_id' => 4],
+        //     ['id' => 4, 'customer_id' => 2, 'warehouse_id' => 2],
+        //     ['id' => 5, 'customer_id' => 2, 'warehouse_id' => 3],
+        //     ['id' => 6, 'customer_id' => 2, 'warehouse_id' => 4],
+        // ];
 
-        CostLine::insert($costLinesData);
-        CostCenter::insert($costCenterData);
-        Customer::insert($customersData);
-        Customers_contact::insert($customersContactData);
-        Warehouse::insert($warehousesData);
-        CustomerWarehouse::insert($warehousesCustomerData);
+        // $costLinesData = [
+        //     ["name" => "PINT"],
+        //     ["name" => "PEXT"],
+        //     ["name" => "HUAWEI"],
+        // ];
+        // $costCenterData = [
+        //     ["name" => "Mantto pint CLARO", "cost_line_id" => 1, "percentage" => "20"],
+        //     ["name" => "Combustible pint CLARO", "cost_line_id" => 1, "percentage" => "40"],
+        //     ["name" => "Adicionales pint CLARO", "cost_line_id" => 1, "percentage" => "40"],
+        //     ["name" => "Mantto pext CLARO", "cost_line_id" => 2, "percentage" => "10"],
+        //     ["name" => "Mantto pext GTD", "cost_line_id" => 2, "percentage" => "10"],
+        //     ["name" => "Instalaciones CLARO", "cost_line_id" => 2, "percentage" => "30"],
+        //     ["name" => "Instalaciones GTD", "cost_line_id" => 2, "percentage" => "20"],
+        //     ["name" => "Densificaion", "cost_line_id" => 2, "percentage" => "20"],
+        //     ["name" => "Adicionales", "cost_line_id" => 2, "percentage" => "10"],
+        //     ["name" => 'MBB', 'cost_line_id' => 3, 'percentage' => '50'],
+        //     ["name" => 'FBB', 'cost_line_id' => 3, 'percentage' => '50'],
+        // ];
+
+        // CostLine::insert($costLinesData);
+        // CostCenter::insert($costCenterData);
+        // Customer::insert($customersData);
+        // Customers_contact::insert($customersContactData);
+        // Warehouse::insert($warehousesData);
+        // CustomerWarehouse::insert($warehousesCustomerData);
     }
 }

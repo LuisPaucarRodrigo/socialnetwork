@@ -41,14 +41,14 @@ class HandleInertiaRequests extends Middleware
             $userPermissions = $user->onePermission();
             foreach (RolesConstants::MODULES as $module) {
                 foreach (constant("\\App\\Constants\\RolesConstants::$module") as $perm) { 
-                    if ($userPermissions->contains('name', $perm)) {
+                    if ($userPermissions->contains($perm)) {
                         array_push($userModules, $module); break;
                     }
                 }
             }
             foreach (RolesConstants::SUBMODULES as $subm) {
                 foreach (constant("\\App\\Constants\\RolesConstants::$subm") as $perm) { 
-                    if ($userPermissions->contains('name', $perm)) {
+                    if ($userPermissions->contains($perm)) {
                         array_push($userSubmodules, $subm); break;
                     }
                 }
@@ -59,7 +59,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $user,
                 'userModules' => $userModules,
-                'userSubmodules' => $userSubmodules,
+                'userSubModules' => $userSubmodules,
             ],
             'flash' => function () use ($request) {
                 return [

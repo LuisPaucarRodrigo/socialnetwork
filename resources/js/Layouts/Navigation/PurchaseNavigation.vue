@@ -1,4 +1,4 @@
-<template v-if="hasPermission('PurchasingManager') || hasPermission('Purchasing')">
+<template>
     <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
         @click="showingShoppingArea = !showingShoppingArea">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" :stroke="purchaseOrdersAlarms.length + shoppingPurchases.length + shoppingPurchases7.length
@@ -9,10 +9,10 @@
         <span class="mx-3">Area de Compras</span>
     </a>
 
-    <MyTransition :transitiondemonstration="showingShoppingArea">
+    <MyTransition v-if="subModulePermission(submodules.pprovider_submodule, userSubModules)" :transitiondemonstration="showingShoppingArea">
         <Link class="w-full" :href="route('providersmanagement.index')">Proveedores</Link>
     </MyTransition>
-    <MyTransition :transitiondemonstration="showingShoppingArea">
+    <MyTransition v-if="subModulePermission(submodules.pprequest_submodule, userSubModules)" :transitiondemonstration="showingShoppingArea">
         <div class="relative">
             <button @click="tooglePurchaseRequest"><span v-if="shoppingPurchases.length + shoppingPurchases7.length > 0"
                     class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
@@ -52,7 +52,7 @@
         </MyTransition>
     </template>
 
-    <MyTransition :transitiondemonstration="showingShoppingArea">
+    <MyTransition v-if="subModulePermission(submodules.pporder_submodule, userSubModules)" :transitiondemonstration="showingShoppingArea">
         <div class="relative">
             <button @click="showPurchaseOrdersAlarms = !showPurchaseOrdersAlarms">
                 <span v-if="purchaseOrdersAlarms.length > 0"
@@ -82,28 +82,25 @@
         </MyTransition>
     </template>
 
-    <MyTransition :transitiondemonstration="showingShoppingArea">
+    <MyTransition v-if="subModulePermission(submodules.ppcpurchase_submodule, userSubModules)" :transitiondemonstration="showingShoppingArea">
         <Link class="w-full" :href="route('purchaseorders.history')">Compras Completadas</Link>
     </MyTransition>
 </template>
 <script setup>
 import MyTransition from '@/Components/MyTransition.vue';
-import { Link } from '@inertiajs/vue3';
+import { subModulePermission } from '@/utils/roles/roles';
+import { Link, usePage } from '@inertiajs/vue3';
 import { onMounted, ref } from 'vue';
 
-const { userPermissions } = defineProps({
-    userPermissions: Array
-})
+const {submodules} = usePage().props
+const {userSubModules} = usePage().props.auth
+
 const showingShoppingArea = ref(false)
 const showShoppingPurchaseRequestAlarms = ref(false)
 const purchaseOrdersAlarms = ref([])
 const shoppingPurchases = ref([])
 const shoppingPurchases7 = ref([])
 
-
-function hasPermission(permission) {
-    return userPermissions.includes(permission)
-}
 
 function tooglePurchaseRequest() {
     showShoppingPurchaseRequestAlarms.value = !showShoppingPurchaseRequestAlarms.value

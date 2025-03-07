@@ -1,4 +1,4 @@
-<template v-if="hasPermission('CarManager')|| hasPermission('Car')">
+<template>
     <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#" @click="showFleetCars = !showFleetCars">
         <svg width="23px" height="23px" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
             stroke-width="1.5" :stroke="documentsCarToExpire.length > 0 ? 'red' : 'currentcolor'">
@@ -7,12 +7,12 @@
         </svg>
         <span class="mx-3">Flota de Vehiculos</span>
     </a>
-    <MyTransition v-if="hasPermission('CarManager')" :transitiondemonstration="showFleetCars">
+    <MyTransition v-if="subModulePermission(submodules.cchanappro_submodule, userSubModules)" :transitiondemonstration="showFleetCars">
         <div class="relative">
             <Link class="w-full" :href="route('fleet.cars.index.approvel')">Aprobaciòn de Cambios</Link>
         </div>
     </MyTransition>
-    <MyTransition :transitiondemonstration="showFleetCars">
+    <MyTransition  v-if="subModulePermission(submodules.cmobileunit_submodule, userSubModules)" :transitiondemonstration="showFleetCars">
         <div class="relative">
             <Link class="w-full" :href="route('fleet.cars.index')">UM</Link>
             <button v-if="documentsCarToExpire.length > 0"
@@ -57,12 +57,12 @@
 <script setup>
 import Modal from '@/Components/Modal.vue';
 import MyTransition from '@/Components/MyTransition.vue';
-import { Link } from '@inertiajs/vue3';
+import { subModulePermission } from '@/utils/roles/roles';
+import { Link, usePage } from '@inertiajs/vue3';
 import { onMounted, ref } from 'vue';
 
-const { userPermissions } = defineProps({
-    userPermissions: Array
-})
+const {submodules} = usePage().props
+const {userSubModules} = usePage().props.auth
 
 const showFleetCars = ref(false)
 const showDocumentsCarToExpireAlarms = ref(false)
@@ -70,15 +70,10 @@ const documentsCarToExpire = ref([])
 const caducationsList = ref(null)
 const showSpecificAlarm = ref(false)
 
-function hasPermission(permission) {
-    return userPermissions.includes(permission)
-}
 
-onMounted(() => {
-    if (hasPermission('CarManager') || hasPermission('Car')) {
-        fetchFleetCarCount();
-        setInterval(fetchFleetCarCount, 60000);
-    }
+onMounted(() => {   
+    fetchFleetCarCount();
+    setInterval(fetchFleetCarCount, 60000);
 });
 
 async function fetchFleetCarCount() {

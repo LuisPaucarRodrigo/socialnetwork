@@ -1,4 +1,4 @@
-<template v-if="hasPermission('HuaweiManager')">
+<template>
     <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#" @click="toogleHUawei">
         <svg v-if="pending_orders.length == 0" fill="white" width="23px" height="23px" viewBox="0 0 32 32"
             xmlns="http://www.w3.org/2000/svg">
@@ -73,16 +73,9 @@ import MyTransition from '@/Components/MyTransition.vue';
 import { Link } from '@inertiajs/vue3';
 import { onMounted, ref } from 'vue';
 
-const { userPermissions } = defineProps({
-    userPermissions: Array
-})
 const showHuawei = ref(false)
 const showPendingOrders = ref(false)
 const pending_orders = ref([])
-
-function hasPermission(permission) {
-    return userPermissions.includes(permission)
-}
 
 function toogleHUawei() {
     showHuawei.value = !showHuawei.value;
@@ -100,10 +93,10 @@ async function fetchPendingOrders() {
     }
 }
 
-onMounted(() => {
-    if (hasPermission('HuaweiManager')) {
-        fetchPendingOrders();
-        setInterval(fetchPendingOrders, 60000)
-    }
-})
+// onMounted(() => {
+//     if (hasPermission('HuaweiManager')) {
+//         fetchPendingOrders();
+//         setInterval(fetchPendingOrders, 60000)
+//     }
+// })
 </script>
