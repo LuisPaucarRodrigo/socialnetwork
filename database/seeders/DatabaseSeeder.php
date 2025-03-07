@@ -30,6 +30,11 @@ class DatabaseSeeder extends Seeder
         $permissions = [
             //User
             'UserManager' => 'Permite acceso a la mayoria de funciones de Usuarios y roles',
+            'User' => 'Permite acceso a la mayoria de funciones de Usuarios y roles',
+            'UserGestionManager' => 'Acceso total a la gestión de Usuarios',
+            'UserGestion' => 'Acceso restringido a gestión Usuarios',
+            'UserRolesManager' => 'Acceso total a la gestión de Roles',
+            'UserRoles' => 'Acceso restringido a Roles',
             //Human Resource
             'HumanResourceManager' => 'Permite acceso a la mayoria de funciones de RRHH',    
             'HumanResource' => 'Solo podra visualizar RRHH',
@@ -128,9 +133,9 @@ class DatabaseSeeder extends Seeder
                 'name' => $name,
                 'description' => $description
             ]);
-            if (in_array($name, $managerPermissions)) {
+            // if (in_array($name, $managerPermissions)) {
                 $adminRole->permissions()->attach($permission);
-            }
+            // }
         }
 
         $areasData = [
@@ -143,6 +148,7 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Calidad']
 
         ];
+        
         Area::insert($areasData);
 
         User::factory()->create([
