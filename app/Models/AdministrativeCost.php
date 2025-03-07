@@ -22,7 +22,7 @@ class AdministrativeCost extends Model
         'doc_date',
         'description',
         'amount',
-        'project_id',
+        'month_project_id',
         'provider_id',
         'igv',
         'photo',
@@ -71,7 +71,7 @@ class AdministrativeCost extends Model
             $generalExpense = GeneralExpense::create([
                 'zone' => $item->zone,
                 'expense_type' => $item->expense_type,
-                'location' => $item?->project?->description ?? 'Sin descripción',
+                'location' => $item?->month_project?->name.' - gasto administrativo' ?? 'Sin descripción',
                 'amount' => $item->amount,
                 'operation_number' => $item->operation_number,
                 'operation_date' => $item->operation_date,
@@ -92,7 +92,7 @@ class AdministrativeCost extends Model
                 $generalExpense->update([
                     'zone' => $item->zone,
                     'expense_type' => $item->expense_type,
-                    'location' => $item?->project?->description ?? 'Sin descripción',
+                    'location' => $item?->month_project?->name.' - gasto administrativo' ?? 'Sin descripción',
                     'amount' => $item->amount,
                     'operation_number' => $item->operation_number,
                     'operation_date' => $item->operation_date,

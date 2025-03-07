@@ -54,12 +54,7 @@ Route::middleware('permission:UserManager')->group(function () {
     Route::delete('/shopping_area/purchasesrequest/destroy/{id}', [PurchaseRequestController::class, 'destroy'])->name('purchasesrequest.destroy');
 
 
-    Route::post('/projectmanagement/purchases_request/additional_costs/{additional_cost}/update', [AdditionalCostsController::class, 'update'])->name('projectmanagement.updateAdditionalCost');
-    Route::delete('/projectmanagement/purchases_request/{project_id}/additional_costs/{additional_cost}/destroy', [AdditionalCostsController::class, 'destroy'])->name('projectmanagement.deleteAdditionalCost');
     
-    
-    Route::post('/projectmanagement/purchases_request/static_costs/{additional_cost}/update', [StaticCostsController::class, 'update'])->name('projectmanagement.updateStaticCost');
-    Route::delete('/projectmanagement/purchases_request/{project_id}/static_costs/{additional_cost}/destroy', [StaticCostsController::class, 'destroy'])->name('projectmanagement.deleteStaticCost');
 
 
 

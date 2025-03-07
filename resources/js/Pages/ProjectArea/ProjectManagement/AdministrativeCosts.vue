@@ -1,23 +1,18 @@
 <template>
-    <Head title="Costos Fijos" />
-    <AuthenticatedLayout :redirectRoute="{
-        route: 'projectmanagement.purchases_request.index',
-        params: { id: project_id.id },
-    }">
+    <Head title="Costos Administrativos" />
+    <AuthenticatedLayout :redirectRoute="'monthproject.index'">
         <template #header>
-            Gastos Fijos del Proyecto {{ props.project_id.name }}
+            Gastos Administativos del Proyecto {{ month_project_id.name.toUpperCase() }}
         </template>
         <br />
-        <Toaster richColors />
+        <Toaster richColors /> 
         <div class="inline-block min-w-full mb-4">
             <div class="flex gap-4 items-center justify-between">
                 <div class="flex space-x-3">
-                    <PrimaryButton v-if="
-                        project_id.status === null &&
-                        hasPermission('ProjectManager')
-                    " @click="openCreateAdditionalModal" type="button" class="whitespace-nowrap">
+                    <PrimaryButton 
+                     @click="openCreateAdditionalModal" type="button" class="whitespace-nowrap">
                         + Agregar
-                    </PrimaryButton>
+                    </PrimaryButton> 
                     <PrimaryButton data-tooltip-target="update_data_tooltip" type="button" @click="() => {
                         filterMode = true;
                         search_advance(initialFilterFormState);
@@ -44,7 +39,7 @@
                         Exportar Excel
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
-                    <button type="button"
+                     <button type="button"
                         class="rounded-md bg-blue-600 px-4 py-2 text-center text-sm text-white hover:bg-blue-500 h-full"
                         @click="openExportPhoto" data-tooltip-target="export-photo-tooltip">
                         <svg fill="#ffffff" width="20px" height="20px" viewBox="0 0 24 24"
@@ -63,7 +58,7 @@
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Facturas, Boletas y Vouchers de Pago
                         <div class="tooltip-arrow" data-popper-arrow></div>
-                    </div>
+                    </div> 
 
                     <div>
                         <dropdown align="left">
@@ -99,11 +94,12 @@
                                 </div>
                             </template>
                         </dropdown>
-                    </div>
+                    </div> 
                 </div>
-                <Search v-model:search="filterForm.search" fields="Ruc , Numero de Documento, Numero de Operacion, Descripcion, Monto Total"/>
+                 <Search v-model:search="filterForm.search" fields="Ruc , Numero de Documento, Numero de Operacion, Descripcion, Monto Total"/> 
             </div>
         </div>
+
         <div class="overflow-x-auto h-[72vh] z-10">
             <table class="w-full">
                 <thead>
@@ -184,17 +180,14 @@
                             <TableHeaderFilter labelClass="text-[11px]" label="Estado" :options="stateTypes"
                                 v-model="filterForm.selectedStateTypes" width="w-48" />
                         </th>
-                        <th v-if="
-                            auth.user.role_id === 1 &&
-                            project_id.status === null
-                        "
+                        <th 
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Acciones
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in dataToRender" :key="item.id" class="text-gray-700 bg-white hover:bg-gray-200 hover:opacity-80">
+                    <tr v-for="(item,i) in dataToRender" :key="item.id" class="text-gray-700 bg-white hover:bg-gray-200 hover:opacity-80">
                         <td :class="[
                             'sticky left-0 z-10 border-b border-gray-200 ',
                             {
@@ -277,10 +270,8 @@
                             </div>
                         </td>
                         
-                        <td v-if="
-                            auth.user.role_id === 1 &&
-                            project_id.status === null
-                        " class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
+                        <td 
+                         class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <div class="flex items-center">
                                 <button @click="openEditAdditionalModal(item)"
                                     class="text-amber-600 hover:underline mr-2">
@@ -319,16 +310,13 @@
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
-                        <td v-if="
-                            auth.user.role_id === 1 &&
-                            project_id.status === null
-                        " class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <div class="flex items-center"></div>
                         </td>
                     </tr>
                 </tbody>
             </table>
-        </div>
+        </div>  
         <div v-if="!filterMode"
             class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
             <pagination :links="additional_costs.links" />
@@ -336,7 +324,7 @@
         <Modal :show="create_additional">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
-                    Agregar Costo Fijo
+                    Agregar Costo Administrativo
                 </h2>
                 <form @submit.prevent="submit">
                     <div class="space-y-12 mt-4">
@@ -518,7 +506,7 @@
         <Modal :show="editAdditionalModal">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
-                    Editar Costo Fijo
+                    Editar Costo Administrativo
                 </h2>
                 <form @submit.prevent="submitEdit">
                     <div class="space-y-12">
@@ -685,7 +673,7 @@
                                         form.photo_status == 'stable'
                                     " class="text-sm leading-6 text-indigo-700 flex space-x-2 items-center mt-3">
                                         <span> Archivo Actual: </span>
-                                        <a :href="route('staticcost.archive', {
+                                        <a :href="route('administrativeCosts.archive', {
                                             static_cost_id: form.id,
                                         })
                                             " target="_blank" class="hover:underline">
@@ -773,7 +761,7 @@
             </div>
         </Modal>
 
-        <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Gasto Fijo"
+        <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Gasto Administrativo"
             :deleteFunction="deleteAdditional" @closeModal="closeModalDoc" />
     </AuthenticatedLayout>
 </template>
@@ -806,7 +794,7 @@ import Search from "@/Components/Search.vue";
 
 const props = defineProps({
     additional_costs: Object,
-    project_id: Object,
+    month_project_id: Object,
     providers: Object,
     auth: Object,
     userPermissions: Array,
@@ -822,17 +810,13 @@ const { expenseTypes, docTypes, zones ,stateTypes } = props
 const dataToRender = ref(props.additional_costs.data);
 const filterMode = ref(false);
 
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-};
-
 const form = useForm({
     id: "",
     expense_type: "",
     ruc: "",
     zone: "",
     provider_id: "",
-    project_id: props.project_id.id,
+    month_project_id: props.month_project_id.id,
     type_doc: "",
     operation_number: "",
     operation_date: "",
@@ -896,12 +880,12 @@ const submit = async () => {
         isFetching.value = true
         const formToSend = toFormData(form.data())
         const res = await axios.post(
-            route("projectmanagement.storeStaticCost", {
-                project_id: props.project_id.id,
+            route("projectmanagement.storeAdministrativeCost", {
+                month_project_id: props.month_project_id.id,
             }), formToSend)
         dataToRender.value.unshift(res.data)
         closeModal();
-        notify('Gasto Fijo Guardado')
+        notify('Gasto Administrativo Guardado')
     } catch (e) {
         isFetching.value = false
         if (e.response?.data?.errors) {
@@ -917,13 +901,13 @@ const submitEdit = async () => {
         isFetching.value = true
         const formToSend = toFormData(form.data())
         const res = await axios.post(
-            route("projectmanagement.updateStaticCost", {
+            route("projectmanagement.updateAdministrativeCost", {
                 additional_cost: form.id,
             }), formToSend)
         let index = dataToRender.value.findIndex(item => item.id == form.id)
         dataToRender.value[index] = res.data
         closeEditModal();
-        notify('Gasto Fijo Actualizado')
+        notify('Gasto Administrativo Actualizado')
     } catch (e) {
         isFetching.value = false
         if (e.response?.data?.errors) {
@@ -947,13 +931,13 @@ const deleteAdditional = async () => {
     const docId = docToDelete.value;
     if (docId) {
         const res = await axios.delete(
-            route("projectmanagement.deleteStaticCost", {
-                project_id: props.project_id.id,
+            route("projectmanagement.deleteAdministrativeCost", {
+                month_project_id: props.month_project_id.id,
                 additional_cost: docId,
             }))
         if (res?.data?.msg === 'success') {
             closeModalDoc()
-            notify('Gasto Fijo Eliminado')
+            notify('Gasto Administrativo Eliminado')
             let index = dataToRender.value.findIndex(item => item.id == docId)
             dataToRender.value.splice(index, 1);
         }
@@ -983,7 +967,7 @@ function handlerPreview(id) {
 function openExportPhoto() {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
     const url =
-        route("zip.static.descargar", { project_id: props.project_id.id }) +
+        route("zip.administrative.descargar", { month_project_id: props.month_project_id.id }) +
         "?" +
         uniqueParam;
     window.location.href = url;
@@ -1030,8 +1014,8 @@ watch(
 async function search_advance(data) {
     const $search = data || filterForm.value
     let res = await axios.post(
-        route("staticcost.advance.search", {
-            project_id: props.project_id.id,
+        route("administrativeCosts.advance.search", {
+            month_project_id: props.month_project_id.id,
         }), $search);
     dataToRender.value = res.data;
     notifyWarning(`Se encontraron ${res.data.length} registro(s)`)
@@ -1045,8 +1029,8 @@ async function search_advance(data) {
 function openExportExcel() {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
     const url =
-        route("staticcost.excel.export", {
-            project_id: props.project_id.id,
+        route("administrativeCosts.excel.export", {
+            month_project_id: props.month_project_id.id,
         }) +
         "?" +
         uniqueParam;
@@ -1111,7 +1095,7 @@ const openOpNuDaModal = () => {
 const submitOpNuDatModal = async () => {
     isFetching.value = true;
     const res = await axios
-        .post(route("projectmanagement.staticCosts.massiveUpdate"), {
+        .post(route("projectmanagement.administrativeCosts.massiveUpdate"), {
             ...opNuDateForm.data(),
             ...actionForm.value
         })

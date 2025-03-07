@@ -55,7 +55,7 @@
                     <div :class="`text-gray-500 text-sm`">
                         <div class="grid grid-cols-1 gap-y-1">
                             <Link
-                                :href="route('tasks.index', { id: item.id })"
+                                :href="route('projectmanagement.administrativeCosts', { month_project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600"
                             >
                                 Gastos Administrativos
