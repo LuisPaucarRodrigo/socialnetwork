@@ -114,6 +114,30 @@ class CarsController extends Controller
         ], 200);
     }
 
+    public function specificAlarm($car_id)
+    {   
+        $today = Carbon::now();
+        $expirationThreshold = $today->copy()->addDays(7);
+    
+        $document = CarDocument::where('car_id', $car_id)->first();
+    
+        $expiring = [];
+    
+        if ($document->technical_review_date && $document->technical_review_date <= $expirationThreshold) {
+            $expiring['Revisión Técnica'] = $document->technical_review_date;
+        }
+    
+        if ($document->soat_date && $document->soat_date <= $expirationThreshold) {
+            $expiring['SOAT'] = $document->soat_date;
+        }
+    
+        if ($document->insurance_date && $document->insurance_date <= $expirationThreshold) {
+            $expiring['Seguro'] = $document->insurance_date;
+        }
+    
+        return response()->json($expiring,200);
+    }
+
     public function store(FleetCarRequest $request)
     {
         $data = $request->validated();
@@ -457,6 +481,7 @@ class CarsController extends Controller
         $approval = CarDocument::whereHas('approvel_car_document')->get();
         return response()->json($approval, 200);
     }
+    
     public function acceptOrDecline(CarChangelog $changelog, $is_accepted)
     {
         $user = Auth::user();

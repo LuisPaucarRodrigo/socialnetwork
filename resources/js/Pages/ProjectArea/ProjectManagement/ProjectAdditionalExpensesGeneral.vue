@@ -6,7 +6,7 @@
         params: { type }
     }">
         <template #header>
-            Gastos {{ fixedOrAdditional ? 'Fijos' : 'Adicionales' }}
+            Gastos Generales {{ fixedOrAdditional ? 'Fijos' : 'Adicionales' }}
         </template>
         <br />
         <Toaster richColors />
@@ -82,10 +82,10 @@
                                             class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                             Actualizar Operación
                                         </button>
-                                        <button @click="openSwapCostsModal"
+                                        <!-- <button @click="openSwapCostsModal"
                                             class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                            Swap
-                                        </button>
+                                            Swap(Gastos Fijos)
+                                        </button> -->
                                     </div>
                                 </div>
                             </template>
@@ -657,9 +657,9 @@
 
         <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Gasto"
             :deleteFunction="deleteAdditional" @closeModal="closeModalDoc" />
-        <ConfirmateModal :showConfirm="showSwapCostsModal" tittle="Cambio de gastos adicionales a fijos"
+        <!-- <ConfirmateModal :showConfirm="showSwapCostsModal" tittle="Cambio de gastos adicionales a fijos"
             text="La siguiente acción ya no se podrá revertir, ¿Desea continuar?" :actionFunction="swapCosts"
-            @closeModal="closeSwapCostsModal" />
+            @closeModal="closeSwapCostsModal" /> -->
     </AuthenticatedLayout>
 </template>
 
@@ -687,6 +687,7 @@ import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import ChartsAdditionalExpenses from "./ChartsAdditionalExpenses.vue";
 import Search from "@/Components/Search.vue";
+// import ConfirmateModal from "@/Components/ConfirmateModal.vue";
 
 const props = defineProps({
     expense: Object,
@@ -742,7 +743,7 @@ const create_additional = ref(false);
 const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
 const showOpNuDatModal = ref(false)
-const showSwapCostsModal = ref(false)
+// const showSwapCostsModal = ref(false)
 
 const openCreateAdditionalModal = () => {
     create_additional.value = true;
@@ -1062,17 +1063,17 @@ function updateExpense(expense, action, state) {
     }
 }
 
-const closeSwapCostsModal = () => {
-    showSwapCostsModal.value = false
-}
+// const closeSwapCostsModal = () => {
+//     showSwapCostsModal.value = false
+// }
 
-const openSwapCostsModal = () => {
-    if (actionForm.value.ids.length === 0) {
-        notifyWarning("No hay registros seleccionados");
-        return;
-    }
-    showSwapCostsModal.value = true
-}
+// const openSwapCostsModal = () => {
+//     if (actionForm.value.ids.length === 0) {
+//         notifyWarning("No hay registros seleccionados");
+//         return;
+//     }
+//     showSwapCostsModal.value = true
+// }
 
 const swapCosts = async () => {
     await axios

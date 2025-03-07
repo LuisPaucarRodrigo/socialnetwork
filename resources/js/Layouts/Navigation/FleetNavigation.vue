@@ -24,8 +24,38 @@
             </button>
         </div>
     </MyTransition>
+    <template v-if="showDocumentsCarToExpireAlarms">
+        <div class="mb-4">
+            <MyTransition v-for="item, i in documentsCarToExpire" :key="i" class="ml-4"
+                :transitiondemonstration="showDocumentsCarToExpireAlarms">
+                <div class="w-full flex items-center">
+                    <div class="flex items-center">
+                        <svg class="w-4 h-4 mr-2 text-red-600 dark:text-red" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M15.133 10.632v-1.8a5.407 5.407 0 0 0-4.154-5.262.955.955 0 0 0 .021-.106V1.1a1 1 0 0 0-2 0v2.364a.944.944 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C4.867 13.018 3 13.614 3 14.807 3 15.4 3 16 3.538 16h12.924C17 16 17 15.4 17 14.807c0-1.193-1.867-1.789-1.867-4.175Zm-13.267-.8a1 1 0 0 1-1-1 9.424 9.424 0 0 1 2.517-6.39A1.001 1.001 0 1 1 4.854 3.8a7.431 7.431 0 0 0-1.988 5.037 1 1 0 0 1-1 .995Zm16.268 0a1 1 0 0 1-1-1A7.431 7.431 0 0 0 15.146 3.8a1 1 0 0 1 1.471-1.354 9.425 9.425 0 0 1 2.517 6.391 1 1 0 0 1-1 .995ZM6.823 17a3.453 3.453 0 0 0 6.354 0H6.823Z" />
+                        </svg>
+                        <button @click="specificAlarm(item.id)">
+                            <span>{{ item.plate }}</span>
+                        </button>
+                    </div>
+                </div>
+            </MyTransition>
+
+        </div>
+    </template>
+    <Modal :show="showSpecificAlarm" maxWidth="sm" @close="openModalSpesificAlarm">
+        <div class="p-6">
+            <h2 class="text-base font-medium leading-7 text-gray-900">Documentos a caducar</h2>
+            <div class="my-5 flex space-x-5 justify-between" v-for="(value, key) in caducationsList" :key="key">
+                <p>{{ key }} :</p> 
+                <p>{{ value }}</p>
+            </div>
+        </div>
+    </Modal>
 </template>
 <script setup>
+import Modal from '@/Components/Modal.vue';
 import MyTransition from '@/Components/MyTransition.vue';
 import { Link } from '@inertiajs/vue3';
 import { onMounted, ref } from 'vue';
@@ -37,6 +67,8 @@ const { userPermissions } = defineProps({
 const showFleetCars = ref(false)
 const showDocumentsCarToExpireAlarms = ref(false)
 const documentsCarToExpire = ref([])
+const caducationsList = ref(null)
+const showSpecificAlarm = ref(false)
 
 function hasPermission(permission) {
     return userPermissions.includes(permission)
@@ -57,4 +89,21 @@ async function fetchFleetCarCount() {
         console.error('Error al obtener el contador de carros:', error);
     }
 }
+
+async function specificAlarm(car_id) {
+    try {
+        const response = await axios.get(route('fleet.cars.specific.alarms',{car_id : car_id}));
+        caducationsList.value = response.data;
+        openModalSpesificAlarm()
+    } catch (error) {
+        console.error('Error al obtener los documentos:', error);
+    }
+}
+
+function openModalSpesificAlarm(){
+    showSpecificAlarm.value = !showSpecificAlarm.value
+}
+
 </script>
+
+<!-- fleet.cars.specific.alarms -->

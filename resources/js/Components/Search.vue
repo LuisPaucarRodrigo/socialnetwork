@@ -15,14 +15,14 @@ import { ref } from 'vue';
 
 const { fields } = defineProps({
     fields: String,
-    search: String
+    // search: String
 })
 
-const emit = defineEmits(['update:search']);
+const search = defineModel('search')
 
 const searchQuery = ref('');
 
 function applySearch() {
-    emit('update:search', searchQuery.value);
+    search.value = searchQuery.value
 }
 </script>

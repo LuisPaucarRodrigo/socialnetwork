@@ -78,10 +78,13 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::post('/projectPext/storeProjectAndAssignation', [PextController::class, 'storeProjectAndAssignation'])->name('projectmanagement.pext.storeProjectAndAssignation');
     // Route::get('/projectPext/requestCicsa/{zone?}', [PextController::class, 'requestCicsa'])->name('projectmanagement.pext.requestCicsa');
 
-
+    
     Route::post('/projectPext/expenses/storeOrUpdate/{expense_id?}', [PextController::class, 'expenses_storeOrUpdate'])->name('pext.expenses.storeOrUpdate');
     Route::delete('/projectPext/expenses/delete/{expense_id}', [PextController::class, 'expenses_delete'])->name('pext.expenses.delete');
     Route::put('/projectPext/expenses/expenseValidate/{expense_id}', [PextController::class, 'expense_validate'])->name('projectmanagement.pext.expenses.validate');
+
+    Route::get('/projectPext/monthly', [PextController::class, 'onthlyExpensePext'])->name('pext.monthly');
+
 
     //Project
     Route::get('/project/create', [ProjectManagementController::class, 'project_create'])->name('projectmanagement.create');
