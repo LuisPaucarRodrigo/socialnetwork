@@ -51,7 +51,7 @@
     <MyTransition 
          v-if="subModulePermission(submodules.padmexpen_submodule, userSubModules)"
         :transitiondemonstration="showingProyectArea">
-        <Link class="w-full" :href="route('projectmanagement.pext.index')">G. Administrativos</Link>
+        <Link class="w-full" :href="route('monthproject.index')">G. Administrativos</Link>
     </MyTransition>
     <MyTransition 
          v-if="subModulePermission(submodules.pchecklist_submodule, userSubModules)"

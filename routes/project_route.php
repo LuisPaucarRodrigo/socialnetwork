@@ -9,6 +9,7 @@ use App\Http\Controllers\ProjectArea\ChecklistsController;
 use App\Http\Controllers\ProjectArea\CicsaSectionController;
 use App\Http\Controllers\ProjectArea\CustomersController;
 use App\Http\Controllers\ProjectArea\LiquidationController;
+use App\Http\Controllers\ProjectArea\MonthProjectController;
 use App\Http\Controllers\ProjectArea\PextController;
 use App\Http\Controllers\ProjectArea\PreProjectController;
 use App\Http\Controllers\ProjectArea\ProjectDocumentController;
@@ -204,6 +205,15 @@ Route::middleware('permission:'.implode('|', RolesConstants::PROJECT_MODULE))->g
     Route::delete('/checklist/toolkit/{id}/destroy', [ChecklistsController::class, 'toolkit_destroy'])->name('checklist.toolkit.destroy');
     Route::delete('/checklist/dailytoolkit/{id}/destroy', [ChecklistsController::class, 'dailytoolkit_destroy'])->name('checklist.dailytoolkit.destroy');
     Route::delete('/checklist/epp/{id}/destroy', [ChecklistsController::class, 'epp_destroy'])->name('checklist.epp.destroy');
+
+
+    //Administrative projects expenses
+    Route::get('/monthProjects', [MonthProjectController::class, 'index'])->name('monthproject.index');
+    Route::post('/monthProjects_store/{mp_id?}', [MonthProjectController::class, 'store'])->name('monthproject.store');
+    Route::delete('/monthProjects_destroy/{mp_id}', [MonthProjectController::class, 'destroy'])->name('monthproject.destroy');
+    
+
+
 });
 
 Route::middleware('permission:'.implode('|', RolesConstants::PROJECT_MODULE))->group(function () {
