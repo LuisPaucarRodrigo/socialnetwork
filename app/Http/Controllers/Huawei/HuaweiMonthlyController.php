@@ -36,16 +36,68 @@ class HuaweiMonthlyController extends Controller
 
     public function getGeneralBalance()
     {
+        $prevExpense = HuaweiMonthlyExpense::with([
+            'general_expense',
+        ])
+            ->where(function ($query) {
+                $query->where('is_accepted', 1)
+                    ->orWhere('is_accepted', null);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        foreach ($prevExpense as $exp) {
+            $exp->setAppends(['real_state', 'type']);
+        }
+
+        $acExpensesAmounts = $prevExpense->filter(function ($cost) {
+            return $cost->type === 'Variable';
+        })->groupBy('expense_type')->map(function ($group) {
+            return [
+                'expense_type' => $group->first()->expense_type,
+                'total_amount' => $group->sum('amount'),
+            ];
+        })->values()->toArray();
+
+        $scExpensesAmounts = $prevExpense->filter(function ($cost) {
+            return $cost->type === 'Fijo';
+        })->groupBy('expense_type')->map(function ($group) {
+            return [
+                'expense_type' => $group->first()->expense_type,
+                'total_amount' => $group->sum('amount'),
+            ];
+        })->values()->toArray();
+
         return Inertia::render('Huawei/GeneralBalance', [
-            'total_variable_costs' => 1,
-            'total_main_earnings' => 1,
-            'total_detraction' => 1,
-            'total_static_costs' => 1,
-            'total_earnings' => 1,
-            'total_real_earnings' => 1,
-            'total_real_earnings_without_deposit' => 1,
+            'expenses' => $prevExpense,
+            'acExpensesAmounts' => $acExpensesAmounts,
+            'scExpensesAmounts' => $scExpensesAmounts,
         ]);
     }
+
+    public function getExpensesByZone($expenseType)
+    {
+        $prevExpense = HuaweiMonthlyExpense::with([
+            'general_expense',
+        ])
+            ->where(function ($query) {
+                $query->where('is_accepted', 1)
+                    ->orWhere('is_accepted', null);
+            })
+            ->where('expense_type', $expenseType)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $groupedExpenses = $prevExpense->groupBy('zone')->map(function ($group) {
+            return [
+                'zone' => $group->first()->zone,
+                'total_amount' => $group->sum('amount'),
+            ];
+        })->values()->toArray();
+
+        return response()->json($groupedExpenses, 200);
+    }
+
 
     public function getExpenses($mode = null)
     {
@@ -53,7 +105,7 @@ class HuaweiMonthlyController extends Controller
             ->orderBy('expense_date', 'desc')
             ->with([
                 'huawei_project' => function ($query) {
-                    $query->select('id', 'assigned_diu', 'huawei_site_id');
+                    $query->select('id', 'assigned_diu', 'huawei_site_id', 'macro_project');
                 },
                 'huawei_project.huawei_site'
             ])
@@ -125,7 +177,7 @@ class HuaweiMonthlyController extends Controller
         $expenses = $expensesQuery->orderBy('expense_date', 'desc')
             ->with([
                 'huawei_project' => function ($query) {
-                    $query->select('id', 'assigned_diu', 'huawei_site_id');
+                    $query->select('id', 'assigned_diu', 'huawei_site_id', 'macro_project');
                 },
                 'huawei_project.huawei_site'
             ])
@@ -241,7 +293,7 @@ class HuaweiMonthlyController extends Controller
         $expenses = $expensesQuery->orderBy('expense_date', 'desc')
             ->with([
                 'huawei_project' => function ($query) {
-                    $query->select('id', 'assigned_diu', 'huawei_site_id');
+                    $query->select('id', 'assigned_diu', 'huawei_site_id', 'macro_project');
                 },
                 'huawei_project.huawei_site'
             ])
@@ -386,9 +438,9 @@ class HuaweiMonthlyController extends Controller
         return response()->json($expenseTo, 200);
     }
 
-    public function exportMonthlyExpenses()
+    public function exportMonthlyExpenses($mode = null)
     {
-        return Excel::download(new HuaweiMonthlyExport(), 'Gastos Mensuales Huawei.xlsx');
+        return Excel::download(new HuaweiMonthlyExport($mode), 'Gastos Generales ' . ($mode ? 'Fijos' : 'Variables') . ' Huawei.xlsx');
     }
 
     public function importCosts(Request $request)
@@ -432,6 +484,9 @@ class HuaweiMonthlyController extends Controller
             if ($isEmptyRow) {
                 break;
             }
+
+            self::$data;
+
             $rowObject = (object) [
                 'employee' => $this->sanitizeText($row['A'], false),
                 'project_id' => $row['B'] ? HuaweiProject::where('assigned_diu', $row['B'])->first()->id : null,
@@ -442,7 +497,7 @@ class HuaweiMonthlyController extends Controller
                 'ruc' => $row['G'],
                 'amount' => $this->sanitizeNumber($row['H']),
                 'description' => $row['I'],
-                'expense_type' => $row['J'],
+                'expense_type' => $this->getClosestExpenseType($row['J']),
                 'ec_expense_date' => $this->sanitizeDate($row['L']),
                 'ec_op_number' => $row['M'],
                 'ec_amount' => $this->sanitizeNumber($row['N']),
@@ -657,5 +712,22 @@ class HuaweiMonthlyController extends Controller
         return $sanitized === '' ? '0' : $sanitized;
     }
 
-
+    private function getClosestExpenseType($input)
+    {
+        $expenseTypes = array_merge(self::$data['static_expense_types'], self::$data['variable_expense_types']);
+        
+        $bestMatch = null;
+        $highestSimilarity = 0;
+    
+        foreach ($expenseTypes as $type) {
+            similar_text($input, $type, $percent);
+            if ($percent > $highestSimilarity) {
+                $highestSimilarity = $percent;
+                $bestMatch = $type;
+            }
+        }
+    
+        return $bestMatch ?: $input;
+    }
+    
 }

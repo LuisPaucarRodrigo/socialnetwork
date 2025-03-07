@@ -13,11 +13,11 @@ class HuaweiProject extends Model
     protected $fillable = [
         'name',
         'huawei_site_id',
+        'cost_center_id',
+        'zone',
         'description',
         'ot',
-        'pre_report',
         'status',
-        'initial_amount',
         'prefix',
         'macro_project',
         'assigned_diu'
@@ -83,6 +83,16 @@ class HuaweiProject extends Model
     public function huawei_monthly_expenses ()
     {
         return $this->hasMany(HuaweiMonthlyExpense::class, 'huawei_project_id');
+    }
+
+    public function huawei_project_schedules ()
+    {
+        return $this->hasMany(HuaweiProjectSchedule::class, 'huawei_project_id');
+    }
+
+    public function cost_center ()
+    {
+        return $this->belongsTo(CostCenter::class, 'cost_center_id');
     }
 
     public function getCodeAttribute()
