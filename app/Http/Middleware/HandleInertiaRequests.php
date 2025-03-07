@@ -66,6 +66,8 @@ class HandleInertiaRequests extends Middleware
                     'success' => $request->session()->get('success'),
                 ];
             },
+            'modules' => RolesConstants::MODULES,
+            'submodules' => RolesConstants::SUBMODULES,
             'showingMobileMenu' => false,
         ]);
     }

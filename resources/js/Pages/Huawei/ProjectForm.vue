@@ -164,7 +164,7 @@
                                     Centro de Costos:
                                 </h2>
                                 <p class="text-gray-600 font-medium">
-                                    {{ props.huawei_project.cost_center.name }}
+                                    {{ props.huawei_project.cost_center?.name }}
                                 </p>
                             </div>
                             <div class="flex gap-2 items-center">

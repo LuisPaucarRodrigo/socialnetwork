@@ -3,7 +3,7 @@
     <Head title="Gestion de Costos Adicionales" />
     <AuthenticatedLayout redirectRoute="projectmanagement.pext.index">
         <template #header>
-            Gastos del Proyecto
+            Gastos Mensuales del Proyecto
         </template>
         <br />
         <Toaster richColors />
@@ -79,10 +79,14 @@
                                             class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                             Actualizar Operación
                                         </button>
-                                        <button @click="openSwapCostsModal"
+                                        <button v-if="fixedOrAdditional == 0" @click="openSwapCostsModal"
                                             class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                            Swap
+                                            Swap(Gastos Fijos)
                                         </button>
+                                        <!-- <button v-if="fixedOrAdditional == 0" @click="openSwapMPModal"
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Swap(Proyectos Mensuales)
+                                        </button> -->
                                         <!-- <button @click=""
                                             class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                             Eliminar
@@ -416,6 +420,7 @@
             class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
             <pagination :links="expenses.links" />
         </div>
+
         <Modal :show="create_additional" @close="closeModal">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
@@ -643,8 +648,55 @@
             </div>
         </Modal>
 
+        <!-- <Modal :show="showSwapMPModal" @close="closeSwapMPModal">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900 mb-2">
+                    Gastos a Proyecto Adicional
+                </h2>
+                <h4 class="text-sm font-light text-green-900 bg-green-500/10 rounded-lg p-3 ">
+                    Los registros pasarán al proyecto especificado, según el tipo de gasto se insertaran en fijos o
+                    variables.
+                </h4>
+                <form @submit.prevent="submitSwapAPModal">
+                    <div class="space-y-12">
+                        <div class="border-b grid grid-cols-1 gap-6 border-gray-900/10 pb-12">
+                            <div class="mt-4">
+                                <InputLabel for="project_id" class="font-medium leading-6 text-gray-900">
+                                    Proyectos Mensuales
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <select id="project_id" required
+                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option disabled value="">
+                                            Seleccionar Proyecto
+                                        </option>
+                                        <option v-for="item in monthlyProjects" :key="item.id" :value="item.id">
+                                            {{ item.description }}
+                                        </option>
+                                    </select>
+                                    <InputError :message="additionalProjectForm.errors.project_id" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <SecondaryButton @click="closeSwapMPModal">
+                                Cancelar
+                            </SecondaryButton>
+                            <button type="submit" :disabled="isFetching" :class="{ 'opacity-25': isFetching }"
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </Modal> -->
+
         <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Gasto"
             :deleteFunction="deleteAdditional" @closeModal="closeModalDoc" />
+        <ConfirmateModal :showConfirm="showSwapCostsModal" tittle="Cambio de gastos adicionales a fijos"
+            text="La siguiente acción ya no se podrá revertir, ¿Desea continuar?" :actionFunction="swapCosts"
+            @closeModal="closeSwapCostsModal" />
         <!-- <SuccessOperationModal :confirming="confirmValidation" :title="'Validación'"
             :message="'La validación del gasto fue exitosa.'" /> -->
     </AuthenticatedLayout>
@@ -675,6 +727,7 @@ import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import Search from "@/Components/Search.vue";
+import ConfirmateModal from "@/Components/ConfirmateModal.vue";
 
 const props = defineProps({
     expense: Object,
@@ -693,6 +746,8 @@ const props = defineProps({
 const expenses = ref(props.expense);
 // const subCostCenterZone = ref(null);
 const showOpNuDatModal = ref(false)
+const showSwapMPModal = ref(false)
+const monthlyProjects = ref(null)
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
@@ -728,7 +783,7 @@ const create_additional = ref(false);
 const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
 const pext_project_zone = ref("");
-
+const showSwapCostsModal = ref(false)
 const openCreateAdditionalModal = () => {
     create_additional.value = true;
 };
@@ -1021,4 +1076,64 @@ async function submitOpNuDatModal() {
     }
 }
 
+const openSwapCostsModal = () => {
+    if (actionForm.value.ids.length === 0) {
+        notifyWarning("No hay registros seleccionados");
+        return;
+    }
+    showSwapCostsModal.value = true
+}
+
+function openSwapMPModal() {
+    if (actionForm.value.ids.length === 0) {
+        notifyWarning("No hay registros seleccionados");
+        return;
+    }
+    mProject()
+    showSwapMPModal.value = true
+}
+
+function closeSwapMPModal() {
+    if (actionForm.value.ids.length === 0) {
+        notifyWarning("No hay registros seleccionados");
+        return;
+    }
+    showSwapMPModal.value = false
+}
+
+const closeSwapCostsModal = () => {
+    showSwapCostsModal.value = false
+}
+
+const swapCosts = async () => {
+    let validation = expenses.value.data || expenses.value
+    await axios
+        .post(route("projectmanagement.pext.massiveUpdate.swap"), {
+            ...actionForm.value
+        })
+        .catch((e) => {
+            notifyError("Server Error");
+        });
+
+    actionForm.value.ids.forEach((id) => {
+        const index = validation.findIndex((item) => item.id === id);
+        if (index !== -1) {
+            validation.splice(index, 1);
+        }
+    });
+
+    actionForm.value.ids = []
+    closeSwapCostsModal();
+    notify("Registros Movidos con éxito");
+}
+
+async function mProject(){
+    const url = route('pext.monthly')
+    try {
+        let response = await axios.get(url)
+        monthlyProjects.value = response.data
+    } catch (error) {
+        console.log(error)
+    }
+} 
 </script>
