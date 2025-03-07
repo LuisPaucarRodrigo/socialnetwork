@@ -20,7 +20,7 @@ class AdministrativeCostsController extends Controller
 {
     public function index(MonthProject $month_project_id)
     {
-        $expenseTypes = PintConstants::scExpenseTypes();
+        $expenseTypes = PintConstants::admincostExpenseTypes();
         $docTypes = PintConstants::scDocTypes();
         $zones = PintConstants::scZones();
         $stateTypes = PintConstants::scStatesTypes();
@@ -80,7 +80,7 @@ class AdministrativeCostsController extends Controller
         if (count($request->selectedZones) < PintConstants::countScZones()) {
             $result = $result->whereIn('zone', $request->selectedZones);
         }
-        if (count($request->selectedExpenseTypes) < PintConstants::countScExpenseTypes()) {
+        if (count($request->selectedExpenseTypes) < PintConstants::countAdmincostExpenseTypes()) {
             $result = $result->whereIn('expense_type', $request->selectedExpenseTypes);
         }
         if (count($request->selectedDocTypes) < PintConstants::countScDocTypes()) {
