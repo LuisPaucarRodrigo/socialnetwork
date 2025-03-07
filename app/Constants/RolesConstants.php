@@ -247,6 +247,7 @@ class RolesConstants
         'ppropint_submodule' => 'ppropint_submodule', 
         'ppropext_submodule' => 'ppropext_submodule', 
         'pchecklist_submodule' => 'pchecklist_submodule', 
+        'padmexpen_submodule' => 'padmexpen_submodule', 
         'pbacklog_submodule' => 'pbacklog_submodule', 
 
         'fbudget_submodule' => 'fbudget_submodule', 
