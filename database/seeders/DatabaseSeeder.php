@@ -95,9 +95,17 @@ class DatabaseSeeder extends Seeder
             //Billing
             'BillingManager' => 'Permite acceso a la mayoria de funciones de Facturación',
             'Billing' => 'Solo podra visualizar Facturación',
-
+            'BillingPintManager' =>  'Acceso total a la gestión de Facturación Pint',
+            'BillingPint' =>  'Acceso restringido a Facturación Pint',
+            'BillingPextManager' =>  'Acceso total a la gestión de Facturación Pext',
+            'BillingPext' =>  'Acceso restringido a Facturación Pext',
+            //Car fleet
             'CarManager' => 'Permite acceso al área de Gestión de Autos',
             'Car' => 'Funcionalidades limitadas en Gestión de Autos',
+            'CarChangeApprovalManager' =>  'Acceso total a la gestión de aprobación de cambios de flota',
+            'CarChangeApproval' =>  'Acceso restringido a la aprobación de cambios de flota',
+            'CarMobileUnitManager' =>  'Acceso total a la gestión de unidad móvil',
+            'CarMobileUnit' =>  'Acceso restringido a la unidad móvil',
 
         ];
 
