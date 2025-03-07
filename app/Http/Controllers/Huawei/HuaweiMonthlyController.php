@@ -486,10 +486,10 @@ class HuaweiMonthlyController extends Controller
             }
 
             self::$data;
-
+            $project = $row['B'] ? HuaweiProject::where('assigned_diu', $row['B'])->first() : null;
             $rowObject = (object) [
                 'employee' => $this->sanitizeText($row['A'], false),
-                'project_id' => $row['B'] ? HuaweiProject::where('assigned_diu', $row['B'])->first()->id : null,
+                'project_id' => $project ? $project->id : null, // Se asigna NULL si no encuentra el proyecto
                 'expense_date' => $this->sanitizeDate($row['C']),
                 'cdp_type' => $this->sanitizeText($row['D'], true),
                 'doc_number' => $row['E'],
