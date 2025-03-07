@@ -1,5 +1,6 @@
 <?php
 
+use App\Constants\RolesConstants;
 use App\Http\Controllers\DocumentManagement\FolderController;
 use App\Http\Controllers\ProjectArea\StaticCostsController;
 use App\Http\Controllers\User\UserController;
@@ -20,7 +21,7 @@ use App\Http\Controllers\Inventory\WarehousesController;
 use App\Http\Controllers\ShoppingArea\ProviderController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('permission:UserManager')->group(function () {
+Route::middleware('permission:'.implode('|', RolesConstants::USERS_MODULE))->group(function () {
     Route::get('users', [UserController::class, 'index_user'])->name('users.index');
     Route::post('users/search', [UserController::class, 'search'])->name('users.search');
     Route::get('users/linkEmployee/{user}', [UserController::class, 'linkEmployee'])->name('users.linkEmployee');

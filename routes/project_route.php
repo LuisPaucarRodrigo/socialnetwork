@@ -1,5 +1,6 @@
 <?php
 
+use App\Constants\RolesConstants;
 use App\Http\Controllers\HttpController;
 use App\Http\Controllers\ProjectArea\AdditionalCostsController;
 use App\Http\Controllers\ProjectArea\BacklogController;
@@ -18,7 +19,7 @@ use App\Http\Controllers\ProjectArea\TaskManagementController;
 use App\Http\Controllers\ProjectArea\ServicesLiquidationsController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('permission:ProjectManager')->group(function () {
+Route::middleware('permission:'.implode('|', RolesConstants::PROJECT_MODULE))->group(function () {
     //Customers
     Route::post('/customers/post', [CustomersController::class, 'store'])->name('customers.store');
     Route::put('/customers/{customer}/update', [CustomersController::class, 'update'])->name('customers.update');
@@ -205,7 +206,7 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::delete('/checklist/epp/{id}/destroy', [ChecklistsController::class, 'epp_destroy'])->name('checklist.epp.destroy');
 });
 
-Route::middleware('permission:ProjectManager|Project')->group(function () {
+Route::middleware('permission:'.implode('|', RolesConstants::PROJECT_MODULE))->group(function () {
     //Customers
     Route::any('/customers', [CustomersController::class, 'index'])->name('customers.index');
     Route::get('/customers/search', [CustomersController::class, 'index'])->name('customers.search');
