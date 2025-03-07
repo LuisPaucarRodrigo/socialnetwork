@@ -190,7 +190,7 @@
                     Backlog
                     </Link>
                 </MyTransition>
-                <MyTransition :transitiondemonstration="showingProyectArea">
+                <!-- <MyTransition :transitiondemonstration="showingProyectArea">
                     <div class="relative">
                         <button @click="toggleMembersCicsa">
                             <span v-if="cicsasubSectionsPorVencer.length + cicsasubSectionsPorVencer7.length > 0"
@@ -234,7 +234,7 @@
                             </Link>
                         </MyTransition>
                     </div>
-                </template>
+                </template> -->
             </template>
 
 
