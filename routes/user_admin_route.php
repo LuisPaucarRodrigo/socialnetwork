@@ -1,5 +1,6 @@
 <?php
 
+use App\Constants\RolesConstants;
 use App\Http\Controllers\DocumentManagement\FolderController;
 use App\Http\Controllers\ProjectArea\StaticCostsController;
 use App\Http\Controllers\User\UserController;
@@ -21,13 +22,10 @@ use App\Http\Controllers\ShoppingArea\ProviderController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('permission:UserManager')->group(function () {
-    Route::get('users', [UserController::class, 'index_user'])->name('users.index');
-    Route::post('users/search', [UserController::class, 'search'])->name('users.search');
+   
     Route::get('users/linkEmployee/{user}', [UserController::class, 'linkEmployee'])->name('users.linkEmployee');
-
     Route::get('users/edit/{id}', [UserController::class, 'edit'])->name('users.edit');
     Route::put('users/update/{id}', [UserController::class, 'update'])->name('users.update');
-    Route::get('users/details/{id}', [UserController::class, 'details'])->name('users.details');
     Route::post('users/delete/{id}', [UserController::class, 'delete'])->name('users.destroy');
 
     Route::get('rols', [ManagementRolsController::class, 'rols_index'])->name('rols.index');
@@ -56,12 +54,7 @@ Route::middleware('permission:UserManager')->group(function () {
     Route::delete('/shopping_area/purchasesrequest/destroy/{id}', [PurchaseRequestController::class, 'destroy'])->name('purchasesrequest.destroy');
 
 
-    Route::post('/projectmanagement/purchases_request/additional_costs/{additional_cost}/update', [AdditionalCostsController::class, 'update'])->name('projectmanagement.updateAdditionalCost');
-    Route::delete('/projectmanagement/purchases_request/{project_id}/additional_costs/{additional_cost}/destroy', [AdditionalCostsController::class, 'destroy'])->name('projectmanagement.deleteAdditionalCost');
     
-    
-    Route::post('/projectmanagement/purchases_request/static_costs/{additional_cost}/update', [StaticCostsController::class, 'update'])->name('projectmanagement.updateStaticCost');
-    Route::delete('/projectmanagement/purchases_request/{project_id}/static_costs/{additional_cost}/destroy', [StaticCostsController::class, 'destroy'])->name('projectmanagement.deleteStaticCost');
 
 
 
@@ -146,4 +139,11 @@ Route::middleware('permission:UserManager')->group(function () {
     //Purchase request
     Route::get('/shopping_area/purchasesrequest/edit/{id}/{project_id?}', [PurchaseRequestController::class, 'edit'])->name('purchasesrequest.edit');
     Route::put('/shopping_area/purchasesrequest/update/{id}', [PurchaseRequestController::class, 'update'])->name('purchasesrequest.update');
+});
+
+
+Route::middleware('permission:UserManager|UserGestionManager|UserGestion')->group(function () {
+    Route::get('users', [UserController::class, 'index_user'])->name('users.index');
+    Route::post('users/search', [UserController::class, 'search'])->name('users.search');
+    Route::get('users/details/{id}', [UserController::class, 'details'])->name('users.details');
 });

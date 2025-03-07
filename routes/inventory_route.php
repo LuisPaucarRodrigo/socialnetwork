@@ -1,11 +1,12 @@
 <?php
 
+use App\Constants\RolesConstants;
 use App\Http\Controllers\Inventory\PurchaseProductsController;
 use App\Http\Controllers\Inventory\SpecialWarehouseController;
 use App\Http\Controllers\Inventory\WarehousesController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('permission:InventoryManager')->group(function () {
+Route::middleware('permission:'.implode('|', RolesConstants::INVENTORY_MODULE))->group(function () {
     //Purchase Products
     Route::post('/inventory/purchase_products/products/post', [PurchaseProductsController::class, 'store'])->name('inventory.purchaseproducts.store');
     Route::put('/inventory/purchase_products/products/{purchase_product}/update', [PurchaseProductsController::class, 'update'])->name('inventory.purchaseproducts.update');
@@ -41,7 +42,7 @@ Route::middleware('permission:InventoryManager')->group(function () {
     Route::post('/inventory/resource/serial_number/purchase_orders', [WarehousesController::class, 'serialNumberResourcePurchaseOrders'])->name('warehouses.resource.add.serial_number');
 });
 
-Route::middleware('permission:InventoryManager|Inventory')->group(function () {
+Route::middleware('permission:'.implode('|', RolesConstants::INVENTORY_MODULE))->group(function () {
     //Purchase Products
     Route::get('/inventory/purchase_products/products', [PurchaseProductsController::class, 'index'])->name('inventory.purchaseproducts');
     Route::get('/inventory/purchase_products/products/search/{request}', [PurchaseProductsController::class, 'search'])->name('inventory.purchaseproducts.search');

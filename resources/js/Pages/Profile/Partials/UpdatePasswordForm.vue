@@ -105,7 +105,7 @@ const updatePassword = () => {
                     leave-active-class="transition ease-in-out"
                     leave-to-class="opacity-0"
                 >
-                    <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Guardar.</p>
+                    <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Contraseña guardada.</p>
                 </Transition>
             </div>
         </form>

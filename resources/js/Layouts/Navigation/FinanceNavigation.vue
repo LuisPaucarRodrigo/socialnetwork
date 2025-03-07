@@ -1,4 +1,4 @@
-<template v-if="hasPermission('FinanceManager') || hasPermission('Finance')">
+<template>
     <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#" @click="showingFinance = !showingFinance">
         <svg v-if="financePurchases.length + financePurchases7.length + paymentAlarms3.length + paymentAlarms7.length > 0"
             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="red"
@@ -14,10 +14,10 @@
 
         <span class="mx-3">Finanzas</span>
     </a>
-    <MyTransition :transitiondemonstration="showingFinance">
+    <MyTransition v-if="subModulePermission(submodules.fbudget_submodule, userSubModules)" :transitiondemonstration="showingFinance">
         <Link class="w-full" :href="route('selectproject.index')">Presupuestos</Link>
     </MyTransition>
-    <MyTransition :transitiondemonstration="showingFinance">
+    <MyTransition v-if="subModulePermission(submodules.fpapproval_submodule, userSubModules)" :transitiondemonstration="showingFinance">
         <div class="relative">
             <button @click="tooglePurchaseQuote"><span v-if="financePurchases.length + financePurchases7.length > 0"
                     class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
@@ -58,11 +58,11 @@
             </MyTransition>
         </div>
     </template>
-    <MyTransition :transitiondemonstration="showingFinance">
+    <MyTransition v-if="subModulePermission(submodules.fdeposists_submodule, userSubModules)" :transitiondemonstration="showingFinance">
         <Link class="w-full" :href="route('deposits.index')">Depósitos</Link>
     </MyTransition>
 
-    <MyTransition :transitiondemonstration="showingFinance">
+    <MyTransition v-if="subModulePermission(submodules.fpopayment_submodule, userSubModules)" :transitiondemonstration="showingFinance">
         <div class="relative">
             <button @click="tooglePayment"><span v-if="paymentAlarms3.length + paymentAlarms7.length > 0"
                     class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
@@ -99,19 +99,18 @@
             </Link>
         </MyTransition>
     </template>
-    <MyTransition :transitiondemonstration="showingFinance">
+    <MyTransition v-if="subModulePermission(submodules.faccstatement_submodule, userSubModules)" :transitiondemonstration="showingFinance">
         <Link class="w-full" :href="route('finance.account_statement')">Estado de Cuenta</Link>
     </MyTransition>
 </template>
 <script setup>
 import MyTransition from '@/Components/MyTransition.vue';
-import { Link } from '@inertiajs/vue3';
+import { subModulePermission } from '@/utils/roles/roles';
+import { Link,  usePage} from '@inertiajs/vue3';
 import { onMounted, ref } from 'vue';
 
-const { userPermissions } = defineProps({
-    userPermissions: Array
-})
-
+const {submodules} = usePage().props
+const {userSubModules} = usePage().props.auth
 const showingFinance = ref(false)
 const paymentPorVencer = ref(false)
 const showFinancePurchaseQuoteAlarms = ref(false)
@@ -120,9 +119,6 @@ const financePurchases7 = ref([])
 const paymentAlarms3 = ref([])
 const paymentAlarms7 = ref([])
 
-function hasPermission(permission) {
-    return userPermissions.includes(permission)
-}
 
 async function fetchFinancePurchases() {
     try {
@@ -146,10 +142,8 @@ async function fetchPaymentsAlarm() {
 }
 
 onMounted(() => {
-    if (hasPermission('FinanceManager') || hasPermission('Finance')) {
-        fetchFinancePurchases();
-        fetchPaymentsAlarm();
-    }
+    fetchFinancePurchases();
+    fetchPaymentsAlarm();
     setInterval(() => {
         fetchFinancePurchases();
         fetchPaymentsAlarm();

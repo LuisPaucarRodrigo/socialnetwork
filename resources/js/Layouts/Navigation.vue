@@ -11,15 +11,12 @@
         </div>
 
         <nav class="mt-10" x-data="{ isMultiLevelMenuOpen: false }">
-            <UserNavigation :userPermissions="$page.props.userPermissions" />
-            <EmployeesNavigation :userPermissions="$page.props.userPermissions" />
-            <InventoryNavigation :userPermissions="$page.props.userPermissions" />
-            <PurchaseNavigation :userPermissions="$page.props.userPermissions" />
-            <ProjectsNavigation :userPermissions="$page.props.userPermissions" />
-            <FinanceNavigation :userPermissions="$page.props.userPermissions" />
-            <!-- <DocumentGestionNavigation :userPermissions="$page.props.userPermissions" :auth="$page.props.auth"/> -->
-            <BillingNavigation :userPermissions="$page.props.userPermissions" />
-            <FleetNavigation :userPermissions="$page.props.userPermissions" />
+            <template v-for="module in navModules" :key="module.name">
+                <component 
+                    v-if="modulePermission(module.name, userModules)"
+                    :is="module.component"
+                />
+            </template>
         </nav>
     </div>
 </template>
@@ -36,6 +33,9 @@ import FinanceNavigation from './Navigation/FinanceNavigation.vue';
 import PurchaseNavigation from './Navigation/PurchaseNavigation.vue';
 import BillingNavigation from './Navigation/BillingNavigation.vue';
 import UserNavigation from './Navigation/UserNavigation.vue';
+import HuaweiNavigation from '@/Layouts/Navigation/HuaweiNavigation.vue';
+import { modulePermission } from '@/utils/roles/roles';
+
 // import DocumentGestionNavigation from './Navigation/DocumentGestionNavigation.vue';
 
 export default {
@@ -43,9 +43,6 @@ export default {
         userPermissions: {
             type: Array,
         },
-        auth: {
-            type: Object
-        }
     },
 
     components: {
@@ -60,13 +57,29 @@ export default {
         FinanceNavigation,
         PurchaseNavigation,
         BillingNavigation,
+        HuaweiNavigation,
         // DocumentGestionNavigation
     },
 
+    data() {
+        return {
+            userModules : this.$page.props.auth.userModules,
+            navModules: [
+                { name: 'USERS_MODULE', component: 'UserNavigation' },
+                { name: 'HR_MODULE', component: 'EmployeesNavigation' },
+                { name: 'INVENTORY_MODULE', component: 'InventoryNavigation' },
+                { name: 'PURCHASING_MODULE', component: 'PurchaseNavigation' },
+                { name: 'PROJECT_MODULE', component: 'ProjectsNavigation' },
+                { name: 'FINANCE_MODULE', component: 'FinanceNavigation' },
+                { name: 'BILLING_MODULE', component: 'BillingNavigation' },
+                { name: 'HUAWEI_MODULE', component: 'HuaweiNavigation' },
+                { name: 'CAR_MODULE', component: 'FleetNavigation' }
+            ],
+        };
+    },
+
     methods: {
-        hasPermission(permission) {
-            return this.$page.props.userPermissions.includes(permission);
-        },
+        modulePermission: modulePermission
     },
 }
 </script>

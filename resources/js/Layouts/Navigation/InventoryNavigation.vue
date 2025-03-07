@@ -1,4 +1,4 @@
-<template v-if="hasPermission('InventoryManager') || hasPermission('Inventory')">
+<template>
     <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
         @click="showingInventory = !showingInventory">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -20,12 +20,6 @@ import MyTransition from '@/Components/MyTransition.vue';
 import { Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
-const{userPermissions} = defineProps({
-    userPermissions:Array
-})
 const showingInventory = ref(false)
 
-function hasPermission(permission){
-    return userPermissions.includes(permission)
-}
 </script>

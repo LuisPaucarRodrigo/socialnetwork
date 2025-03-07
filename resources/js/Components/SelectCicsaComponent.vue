@@ -11,6 +11,15 @@
 import { router } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 
+
+const props = defineProps({
+    currentSelect: {
+        type: String,
+        required: true
+    },
+    type: String
+});
+
 const SotOptions = [
     {
         optionName: 'Proceso',
@@ -51,13 +60,6 @@ const SotOptions = [
 ]
 
 
-const props = defineProps({
-    currentSelect: {
-        type: String,
-        required: true
-    },
-    type: String
-});
 
 const selectedOption = ref(props.currentSelect);
 

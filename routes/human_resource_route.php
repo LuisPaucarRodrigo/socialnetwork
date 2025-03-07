@@ -1,5 +1,6 @@
 <?php
 
+use App\Constants\RolesConstants;
 use App\Http\Controllers\DocumentSpreedSheetController;
 use App\Http\Controllers\HumanResource\ControlEmployees;
 use App\Http\Controllers\HumanResource\DocumentController;
@@ -12,7 +13,7 @@ use App\Http\Controllers\HumanResource\VacationController;
 use Illuminate\Routing\Route as RoutingRoute;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('permission:HumanResourceManager')->group(function () {
+Route::middleware('permission:'.implode('|', RolesConstants::HR_MODULE))->group(function () {
     Route::get('/management_employees/information_additional', [ManagementEmployees::class, 'create'])->name('management.employees.create');
     Route::post('/management_employees/information_additional/create', [ManagementEmployees::class, 'store'])->name('management.employees.store');
     Route::get('/management_employees/edit/{id}', [ManagementEmployees::class, 'edit'])->name('management.employees.edit');
@@ -100,7 +101,7 @@ Route::middleware('permission:HumanResourceManager')->group(function () {
     Route::post('/document_rrhh_status/insurance_exp_date', [DocumentSpreedSheetController::class, 'insurance_exp_date'])->name('document.rrhh.status.in_expdate');
 });
 
-Route::middleware('permission:HumanResourceManager|HumanResource')->group(function () {
+Route::middleware('permission:'.implode('|', RolesConstants::HR_MODULE))->group(function () {
     Route::get('/management_employees/index', [ManagementEmployees::class, 'index'])->name('management.employees');
     Route::get('/management_employees/information_additional/details/{id}', [ManagementEmployees::class, 'details'])->name('management.employees.show');
     Route::get('/management_employees/information_additional/details/download/{id}', [ManagementEmployees::class, 'download'])->name('management.employees.information.details.download');
