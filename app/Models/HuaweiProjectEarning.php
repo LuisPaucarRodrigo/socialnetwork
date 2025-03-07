@@ -16,8 +16,11 @@ class HuaweiProjectEarning extends Model
         'description',
         'huawei_project_id',
         'unit_price',
+        'unit',
         'quantity',
-        'state'
+        'observation',
+        'evidence',
+        'goal',
     ];
 
     protected $appends = [

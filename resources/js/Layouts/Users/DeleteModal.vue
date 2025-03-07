@@ -45,7 +45,6 @@ import { ref } from 'vue';
 const confirmingUserDeletion = defineModel('confirmingUserDeletion')
 const usersToDelete = defineModel('usersToDelete')
 const users = defineModel('users')
-
 const passwordInput = ref(null);
 
 const form = useForm({
@@ -69,12 +68,6 @@ async function deleteUser() {
             notifyError(`Network or other error: ${error}`)
         }
     }
-    // form.delete(route('users.destroy', { id: userId }), {
-    //     preserveScroll: true,
-    //     onSuccess: () => closeModal(),
-    //     onError: () => passwordInput.value.focus(),
-    //     onFinish: () => form.reset(),
-    // });
 };
 
 const closeModal = () => {
@@ -84,10 +77,11 @@ const closeModal = () => {
 
 function updateFrontEnd(action, data) {
     if (action === "delete") {
-        let validations = users.value.data || users.value
+        const validations = users.value.data || users.value
         const index = validations.findIndex(item => item.id === data)
         validations[index].splice(index, 1)
         closeModal()
     }
 }
+
 </script>

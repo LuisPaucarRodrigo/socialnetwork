@@ -1,6 +1,6 @@
   <template>
       <Head title="Agregar Entrada" />
-      <AuthenticatedLayout :redirectRoute="{route: 'huawei.inventory.show', params: {warehouse: 1} }">
+      <AuthenticatedLayout :redirectRoute="{route: 'huawei.inventory.show', params: {warehouse: 'Claro'} }">
         <template #header>
           <h1 class="text-lg font-semibold leading-7 text-gray-900">Agregar Entrada</h1>
         </template>
@@ -76,16 +76,18 @@
               </div>
 
               <div class="col-span-1">
-                <label for="warehouse" class="block text-sm font-medium text-gray-700">Almacén</label>
+                <label for="warehouse" class="block text-sm font-medium text-gray-700">Operador</label>
                 <select
                     id="warehouse"
                     v-model="form.warehouse"
                     @change="getInventory(form.warehouse)"
                     class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 >
-                    <option value="" disabled>Selecciona una almacén</option>
-                    <option value="1">Claro</option>
-                    <option value="2">Entel</option>
+                    <option value="" disabled>Seleccione un opeador</option>
+                    <option>Claro</option>
+                    <option>Entel</option>
+                    <option>Telefonica</option>
+
                 </select>
                 <InputError :message="form.errors.warehouse" />
             </div>
@@ -226,7 +228,7 @@
 
           </div>
           <div class="mt-6 flex items-center justify-end gap-x-3">
-              <Link :href="route('huawei.inventory.show', {warehouse: 1})" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-700">Cancelar</Link>
+              <Link :href="route('huawei.inventory.show', {warehouse: 'Claro'})" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-700">Cancelar</Link>
               <button @click="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-800">Guardar</button>
             </div>
         </div>
@@ -876,7 +878,7 @@ import InputFile from '@/Components/InputFile.vue';
                 showModal.value = true;
                 setTimeout(() => {
                     showModal.value = false;
-                    router.visit(route('huawei.inventory.show', {warehouse: 1}))
+                    router.visit(route('huawei.inventory.show', {warehouse: 'Claro'}))
                 }, 2000);
             },
             onError: (e) => {
@@ -894,7 +896,7 @@ import InputFile from '@/Components/InputFile.vue';
                 showModal.value = true;
                 setTimeout(() => {
                     showModal.value = false;
-                    router.visit(route('huawei.inventory.show', {warehouse: 1}))
+                    router.visit(route('huawei.inventory.show', {warehouse: 'Claro'}))
                 }, 2000);
             },
             onError: (e) => {
@@ -956,17 +958,7 @@ import InputFile from '@/Components/InputFile.vue';
                 materials.value = res.data.materials;
                 equipments.value = res.data.equipments;
                 ready.value = true;
-                switch (value){
-                    case '1':
-                        prefix.value = 'Claro';
-                        break;
-                    case '2':
-                        prefix.value = 'Entel';
-                        break;
-                    default:
-                        prefix.value = null;
-                        break;
-                }
+                prefix.value = value;
 
             })
             .catch(e => {

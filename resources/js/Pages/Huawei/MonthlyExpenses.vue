@@ -1680,7 +1680,7 @@ async function search_advance($data) {
 }
 
 function openExportExcel() {
-    const url = route("huawei.projects.general.expenses.export");
+    const url = route("huawei.projects.general.expenses.export", {mode: props.mode});
     window.location.href = url;
 }
 

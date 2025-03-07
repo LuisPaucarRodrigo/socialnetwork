@@ -11,7 +11,7 @@
             <UsersTable :users="users" :formSearch="formSearch" :platforms="platforms"
                 v-model:confirmingUserDeletion="confirmingUserDeletion" v-model:usersToDelete="usersToDelete" />
         </div>
-        <DeleteModal :confirmingUserDeletion="confirmingUserDeletion" v-model:usersToDelete="usersToDelete"
+        <DeleteModal v-model:confirmingUserDeletion="confirmingUserDeletion" v-model:usersToDelete="usersToDelete"
             v-model:users="users" />
     </AuthenticatedLayout>
 </template>

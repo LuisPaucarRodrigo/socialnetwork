@@ -81,12 +81,13 @@
 
         <!-- Select Almacén -->
         <div class="flex items-center gap-2">
-            <p>Almacén</p>
+            <p>Operador</p>
             <select v-model="selectedWarehouse" id="code" @change="changeWarehouse($event.target.value)"
                 class="block w-full min-w-[150px] rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                <option disabled>Seleccione Almacén</option>
-                <option value="1">Claro</option>
-                <option value="2">Entel</option>
+                <option disabled>Seleccione Operador</option>
+                <option>Claro</option>
+                <option>Entel</option>
+                <option>Telefonica</option>
             </select>
         </div>
 

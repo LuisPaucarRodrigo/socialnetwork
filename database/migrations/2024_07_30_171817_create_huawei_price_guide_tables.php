@@ -15,10 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('code');
             $table->string('description');
+            $table->string('unit');
             $table->double('b1');
             $table->double('b2');
             $table->double('b3');
             $table->double('b4');
+            $table->foreignId('cost_center_id')->constrained('cost_centers')->onDelete('cascade');
             $table->timestamps();
         });
             //buena paucar

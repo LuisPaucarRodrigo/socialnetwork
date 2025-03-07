@@ -48,7 +48,7 @@
     </template>
 
     <MyTransition :transitiondemonstration="showHuawei">
-        <Link class="w-full" :href="route('huawei.quickmaterials')">Inventario Internos</Link>
+        <Link class="w-full" :href="route('huawei.quickmaterials')">Inventario Interno</Link>
     </MyTransition>
     <MyTransition :transitiondemonstration="showHuawei">
         <Link class="w-full" :href="route('huawei.internalguides')">Guías Internas</Link>

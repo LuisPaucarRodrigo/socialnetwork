@@ -17,7 +17,6 @@
             <PurchaseNavigation :userPermissions="$page.props.userPermissions" />
             <ProjectsNavigation :userPermissions="$page.props.userPermissions" />
             <FinanceNavigation :userPermissions="$page.props.userPermissions" />
-
             <!-- <DocumentGestionNavigation :userPermissions="$page.props.userPermissions" :auth="$page.props.auth"/> -->
             <BillingNavigation :userPermissions="$page.props.userPermissions" />
             <FleetNavigation :userPermissions="$page.props.userPermissions" />
