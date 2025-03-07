@@ -118,6 +118,10 @@ class RolesConstants
         'ProjectBacklogManager',
         'ProjectBacklog',
     ];
+    public const padmexpen_submodule = [
+        'ProjectAdmExpensesManager',
+        'ProjectAdmExpenses',
+    ];
     
     public const PROJECT_MODULE = [
         'ProjectManager',
@@ -130,6 +134,7 @@ class RolesConstants
         ...self::ppropext_submodule,
         ...self::pchecklist_submodule,
         ...self::pbacklog_submodule,
+        ...self::padmexpen_submodule,
     ];
 
     //FINANCE
