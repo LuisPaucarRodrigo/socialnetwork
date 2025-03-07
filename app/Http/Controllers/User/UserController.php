@@ -17,7 +17,7 @@ class UserController extends Controller
     public function index_user()
     {
         return Inertia::render('Users/Index', [
-            'user' => User::with(['employee:id,user_id'])->paginate(20)
+            'user' => User::with(['role','employee:id,user_id'])->paginate(20)
         ]);
     }
 
@@ -25,7 +25,7 @@ class UserController extends Controller
     {
         $searchQuery = $request->searchQuery;
         $platform = $request->platform;
-        $user = User::with(['employee:id,user_id'])->where(function ($query) use ($searchQuery) {
+        $user = User::with(['role', 'employee:id,user_id'])->where(function ($query) use ($searchQuery) {
             $query->where('name', 'like', "%$searchQuery%")
                 ->orWhere('dni', 'like', "%$searchQuery%");
         });

@@ -7,6 +7,7 @@
                     <TableHeaderFilter labelClass="text-[11px]" label="Platform" :options="platforms"
                         v-model="formSearch.platform" width="w-44" />
                 </TableTitle>
+                <TableTitle>Rol</TableTitle>
                 <TableTitle>Email</TableTitle>
                 <TableTitle>DNI</TableTitle>
                 <TableTitle>Telefono</TableTitle>
@@ -17,6 +18,7 @@
             <tr v-for="user in users.data || users" :key="user.id" class="text-gray-700">
                 <TableRow>{{ user.name }}</TableRow>
                 <TableRow>{{ user.platform }}</TableRow>
+                <TableRow>{{ user.role?.name }}</TableRow>
                 <TableRow>{{ user.email }}</TableRow>
                 <TableRow>{{ user.dni }}</TableRow>
                 <TableRow>{{ user.phone }}</TableRow>
