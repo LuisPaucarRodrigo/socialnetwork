@@ -38,7 +38,7 @@ class HandleInertiaRequests extends Middleware
         $userModules = [];
         $userSubmodules = [];
         if($user) {
-            $userPermissions = $user->load('role.permissions')->role->permissions;
+            $userPermissions = $user->onePermission();
             foreach (RolesConstants::MODULES as $module) {
                 foreach (constant("\\App\\Constants\\RolesConstants::$module") as $perm) { 
                     if ($userPermissions->contains('name', $perm)) {
