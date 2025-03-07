@@ -748,6 +748,7 @@ class PextController extends Controller
                 'fixedOrAdditional' => $pex->fixedOrAdditional == 1 ? 0 : 1
             ]);
         }
+
         return response()->json(true, 200);
     }
 
@@ -832,4 +833,18 @@ class PextController extends Controller
             ]
         ]);
     }
+
+    public function onthlyExpensePext()
+    {
+        $listCost = [4,5];
+        $projects = Project::where('cost_line_id', 2)
+            ->whereIn('cost_center_id', $listCost)
+            ->where('initial_budget', '>', 0)
+            ->whereHas('preproject')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return response()->json($projects, 200);
+    }
+
+    public function swapExpensesMonthly() {}
 }

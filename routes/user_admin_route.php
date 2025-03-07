@@ -28,7 +28,7 @@ Route::middleware('permission:UserManager')->group(function () {
     Route::get('users/edit/{id}', [UserController::class, 'edit'])->name('users.edit');
     Route::put('users/update/{id}', [UserController::class, 'update'])->name('users.update');
     Route::get('users/details/{id}', [UserController::class, 'details'])->name('users.details');
-    Route::delete('users/delete/{id}', [UserController::class, 'delete'])->name('users.destroy');
+    Route::post('users/delete/{id}', [UserController::class, 'delete'])->name('users.destroy');
 
     Route::get('rols', [ManagementRolsController::class, 'rols_index'])->name('rols.index');
     Route::post('rols/store', [ManagementRolsController::class, 'store'])->name('rols.store');

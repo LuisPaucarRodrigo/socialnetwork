@@ -55,7 +55,6 @@
     </Modal>
 </template>
 <script setup>
-import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
 import MyTransition from '@/Components/MyTransition.vue';
 import { Link } from '@inertiajs/vue3';

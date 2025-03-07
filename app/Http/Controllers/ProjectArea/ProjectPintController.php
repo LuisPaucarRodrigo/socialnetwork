@@ -123,6 +123,21 @@ class ProjectPintController extends Controller
         $projectConstants = new ProjectConstantsPext();
 
         $template = $projectConstants->generateTemplate($data);
+
+        $currentMonth = now()->month;
+        $currentYear = now()->year;
+
+        $listCost = [4, 5];
+        $existingPreproject = Preproject::where('cost_line_id', 2)
+            ->whereIn('cost_center_id', $listCost)
+            ->whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->first();
+
+        if ($existingPreproject) {
+            return response()->json('Ya existe un proyecto creado en este mes y año.', 422);
+        }
+
         DB::beginTransaction();
         try {
             //Preproject 
@@ -149,17 +164,17 @@ class ProjectPintController extends Controller
 
             //CicsaAssignation
             CicsaAssignation::create([
-                "assignation_date"=> $preproject->date,
-                "project_name"=> $project->description,
-                "customer"=> $preproject->customer->business_name,
-                "project_code"=> $preproject->code,
-                "cpe"=> $preproject->cpe,
-                "zone"=> 'Arequipa',
-                "zone2"=> null,
-                "manager"=> 'Valery Joana Montalvan Huillca',
-                "user_name"=> 'Valery Joana Montalvan Huillca',
-                "user_id"=> 9,
-                "project_id"=> $project->id,
+                "assignation_date" => $preproject->date,
+                "project_name" => $project->description,
+                "customer" => $preproject->customer->business_name,
+                "project_code" => $preproject->code,
+                "cpe" => $preproject->cpe,
+                "zone" => 'Arequipa',
+                "zone2" => null,
+                "manager" => 'Valery Joana Montalvan Huillca',
+                "user_name" => 'Valery Joana Montalvan Huillca',
+                "user_id" => 9,
+                "project_id" => $project->id,
             ]);
 
             DB::commit();
