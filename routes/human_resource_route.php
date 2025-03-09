@@ -143,7 +143,7 @@ Route::middleware('permission:'.implode('|', RolesConstants::HR_MODULE))->group(
 
     //Document Spreed Sheet
     Route::any('/documents_rrhh_status', [DocumentSpreedSheetController::class, 'index'])->name('document.rrhh.status');
-    Route::get('/documents_rrhh_status/{emp_id?}', [DocumentSpreedSheetController::class, 'employee_document_alarms'])->name('employee.document.rrhh.status');
+    Route::get('/documents_rrhh_status/{emp_id}/{type}', [DocumentSpreedSheetController::class, 'employee_document_alarms'])->name('employee.document.rrhh.status');
     Route::get('/document_rrhh_status_alarm', [DocumentSpreedSheetController::class, 'employeesDocumentAlarms'])->name('document.rrhh.status.alarms');
 
 

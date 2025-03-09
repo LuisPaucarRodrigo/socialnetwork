@@ -191,25 +191,48 @@ class DocumentSpreedSheetController extends Controller
     }
 
 
-    public function employee_document_alarms($emp_id)
+    public function employee_document_alarms($emp_id, $type)
     {
-        $employee = Employee::with([
-            'document_registers',
-            'contract:id,state,employee_id,hire_date,discount_sctr',
-        ])
-            ->select(
-                'id',
-                'name',
-                'lastname',
-                'phone1',
-                'email',
-                'email_company',
-                'dni',
-                'l_policy',
-                'sctr_exp_date',
-                'policy_exp_date',
-            )
-            ->find($emp_id);
+        $employee = null;
+        if($type === 'employees'){
+            $employee = Employee::with([
+                'document_registers',
+                'contract:id,state,employee_id,hire_date,discount_sctr',
+            ])
+                ->select(
+                    'id',
+                    'name',
+                    'lastname',
+                    'phone1',
+                    'email',
+                    'email_company',
+                    'dni',
+                    'l_policy',
+                    'sctr_exp_date',
+                    'policy_exp_date',
+                )
+                ->find($emp_id);
+        }
+        else if($type === 'external') {
+            $employee = ExternalEmployee::with([
+                'document_registers',
+            ])
+                ->select(
+                    'id',
+                    'name',
+                    'lastname',
+                    'phone1',
+                    'email',
+                    'email_company',
+                    'dni',
+                    'sctr',
+                    'l_policy',
+                    'sctr_exp_date',
+                    'policy_exp_date',
+                    'cost_line_id'
+                )
+                ->find($emp_id);
+        }
 
         if ($employee) {
             $formattedDr = $employee->document_registers->mapWithKeys(function ($dr) {
