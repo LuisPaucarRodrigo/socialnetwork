@@ -35,9 +35,14 @@ class Employee extends Model
 
     //RELATIONS
 
+    public function getTypeAttribute()
+    {
+        return 'employees';
+    }
+
     public function user()
     {
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function contract()

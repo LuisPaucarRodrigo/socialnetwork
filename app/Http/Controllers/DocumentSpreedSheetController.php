@@ -318,12 +318,13 @@ class DocumentSpreedSheetController extends Controller
             $employees = Employee::whereHas('contract', function ($query) {
                 $query->where('state', 'Active');
             })->orderBy('name')->get();
-            $employees->each->setAppends(['documents_about_to_expire']);
+            $employees->each->setAppends(['documents_about_to_expire', 'type']);
             $employees = $employees->filter(function ($item) {
                 return $item->documents_about_to_expire > 0;
             })->values()->all();
+
             $e_employees = ExternalEmployee::orderBy('lastname')->get();
-            $e_employees->each->setAppends(['documents_about_to_expire']);
+            $e_employees->each->setAppends(['documents_about_to_expire', 'type']);
             $e_employees = $e_employees->filter(function ($item) {
                 return $item->documents_about_to_expire > 0;
             })->values()->all();

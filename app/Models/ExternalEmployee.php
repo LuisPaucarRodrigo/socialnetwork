@@ -34,6 +34,12 @@ class ExternalEmployee extends Model
     //     'policy_about_to_expire',
     // ];
 
+    public function getTypeAttribute()
+    {
+        return 'external';
+    }
+
+
     public function document_registers()
     {
         return $this->hasMany(DocumentRegister::class, 'e_employee_id');
