@@ -264,40 +264,41 @@ class AdditionalCostsController extends Controller
             ]);
 
             //Automatic swap
-            if ($cost->is_accepted) {
-                $project = Project::with('preproject.quote')->find($cost->project_id);
-                if ($cost->expense_type === PintConstants::COMBUSTIBLE_UM) {
-                    $newdata = collect($cost->toArray())->except(['id', 'is_accepted'])->toArray();
-                    StaticCost::create($newdata);
-                    $cost->photo && $this->file_move($cost->photo);
-                    $cost->delete();
-                }
-                if ($cost->expense_type === PintConstants::COMBUSTIBLE_GEP) {
-                    if ($project->cost_line_id === 1 && $project->cost_center_id === 2) {
-                        $newdata = collect($cost->toArray())->except(['id', 'is_accepted'])->toArray();
-                        StaticCost::create($newdata);
-                        $cost->photo && $this->file_move($cost->photo);
-                        $cost->delete();
-                    } else {
-                        //find mantto project}
-                        $projectGEP = Project::where('cost_line_id', 1)->where('cost_center_id', 2)
-                            ->whereHas('preproject', function ($query) use ($project) {
-                                $query->whereHas('quote', function ($subquery) use ($project) {
-                                    $subquery->where('date', $project->preproject?->quote?->date)
-                                        ->where('deliverable_time', $project->preproject?->quote?->deliverable_time);
-                                });
-                            })
-                            ->first();
-                        if ($projectGEP) {
-                            $newdata = collect($cost->toArray())->except(['id', 'is_accepted'])->toArray();
-                            $newdata['project_id'] = $projectGEP->id;
-                            StaticCost::create($newdata);
-                            $cost->photo && $this->file_move($cost->photo);
-                            $cost->delete();
-                        }
-                    }
-                }
-            }
+            // if ($cost->is_accepted) {
+            //     $project = Project::with('preproject.quote')->find($cost->project_id);
+            //     if ($cost->expense_type === PintConstants::COMBUSTIBLE_UM) {
+            //         $newdata = collect($cost->toArray())->except(['id', 'is_accepted'])->toArray();
+            //         StaticCost::create($newdata);
+            //         $cost->photo && $this->file_move($cost->photo);
+            //         $cost->delete();
+            //     }
+            //     if ($cost->expense_type === PintConstants::COMBUSTIBLE_GEP) {
+            //         if ($project->cost_line_id === 1 && $project->cost_center_id === 2) {
+            //             // from gep project
+            //             $newdata = collect($cost->toArray())->except(['id', 'is_accepted'])->toArray();
+            //             StaticCost::create($newdata);
+            //             $cost->photo && $this->file_move($cost->photo);
+            //             $cost->delete();
+            //         } else {
+            //             // from mantto project
+            //             $projectGEP = Project::where('cost_line_id', 1)->where('cost_center_id', 2)
+            //                 ->whereHas('preproject', function ($query) use ($project) {
+            //                     $query->whereHas('quote', function ($subquery) use ($project) {
+            //                         $subquery->where('date', $project->preproject?->quote?->date)
+            //                             ->where('deliverable_time', $project->preproject?->quote?->deliverable_time);
+            //                     });
+            //                 })
+            //                 ->first();
+            //             if ($projectGEP) {
+            //                 $newdata = collect($cost->toArray())->except(['id', 'is_accepted'])->toArray();
+            //                 $newdata['project_id'] = $projectGEP->id;
+            //                 StaticCost::create($newdata);
+            //                 $cost->photo && $this->file_move($cost->photo);
+            //                 $cost->delete();
+            //             }
+            //         }
+            //     }
+            // }
         }
         $updatedCosts = AdditionalCost::whereIn('id', $data['ids'])
             ->with(['project', 'provider:id,company_name'])
@@ -353,7 +354,8 @@ class AdditionalCostsController extends Controller
             $newData = collect($ac->toArray())->except(['id', 'project_id'])->toArray();
             $newData['project_id'] = $data['project_id'];
             $ac->photo && $this->file_move_toAdditional($ac->photo);
-            $newData['fixedOrAdditional'] = ($ac->expense_type === PintConstants::COMBUSTIBLE_GEP || $ac->expense_type === PintConstants::COMBUSTIBLE_UM) ? true : false;
+            // $newData['fixedOrAdditional'] = ($ac->expense_type === PintConstants::COMBUSTIBLE_GEP || $ac->expense_type === PintConstants::COMBUSTIBLE_UM) ? true : false;
+            $newData['fixedOrAdditional'] = false;
             PextProjectExpense::create($newData);
         }
         AdditionalCost::whereIn('id', $data['ids'])->delete();
