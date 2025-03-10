@@ -34,6 +34,12 @@ class ExternalEmployee extends Model
     //     'policy_about_to_expire',
     // ];
 
+    public function getTypeAttribute()
+    {
+        return 'external';
+    }
+
+
     public function document_registers()
     {
         return $this->hasMany(DocumentRegister::class, 'e_employee_id');
@@ -72,6 +78,14 @@ class ExternalEmployee extends Model
             $total += 1;
         }
         return $total;
+    }
+
+    public function getNoDocumentsAttribute()
+    {
+        $missing = Subdivision::where('section_id', '<=', 10)
+            ->whereNotIn('id', $this->document_registers()->pluck('subdivision_id'))
+            ->exists();
+        return $missing;
     }
 
     public function cost_line()
