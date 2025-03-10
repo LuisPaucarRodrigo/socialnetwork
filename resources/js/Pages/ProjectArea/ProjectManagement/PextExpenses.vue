@@ -106,10 +106,10 @@
                         :href="route('projectmanagement.pext.expenses.index', { project_id: project_id, fixedOrAdditional: true })">
                     G.Fijos
                     </Link>
-                    <!-- <Link class="rounded-md px-4 py-2 text-center text-sm text-white bg-green-600 hover:bg-green-500"
+                    <Link class="rounded-md px-4 py-2 text-center text-sm text-white bg-green-600 hover:bg-green-500"
                         :href="route('projectmanagement.pext.expense_dashboard', { project_id: project_id })">
                     Resumen de Gasto
-                    </Link> -->
+                    </Link>
                 </div>
 
                 <div v-if="hasPermission('HumanResourceManager')" class="sm:hidden">
@@ -152,7 +152,7 @@
                     </dropdown>
                 </div>
                 <div class="flex space-x-3">
-                    <Search v-model:search="filterForm.search" fields="Ruc,Fecha Documento,Descripción,Monto" />
+                    <Search v-model:search="filterForm.search" fields="Ruc,Fecha Documento,Descripción,Monto,Numero de Operación" />
                 </div>
             </div>
         </div>

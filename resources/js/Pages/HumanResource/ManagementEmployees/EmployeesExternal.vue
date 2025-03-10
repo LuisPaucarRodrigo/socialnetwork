@@ -6,7 +6,7 @@
             Empleados Externos
         </template>
 
-        <div class="min-w-full rounded-lg shadow">
+        <div class="min-w-full">
             <div class="mt-6 sm:flex sm:gap-4 sm:justify-between">
                 <div class="flex items-center justify-between gap-x-3 w-full">
                     <div v-if="hasPermission('HumanResourceManager')" class="hidden sm:flex sm:items-center space-x-4">
@@ -15,153 +15,69 @@
                         </PrimaryButton>
                     </div>
                 </div>
-
             </div>
-            <div class="overflow-auto h-[72vh] rounded-lg shadow">
-                <table class="w-full">
-                    <thead class="sticky top-0 z-20">
-                        <tr
-                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500 w-auto">
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Perfil
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                <div class="w-[190px]">
-                                    <TableHeaderCicsaFilter label="Linea de Negocio" labelClass="text-gray-600"
-                                        :options="cost_line" v-model="formSearch.cost_line" />
-                                </div>
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Nombre
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Apellido
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                DNI
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Telefono
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de Nacimiento
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Direccion
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Correo
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Correo Empresarial
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Salario
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Sctr
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Curriculum
-                            </th>
+            <TableStructure>
+                <template #thead>
+                    <tr>
+                        <TableTitle>Perfil</TableTitle>
+                        <TableTitle>
+                            <div class="w-[190px]">
+                                <TableHeaderCicsaFilter label="Linea de Negocio" labelClass="text-gray-600"
+                                    :options="cost_line" v-model="formSearch.cost_line" />
+                            </div>
+                        </TableTitle>
+                        <TableTitle>Nombre</TableTitle>
+                        <TableTitle>Apellido</TableTitle>
+                        <TableTitle>DNI</TableTitle>
+                        <TableTitle>Telefono</TableTitle>
+                        <TableTitle>Fecha de Nacimiento</TableTitle>
+                        <TableTitle>Dirección</TableTitle>
+                        <TableTitle>Correo</TableTitle>
+                        <TableTitle>Correo Empresarial</TableTitle>
+                        <TableTitle>Salario</TableTitle>
+                        <TableTitle>Sctr</TableTitle>
+                        <TableTitle>Curriculum</TableTitle>
+                        <TableTitle></TableTitle>
+                    </tr>
+                </template>
+                <template #tbody>
+                    <tr v-for="employee in employees" :key="employee.id" class="text-gray-700">
+                        <TableRow>
+                            <img :src="employee.cropped_image" alt="Empleado" class="w-12 h-13 rounded-full">
+                        </TableRow>
+                        <TableRow>{{ employee?.cost_line?.name }}</TableRow>
+                        <TableRow>{{ employee.name }}</TableRow>
+                        <TableRow>{{ employee.lastname }}</TableRow>
+                        <TableRow>{{ employee.dni }}</TableRow>
+                        <TableRow>{{ employee.phone1 }}</TableRow>
+                        <TableRow>{{ employee.birthdate }}</TableRow>
+                        <TableRow :width="'w-[150px]'">{{ employee.address }}</TableRow>
+                        <TableRow>{{ employee.email }}</TableRow>
+                        <TableRow>{{ employee.email_company }}</TableRow>
+                        <TableRow>{{ employee.salary }}</TableRow>
+                        <TableRow>{{ employee.sctr }}</TableRow>
+                        <TableRow>
+                            <button v-if="employee.curriculum_vitae" @click="handlerPreview(employee.id)">
+                                <EyeIcon class="w-4 h-4 text-teal-600" />
+                            </button>
+                            <span v-else>-</span>
+                        </TableRow>
+                        <TableRow>
+                            <div class="flex space-x-3 justify-center">
+                                <button v-if="hasPermission('HumanResourceManager')" type="button"
+                                    @click="modal_employees_external(employee)">
+                                    <PencilSquareIcon class="w-5 h-5 text-yellow-400" />
 
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="employee in employees" :key="employee.id" class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
-                                <img :src="employee.cropped_image" alt="Empleado" class="w-12 h-13 rounded-full">
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
-                                <p class="text-gray-900">{{ employee?.cost_line?.name }}</p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900">{{ employee.name }}</p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900">{{ employee.lastname }}</p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900">{{ employee.dni }}</p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900">{{ employee.phone1 }}</p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900">
-                                    {{ employee.birthdate }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900">
-                                    {{ employee.address }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900">
-                                    {{ employee.email }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900">
-                                    {{ employee.email_company }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900">
-                                    {{ employee.salary }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900">
-                                    {{ employee.sctr ? 'Si' : 'No' }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <button v-if="employee.curriculum_vitae" @click="handlerPreview(employee.id)">
-                                    <EyeIcon class="w-4 h-4 text-teal-600" />
                                 </button>
-                                <span v-else>-</span>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <div class="flex space-x-3 justify-center">
-                                    <button v-if="hasPermission('HumanResourceManager')" type="button"
-                                        @click="modal_employees_external(employee)"
-                                        class="text-blue-900">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                        </svg>
-                                    </button>
-                                    <button v-if="hasPermission('HumanResourceManager')" type="button"
-                                        @click="confirmUserDeletion(employee.id)"
-                                        class="text-blue-900">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                                <button v-if="hasPermission('HumanResourceManager')" type="button"
+                                    @click="confirmUserDeletion(employee.id)">
+                                    <TrashIcon class="w-5 h-5 text-red-500" />
+                                </button>
+                            </div>
+                        </TableRow>
+                    </tr>
+                </template>
+            </TableStructure>
         </div>
         <Modal :show="show_m_employee">
             <div class="p-6">
@@ -172,7 +88,8 @@
                     <div class="border-b border-gray-900/10 pb-12">
                         <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                             <div v-if="form.cropped_image" class="flex justify-center">
-                                <img :src="form.cropped_image" alt="Imagen Personal" class="rounded-full h-45 w-45 py-5">
+                                <img :src="form.cropped_image" alt="Imagen Personal"
+                                    class="rounded-full h-45 w-45 py-5">
                             </div>
                             <div class="sm:col-span-3">
                                 <InputLabel for="reentry_date">Foto de Usuario</InputLabel>
@@ -204,7 +121,7 @@
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         <option disabled value="">Seleccionar Linea de Negocio</option>
                                         <option v-for="item, i in costLines" :key="item.id" :value="item.id">{{ item
-                                            .name}}
+                                            .name }}
                                         </option>
                                     </select>
                                     <InputError :message="form.errors.cost_line_id" />
@@ -316,8 +233,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
-import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
-import { EyeIcon } from "@heroicons/vue/24/outline";
+import { EyeIcon, TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
 import ModalImage from '@/Layouts/ModalImage.vue';
 import InputFile from '@/Components/InputFile.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -328,6 +244,9 @@ import { ref, watch } from 'vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TableHeaderCicsaFilter from '@/Components/TableHeaderCicsaFilter.vue';
+import TableStructure from '@/Layouts/TableStructure.vue';
+import TableTitle from '@/Components/TableTitle.vue';
+import TableRow from '@/Components/TableRow.vue';
 
 const confirmingUserDeletion = ref(false);
 const employeeToDelete = ref(null);

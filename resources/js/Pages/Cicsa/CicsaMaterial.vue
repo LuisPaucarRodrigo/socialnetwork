@@ -2,12 +2,12 @@
 
     <Head title="CICSA Material" />
 
-    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
+    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: { type } }">
         <template #header>
-            {{ type==1 ? 'Pint' : 'Pext' }} - Materiales
+            {{ type == 1 ? 'Pint' : 'Pext' }} - Materiales
         </template>
         <Toaster richColors />
-        <div class="min-w-full rounded-lg shadow">
+        <div class="min-w-full">
             <div class="flex justify-end">
                 <!-- <a :href="route('material.export') + '?' + uniqueParam"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a> -->
@@ -23,169 +23,77 @@
                 </div>
             </div>
             <br>
-            <div class="overflow-x-auto h-[70vh]">
-                <table class="w-full whitespace-no-wrap">
-                    <thead>
-                        <tr
-                            class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Nombre de Proyecto
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Codigo de Proyecto
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Centro de Costos
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                CPE
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Lista de Materiales de Factibilidad
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Acciones
-                            </th>
+            <TableStructure>
+                <template #thead>
+                    <TableTitle>Nombre de Proyecto</TableTitle>
+                    <TableTitle>Codigo de Proyecto</TableTitle>
+                    <TableTitle>Centro de Costos</TableTitle>
+                    <TableTitle>CPE</TableTitle>
+                    <TableTitle>Lista de Materiales de Factibilidad</TableTitle>
+                    <TableTitle>Acciones</TableTitle>
+                </template>
+                <template #tbody>
+                    <template v-for="item in materials.data ?? materials" :key="item.id">
+                        <tr class="text-gray-700">
+                            <TableRow>{{ item.project_name }}</TableRow>
+                            <TableRow>{{ item.project_code }}</TableRow>
+                            <TableRow>{{ item.project?.cost_center?.name }}</TableRow>
+                            <TableRow>{{ item.cpe }}</TableRow>
+                            <TableRow>
+                                <button v-if="item?.cicsa_feasibility?.cicsa_feasibility_materials?.length > 0"
+                                    type="button"
+                                    @click="openMaterialsModal(item?.cicsa_feasibility?.cicsa_feasibility_materials)">
+                                    <EyeIcon class="w-5 h-5 text-green-600" />
+                                </button>
+                            </TableRow>
+                            <TableRow>
+                                <div class="flex space-x-3 justify-center">
+                                    <button
+                                        @click="openCreateSotModal(item.id, item?.cicsa_feasibility?.cicsa_feasibility_materials, item.project_name, item.cpe)">
+                                        <PlusCircleIcon class="w-5 h-5 text-green-600" />
+                                    </button>
+                                    <button v-if="item.cicsa_materials.length > 0" type="button"
+                                        @click="toggleDetails(item?.cicsa_materials)"
+                                        class="text-blue-900 whitespace-no-wrap">
+                                        <ChevronDownIcon v-if="materialRow !== item.id" class="w-6 h-6"/>
+                                        <ChevronUpIcon v-else class="w-6 h-6" />
+                                    </button>
+                                </div>
+                            </TableRow>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <template v-for="item in materials.data ?? materials" :key="item.id">
-                            <tr class=" text-gray-700">
-                                <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                    <p class="text-gray-900 text-center">
-                                        {{ item.project_name }}
-                                    </p>
-                                </td>
-                                <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                    <p class="text-gray-900 text-center">
-                                        {{ item.project_code }}
-                                    </p>
-                                </td>
-                                <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                    <p class="text-gray-900 text-center">
-                                        {{ item.project?.cost_center?.name }}
-                                    </p>
-                                </td>
-                                <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                    <p class="text-gray-900 text-center">
-                                        {{ item.cpe }}
-                                    </p>
-                                </td>
-                                <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] text-center">
-                                    <button v-if="item?.cicsa_feasibility?.cicsa_feasibility_materials?.length > 0"
-                                        type="button"
-                                        @click="openMaterialsModal(item?.cicsa_feasibility?.cicsa_feasibility_materials)">
+                        <template v-if="materialRow == item.id">
+                            <tr>
+                                <TableTitle :style="'bg-gray-200'"></TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Fecha de Recojo</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Numero de Guia</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Lista de Materiales Recibidos</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Acciones</TableTitle>
+                                <TableTitle :style="'bg-gray-200'"></TableTitle>
+                            </tr>
+                            <tr v-for="materialDetail in item.cicsa_materials" :key="materialDetail.id"
+                                class="bg-gray-100 text-center">
+                                <TableRow></TableRow>
+                                <TableRow>{{ formattedDate(materialDetail.pick_date) }}</TableRow>
+                                <TableRow>{{ materialDetail.guide_number }}</TableRow>
+                                <TableRow>
+                                    <button v-if="materialDetail?.cicsa_material_items?.length > 0" type="button"
+                                        @click="openMaterialsModal(materialDetail?.cicsa_material_items)">
                                         <EyeIcon class="w-5 h-5 text-green-600" />
                                     </button>
-                                </td>
-                                <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                    <div class="flex space-x-3 justify-center">
-                                        <button
-                                            @click="openCreateSotModal(item.id, item?.cicsa_feasibility?.cicsa_feasibility_materials, item.project_name, item.cpe)">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-green-600">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                            </svg>
-
-                                        </button>
-
-
-                                        <button v-if="item.cicsa_materials.length > 0" type="button"
-                                            @click="toggleDetails(item?.cicsa_materials)"
-                                            class="text-blue-900 whitespace-no-wrap">
-                                            <svg v-if="materialRow !== item.id" xmlns="http://www.w3.org/2000/svg"
-                                                fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                class="w-6 h-6">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                            </svg>
-                                            <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                class="w-6 h-6">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </td>
+                                </TableRow>
+                                <TableRow>
+                                    <button class="text-blue-900"
+                                        @click="openEditSotModal(materialDetail, item.cicsa_feasibility?.cicsa_feasibility_materials, item.project_name, item.cpe)">
+                                        <PencilSquareIcon class="w-5 h-5 text-amber-400" />
+                                    </button>
+                                </TableRow>
+                                <TableRow></TableRow>
                             </tr>
-                            <template v-if="materialRow == item.id">
-                                <tr
-                                    class="border-b bg-red-500 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
-                                        Fecha de Recojo
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
-                                        Numero de Guia
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-2text-xs font-semibold uppercase tracking-wider text-gray-400">
-                                        Lista de Materiales Recibidos
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
-                                        Acciones
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-200 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
-                                    </th>
-                                </tr>
-                                <tr v-for="materialDetail in item.cicsa_materials" :key="materialDetail.id"
-                                    class="bg-gray-100 text-center">
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                    </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <p class="text-gray-900 whitespace-no-wrap">
-                                            {{ formattedDate(materialDetail.pick_date) }}
-                                        </p>
-                                    </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <p class="text-gray-900 whitespace-no-wrap">
-                                            {{ materialDetail.guide_number }}
-                                        </p>
-                                    </td>
-                                    <td class="border-b border-gray-200 bg-white px-2 py-3 text-[13px] text-center">
-                                        <p class="text-gray-900 whitespace-no-wrap">
-                                            <button v-if="materialDetail?.cicsa_material_items?.length > 0"
-                                                type="button"
-                                                @click="openMaterialsModal(materialDetail?.cicsa_material_items)">
-                                                <EyeIcon class="w-5 h-5 text-green-600" />
-                                            </button>
-                                        </p>
-                                    </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <p class="text-gray-900 whitespace-no-wrap">
-                                            <button class="text-blue-900"
-                                                @click="openEditSotModal(materialDetail, item.cicsa_feasibility?.cicsa_feasibility_materials, item.project_name, item.cpe)">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                    stroke-width="1.5" stroke="currentColor"
-                                                    class="w-5 h-5 text-amber-400">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                                </svg>
-                                            </button>
-                                        </p>
-                                    </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                    </td>
-                                </tr>
-                            </template>
                         </template>
-                    </tbody>
-                </table>
-            </div>
+                    </template>
+
+                </template>
+            </TableStructure>
 
             <div v-if="materials.data"
                 class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
@@ -396,7 +304,8 @@
                         <InputLabel for="quantity">Cantidad
                         </InputLabel>
                         <div class="mt-2">
-                            <TextInput required type="number" v-model="material_item.quantity" id="quantity" step="0.01" />
+                            <TextInput required type="number" v-model="material_item.quantity" id="quantity"
+                                step="0.01" />
                         </div>
                     </div>
                 </div>
@@ -514,9 +423,12 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import { formattedDate, setAxiosErrors } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
-import { EyeIcon } from '@heroicons/vue/24/outline';
+import { EyeIcon, PlusCircleIcon, ChevronDownIcon, ChevronUpIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import { Toaster } from 'vue-sonner';
 import { notify, notifyError } from '@/Components/Notification';
+import TableStructure from '@/Layouts/TableStructure.vue';
+import TableTitle from '@/Components/TableTitle.vue';
+import TableRow from '@/Components/TableRow.vue';
 
 const { material, auth, searchCondition, type } = defineProps({
     material: Object,
@@ -724,7 +636,7 @@ function submitImportExcel() {
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('material.index', {type}), { searchQuery: $search });
+        const response = await axios.post(route('material.index', { type }), { searchQuery: $search });
         materials.value = response.data.material;
 
     } catch (error) {

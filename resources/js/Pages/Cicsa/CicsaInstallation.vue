@@ -5,7 +5,7 @@
     <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: { type } }">
         <template #header> {{ type == 1 ? 'Pint' : 'Pext' }} - Instalación PINT y PEXT </template>
         <Toaster richColors />
-        <div class="min-w-full rounded-lg shadow">
+        <div class="min-w-full">
             <div class="flex justify-between space-x-3">
                 <a :href="route('cicsa.installation.export', { type }) + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
@@ -21,214 +21,80 @@
                 </div>
             </div>
             <br />
-            <div class="overflow-x-auto h-[70vh]">
-                <table class="w-full whitespace-no_wrap">
-                    <thead>
-                        <tr
-                            class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Nombre de Proyecto
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Codigo de Proyecto
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Centro de Costos
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                CPE
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha PEXT
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha PINT
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Acta de Conformidad
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Informe
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Materiales Recibidos
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Materiales Liquidados
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de Envío de Informe
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Monto Proyectado sin IGV
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Observaciones
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Coordinador
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Encargado
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="item in installations.data ?? installations" :key="item.id" class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.project_name }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.project_code }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.project?.cost_center?.name }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cpe }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{
-                                        formattedDate(
-                                            item.cicsa_installation?.pext_date
-                                        )
-                                    }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{
-                                        formattedDate(
-                                            item.cicsa_installation?.pint_date
-                                        )
-                                    }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_installation?.conformity }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_installation?.report }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] text-center">
-                                <button v-if="item?.total_materials?.length > 0" type="button" @click="
-                                    openMaterialsModal(item.total_materials)
-                                    ">
-                                    <EyeIcon class="w-5 h-5 text-green-600" />
+            <TableStructure>
+                <template #thead>
+                    <TableTitle>Nombre del Proyecto</TableTitle>
+                    <TableTitle>Código del Proyecto</TableTitle>
+                    <TableTitle>Centro de Costos</TableTitle>
+                    <TableTitle>CPE</TableTitle>
+                    <TableTitle>Fecha PEXT</TableTitle>
+                    <TableTitle>Fecha PINT</TableTitle>
+                    <TableTitle>Acta de Conformidad</TableTitle>
+                    <TableTitle>Informe</TableTitle>
+                    <TableTitle>Materiales Recibidos</TableTitle>
+                    <TableTitle>Materiales Liquidados</TableTitle>
+                    <TableTitle>Fecha de Envío de Informe</TableTitle>
+                    <TableTitle>Monto Proyectado sin IGV</TableTitle>
+                    <TableTitle>Observaciones</TableTitle>
+                    <TableTitle>Coordinador</TableTitle>
+                    <TableTitle>Encargado</TableTitle>
+                    <TableTitle></TableTitle>
+                </template>
+                <template #tbody>
+                    <tr v-for="item in installations.data ?? installations" :key="item.id" class="text-gray-700">
+                        <TableRow>{{ item.project_name }}</TableRow>
+                        <TableRow>{{ item.project_code }}</TableRow>
+                        <TableRow>{{ item.project?.cost_center?.name }}</TableRow>
+                        <TableRow>{{ item.cpe }}</TableRow>
+                        <TableRow>{{ formattedDate(item.cicsa_installation?.pext_date) }}</TableRow>
+                        <TableRow>{{ formattedDate(item.cicsa_installation?.pint_date) }}</TableRow>
+                        <TableRow>{{ item.cicsa_installation?.conformity }}</TableRow>
+                        <TableRow>{{ item.cicsa_installation?.report }}</TableRow>
+                        <TableRow>
+                            <button v-if="item?.total_materials?.length > 0"
+                                @click="openMaterialsModal(item.total_materials)">
+                                <EyeIcon class="w-5 h-5 text-green-600" />
+                            </button>
+                        </TableRow>
+                        <TableRow>
+                            <button v-if="item?.cicsa_installation?.cicsa_installation_materials?.length > 0"
+                                @click="openInstMaterialsModal(item.cicsa_installation.cicsa_installation_materials)">
+                                <EyeIcon class="w-5 h-5 text-green-600" />
+                            </button>
+                        </TableRow>
+                        <TableRow>{{ formattedDate(item.cicsa_installation?.shipping_report_date) }}</TableRow>
+                        <TableRow>
+                            {{ item.cicsa_installation?.projected_amount ? `S/
+                            ${item.cicsa_installation.projected_amount.toFixed(2)}` : '' }}
+                        </TableRow>
+                        <TableRow>{{ item.cicsa_installation?.observation }}</TableRow>
+                        <TableRow>{{ item.cicsa_installation?.coordinator }}</TableRow>
+                        <TableRow>{{ item.cicsa_installation?.user_name }}</TableRow>
+                        <TableRow>
+                            <div class="flex space-x-3 justify-center">
+                                <button @click="openEditFeasibilityModal(
+                                    item.id,
+                                    item.project_name,
+                                    item.cpe,
+                                    item.cicsa_installation,
+                                    item.total_materials,
+                                    item?.cicsa_installation
+                                        ?.cicsa_installation_materials
+                                )">
+                                    <PencilSquareIcon class="w-5 h-5 text-amber-400" />
                                 </button>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] text-center">
-                                <button v-if="item?.cicsa_installation
-                                    ?.cicsa_installation_materials
-                                    ?.length > 0
-                                " type="button" @click="
-                                    openInstMaterialsModal(
-                                        item.cicsa_installation
-                                            .cicsa_installation_materials
-                                    )
-                                    ">
-                                    <EyeIcon class="w-5 h-5 text-green-600" />
-                                </button>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{
-                                        formattedDate(
-                                            item.cicsa_installation
-                                                ?.shipping_report_date
-                                        )
-                                    }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{
-                                        item.cicsa_installation
-                                            ?.projected_amount
-                                            ? "S/" +
-                                            item.cicsa_installation.projected_amount.toFixed(2)
-                                            : ""
-                                    }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_installation?.observation }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_installation?.coordinator }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_installation?.user_name }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <div class="flex space-x-3 justify-center">
-                                    <button class="text-blue-900" @click="
-                                        openEditFeasibilityModal(
-                                            item.id,
-                                            item.project_name,
-                                            item.cpe,
-                                            item.cicsa_installation,
-                                            item.total_materials,
-                                            item?.cicsa_installation
-                                                ?.cicsa_installation_materials
-                                        )
-                                        ">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                        </svg>
-                                    </button>
-                                    <a :href="route('cicsa.export.materials.summary', { ca_id: item.id })" class="w-5">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="size-5 text-green-500">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                                        </svg>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                                <a :href="route('cicsa.export.materials.summary', { ca_id: item.id })" class="w-5">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="size-5 text-green-500">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </TableRow>
+                    </tr>
+                </template>
+            </TableStructure>
 
             <div v-if="installations.data"
                 class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
@@ -254,15 +120,15 @@
                                     <option value="" disabled>Seleccionar Coordinador</option>
                                     <option v-for="opt in (
                                         type == 2
-                                            ? [ 'Valery Joana', 
-                                                'Maria Moscoso', 
-                                                'Angela Mayela'] 
-                                            : 
-                                        type == 1
-                                            ? [ 'Sheyla Rondón'] 
-                                            : []
-                                        )" :key="opt">
-                                            {{ opt }}
+                                            ? ['Valery Joana',
+                                                'Maria Moscoso',
+                                                'Angela Mayela']
+                                            :
+                                            type == 1
+                                                ? ['Sheyla Rondón']
+                                                : []
+                                    )" :key="opt">
+                                        {{ opt }}
                                     </option>
                                 </select>
                                 <InputError :message="form.errors.coordinator" />
@@ -389,7 +255,7 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="(
-                                                item, i
+item, i
                                             ) in pintList" :key="i" class="text-gray-700 bg-white text-sm">
                                         <td class="border-b border-slate-300 px-2 py-4">
                                             {{ item?.name }}
@@ -697,11 +563,14 @@ import SelectCicsaComponent from "@/Components/SelectCicsaComponent.vue";
 // import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
 import { formattedDate } from "@/utils/utils.js";
 import TextInput from "@/Components/TextInput.vue";
-import { EyeIcon } from "@heroicons/vue/24/outline";
+import { EyeIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { setAxiosErrors } from "@/utils/utils";
 import { ref, watch } from "vue";
 import { notify, notifyError } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
+import TableStructure from "@/Layouts/TableStructure.vue";
+import TableTitle from "@/Components/TableTitle.vue";
+import TableRow from "@/Components/TableRow.vue";
 
 
 const { installation, auth, searchCondition, type } = defineProps({

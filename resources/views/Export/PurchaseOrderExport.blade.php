@@ -9,6 +9,7 @@
             <th> Formato Maestro </th>
             <th> Item 3456 </th>
             <th> Presupuesto </th>
+            <th> Monto Proyectado sin IGV en Intalacion</th>
             <th> Encargado </th>
         </tr>
     </thead>
@@ -23,6 +24,7 @@
             <td> {{ $purchaseOrder?->master_format }} </td>
             <td> {{ $purchaseOrder?->item3456 }} </td>
             <td> {{ $purchaseOrder?->budget }} </td>
+            <td> {{ $purchaseOrder?->cicsa_assignation->cicsa_installation?->projected_amount }} </td>
             <td> {{ $purchaseOrder?->user_name }} </td>
         </tr>
         @endforeach

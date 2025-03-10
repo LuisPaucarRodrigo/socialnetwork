@@ -3,6 +3,7 @@
 namespace App\Exports\CicsaProcess;
 
 use App\Models\CicsaAssignation;
+use App\Models\CicsaInstallation;
 use App\Models\CicsaPurchaseOrder;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
@@ -20,9 +21,10 @@ class PurchaseOrderExport implements FromView, WithColumnWidths
         return view('Export.PurchaseOrderExport', [
             'purchaseOrders' => CicsaPurchaseOrder::with(['cicsa_assignation' => function ($query) {
                 $query->select('id', 'project_name', 'project_code', 'cpe')
-                ->whereHas('project', function ($subQuery) {
-                    $subQuery->where('cost_line_id', $this->type);
-                });
+                    ->whereHas('project', function ($subQuery) {
+                        $subQuery->where('cost_line_id', $this->type);
+                    })
+                    ->with('cicsa_installation:id,cicsa_assignation_id,projected_amount');
             }])->get()
         ]);
     }

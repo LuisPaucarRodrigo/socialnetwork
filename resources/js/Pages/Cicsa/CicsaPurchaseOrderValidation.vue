@@ -2,18 +2,19 @@
 
     <Head title="CICSA Validación" />
 
-    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
+    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: { type } }">
         <template #header>
-            {{ type==1 ? 'Pint' : 'Pext' }} - Validación de OC
+            {{ type == 1 ? 'Pint' : 'Pext' }} - Validación de OC
         </template>
         <Toaster richColors />
-        <div class="min-w-full rounded-lg shadow">
+        <div class="min-w-full">
             <div class="flex justify-between">
-                <a :href="route('cicsa.purchase_orders.validation.export', {type}) + '?' + uniqueParam"
+                <a :href="route('cicsa.purchase_orders.validation.export', { type }) + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
-                    <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)" placeholder="Buscar ..." />
-                    <SelectCicsaComponent currentSelect="Validación de OC" :type="type"/>
+                    <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
+                        placeholder="Buscar ..." />
+                    <SelectCicsaComponent currentSelect="Validación de OC" :type="type" />
                     <div id="search_fields" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Nombre,Codigo,CPE,OC,Observaciones
@@ -22,203 +23,72 @@
                 </div>
             </div>
             <br>
-            <div class="overflow-x-auto h-[70vh]">
-                <table class="w-full whitespace-no-wrap">
-                    <thead>
-                        <tr
-                            class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                            <th colspan="3"
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Nombre de Proyecto
-                            </th>
-                            <th colspan="3"
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Codigo de Proyecto
-                            </th>
-                            <th colspan="3"
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Centro de Costos
-                            </th>
-                            <th colspan="2"
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                CPE
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            </th>
+            <TableStructure>
+                <template #thead>
+                    <tr>
+                        <TableTitle :colspan="3">Nombre de Proyecto</TableTitle>
+                        <TableTitle :colspan="3">Codigo de Proyecto</TableTitle>
+                        <TableTitle :colspan="3">Centro de Costos</TableTitle>
+                        <TableTitle :colspan="2">CPE</TableTitle>
+                        <TableTitle></TableTitle>
+                    </tr>
+                </template>
+                <template #tbody>
+                    <template v-for="item in purchase_validations.data ?? purchase_validations" :key="item.id">
+                        <tr>
+                            <TableRow :colspan="3">{{ item.project_name }}</TableRow>
+                            <TableRow :colspan="3">{{ item.project_code }}</TableRow>
+                            <TableRow :colspan="3">{{ item.project?.cost_center?.name }}</TableRow>
+                            <TableRow :colspan="2">{{ item.cpe }}</TableRow>
+                            <TableRow>
+                                <div class="flex space-x-3 justify-center">
+                                    <button v-if="item.cicsa_purchase_order_validation.length > 0" type="button"
+                                        @click="toggleDetails(item?.cicsa_purchase_order_validation)">
+                                        <ChevronDownIcon v-if="validation_purchase_order_row !== item.id" class="w-6 h-6"/>
+                                        <ChevronUpIcon v-else class="w-6 h-6" />
+                                    </button>
+                                </div>
+                            </TableRow>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <template v-for="item in purchase_validations.data ?? purchase_validations" :key="item.id">
-
-                            <tr class="text-gray-700">
-                                <td colspan="3" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                    <p class="text-gray-900 text-center">
-                                        {{ item.project_name }}
-                                    </p>
-                                </td>
-                                <td colspan="3" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                    <p class="text-gray-900 text-center">
-                                        {{ item.project_code }}
-                                    </p>
-                                </td>
-                                <td colspan="3" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                    <p class="text-gray-900 text-center">
-                                        {{ item.project?.cost_center?.name }}
-                                    </p>
-                                </td>
-                                <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                    <p class="text-gray-900 text-center">
-                                        {{ item.cpe }}
-                                    </p>
-                                </td>
-                                <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                    <div class="flex space-x-3 justify-center">
-                                        <button v-if="item.cicsa_purchase_order_validation.length > 0" type="button"
-                                            @click="toggleDetails(item?.cicsa_purchase_order_validation)"
-                                            class="text-blue-900 whitespace-no-wrap">
-                                            <svg v-if="validation_purchase_order_row !== item.id"
-                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                            </svg>
-                                            <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                class="w-6 h-6">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </td>
+                        <template v-if="validation_purchase_order_row == item.id">
+                            <tr
+                                class="border-b bg-red-500 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                <TableTitle :style="'bg-gray-200'">Numero de OC</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Fecha de Validación</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Validacion de expediente</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Control de Materiales</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Supervisor</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Almacén</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Jefe</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Liquidador</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Superintendente</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Observaciones</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Encargado</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Acciones</TableTitle>
                             </tr>
-                            <template v-if="validation_purchase_order_row == item.id">
-                                <tr
-                                    class="border-b bg-red-500 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Numero de OC
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Fecha de Validación
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Validacion de expediente
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Control de Materiales
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Supervisor
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Almacén
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Jefe
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Liquidador
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Superintendente
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Observaciones
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Encargado
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-2 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Acciones
-                                    </th>
-
-                                </tr>
-                                <tr v-for="materialDetail in item.cicsa_purchase_order_validation"
-                                    :key="materialDetail.id" class="bg-gray-100">
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <p class="text-gray-900 text-center">
-                                            {{ materialDetail?.cicsa_purchase_order?.oc_number }}
-                                        </p>
-                                    </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <p class="text-gray-900 text-center">
-                                            {{ formattedDate(materialDetail?.validation_date) }}
-                                        </p>
-                                    </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <p class="text-gray-900 text-center">
-                                            {{ materialDetail?.file_validation }}
-                                        </p>
-                                    </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <p class="text-gray-900 text-center">
-                                            {{ materialDetail?.materials_control }}
-                                        </p>
-                                    </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <p class="text-gray-900 text-center">
-                                            {{ materialDetail?.supervisor }}
-                                        </p>
-                                    </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <p class="text-gray-900 text-center">
-                                            {{ materialDetail?.warehouse }}
-                                        </p>
-                                    </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <p class="text-gray-900 text-center">
-                                            {{ materialDetail?.boss }}
-                                        </p>
-                                    </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <p class="text-gray-900 text-center">
-                                            {{ materialDetail?.liquidator }}
-                                        </p>
-                                    </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <p class="text-gray-900 text-center">
-                                            {{ materialDetail?.superintendent }}
-                                        </p>
-                                    </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <p class="text-gray-900 text-center">
-                                            {{ materialDetail?.observations }}
-                                        </p>
-                                    </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <p class="text-gray-900 text-center">
-                                            {{ materialDetail?.user_name }}
-                                        </p>
-                                    </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] text-center">
-                                        <button class="text-blue-900" @click="openUpdateModal(materialDetail)">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                            </svg>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </template>
+                            <tr v-for="materialDetail in item.cicsa_purchase_order_validation" :key="materialDetail.id"
+                                class="bg-gray-100">
+                                <TableRow>{{ materialDetail?.cicsa_purchase_order?.oc_number }}</TableRow>
+                                <TableRow>{{ formattedDate(materialDetail?.validation_date) }}</TableRow>
+                                <TableRow>{{ materialDetail?.file_validation }}</TableRow>
+                                <TableRow>{{ materialDetail?.materials_control }}</TableRow>
+                                <TableRow>{{ materialDetail?.supervisor }}</TableRow>
+                                <TableRow>{{ materialDetail?.warehouse }}</TableRow>
+                                <TableRow>{{ materialDetail?.boss }}</TableRow>
+                                <TableRow>{{ materialDetail?.liquidator }}</TableRow>
+                                <TableRow>{{ materialDetail?.superintendent }}</TableRow>
+                                <TableRow>{{ materialDetail?.observations }}</TableRow>
+                                <TableRow>{{ materialDetail?.user_name }}</TableRow>
+                                <TableRow>
+                                    <button class="text-blue-900" @click="openUpdateModal(materialDetail)">
+                                        <PencilSquareIcon class="w-5 h-5 text-amber-400" />
+                                    </button>
+                                </TableRow>
+                            </tr>
                         </template>
-                    </tbody>
-                </table>
-            </div>
-
+                    </template>
+                </template>
+            </TableStructure>
             <div v-if="purchase_validations.data"
                 class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="purchase_validations.links" />
@@ -383,8 +253,12 @@ import { formattedDate, setAxiosErrors } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import { Toaster } from 'vue-sonner';
 import { notify, notifyError } from '@/Components/Notification';
+import TableStructure from '@/Layouts/TableStructure.vue';
+import TableTitle from '@/Components/TableTitle.vue';
+import TableRow from '@/Components/TableRow.vue';
+import { ChevronDownIcon, ChevronUpIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 
-const { purchase_validation, auth,searchCondition, type } = defineProps({
+const { purchase_validation, auth, searchCondition, type } = defineProps({
     purchase_validation: Object,
     auth: Object,
     searchCondition: {
@@ -461,7 +335,7 @@ async function submit() {
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('cicsa.purchase_orders.validation', {type}), { searchQuery: $search });
+        const response = await axios.post(route('cicsa.purchase_orders.validation', { type }), { searchQuery: $search });
         purchase_validations.value = response.data.purchase_validation;
     } catch (error) {
         console.error('Error searching:', error);
