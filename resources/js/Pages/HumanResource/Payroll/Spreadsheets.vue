@@ -5,7 +5,7 @@
         <template #header>
             Nomina de {{ payrolls.month }}
         </template>
-        <div class="min-w-full min-h-full overflow-hidden rounded-lg shadow">
+        <div class="min-w-full min-h-full overflow-hidden">
             <div class="mt-6 flex flex-col sm:flex-row sm:items-center justify-between sm:gap-x-3 gap-y-4">
                 <div class="flex items-center justify-between gap-x-6 w-full">
                     <div class="hidden sm:flex sm:items-center sm:space-x-2 pl-3">
@@ -60,398 +60,160 @@
                     </div>
                 </div>
             </div>
-            <div class="overflow-auto h-[70vh]">
-                <table class="w-full whitespace-no-wrap">
-                    <thead>
-                        <tr
-                            class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                DNI
-                            </th>
-                            <th
-                                class="sticky left-0 z-10 bg-amber-200 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 top-0 z-5">
-                                Nombre
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                REG. PEN
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                Fecha Ingreso
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-9 mx-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                Sueldo
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-9 mx-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                Pago por dias
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-9 mx-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                Descuento
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                Vac. Truncas
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                Ingreso
-                                Total
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                Tot.B.G.Sis. Pensionario
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                %.SNP
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                SNP/ONP
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                %.COM
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                %.Com. Sobre R.A.
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                % SEG
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                PRIMA SEGURO
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                % APORT. OBLIG.
-                            </th>
+            <TableStructure>
+                <template #thead>
+                    <tr
+                        class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                        <TableTitle>DNI</TableTitle>
+                        <th
+                            class="sticky left-0 z-10 bg-amber-200 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 top-0 z-5">
+                            Nombre
+                        </th>
+                        <TableTitle>REG. PEN</TableTitle>
+                        <TableTitle>Fecha Ingreso</TableTitle>
+                        <TableTitle>Sueldo</TableTitle>
+                        <TableTitle>Pago por días</TableTitle>
+                        <TableTitle>Descuento</TableTitle>
+                        <TableTitle>Vac. Truncas</TableTitle>
+                        <TableTitle>Ingreso Total</TableTitle>
+                        <TableTitle>Tot.B.G.Sis. Pensionario</TableTitle>
+                        <TableTitle>%.SNP</TableTitle>
+                        <TableTitle>SNP/ONP</TableTitle>
+                        <TableTitle>%.COM</TableTitle>
+                        <TableTitle>%.Com. Sobre R.A.</TableTitle>
+                        <TableTitle>% SEG</TableTitle>
+                        <TableTitle>PRIMA SEGURO</TableTitle>
+                        <TableTitle>% APORT. OBLIG.</TableTitle>
+                        <TableTitle>MONTO OBLIGA.</TableTitle>
+                        <TableTitle>DESCUENTO TOTAL</TableTitle>
+                        <TableTitle>Viáticos</TableTitle>
+                        <TableTitle>NETO PAGAR</TableTitle>
+                        <TableTitle>TOT. BASE GRAV. ESSAL.</TableTitle>
+                        <TableTitle>SALUD 9%</TableTitle>
+                        <TableTitle>VIDA LEY</TableTitle>
+                        <TableTitle>SCTR P</TableTitle>
+                        <TableTitle>SCTR S</TableTitle>
+                        <TableTitle>APORTE TOTAL</TableTitle>
 
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                MONT0 OBLIGA.
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                DESCUENTO TOTAL
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                Viaticos
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-green-200 px-9 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                NETO PAGAR
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-9 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                TOT. BASE GRAV. ESSAL.
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-9 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                SALUD 9%
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-9 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                VIDA LEY
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-9 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                SCTR P
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-9 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                SCTR S
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 sticky top-0 z-5">
-                                APORTE TOTAL
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="spreadsheet in spreadsheets" :key="spreadsheet.id" class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-nowrap">{{ spreadsheet.employee.dni }}</p>
-                            </td>
-                            <td class="sticky left-0 border-b bg-amber-200 px-5 py-5 text-sm">
+                    </tr>
+                </template>
+                <template #tbody>
+                    <tr v-for="spreadsheet in spreadsheets" :key="spreadsheet.id" class="text-gray-700">
+                        <TableRow>{{ spreadsheet.employee.dni }}</TableRow>
+                        <TableRow :style="'sticky left-0 bg-amber-200 whitespace-nowrap'">
+                            {{ spreadsheet.employee.name }} {{
+                                spreadsheet.employee.lastname }}
+                        </TableRow>
+                        <TableRow>{{ spreadsheet.pension.type }}</TableRow>
+                        <TableRow>{{ formattedDate(spreadsheet.hire_date) }}</TableRow>
+                        <TableRow>S/ {{ spreadsheet.basic_salary.toFixed(2) }}</TableRow>
+                        <TableRow>S/ {{ spreadsheet.payment_until_today.toFixed(2) }}</TableRow>
+                        <TableRow>
+                            <div class="flex gap-x-3">
                                 <p class="text-gray-900 whitespace-nowrap">
-                                    {{ spreadsheet.employee.name }} {{
-                                        spreadsheet.employee.lastname }}
+                                    S/ {{ spreadsheet.discount.toFixed(2) }}
                                 </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <button @click="openDiscountModal(spreadsheet.id)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-amber-400">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </TableRow>
+                        <TableRow>S/ {{ spreadsheet.truncated_vacations.toFixed(2) }}</TableRow>
+                        <TableRow>S/ {{ spreadsheet.total_income.toFixed(2) }}</TableRow>
+                        <TableRow>S/ {{ spreadsheet.total_pension_base.toFixed(2) }}</TableRow>
+                        <TableRow>% {{ spreadsheet.snp.toFixed(2) }}</TableRow>
+                        <TableRow>S/ {{ spreadsheet.snp_onp.toFixed(2) }}</TableRow>
+                        <TableRow>% {{ spreadsheet.commission.toFixed(2) }}</TableRow>
+                        <TableRow>S/ {{ spreadsheet.commission_on_ra.toFixed(2) }}</TableRow>
+                        <TableRow>% {{ spreadsheet.seg.toFixed(2) }}</TableRow>
+                        <TableRow>S/ {{ spreadsheet.insurance_premium.toFixed(2) }}</TableRow>
+                        <TableRow>% {{ spreadsheet.mandatory_contribution.toFixed(2) }}</TableRow>
+                        <TableRow>S/ {{ spreadsheet.mandatory_contribution_amount.toFixed(2) }}</TableRow>
+                        <TableRow>S/ {{ spreadsheet.total_discount.toFixed(2) }}</TableRow>
+                        <TableRow>
+                            <div class="flex gap-x-3">
                                 <p class="text-gray-900 whitespace-nowrap">
-                                    {{ spreadsheet.pension.type }}
+                                    S/ {{
+                                        spreadsheet.amount_travel_expenses ?
+                                            spreadsheet.amount_travel_expenses.toFixed(2) :
+                                            '0.00'
+                                    }}
                                 </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-nowrap">
-                                    {{ formattedDate(spreadsheet.hire_date) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-nowrap">
-                                    S/ {{ spreadsheet.basic_salary.toFixed(2) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-nowrap">
-                                    S/ {{ spreadsheet.payment_until_today.toFixed(2) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <div class="flex gap-x-3">
-                                    <p class="text-gray-900 whitespace-nowrap">
-                                        S/ {{ spreadsheet.discount.toFixed(2) }}
-                                    </p>
-                                    <button @click="openDiscountModal(spreadsheet.id)">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-amber-400">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                        </svg>
+                                <template
+                                    v-if="!payrolls.state && spreadsheet.amount_travel_expenses && permissions('HumanResourceManager')">
+                                    <button
+                                        v-if="spreadsheet.payroll_detail_expense[1].operation_number && spreadsheet.payroll_detail_expense[1].operation_date"
+                                        @click="openPaymentTravelExpenseModal(spreadsheet.payroll_detail_expense[1])">
+                                        <EyeIcon class="w-5 h-5 text-teal-500" />
                                     </button>
-                                </div>
+                                    <button v-else
+                                        @click="openPaymentTravelExpenseModal(spreadsheet.payroll_detail_expense[1])">
+                                        <PencilSquareIcon class="w-5 h-5 text-amber-500" />
+                                    </button>
+                                </template>
+                            </div>
+                        </TableRow>
+                        <TableRow :style="'bg-green-200'">
+                            <div class="flex gap-x-3">
+                                <p class="text-gray-900 whitespace-nowrap">
+                                    S/ {{ spreadsheet.net_pay.toFixed(2) }}
+                                </p>
+                                <template v-if="!payrolls.state && permissions('HumanResourceManager')">
+                                    <button
+                                        v-if="!payrolls.state && permissions('HumanResourceManager') && spreadsheet.payroll_detail_expense[0].operation_number && spreadsheet.payroll_detail_expense[0].operation_date"
+                                        @click="openPaymentSalaryModal(spreadsheet.payroll_detail_expense[0])">
+                                        <EyeIcon class="w-5 h-5 text-teal-500" />
 
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-nowrap">
-                                    S/ {{ spreadsheet.truncated_vacations.toFixed(2) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-nowrap">
-                                    S/ {{
-                                        spreadsheet.total_income.toFixed(2)
-                                    }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-nowrap">
-                                    S/ {{ spreadsheet.total_pension_base.toFixed(2) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-nowrap">
-                                    % {{ spreadsheet.snp.toFixed(2) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-nowrap">
-                                    S/ {{ spreadsheet.snp_onp.toFixed(2) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-nowrap">
-                                    % {{ spreadsheet.commission.toFixed(2) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-nowrap">
-                                    S/ {{ spreadsheet.commission_on_ra.toFixed(2) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-nowrap">
-                                    % {{ spreadsheet.seg.toFixed(2) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-nowrap">
-                                    S/ {{ spreadsheet.insurance_premium.toFixed(2) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-nowrap">
-                                    % {{ spreadsheet.mandatory_contribution.toFixed(2) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-nowrap">
-                                    S/ {{ spreadsheet.mandatory_contribution_amount.toFixed(2) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-nowrap">
-                                    S/ {{
-                                        spreadsheet.total_discount.toFixed(2)
-                                    }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <div class="flex gap-x-3">
-                                    <p class="text-gray-900 whitespace-nowrap">
-                                        S/ {{
-                                            spreadsheet.amount_travel_expenses ?
-                                                spreadsheet.amount_travel_expenses.toFixed(2) :
-                                                '0.00'
-                                        }}
-                                    </p>
-                                    <template
-                                        v-if="!payrolls.state && spreadsheet.amount_travel_expenses && permissions('HumanResourceManager')">
-                                        <button
-                                            v-if="spreadsheet.payroll_detail_expense[1].operation_number && spreadsheet.payroll_detail_expense[1].operation_date"
-                                            @click="openPaymentTravelExpenseModal(spreadsheet.payroll_detail_expense[1])">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-teal-500">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            </svg>
-                                        </button>
-                                        <button v-else
-                                            @click="openPaymentTravelExpenseModal(spreadsheet.payroll_detail_expense[1])">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-amber-400">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                            </svg>
-                                        </button>
-                                    </template>
-                                </div>
-                            </td>
-                            <td class="border-b border-gray-200 bg-green-200 px-5 py-5 text-sm">
-                                <div class="flex gap-x-3">
-                                    <p class="text-gray-900 whitespace-nowrap">
-                                        S/ {{ spreadsheet.net_pay.toFixed(2) }}
-                                    </p>
-                                    <template v-if="!payrolls.state && permissions('HumanResourceManager')">
-                                        <button
-                                            v-if="!payrolls.state && permissions('HumanResourceManager') && spreadsheet.payroll_detail_expense[0].operation_number && spreadsheet.payroll_detail_expense[0].operation_date"
-                                            @click="openPaymentSalaryModal(spreadsheet.payroll_detail_expense[0])">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-teal-500">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            </svg>
-                                        </button>
-                                        <button v-else
-                                            @click="openPaymentSalaryModal(spreadsheet.payroll_detail_expense[0])">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-amber-400">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                            </svg>
-                                        </button>
-                                    </template>
+                                    </button>
+                                    <button v-else
+                                        @click="openPaymentSalaryModal(spreadsheet.payroll_detail_expense[0])">
+                                        <PencilSquareIcon class="w-5 h-5 text-amber-500" />
+                                    </button>
+                                </template>
 
-                                </div>
+                            </div>
+                        </TableRow>
 
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-nowrap">
-                                    S/ {{ spreadsheet.total_pension_base.toFixed(2) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-nowrap">
-                                    S/ {{ spreadsheet.healths.toFixed(2) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-nowrap">
-                                    S/ {{ spreadsheet.life_ley?.toFixed(2) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">
-                                    S/ {{ spreadsheet.discount_sctr ? spreadsheet.sctr_p.toFixed(2) : 0.00 }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">
-                                    S/ {{ spreadsheet.discount_sctr ? spreadsheet.sctr_s.toFixed(2) : 0.00 }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">
-                                    S/ {{ spreadsheet.total_contribution.toFixed(2) }}
-                                </p>
-                            </td>
-                        </tr>
-                        <tr class="sticky bottom-0 z-5">
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap"
-                                colspan="4">
-                                Totales:
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
-                                S/ {{ totals.sum_salary.toFixed(2) }}
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
-                                S/ {{ totals.sum_payment_until_today.toFixed(2) }}
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
-                                S/ {{ totals.sum_discount.toFixed(2) }}
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
-                                S/ {{ totals.sum_truncated_vacations.toFixed(2) }}
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
-                                S/ {{ totals.sum_total_income.toFixed(2) }}
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap"
-                                colspan="2">
-                                S/ {{ totals.sum_total_income.toFixed(2) }}
-                            </td>
+                        <TableRow>S/ {{ spreadsheet.total_pension_base.toFixed(2) }}</TableRow>
+                        <TableRow>S/ {{ spreadsheet.healths.toFixed(2) }}</TableRow>
+                        <TableRow>S/ {{ spreadsheet.life_ley?.toFixed(2) }}</TableRow>
+                        <TableRow>S/ {{ spreadsheet.discount_sctr ? spreadsheet.sctr_p.toFixed(2) : 0.00 }}
+                        </TableRow>
+                        <TableRow>S/ {{ spreadsheet.discount_sctr ? spreadsheet.sctr_s.toFixed(2) : 0.00 }}
+                        </TableRow>
+                        <TableRow>S/ {{ spreadsheet.total_contribution.toFixed(2) }}</TableRow>
+                    </tr>
+                    <tr class="sticky bottom-0 z-5">
+                        <TableRow :colspan="4">Totales:</TableRow>
+                        <TableRow>S/ {{ totals.sum_salary.toFixed(2) }}</TableRow>
+                        <TableRow>S/ {{ totals.sum_payment_until_today.toFixed(2) }}</TableRow>
+                        <TableRow>S/ {{ totals.sum_discount.toFixed(2) }}</TableRow>
+                        <TableRow>S/ {{ totals.sum_truncated_vacations.toFixed(2) }}</TableRow>
+                        <TableRow>S/ {{ totals.sum_total_income.toFixed(2) }}</TableRow>
+                        <TableRow :colspan="2">S/ {{ totals.sum_total_income.toFixed(2) }}</TableRow>
+                        <TableRow :colspan="2">S/ {{ totals.sum_snp_onp.toFixed(2) }}</TableRow>
+                        <TableRow :colspan="2">S/ {{ totals.sum_commission_on_ra.toFixed(2) }}</TableRow>
+                        <TableRow :colspan="2">S/ {{ totals.sum_insurance_premium.toFixed(2) }}</TableRow>
+                        <TableRow>S/ {{ totals.sum_mandatory_contribution_amount.toFixed(2) }}
+                        </TableRow>
+                        <TableRow>S/ {{ totals.sum_total_discount.toFixed(2) }}</TableRow>
+                        <TableRow>S/ {{ totals.sum_amount_travel_expenses.toFixed(2) }}</TableRow>
+                        <TableRow :style="'bg-green-200'">S/ {{ totals.sum_net_pay.toFixed(2) }}</TableRow>
 
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap"
-                                colspan="2">
-                                S/ {{ totals.sum_snp_onp.toFixed(2) }}
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap"
-                                colspan="2">
-                                S/ {{ totals.sum_commission_on_ra.toFixed(2) }}
-                            </td>
-
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap"
-                                colspan="2">
-                                S/ {{ totals.sum_insurance_premium.toFixed(2) }}
-                            </td>
-
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
-                                S/ {{ totals.sum_mandatory_contribution_amount.toFixed(2) }}
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
-                                S/ {{ totals.sum_total_discount.toFixed(2) }}
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
-                                S/ {{ totals.sum_amount_travel_expenses.toFixed(2) }}
-                            </td>
-                            <td class="border-b border-gray-200 bg-green-200 px-5 py-5 text-sm whitespace-nowrap">
-                                S/ {{ totals.sum_net_pay.toFixed(2) }}</td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
-                                S/ {{ totals.sum_total_income.toFixed(2) }}</td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
-                                S/ {{ totals.sum_health.toFixed(2) }}
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
-                                S/ {{ totals.sum_life_ley.toFixed(2) }}
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                S/ {{ totals.sum_sctr_p.toFixed(2) }}
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                S/ {{ totals.sum_sctr_s.toFixed(2) }}
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                S/ {{ totals.sum_total_contribution.toFixed(2) }}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                        <TableRow>S/ {{ totals.sum_total_income.toFixed(2) }}</TableRow>
+                        <TableRow>S/ {{ totals.sum_health.toFixed(2) }}</TableRow>
+                        <TableRow>S/ {{
+                            totals.sum_life_ley.toFixed(2) }}</TableRow>
+                        <TableRow>S/ {{ totals.sum_sctr_p.toFixed(2) }}</TableRow>
+                        <TableRow>S/ {{ totals.sum_sctr_s.toFixed(2) }}</TableRow>
+                        <TableRow>S/ {{ totals.sum_total_contribution.toFixed(2) }}</TableRow>
+                    </tr>
+                </template>
+            </TableStructure>
         </div>
         <Modal :show="showPaymentModal">
             <div class="p-6">
@@ -521,7 +283,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { formattedDate, setAxiosErrors } from '@/utils/utils';
-import { Head, router, useForm } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -532,6 +294,10 @@ import InputError from '@/Components/InputError.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { notify, notifyError, notifyWarning } from '@/Components/Notification';
 import ConfirmateModal from '@/Components/ConfirmateModal.vue';
+import TableTitle from '@/Components/TableTitle.vue';
+import TableRow from '@/Components/TableRow.vue';
+import { EyeIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
+import TableStructure from '@/Layouts/TableStructure.vue';
 
 const { spreadsheet, payroll, total, userPermissions } = defineProps({
     spreadsheet: Object,

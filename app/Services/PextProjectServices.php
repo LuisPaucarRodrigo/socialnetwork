@@ -121,7 +121,8 @@ class PextProjectServices
                 ->orWhere('doc_date', 'like', "%$searchTerms%")
                 ->orWhere('description', 'like', "%$searchTerms%")
                 ->orWhere('amount', 'like', "%$searchTerms%")
-                ->orWhere('doc_number', 'like', "%$searchTerms%");
+                ->orWhere('doc_number', 'like', "%$searchTerms%")
+                ->orWhere('operation_number', 'like', "%$searchTerms%");
         });
         return $expense;
     }

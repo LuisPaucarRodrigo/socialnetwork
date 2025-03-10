@@ -11,46 +11,6 @@
 import { router } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 
-const SotOptions = [
-    {
-        optionName: 'Proceso',
-        route: route('cicsa.index', {type: props.type}),
-    },
-    {
-        optionName: 'Asignación',
-        route: route('assignation.index', {type: props.type}),
-    },
-    {
-        optionName: 'Factibilidad PINT y PEXT',
-        route: route('feasibilities.index', {type: props.type}),
-    },
-    {
-        optionName: 'Materiales',
-        route: route('material.index', {type: props.type}),
-    },
-    {
-        optionName: 'Instalación PINT y PEXT',
-        route: route('cicsa.installation.index', {type: props.type}),
-    },
-    {
-        optionName: 'Orden de Compra',
-        route: route('purchase.order.index', { type: props.type}),
-    },
-    {
-        optionName: 'Validación de OC',
-        route: route('cicsa.purchase_orders.validation', {type:props.type}),
-    },
-    {
-        optionName: 'Orden de Servicio',
-        route: route('cicsa.service_orders', {type: props.type}),
-    },
-    {
-        optionName: 'Cobranza',
-        route: route('cicsa.charge_areas', {type: props.type}),
-    },
-]
-
-
 const props = defineProps({
     currentSelect: {
         type: String,
@@ -59,11 +19,53 @@ const props = defineProps({
     type: String
 });
 
+const SotOptions = [
+    {
+        optionName: 'Proceso',
+        route: route('cicsa.index', { type: props.type }),
+    },
+    {
+        optionName: 'Asignación',
+        route: route('assignation.index', { type: props.type }),
+    },
+    {
+        optionName: 'Factibilidad PINT y PEXT',
+        route: route('feasibilities.index', { type: props.type }),
+    },
+    {
+        optionName: 'Materiales',
+        route: route('material.index', { type: props.type }),
+    },
+    {
+        optionName: 'Instalación PINT y PEXT',
+        route: route('cicsa.installation.index', { type: props.type }),
+    },
+    {
+        optionName: 'Orden de Compra',
+        route: route('purchase.order.index', { type: props.type }),
+    },
+    {
+        optionName: 'Validación de OC',
+        route: route('cicsa.purchase_orders.validation', { type: props.type }),
+    },
+    {
+        optionName: 'Orden de Servicio',
+        route: route('cicsa.service_orders', { type: props.type }),
+    },
+    {
+        optionName: 'Cobranza',
+        route: route('cicsa.charge_areas', { type: props.type }),
+    },
+]
+
+
+
+
 const selectedOption = ref(props.currentSelect);
 
 const ToRoute = () => {
-    let currentOption = SotOptions.find(i=>i.optionName === selectedOption.value)
-    if (currentOption?.route){
+    let currentOption = SotOptions.find(i => i.optionName === selectedOption.value)
+    if (currentOption?.route) {
         router.visit(currentOption.route)
     } else {
         console.error('ruta no definida; define ps, no seas');

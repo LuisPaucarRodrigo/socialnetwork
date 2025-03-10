@@ -11,6 +11,7 @@ use App\Http\Requests\ChecklistRequest\ChecklistEppRequest;
 use App\Http\Requests\ChecklistRequest\ChecklistToolkitRequest;
 use App\Http\Requests\CostsRequest\AdditionalCostsApiRequest;
 use App\Models\AdditionalCost;
+use App\Models\Car;
 use App\Models\ChecklistCar;
 use App\Models\ChecklistDailytoolkit;
 use App\Models\ChecklistEpp;
@@ -104,6 +105,8 @@ class ChecklistsController extends Controller
 
             $data['user_id'] = Auth::user()->id;
             $data['user_name'] = Auth::user()->name;
+            $car = Car::find($data['car_id']);
+            $data['plate'] = $car->plate;
             ChecklistCar::create($data);
             return response()->json([], 200);
         } catch (Exception $e) {
