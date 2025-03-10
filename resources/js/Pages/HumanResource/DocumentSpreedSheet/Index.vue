@@ -431,7 +431,6 @@ const { employees, e_employees, sections, costLines } = defineProps({
   costLines: Array,
 });
 
-
 const employeesData = ref(employees)
 const e_employeesData = ref(e_employees)
 

@@ -334,6 +334,28 @@ class DocumentSpreedSheetController extends Controller
             return response()->json($e->getMessage(),500);
         }
     }
+    public function employeesNoDocumentAlarms()
+    {
+        try {
+            $employees = Employee::whereHas('contract', function ($query) {
+                $query->where('state', 'Active');
+            })->orderBy('name')->get();
+            $employees->each->setAppends(['no_documents', 'type']);
+            $employees = $employees->filter(function ($item) {
+                return $item->no_documents;
+            })->values()->all();
+
+            $e_employees = ExternalEmployee::orderBy('lastname')->get();
+            $e_employees->each->setAppends(['no_documents', 'type']);
+            $e_employees = $e_employees->filter(function ($item) {
+                return $item->no_documents;
+            })->values()->all();
+            $employees = array_merge($employees, $e_employees);
+            return response()->json($employees, 200);
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(),500);
+        }
+    }
 
 
     // public function updateDocReg () {
