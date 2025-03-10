@@ -35,9 +35,14 @@ class Employee extends Model
 
     //RELATIONS
 
+    public function getTypeAttribute()
+    {
+        return 'employees';
+    }
+
     public function user()
     {
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function contract()
@@ -155,6 +160,13 @@ class Employee extends Model
             $total += 1;
         }
         return $total;
+    }
+    public function getNoDocumentsAttribute()
+    {
+        $missing = Subdivision::where('section_id', '<=', 10)
+            ->whereNotIn('id', $this->document_registers()->pluck('subdivision_id'))
+            ->exists();
+        return $missing;
     }
 
     protected static function booted()

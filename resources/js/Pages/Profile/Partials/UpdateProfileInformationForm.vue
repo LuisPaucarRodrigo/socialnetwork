@@ -93,7 +93,7 @@ const form = useForm({
                     leave-active-class="transition ease-in-out"
                     leave-to-class="opacity-0"
                 >
-                    <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Guardar.</p>
+                    <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Datos actualizados.</p>
                 </Transition>
             </div>
         </form>

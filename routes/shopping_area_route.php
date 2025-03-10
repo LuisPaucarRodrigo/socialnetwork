@@ -1,12 +1,13 @@
 <?php
 
+use App\Constants\RolesConstants;
 use App\Http\Controllers\ProjectArea\ProjectManagementController;
 use App\Http\Controllers\ShoppingArea\ProviderController;
 use App\Http\Controllers\ShoppingArea\PurchaseOrdersController;
 use App\Http\Controllers\ShoppingArea\PurchaseRequestController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('permission:PurchasingManager')->group(function () {
+Route::middleware('permission:'.implode('|', RolesConstants::PURCHASING_MODULE))->group(function () {
 
     //Providers
     Route::get('/shopping_area/providers/create', [ProviderController::class, 'create'])->name('providersmanagement.create');
@@ -35,7 +36,7 @@ Route::middleware('permission:PurchasingManager')->group(function () {
     Route::post('/shopping_area/purchaseorders/state', [PurchaseOrdersController::class, 'state'])->name('purchaseorders.state');
 });
 
-Route::middleware('permission:PurchasingManager|Purchasing')->group(function () {
+Route::middleware('permission:'.implode('|', RolesConstants::PURCHASING_MODULE))->group(function () {
 
     //Providers
     Route::any('/shopping_area/providers', [ProviderController::class, 'index'])->name('providersmanagement.index');

@@ -33,7 +33,6 @@ class PintConstants
     public const ACTIVOS = 'Activos';
     public const GASTOS_FINANCIEROS = 'Gastos Financieros';
     public const OTROS = 'Otros';
-
     public const ALQUILER_DE_VEHICULOS = 'Alquiler de Vehículos';
     public const ALQUILER_DE_LOCALES = 'Alquiler de Locales';
     public const COMBUSTIBLE_UM = 'Combustible UM';
@@ -199,6 +198,44 @@ class PintConstants
         ];
     }
 
+    public static function admincostExpenseTypes(): array {
+        return [
+            self::HOSPEDAJE,
+            self::ENCOMIENDA,
+            self::CONSUMIBLES,
+            self::PASAJE_INTERPROVINCIAL,
+            self::TAXIS_Y_PASAJES,
+            self::BANDEOS,
+            self::PEAJE,
+            self::HERRAMIENTAS,
+            self::EQUIPOS,
+            self::DANOS_DE_VEHICULOS,
+            self::EPPS,
+            self::SEGUROS_Y_POLIZAS,
+            self::GASTOS_DE_REPRESENTACION,
+            self::COCHERAS,
+            self::APOYOS,
+            self::ACARREOS,
+            self::ACTIVOS,
+            self::GASTOS_FINANCIEROS,
+            self::ALQUILER_DE_VEHICULOS,
+            self::ALQUILER_DE_LOCALES,
+            self::COMBUSTIBLE_UM,
+            self::COMBUSTIBLE_GEP,
+            self::CELULARES,
+            self::PROVEIDOS,
+            self::TERCEROS,
+            self::VIATICOS,
+            self::REPOSICION_DE_EQUIPO,
+            self::ADICIONALES,
+            self::FILTROS_Y_ACEITES,
+            self::PLANILLA,
+            self::OTROS,
+        ];
+    }
+
+
+
     public static function scExpensesThatDontCount (): array { 
         return [
         PintConstants::COMBUSTIBLE_GEP,
@@ -279,6 +316,8 @@ class PintConstants
     public static function countScDocTypes(): int{return count(self::scDocTypes());}
     public static function countScZones() : int {return count(self::scZones());}
     public static function countScStatesTypes() : int {return count(self::scStatesTypes());}
+
+    public static function countAdmincostExpenseTypes() : int {return count(self::admincostExpenseTypes());}
 
     
 }

@@ -1,4 +1,4 @@
-<template v-if="hasPermission('UserManager')">
+<template>
     <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
         @click="showingUsersAndRols = !showingUsersAndRols">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -9,24 +9,23 @@
         </svg>
         <span class="mx-3">Usuarios y Roles</span>
     </a>
-    <MyTransition :transitiondemonstration="showingUsersAndRols">
+    <MyTransition v-if="subModulePermission(submodules.user_submodule, userSubModules)" :transitiondemonstration="showingUsersAndRols">
         <Link class="w-full" :href="route('users.index')">Usuarios</Link>
     </MyTransition>
-    <MyTransition :transitiondemonstration="showingUsersAndRols">
+    <MyTransition v-if="subModulePermission(submodules.roles_submodule, userSubModules)" :transitiondemonstration="showingUsersAndRols">
         <Link class="w-full" :href="route('rols.index')">Roles</Link>
     </MyTransition>
 </template>
 <script setup>
 import MyTransition from '@/Components/MyTransition.vue';
-import { Link } from '@inertiajs/vue3';
+import { subModulePermission } from '@/utils/roles/roles';
+import { Link, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
-const{userPermissions} = defineProps({
-    userPermissions:Array
-})
-const showingUsersAndRols = ref(false)
 
-function hasPermission(permission){
-    return userPermissions.includes(permission)
-}
+const showingUsersAndRols = ref(false)
+const {submodules} = usePage().props
+const {userSubModules} = usePage().props.auth
+
+
 </script>

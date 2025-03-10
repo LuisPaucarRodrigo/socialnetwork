@@ -1,5 +1,4 @@
-<template
-    v-if="hasPermission('ProjectManager') || hasPermission('Project') || hasPermission('HumanResourceManager') || hasPermission('HumanResource')">
+<template>
         <a class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#" @click="showCicsa = !showCicsa">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-6 h-6">
@@ -8,24 +7,23 @@
             </svg>
             <span class="mx-3">Facturación</span>
         </a>
-        <MyTransition :transitiondemonstration="showCicsa">
+        <MyTransition v-if="subModulePermission(submodules.billingpint_submodule, userSubModules)" :transitiondemonstration="showCicsa">
             <Link class="w-full" :href="route('cicsa.index', { type: 1 })">Pint</Link>
         </MyTransition>
-        <MyTransition :transitiondemonstration="showCicsa">
+        <MyTransition v-if="subModulePermission(submodules.billingpext_submodule, userSubModules)" :transitiondemonstration="showCicsa">
             <Link class="w-full" :href="route('cicsa.index', { type: 2 })">Pext</Link>
         </MyTransition>
     </template>
 <script setup>
 import MyTransition from '@/Components/MyTransition.vue';
-import { Link } from '@inertiajs/vue3';
+import { subModulePermission } from '@/utils/roles/roles';
+import { Link, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
-const { userPermissions } = defineProps({
-    userPermissions: Array
-})
+const {submodules} = usePage().props
+const {userSubModules} = usePage().props.auth
+
 const showCicsa = ref(false)
 
-function hasPermission(permission) {
-    return userPermissions.includes(permission)
-}
+
 </script>

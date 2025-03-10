@@ -1,5 +1,6 @@
 <?php
 
+use App\Constants\RolesConstants;
 use App\Http\Controllers\Finance\AccountStatementController;
 use App\Http\Controllers\Finance\BudgetUpdateController;
 use App\Http\Controllers\Finance\CostLineController;
@@ -9,7 +10,7 @@ use App\Http\Controllers\Finance\PaymentController;
 use App\Http\Controllers\Finance\SunatController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('permission:FinanceManager')->group(function () {
+Route::middleware('permission:'.implode('|', RolesConstants::FINANCE_MODULE))->group(function () {
     //Budget
     Route::post('/initialBudget/{project}/createUpdate', [BudgetUpdateController::class, 'store'])->name('budgetupdates.store');
     Route::put('/initialBudget/{project}/define', [BudgetUpdateController::class, 'define_initial_budget'])->name('initialbudget.define');
@@ -60,7 +61,7 @@ Route::middleware('permission:FinanceManager')->group(function () {
 
 });
 
-Route::middleware('permission:FinanceManager|Finance')->group(function () {
+Route::middleware('permission:'.implode('|', RolesConstants::FINANCE_MODULE))->group(function () {
     //Budget
     Route::get('/selectProject', [BudgetUpdateController::class, 'selectProject'])->name('selectproject.index');
     Route::get('/initialBudget/{project}', [BudgetUpdateController::class, 'initial'])->name('initialbudget.index');

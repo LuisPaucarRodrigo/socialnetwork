@@ -1,5 +1,6 @@
 <?php
 
+use App\Constants\RolesConstants;
 use App\Http\Controllers\HttpController;
 use App\Http\Controllers\ProjectArea\AdditionalCostsController;
 use App\Http\Controllers\ProjectArea\BacklogController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\ProjectArea\ChecklistsController;
 use App\Http\Controllers\ProjectArea\CicsaSectionController;
 use App\Http\Controllers\ProjectArea\CustomersController;
 use App\Http\Controllers\ProjectArea\LiquidationController;
+use App\Http\Controllers\ProjectArea\MonthProjectController;
 use App\Http\Controllers\ProjectArea\PextController;
 use App\Http\Controllers\ProjectArea\PreProjectController;
 use App\Http\Controllers\ProjectArea\ProjectDocumentController;
@@ -16,9 +18,11 @@ use App\Http\Controllers\ProjectArea\ProjectPintController;
 use App\Http\Controllers\ProjectArea\StaticCostsController;
 use App\Http\Controllers\ProjectArea\TaskManagementController;
 use App\Http\Controllers\ProjectArea\ServicesLiquidationsController;
+use App\Http\Controllers\ProjectArea\AdministrativeCostsController;
+
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('permission:ProjectManager')->group(function () {
+Route::middleware('permission:' . implode('|', RolesConstants::PROJECT_MODULE))->group(function () {
     //Customers
     Route::post('/customers/post', [CustomersController::class, 'store'])->name('customers.store');
     Route::put('/customers/{customer}/update', [CustomersController::class, 'update'])->name('customers.update');
@@ -78,7 +82,7 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::post('/projectPext/storeProjectAndAssignation', [PextController::class, 'storeProjectAndAssignation'])->name('projectmanagement.pext.storeProjectAndAssignation');
     // Route::get('/projectPext/requestCicsa/{zone?}', [PextController::class, 'requestCicsa'])->name('projectmanagement.pext.requestCicsa');
 
-    
+
     Route::post('/projectPext/expenses/storeOrUpdate/{expense_id?}', [PextController::class, 'expenses_storeOrUpdate'])->name('pext.expenses.storeOrUpdate');
     Route::delete('/projectPext/expenses/delete/{expense_id}', [PextController::class, 'expenses_delete'])->name('pext.expenses.delete');
     Route::put('/projectPext/expenses/expenseValidate/{expense_id}', [PextController::class, 'expense_validate'])->name('projectmanagement.pext.expenses.validate');
@@ -203,9 +207,36 @@ Route::middleware('permission:ProjectManager')->group(function () {
     Route::delete('/checklist/toolkit/{id}/destroy', [ChecklistsController::class, 'toolkit_destroy'])->name('checklist.toolkit.destroy');
     Route::delete('/checklist/dailytoolkit/{id}/destroy', [ChecklistsController::class, 'dailytoolkit_destroy'])->name('checklist.dailytoolkit.destroy');
     Route::delete('/checklist/epp/{id}/destroy', [ChecklistsController::class, 'epp_destroy'])->name('checklist.epp.destroy');
+
+
+    //Administrative projects expenses
+    Route::get('/monthProjects', [MonthProjectController::class, 'index'])->name('monthproject.index');
+    Route::post('/monthProjects_store/{mp_id?}', [MonthProjectController::class, 'store'])->name('monthproject.store');
+    Route::delete('/monthProjects_destroy/{mp_id}', [MonthProjectController::class, 'destroy'])->name('monthproject.destroy');
+
+
+    Route::post('/project/purchases_request/{month_project_id}/administrative_costs', [AdministrativeCostsController::class, 'store'])->name('projectmanagement.storeAdministrativeCost');
+    Route::get('/descargar_zip_administrative/{month_project_id}', [AdministrativeCostsController::class, 'downloadImages'])->name('zip.administrative.descargar');
+    Route::post('/project/administrative_costs_massive_update/', [AdministrativeCostsController::class, 'masiveUpdate'])->name('projectmanagement.administrativeCosts.massiveUpdate');
+    Route::get('/project/purchases_request/{month_project_id}/administrative_costs', [AdministrativeCostsController::class, 'index'])->name('projectmanagement.administrativeCosts');
+    Route::get('/administrativecosts_photo/{static_cost_id}', [AdministrativeCostsController::class, 'download_ac_photo'])->name('administrativeCosts.archive');
+    Route::post('/administrativecosts_advancesearch/{month_project_id}', [AdministrativeCostsController::class, 'search_costs'])->name('administrativeCosts.advance.search');
+    Route::get('/administrativecosts/excel_export/{month_project_id}', [AdministrativeCostsController::class, 'export'])->name('administrativeCosts.excel.export');
+    Route::post('/projectmanagement/purchases_request/administrative_costs/{additional_cost}/update', [AdministrativeCostsController::class, 'update'])->name('projectmanagement.updateAdministrativeCost');
+    Route::delete('/projectmanagement/purchases_request/{month_project_id}/administrative_costs/{additional_cost}/destroy', [AdministrativeCostsController::class, 'destroy'])->name('projectmanagement.deleteAdministrativeCost');
+
+
+
+
+
+
+
+
+
+
 });
 
-Route::middleware('permission:ProjectManager|Project')->group(function () {
+Route::middleware('permission:' . implode('|', RolesConstants::PROJECT_MODULE))->group(function () {
     //Customers
     Route::any('/customers', [CustomersController::class, 'index'])->name('customers.index');
     Route::get('/customers/search', [CustomersController::class, 'index'])->name('customers.search');
@@ -270,7 +301,7 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     Route::get('/projectPext/additionalOrFixed/expenses/{project_id}/index/{fixedOrAdditional}/{type}', [PextController::class, 'additional_expense_index'])->name('pext.additional.expense.index');
     Route::get('/projectPext/additionalOrFixed/expenses/general/{fixedOrAdditional}/index/{type}', [PextController::class, 'additional_expense_index_general'])->name('pext.additional.expense.general.index');
     Route::post('/projectPext/additionalOrFixed/getCicsaAssignation/search_zone', [PextController::class, 'getCicsaAssignation'])->name('pext.additional.expense.general.getCicsaAssignation');
-    
+
     Route::post('/projectPext/additionalOrFixed/expense/search/{project_id}', [PextController::class, 'search_advance_monthly_or_additional_expense'])->name('pext.monthly.additional.expense.search_advance');
     Route::post('/projectPext/additionalOrFixed/expense/general/search', [PextController::class, 'search_advance_additional_expense_general'])->name('pext.monthly.additional.expense.general.search_advance');
     Route::post('/projectPext/massive_update', [PextController::class, 'masiveUpdate'])->name('projectmanagement.pext.massiveUpdate');
@@ -342,5 +373,15 @@ Route::middleware('permission:ProjectManager|Project')->group(function () {
     //Costs Export
     Route::get('/additionalcost_photo/{additional_cost_id}', [AdditionalCostsController::class, 'download_ac_photo'])->name('additionalcost.archive');
     Route::get('/additionalcosts/excel_export/{project_id}', [AdditionalCostsController::class, 'export'])->name('additionalcost.excel.export');
+
+
+
+    Route::post('/projectmanagement/purchases_request/additional_costs/{additional_cost}/update', [AdditionalCostsController::class, 'update'])->name('projectmanagement.updateAdditionalCost');
+    Route::delete('/projectmanagement/purchases_request/{project_id}/additional_costs/{additional_cost}/destroy', [AdditionalCostsController::class, 'destroy'])->name('projectmanagement.deleteAdditionalCost');
+
+
     Route::get('/staticcosts/excel_export/{project_id}', [StaticCostsController::class, 'export'])->name('staticcost.excel.export');
+    Route::post('/projectmanagement/purchases_request/static_costs/{additional_cost}/update', [StaticCostsController::class, 'update'])->name('projectmanagement.updateStaticCost');
+    Route::delete('/projectmanagement/purchases_request/{project_id}/static_costs/{additional_cost}/destroy', [StaticCostsController::class, 'destroy'])->name('projectmanagement.deleteStaticCost');
+
 });

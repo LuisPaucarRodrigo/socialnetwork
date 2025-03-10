@@ -1,5 +1,4 @@
-const filterForm = ref({...initialFilterFormState});<template>
-
+<template>
     <Head title="Costos Fijos" />
     <AuthenticatedLayout :redirectRoute="{
         route: 'projectmanagement.purchases_request.index',

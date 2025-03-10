@@ -1,4 +1,4 @@
-<template v-if="hasPermission('ProjectManager') || hasPermission('Project')">
+<template>
     <a v-if="cicsasubSectionsPorVencer.length + cicsasubSectionsPorVencer7.length > 0"
         class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
         @click="showingProyectArea = (cicsashowingMembers && cicsashowingMembers7) ? false : !showingProyectArea; cicsashowingMembers = cicsashowingMembers7 = false">
@@ -18,35 +18,57 @@
         </svg>
         <span class="mx-3">Area de Proyectos</span>
     </a>
-    <MyTransition :transitiondemonstration="showingProyectArea">
+    <MyTransition 
+         v-if="subModulePermission(submodules.pclients_submodule, userSubModules)"
+        :transitiondemonstration="showingProyectArea">
         <Link class="w-full" :href="route('customers.index')">Clientes</Link>
     </MyTransition>
-    <MyTransition :transitiondemonstration="showingProyectArea">
+    <MyTransition 
+         v-if="subModulePermission(submodules.ppro_submodule, userSubModules)"
+        :transitiondemonstration="showingProyectArea">
         <Link class="w-full" :href="route('preprojects.titles')">PRO</Link>
     </MyTransition>
-    <MyTransition :transitiondemonstration="showingProyectArea">
+    <MyTransition 
+         v-if="subModulePermission(submodules.pprepint_submodule, userSubModules)"
+        :transitiondemonstration="showingProyectArea">
         <Link class="w-full" :href="route('preprojects.index', { type: 1 })">Anteproyectos Pint</Link>
     </MyTransition>
-    <MyTransition :transitiondemonstration="showingProyectArea">
+    <MyTransition 
+         v-if="subModulePermission(submodules.pprepext_submodule, userSubModules)"
+        :transitiondemonstration="showingProyectArea">
         <Link class="w-full" :href="route('preprojects.index', { type: 2 })">Anteproyectos Pext</Link>
     </MyTransition>
-    <MyTransition :transitiondemonstration="showingProyectArea">
+    <MyTransition 
+         v-if="subModulePermission(submodules.ppropint_submodule, userSubModules)"
+        :transitiondemonstration="showingProyectArea">
         <Link class="w-full" :href="route('projectmanagement.index')">Proyectos Pint</Link>
     </MyTransition>
-    <MyTransition :transitiondemonstration="showingProyectArea">
+    <MyTransition 
+         v-if="subModulePermission(submodules.ppropext_submodule, userSubModules)"
+        :transitiondemonstration="showingProyectArea">
         <Link class="w-full" :href="route('projectmanagement.pext.index')">Proyectos Pext</Link>
     </MyTransition>
-    <MyTransition :transitiondemonstration="showingProyectArea">
+    <MyTransition 
+         v-if="subModulePermission(submodules.padmexpen_submodule, userSubModules)"
+        :transitiondemonstration="showingProyectArea">
+        <Link class="w-full" :href="route('monthproject.index')">G. Administrativos</Link>
+    </MyTransition>
+    <MyTransition 
+         v-if="subModulePermission(submodules.pchecklist_submodule, userSubModules)"
+        :transitiondemonstration="showingProyectArea">
         <Link class="w-full" :href="route('checklist.index')">
         Checklist
         </Link>
     </MyTransition>
-    <MyTransition :transitiondemonstration="showingProyectArea">
+    <MyTransition 
+         v-if="subModulePermission(submodules.pbacklog_submodule, userSubModules)"
+        :transitiondemonstration="showingProyectArea">
         <Link class="w-full" :href="route('project.backlog.index')">
         Backlog
         </Link>
     </MyTransition>
-    <MyTransition :transitiondemonstration="showingProyectArea">
+    <!-- <MyTransition 
+        :transitiondemonstration="showingProyectArea">
         <div class="relative">
             <button @click="toggleMembersCicsa">
                 <span v-if="cicsasubSectionsPorVencer.length + cicsasubSectionsPorVencer7.length > 0"
@@ -88,26 +110,22 @@
                 </Link>
             </MyTransition>
         </div>
-    </template>
+    </template> -->
 </template>
 <script setup>
 import MyTransition from '@/Components/MyTransition.vue';
-import { Link } from '@inertiajs/vue3';
+import { subModulePermission } from '@/utils/roles/roles';
+import { Link, usePage } from '@inertiajs/vue3';
 import { onMounted, ref } from 'vue';
 
-const { userPermissions } = defineProps({
-    userPermissions: Array
-})
+const {submodules} = usePage().props
+const {userSubModules} = usePage().props.auth
 
 const showingProyectArea = ref(false)
 const cicsashowingMembers = ref(false)
 const cicsashowingMembers7 = ref(false)
 const cicsasubSectionsPorVencer = ref([])
 const cicsasubSectionsPorVencer7 = ref([])
-
-function hasPermission(permission) {
-    return userPermissions.includes(permission);
-}
 
 function toggleMembersCicsa(){
     cicsashowingMembers7.value = !cicsashowingMembers7.value
@@ -125,9 +143,8 @@ async function fetchCicsaSubSectionsCount() {
 }
 
 onMounted(() => {
-    if (hasPermission('ProjectManager') || hasPermission('Project')) {
-        fetchCicsaSubSectionsCount();
-        setInterval(fetchCicsaSubSectionsCount,60000)
-    }
+    fetchCicsaSubSectionsCount();
+    setInterval(fetchCicsaSubSectionsCount,60000)
+
 })
 </script>
