@@ -22,7 +22,7 @@ class AccountStatementImportRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'excel_file' => 'required|file|mimes:xlsx',
+            'excel_file' => 'required|file',
         ];
     }
 }

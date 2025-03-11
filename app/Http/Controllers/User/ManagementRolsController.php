@@ -14,7 +14,8 @@ class ManagementRolsController extends Controller
     public function rols_index()
     {
         return Inertia::render('Rols/Rol', [
-            'rols' => Role::with('permissions')->paginate(), 'permissions' => Permission::where('name','!=','UserManager')->get()
+            'rols' => Role::with('permissions')->paginate(),
+            'permissions' => Permission::all()
         ]);
     }
 

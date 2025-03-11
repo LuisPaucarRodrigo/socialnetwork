@@ -1,9 +1,10 @@
 <?php
 
+use App\Constants\RolesConstants;
 use App\Http\Controllers\CarManagement\CarsController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('permission:CarManager|Car')->group(function () {
+Route::middleware('permission:'.implode('|', RolesConstants::CAR_MODULE))->group(function () {
     Route::get('/fleet_cars/index', [CarsController::class, 'index'])->name('fleet.cars.index');
     Route::post('/fleet_cars/search', [CarsController::class, 'search'])->name('fleet.cars.search');
     
@@ -30,6 +31,7 @@ Route::middleware('permission:CarManager|Car')->group(function () {
     Route::get('/fleet_cars/show_checklist/send_images/{checklist}', [CarsController::class, 'sendChecklistImages'])->name('fleet.cars.show_checklist.send_images');
 
     Route::get('/fleet_cars/expiration/alarms',[CarsController::class,'alarms'])->name('fleet.cars.alarms');
-    Route::get('/fleet_cars/approve/alarms',[CarsController::class,'approveAlarms'])->name('fleet.cars.approveAlarms');
+    Route::get('/fleet_cars/specific_expiration/alarms/{car_id}',[CarsController::class,'specificAlarm'])->name('fleet.cars.specific.alarms');
+    // Route::get('/fleet_cars/approve/alarms',[CarsController::class,'approveAlarms'])->name('fleet.cars.approveAlarms');
     Route::put('/fleet_cars/show_checklist/accept_or_decline/{changelog}/{is_accepted}', [CarsController::class, 'acceptOrDecline'])->name('fleet.cars.show_checklist.accept_or_decline');
 });

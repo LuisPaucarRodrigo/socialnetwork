@@ -114,7 +114,7 @@
                   </div>
                 </td>
                 <td class="px-2 py-2 text-center">
-                  <a :href="route('employee.document.rrhh.status', { emp_id: emp.id })"
+                  <a :href="route('employee.document.rrhh.status', { emp_id: emp.id, type:'employees' })"
                     class="text-green-700 hover:underline hover:text-green-500 cursor-pointer">
                     Ver detalles
                   </a>
@@ -215,8 +215,9 @@
                   </div>
                 </td>
                 <td class="px-2 py-2 text-center">
-                  <a :href="'#'" class="text-green-700 hover:underline hover:text-green-500 cursor-pointer">
-
+                  <a :href="route('employee.document.rrhh.status', { emp_id: emp.id, type:'external' })" 
+                    class="text-green-700 hover:underline hover:text-green-500 cursor-pointer">
+                    Ver detalles
                   </a>
                 </td>
                 <!-- principalData -->
@@ -429,7 +430,6 @@ const { employees, e_employees, sections, costLines } = defineProps({
   sections: Object,
   costLines: Array,
 });
-
 
 const employeesData = ref(employees)
 const e_employeesData = ref(e_employees)

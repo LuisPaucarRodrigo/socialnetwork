@@ -16,11 +16,7 @@ Route::get('/', function () {
 
 Route::get('/scrape', [ScraperController::class, 'scrape']);
 
-Route::middleware(['auth', 'checkPlatformWeb'])->group(function () {
-
-    Route::get('/allfine', [ProfileController::class, 'allFine']);
-
-    
+Route::middleware(['auth', 'checkPlatformWeb'])->group(function () {   
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

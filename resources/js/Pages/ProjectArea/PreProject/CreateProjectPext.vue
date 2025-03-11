@@ -8,6 +8,7 @@
         <template #header>
             Anteproyecto y Proyecto PEXT CICSA GTD
         </template>
+        <Toaster richColors />
         <div class="min-w-full p-3 rounded-lg shadow">
             <form @submit.prevent="submit">
                 <div class="pt-1">
@@ -77,7 +78,7 @@
                                     Contactos de CICSA
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <div v-for="( item, i ) in form.contacts " :key="i" class="">
+                                    <div v-for="(item, i) in form.contacts" :key="i" class="">
                                         <div
                                             class="border-b col-span-8 border-gray-900/10 grid grid-cols-8 items-center my-2">
                                             <p class=" text-sm col-span-7 line-clamp-2">
@@ -139,9 +140,9 @@
                                         TOTAL
                                     </InputLabel>
                                     <p class="font-medium text-base tracking-wider mr-8 text-indigo-900">
-                                        S/. {{ form.services.reduce((a, item) => a + parseFloat(item.rent_price ?
+                                        S/. {{form.services.reduce((a, item) => a + parseFloat(item.rent_price ?
                                             item.rent_price :
-                                            0), 0) }}
+                                            0), 0)}}
                                     </p>
                                 </div>
                             </div>
@@ -150,7 +151,7 @@
                                     Empleados
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <div v-for="( item, i ) in form.employees " :key="i" class="">
+                                    <div v-for="(item, i) in form.employees" :key="i" class="">
                                         <div
                                             class="border-b col-span-8 border-gray-900/10 grid grid-cols-8 items-center my-2">
                                             <p class=" text-sm col-span-7 line-clamp-2 whitespace-nowrap">
@@ -171,7 +172,7 @@
                                 </InputLabel>
                                 <div class="mt-2">
                                     <div v-if="form.cpe !== '' && productsCPE.length > 0"
-                                        v-for="( item, i ) in productsCPE " :key="i" class="">
+                                        v-for="(item, i) in productsCPE" :key="i" class="">
                                         <div
                                             class="border-b col-span-8 border-gray-900/10 grid grid-cols-8 items-center my-2">
                                             <p class=" text-sm col-span-7 line-clamp-2 whitespace-nowrap">
@@ -225,7 +226,6 @@
                 message="El contacto ya fue añadido o es inválido" />
 
         </div>
-        <ConfirmCreateModal :confirmingcreation="showModal" itemType="Anteproyecto" />
         <ConfirmUpdateModal :confirmingupdate="showModalUpdate" itemType="Anteproyecto" />
 
 
@@ -233,19 +233,17 @@
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
-import Modal from '@/Components/Modal.vue';
 import { ref, watch } from 'vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { TrashIcon } from '@heroicons/vue/24/outline';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import axios from 'axios';
-import Employees from '@/Pages/HumanResource/ManagementEmployees/Employees.vue';
+import { setAxiosErrors } from '@/utils/utils';
+import { notify, notifyError } from '@/Components/Notification';
+import { Toaster } from 'vue-sonner';
 
 const showModal = ref(false)
 const showModalUpdate = ref(false)
@@ -309,20 +307,25 @@ watch(() => form.cost_center_id, () => {
     getEmployees(form.cost_center_id)
 })
 
-const submit = () => {
+async function submit() {
     let url = route('project.auto_store.pext')
-    form.post(url, {
-        onSuccess: () => {
-            showModal.value = true
-            setTimeout(() => {
-                showModal.value = false
-                router.visit(route('preprojects.index', { type: type }))
-            }, 2000);
-        },
-        onError: (e) => {
-            console.log(e);
+    try {
+        await axios.post(url, form)
+        notify('Creacion de nuevo preproyecto')
+        setTimeout(() => {
+            router.visit(route('preprojects.index', { type: type }))
+        }, 2000);
+    } catch (error) {
+        if (error.response) {
+            if (error.response.data.errors) {
+                setAxiosErrors(error.response.data.errors, form)
+            } else {
+                notifyError(`Server error: ${error.response.data}`);
+            }
+        } else {
+            notifyError("Network or other error:", error)
         }
-    })
+    }
 }
 
 
