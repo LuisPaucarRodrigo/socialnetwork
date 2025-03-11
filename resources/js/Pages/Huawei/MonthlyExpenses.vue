@@ -421,7 +421,7 @@
                             <TableAutocompleteFilter
                                 labelClass="text-[11px]"
                                 label="N° de Operación de E.C."
-                                :options="filterForm.ecOpNumbers"
+                                :options="op_numbers"
                                 v-model="filterForm.ecOpNumbers"
                                 width="w-48"
                             />
@@ -1636,6 +1636,7 @@ const openPreviewDocumentModal = (expense) => {
 const employees = props.data.employees;
 const expenseTypes = props.mode ? props.data.static_expense_types : props.data.variable_expense_types;
 const cdp_types = props.data.cdp_types;
+const op_numbers = props.summary.op_numbers;
 
 const filterForm = ref({
     search: props.search ?? "",
@@ -1649,7 +1650,7 @@ const filterForm = ref({
     exNoDate: false,
     opStartDate: "",
     opEndDate: "",
-    ecOpNumbers: props.summary.op_numbers,
+    ecOpNumbers: op_numbers,
     selectedStates: ["Aceptado", "Rechazado", "Pendiente", "Aceptado-Validado"],
     opNoDate: false,
 });
