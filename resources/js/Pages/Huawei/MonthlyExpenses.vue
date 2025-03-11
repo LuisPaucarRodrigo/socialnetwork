@@ -418,7 +418,13 @@
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
                         >
-                            N° de Operación de E.C.
+                            <TableAutocompleteFilter
+                                labelClass="text-[11px]"
+                                label="N° de Operación de E.C."
+                                :options="filterForm.ecOpNumbers"
+                                v-model="filterForm.ecOpNumbers"
+                                width="w-48"
+                            />
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
@@ -1632,7 +1638,7 @@ const expenseTypes = props.mode ? props.data.static_expense_types : props.data.v
 const cdp_types = props.data.cdp_types;
 
 const filterForm = ref({
-    search: "",
+    search: props.search ?? "",
     selectedEmployees: employees,
     selectedZones: props.summary.zones,
     selectedDus: props.summary.assigned_dius,
@@ -1643,6 +1649,7 @@ const filterForm = ref({
     exNoDate: false,
     opStartDate: "",
     opEndDate: "",
+    ecOpNumbers: props.summary.op_numbers,
     selectedStates: ["Aceptado", "Rechazado", "Pendiente", "Aceptado-Validado"],
     opNoDate: false,
 });
@@ -1661,6 +1668,7 @@ watch(
         filterForm.value.opStartDate,
         filterForm.value.opEndDate,
         filterForm.value.opNoDate,
+        filterForm.value.ecOpNumbers,
         filterForm.value.selectedStates,
     ],
     () => {

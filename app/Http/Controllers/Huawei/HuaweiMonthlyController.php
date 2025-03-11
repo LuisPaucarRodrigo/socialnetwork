@@ -137,6 +137,7 @@ class HuaweiMonthlyController extends Controller
 
         $summary = [
             'zones' => $expenses->pluck('zone')->unique()->values(),
+            'op_numbers' => $expenses->pluck('ec_op_number')->unique()->values(),
             'assigned_dius' => $expenses
                 ->map(fn($expense) => $expense->huawei_project?->assigned_diu)
                 ->unique()
@@ -211,6 +212,7 @@ class HuaweiMonthlyController extends Controller
 
         $summary = [
             'zones' => $expenses->pluck('zone')->unique()->values(),
+            'op_numbers' => $expenses->pluck('ec_op_number')->unique()->values(),
             'assigned_dius' => $filteredExpenses
                 ->map(fn($expense): mixed => $expense->huawei_project?->assigned_diu)
                 ->unique()
@@ -235,6 +237,7 @@ class HuaweiMonthlyController extends Controller
         $summary = [
             'expense_types' => count($mode ? self::$data['static_expense_types'] : self::$data['variable_expense_types']),
             'zones' => $expensesQuery->get()->pluck('zone')->unique()->values()->count(),
+            'op_numbers' => $expensesQuery->get()->pluck('ec_op_number')->unique()->values()->count(),
             'assigned_dius' => $filteredExpenses
                 ->map(fn($expense) => $expense->huawei_project?->assigned_diu)
                 ->unique()
@@ -243,7 +246,24 @@ class HuaweiMonthlyController extends Controller
             'cdp_types' => count(self::$data['cdp_types']),
         ];
 
-        // Aplicar filtros de base de datos
+        if (!empty($request->search)){
+            $searchTerm = strtolower($request->search);
+            $expensesQuery->where(function ($query) use ($searchTerm) {
+                $query->whereRaw('LOWER(expense_type) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(zone) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(employee) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(cdp_type) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(doc_number) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(op_number) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(ruc) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(description) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereRaw('LOWER(ec_op_number) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereHas('huawei_project', function ($query) use ($searchTerm) {
+                        $query->whereRaw('LOWER(assigned_diu) LIKE ?', ["%{$searchTerm}%"]);
+                    });
+            });
+        }
+
         if (count($request->selectedExpenseTypes) < $summary['expense_types']) {
             $expensesQuery->whereIn('expense_type', $request->selectedExpenseTypes);
         }
@@ -289,6 +309,9 @@ class HuaweiMonthlyController extends Controller
         }
         if ($request->opNoDate) {
             $expensesQuery->whereNull('ec_expense_date');
+        }
+        if (count($request->ecOpNumbers) < $summary['op_numbers']){
+            $expensesQuery->whereIn('ec_op_number', $request->ecOpNumbers);
         }
         $expenses = $expensesQuery->orderBy('expense_date', 'desc')
             ->with([
