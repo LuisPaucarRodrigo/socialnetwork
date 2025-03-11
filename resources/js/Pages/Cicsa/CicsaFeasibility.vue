@@ -126,8 +126,8 @@
                             </div>
                             <br>
                         </div>
-                        <div class="sm:col-span-2">
-                            <table class="w-full whitespace-nowrap">
+                        <div class="sm:col-span-2 overflow-x-auto">
+                            <table class="w-full whitespace-nowrap ">
                                 <thead>
                                     <tr
                                         class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
