@@ -1677,7 +1677,6 @@ watch(
     },
     { deep: true }
 );
-
 async function search_advance($data) {
     let url = route("huawei.projects.general.expenses.searchadvance", {mode: props.mode});
     try {

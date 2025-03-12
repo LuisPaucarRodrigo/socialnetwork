@@ -80,6 +80,8 @@ class HuaweiConstants
             "RH",
             "Yape",
             "Pendiente Factura",
+            "Plin",
+            "Transferencia"
         ];
     }
 }

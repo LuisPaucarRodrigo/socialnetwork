@@ -137,11 +137,11 @@ class HuaweiMonthlyController extends Controller
 
         $summary = [
             'zones' => $expenses->pluck('zone')->unique()->values(),
-            'op_numbers' => $expenses->pluck('ec_op_number')->unique()->values(),
+            'op_numbers' => $expenses->pluck('ec_op_number')->map(fn($item) => (string) $item)->uniqueStrict()->values(),
             'assigned_dius' => $expenses
                 ->map(fn($expense) => $expense->huawei_project?->assigned_diu)
-                ->unique()
                 ->filter()
+                ->uniqueStrict()
                 ->values(),
         ];
 
@@ -212,7 +212,7 @@ class HuaweiMonthlyController extends Controller
 
         $summary = [
             'zones' => $expenses->pluck('zone')->unique()->values(),
-            'op_numbers' => $expenses->pluck('ec_op_number')->unique()->values(),
+            'op_numbers' => $expenses->pluck('ec_op_number')->map(fn($item) => (string) $item)->uniqueStrict()->values(),
             'assigned_dius' => $filteredExpenses
                 ->map(fn($expense): mixed => $expense->huawei_project?->assigned_diu)
                 ->unique()
@@ -232,21 +232,25 @@ class HuaweiMonthlyController extends Controller
     {
         // Iniciar la consulta base de expenses
         $expensesQuery = HuaweiMonthlyExpense::orderBy('expense_date', 'desc');
-        $filteredExpenses = $expensesQuery->get()
-            ->filter(fn($expense) => $mode ? $expense->type === 'Fijo' : $expense->type === 'Variable');
+        $allExpenses = $expensesQuery->get();
+        
+        $filteredExpenses = $allExpenses->filter(fn($expense) => $mode ? $expense->type === 'Fijo' : $expense->type === 'Variable');
+        
         $summary = [
             'expense_types' => count($mode ? self::$data['static_expense_types'] : self::$data['variable_expense_types']),
-            'zones' => $expensesQuery->get()->pluck('zone')->unique()->values()->count(),
-            'op_numbers' => $expensesQuery->get()->pluck('ec_op_number')->unique()->values()->count(),
+            'zones' => $allExpenses->pluck('zone')->unique()->count(),
+            'op_numbers' => $allExpenses->pluck('ec_op_number')->map(fn($item) => (string) $item)->uniqueStrict()->count(), // <-- Aquí el cambio
             'assigned_dius' => $filteredExpenses
                 ->map(fn($expense) => $expense->huawei_project?->assigned_diu)
-                ->unique()
-                ->values()->count(),
+                ->filter()
+                ->uniqueStrict()
+                ->count(),
             'employees' => count(self::$data['employees']),
             'cdp_types' => count(self::$data['cdp_types']),
         ];
-
-        if (!empty($request->search)){
+        
+        
+        if (!empty($request->search)) {
             $searchTerm = strtolower($request->search);
             $expensesQuery->where(function ($query) use ($searchTerm) {
                 $query->whereRaw('LOWER(expense_type) LIKE ?', ["%{$searchTerm}%"])
@@ -310,7 +314,7 @@ class HuaweiMonthlyController extends Controller
         if ($request->opNoDate) {
             $expensesQuery->whereNull('ec_expense_date');
         }
-        if (count($request->ecOpNumbers) < $summary['op_numbers']){
+        if (count($request->ecOpNumbers) < $summary['op_numbers']) {
             $expensesQuery->whereIn('ec_op_number', $request->ecOpNumbers);
         }
         $expenses = $expensesQuery->orderBy('expense_date', 'desc')
@@ -738,10 +742,10 @@ class HuaweiMonthlyController extends Controller
     private function getClosestExpenseType($input)
     {
         $expenseTypes = array_merge(self::$data['static_expense_types'], self::$data['variable_expense_types']);
-        
+
         $bestMatch = null;
         $highestSimilarity = 0;
-    
+
         foreach ($expenseTypes as $type) {
             similar_text($input, $type, $percent);
             if ($percent > $highestSimilarity) {
@@ -749,8 +753,8 @@ class HuaweiMonthlyController extends Controller
                 $bestMatch = $type;
             }
         }
-    
+
         return $bestMatch ?: $input;
     }
-    
+
 }
