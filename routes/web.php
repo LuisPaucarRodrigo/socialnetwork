@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProjectArea\AdministrativeCostsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\ScraperController;
@@ -16,7 +17,9 @@ Route::get('/', function () {
 
 Route::get('/scrape', [ScraperController::class, 'scrape']);
 
-Route::middleware(['auth', 'checkPlatformWeb'])->group(function () {   
+Route::middleware(['auth', 'checkPlatformWeb'])->group(function () { 
+    
+    Route::get('/allfine', [AdministrativeCostsController::class, 'allfine']);
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
