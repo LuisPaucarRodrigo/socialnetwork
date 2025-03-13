@@ -275,33 +275,6 @@ class AdministrativeCostsController extends Controller
     }
 
 
-    public function allfine() {
-        $data = AdministrativeCost::all();
-        foreach($data as $item) {
-            if($item->photo) {
-                $this->file_move($item->photo);
-            }
-        }
-        return response()->json();
-    }
-
-
-
-
-
-
-    public function file_move($fileName)
-    {
-        $sourcePath = public_path('documents/staticcosts/' . $fileName);
-        $destinationPath = public_path('documents/administrativecosts/' . $fileName);
-        if (file_exists($sourcePath)) {
-            rename($sourcePath, $destinationPath);
-            return true;
-        }
-        return true;
-    }
-
-
     public function export($month_project_id)
     {
         return Excel::download(new AdministrativeCostsExport($month_project_id), 'Gastos_Administrativos.xlsx');
