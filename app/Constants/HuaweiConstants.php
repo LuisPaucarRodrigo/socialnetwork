@@ -48,40 +48,42 @@ class HuaweiConstants
     public static function getVariableExpenseTypes(): array
     {
         return [
-            "Adicional Camioneta",
-            "Consumibles",
+            "ADICIONAL CAMIONETA",
+            "ADICIONAL",
+            "CONSUMIBLES",
             "EPPS",
-            "Fletes",
-            "Herramientas",
-            "Hospedaje",
-            "Materiales",
-            "Movilidad",
-            "Transporte",
-            "Otros",
+            "FLETES",
+            "HERRAMIENTAS",
+            "HOSPEDAJE",
+            "MATERIALES",
+            "MOVILIDAD",
+            "TRANSPORTE",
+            "ALIMENTACION",
+            "COMBUSTIBLE",
+            "ENCOMIENDA",
+            "OTROS",
         ];
     }
 
     public static function getStaticExpenseTypes(): array
     {
         return [
-            "Alimentación",
-            "Combustible",
-            "Planilla",
+            "PLANILLA",
         ];
     }
 
     public static function getCDPTypes(): array
     {
         return [
-            "Efectivo",
-            "Depósito",
-            "Factura",
-            "Boleta",
+            "EFECTIVO",
+            "DEPOSITO",
+            "FACTURA",
+            "BOLETA",
             "RH",
-            "Yape",
-            "Pendiente Factura",
-            "Plin",
-            "Transferencia"
+            "YAPE",
+            "PENDIENTE FACTURA",
+            "PLIN",
+            "TRANSFERENCIA"
         ];
     }
 }
