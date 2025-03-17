@@ -1126,4 +1126,5 @@ watch(yearInput, () => {
         handleSearch(`${yearInput.value}-01`, `${yearInput.value}-12`, false);
     }
 });
+
 </script>

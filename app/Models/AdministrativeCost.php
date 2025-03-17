@@ -79,7 +79,7 @@ class AdministrativeCost extends Model
                 'doc_number' => $item->doc_number,
                 'type_doc' => $item->type_doc,
                 'account_statement_id' => $as?->id,
-                'type'=> ProjectConstants::EXP_TYPE_STATIC
+                'type'=> ProjectConstants::EXP_TYPE_ADMINISTRATIVE
             ]);
 
             $item->general_expense_id = $generalExpense->id;
@@ -100,7 +100,7 @@ class AdministrativeCost extends Model
                     'doc_number' => $item->doc_number,
                     'type_doc' => $item->type_doc,
                     'account_statement_id' => $as?->id,
-                    'type'=> ProjectConstants::EXP_TYPE_STATIC
+                    'type'=> ProjectConstants::EXP_TYPE_ADMINISTRATIVE
                 ]);
             }
         });
