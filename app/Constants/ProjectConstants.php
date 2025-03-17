@@ -19,6 +19,7 @@ class ProjectConstants
     public const EXP_TYPE_PAYROLL = 'payroll';
     public const EXP_TYPE_HMONTHLY = 'huawei_monthly';
     public const EXP_TYPE_PEXTEXP = 'pext_expense';
+    public const EXP_TYPE_ADMINISTRATIVE = 'administrative';
 
 
 }

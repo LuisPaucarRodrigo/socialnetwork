@@ -47,7 +47,7 @@ class AccountStatementController extends Controller
         return response()->json(['dataToRender'=>$data], 200);
     }
 
-    
+
     public function searchStatements(Request $request) {
         $data = $this->getAccountVariables($request->month, $request->endMonth,$request->all);
         return response()->json($data, 200);
@@ -61,7 +61,7 @@ class AccountStatementController extends Controller
 
 
 
-    public function importExcel (AccountStatementImportRequest $request){ 
+    public function importExcel (AccountStatementImportRequest $request){
         $data = $request->validated();
         try{
             Excel::import(new AccountStatementImport, $data['excel_file']);
@@ -172,18 +172,18 @@ class AccountStatementController extends Controller
             'description',
             'charge',
             'payment',
+            
         );
-        if (!$all) { 
-            if($endMonth) {
-                $startDate = Carbon::create($currentYear, $currentMonth, 1)->startOfMonth();
-                $endDate = Carbon::create($inputEndYear, $inputEndMonth, 1)->endOfMonth();
-                $accountStatements = $accountStatements
-                    ->whereBetween('operation_date', [$startDate, $endDate]);
+
+        if (!$all) {
+            if ($endMonth) {
+                $startDate = Carbon::create($currentYear, $currentMonth, 1)->startOfMonth()->format('Y-m-d');
+                $endDate = Carbon::create($inputEndYear, $inputEndMonth, 1)->endOfMonth()->format('Y-m-d');
             } else {
-                $accountStatements =  $accountStatements
-                ->whereMonth('operation_date', $currentMonth)
-                ->whereYear('operation_date', $currentYear);
+                $startDate = Carbon::create($currentYear, $currentMonth, 1)->startOfMonth()->format('Y-m-d');
+                $endDate = Carbon::create($currentYear, $currentMonth, 1)->endOfMonth()->format('Y-m-d');
             }
+            $accountStatements = $accountStatements->whereBetween('operation_date', [$startDate, $endDate]);
         }
 
 

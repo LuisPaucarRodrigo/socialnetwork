@@ -957,7 +957,7 @@ const handleRucDniAutocomplete = (e) => {
 function handlerPreview(id) {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
     window.open(
-        route("staticcost.archive", { static_cost_id: id }) +
+        route("administrativeCosts.archive", { static_cost_id: id }) +
         "?" +
         uniqueParam,
         "_blank"
