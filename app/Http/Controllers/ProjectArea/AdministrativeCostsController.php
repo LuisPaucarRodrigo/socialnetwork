@@ -105,7 +105,7 @@ class AdministrativeCostsController extends Controller
     {
         $data = $request->validated();
         if ($request->hasFile('photo')) {
-            $data['photo'] = $this->file_store($request->file('photo'), 'documents/staticcosts/');
+            $data['photo'] = $this->file_store($request->file('photo'), 'documents/administrativecosts/');
         }
         $data['account_statement_id'] = null;
         if (isset($data['operation_number']) && isset($data['operation_date'])) {
@@ -125,7 +125,7 @@ class AdministrativeCostsController extends Controller
     public function download_ac_photo(AdministrativeCost $static_cost_id)
     {
         $fileName = $static_cost_id->photo;
-        $filePath = '/documents/staticcosts/' . $fileName;
+        $filePath = '/documents/administrativecosts/' . $fileName;
         $path = public_path($filePath);
         if (file_exists($path)) {
             ob_end_clean();
@@ -162,9 +162,9 @@ class AdministrativeCostsController extends Controller
         if ($request->hasFile('photo')) {
             $filename = $additional_cost->photo;
             if ($filename) {
-                $this->file_delete($filename, 'documents/staticcosts/');
+                $this->file_delete($filename, 'documents/administrativecosts/');
             }
-            $data['photo'] = $this->file_store($request->file('photo'), 'documents/staticcosts/');
+            $data['photo'] = $this->file_store($request->file('photo'), 'documents/administrativecosts/');
 
         } else if ($request->photo_status === 'stable') {
             $filename = $additional_cost->photo;
@@ -176,7 +176,7 @@ class AdministrativeCostsController extends Controller
         if ($request->photo_status === 'delete') {
             $filename = $additional_cost->photo;
             if ($filename) {
-                $this->file_delete($filename, 'documents/staticcosts/');
+                $this->file_delete($filename, 'documents/administrativecosts/');
             }
         }
         $additional_cost->update($data);
@@ -221,7 +221,7 @@ class AdministrativeCostsController extends Controller
 
     public function destroy(MonthProject $month_project_id, AdministrativeCost $additional_cost)
     {
-        $additional_cost->photo && $this->file_delete($additional_cost->photo, 'documents/staticcosts/');
+        $additional_cost->photo && $this->file_delete($additional_cost->photo, 'documents/administrativecosts/');
         $additional_cost->delete();
         return response()->json(['msg' => 'success'], 200);
     }
@@ -246,15 +246,15 @@ class AdministrativeCostsController extends Controller
     {
         try {
             $additionalCosts = AdministrativeCost::where('month_project_id', $month_project_id)
-                ->whereIn('type_doc', ['Factura', 'Boleta', 'Voucher de Pago'])
+                // ->whereIn('type_doc', ['Factura', 'Boleta', 'Voucher de Pago'])
                 ->get();
-            $zipFileName = 'staticCostsPhotos.zip';
-            $zipFilePath = public_path("/documents/staticcosts/{$zipFileName}");
+            $zipFileName = 'administrativeCostsPhoto.zip';
+            $zipFilePath = public_path("/documents/administrativecosts/{$zipFileName}");
             $zip = new ZipArchive;
             if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
                 foreach ($additionalCosts as $cost) {
                     if (!empty($cost->photo)) {
-                        $photoPath = public_path("/documents/staticcosts/{$cost->photo}");
+                        $photoPath = public_path("/documents/administrativecosts/{$cost->photo}");
                         if (file_exists($photoPath)) {
                             $zip->addFile($photoPath, $cost->photo);
                         }

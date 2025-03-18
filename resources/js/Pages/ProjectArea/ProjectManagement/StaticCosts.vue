@@ -18,9 +18,8 @@
                     " @click="openCreateAdditionalModal" type="button" class="whitespace-nowrap">
                         + Agregar
                     </PrimaryButton>
-                    <PrimaryButton data-tooltip-target="update_data_tooltip" type="button" @click="() => {
-                        filterMode = true;
-                        search_advance(initialFilterFormState);
+                    <PrimaryButton data-tooltip-target="update_data_tooltip" type="button"  @click="() => {
+                        filterForm = {...initialFilterFormState}
                     }
                         ">
                         <ServerIcon class="w-5 h-5 text-white" />
@@ -1080,9 +1079,7 @@ const handleCheckAll = (e) => {
 
 watch(
     () => filterForm.value,
-    () => {
-        actionForm.value = { ids: [] };
-    },
+    () => { actionForm.value = { ids: [] };},
     { deep: true }
 );
 

@@ -114,6 +114,10 @@ class PextProjectExpense extends Model
         });
 
         static::deleting(function ($expense) {
+            $generalExpense = $expense->general_expense;
+            if ($generalExpense) {
+                $generalExpense->delete();
+            }
             if ($expense->photo) {
                 $profile = public_path('documents/expensesPext/' . $expense->photo);
                 if (file_exists($profile)) {

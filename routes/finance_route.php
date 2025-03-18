@@ -58,6 +58,9 @@ Route::middleware('permission:'.implode('|', RolesConstants::FINANCE_MODULE))->g
     Route::post('/cost_center/employees_store', [CostLineController::class, 'cost_centers_employee_store'])->name('finance.cost_center.employee.store');
 
 
+    Route::get('/previousbalance/{month?}/{all?}', [AccountStatementController::class, 'allfine']);
+
+
 
 });
 
