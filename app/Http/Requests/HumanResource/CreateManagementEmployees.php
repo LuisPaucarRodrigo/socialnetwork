@@ -40,7 +40,7 @@ class CreateManagementEmployees extends FormRequest
             'cost_line_id' => 'required|numeric',
             'type_contract' => 'required|string',
             'state_travel_expenses' => 'required|boolean',
-            'amount_travel_expenses' => 'required_if:state_travel_expenses,true|nullable|numeric',
+            'amount_travel_expenses' => 'nullable|numeric|required_if:state_travel_expenses,true',
 
             'discount_remuneration' => 'required|boolean',
             'discount_sctr' => 'required|boolean',

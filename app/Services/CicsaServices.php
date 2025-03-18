@@ -49,7 +49,7 @@ class CicsaServices
     // public function 
     public function addCalculatedFields($item)
     {
-        $object = $item->getCollection()->each(function ($it) {
+        $item->each(function ($it) {
             $it->setAppends([
                 'total_materials',
                 'cicsa_project_status',
@@ -60,7 +60,7 @@ class CicsaServices
                 'last_charge_status_date',
             ]);
         });
-        return $object;
+        return $item;
     }
 
     public function filteredAdvance($request, $projectsCicsa): Builder

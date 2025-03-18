@@ -15,7 +15,6 @@ import { ref } from 'vue';
 
 const { fields } = defineProps({
     fields: String,
-    // search: String
 })
 
 const search = defineModel('search')

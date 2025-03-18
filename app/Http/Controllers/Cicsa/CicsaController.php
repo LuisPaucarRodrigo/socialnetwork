@@ -67,22 +67,8 @@ class CicsaController extends Controller
                     });
                 });
         });
-        $projects = $this->cicsaService->addRelations($projects);
-        $projects = $projects->paginate(15);
-
-        $projects->each(function ($project) {
-            $project->setAppends([
-                'total_materials',
-                'cicsa_project_status',
-                'cicsa_administration_status',
-                'cicsa_charge_status',
-                'last_project_status_date',
-                'last_administration_status_date',
-                'last_charge_status_date',
-            ]);
-        });
-        // $projects = $this->cicsaService->addCalculatedFields($projectss);
-
+        $projects = $this->cicsaService->addRelations($projects)->paginate(20);
+        $projects = $this->cicsaService->addCalculatedFields($projects);
         $cost_center = $this->cicsaService->differentialIndex($type);
 
         return Inertia::render('Cicsa/CicsaIndex', [
@@ -105,11 +91,8 @@ class CicsaController extends Controller
                 $projectsCicsa = $this->cicsaService->cicsaBaseQuery($type);
                 $projectsCicsa = $this->cicsaService->addRelations($projectsCicsa);
             } else {
-                $projectsCicsa = CicsaAssignation::whereHas('project', function ($subQuery) use ($type) {
-                    $subQuery->where('is_accepted', 1)
-                        ->where('cost_line_id', $type);
-                })
-                    ->with('project.cost_center');
+                $projectsCicsa = $this->cicsaService->cicsaBaseQuery($type);
+                $projectsCicsa->with('project.cost_center');
                 if ($stages === "Proyecto") {
                     $projectsCicsa->with(
                         'cicsa_feasibility.cicsa_feasibility_materials',
@@ -123,8 +106,7 @@ class CicsaController extends Controller
                         'cicsa_service_order',
                     );
                 } elseif ($stages === "Cobranza") {
-                    $projectsCicsa->with(
-                        [
+                    $projectsCicsa->with([
                             'cicsa_purchase_order:id,oc_number,cicsa_assignation_id',
                             'cicsa_charge_area'
                         ]
@@ -132,20 +114,8 @@ class CicsaController extends Controller
                 }
             }
 
-            $projectsCicsa = $this->cicsaService->filteredAdvance($request, $projectsCicsa);
-            $projectsCicsa = $projectsCicsa->get();
-
-            $projectsCicsa->each(function ($project) {
-                $project->setAppends([
-                    'total_materials',
-                    'cicsa_project_status',
-                    'cicsa_administration_status',
-                    'cicsa_charge_status',
-                    'last_project_status_date',
-                    'last_administration_status_date',
-                    'last_charge_status_date',
-                ]);
-            });
+            $projectsCicsa = $this->cicsaService->filteredAdvance($request, $projectsCicsa)->get();
+            $projectsCicsa = $this->cicsaService->addCalculatedFields($projectsCicsa);
             $projectsCicsa = $this->cicsaService->filteredCalculated($stages, $projectsCicsa);
             $projectsCicsa = $this->cicsaService->filteredExternal($request, $projectsCicsa);
 

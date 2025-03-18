@@ -49,7 +49,6 @@ class ScheduleController extends Controller
         }
     }
 
-
     public function preview(Schedule $schedule)
     {
         $fileName = $schedule->schedule_title;

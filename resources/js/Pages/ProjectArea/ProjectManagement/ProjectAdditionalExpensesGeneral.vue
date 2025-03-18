@@ -917,7 +917,6 @@ async function search_advance(data) {
     let url = route("pext.monthly.additional.expense.general.search_advance")
     try {
         let response = await axios.post(url, data);
-        console.log(response.data)
         expenses.value = response.data;
         notifyWarning(`Se encontraron ${response.data.length} registro(s)`);
     } catch (error) {

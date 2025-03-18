@@ -24,23 +24,21 @@ class CarsController extends Controller
 {
     public function index()
     {
-        
-        $cars = Car::with(['user', 'costline', 'car_document.approvel_car_document', 'car_changelogs' => function ($query) {
-            $query->orderBy('created_at', 'desc');
-        }, 'car_changelogs.car_changelog_items', 'checklist']);
+        $cars = Car::with(['user', 'costline', 'car_document.approvel_car_document', 'checklist', 'car_changelogs' => function ($query) {
+            $query->with('car_changelog_items')
+                ->orderBy('created_at', 'desc');
+        }]);
 
         $users = User::whereHas('role.permissions', function ($query) {
             $query->where('name', 'Car');
         })->get();
-        
+
         $user = Auth::user();
-        // dd($user);
         $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
 
         if (!$userHasCarManagerPermission) {
             $cars->where('user_id', $user->id);
         }
-
         $cars = $cars->orderby('created_at', 'desc')->get();
         return Inertia::render('FleetCar/Index', [
             'car' => $cars,
@@ -63,7 +61,7 @@ class CarsController extends Controller
                     ->orWhere('model', 'like', "%$search%")
                     ->orWhere('type', 'like', "%$search%");
             });
-            $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
+        $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
 
         if (!$userHasCarManagerPermission) {
             $cars->where('user_id', $user->id);
@@ -115,27 +113,27 @@ class CarsController extends Controller
     }
 
     public function specificAlarm($car_id)
-    {   
+    {
         $today = Carbon::now();
         $expirationThreshold = $today->copy()->addDays(7);
-    
+
         $document = CarDocument::where('car_id', $car_id)->first();
-    
+
         $expiring = [];
-    
+
         if ($document->technical_review_date && $document->technical_review_date <= $expirationThreshold) {
             $expiring['Revisión Técnica'] = $document->technical_review_date;
         }
-    
+
         if ($document->soat_date && $document->soat_date <= $expirationThreshold) {
             $expiring['SOAT'] = $document->soat_date;
         }
-    
+
         if ($document->insurance_date && $document->insurance_date <= $expirationThreshold) {
             $expiring['Seguro'] = $document->insurance_date;
         }
-    
-        return response()->json($expiring,200);
+
+        return response()->json($expiring, 200);
     }
 
     public function store(FleetCarRequest $request)
@@ -481,7 +479,7 @@ class CarsController extends Controller
         $approval = CarDocument::whereHas('approvel_car_document')->get();
         return response()->json($approval, 200);
     }
-    
+
     public function acceptOrDecline(CarChangelog $changelog, $is_accepted)
     {
         $user = Auth::user();

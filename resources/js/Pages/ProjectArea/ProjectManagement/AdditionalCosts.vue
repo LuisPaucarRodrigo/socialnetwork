@@ -21,9 +21,9 @@
                         + Agregar
                     </PrimaryButton>
                     <PrimaryButton data-tooltip-target="update_data_tooltip" type="button" @click="() => {
-                        filterForm = {...initialFilterFormState}
+                        filterForm = { ...initialFilterFormState }
                     }
-                        ">
+                    ">
                         <ServerIcon class="w-5 h-5 text-white" />
                     </PrimaryButton>
                     <div id="update_data_tooltip" role="tooltip"
@@ -77,7 +77,7 @@
                                     { project_id: project_id.id }
                                 )
                             )
-                            ">
+                        ">
                         R
                     </button>
                     <div id="rejected_tooltip" role="tooltip"
@@ -209,7 +209,8 @@
                     </dropdown>
                 </div>
 
-                <Search v-model:search="filterForm.search" fields="Ruc , Numero de Documento, Numero de Operacion, Descripcion, Monto Total"/>
+                <Search v-model:search="filterForm.search"
+                    fields="Ruc , Numero de Documento, Numero de Operacion, Descripcion, Monto Total" />
             </div>
         </div>
         <div class="overflow-x-auto h-[72vh]">
@@ -229,9 +230,7 @@
                             </label>
                         </th>
                         <th
-                            class="sm:sticky sm:left-14 sm:z-10 border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600"
-                            
-                            >
+                            class="sm:sticky sm:left-14 sm:z-10 border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Zona" :options="zones"
                                 v-model="filterForm.selectedZones" width="w-32" />
                         </th>
@@ -283,7 +282,7 @@
                                     <ArrowsUpDownIcon class="h-5 w-5" />
                                 </button>
                             </div>
-                            
+
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
@@ -306,7 +305,7 @@
                             <TableHeaderFilter labelClass="text-[11px]" label="Estado" :options="stateTypes"
                                 v-model="filterForm.selectedStateTypes" width="w-48" />
                         </th>
-                       
+
                         <th v-if="
                             auth.user.role_id === 1 &&
                             project_id.status === null
@@ -317,7 +316,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in dataToRender" :key="item.id" class="text-gray-700 bg-white hover:bg-gray-200 hover:opacity-80">
+                    <tr v-for="item in dataToRender" :key="item.id"
+                        class="text-gray-700 bg-white hover:bg-gray-200 hover:opacity-80">
                         <td :class="[
                             'sticky left-0 z-10 border-b border-gray-200',
                             {
@@ -334,10 +334,12 @@
                                     type="checkbox" />
                             </label>
                         </td>
-                        <td class="sm:sticky sm:left-14 sm:z-10 border-b w-32 border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
+                        <td
+                            class="sm:sticky sm:left-14 sm:z-10 border-b w-32 border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
                             {{ item.zone }}
                         </td>
-                        <td class="sm:sticky sm:left-48 sm:z-10 border-b border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
+                        <td
+                            class="sm:sticky sm:left-48 sm:z-10 border-b border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
                             <p class="w-48 break-words">
                                 {{ item.expense_type }}
                             </p>
@@ -351,7 +353,7 @@
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <p class="line-clamp-2 hover:line-clamp-none">
                                 {{ item?.provider?.company_name }}
-                                </p>
+                            </p>
                         </td>
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             {{ item.operation_number }}
@@ -362,7 +364,8 @@
                                 formattedDate(item.operation_date)
                             }}
                         </td>
-                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap">
+                        <td
+                            class="border-b border-gray-200 px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap">
                             {{ item.doc_number }}
                         </td>
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
@@ -392,27 +395,15 @@
                         </td>
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <div v-if="item.is_accepted === null" class="flex gap-3 justify-center w-full">
-                                <button @click="() => openAcceptModal(item)
-                                    " class="flex items-center rounded-xl text-blue-500 hover:bg-green-200">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-green-500">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                    </svg>
+                                <button @click="() => openAcceptModal(item)">
+                                    <CheckCircleIcon class="w-5 h-5 text-green-500" />
                                 </button>
-                                <button @click="() => validateRegister(item.id, false)
-                                    " type="button"
-                                    class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-red-500">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                    </svg>
+                                <button @click="() => validateRegister(item.id, false)" type="button">
+                                    <XCircleIcon class="w-5 h-5 text-red-500" />
                                 </button>
                             </div>
-                            
-                            <div v-else 
-                                :class = "[
+
+                            <div v-else :class="[
                                 'text-center',
                                 {
                                     'text-indigo-500': item.real_state === 'Pendiente',
@@ -420,8 +411,7 @@
                                     'text-amber-500': item.real_state == 'Aceptado',
                                     'text-red-500': item.real_state == 'Rechazado',
                                 },
-                            ]"
-                            >
+                            ]">
                                 {{ item.real_state }}
                             </div>
                         </td>
@@ -864,7 +854,7 @@
                                             form.photo_status =
                                                 'delete';
                                         }
-                                            ">
+                                        ">
                                             <TrashIcon class="text-red-500 h-4 w-4" />
                                         </button>
                                     </div>
@@ -877,7 +867,7 @@
                                             form.photo_status =
                                                 'stable';
                                         }
-                                            " type="button" class="font-black">
+                                        " type="button" class="font-black">
                                             ANULAR
                                         </button>
                                     </div>
@@ -937,7 +927,8 @@
                     Actualización Masiva
                 </h2>
                 <h4 class="text-sm font-light text-green-900 bg-green-500/10 rounded-lg p-3 ">
-                    Los registros con fecha de operación y número de operación, pasarán a automáticamente estar aceptados.
+                    Los registros con fecha de operación y número de operación, pasarán a automáticamente estar
+                    aceptados.
                 </h4>
                 <form @submit.prevent="submitOpNuDatModal">
                     <div class="space-y-12">
@@ -986,7 +977,9 @@
                     Gastos a Proyecto Adicional
                 </h2>
                 <h4 class="text-sm font-light text-green-900 bg-green-500/10 rounded-lg p-3 ">
-                    Los registros pasarán al proyecto especificado, según el tipo de gasto se insertaran en fijos o variables. Solo se listan los proyectos adicionales que proceden
+                    Los registros pasarán al proyecto especificado, según el tipo de gasto se insertaran en fijos o
+                    variables.
+                    Solo se listan los proyectos adicionales que proceden
                 </h4>
                 <form @submit.prevent="submitSwapAPModal">
                     <div class="space-y-12">
@@ -1119,10 +1112,10 @@
             :message="'Los datos fueron importados con éxito'" />
         <SuccessOperationModal :confirming="confirmValidation" :title="'Validación'"
             :message="'La validación del gasto fue exitosa.'" />
-        
+
         <ConfirmateModal :showConfirm="showSwapCostsModal" tittle="Cambio de gastos adicionales a fijos"
-            text="La siguiente acción ya no se podrá revertir, ¿Desea continuar?"
-            :actionFunction="swapCosts" @closeModal="closeSwapCostsModal" />
+            text="La siguiente acción ya no se podrá revertir, ¿Desea continuar?" :actionFunction="swapCosts"
+            @closeModal="closeSwapCostsModal" />
 
     </AuthenticatedLayout>
 </template>
@@ -1142,7 +1135,9 @@ import {
     TrashIcon,
     PencilSquareIcon,
     ServerIcon,
-    ArrowsUpDownIcon
+    ArrowsUpDownIcon,
+    CheckCircleIcon,
+    XCircleIcon
 } from "@heroicons/vue/24/outline";
 import { formattedDate } from "@/utils/utils";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
@@ -1174,7 +1169,7 @@ const props = defineProps({
 });
 
 
-const { expenseTypes, docTypes, zones ,stateTypes } = props
+const { expenseTypes, docTypes, zones, stateTypes } = props
 const dataToRender = ref(props.additional_costs.data);
 const filterMode = ref(false);
 const allReg = ref(false)
@@ -1478,7 +1473,7 @@ async function validateRegister(ac_id, is_accepted) {
             route("projectmanagement.validateAdditionalCost", { ac_id }),
             { is_accepted }
         );
-        if(!res?.data?.additional_cost) {
+        if (!res?.data?.additional_cost) {
             let index = dataToRender.value.findIndex(
                 (item) => item.id == ac_id
             );
@@ -1503,15 +1498,15 @@ async function validateRegister(ac_id, is_accepted) {
 
 
 //block actions
-const actionForm = ref({ids: [],});
+const actionForm = ref({ ids: [], });
 const handleCheckAll = (e) => {
-    if (e.target.checked) {actionForm.value.ids = dataToRender.value.map((item) => item.id);} 
-    else { actionForm.value.ids = [];}
+    if (e.target.checked) { actionForm.value.ids = dataToRender.value.map((item) => item.id); }
+    else { actionForm.value.ids = []; }
 };
 
 watch(
     () => filterForm.value,
-    () => {actionForm.value = { ids: [] };},
+    () => { actionForm.value = { ids: [] }; },
     { deep: true }
 );
 
@@ -1550,9 +1545,9 @@ const submitOpNuDatModal = async () => {
                 notifyError("Server Error");
             }
         });
-    const resIds = res.data.map(item=>item.id);
-    const rgsToRemove = actionForm.value.ids.filter(id=>!resIds.includes(id))
-    const originalMap = new Map(dataToRender.value.filter(item=>!rgsToRemove.includes(item.id)).
+    const resIds = res.data.map(item => item.id);
+    const rgsToRemove = actionForm.value.ids.filter(id => !resIds.includes(id))
+    const originalMap = new Map(dataToRender.value.filter(item => !rgsToRemove.includes(item.id)).
         map(item => [item.id, item]));
     res.data.forEach(update => {
         if (originalMap.has(update.id)) {
@@ -1564,8 +1559,8 @@ const submitOpNuDatModal = async () => {
     actionForm.value.ids = resIds
     closeOpNuDatModal();
     notify("Registros Seleccionados Actualizados")
-    setTimeout(()=>{
-        if(rgsToRemove.length>0) notify("Algunos fueron movidos a gastos fijos y/o proyecto GEP")
+    setTimeout(() => {
+        if (rgsToRemove.length > 0) notify("Algunos fueron movidos a gastos fijos y/o proyecto GEP")
     }, 1000)
 }
 
@@ -1584,12 +1579,12 @@ const openAcceptModal = (item) => {
     itemToAccept.value = item
     showAcceptModal.value = true
 }
-async function submitAcceptModal () {
+async function submitAcceptModal() {
     isFetching.value = true;
     const res = await axios.post(
-            route("projectmanagement.validateAdditionalCost", { ac_id: itemToAccept.value.id }),
-            { is_accepted:1, ...opNuDateForm.data() }
-        )
+        route("projectmanagement.validateAdditionalCost", { ac_id: itemToAccept.value.id }),
+        { is_accepted: 1, ...opNuDateForm.data() }
+    )
         .catch((e) => {
             isFetching.value = false;
             if (e.response?.data?.errors) {
@@ -1598,7 +1593,7 @@ async function submitAcceptModal () {
                 notifyError("Server Error");
             }
         });
-    if(!res?.data?.additional_cost) {
+    if (!res?.data?.additional_cost) {
         let index = dataToRender.value.findIndex(
             (item) => item.id == itemToAccept.value.id
         );
@@ -1639,8 +1634,8 @@ const swapCosts = async () => {
             notifyError("Server Error");
         });
     dataToRender.value = dataToRender.value.filter(
-            (item) => !actionForm.value.ids.includes(item.id)
-        );
+        (item) => !actionForm.value.ids.includes(item.id)
+    );
     actionForm.value.ids = []
     closeSwapCostsModal();
     notify("Registros Movidos con éxito");
@@ -1695,10 +1690,10 @@ const submitSwapAPModal = async () => {
                 notifyError("Server Error");
             }
         });
-    
+
     dataToRender.value = dataToRender.value.filter(
-            (item) => !actionForm.value.ids.includes(item.id)
-        );
+        (item) => !actionForm.value.ids.includes(item.id)
+    );
     actionForm.value.ids = []
 
     closeSwapAPModal();
@@ -1709,9 +1704,9 @@ const submitSwapAPModal = async () => {
 
 //swapp to open mnto and gep
 const projects_for_swap = ref([])
-function getRegularProjects () {
+function getRegularProjects() {
     axios.get(route('projectmanagement.regularprojects.all'))
-        .then(res=>{
+        .then(res => {
             projects_for_swap.value = res.data
         })
 }
@@ -1752,10 +1747,10 @@ const submitSwapRPModal = async () => {
                 notifyError("Server Error");
             }
         });
-    
+
     dataToRender.value = dataToRender.value.filter(
-            (item) => !actionForm.value.ids.includes(item.id)
-        );
+        (item) => !actionForm.value.ids.includes(item.id)
+    );
     actionForm.value.ids = []
 
     closeSwapRPModal();
