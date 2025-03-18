@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Http\Requests\HumanResource\FiredContractEmployees;
 use App\Models\Address;
 use App\Models\Contract;
 use App\Models\CostLine;
@@ -14,9 +13,10 @@ use App\Models\Family;
 use App\Models\Health;
 use App\Models\PayrollDetail;
 use Carbon\Carbon;
-use GuzzleHttp\Psr7\Response;
 use Illuminate\Database\Eloquent\Builder;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+
+use function PHPUnit\Framework\isEmpty;
 
 class ManagementEmployeesServices
 {
@@ -32,7 +32,7 @@ class ManagementEmployeesServices
 
     public function getEmployees(): Object
     {
-        $employees = $this->queryEmployeesCostLine('Active')->get();
+        $employees = $this->queryEmployeesCostLine('Active')->paginate();
         $employees = $this->mapProfileEmployee($employees);
         return $employees;
     }
@@ -154,11 +154,13 @@ class ManagementEmployeesServices
         }
     }
 
-    public function updateOrCreateEmployee($validateData, $file, $employee_id): String
+    public function updateOrCreateEmployee($request, $employee_id): String
     {
-        if ($file) {
+        $filteredFields = array_diff((new Employee())->getFillable(), ['cropped_image']);
+        $validateData = $request->only($filteredFields);
+        if ($request->hasFile('cropped_image')) {
             $url = 'image/profile/';
-            $validateData['cropped_image'] = $this->storeArchives($file, $url);
+            $validateData['cropped_image'] = $this->storeArchives($request->file('cropped_image'), $url);
         }
         $employee = Employee::updateOrCreate(
             ['id' => $employee_id],
@@ -167,20 +169,23 @@ class ManagementEmployeesServices
         return $employee->id;
     }
 
-    public function updateOrCreateContract($validateData, $file, $employee_id)
+    public function updateOrCreateContract($validateData, $employee_id)
     {
-        $url = 'documents/curriculum_vitae/';
-        if ($file) {
-            $validateData['curriculum_vitae'] = $this->storeArchives($file, $url);
-        }
         Contract::updateOrCreate(
             ['employee_id' => $employee_id],
             $validateData
         );
     }
 
-    public function updateOrCreateEducation($validateData, $employee_id)
+    public function updateOrCreateEducation($request, $employee_id)
     {
+        $filteredFields = array_diff((new Education())->getFillable(), ['curriculum_vitae']);
+        $validateData = $request->only($filteredFields);
+        if ($request->hasFile('curriculum_vitae')) {
+            $url = 'documents/curriculum_vitae/';
+            $validateData['curriculum_vitae'] = $this->storeArchives($request->file('curriculum_vitae'), $url);
+        }
+
         Education::updateOrCreate(
             ['employee_id' => $employee_id],
             $validateData
@@ -236,7 +241,7 @@ class ManagementEmployeesServices
 
     public function getExternalEmployees()
     {
-        $employees = ExternalEmployee::with('cost_line')->get();
+        $employees = ExternalEmployee::with('cost_line')->paginate();
         $employees = $this->mapProfileEmployee($employees);
         return $employees;
     }
@@ -248,7 +253,7 @@ class ManagementEmployeesServices
                 $item->whereIn('name', $cost_line);
             })
             ->get();
-        $employees->mapProfileEmployee();
+        $employees = $this->mapProfileEmployee($employees);
         return $employees;
     }
 

@@ -30,7 +30,7 @@
                         <TableTitle :colspan="2">Codigo de Proyecto</TableTitle>
                         <TableTitle :colspan="2">Centro de Costos</TableTitle>
                         <TableTitle :colspan="2">CPE</TableTitle>
-                        <TableTitle></TableTitle>
+                        <TableTitle :colspan="2"></TableTitle>
                     </tr>
                 </template>
                 <template #tbody>

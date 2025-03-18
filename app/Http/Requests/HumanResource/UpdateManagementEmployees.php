@@ -38,9 +38,9 @@ class UpdateManagementEmployees extends FormRequest
             'phone2' => 'nullable|numeric|digits:9',
 
             'cost_line_id' => 'required|numeric',
-            'state_travel_expenses' => 'required|boolean',
             'type_contract' => 'required|string',
-            'amount_travel_expenses' => 'nullable|numeric',
+            'state_travel_expenses' => 'required|boolean',
+            'amount_travel_expenses' => 'nullable|numeric|required_if:state_travel_expenses,true',
             
             'discount_remuneration' => 'required|boolean',
             'discount_sctr' => 'required|boolean',
@@ -50,6 +50,7 @@ class UpdateManagementEmployees extends FormRequest
             'hire_date' => 'required|date',
             'education_level' => 'required|string|in:Universidad,Instituto,Otros',
             'education_status' => 'required|string|in:Incompleto,Completo,En Progreso',
+            
             'specialization' => 'required|string|max:255',
             'street_address' => 'required|string|max:255',
             'department' => 'required|string|max:255',
@@ -73,6 +74,7 @@ class UpdateManagementEmployees extends FormRequest
             'shoe_size' => 'nullable|numeric',
             'shirt_size' => 'nullable|string',
             'pants_size' => 'nullable|numeric',
+
             'medical_condition' => 'required|string|max:255',
             'allergies' => 'required|string|max:255',
             'operations' => 'required|string|max:255',

@@ -1,5 +1,5 @@
 <template>
-    <TableStructure>
+    <TableStructure :style="'h-[72vh]'">
         <template #thead>
             <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                 <TableTitle>Nombre</TableTitle>

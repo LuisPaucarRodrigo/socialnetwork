@@ -10,11 +10,8 @@ use App\Http\Requests\PreprojectRequest\ImageRequest;
 use App\Models\Car;
 use App\Models\CicsaAssignation;
 use App\Models\Employee;
-use App\Models\HuaweiAdditionalCost;
-use App\Models\HuaweiProject;
 use App\Models\Imagespreproject;
 use App\Models\PreprojectCode;
-use App\Models\PreprojectTitle;
 use App\Models\PextProjectExpense;
 use App\Services\ApiServices;
 use Carbon\Carbon;
@@ -45,7 +42,7 @@ class ApiController extends Controller
                     ->where('user_id', $user->id)
                     ->with(['contract:id,cost_line_id,employee_id'])
                     ->first();
-                if($employee){
+                if ($employee) {
                     $token = $user->createToken('MobileAppToken')->plainTextToken;
                     return response()->json([
                         'id' => $user->id,
@@ -80,13 +77,7 @@ class ApiController extends Controller
     {
         try {
             $user = $this->apiService->findUser($id);
-            $preprojects = $user->preprojects()
-                ->select('preprojects.id as preproject_id', 'preproject_user.id as pivot_id', 'code', 'description', 'date', 'observation', 'status')
-                ->whereNull('status')
-                ->whereHas('preprojectTitles', function ($query) {
-                    $query->where('state', 1);
-                })
-                ->get();
+            $preprojects = $this->apiService->userPreproject($user)->get();
             return response()->json($preprojects, 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -98,13 +89,6 @@ class ApiController extends Controller
     public function preprojectcodephoto($id)
     {
         try {
-            // $preprojectTitle = PreprojectTitle::with(['preprojectCodes.code' => function ($query) {
-            //     $query->select('id', 'code');
-            // }, 'preprojectCodes' => function ($query) {
-            //     $query->select('id', 'preproject_title_id', 'code_id', 'status');
-            // }])
-            //     ->whereNotNull('state')->where('preproject_id', $id)
-            //     ->select('id', 'type')
             $preprojectTitle = $this->apiService->preprojectTitle($id)->get();
             return response()->json($preprojectTitle, 200);
         } catch (\Exception $e) {
@@ -116,16 +100,6 @@ class ApiController extends Controller
 
     public function codephotospecific($id)
     {
-        $data = PreprojectCode::with(['code' => function ($query) {
-            $query->select('id', 'code', 'description')
-                ->with('code_images');
-        }, 'preprojectTitle' => function ($query) {
-            $query->select('id', 'preproject_id')
-                ->with(['preproject:id,code']);
-        }])
-            ->select('id', 'preproject_title_id', 'code_id')
-            ->find($id);
-
         $data = PreprojectCode::select('id', 'preproject_title_id', 'code_id')
             ->with([
                 'code:id,code,description',
@@ -139,15 +113,15 @@ class ApiController extends Controller
             $image->image = url('/image/imageCode/' . $image->image);
             return $image;
         });
-        $codesWith = [
+
+        return response()->json([
             'id' => $data->id,
             'codePreproject' => $data->preprojectTitle->preproject->code,
             'code' => $data->code->code,
             'description' => $data->code->description,
             'status' => $data->status ?? $data->replaceable_status,
             'images' => $images
-        ];
-        return response()->json($codesWith);
+        ], 200);
     }
 
     public function preprojectimage(ImageRequest $request)
@@ -156,7 +130,6 @@ class ApiController extends Controller
         DB::beginTransaction();
         try {
             $data['image']  = $this->apiService->storeBase64Image($data['photo'], "image/imagereportpreproject/", null);
-
             Imagespreproject::create([
                 'description' => $data['description'],
                 'image' => $data['image'],
@@ -180,7 +153,7 @@ class ApiController extends Controller
         $data->each(function ($url) {
             $url->image = url('/image/imagereportpreproject/' . $url->image);
         });
-        return response()->json($data);
+        return response()->json($data, 200);
     }
 
     public function logout(Request $request)
@@ -490,34 +463,34 @@ class ApiController extends Controller
             ->where(function ($query) use ($zone) {
                 $query->where('zone', $zone)
                     ->orWhere('zone2', $zone);
-            })
-            ->whereHas('project', function ($query) use ($currentMonthStart, $currentMonthEnd) {
-                $query->where('cost_line_id', 2)
-                    ->where(function ($subQuery) use ($currentMonthStart, $currentMonthEnd) {
-                        $subQuery->where(function ($subSubQuery) use ($currentMonthStart, $currentMonthEnd) {
-                            $subSubQuery->whereHas('cost_center', function ($costCenterQuery) {
-                                $costCenterQuery->where('name', 'like', '%Mantto%');
-                            })
-                                ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
-                                ->where('initial_budget', '>', 0);
+            });
+        $cicsaProcess->whereHas('project', function ($query) use ($currentMonthStart, $currentMonthEnd) {
+            $query->where('cost_line_id', 2)
+                ->where(function ($subQuery) use ($currentMonthStart, $currentMonthEnd) {
+                    $subQuery->where(function ($subSubQuery) use ($currentMonthStart, $currentMonthEnd) {
+                        $subSubQuery->whereHas('cost_center', function ($costCenterQuery) {
+                            $costCenterQuery->where('name', 'like', '%Mantto%');
                         })
-                            ->orWhereHas('cost_center', function ($costCenterQuery) {
-                                $costCenterQuery->where('name', 'not like', '%Mantto%');
-                            });
-                    });
+                            ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
+                            ->where('initial_budget', '>', 0);
+                    })
+                        ->orWhereHas('cost_center', function ($costCenterQuery) {
+                            $costCenterQuery->where('name', 'not like', '%Mantto%');
+                        });
+                });
+        });
+        $cicsaProcess->where(function ($query) {
+            $query->whereHas('cicsa_charge_area', function ($subQuery) {
+                $subQuery->select('id', 'cicsa_assignation_id', 'invoice_number', 'invoice_date', 'amount', 'deposit_date')
+                    ->where(function ($subSubQuery) {
+                        $subSubQuery->whereNull('invoice_number')
+                            ->orWhereNull('invoice_date')
+                            ->orWhereNull('amount');
+                    })
+                    ->whereNull('deposit_date');
             })
-            ->where(function ($query) {
-                $query->whereHas('cicsa_charge_area', function ($subQuery) {
-                    $subQuery->select('id', 'cicsa_assignation_id', 'invoice_number', 'invoice_date', 'amount', 'deposit_date')
-                        ->where(function ($subSubQuery) {
-                            $subSubQuery->whereNull('invoice_number')
-                                ->orWhereNull('invoice_date')
-                                ->orWhereNull('amount');
-                        })
-                        ->whereNull('deposit_date');
-                })
-                    ->orDoesntHave('cicsa_charge_area');
-            })
+                ->orDoesntHave('cicsa_charge_area');
+        })
             ->get();
 
         $cicsaProcess->each->setAppends([]);
@@ -528,20 +501,7 @@ class ApiController extends Controller
     {
         $validateData = $request->validated();
         try {
-            $docDate = Carbon::createFromFormat('d/m/Y', $validateData['doc_date']);
-            $validateData['doc_date'] = $docDate->format('Y-m-d');
-            $validateData['fixedOrAdditional'] = 0;
-            if (($validateData['zone'] !== 'MDD') && $validateData['type_doc'] === 'Factura') {
-                $validateData['igv'] = 18;
-            }
-            $user = Auth::user();
-            $newDesc = $user->name . ", " . $validateData['description'];
-            $validateData['description'] = $newDesc;
-            if ($validateData['photo']) {
-                $validateData['photo'] = $this->apiService->storeBase64Image($validateData['photo'], 'documents/expensesPext', 'Gasto Pext');
-            }
-
-            $validateData['user_id'] = $user->id;
+            $validateData = $this->apiService->transformExpenseData($validateData);
             PextProjectExpense::create($validateData);
             return response()->json([], 200);
         } catch (Exception $e) {
@@ -553,23 +513,13 @@ class ApiController extends Controller
 
     public function historyExpensesPext()
     {
-        $user = Auth::user();
-        $expensesPext = PextProjectExpense::where('user_id', $user->id)
-            ->whereHas('project', function ($query) {
-                $query->where('cost_line_id', 2);
-            })
-            ->get();
+        $expensesPext = $this->apiService->getExpensesPext()->get();
         return response()->json($expensesPext, 200);
     }
 
     public function employee_cost_line($cost_line_id)
     {
-        $employees = Employee::select('id', 'name', 'lastname')
-            ->whereHas('contract', function ($e) use ($cost_line_id) {
-                $e->select('id', 'employee_id')
-                    ->where('cost_line_id', $cost_line_id);
-            })
-            ->get();
+        $employees = $this->apiService->employeesCostLine($cost_line_id)->get();
         return response()->json($employees, 200);
     }
 
@@ -687,9 +637,7 @@ class ApiController extends Controller
 
     public function index_car($cost_line_id)
     {
-        $car = Car::select('id', 'plate')
-            ->where('cost_line_id', $cost_line_id)
-            ->get();
+        $car = $this->apiService->car($cost_line_id)->get();
         return response()->json($car, 200);
     }
 
@@ -713,18 +661,9 @@ class ApiController extends Controller
 
     public function contantsCheckList($cost_line_id)
     {
-        $employees = Employee::select('id', 'name', 'lastname')
-            ->whereHas('contract', function ($e) use ($cost_line_id) {
-                $e->select('id', 'employee_id')
-                    ->where('cost_line_id', $cost_line_id);
-            })
-            ->get();
-
+        $employees = $this->apiService->employeesCostLine($cost_line_id)->get();
         $zones = $cost_line_id == 1 ? PintConstants::mobileZones() : PextConstants::getZone();
-
-        $car = Car::select('id', 'plate')
-            ->where('cost_line_id', $cost_line_id)
-            ->get();
+        $car = $this->apiService->car($cost_line_id)->get();
 
         return response()->json([
             'zones' => $zones,

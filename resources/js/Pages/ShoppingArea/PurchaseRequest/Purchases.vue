@@ -5,7 +5,7 @@
         <template #header>
             Solicitudes de compra
         </template>
-        <div class="min-w-full overflow-hidden rounded-lg shadow">
+        <div class="min-w-full overflow-hidden">
             <div class="flex justify-between items-center gap-4">
                 <PrimaryButton v-if="hasPermission('PurchasingManager')" @click="add_request" type="button">
                     + Agregar
@@ -26,8 +26,8 @@
                 </div>
             </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full whitespace-no-wrap">
+            <div class="overflow-x-auto rounded-lg shadow">
+                <table class="w-full whitespace-nowrap">
                     <thead>
                         <tr
                             class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">

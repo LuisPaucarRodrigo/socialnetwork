@@ -10,9 +10,8 @@
             <div class="mt-6 flex items-center justify-between gap-x-6">
                 <div class="hidden sm:flex sm:items-center sm:space-x-3">
                     <template v-if="!formSearch.statusProject">
-                        <PrimaryButton v-if="hasPermission('ProjectManager')"
-                            data-tooltip-target="add_monthly_project" @click="createOrEditModal" type="button"
-                            customColor="bg-green-600 hover:bg-green-500">
+                        <PrimaryButton v-if="hasPermission('ProjectManager')" data-tooltip-target="add_monthly_project"
+                            @click="createOrEditModal" type="button" customColor="bg-green-600 hover:bg-green-500">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -72,52 +71,10 @@
                     </dropdown>
                 </div>
                 <div class="flex space-x-3">
-                    <Search v-model:search="formSearch.search" fields="Nombre,Codigo,CPE"/>
+                    <Search v-model:search="formSearch.search" fields="Nombre,Codigo,CPE" />
                 </div>
             </div>
             <br>
-            <!-- <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                <div v-for="item in projects.data || projects" :key="item.id"
-                    class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
-                    <div class="grid grid-cols-2">
-                        <p class="col-start-1 col-span-2 text-sm font-semibold mb-3">
-                            Proyecto: {{ item.project_name }}
-                        </p>
-                        <div v-if="hasPermission('ProjectManager')" class="inline-flex justify-end items-start gap-x-2">
-                            <button type="button" class="text-blue-900 whitespace-no-wrap" @click="editProject(item)">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                    <p class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
-                        Fecha: {{ formattedDate(item.assignation_date) }}
-                    </p>
-                    <p class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
-                        Cliente: {{ item.customer }}
-                    </p>
-                    <p class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
-                        Centro de Costos: {{ item.project?.cost_center?.name }}
-                    </p>
-                    <p class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
-                        Codigo: {{ item.project_code }}
-                    </p>
-                    <p class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
-                        CPE: {{ item.cpe }}
-                    </p>
-                    <p class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
-                        Zonas: {{ item.zone }}
-                    </p>
-                    <div class="grid grid-cols-1 gap-y-1">
-                        <Link :href="route('pext.additional.expense.index', { cicsa_assignation_id: item.id })"
-                            class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Gastos
-                        </Link>
-                    </div>
-                </div>
-            </div> -->
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 <div class="bg-blue-200 p-3 rounded-md shadow-sm border border-gray-300 items-center">
                     <div class="grid grid-cols-2">
@@ -219,12 +176,14 @@
                             </div>
                         </div>
                     </div>
+
+                </div>
+                <div v-if="projects.data"
+                    class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+                    <pagination :links="projects.links" />
                 </div>
             </div>
-            <br>
-            <div v-if="projects.data" class="flex flex-col items-center px-5 py-5 xs:flex-row xs:justify-between">
-                <pagination :links="projects.links" />
-            </div>
+
         </div>
 
         <Modal :show="showModal">
@@ -281,7 +240,7 @@
                                     <option value="">Seleccionar Centro de Costo</option>
                                     <option v-for="item in cost_line.cost_center" :key="item.id" :value="item.id">{{
                                         item.name
-                                        }}
+                                    }}
                                     </option>
                                 </select>
                                 <InputError :message="form.errors.cost_center_id" />
@@ -309,7 +268,7 @@
                                 <select id="zone" v-model="form.zone" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Zona</option>
-                                    <option v-for="item in  optionZones">{{ item }}</option>
+                                    <option v-for="item in optionZones">{{ item }}</option>
                                 </select>
                                 <InputError :message="form.errors.zone" />
                             </div>
@@ -320,7 +279,7 @@
                                 <select id="zone2" v-model="form.zone2" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccionar Zona</option>
-                                    <option v-for="item in  optionZones">{{ item }}</option>
+                                    <option v-for="item in optionZones">{{ item }}</option>
                                 </select>
                                 <InputError :message="form.errors.zone2" />
                             </div>
@@ -603,7 +562,7 @@ const { project, auth, userPermissions, searchCondition, cost_line, type, option
         type: String,
         Required: false
     },
-    optionZones:Array
+    optionZones: Array
 })
 
 const initialState = {

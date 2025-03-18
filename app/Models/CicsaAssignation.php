@@ -28,16 +28,6 @@ class CicsaAssignation extends Model
         'project_id',
     ];
 
-    // protected $appends = [
-    //     'total_materials',
-    //     'cicsa_project_status',
-    //     'cicsa_administration_status',
-    //     'cicsa_charge_status',
-    //     'last_project_status_date',
-    //     'last_administration_status_date',
-    //     'last_charge_status_date',
-    // ];
-
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

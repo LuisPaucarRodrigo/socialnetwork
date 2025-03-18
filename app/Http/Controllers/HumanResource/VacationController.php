@@ -15,7 +15,6 @@ use Carbon\Carbon;
 
 class VacationController extends Controller
 {
-
     public function index(Request $request, $review = false)
     {
         if ($review == false) {
@@ -90,7 +89,6 @@ class VacationController extends Controller
 
     public function review(Vacation $vacation)
     {
-
         return Inertia::render('HumanResource/ManagementVacation/Details', [
             'vacation' => $vacation,
             'details' => Vacation::with('employee')->find($vacation->id),

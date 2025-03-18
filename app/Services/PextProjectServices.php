@@ -8,39 +8,25 @@ use App\Models\PextProjectExpense;
 use App\Models\Preproject;
 use App\Models\Project;
 use Illuminate\Database\Eloquent\Builder;
-use PhpParser\Node\Expr\Cast\Array_;
+use Illuminate\Support\Facades\DB;
 
 class PextProjectServices
 {
-    private function baseCicsaAssignation(): Builder
+    public function getProject()
     {
-        $query = CicsaAssignation::with('project.cost_center', 'project.preproject')
-            ->whereHas('project', function ($query) {
-                $query->where('cost_line_id', 2)
-                    ->whereHas('cost_center', function ($costCenterQuery) {
-                        $costCenterQuery->where('name', 'like', "%Mantto%");
-                    })->whereHas('preproject');
-            })
-            ->orderBy('created_at', 'desc');
-        return $query;
+        $project = Project::where('cost_line_id', 2)
+            ->whereHas('cost_center', function ($costCenterQuery) {
+                $costCenterQuery->where('name', 'like', "%Mantto%");
+            })->whereHas('preproject')
+            ->orderBy('created_at','desc');
+        return $project;
     }
 
-    public function getCicsaAssignation()
+    public function searchProjectMonthly($searchQuery): Object
     {
-        $cicsaAssignation = $this->baseCicsaAssignation()->paginate();
-        return $cicsaAssignation;
-    }
-
-    public function searchCicsaAssignation($searchQuery): Object
-    {
-        $cicsaAssignation = $this->baseCicsaAssignation();
-        $cicsaAssignation = $cicsaAssignation->where(function ($query) use ($searchQuery) {
-            $query->orWhere('project_name', 'like', "%$searchQuery%")
-                ->orWhere('project_code', 'like', "%$searchQuery%")
-                ->orWhere('cpe', 'like', "%$searchQuery%");
-        })
-            ->get();
-        return $cicsaAssignation;
+        $project = $this->getProject();
+        $project = $project->where('description', 'like', "%$searchQuery%")->get();
+        return $project;
     }
 
     public function getProjectOrProject(): Object
@@ -66,7 +52,7 @@ class PextProjectServices
         $cicsaAssignation->load('project.cost_center');
         return $cicsaAssignation;
     }
-
+    
     public function storeProject($validateData): array
     {
         $preproject = Preproject::find($validateData['pre_project_id']);
@@ -153,7 +139,7 @@ class PextProjectServices
             $expense->where('operation_date', '<=', $request->opEndDate);
         }
 
-        if (count($request->selectedZones) < 7) {
+        if ($request->selectedZones && count($request->selectedZones) < 7) {
             $expense->whereIn('zone', $request->selectedZones);
         }
 
@@ -170,9 +156,8 @@ class PextProjectServices
 
     public function addCalculatedFields($expense)
     {
-        $expense->transform(function ($item) {
+        $expense->each(function ($item) {
             $item->setAppends(['real_amount', 'real_state']);
-            return $item;
         });
         return $expense;
     }
@@ -191,5 +176,115 @@ class PextProjectServices
     {
         $cost_line = CostLine::with('cost_center')->find($cost_line_id);
         return $cost_line;
+    }
+
+    public function expenseBars($project_id, $fixedOrAdditional): Builder
+    {
+        $bars = PextProjectExpense::where('project_id', $project_id)
+            ->where('fixedOrAdditional', $fixedOrAdditional)
+            ->select('expense_type', DB::raw('SUM(amount) as total_amount'))
+            ->groupBy('expense_type');
+        return $bars;
+    }
+
+    public function baseAssignation($cost_line_id, $cost_center, $is_accepted): Builder
+    {
+        $project = CicsaAssignation::with('project.cost_center', 'project.project_quote.project_quote_valuations')
+            ->whereHas('project', function ($query) use ($cost_line_id, $cost_center, $is_accepted) {
+                $query->where('cost_line_id', $cost_line_id)
+                    ->whereIn('cost_center_id', $cost_center)
+                    ->where('is_accepted', $is_accepted);
+            })
+            ->orderBy('created_at', 'desc');
+        return $project;
+    }
+
+    public function searchBase($project, $searchQuery): Builder
+    {
+        $project->where(function ($query) use ($searchQuery) {
+            $query->where('project_name', 'like', "%$searchQuery%")
+                ->orWhere('project_code', 'like', "%$searchQuery%")
+                ->orWhere('cpe', 'like', "%$searchQuery%");
+        });
+        return $project;
+    }
+
+    public function costCenter(int $type): Object
+    {
+        $cost_centers = $type == 2 ? [6, 7, 8, 9] : [3];
+        $cost_line = CostLine::with(['cost_center' => function ($query) use ($cost_centers) {
+            $query->whereIn('id', $cost_centers);
+        }])->find($type);
+        return $cost_line;
+    }
+
+    public function addCalculated($project)
+    {
+        $project->each(function ($item) {
+            $item->setAppends([
+                'cicsa_charge_status',
+            ]);
+        });
+        return $project;
+    }
+
+    public function index_additional_base(int $type, int $is_accepted): Builder
+    {
+        if ($type == 2) {
+            $project = $this->baseAssignation(2, [6, 7, 8, 9], $is_accepted);
+            $project = $project->whereDoesntHave('project.preproject');
+        }
+
+        if ($type == 1) {
+            $project = $this->baseAssignation(1, [3], $is_accepted);
+        }
+        return $project;
+    }
+
+    public function project_expenses_base(int $project_id, $fixedOrAdditional): Builder
+    {
+        $expense = PextProjectExpense::with(['provider:id,company_name', 'project.cost_center'])
+            ->where('fixedOrAdditional', json_decode($fixedOrAdditional))
+            ->where('project_id', $project_id)
+            ->where(function ($query) {
+                $query->where('is_accepted', 1)
+                    ->orWhere('is_accepted', null);
+            })
+            ->orderBy('created_at', 'desc');
+        return $expense;
+    }
+
+    public function expense_calculation($project_id, $fixedOrAdditional)
+    {
+        $project = Project::find($project_id);
+        $result = $project
+            ->pext_project_expenses()
+            ->where(function ($query) {
+                $query->where('is_accepted', 1)
+                    ->orWhere('is_accepted', null);
+            })
+            ->where('fixedOrAdditional', $fixedOrAdditional)
+            ->select('expense_type', DB::raw('SUM(amount/(1+igv/100)) as total_amount'))
+            ->groupBy('expense_type');
+        return $result;
+    }
+
+    public function map_expenses($item)
+    {
+        $item = $item->map(function ($cost) {
+            return [
+                'expense_type' => $cost->expense_type,
+                'total_amount' => $cost->total_amount,
+            ];
+        })->toArray();
+        return $item;
+    }
+
+    public function add_calculated_field($expense)
+    {
+        $expense->each(function ($exp) {
+            $exp->setAppends(['real_amount', 'real_state']);
+        });
+        return $expense;
     }
 }

@@ -41,28 +41,18 @@
                                 <a v-if="car.photo"
                                     :href="route('fleet.cars.show.image', { car: car.id }) + '?' + uniqueParam"
                                     target="_blank">
-                                    <EyeIcon class="w-5 h-5 text-green-600"></EyeIcon>
+                                    <EyeIcon class="w-5 h-5 text-green-600" />
                                 </a>
                             </TableRow>
                             <TableRow>{{ car.user.name }}</TableRow>
                             <TableRow>
                                 <div class="flex space-x-3 justify-center">
-                                    <button v-if="hasPermission('Car')" @click="
-                                        openModalCreateDocument(car)
-                                        " class="text-blue-900">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6"
-                                            :class="car.car_document?.approvel_car_document.length > 0 ? 'text-red-400' : 'text-blue-400'">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
-                                        </svg>
+                                    <button v-if="hasPermission('Car')" @click="openModalCreateDocument(car)">
+                                        <DocumentDuplicateIcon class="w-6 h-6"
+                                            :class="car.car_document?.approvel_car_document.length > 0 ? 'text-red-400' : 'text-blue-400'" />
                                     </button>
-                                    <button v-if="hasPermission('Car')" @click="
-                                        openCreateModalChangelog(
-                                            null,
-                                            car
-                                        )
-                                        " class="text-blue-900">
+                                    <button v-if="hasPermission('Car')" @click="openCreateModalChangelog(
+                                        null, car)">
                                         <svg viewBox="0 0 1024 1024" class="w-6 h-6 icon" version="1.1"
                                             xmlns="http://www.w3.org/2000/svg">
                                             <path
@@ -71,12 +61,8 @@
                                         </svg>
                                     </button>
                                     <button v-if="hasPermission('CarManager')" type="button"
-                                        @click="openModalEdit(car)" class="text-blue-900">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                        </svg>
+                                        @click="openModalEdit(car)">
+                                        <PencilSquareIcon class="w-6 h-6 text-yellow-400" />
                                     </button>
 
                                     <a v-if="
@@ -86,7 +72,7 @@
                                         'fleet.cars.show_checklist',
                                         { car: car.id }
                                     )
-                                        " class="text-blue-900">
+                                        ">
                                         <svg class="w-6 h-6 text-green-600" viewBox="0 0 24 24" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" clip-rule="evenodd"
@@ -97,11 +83,7 @@
 
                                     <button v-if="hasPermission('CarManager')" type="button"
                                         @click="openModalDeleteCars(car.id)" class="text-blue-900">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                        </svg>
+                                        <TrashIcon class="w-6 h-6 text-red-500" />
                                     </button>
                                     <button v-if="car.car_changelogs.length > 0" type="button"
                                         @click="toogleChangelog(car)" class="text-blue-900 whitespace-no-wrap">
@@ -264,12 +246,12 @@
                                                                 changelog.is_accepted ===
                                                                 null && hasPermission('CarManager')
                                                             " @click="
-                                                                    () =>
-                                                                        validateRegister(
-                                                                            changelog.id,
-                                                                            1
-                                                                        )
-                                                                "
+                                                                () =>
+                                                                    validateRegister(
+                                                                        changelog.id,
+                                                                        1
+                                                                    )
+                                                            "
                                                                 class="flex items-center rounded-xl text-blue-500 hover:bg-green-200">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                                     viewBox="0 0 24 24" stroke-width="1.5"
@@ -283,12 +265,12 @@
                                                                 changelog.is_accepted ===
                                                                 null && hasPermission('CarManager')
                                                             " @click="
-                                                                    () =>
-                                                                        validateRegister(
-                                                                            changelog.id,
-                                                                            0
-                                                                        )
-                                                                " type="button"
+                                                                () =>
+                                                                    validateRegister(
+                                                                        changelog.id,
+                                                                        0
+                                                                    )
+                                                            " type="button"
                                                                 class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                                                                     viewBox="0 0 24 24" stroke-width="1.5"
@@ -462,7 +444,7 @@
         <Modal :show="showModalDocumentCar">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
-                    {{ formDocument.id ? "Editar " : "Nueva " }}Documentaciòn UM 
+                    {{ formDocument.id ? "Editar " : "Nueva " }}Documentaciòn UM
                 </h2>
                 <p>Dueño: {{ show_owner }} Placa: {{ show_plate }}</p>
                 <form @submit.prevent="submitDocument">
@@ -514,7 +496,7 @@
                                     <TextInput id="technical_review_date" type="date" v-model="formDocument.technical_review_date
                                         " />
                                     <InputError :message="formDocument.errors
-                                            .technical_review_date
+                                        .technical_review_date
                                         " />
                                 </div>
                             </template>
@@ -847,6 +829,8 @@ import {
     TrashIcon,
     DocumentIcon,
     PencilSquareIcon,
+    DocumentDuplicateIcon,
+    ArrowPathIcon,
 } from "@heroicons/vue/24/outline";
 import TableTitle from "@/Components/TableTitle.vue";
 import TableRow from "@/Components/TableRow.vue";
@@ -996,7 +980,7 @@ function openModalChangelog() {
 }
 
 function openCreateModalChangelog(item, car) {
-    console.log("eduardo y juan traca",item,car)
+    console.log("eduardo y juan traca", item, car)
 
     openModalChangelog();
     formChangelog.defaults({ ...(item ?? initialFormDocument) });
@@ -1128,8 +1112,8 @@ async function submitDocument() {
 async function submitChangelog() {
     let url = formChangelog.id
         ? route("fleet.cars.update_changelog", {
-              car_changelog: formChangelog.id,
-          })
+            car_changelog: formChangelog.id,
+        })
         : route("fleet.cars.store_changelog", { car: car_id.value });
     let method = "post";
     let formData = new FormData();

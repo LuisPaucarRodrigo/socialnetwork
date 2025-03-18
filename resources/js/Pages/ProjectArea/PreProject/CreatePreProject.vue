@@ -80,26 +80,43 @@
 
                             <div class="col-span-1 sm:col-span-2">
                                 <p class="border-b-2 border-gray-300 text-sm text-indigo-600">
-                                    Datos del <b> cliente {{ form.hasSubcustomer ? 'final' : '' }}</b>
+                                    Datos del <b> cliente</b>
                                 </p>
                             </div>
                             <div>
                                 <InputLabel class="font-medium leading-6 text-gray-900">Nombre:
                                 </InputLabel>
                                 <InputLabel class="leading-6 text-gray-900">
-                                    {{ customers.find(item => item.id == (form.hasSubcustomer
-                                        ? form.subcustomer_id : form.customer_id)
-                                    )?.business_name }}
+                                    {{customers.find(item => item.id == form.customer_id)?.business_name}}
                                 </InputLabel>
 
                                 <InputLabel class="font-medium leading-6 mt-2 text-gray-900">Dirección:
                                 </InputLabel>
                                 <InputLabel class="leading-6 text-gray-900">
-                                    {{ customers.find(item => item.id == (form.hasSubcustomer
-                                        ? form.subcustomer_id : form.customer_id))?.address }}
+                                    {{customers.find(item => item.id == form.customer_id)?.address}}
                                 </InputLabel>
-
                             </div>
+                            <template v-if="form.hasSubcustomer">
+                                <div class="col-span-1 sm:col-span-2">
+                                    <p class="border-b-2 border-gray-300 text-sm text-indigo-600">
+                                        Datos del <b> cliente final</b>
+                                    </p>
+                                </div>
+                                <div>
+                                    <InputLabel class="font-medium leading-6 text-gray-900">Nombre SubCliente:
+                                    </InputLabel>
+                                    <InputLabel class="leading-6 text-gray-900">
+                                        {{customers.find(item => item.id == form.subcustomer_id)?.business_name}}
+                                    </InputLabel>
+
+                                    <InputLabel class="font-medium leading-6 mt-2 text-gray-900">Dirección SubCliente:
+                                    </InputLabel>
+                                    <InputLabel class="leading-6 text-gray-900">
+                                        {{customers.find(item => item.id == form.subcustomer_id)?.address}}
+                                    </InputLabel>
+
+                                </div>
+                            </template>
                             <div>
                                 <div class="flex gap-2 items-end">
                                     <InputLabel for="description" class="font-medium leading-6 text-gray-900">Contactos
@@ -114,7 +131,7 @@
                                 </div>
 
 
-                                <div v-for="( item, i ) in contactsList " :key="i" class="">
+                                <div v-for="(item, i) in contactsList" :key="i" class="">
                                     <div v-if="form.contacts.includes(item.id)"
                                         class="border-b col-span-8 border-gray-900/10 grid grid-cols-8 items-center my-2">
                                         <p class=" text-sm col-span-7 line-clamp-2">
@@ -257,7 +274,7 @@
             <Modal :show="showContactModal">
                 <div class="p-6">
                     <h2 class="text-base font-medium leading-7 text-gray-900">
-                        Contactos del cliente {{ form.subcustomer_id && 'final' }}
+                        Contactos del cliente {{ form.hasSubcustomer && 'final' }}
                     </h2>
                     <p class="text-sm text-indigo-500">Primero seleccinar un cliente o cliente final</p>
                     <form @submit.prevent="submitContact">
@@ -265,7 +282,7 @@
                             <select v-model="contactItem" required
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                 <option disabled value="">Seleccione</option>
-                                <option v-for=" item in contactsList" :value="item.id">
+                                <option v-for="item in contactsList" :value="item.id">
                                     {{ item.name }}
                                 </option>
                             </select>

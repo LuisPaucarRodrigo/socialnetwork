@@ -16,7 +16,7 @@
                     </div>
                 </div>
             </div>
-            <TableStructure>
+            <TableStructure :style="'h-[72vh]'">
                 <template #thead>
                     <tr>
                         <TableTitle>Perfil</TableTitle>
@@ -41,7 +41,7 @@
                     </tr>
                 </template>
                 <template #tbody>
-                    <tr v-for="employee in employees" :key="employee.id" class="text-gray-700">
+                    <tr v-for="employee in employees.data || employees" :key="employee.id" class="text-gray-700">
                         <TableRow>
                             <img :src="employee.cropped_image" alt="Empleado" class="w-12 h-13 rounded-full">
                         </TableRow>
@@ -51,7 +51,7 @@
                         <TableRow>{{ employee.dni }}</TableRow>
                         <TableRow>{{ employee.phone1 }}</TableRow>
                         <TableRow>{{ employee.birthdate }}</TableRow>
-                        <TableRow :width="'w-[150px]'">{{ employee.address }}</TableRow>
+                        <TableRow :width="'w-[250px]'">{{ employee.address }}</TableRow>
                         <TableRow>{{ employee.email }}</TableRow>
                         <TableRow>{{ employee.email_company }}</TableRow>
                         <TableRow>{{ employee.salary }}</TableRow>
@@ -78,6 +78,10 @@
                     </tr>
                 </template>
             </TableStructure>
+            <div v-if="employees.data"
+                class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+                <Pagination :links="employees.links" />
+            </div>
         </div>
         <Modal :show="show_m_employee">
             <div class="p-6">
@@ -247,6 +251,7 @@ import TableHeaderCicsaFilter from '@/Components/TableHeaderCicsaFilter.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
+import Pagination from '@/Components/Pagination.vue';
 
 const confirmingUserDeletion = ref(false);
 const employeeToDelete = ref(null);
@@ -258,7 +263,6 @@ const props = defineProps({
     userPermissions: Array,
     costLines: Object,
 })
-
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
 }

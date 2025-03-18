@@ -672,7 +672,6 @@ import { ref, watch } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const showModal = ref(false);
-
 const props = defineProps({
     pensions: Object,
     employees: {
@@ -774,7 +773,7 @@ if (props.employees) {
     form.personal_segment = props.employees.contract.personal_segment
 }
 
-watch(form.state_travel_expenses, (newVal) => {
+watch(() => form.state_travel_expenses, (newVal) => {
     form.amount_travel_expenses = ''
 })
 
