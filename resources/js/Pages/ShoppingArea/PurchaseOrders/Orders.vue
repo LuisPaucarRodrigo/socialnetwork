@@ -24,112 +24,63 @@
                     </form>
                 </div>
             </div>
+            <TableStructure>
+                <template #thead>
+                    <tr>
+                        <TableTitle>Proyecto</TableTitle>
+                        <TableTitle>Codigo de Orden</TableTitle>
+                        <TableTitle>Titulo de Solicitud</TableTitle>
+                        <TableTitle>Fecha de solicitud de compra</TableTitle>
+                        <TableTitle>Fecha de llegada de la compra</TableTitle>
+                        <TableTitle>Exportar Orden de Compra</TableTitle>
+                        <TableTitle>Cotización</TableTitle>
+                        <TableTitle>Estado de Envío</TableTitle>
+                    </tr>
+                </template>
 
-            <div class="overflow-x-auto">
-                <table class="w-full whitespace-no-wrap">
-                    <thead>
-                        <tr
-                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Proyecto
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Codigo de Orden
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Titulo de Solicitud
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de solicitud de compra
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de llegada de la compra
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Exportar Orden de Compra
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Cotización
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Estado de Envio
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="order in (props.search ? orders : orders.data)" :key="order.id" :class="[
-        'text-gray-700',
-        {
-            'border-l-8': true,// Si la fecha de finalización es 'Disponible', pinta el borde de verde
-            'border-red-500': Date.parse(order.purchase_quote.purchasing_requests.due_date) <= Date.now() + (3 * 24 * 60 * 60 * 1000),
-            'border-yellow-500': Date.parse(order.purchase_quote.purchasing_requests.due_date) > Date.now() + (3 * 24 * 60 * 60 * 1000) && Date.parse(order.purchase_quote.purchasing_requests.due_date) <= Date.now() + (7 * 24 * 60 * 60 * 1000)
-        }]">
-
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">
-                                    {{ order.purchase_quote.purchasing_requests.project?.name }}</p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">
-                                    {{ order.code }}</p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">
-                                    {{ order.purchase_quote.purchasing_requests.title }}</p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">
-                                    {{ formattedDate(order.purchase_quote.purchasing_requests.due_date) }}</p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{
-        formattedDate(order.purchase_arrival_date) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <div class="flex items-center">
-                                    <a target="_blank" :href="route('purchaseorders.export.order', { id: order.id })"
-                                        class="text-green-600 hover:underline">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                        </svg>
-                                    </a>
-                                </div>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
-                                <div class="flex items-center">
-                                    <button @click="openCotization(order)" class="text-green-600 hover:underline">
-                                        <EyeIcon class="h-4 w-4" />
-                                    </button>
-                                </div>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <select v-if="hasPermission('PurchasingManager')" id="selectState"
-                                    @change="updateState(order.id, $event.target.value, order.is_payments_completed)">
-                                    <option selected disabled>{{ order.state }}</option>
-                                    <option v-for="option in availableOptions(order.state)" :key="option"
-                                        :value="option">
-                                        {{ option }}
-                                    </option>
-                                </select>
-                                <p v-else class="text-gray-900 whitespace-no-wrap">
-                                    {{ order.state }}</p>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
+                <template #tbody>
+                    <tr v-for="order in (props.search ? orders : orders.data)" :key="order.id" :class="[
+                        'text-gray-700',
+                        {
+                            'border-l-8': true,
+                            'border-red-500': Date.parse(order.purchase_quote.purchasing_requests.due_date) <= Date.now() + (3 * 24 * 60 * 60 * 1000),
+                            'border-yellow-500': Date.parse(order.purchase_quote.purchasing_requests.due_date) > Date.now() + (3 * 24 * 60 * 60 * 1000) &&
+                                Date.parse(order.purchase_quote.purchasing_requests.due_date) <= Date.now() + (7 * 24 * 60 * 60 * 1000)
+                        }
+                    ]">
+                        <TableRow>{{ order.purchase_quote.purchasing_requests.project?.name }} </TableRow>
+                        <TableRow>{{ order.code }} </TableRow>
+                        <TableRow>{{ order.purchase_quote.purchasing_requests.title }} </TableRow>
+                        <TableRow>{{ formattedDate(order.purchase_quote.purchasing_requests.due_date) }} </TableRow>
+                        <TableRow>{{ formattedDate(order.purchase_arrival_date) }} </TableRow>
+                        <TableRow><a target="_blank" :href="route('purchaseorders.export.order', { id: order.id })">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-green-600">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                </svg>
+                            </a>
+                        </TableRow>
+                        <TableRow>
+                            <button @click="openCotization(order)">
+                                <EyeIcon class="h-5 w-5 text-green-600" />
+                            </button>
+                        </TableRow>
+                        <TableRow>
+                            <select v-if="hasPermission('PurchasingManager')" id="selectState"
+                                @change="updateState(order.id, $event.target.value, order.is_payments_completed)">
+                                <option selected disabled>{{ order.state }}</option>
+                                <option v-for="option in availableOptions(order.state)" :key="option" :value="option">
+                                    {{ option }}
+                                </option>
+                            </select>
+                            <p v-else class="text-gray-900 whitespace-no-wrap">
+                                {{ order.state }}
+                            </p>
+                        </TableRow>
+                    </tr>
+                </template>
+            </TableStructure>
             <div v-if="props.search === undefined"
                 class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="orders.links" />
@@ -305,6 +256,9 @@ import InputError from '@/Components/InputError.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import TextInput from '@/Components/TextInput.vue';
 import ConfirmateModal from '@/Components/ConfirmateModal.vue';
+import TableTitle from '@/Components/TableTitle.vue';
+import TableRow from '@/Components/TableRow.vue';
+import TableStructure from '@/Layouts/TableStructure.vue';
 
 const showModal = ref(false);
 const showCotization = ref(false);

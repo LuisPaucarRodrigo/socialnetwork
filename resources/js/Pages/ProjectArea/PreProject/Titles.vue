@@ -14,57 +14,33 @@
                 Codes
             </PrimaryButton>
         </div>
-
-        <div class="overflow-x-auto rounded-lg shadow mt-2">
-            <table class="w-full whitespace-no-wrap">
-                <thead>
-                    <tr
-                        class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            Tìtulo
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            Tìpo
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            Códigos
-                        </th>
-                        <th v-if="hasPermission('ProjectManager')"
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="title in titles.data" :key="title.id" class="text-gray-700">
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ title.title }}</p>
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ title.type }}</p>
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
-                            <p class="text-gray-900">{{ title.codes.map((item) => item.code).join(', ') }}</p>
-                        </td>
-                        <td v-if="hasPermission('ProjectManager')"
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
-                            <div class="flex justify-center space-x-3">
-                                <button type="button" @click="openEditTitleModal(title)"
-                                    class="text-yellow-600 whitespace-no-wrap">
-                                    <PencilIcon class="h-5 w-5 ml-1" />
-                                </button>
-                                <button type="button" @click="confirmDeleteTitle(title.id)"
-                                    class="text-red-600 whitespace-no-wrap">
-                                    <TrashIcon class="h-5 w-5 ml-1" />
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <TableStructure>
+            <template #thead>
+                <tr>
+                    <TableTitle>Título</TableTitle>
+                    <TableTitle>Tipo</TableTitle>
+                    <TableTitle>Códigos</TableTitle>
+                    <TableTitle v-if="hasPermission('ProjectManager')"></TableTitle>
+                </tr>
+            </template>
+            <template #tbody>
+                <tr v-for="title in titles.data" :key="title.id">
+                    <TableRow>{{ title.title }}</TableRow>
+                    <TableRow>{{ title.type }}</TableRow>
+                    <TableRow>{{title.codes.map((item) => item.code).join(', ')}}</TableRow>
+                    <TableRow v-if="hasPermission('ProjectManager')">
+                        <div class="flex justify-center space-x-3">
+                            <button type="button" @click="openEditTitleModal(title)">
+                                <PencilIcon class="h-5 w-5 text-yellow-600" />
+                            </button>
+                            <button type="button" @click="confirmDeleteTitle(title.id)">
+                                <TrashIcon class="h-5 w-5 text-red-600" />
+                            </button>
+                        </div>
+                    </TableRow>
+                </tr>
+            </template>
+        </TableStructure>
 
         <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
             <pagination :links="props.titles.links" />
@@ -88,7 +64,7 @@
                                         <InputError :message="form.errors.title" />
                                     </div>
                                 </div>
-    
+
                                 <div>
                                     <InputLabel for="type" class="font-medium leading-6 text-gray-900">Tipo
                                     </InputLabel>
@@ -103,9 +79,10 @@
                                         <InputError :message="form.errors.type" />
                                     </div>
                                 </div>
-    
+
                                 <div>
-                                    <InputLabel for="codes" class="font-medium leading-6 text-gray-900">Códigos</InputLabel>
+                                    <InputLabel for="codes" class="font-medium leading-6 text-gray-900">Códigos
+                                    </InputLabel>
                                     <div class="mt-2">
                                         <select multiple v-model="form.code_id_array" id="codes" size="15"
                                             class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
@@ -116,14 +93,16 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <InputLabel for="codes" class="font-medium leading-6 text-gray-900">Codigos Seleccionados</InputLabel>
+                                    <InputLabel for="codes" class="font-medium leading-6 text-gray-900">Codigos
+                                        Seleccionados
+                                    </InputLabel>
                                     <div class="mt-2 grid grid-cols-3 gap-2">
                                         <p v-for="cod in form.code_id_array" class="text-xs whitespace-nowrap">
-                                            - {{ codes.find(item=>item.id==cod).code }}
+                                            - {{codes.find(item => item.id == cod).code}}
                                         </p>
                                     </div>
                                 </div>
-                            </div>      
+                            </div>
 
 
                             <div class="mt-6 flex items-center justify-end gap-x-6">
@@ -161,6 +140,9 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import TableStructure from '@/Layouts/TableStructure.vue';
+import TableTitle from '@/Components/TableTitle.vue';
+import TableRow from '@/Components/TableRow.vue';
 
 const create_title = ref(false);
 const showModal = ref(false);
