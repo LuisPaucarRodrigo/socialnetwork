@@ -7,7 +7,6 @@ use App\Constants\PintConstants;
 use App\Http\Requests\LoginMobileRequest;
 use App\Http\Requests\PextProjectRequest\ApiStoreExpensesRequest;
 use App\Http\Requests\PreprojectRequest\ImageRequest;
-use App\Models\Car;
 use App\Models\CicsaAssignation;
 use App\Models\Employee;
 use App\Models\Imagespreproject;
@@ -479,7 +478,7 @@ class ApiController extends Controller
                         });
                 });
         });
-        $cicsaProcess->where(function ($query) {
+        $cicsaProcess = $cicsaProcess->where(function ($query) {
             $query->whereHas('cicsa_charge_area', function ($subQuery) {
                 $subQuery->select('id', 'cicsa_assignation_id', 'invoice_number', 'invoice_date', 'amount', 'deposit_date')
                     ->where(function ($subSubQuery) {

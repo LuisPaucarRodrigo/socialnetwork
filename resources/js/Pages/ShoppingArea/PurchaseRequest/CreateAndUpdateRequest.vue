@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Agregar Solicitud" />
     <AuthenticatedLayout
         :redirectRoute="project ? { route: 'projectmanagement.purchases_request.index', params: { project_id: project.id } } : 'purchasesrequest.index'">
@@ -61,7 +62,8 @@
                                     </div>
                                 </div>
                                 <div class="mt-2">
-                                    <InputLabel for="code" class="font-bold">El código se generará de forma automática</InputLabel>
+                                    <InputLabel for="code" class="font-bold">El código se generará de forma automática
+                                    </InputLabel>
                                 </div>
                             </div>
                         </div>
@@ -72,9 +74,10 @@
                                     Añadir {{ resorceOrProduct === true ? 'Producto' : 'Activo' }}
                                 </h2>
                                 <button v-if="auth.user.role_id === 1 || !purchase || purchase.purchase_quotes === null"
-                                    type="button" @click="()=>{
+                                    type="button" @click="() => {
                                         product_selected = resorceOrProduct ? allProducts.filter(product => product.type_product !== null) : allProducts.filter(resource => resource.type === 'Activo')
-                                        showProductModal = true}">
+                                        showProductModal = true
+                                    }">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="indigo" class="w-6 h-6">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -82,80 +85,33 @@
                                     </svg>
                                 </button>
                             </div>
-                            <div class="mt-2">
-                                <div class="overflow-x-auto mt-8">
-                                    <table class="w-full">
-                                        <thead>
-                                            <tr
-                                                class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                                <th
-                                                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                    #
-                                                </th>
-                                                <th
-                                                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                    Código
-                                                </th>
-                                                <th
-                                                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                    Nombre del producto
-                                                </th>
-                                                <th
-                                                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                    Cantidad
-                                                </th>
-                                                <th
-                                                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                    Unidad
-                                                </th>
-                                                <th v-if="auth.user.role_id === 1 || purchase?.purchase_quotes === null"
-                                                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                                    Acciones
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="(item, index) in (form.products)" :key="index"
-                                                class="text-gray-700 hover:bg-gray-200 bg-white">
-                                                <td class="border-b border-gray-200 px-5 py-5 text-sm">
-                                                    <p>
-                                                        {{ index + 1 }}
-                                                    </p>
-                                                </td>
-                                                <td class="border-b border-gray-200 px-5 py-5 text-sm">
-                                                    <p>
-                                                        {{ item.code }}
-                                                    </p>
-                                                </td>
-                                                <td class="border-b border-gray-200 px-5 py-5 text-sm">
-                                                    <p class="text-gray-900">
-                                                        {{ item.name }}
-                                                    </p>
-                                                </td>
-                                                <td class="border-b border-gray-200 px-5 py-5 text-sm">
-                                                    <p class="text-gray-900">
-                                                        {{ purchase ? item.pivot?.quantity : item.quantity }}
-                                                    </p>
-                                                </td>
-                                                <td class="border-b border-gray-200 px-5 py-5 text-sm">
-                                                    <p class="text-gray-900">
-                                                        {{ item.unit }}
-                                                    </p>
-                                                </td>
-                                                <td v-if="auth.user.role_id === 1 || !purchase || purchase.purchase_quotes === null"
-                                                    class="border-b border-gray-200 px-5 py-5 text-sm">
-                                                    <div @click=" deleteProduct(index, item.pivot?.id)"
-                                                        class="flex justify-center">
-                                                        <button type="button" class="col-span-1 flex justify-end">
-                                                            <TrashIcon class=" text-red-500 h-4 w-4 " />
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                            <TableStructure>
+                                <template #thead>
+                                    <tr>
+                                        <TableTitle>#</TableTitle>
+                                        <TableTitle>Código</TableTitle>
+                                        <TableTitle>Nombre del producto</TableTitle>
+                                        <TableTitle>Cantidad</TableTitle>
+                                        <TableTitle>Unidad</TableTitle>
+                                        <TableTitle></TableTitle>
+                                    </tr>
+                                </template>
+                                <template #tbody>
+                                    <tr v-for="(item, index) in (form.products)" :key="index">
+                                        <TableRow>{{ index + 1 }}</TableRow>
+                                        <TableRow>{{ item.code }}</TableRow>
+                                        <TableRow>{{ item.name }}</TableRow>
+                                        <TableRow>{{ purchase ? item.pivot?.quantity : item.quantity }}</TableRow>
+                                        <TableRow>{{ item.unit }}</TableRow>
+                                        <TableRow
+                                            v-if="auth.user.role_id === 1 || !purchase || purchase.purchase_quotes === null">
+                                            <button @click=" deleteProduct(index, item.pivot?.id)" type="button">
+                                                <TrashIcon class=" text-red-500 h-5 w-5 " />
+                                            </button>
+                                        </TableRow>
+                                    </tr>
+                                </template>
+                            </TableStructure>
                         </div><br>
                     </div>
                     <br>
@@ -241,6 +197,9 @@ import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { TrashIcon } from '@heroicons/vue/24/outline';
 import { ref, watch } from 'vue';
+import TableStructure from '@/Layouts/TableStructure.vue';
+import TableTitle from '@/Components/TableTitle.vue';
+import TableRow from '@/Components/TableRow.vue';
 
 const showModal = ref(false);
 const showModal2 = ref(false);
@@ -265,7 +224,7 @@ const { purchase, allProducts, project, typeProduct, resourceType } = defineProp
     resourceType: Object
 })
 
-if(purchase){
+if (purchase) {
     product_selected.value = allProducts
     resorceOrProduct.value = allProducts[0].type === "Activo" ? false : true
 }

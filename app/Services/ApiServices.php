@@ -9,6 +9,7 @@ use App\Models\PreprojectTitle;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Auth;
 
@@ -98,14 +99,14 @@ class ApiServices
         return $expensesPext;
     }
 
-    public function userPreproject($user): Builder
+    public function userPreproject($user): BelongsToMany
     {
-        $user->preprojects()
+        $preprojects = $user->preprojects()
             ->select('preprojects.id as preproject_id', 'preproject_user.id as pivot_id', 'code', 'description', 'date', 'observation', 'status')
             ->whereNull('status')
             ->whereHas('preprojectTitles', function ($query) {
                 $query->where('state', 1);
             });
-        return $user;
+        return $preprojects;
     }
 }
