@@ -25,9 +25,8 @@ class CarsController extends Controller
     public function index()
     {
         $cars = Car::with(['user', 'costline', 'car_document.approvel_car_document', 'checklist', 'car_changelogs' => function ($query) {
-            $query->with('car_changelog_items')
-                ->orderBy('created_at', 'desc');
-        }]);
+            $query->with('car_changelog_items');
+        }])->orderBy('created_at', 'desc');
 
         $users = User::whereHas('role.permissions', function ($query) {
             $query->where('name', 'Car');
@@ -39,7 +38,7 @@ class CarsController extends Controller
         if (!$userHasCarManagerPermission) {
             $cars->where('user_id', $user->id);
         }
-        $cars = $cars->orderby('created_at', 'desc')->get();
+        $cars = $cars->get();
         return Inertia::render('FleetCar/Index', [
             'car' => $cars,
             'costLine' => CostLine::all(),
@@ -84,14 +83,11 @@ class CarsController extends Controller
         $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
 
         if ($userHasCarManagerPermission) {
-            $cars = Car::whereHas('car_document', function ($query) use ($expirationThreshold) {
-                    $query->where('technical_review_date', '<=', $expirationThreshold)
-                        ->orWhere('soat_date', '<=', $expirationThreshold)
-                        ->orWhere('insurance_date', '<=', $expirationThreshold);
+            $cars = Car::with('car_document')->whereHas('car_document', function ($query) use ($expirationThreshold) {
+                $query->where('technical_review_date', '<=', $expirationThreshold)
+                    ->orWhere('soat_date', '<=', $expirationThreshold)
+                    ->orWhere('insurance_date', '<=', $expirationThreshold);
             })
-                ->orWhereHas('car_changelogs', function ($query) {
-                    $query->whereNull('is_accepted');
-                })
                 ->get();
         } else {
             $cars = Car::where('user_id', $user->id)
@@ -114,9 +110,7 @@ class CarsController extends Controller
     {
         $today = Carbon::now();
         $expirationThreshold = $today->copy()->addDays(7);
-
         $document = CarDocument::where('car_id', $car_id)->first();
-
         $expiring = [];
 
         if ($document->technical_review_date && $document->technical_review_date <= $expirationThreshold) {
@@ -195,6 +189,8 @@ class CarsController extends Controller
         $car->delete();
         return response()->json(true);
     }
+
+
 
     //documents
     public function showDocuments(CarDocument $car_document, $fieldName)
@@ -473,6 +469,17 @@ class CarsController extends Controller
         }
         $changes->delete();
         return response()->json([], 200);
+    }
+
+    public function showDocumentsApproval(ApprovalCarDocument $approval_car, $fieldName)
+    {
+        $fileName = $approval_car->$fieldName;
+        $file_path = "documents/fleetcar/car_documents/$fileName";
+        if (file_exists(public_path($file_path))) {
+            ob_end_clean();
+            return response()->file(public_path($file_path));
+        }
+        abort(404, 'Archivo no encontrada');
     }
 
     public function approveAlarms()

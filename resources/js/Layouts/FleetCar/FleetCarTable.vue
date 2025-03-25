@@ -1,12 +1,13 @@
 <template>
-    <TableStructure>
+    <TableStructure :style="'h-[72vh]'">
         <template #thead>
             <tr>
-                <TableTitle v-if="hasPermission('CarManager')">
-                    <div class="w-[190px]">
-                        <TableHeaderCicsaFilter label="Linea de Negocio" labelClass="text-gray-600" :options="cost_line"
-                            v-model="formSearch.cost_line" />
-                    </div>
+                <th class="bg-gray-100">
+                    <div class="w-2"></div>
+                </th>
+                <TableTitle v-if="hasPermission('CarManager')" :style="'bg-gray-100 whitespace-nowrap'">
+                    <TableHeaderCicsaFilter label="Linea de Negocio" labelClass="text-gray-600" :options="cost_line"
+                        v-model="formSearch.cost_line" />
                 </TableTitle>
                 <TableTitle>Placa</TableTitle>
                 <TableTitle>Modelo</TableTitle>
@@ -15,12 +16,15 @@
                 <TableTitle>Tipo</TableTitle>
                 <TableTitle>Foto</TableTitle>
                 <TableTitle>Dueño</TableTitle>
-                <TableTitle></TableTitle>
+                <TableTitle :colspan="2">Acciones</TableTitle>
             </tr>
         </template>
         <template #tbody>
             <template v-for="(car, i) in cars.data || cars" :key="car.id">
-                <tr class="text-gray-700">
+                <tr>
+                    <th>
+                        <div class="w-2"></div>
+                    </th>
                     <TableRow v-if="hasPermission('CarManager')">
                         {{ car.costline?.name }}
                     </TableRow>
@@ -36,7 +40,7 @@
                         </a>
                     </TableRow>
                     <TableRow>{{ car.user.name }}</TableRow>
-                    <TableRow>
+                    <TableRow :colspan="2">
                         <div class="flex space-x-3 justify-center">
                             <button v-if="hasPermission('Car')" @click="openModalCreateDocument(car)">
                                 <DocumentDuplicateIcon class="w-6 h-6"
@@ -92,163 +96,320 @@
                     </TableRow>
                 </tr>
                 <template v-if="carId == car.id">
-                    <tr class="border-b text-left text-xs font-semibold tracking-wide text-gray-500">
-                        <td colspan="11" class="py-1 px-2">
-                            <table class="w-full">
-                                <thead>
-                                    <tr
-                                        class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                        <th class="sticky left-0 z-10 bg-gray-100 border-b-2 border-gray-20">
-                                            <div class="w-2"></div>
-                                        </th>
-                                        <TableTitle :style="'bg-gray-200'">Fecha</TableTitle>
-                                        <TableTitle :style="'bg-gray-200'">Kilometraje</TableTitle>
-                                        <TableTitle :style="'bg-gray-200'">Tipo</TableTitle>
-                                        <TableTitle :style="'bg-gray-200'">Taller</TableTitle>
-                                        <TableTitle :style="'bg-gray-200'">Nombre de Contacto</TableTitle>
-                                        <TableTitle :style="'bg-gray-200'">Teléfono de Contacto</TableTitle>
-                                        <TableTitle :style="'bg-gray-200'">Observación</TableTitle>
-                                        <TableTitle :style="'bg-gray-200'">Factura</TableTitle>
-                                        <TableTitle :style="'bg-gray-200'">Items</TableTitle>
-                                        <TableTitle :style="'bg-gray-200'"></TableTitle>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <template v-for="changelog in car.car_changelogs" :key="changelog.id">
-                                        <tr class="bg-gray-100">
-                                            <TableRow></TableRow>
-                                            <TableRow>{{ formattedDate(changelog.date) }}</TableRow>
-                                            <TableRow>{{ changelog.mileage }}</TableRow>
-                                            <TableRow>{{ changelog.type }}</TableRow>
-                                            <TableRow>{{ changelog.workshop }}</TableRow>
-                                            <TableRow>{{ changelog.contact_name }}</TableRow>
-                                            <TableRow>{{ changelog.contact_phone }}</TableRow>
-                                            <TableRow>{{ changelog.observation }}</TableRow>
-                                            <TableRow>
-                                                <a target="_blank" :href="route(
-                                                    'fleet.cars.show_invoice',
-                                                    {
-                                                        car_changelog:
-                                                            changelog.id,
-                                                    }
-                                                )
-                                                    ">
-                                                    <DocumentIcon class="w-5 h-5 text-blue-600">
-                                                    </DocumentIcon>
-                                                </a>
-                                            </TableRow>
-                                            <TableRow>
-                                                <div class="flex flex-col justify-center items-center">
-                                                    <button type="button" @click="toggleVisibility(changelog.id)">
-                                                        <svg v-if="!visibleChangelogs.has(changelog.id)"
-                                                            xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                            class="w-6 h-6">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                                        </svg>
-                                                        <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                            class="w-6 h-6">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-                                                        </svg>
-                                                    </button>
-                                                </div>
-                                            </TableRow>
-                                            <TableRow>
-                                                <div class="flex justify-center items-center gap-2">
-                                                    <button v-if="
-                                                        changelog.is_accepted ===
-                                                        null && hasPermission('CarManager')
-                                                    " @click="
+                    <tr>
+                        <th class="sticky left-0 z-10 bg-gray-200 border-b-2 border-gray-20">
+                            <div class="w-2"></div>
+                        </th>
+                        <TableTitle :style="'bg-gray-200'">Fecha</TableTitle>
+                        <TableTitle :style="'bg-gray-200'">Kilometraje</TableTitle>
+                        <TableTitle :style="'bg-gray-200'">Tipo</TableTitle>
+                        <TableTitle :style="'bg-gray-200'">Taller</TableTitle>
+                        <TableTitle :style="'bg-gray-200'">Nombre de Contacto</TableTitle>
+                        <TableTitle :style="'bg-gray-200'">Teléfono de Contacto</TableTitle>
+                        <TableTitle :style="'bg-gray-200'">Observación</TableTitle>
+                        <TableTitle :style="'bg-gray-200'">Factura</TableTitle>
+                        <TableTitle :style="'bg-gray-200'">Items</TableTitle>
+                        <TableTitle :style="'bg-gray-200'"></TableTitle>
+                    </tr>
+                    <template v-for="changelog in car.car_changelogs" :key="changelog.id">
+                        <tr>
+                            <td :class="[
+                                'sticky left-0 z-10 border-b border-gray-200',
+                                {
+                                    'bg-indigo-500':
+                                        changelog.is_accepted === null,
+                                    'bg-green-500':
+                                        changelog.is_accepted == 1,
+                                    'bg-red-500':
+                                        changelog.is_accepted == 0,
+                                },
+                            ]"></td>
+                            <TableRow>{{ formattedDate(changelog.date) }}</TableRow>
+                            <TableRow>{{ changelog.mileage }}</TableRow>
+                            <TableRow>{{ changelog.type }}</TableRow>
+                            <TableRow>{{ changelog.workshop }}</TableRow>
+                            <TableRow>{{ changelog.contact_name }}</TableRow>
+                            <TableRow>{{ changelog.contact_phone }}</TableRow>
+                            <TableRow>{{ changelog.observation }}</TableRow>
+                            <TableRow>
+                                <a target="_blank" :href="route(
+                                    'fleet.cars.show_invoice',
+                                    {
+                                        car_changelog:
+                                            changelog.id,
+                                    }
+                                )
+                                    ">
+                                    <DocumentIcon class="w-5 h-5 text-blue-600">
+                                    </DocumentIcon>
+                                </a>
+                            </TableRow>
+                            <TableRow>
+                                <div class="flex flex-col justify-center items-center">
+                                    <button type="button" @click="toggleVisibility(changelog.id)">
+                                        <svg v-if="!visibleChangelogs.has(changelog.id)"
+                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                                        <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </TableRow>
+                            <TableRow>
+                                <div class="flex justify-center items-center gap-2">
+                                    <button v-if="
+                                        changelog.is_accepted ===
+                                        null && hasPermission('CarManager')
+                                    " @click="
+                                        () =>
+                                            validateRegister(
+                                                changelog.id,
+                                                1
+                                            )
+                                    " class="flex items-center rounded-xl text-blue-500 hover:bg-green-200">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-green-500">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+                                    </button>
+                                    <button v-if="
+                                        changelog.is_accepted ===
+                                        null && hasPermission('CarManager')
+                                    " @click="
+                                        () =>
+                                            validateRegister(
+                                                changelog.id,
+                                                0
+                                            )
+                                    " type="button"
+                                        class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-red-500">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+                                    </button>
+                                    <button type="button" v-if="hasPermission('CarManager')" @click="
+                                        openEditChangelog(
+                                            changelog,
+                                            car
+                                        )
+                                        ">
+                                        <PencilSquareIcon class="w-5 h-5 text-yellow-400">
+                                        </PencilSquareIcon>
+                                    </button>
+                                    <button type="button" v-if="hasPermission('CarManager')" @click="
+                                        openModalDeleteChangelog(
+                                            changelog.id
+                                        )
+                                        ">
+                                        <TrashIcon class="w-5 h-5 text-red-600"></TrashIcon>
+                                    </button>
+                                </div>
+                            </TableRow>
+                        </tr>
+                        <tr v-if="visibleChangelogs.has(changelog.id)" class="border-b bg-gray-50">
+                            <td colspan="11" class="py-1 px-2">
+                                <table class="w-full">
+                                    <thead>
+                                        <tr
+                                            class="border-b text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                            <th
+                                                class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
+                                                N°
+                                            </th>
+                                            <th
+                                                class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
+                                                Nombre
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(item, index) in changelog.car_changelog_items" :key="item.id">
+                                            <td class="border-b px-2 py-2 text-center text-[11px] text-gray-600">
+                                                {{ index + 1 }}</td>
+                                            <td class="border-b px-2 py-2 text-center text-[11px] text-gray-600">
+                                                {{ item.name }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </template>
+                </template>
+                <!-- <template v-if="carId == car.id">
+                    <tr class="border-b text-left text-xs tracking-wide">
+                        <table class="w-full">
+                            <thead>
+                                <tr
+                                    class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                    <th class="sticky left-0 z-10 bg-gray-100 border-b-2 border-gray-20">
+                                        <div class="w-2"></div>
+                                    </th>
+                                    <TableTitle :style="'bg-gray-200'">Fecha</TableTitle>
+                                    <TableTitle :style="'bg-gray-200'">Kilometraje</TableTitle>
+                                    <TableTitle :style="'bg-gray-200'">Tipo</TableTitle>
+                                    <TableTitle :style="'bg-gray-200'">Taller</TableTitle>
+                                    <TableTitle :style="'bg-gray-200'">Nombre de Contacto</TableTitle>
+                                    <TableTitle :style="'bg-gray-200'">Teléfono de Contacto</TableTitle>
+                                    <TableTitle :style="'bg-gray-200'">Observación</TableTitle>
+                                    <TableTitle :style="'bg-gray-200'">Factura</TableTitle>
+                                    <TableTitle :style="'bg-gray-200'">Items</TableTitle>
+                                    <TableTitle :style="'bg-gray-200'"></TableTitle>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template v-for="changelog in car.car_changelogs" :key="changelog.id">
+                                    <tr>
+                                        <td :class="[
+                                            'sticky left-0 z-10 border-b border-gray-200',
+                                            {
+                                                'bg-indigo-500':
+                                                    changelog.is_accepted === null,
+                                                'bg-green-500':
+                                                    changelog.is_accepted == 1,
+                                                'bg-red-500':
+                                                    changelog.is_accepted == 0,
+                                            },
+                                        ]"></td>
+                                        <TableRow>{{ formattedDate(changelog.date) }}</TableRow>
+                                        <TableRow>{{ changelog.mileage }}</TableRow>
+                                        <TableRow>{{ changelog.type }}</TableRow>
+                                        <TableRow>{{ changelog.workshop }}</TableRow>
+                                        <TableRow>{{ changelog.contact_name }}</TableRow>
+                                        <TableRow>{{ changelog.contact_phone }}</TableRow>
+                                        <TableRow>{{ changelog.observation }}</TableRow>
+                                        <TableRow>
+                                            <a target="_blank" :href="route(
+                                                'fleet.cars.show_invoice',
+                                                {
+                                                    car_changelog:
+                                                        changelog.id,
+                                                }
+                                            )
+                                                ">
+                                                <DocumentIcon class="w-5 h-5 text-blue-600">
+                                                </DocumentIcon>
+                                            </a>
+                                        </TableRow>
+                                        <TableRow>
+                                            <div class="flex flex-col justify-center items-center">
+                                                <button type="button" @click="toggleVisibility(changelog.id)">
+                                                    <svg v-if="!visibleChangelogs.has(changelog.id)"
+                                                        xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                        class="w-6 h-6">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                                    </svg>
+                                                    <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                        class="w-6 h-6">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </TableRow>
+                                        <TableRow>
+                                            <div class="flex justify-center items-center gap-2">
+                                                <button v-if="
+                                                    changelog.is_accepted ===
+                                                    null && hasPermission('CarManager')
+                                                " @click="
                                                         () =>
                                                             validateRegister(
                                                                 changelog.id,
                                                                 1
                                                             )
                                                     "
-                                                        class="flex items-center rounded-xl text-blue-500 hover:bg-green-200">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                            class="w-5 h-5 text-green-500">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                                        </svg>
-                                                    </button>
-                                                    <button v-if="
-                                                        changelog.is_accepted ===
-                                                        null && hasPermission('CarManager')
-                                                    " @click="
+                                                    class="flex items-center rounded-xl text-blue-500 hover:bg-green-200">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                        class="w-5 h-5 text-green-500">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                    </svg>
+                                                </button>
+                                                <button v-if="
+                                                    changelog.is_accepted ===
+                                                    null && hasPermission('CarManager')
+                                                " @click="
                                                         () =>
                                                             validateRegister(
                                                                 changelog.id,
                                                                 0
                                                             )
                                                     " type="button"
-                                                        class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                            class="w-5 h-5 text-red-500">
-                                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                                        </svg>
-                                                    </button>
-                                                    <button type="button" v-if="hasPermission('CarManager')" @click="
-                                                        openEditChangelog(
-                                                            changelog,
-                                                            car
-                                                        )
-                                                        ">
-                                                        <PencilSquareIcon class="w-5 h-5 text-yellow-400">
-                                                        </PencilSquareIcon>
-                                                    </button>
-                                                    <button type="button" v-if="hasPermission('CarManager')" @click="
-                                                        openModalDeleteChangelog(
-                                                            changelog.id
-                                                        )
-                                                        ">
-                                                        <TrashIcon class="w-5 h-5 text-red-600"></TrashIcon>
-                                                    </button>
-                                                </div>
-                                            </TableRow>
-                                        </tr>
-                                        <tr v-if="visibleChangelogs.has(changelog.id)" class="border-b bg-gray-50">
-                                            <td colspan="11" class="py-1 px-2">
-                                                <table class="w-full">
-                                                    <thead>
-                                                        <tr
-                                                            class="border-b text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                                            <th
-                                                                class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
-                                                                N°
-                                                            </th>
-                                                            <th
-                                                                class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
-                                                                Nombre
-                                                            </th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr v-for="(item, index) in changelog.car_changelog_items"
-                                                            :key="item.id">
-                                                            <td
-                                                                class="border-b px-2 py-2 text-center text-[11px] text-gray-600">
-                                                                {{ index + 1 }}</td>
-                                                            <td
-                                                                class="border-b px-2 py-2 text-center text-[11px] text-gray-600">
-                                                                {{ item.name }}</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </template>
-                                </tbody>
-                            </table>
-                        </td>
+                                                    class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                        class="w-5 h-5 text-red-500">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                    </svg>
+                                                </button>
+                                                <button type="button" v-if="hasPermission('CarManager')" @click="
+                                                    openEditChangelog(
+                                                        changelog,
+                                                        car
+                                                    )
+                                                    ">
+                                                    <PencilSquareIcon class="w-5 h-5 text-yellow-400">
+                                                    </PencilSquareIcon>
+                                                </button>
+                                                <button type="button" v-if="hasPermission('CarManager')" @click="
+                                                    openModalDeleteChangelog(
+                                                        changelog.id
+                                                    )
+                                                    ">
+                                                    <TrashIcon class="w-5 h-5 text-red-600"></TrashIcon>
+                                                </button>
+                                            </div>
+                                        </TableRow>
+                                    </tr>
+                                    <tr v-if="visibleChangelogs.has(changelog.id)" class="border-b bg-gray-50">
+                                        <td colspan="11" class="py-1 px-2">
+                                            <table class="w-full">
+                                                <thead>
+                                                    <tr
+                                                        class="border-b text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                                        <th
+                                                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
+                                                            N°
+                                                        </th>
+                                                        <th
+                                                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
+                                                            Nombre
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(item, index) in changelog.car_changelog_items"
+                                                        :key="item.id">
+                                                        <td
+                                                            class="border-b px-2 py-2 text-center text-[11px] text-gray-600">
+                                                            {{ index + 1 }}</td>
+                                                        <td
+                                                            class="border-b px-2 py-2 text-center text-[11px] text-gray-600">
+                                                            {{ item.name }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
                     </tr>
-                </template>
+                </template> -->
             </template>
         </template>
     </TableStructure>
@@ -269,12 +430,100 @@ import {
 } from "@heroicons/vue/24/outline";
 import Pagination from '@/Components/Pagination.vue';
 import TableHeaderCicsaFilter from '@/Components/TableHeaderCicsaFilter.vue';
+import { ref } from 'vue';
+import { formattedDate } from '@/utils/utils';
 
-const { userPermissions, formSearch, cars } = defineProps({
+const { userPermissions, formSearch, cars, cost_line, openModalCreateDocument, openModalEdit, openCreateModalChangelog, openEditChangelog
+} = defineProps({
     userPermissions: Array,
     formSearch: Object,
-    cars: Object
+    cars: Object,
+    cost_line: Object,
+    openModalCreateDocument: Function,
+    openModalEdit: Function,
+    openCreateModalChangelog: Function,
+    openEditChangelog: Function
 })
+
+const carId = ref(null);
+const visibleChangelogs = ref(new Set());
+const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
+
+function toogleChangelog(item) {
+    if (carId.value === item.id) {
+        carId.value = null;
+    } else {
+        carId.value = item.id;
+    }
+}
+
+const toggleVisibility = (id) => {
+    if (visibleChangelogs.value.has(id)) {
+        visibleChangelogs.value.delete(id);
+    } else {
+        visibleChangelogs.value.add(id);
+    }
+    visibleChangelogs.value = new Set(visibleChangelogs.value);
+};
+
+async function validateRegister(changelog_id, is_accepted) {
+    const url = route("fleet.cars.show_checklist.accept_or_decline", {
+        changelog: changelog_id,
+        is_accepted: is_accepted,
+    });
+    try {
+        const response = await axios.put(url);
+        updateCar(response.data, "validateChangelog");
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+function updateCar(data, action) {
+    const validations = cars.value.data || cars.value;
+    if (action === "create") {
+        validations.unshift(data);
+        openModalCar();
+        notify("Creaciòn Exitosa");
+    } else if (action === "edit") {
+        let index = validations.findIndex((item) => item.id === data.id);
+        validations[index] = data;
+        openModalCar();
+        notify("Actualización Exitosa");
+    } else if (action === "delete") {
+        let index = validations.findIndex((item) => item.id === data);
+        validations.splice(index);
+        openModalDeleteCars(null);
+        notify("Eliminacion Exitosa");
+    } else if (action === "udpateDocument") {
+        let index = validations.findIndex(
+            (item) => item.id === formDocument.car_id
+        );
+        validations[index].car_document = data;
+        openModalDocument();
+        notify("Acciòn Exitosa");
+    } else if (action === "createChangelog") {
+        let index = validations.findIndex((item) => item.id === data.id);
+        validations[index] = data;
+        openModalChangelog();
+        notify("Acción Exitosa");
+    } else if (action === "deleteChangelog") {
+        let index = validations.findIndex((item) => item.id === data.id);
+        validations[index] = data;
+        openModalDeleteChangelog(null);
+        if (validations[index].car_changelogs.length === 0) {
+            carId.value = null;
+        }
+        notify("Eliminación Exitosa");
+    } else if (action === "changeEntry") {
+        openModalDocument();
+        notify("Solicitud de actualizacion exitosa");
+    } else if (action === "validateChangelog") {
+        let index = validations.findIndex((item) => item.id === data.id);
+        validations[index] = data;
+        notify("Acción Exitosa");
+    }
+}
 
 function hasPermission(permission) {
     return userPermissions.includes(permission)

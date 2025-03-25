@@ -27,8 +27,8 @@
                     <tr v-for="change in changes">
                         <TableRow>{{ change.car_document.car.plate }}</TableRow>
                         <TableRow>
-                            <a v-if="change.ownership_card" target="_blank" :href="route('fleet.cars.show_documents', {
-                                car_document: change.id,
+                            <a v-if="change.ownership_card" target="_blank" :href="route('fleet.cars.show_approvals_document', {
+                                approval_car: change.id,
                                 fieldName: 'ownership_card',
                             }) + '?' + uniqueParam
                                 ">
@@ -36,8 +36,8 @@
                             </a>
                         </TableRow>
                         <TableRow>
-                            <a v-if="change.technical_review" target="_blank" :href="route('fleet.cars.show_documents', {
-                                car_document: change.id,
+                            <a v-if="change.technical_review" target="_blank" :href="route('fleet.cars.show_approvals_document', {
+                                approval_car: change.id,
                                 fieldName: 'technical_review',
                             }) + '?' + uniqueParam
                                 ">
@@ -46,8 +46,8 @@
                         </TableRow>
                         <TableRow>{{ change.technical_review_date }}</TableRow>
                         <TableRow>
-                            <a v-if="change.soat" target="_blank" :href="route('fleet.cars.show_documents', {
-                                car_document: change.id,
+                            <a v-if="change.soat" target="_blank" :href="route('fleet.cars.show_approvals_document', {
+                                approval_car: change.id,
                                 fieldName: 'soat',
                             }) + '?' + uniqueParam
                                 ">
@@ -90,7 +90,10 @@ import { Toaster } from 'vue-sonner';
 const { change } = defineProps({
     change: Object
 })
+
 const changes = ref(change)
+const uniqueParam = `timestamp=${new Date().getTime()}`;
+
 
 async function validate(approve_id) {
     let url = route('fleet.cars.approve.change', { id: approve_id })

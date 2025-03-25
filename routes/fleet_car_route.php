@@ -21,6 +21,7 @@ Route::middleware('permission:'.implode('|', RolesConstants::CAR_MODULE))->group
     Route::get('/fleet_cars/approvel_car_document/index', [CarsController::class, 'indexApprovelCarDocument'])->name('fleet.cars.index.approvel');
     Route::get('/fleet_cars/approvel_car_document/approve/changes/{id}', [CarsController::class, 'approveChanges'])->name('fleet.cars.approve.change');
     Route::get('/fleet_cars/approvel_car_document/rejected/changes/{id}', [CarsController::class, 'deleteChanges'])->name('fleet.cars.rejected.change');
+    Route::get('/fleet_cars/approvel_car_document/show_document/{approval_car}/document_name/{fieldName}', [CarsController::class, 'showDocumentsApproval'])->name('fleet.cars.show_approvals_document');
 
     Route::post('/fleet_cars/store_changelog/{car}', [CarsController::class, 'storeChangelog'])->name('fleet.cars.store_changelog');
     Route::post('/fleet_cars/update_changelog/{car_changelog}', [CarsController::class, 'updateChangelog'])->name('fleet.cars.update_changelog');

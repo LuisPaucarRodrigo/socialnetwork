@@ -7,12 +7,14 @@
         </svg>
         <span class="mx-3">Flota de Vehiculos</span>
     </a>
-    <MyTransition v-if="subModulePermission(submodules.cchanappro_submodule, userSubModules)" :transitiondemonstration="showFleetCars">
+    <MyTransition v-if="subModulePermission(submodules.cchanappro_submodule, userSubModules)"
+        :transitiondemonstration="showFleetCars">
         <div class="relative">
             <Link class="w-full" :href="route('fleet.cars.index.approvel')">Aprobaciòn de Cambios</Link>
         </div>
     </MyTransition>
-    <MyTransition  v-if="subModulePermission(submodules.cmobileunit_submodule, userSubModules)" :transitiondemonstration="showFleetCars">
+    <MyTransition v-if="subModulePermission(submodules.cmobileunit_submodule, userSubModules)"
+        :transitiondemonstration="showFleetCars">
         <div class="relative">
             <Link class="w-full" :href="route('fleet.cars.index')">UM</Link>
             <button v-if="documentsCarToExpire.length > 0"
@@ -48,7 +50,7 @@
         <div class="p-6">
             <h2 class="text-base font-medium leading-7 text-gray-900">Documentos a caducar</h2>
             <div class="my-5 flex space-x-5 justify-between" v-for="(value, key) in caducationsList" :key="key">
-                <p>{{ key }} :</p> 
+                <p>{{ key }} :</p>
                 <p>{{ value }}</p>
             </div>
         </div>
@@ -61,8 +63,8 @@ import { subModulePermission } from '@/utils/roles/roles';
 import { Link, usePage } from '@inertiajs/vue3';
 import { onMounted, ref } from 'vue';
 
-const {submodules} = usePage().props
-const {userSubModules} = usePage().props.auth
+const { submodules } = usePage().props
+const { userSubModules } = usePage().props.auth
 
 const showFleetCars = ref(false)
 const showDocumentsCarToExpireAlarms = ref(false)
@@ -71,7 +73,7 @@ const caducationsList = ref(null)
 const showSpecificAlarm = ref(false)
 
 
-onMounted(() => {   
+onMounted(() => {
     fetchFleetCarCount();
     setInterval(fetchFleetCarCount, 60000);
 });
@@ -79,6 +81,7 @@ onMounted(() => {
 async function fetchFleetCarCount() {
     try {
         const response = await axios.get(route('fleet.cars.alarms'));
+        console.log(response.data.documentsCarToExpire)
         documentsCarToExpire.value = response.data.documentsCarToExpire;
     } catch (error) {
         console.error('Error al obtener el contador de carros:', error);
@@ -87,7 +90,8 @@ async function fetchFleetCarCount() {
 
 async function specificAlarm(car_id) {
     try {
-        const response = await axios.get(route('fleet.cars.specific.alarms',{car_id : car_id}));
+        const response = await axios.get(route('fleet.cars.specific.alarms', { car_id: car_id }));
+        console.log("specific",response.data)
         caducationsList.value = response.data;
         openModalSpesificAlarm()
     } catch (error) {
@@ -95,7 +99,7 @@ async function specificAlarm(car_id) {
     }
 }
 
-function openModalSpesificAlarm(){
+function openModalSpesificAlarm() {
     showSpecificAlarm.value = !showSpecificAlarm.value
 }
 

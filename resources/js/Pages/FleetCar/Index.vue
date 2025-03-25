@@ -5,9 +5,10 @@
         <Toaster richColors />
         <template #header> Vehiculos </template>
         <div class="w-full">
-            <GeneralOpciones :form="formSearch" :openModalCreate="openModalCreate"
-                :userPermission="userPermissions" />
-            <FleetCarTable v-model:cars="cars" :userPermissions="userPermissions" v-model:formSearch="formSearch" />
+            <GeneralOpciones :form="formSearch" :openModalCreate="openModalCreate" :userPermission="userPermissions" />
+            <FleetCarTable v-model:cars="cars" :userPermissions="userPermissions" v-model:formSearch="formSearch"
+                :cost_line="cost_line" :openModalCreateDocument="openModalCreateDocument" :openModalEdit="openModalEdit"
+                :openCreateModalChangelog="openCreateModalChangelog" :openEditChangelog="openEditChangelog" />
         </div>
         <Modal :show="showModalCar">
             <div class="p-6">
@@ -55,7 +56,7 @@
                                 <InputError :message="form.errors.plate" />
                             </div>
                         </div>
-                        <div class="mt-6">
+                        <div class="mt-2">
                             <InputLabel for="model">Modelo </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" id="model" v-model="form.model" />
@@ -468,7 +469,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import Pagination from "@/Components/Pagination.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import Modal from "@/Components/Modal.vue";
@@ -476,27 +476,18 @@ import { Head, useForm } from "@inertiajs/vue3";
 import { ref, watch } from "vue";
 import InputError from "@/Components/InputError.vue";
 import {
-    formattedDate,
     setAxiosErrors,
     toFormData,
 } from "@/utils/utils";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { notify, notifyError } from "@/Components/Notification";
-import TableHeaderCicsaFilter from "@/Components/TableHeaderCicsaFilter.vue";
 import { Toaster } from "vue-sonner";
 import InputFile from "@/Components/InputFile.vue";
 import {
     EyeIcon,
     TrashIcon,
-    DocumentIcon,
-    PencilSquareIcon,
-    DocumentDuplicateIcon,
-    ArrowPathIcon,
 } from "@heroicons/vue/24/outline";
-import TableTitle from "@/Components/TableTitle.vue";
-import TableRow from "@/Components/TableRow.vue";
 import GeneralOpciones from "@/Layouts/FleetCar/GeneralOpciones.vue";
-import TableStructure from "@/Layouts/TableStructure.vue";
 import FleetCarTable from "@/Layouts/FleetCar/FleetCarTable.vue";
 
 const props = defineProps({
@@ -523,7 +514,7 @@ const archivesDocument = ref({});
 const date_technical_review = ref(null);
 const show_plate = ref(null);
 const show_owner = ref(null);
-const visibleChangelogs = ref(new Set());
+// const visibleChangelogs = ref(new Set());
 
 
 const hasPermission = (permission) => {
@@ -642,8 +633,6 @@ function openModalChangelog() {
 }
 
 function openCreateModalChangelog(item, car) {
-    console.log("eduardo y juan traca", item, car)
-
     openModalChangelog();
     formChangelog.defaults({ ...(item ?? initialFormDocument) });
     car_id.value = car.id;
@@ -674,10 +663,10 @@ function addItem() {
     newItem.value = "";
 }
 
-function openItemsModal(items) {
-    showitems.value = items;
-    itemModal.value = true;
-}
+// function openItemsModal(items) {
+//     showitems.value = items;
+//     itemModal.value = true;
+// }
 
 function closeItemModal() {
     showitems.value = [];
@@ -810,15 +799,6 @@ async function submitChangelog() {
     }
 }
 
-
-function toogleChangelog(item) {
-    if (carId.value === item.id) {
-        carId.value = null;
-    } else {
-        carId.value = item.id;
-    }
-}
-
 function updateCar(data, action) {
     const validations = cars.value.data || cars.value;
     if (action === "create") {
@@ -880,26 +860,26 @@ async function search() {
     }
 }
 
-async function validateRegister(changelog_id, is_accepted) {
-    const url = route("fleet.cars.show_checklist.accept_or_decline", {
-        changelog: changelog_id,
-        is_accepted: is_accepted,
-    });
-    try {
-        const response = await axios.put(url);
-        updateCar(response.data, "validateChangelog");
-    } catch (e) {
-        console.log(e);
-    }
-}
+// async function validateRegister(changelog_id, is_accepted) {
+//     const url = route("fleet.cars.show_checklist.accept_or_decline", {
+//         changelog: changelog_id,
+//         is_accepted: is_accepted,
+//     });
+//     try {
+//         const response = await axios.put(url);
+//         updateCar(response.data, "validateChangelog");
+//     } catch (e) {
+//         console.log(e);
+//     }
+// }
 
-const toggleVisibility = (id) => {
-    if (visibleChangelogs.value.has(id)) {
-        visibleChangelogs.value.delete(id);
-    } else {
-        visibleChangelogs.value.add(id);
-    }
-    visibleChangelogs.value = new Set(visibleChangelogs.value);
-};
+// const toggleVisibility = (id) => {
+//     if (visibleChangelogs.value.has(id)) {
+//         visibleChangelogs.value.delete(id);
+//     } else {
+//         visibleChangelogs.value.add(id);
+//     }
+//     visibleChangelogs.value = new Set(visibleChangelogs.value);
+// };
 
 </script>
