@@ -1,5 +1,5 @@
 <template>
-    <th class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600"
+    <th class="border-b-2 border-gray-200 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600"
         :class="[style]" :colspan="colspan">
         <slot />
     </th>

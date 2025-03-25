@@ -60,6 +60,9 @@ class ChecklistCarRequest extends FormRequest
             'ladderHolder'=> 'required',
             'sidePlate'=> 'required',
 
+            // 'maintenanceTools'=> 'required',
+            // 'preventionTools'=> 'required',
+            // 'imageSpareTire'=> 'required',
             'front'=> 'required',
             'leftSide'=> 'required',
             'rightSide'=> 'required',

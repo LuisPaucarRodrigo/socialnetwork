@@ -22,9 +22,6 @@ return new class extends Migration
             // $table->integer('km');
             
             $table->string('plate');
-            // $table->string('circulation');
-            // $table->string('technique');
-            // $table->string('soat');
             $table->string('hornState');
             $table->string('brakesState');
             $table->string('headlightsState');
@@ -54,10 +51,14 @@ return new class extends Migration
             $table->string('chocks');
             $table->string('ladderHolder');
             $table->string('sidePlate');
+
+            // $table->string('maintenanceTools');
+            // $table->string('preventionTools');
+            // $table->string('imageSpareTire');
             $table->string('front');
             $table->string('leftSide');
             $table->string('rightSide');
-            $table->string(column: 'interior');
+            $table->string('interior');
             $table->string('rearLeftTire');
             $table->string('rearRightTire');
             $table->string('frontRightTire');
@@ -70,13 +71,13 @@ return new class extends Migration
             $table->string('fogLights');
             $table->string('protectionCage');
             $table->string('hoopInsurance');
-            $table->string(column: 'headlightInsurance');
-            $table->string(column: 'cardProtector');
-            $table->string(column: 'safetyTriangle');
-            $table->string(column: 'wheelWrench');
-            $table->string(column: 'back');
-            $table->string(column: 'dashboard');
-            $table->string(column: 'rearSeat');
+            $table->string('headlightInsurance');
+            $table->string('cardProtector');
+            $table->string('safetyTriangle');
+            $table->string('wheelWrench');
+            $table->string('back');
+            $table->string('dashboard');
+            $table->string('rearSeat');
 
             $table->text('observation')->nullable();
             $table->timestamps();
