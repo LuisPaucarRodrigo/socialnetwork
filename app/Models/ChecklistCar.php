@@ -34,8 +34,6 @@ class ChecklistCar extends Model
         'engineState',
         'batteryState',
 
-
-
         'jack',
         'spareTire',
         'towCable',
@@ -46,7 +44,10 @@ class ChecklistCar extends Model
         'chocks',
         'ladderHolder',
         'sidePlate',
-
+        
+        // 'maintenanceTools',
+        // 'preventionTools',
+        // 'imageSpareTire',
         'front',
         'leftSide',
         'rightSide',

@@ -85,9 +85,9 @@ class CarsController extends Controller
 
         if ($userHasCarManagerPermission) {
             $cars = Car::whereHas('car_document', function ($query) use ($expirationThreshold) {
-                $query->where('technical_review_date', '<=', $expirationThreshold)
-                    ->orWhere('soat_date', '<=', $expirationThreshold)
-                    ->orWhere('insurance_date', '<=', $expirationThreshold);
+                    $query->where('technical_review_date', '<=', $expirationThreshold)
+                        ->orWhere('soat_date', '<=', $expirationThreshold)
+                        ->orWhere('insurance_date', '<=', $expirationThreshold);
             })
                 ->orWhereHas('car_changelogs', function ($query) {
                     $query->whereNull('is_accepted');
@@ -105,8 +105,6 @@ class CarsController extends Controller
                 })
                 ->get();
         }
-
-
         return response()->json([
             'documentsCarToExpire' => $cars,
         ], 200);
@@ -379,6 +377,9 @@ class CarsController extends Controller
 
         // Campos y sus traducciones
         $fields = [
+            // 'maintenanceTools' => 'Foto Herraientas de Mantenimiento',
+            // 'preventionTools' => 'Foto Herramientas de Prevencion',
+            // 'imageSpareTire' => 'Foto Llanta de Repuesto',
             'front' => 'Foto Delantera',
             'leftSide' => 'Foto Lateral Izquierda',
             'rightSide' => 'Foto Lateral Derecha',

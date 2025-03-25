@@ -91,6 +91,9 @@ class ChecklistsController extends Controller
     {
         $data = $request->validated();
         try {
+            // $data['maintenanceTools'] = $this->storeBase64Image($data['maintenanceTools'], 'image/checklist/checklistcar', 'maintenanceTools');
+            // $data['preventionTools'] = $this->storeBase64Image($data['preventionTools'], 'image/checklist/checklistcar', 'preventionTools');
+            // $data['imageSpareTire'] = $this->storeBase64Image($data['imageSpareTire'], 'image/checklist/checklistcar', 'imageSpareTire');
             $data['front'] = $this->storeBase64Image($data['front'], 'image/checklist/checklistcar', 'front');
             $data['leftSide'] = $this->storeBase64Image($data['leftSide'], 'image/checklist/checklistcar', 'leftSide');
             $data['rightSide'] = $this->storeBase64Image($data['rightSide'], 'image/checklist/checklistcar', 'rightSide');

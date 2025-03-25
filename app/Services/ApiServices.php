@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Car;
+use App\Models\CicsaAssignation;
 use App\Models\Employee;
 use App\Models\PextProjectExpense;
 use App\Models\PreprojectTitle;
@@ -10,7 +11,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
 class ApiServices
@@ -72,9 +73,9 @@ class ApiServices
         if (($validateData['zone'] !== 'MDD') && $validateData['type_doc'] === 'Factura') {
             $validateData['igv'] = 18;
         }
-
+        $project = CicsaAssignation::where('project_id', $validateData['project_id'])->first();
         $user = Auth::user();
-        $validateData['description'] = $user->name . ", " . $validateData['description'];
+        $validateData['description'] = $project->project_name . "," . $user->name . ", " . $validateData['description'];
 
         if ($validateData['photo']) {
             $validateData['photo'] = $this->storeBase64Image(
