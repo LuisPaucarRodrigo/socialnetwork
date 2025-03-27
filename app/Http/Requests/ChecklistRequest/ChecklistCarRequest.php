@@ -25,6 +25,7 @@ class ChecklistCarRequest extends FormRequest
     public function rules(): array
     {
         return [
+            // 'km'=> 'required',
             'reason'=> 'required',
             'additionalEmployees'=> 'nullable',
             'zone'=> 'required',

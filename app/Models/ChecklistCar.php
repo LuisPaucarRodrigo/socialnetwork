@@ -10,6 +10,7 @@ class ChecklistCar extends Model
     use HasFactory;
 
     protected $fillable = [
+        'km',
         'reason',
         'user_id',
         'car_id',

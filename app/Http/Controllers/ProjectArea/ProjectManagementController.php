@@ -80,7 +80,8 @@ class ProjectManagementController extends Controller
             return Inertia::render('ProjectArea/ProjectManagement/ProjectHistorial', [
                 'projects' => Project::join('preprojects', 'projects.preproject_id', '=', 'preprojects.id')
                     ->select('projects.*', 'preprojects.date as preproject_date')
-                    ->orderBy('preprojects.date', 'desc')->where('projects.status', true)->where('projects.cost_line_id', 1)->paginate(),
+                    ->orderBy('preprojects.date', 'desc')->where('projects.status', true)->where('projects.cost_line_id',1)->paginate(),
+                
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
@@ -110,7 +111,7 @@ class ProjectManagementController extends Controller
     }
 
 
-    public function project_create($project_id = null)
+    public function project_create($project_id = null, $type = null)
     {
         $preprojects = Preproject::all()->filter(function ($item) {
             return $item->is_appropriate === true;
@@ -122,10 +123,11 @@ class ProjectManagementController extends Controller
                 'employees' => Employee::select('id', 'name', 'lastname')->orderBy('name', 'asc')->get(),
                 'project' => $project,
                 'preprojects' => $preprojects,
+                'type' => $type
             ]);
         }
         return Inertia::render('ProjectArea/ProjectManagement/CreateProject', [
-            'employees' => Employee::select('id', 'name', 'lastname')->get(),
+            'employees' => Employee::select('id', 'name', 'lastname')->orderBy('name', 'asc')->get(),
             'preprojects' => $preprojects,
         ]);
     }
@@ -374,19 +376,19 @@ class ProjectManagementController extends Controller
         }
         $currDate = Carbon::parse($currProject->preproject->date);
         $otherProjects = Project::with('preproject.quote')
-        ->join('preprojects', 'projects.preproject_id', '=', 'preprojects.id') 
-        ->where('preprojects.date', '<=', $currDate) 
-        ->where('projects.cost_line_id', 1)
-        ->where('projects.cost_center_id', 1)
-        ->orderByDesc('preprojects.date') 
-        ->select('projects.*')
-        ->limit(12) 
-        ->get();
-    
+            ->join('preprojects', 'projects.preproject_id', '=', 'preprojects.id')
+            ->where('preprojects.date', '<=', $currDate)
+            ->where('projects.cost_line_id', 1)
+            ->where('projects.cost_center_id', 1)
+            ->orderByDesc('preprojects.date')
+            ->select('projects.*')
+            ->limit(12)
+            ->get();
+
         $months = [];
         $utilities = [];
         $names = [];
-    
+
         foreach ($otherProjects as $itemProject) {
             if (!$itemProject->preproject || !$itemProject->preproject->date) {
                 continue;
@@ -394,38 +396,39 @@ class ProjectManagementController extends Controller
             $monthName = Carbon::parse($itemProject->preproject->date)->translatedFormat('F Y');
             $income = optional($itemProject->preproject->quote)->total_amount ?? 0;
             $outcome = ($itemProject->additional_costs_total ?? 0) + ($itemProject->static_costs_total ?? 0);
-            
+
             $names[] = $itemProject->description;
             $months[] = ucfirst($monthName);
             $utilities[] = round($income - $outcome, 2);
         }
-    
+
         return response()->json([
             'months' => array_reverse($months),
             'utilities' => array_reverse($utilities),
             'names' => array_reverse($names),
         ]);
     }
-    
 
-    public function project_zone_expenses ($project_id) {
+
+    public function project_zone_expenses($project_id)
+    {
         $currProject = Project::with('preproject')->find($project_id);
         $zones = PintConstants::allZones();
         $currDate = Carbon::parse($currProject->preproject->date);
         $prevDate = $currDate->copy()->subMonthNoOverflow();
         $acArray = [];
         $scArray = [];
-        foreach($zones as $zone){
+        foreach ($zones as $zone) {
             $acAmount = AdditionalCost::where('zone', $zone)
-            ->selectRaw('SUM(amount / (1 + igv / 100)) as total_amount')
-            ->where('project_id', $project_id)
-            ->whereNotIn('expense_type', PintConstants::acExpensesThatDontCount())
-            ->value('total_amount') ?? 0;
+                ->selectRaw('SUM(amount / (1 + igv / 100)) as total_amount')
+                ->where('project_id', $project_id)
+                ->whereNotIn('expense_type', PintConstants::acExpensesThatDontCount())
+                ->value('total_amount') ?? 0;
             $scAmount = StaticCost::where('zone', $zone)
-            ->selectRaw('SUM(amount / (1 + igv / 100)) as total_amount')
-            ->where('project_id', $project_id)
-            ->whereNotIn('expense_type', PintConstants::scExpensesThatDontCount())
-            ->value('total_amount') ?? 0;
+                ->selectRaw('SUM(amount / (1 + igv / 100)) as total_amount')
+                ->where('project_id', $project_id)
+                ->whereNotIn('expense_type', PintConstants::scExpensesThatDontCount())
+                ->value('total_amount') ?? 0;
             $acArray[] = round($acAmount, 2);
             $scArray[] = round($scAmount, 2);
         }
@@ -436,22 +439,22 @@ class ProjectManagementController extends Controller
             ->whereHas('preproject', function ($query) use ($prevDate) {
                 $query->whereMonth('date', $prevDate->month)
                     ->whereYear('date', $prevDate->year)
-                    ->whereDay('date', 1); 
+                    ->whereDay('date', 1);
             })
             ->first();
         $prevAcArray = [];
         $prevScArray = [];
-        foreach($zones as $zone){
+        foreach ($zones as $zone) {
             $acAmount = AdditionalCost::where('zone', $zone)
-            ->selectRaw('SUM(amount / (1 + igv / 100)) as total_amount')
-            ->where('project_id', $prevProject->id)
-            ->whereNotIn('expense_type', PintConstants::acExpensesThatDontCount())
-            ->value('total_amount') ?? 0;
+                ->selectRaw('SUM(amount / (1 + igv / 100)) as total_amount')
+                ->where('project_id', $prevProject->id)
+                ->whereNotIn('expense_type', PintConstants::acExpensesThatDontCount())
+                ->value('total_amount') ?? 0;
             $scAmount = StaticCost::where('zone', $zone)
-            ->selectRaw('SUM(amount / (1 + igv / 100)) as total_amount')
-            ->where('project_id', $prevProject->id)
-            ->whereNotIn('expense_type', PintConstants::scExpensesThatDontCount())
-            ->value('total_amount') ?? 0;
+                ->selectRaw('SUM(amount / (1 + igv / 100)) as total_amount')
+                ->where('project_id', $prevProject->id)
+                ->whereNotIn('expense_type', PintConstants::scExpensesThatDontCount())
+                ->value('total_amount') ?? 0;
             $prevAcArray[] = round($acAmount, 2);
             $prevScArray[] = round($scAmount, 2);
         }
@@ -461,22 +464,22 @@ class ProjectManagementController extends Controller
             ->where('cost_center_id', 1)
             ->whereHas('preproject', function ($query) use ($currDate) {
                 $query->whereYear('date', $currDate->year)
-                    ->whereDay('date', 1); 
+                    ->whereDay('date', 1);
             })
             ->pluck('id')->toArray();
         $yearAcArray = [];
         $yearScArray = [];
-        foreach($zones as $zone){
+        foreach ($zones as $zone) {
             $acAmount = AdditionalCost::where('zone', $zone)
-            ->selectRaw('SUM(amount / (1 + igv / 100)) as total_amount')
-            ->whereIn('project_id', $yearProjectsIds)
-            ->whereNotIn('expense_type', PintConstants::acExpensesThatDontCount())
-            ->value('total_amount') ?? 0;
+                ->selectRaw('SUM(amount / (1 + igv / 100)) as total_amount')
+                ->whereIn('project_id', $yearProjectsIds)
+                ->whereNotIn('expense_type', PintConstants::acExpensesThatDontCount())
+                ->value('total_amount') ?? 0;
             $scAmount = StaticCost::where('zone', $zone)
-            ->selectRaw('SUM(amount / (1 + igv / 100)) as total_amount')
-            ->whereIn('project_id', $yearProjectsIds)
-            ->whereNotIn('expense_type', PintConstants::scExpensesThatDontCount())
-            ->value('total_amount') ?? 0;
+                ->selectRaw('SUM(amount / (1 + igv / 100)) as total_amount')
+                ->whereIn('project_id', $yearProjectsIds)
+                ->whereNotIn('expense_type', PintConstants::scExpensesThatDontCount())
+                ->value('total_amount') ?? 0;
             $yearAcArray[] = round($acAmount, 2);
             $yearScArray[] = round($scAmount, 2);
         }
@@ -484,19 +487,18 @@ class ProjectManagementController extends Controller
         return response()->json([
             'zones' => $zones,
             'current' => [
-                'additionals'=> $acArray,
-                'statics'=> $scArray,
+                'additionals' => $acArray,
+                'statics' => $scArray,
             ],
             'previous' => [
-                'additionals'=> $prevAcArray,
-                'statics'=> $prevScArray,
+                'additionals' => $prevAcArray,
+                'statics' => $prevScArray,
             ],
             'years' => [
-                'additionals'=> $yearAcArray,
-                'statics'=> $yearScArray,
+                'additionals' => $yearAcArray,
+                'statics' => $yearScArray,
             ],
         ]);
-
     }
 
 

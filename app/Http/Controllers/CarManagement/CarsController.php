@@ -18,6 +18,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class CarsController extends Controller
@@ -510,5 +511,16 @@ class CarsController extends Controller
             ->find($changelog->car_id);
 
         return response()->json($car);
+    }
+
+    public function checkListAlarms()
+    {
+        $checkList = Car::whereHas('checklist', function ($query) {
+            $query->latest()->where('created_at', '<', Carbon::now()->subDays(7));
+        })->get();
+        $checkList->each(function ($i) {
+            $i->days = Carbon::now()->diffInDays(Carbon::parse($i->checklist->first()->created_at)->addDay(7));
+        });
+        return response()->json($checkList, 200);
     }
 }
