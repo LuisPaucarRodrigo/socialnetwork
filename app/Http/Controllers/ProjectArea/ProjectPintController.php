@@ -132,9 +132,9 @@ class ProjectPintController extends Controller
             ->whereIn('cost_center_id', $listCost)
             ->whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear)
-            ->first();
+            ->count();
 
-        if ($existingPreproject) {
+        if (count($existingPreproject) >= 2) {
             return response()->json('Ya existe un proyecto creado en este mes y año.', 422);
         }
 

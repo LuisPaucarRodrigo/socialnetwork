@@ -12,19 +12,20 @@ use Illuminate\Support\Facades\DB;
 
 class PextProjectServices
 {
-    public function getProject()
+    public function getProject($status)
     {
         $project = Project::where('cost_line_id', 2)
+            ->where('status', $status)
             ->whereHas('cost_center', function ($costCenterQuery) {
                 $costCenterQuery->where('name', 'like', "%Mantto%");
             })->whereHas('preproject')
-            ->orderBy('created_at','desc');
+            ->orderBy('created_at', 'desc');
         return $project;
     }
 
-    public function searchProjectMonthly($searchQuery): Object
+    public function searchProjectMonthly($status, $searchQuery): Object
     {
-        $project = $this->getProject();
+        $project = $this->getProject($status);
         $project = $project->where('description', 'like', "%$searchQuery%")->get();
         return $project;
     }
@@ -52,7 +53,7 @@ class PextProjectServices
         $cicsaAssignation->load('project.cost_center');
         return $cicsaAssignation;
     }
-    
+
     public function storeProject($validateData): array
     {
         $preproject = Preproject::find($validateData['pre_project_id']);

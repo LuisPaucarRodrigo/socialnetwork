@@ -319,7 +319,7 @@ let backUrl = project.cost_line_id === 1 ? project.status === null
         : 'projectmanagement.index' : project.status === null
     ? 'projectmanagement.pext.index'
     : project.status == true
-        ? ''
+        ? 'projectmanagement.pext.historial'
         : 'projectmanagement.pext.index'
 
 const taskIdDelete = ref(null);

@@ -32,6 +32,11 @@
                         class="bg-indigo-600 hover:bg-indigo-500 rounded-md px-4 py-2 text-center text-sm text-white">
                     P. Adicionales
                     </Link>
+                    <button @click="() => router.get(route('projectmanagement.pext.historial'))"
+                        type="button"
+                        class="bg-indigo-600 hover:bg-indigo-500 rounded-md px-4 py-2 text-center text-sm text-white">
+                        Historial
+                    </button>
                 </div>
 
                 <div class="sm:hidden">
@@ -77,85 +82,11 @@
             </div>
             <br>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                <div v-for="item in projects.data || projects" :key="item.id"
-                    class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
-                    <div class="grid grid-cols-2">
-                        <h2 class="text-sm font-semibold mb-3">
-                            N° {{ item.code }}
-                        </h2>
-                        <!-- <div v-if="auth.user.role_id === 1 || hasPermission('ProjectManager')"
-                            class="inline-flex justify-end items-start gap-x-2">
-                            <button @click="() => {
-                                router.post(route('projectmanagement.liquidation'), { project_id: item.id }, {
-                                    onSuccess: () => router.visit(route('projectmanagement.index'))
-                                })
-                            }" v-if="item.status === null"
-                                :class="`h-6 px-1 rounded-md bg-indigo-700 text-white text-sm  ${item.is_liquidable ? '' : 'opacity-60'}`"
-                                :disabled="item.is_liquidable ? false : true">
-                                Liquidar
-                            </button>
-                            <Link :href="route('projectmanagement.update', { project_id: item.id })"
-                                class="flex items-start">
-                            <QueueListIcon class="h-6 w-6 text-teal-700" />
-                            </Link>
-                        </div> -->
-                    </div>
-                    <h3 class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
-                        {{ item.name }}
-                    </h3>
-                    <p v-if="item?.initial_budget === 0.00" class="text-red-500 text-sm">
-                        No se definió un presupuesto
-                    </p>
-                    <div class="text-sm ">
-                        <div class="grid grid-cols-1 gap-y-1">
-                            <Link v-if="item?.initial_budget > 0"
-                                :href="route('tasks.index', { id: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Tareas
-                            </Link>
-                            <span v-else class="text-gray-400">Tareas</span>
-                            <Link v-if="item?.initial_budget > 0"
-                                :href="route('projectscalendar.show', { project: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Calendario
-                            </Link>
-                            <span v-else class="text-gray-400">Calendario</span>
-                            <!-- <Link v-if="item?.initial_budget > 0"
-                                :href="route('projectmanagement.resources', { project_id: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Servicios
-                            </Link>
-                            <span v-else class="text-gray-400">Servicios</span> -->
-                            <Link v-if="item?.initial_budget > 0"
-                                :href="route('projectmanagement.pext.expenses.index', { project_id: item.id, fixedOrAdditional: false })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y
-                            Gastos</Link>
-                            <span v-else class="text-gray-400">Compras y Gastos</span>
-
-                            <!-- <Link v-if="item?.initial_budget > 0"
-                                :href="route('projectmanagement.products', { project_id: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
-                                Asignar Productos
-                            </Link>
-                            <span v-else class="text-gray-400">Asignar Productos</span> -->
-
-
-                            <!-- <Link v-if="item?.initial_budget > 0"
-                                :href="route('projectmanagement.liquidate', { project_id: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
-                            Liquidaciones
-                            </Link>
-                            <span v-else class="text-gray-400">Liquidaciones</span> -->
-                            <!-- <Link v-if="item?.initial_budget > 0"
-                                :href="route('project.document.index', {path: `${item.code}_${item.id}`, project_id: item.id})"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
-                            Archivos
-                            </Link>
-                            <span v-else class="text-gray-400">Archivos</span> -->
-                        </div>
-                    </div>
-                </div>
+                <ProjectCard v-for="item in projects.data || projects" :key="item.id" :item="item"
+                    :user-permissions="userPermissions" :auth="auth" />
             </div>
             <br>
-            <div v-if="projects.data"
-                class="flex flex-col items-center px-5 py-5 xs:flex-row xs:justify-between">
+            <div v-if="projects.data" class="flex flex-col items-center px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="projects.links" />
             </div>
         </div>
@@ -302,6 +233,7 @@ import InputError from '@/Components/InputError.vue';
 import { formattedDate, setAxiosErrors } from '@/utils/utils';
 import { notifyError, notify } from '@/Components/Notification';
 import { Toaster } from 'vue-sonner';
+import ProjectCard from '@/Layouts/ProjectPext/ProjectCard.vue';
 
 const { project, userPermissions, auth } = defineProps({
     project: Object,

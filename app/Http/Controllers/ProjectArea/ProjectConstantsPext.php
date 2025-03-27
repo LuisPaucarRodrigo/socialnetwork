@@ -22,7 +22,7 @@ class ProjectConstantsPext
                 'subcustomer_id' => null,
                 'description' => $name,
                 'title' => null,
-                'code' => $this->getCode($data['date'], 'CICSA-PEXTBRAM'),
+                'code' => $this->getCode($data['date'], 'CICSA-PEXTOBRAM'),
                 'cpe' => $data['cpe'],
                 'status' => 1,
 

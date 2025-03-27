@@ -133,15 +133,10 @@
                             <TableRow>{{ changelog.observation }}</TableRow>
                             <TableRow>
                                 <a target="_blank" :href="route(
-                                    'fleet.cars.show_invoice',
-                                    {
-                                        car_changelog:
-                                            changelog.id,
-                                    }
+                                    'fleet.cars.show_invoice', { car_changelog: changelog.id }
                                 )
                                     ">
-                                    <DocumentIcon class="w-5 h-5 text-blue-600">
-                                    </DocumentIcon>
+                                    <DocumentIcon class="w-5 h-5 text-blue-600" />
                                 </a>
                             </TableRow>
                             <TableRow>
@@ -202,15 +197,14 @@
                                             car
                                         )
                                         ">
-                                        <PencilSquareIcon class="w-5 h-5 text-yellow-400">
-                                        </PencilSquareIcon>
+                                        <PencilSquareIcon class="w-5 h-5 text-yellow-400" />
                                     </button>
                                     <button type="button" v-if="hasPermission('CarManager')" @click="
                                         openModalDeleteChangelog(
                                             changelog.id
                                         )
                                         ">
-                                        <TrashIcon class="w-5 h-5 text-red-600"></TrashIcon>
+                                        <TrashIcon class="w-5 h-5 text-red-600" />
                                     </button>
                                 </div>
                             </TableRow>

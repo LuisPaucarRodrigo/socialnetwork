@@ -35,13 +35,13 @@ class PextController extends Controller
     public function index(Request $request)
     {
         if ($request->isMethod('get')) {
-            $project = $this->pextServices->getProject()->paginate();
+            $project = $this->pextServices->getProject(null)->paginate();
             return Inertia::render('ProjectArea/ProjectManagement/PextProjectMonthly', [
                 'project' => $project,
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->searchQuery;
-            $project = $this->pextServices->searchProjectMonthly($searchQuery);
+            $project = $this->pextServices->searchProjectMonthly(null, $searchQuery);
             return response()->json($project, 200);
         }
     }
@@ -50,6 +50,20 @@ class PextController extends Controller
     {
         $pro = $this->pextServices->getProjectOrProject();
         return response()->json($pro, 200);
+    }
+
+    public function historial_pext(Request $request)
+    {
+        if ($request->isMethod('get')) {
+            $project = $this->pextServices->getProject(true)->paginate();
+            return Inertia::render('ProjectArea/ProjectManagement/Pext/PextProjectHistorial', [
+                'project' => $project,
+            ]);
+        } elseif ($request->isMethod('post')) {
+            $searchQuery = $request->searchQuery;
+            $project = $this->pextServices->searchProjectMonthly(true, $searchQuery);
+            return response()->json($project, 200);
+        }
     }
 
     public function storeOrUpdate(StoreOrUpdateAssignationRequest $request, $cicsa_assignation_id = null)
@@ -74,7 +88,7 @@ class PextController extends Controller
         }
     }
 
-    public function index_expenses($project_id, $fixedOrAdditional)
+    public function index_expenses($project_id, $fixedOrAdditional, $status = null)
     {
         $expense = $this->pextServices->project_expenses_base($project_id, $fixedOrAdditional)
             ->paginate();
@@ -88,6 +102,7 @@ class PextController extends Controller
                 'expense' => $expense,
                 'providers' => $providers,
                 'project_id' => $project_id,
+                'status' => $status,
                 'zones' => PextConstants::getZone(),
                 'docTypes' => PextConstants::getDocumentsType(),
                 'expenseTypesFixed' => PextConstants::getExpenseTypeFixed(),
