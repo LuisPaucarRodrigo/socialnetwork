@@ -93,10 +93,10 @@ Route::middleware('permission:' . implode('|', RolesConstants::PROJECT_MODULE))-
     //Project
     Route::get('/project/create', [ProjectManagementController::class, 'project_create'])->name('projectmanagement.create');
     Route::post('/project/store', [ProjectManagementController::class, 'project_store'])->name('projectmanagement.store');
-    Route::get('/projectmanagement/update/{project_id}', [ProjectManagementController::class, 'project_create'])->name('projectmanagement.update');
+    Route::get('/projectmanagement/update/{project_id}/type/{type?}', [ProjectManagementController::class, 'project_create'])->name('projectmanagement.update');
     Route::post('/project/update/{project_id}/add-employee', [ProjectManagementController::class, 'project_add_employee'])->name('projectmanagement.add.employee');
     Route::post('/project/liquidation', [ProjectManagementController::class, 'liquidate_project'])->name('projectmanagement.liquidation');
-
+    
 
     //Project tasks
     Route::get('/project/task/create/{project_id?}', [TaskManagementController::class, 'create'])->name('tasks.create');
@@ -282,9 +282,11 @@ Route::middleware('permission:' . implode('|', RolesConstants::PROJECT_MODULE))-
     //Project Pext
     Route::any('/projectPext/index', [PextController::class, 'index'])->name('projectmanagement.pext.index');
     Route::get('/projectPext/projectOrPreproject', [PextController::class, 'requestProjectOrPreproject'])->name('projectmanagement.pext.requestProjectOrPreproject');
+    Route::any('/projectPext/projectOrPreproject/historial_pext', [PextController::class, 'historial_pext'])->name('projectmanagement.pext.historial');
+
     // Route::get('/projectPext/export/expenses', [PextController::class, 'export_expenses'])->name('projectmanagement.pext.export.expenses');
 
-    Route::get('/projectPext/expenses/monthly/{project_id}/index/{fixedOrAdditional}', [PextController::class, 'index_expenses'])->name('projectmanagement.pext.expenses.index');
+    Route::get('/projectPext/expenses/monthly/{project_id}/index/{fixedOrAdditional}/status/{status?}', [PextController::class, 'index_expenses'])->name('projectmanagement.pext.expenses.index');
     Route::get('/projectPext/expenses/showImage/{expense_id}', [PextController::class, 'expense_show_image'])->name('projectmanagement.pext.expenses.image.show');
     Route::get('/projectPext/expenses/{project_id}/export/{fixedOrAdditional}', [PextController::class, 'expense_export'])->name('projectmanagement.pext.expenses.export');
     Route::get('/projectPext/expenses/export/general/{fixedOrAdditional}', [PextController::class, 'expense_export_general'])->name('projectmanagement.pext.expenses.general.export');

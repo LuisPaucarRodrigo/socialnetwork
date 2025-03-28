@@ -35,7 +35,7 @@ import DangerButton from '@/Components/DangerButton.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
-import { notifyError } from '@/Components/Notification';
+import { notify, notifyError } from '@/Components/Notification';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { setAxiosErrors } from '@/utils/utils';
@@ -77,10 +77,11 @@ const closeModal = () => {
 
 function updateFrontEnd(action, data) {
     if (action === "delete") {
-        const validations = users.value.data || users.value
+        let validations = users.value.data || users.value
         const index = validations.findIndex(item => item.id === data)
-        validations[index].splice(index, 1)
+        validations.splice(index, 1)
         closeModal()
+        notify("Usuario eliminado con exito.")
     }
 }
 

@@ -59,9 +59,9 @@ class ManagementEmployees extends Controller
         $validateData = $request->validated();
         DB::beginTransaction();
         try {
-            $employee_id = $this->employeesServices->updateOrCreateEmployee($request->only((new Employee())->getFillable()), $request->file('cropped_image'), null);
-            $this->employeesServices->updateOrCreateContract($request->only((new Contract())->getFillable()), $request->file('curriculum_vitae'), $employee_id);
-            $this->employeesServices->updateOrCreateEducation($request->only((new Education())->getFillable()), $employee_id);
+            $employee_id = $this->employeesServices->updateOrCreateEmployee($request, null);
+            $this->employeesServices->updateOrCreateContract($request->only((new Contract())->getFillable()), $employee_id);
+            $this->employeesServices->updateOrCreateEducation($request, $employee_id);
             $this->employeesServices->updateOrCreateAddress($request->only((new Address())->getFillable()), $employee_id);
             if (isset($validateData['emergencyContacts'])) {
                 Emergency::where('employee_id', $employee_id)->delete();
@@ -93,9 +93,9 @@ class ManagementEmployees extends Controller
         $validateData = $request->validated();
         DB::beginTransaction();
         try {
-            $this->employeesServices->updateOrCreateEmployee($request->only((new Employee())->getFillable()), $request->file('cropped_image'), $id);
-            $this->employeesServices->updateOrCreateContract($request->only((new Contract())->getFillable()), $request->file('curriculum_vitae'), $id);
-            $this->employeesServices->updateOrCreateEducation($request->only((new Education())->getFillable()), $id);
+            $this->employeesServices->updateOrCreateEmployee($request, $id);
+            $this->employeesServices->updateOrCreateContract($request->only((new Contract())->getFillable()), $id);
+            $this->employeesServices->updateOrCreateEducation($request, $id);
             $this->employeesServices->updateOrCreateAddress($request->only((new Address())->getFillable()), $id);
             if (isset($validateData['emergencyContacts'])) {
                 Emergency::where('employee_id', $id)->delete();

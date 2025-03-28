@@ -29,6 +29,7 @@ class PextExpenseExport implements FromView, WithColumnWidths
                 ->get();
         } else {
             $expense = PextProjectExpense::with(['provider:id,company_name'])
+                ->where('project_id',"!=", 320)
                 ->where('fixedOrAdditional', $this->fixedOrAdditional)
                 ->where('is_accepted', 1)
                 ->get();

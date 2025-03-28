@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Gestion de Costos Adicionales" />
-    <AuthenticatedLayout redirectRoute="projectmanagement.pext.index">
+    <AuthenticatedLayout :redirectRoute="redirectRoute">
         <template #header>
             Gastos Mensuales del Proyecto
         </template>
@@ -98,18 +98,18 @@
                     </div>
                     <Link v-if="fixedOrAdditional"
                         class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
-                        :href="route('projectmanagement.pext.expenses.index', { project_id: project_id, fixedOrAdditional: false })">
+                        :href="route('projectmanagement.pext.expenses.index', { project_id: project_id, fixedOrAdditional: false, status: status })">
                     G.Adicionales
                     </Link>
                     <Link v-else
                         class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
-                        :href="route('projectmanagement.pext.expenses.index', { project_id: project_id, fixedOrAdditional: true })">
+                        :href="route('projectmanagement.pext.expenses.index', { project_id: project_id, fixedOrAdditional: true, status: status })">
                     G.Fijos
                     </Link>
-                    <!-- <Link class="rounded-md px-4 py-2 text-center text-sm text-white bg-green-600 hover:bg-green-500"
+                    <Link class="rounded-md px-4 py-2 text-center text-sm text-white bg-green-600 hover:bg-green-500"
                         :href="route('projectmanagement.pext.expense_dashboard', { project_id: project_id })">
                     Resumen de Gasto
-                    </Link> -->
+                    </Link>
                 </div>
 
                 <div v-if="hasPermission('HumanResourceManager')" class="sm:hidden">
@@ -152,7 +152,8 @@
                     </dropdown>
                 </div>
                 <div class="flex space-x-3">
-                    <Search v-model:search="filterForm.search" fields="Ruc,Fecha Documento,Descripción,Monto" />
+                    <Search v-model:search="filterForm.search"
+                        fields="Ruc,Fecha Documento,Descripción,Monto,Numero de Operación" />
                 </div>
             </div>
         </div>
@@ -734,8 +735,8 @@ const props = defineProps({
     providers: Object,
     auth: Object,
     userPermissions: Array,
-    state: String,
     project_id: String,
+    status: String,
     fixedOrAdditional: Boolean,
     zones: Array,
     docTypes: Array,
@@ -748,7 +749,8 @@ const expenses = ref(props.expense);
 const showOpNuDatModal = ref(false)
 const showSwapMPModal = ref(false)
 const monthlyProjects = ref(null)
-
+console.log(props.status)
+const redirectRoute = props.status ? 'projectmanagement.pext.historial' : 'projectmanagement.pext.index'
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
 };
@@ -1127,7 +1129,7 @@ const swapCosts = async () => {
     notify("Registros Movidos con éxito");
 }
 
-async function mProject(){
+async function mProject() {
     const url = route('pext.monthly')
     try {
         let response = await axios.get(url)

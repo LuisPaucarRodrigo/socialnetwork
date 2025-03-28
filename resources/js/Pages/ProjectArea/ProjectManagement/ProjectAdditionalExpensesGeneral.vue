@@ -142,7 +142,7 @@
                     </dropdown>
                 </div>
                 <div class="flex space-x-3">
-                    <Search v-model:search="filterForm.search" fields="Ruc,Fecha Documento,Descripción,Monto" />
+                    <Search v-model:search="filterForm.search" fields="Ruc,Fecha Documento,Descripción,Monto,Numero de Operación" />
                 </div>
             </div>
         </div>
@@ -917,7 +917,6 @@ async function search_advance(data) {
     let url = route("pext.monthly.additional.expense.general.search_advance")
     try {
         let response = await axios.post(url, data);
-        console.log(response.data)
         expenses.value = response.data;
         notifyWarning(`Se encontraron ${response.data.length} registro(s)`);
     } catch (error) {

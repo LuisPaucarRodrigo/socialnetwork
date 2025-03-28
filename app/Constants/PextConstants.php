@@ -74,7 +74,6 @@ class PextConstants
             "Factura",
             "Boleta",
             "Ticket",
-            "Yape-Plin"
         ];
     }
 }

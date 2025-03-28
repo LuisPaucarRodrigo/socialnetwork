@@ -48,7 +48,7 @@ Route::middleware('permission:UserManager')->group(function () {
     Route::delete('/preprojects/quote_product_delete/{quote_product_id}', [PreProjectController::class, 'quote_product_delete'])->name('preprojects.quote.product.delete');
 
     //projects
-    Route::get('/projectmanagement/update/{project_id}', [ProjectManagementController::class, 'project_create'])->name('projectmanagement.update');
+    Route::get('/projectmanagement/update/{project_id}/type/{type?}', [ProjectManagementController::class, 'project_create'])->name('projectmanagement.update');
     Route::delete('/projectmanagement/delete/{project_id}', [ProjectManagementController::class, 'project_destroy'])->name('projectmanagement.delete');
     Route::delete('/project/update/delete-employee/{pivot_id}', [ProjectManagementController::class, 'project_delete_employee'])->name('projectmanagement.delete.employee');
     Route::delete('/shopping_area/purchasesrequest/destroy/{id}', [PurchaseRequestController::class, 'destroy'])->name('purchasesrequest.destroy');

@@ -133,6 +133,7 @@ class Project extends Model
         ->get()
         ->sum('real_amount');
     }
+    
     public function getStaticCostsTotalAttribute () {
         return $this->staticCosts()
         ->whereNotIn('expense_type', PintConstants::scExpensesThatDontCount())

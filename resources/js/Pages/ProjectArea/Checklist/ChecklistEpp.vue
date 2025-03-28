@@ -1,74 +1,39 @@
 <template>
+
     <Head title="ChecklistDiarioHerramientas" />
     <AuthenticatedLayout :redirectRoute="'checklist.index'">
         <template #header> Checklist EPPS </template>
-        <div class="min-w-full p-3 rounded-lg shadow">
-            <div class="min-w-full overflow-x-auto">
-                <table class="w-full table-auto">
-                    <thead>
-                        <tr
-                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de Registro
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Nombre
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Checklist
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Más
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <template v-for="item in checklists.data" :key="item.id">
-                            <tr class="text-gray-700 border-b">
-                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap">
-                                        {{ formattedDate(item.created_at) }}
-                                    </p>
-                                </td>
-
-                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap">
-                                        {{ item.user_name }}
-                                    </p>
-                                </td>
-
-                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                    <button type="button">
-                                        <EyeIcon @click="openChecklistModal(item)" class="text-indigo-600 w-5" />
-                                    </button>
-                                </td>
-                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                    <button
-                                        @click.prevent="confirmDeleteAdditional(item.id)"
-                                        class="text-red-600 hover:underline mr-2"
-                                    >
-                                        <TrashIcon class="h-5 w-5" />
-                                    </button>
-                                </td>
-                            </tr>
-                        </template>
-                    </tbody>
-                </table>
-            </div>
-            <div class="flex flex-col items-center border-t px-5 py-5 xs:flex-row xs:justify-between">
-                <pagination :links="checklists.links" />
-            </div>
+        <TableStructure>
+            <template #thead>
+                <tr>
+                    <TableTitle>Fecha de Registro</TableTitle>
+                    <TableTitle>Nombre</TableTitle>
+                    <TableTitle>ChackList</TableTitle>
+                    <TableTitle>Mas</TableTitle>
+                </tr>
+            </template>
+            <template #tbody>
+                <tr v-for="item in checklists.data" :key="item.id">
+                    <TableRow>{{ formattedDate(item.created_at) }}</TableRow>
+                    <TableRow>{{ item.user_name }}</TableRow>
+                    <TableRow>
+                        <button type="button">
+                            <EyeIcon @click="openChecklistModal(item)" class="w-5 h-5 text-indigo-600" />
+                        </button>
+                    </TableRow>
+                    <TableRow>
+                        <button @click.prevent="confirmDeleteAdditional(item.id)">
+                            <TrashIcon class="h-5 w-5 text-red-600" />
+                        </button>
+                    </TableRow>
+                </tr>
+            </template>
+        </TableStructure>
+        <div class="flex flex-col items-center border-t px-5 py-5 xs:flex-row xs:justify-between">
+            <pagination :links="checklists.links" />
         </div>
-        <ConfirmDeleteModal
-            :confirmingDeletion="confirmingDocDeletion"
-            itemType="Checklist Epps"
-            :deleteFunction="deleteAdditional"
-            @closeModal="closeModalDoc"
-        />
+        <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Checklist Epps"
+            :deleteFunction="deleteAdditional" @closeModal="closeModalDoc" />
 
 
         <Modal :show="showChecklistModal" @close="closeChecklistModal" max-width="2xl" :closeable="true">
@@ -91,7 +56,7 @@
                             </thead>
                             <tbody>
                                 <tr v-for="(
-                                            item, i
+item, i
                                         ) in itemArrays.stateArray" :key="i" class="text-gray-700 bg-white text-xs">
                                     <td class="border-b border-slate-300 px-2 py-2">
                                         {{ item.name }}
@@ -127,6 +92,9 @@ import { formattedDate } from "@/utils/utils";
 import { EyeIcon } from "@heroicons/vue/24/outline";
 import { TrashIcon } from "@heroicons/vue/24/outline";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
+import TableStructure from "@/Layouts/TableStructure.vue";
+import TableTitle from "@/Components/TableTitle.vue";
+import TableRow from "@/Components/TableRow.vue";
 
 const { checklists } = defineProps({
     checklists: Object,

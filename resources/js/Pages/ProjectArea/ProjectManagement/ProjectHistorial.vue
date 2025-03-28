@@ -5,9 +5,9 @@
         <template #header>
             Proyectos Culminados
         </template>
-        <div class="min-w-full rounded-lg shadow">
-            <div class="mt-6 flex items-center justify-between gap-x-6">
-                <div class="hidden sm:flex sm:items-center sm:space-x-4">
+        <div class="min-w-full ">
+            <div class="mt-6 flex items-center justify-end">
+                <!-- <div class="hidden sm:flex sm:items-center sm:space-x-4">
                 </div>
 
                 <div class="sm:hidden">
@@ -24,7 +24,7 @@
                         </template>
 
                         <template #content class="origin-left">
-                            <div> <!-- Alineación a la derecha -->
+                            <div>
                                 <div class="dropdown">
                                     <div class="dropdown-menu">
                                         <button @click="add_project"
@@ -39,12 +39,14 @@
                             </div>
                         </template>
                     </dropdown>
-                </div>
+                </div> -->
 
-                <input type="text" @input="search($event.target.value)" placeholder="Buscar...">
+                <div>
+                    <TextInput type="text" @input="search($event.target.value)" placeholder="Buscar..." />
+                </div>
             </div>
             <br>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 rounded-lg shadow">
                 <div v-for="item in projects.data" :key="item.id"
                     class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
                     <div class="grid grid-cols-2">
@@ -70,8 +72,7 @@
                     <div
                         :class="`text-gray-500 text-sm ${item.initial_budget === 0.00 ? 'opacity-50 pointer-events-none' : ''}`">
                         <div class="grid grid-cols-1 gap-y-1">
-                            <Link v-if="item.initial_budget > 0"
-                                :href="route('tasks.index', { id: item.id })"
+                            <Link v-if="item.initial_budget > 0" :href="route('tasks.index', { id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Tareas
                             </Link>
                             <Link v-if="item.initial_budget > 0"
@@ -89,15 +90,15 @@
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y
                             Gastos</Link>
                             <span v-else class="text-gray-400">Compras y Gastos</span>
-                            
+
                             <Link v-if="item.initial_budget > 0"
                                 :href="route('projectmanagement.products', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
-                                Asignar Productos
+                            Asignar Productos
                             </Link>
                             <span v-else class="text-gray-400">Asignar Productos</span>
 
-                            
+
                             <Link v-if="item.initial_budget > 0"
                                 :href="route('projectmanagement.liquidate', { project_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
@@ -126,7 +127,8 @@ import Dropdown from '@/Components/Dropdown.vue';
 import axios from 'axios';
 import { ref } from 'vue';
 import { Head, router, Link } from '@inertiajs/vue3';
-import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { PencilIcon } from '@heroicons/vue/24/outline';
+import TextInput from '@/Components/TextInput.vue';
 
 const props = defineProps({
     projects: Object,
@@ -145,8 +147,10 @@ const add_project = () => {
 const delete_project = () => {
     const projectId = projectToDelete.value;
     router.delete(route('projectmanagement.delete', { project_id: projectId }), {
-        onSuccess: () => {closeModal()
-        router.visit(route('projectmanagement.index'))}
+        onSuccess: () => {
+            closeModal()
+            router.visit(route('projectmanagement.index'))
+        }
     });
 }
 

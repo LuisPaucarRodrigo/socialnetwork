@@ -2,14 +2,14 @@
 
     <Head title="CICSA Orden de Servicio" />
 
-    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: {type} }">
+    <AuthenticatedLayout :redirectRoute="{ route: 'cicsa.index', params: { type } }">
         <template #header>
-            {{ type==1 ? 'Pint' : 'Pext' }} - Orden de Servicio
+            {{ type == 1 ? 'Pint' : 'Pext' }} - Orden de Servicio
         </template>
         <Toaster richColors />
-        <div class="min-w-full rounded-lg shadow">
+        <div class="min-w-full">
             <div class="flex justify-between">
-                <a :href="route('cicsa.service_orders.export', {type}) + '?' + uniqueParam"
+                <a :href="route('cicsa.service_orders.export', { type }) + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
@@ -23,194 +23,81 @@
                 </div>
             </div>
             <br>
-            <div class="overflow-x-auto h-[70vh]">
-                <table class="w-full ">
-                    <thead>
-                        <tr
-                            class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                            <th colspan="3"
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Nombre de Proyecto
-                            </th>
-                            <th colspan="2"
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Codigo de Proyecto
-                            </th>
-                            <th colspan="2"
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Centro de Costos
-                            </th>
-                            <th colspan="2"
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                CPE
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            </th>
+            <TableStructure>
+                <template #thead>
+                    <tr>
+                        <TableTitle :colspan="3">Nombre de Proyecto</TableTitle>
+                        <TableTitle :colspan="2">Codigo de Proyecto</TableTitle>
+                        <TableTitle :colspan="2">Centro de Costos</TableTitle>
+                        <TableTitle :colspan="2">CPE</TableTitle>
+                        <TableTitle :colspan="2"></TableTitle>
+                    </tr>
+                </template>
+                <template #tbody>
+                    <template v-for="item in service_orders.data ?? service_orders" :key="item.id">
+                        <tr>
+                            <TableRow :colspan="3">{{ item.project_name }}</TableRow>
+                            <TableRow :colspan="2">{{ item.project_code }}</TableRow>
+                            <TableRow :colspan="2">{{ item.project?.cost_center?.name }}</TableRow>
+                            <TableRow :colspan="2">{{ item.cpe }}</TableRow>
+                            <TableRow :colspan="2">
+                                <div class="flex space-x-3 justify-center">
+                                    <button v-if="item.cicsa_service_order.length > 0" type="button"
+                                        @click="toggleDetails(item?.cicsa_service_order)"
+                                        class="text-blue-900 whitespace-no-wrap">
+                                        <ChevronDownIcon v-if="service_order_row !== item.id" class="w-6 h-6" />
+                                        <ChevronUpIcon v-else class="w-6 h-6" />
+                                    </button>
+                                </div>
+                            </TableRow>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <template v-for="item in service_orders.data ?? service_orders" :key="item.id">
-                            <tr class="text-gray-700">
-                                <td colspan="3" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                    <p class="text-gray-900 text-center">
-                                        {{ item.project_name }}
-                                    </p>
-                                </td>
-                                <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                    <p class="text-gray-900 text-center">
-                                        {{ item.project_code }}
-                                    </p>
-                                </td>
-                                <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                    <p class="text-gray-900 text-center">
-                                        {{ item.project?.cost_center?.name }}
-                                    </p>
-                                </td>
-                                <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                    <p class="text-gray-900 text-center">
-                                        {{ item.cpe }}
-                                    </p>
-                                </td>
-                                <td colspan="2" class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                    <div class="flex space-x-3 justify-center">
-                                        <button v-if="item.cicsa_service_order.length > 0" type="button"
-                                            @click="toggleDetails(item?.cicsa_service_order)"
-                                            class="text-blue-900 whitespace-no-wrap">
-                                            <svg v-if="service_order_row !== item.id" xmlns="http://www.w3.org/2000/svg"
-                                                fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                class="w-6 h-6">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                            </svg>
-                                            <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                class="w-6 h-6">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </td>
+                        <template v-if="service_order_row == item.id">
+                            <tr
+                                class="border-b bg-red-500 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                <TableTitle :style="'bg-gray-200'">Numero de OC</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Fecha de Orden de Servicio</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Orden de Servicio</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Doc OS</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Hoja de Estimación</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Orden de Compra</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Factura en PDF</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Factura en ZIP</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Doc Fac</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Encargado</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Acciones</TableTitle>
                             </tr>
-                            <template v-if="service_order_row == item.id">
-                                <tr
-                                    class="border-b bg-red-500 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Numero de OC
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Fecha de Orden de Servicio
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Orden de Servicio
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Doc OS
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Hoja de Estimación
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Orden de Compra
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Factura en PDF
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Factura en ZIP
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Doc Fac
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Encargado
-                                    </th>
-                                    <th
-                                        class="border-b-2 border-gray-200 bg-gray-100 px-5 py-2 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                        Acciones
-                                    </th>
-                                </tr>
-                                <tr v-for="materialDetail in item.cicsa_service_order" :key="materialDetail.id"
-                                    class="bg-gray-100">
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <p class="text-gray-900 text-center">
-                                            {{ materialDetail.cicsa_purchase_order?.oc_number }}
-                                        </p>
-                                    </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <p class="text-gray-900 text-center">
-                                            {{ formattedDate(materialDetail?.service_order_date) }}
-                                        </p>
-                                    </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <p class="text-gray-900 text-center">
-                                            {{ materialDetail?.service_order }}
-                                        </p>
-                                    </td>
-                                    <td class="border-b text-center border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <button v-if="materialDetail?.document" type="button"
-                                            @click="openPDF(materialDetail?.id, 'OS')">
-                                            <EyeIcon class="w-5 h-5 text-green-600" />
-                                        </button>
-                                    </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <p class="text-gray-900 text-center">
-                                            {{ materialDetail?.estimate_sheet }}
-                                        </p>
-                                    </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <p class="text-gray-900 text-center">
-                                            {{ materialDetail?.purchase_order }}
-                                        </p>
-                                    </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <p class="text-gray-900 text-center">
-                                            {{ materialDetail?.pdf_invoice }}
-                                        </p>
-                                    </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <p class="text-gray-900 text-center">
-                                            {{ materialDetail?.zip_invoice }}
-                                        </p>
-                                    </td>
-                                    <td class="border-b text-center border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <button v-if="materialDetail?.document_invoice" type="button"
-                                            @click="openPDF(materialDetail?.id, 'invoice')">
-                                            <EyeIcon class="w-5 h-5 text-green-600" />
-                                        </button>
-                                    </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                        <p class="text-gray-900 text-center">
-                                            {{ materialDetail?.user_name }}
-                                        </p>
-                                    </td>
-                                    <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px] text-center">
-                                        <button class="text-blue-900" @click="openEditModal(materialDetail)">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                            </svg>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </template>
+                            <tr v-for="materialDetail in item.cicsa_service_order" :key="materialDetail.id"
+                                class="bg-gray-100">
+                                <TableRow>{{ materialDetail.cicsa_purchase_order?.oc_number }}</TableRow>
+                                <TableRow>{{ formattedDate(materialDetail?.service_order_date) }}</TableRow>
+                                <TableRow>{{ materialDetail?.service_order }}</TableRow>
+                                <TableRow>
+                                    <button v-if="materialDetail?.document" type="button"
+                                        @click="openPDF(materialDetail?.id, 'OS')">
+                                        <EyeIcon class="w-5 h-5 text-green-600" />
+                                    </button>
+                                </TableRow>
+                                <TableRow>{{ materialDetail?.estimate_sheet }}</TableRow>
+                                <TableRow>{{ materialDetail?.purchase_order }}</TableRow>
+                                <TableRow>{{ materialDetail?.pdf_invoice }}</TableRow>
+                                <TableRow>{{ materialDetail?.zip_invoice }}</TableRow>
+                                <TableRow>
+                                    <button v-if="materialDetail?.document_invoice" type="button"
+                                        @click="openPDF(materialDetail?.id, 'invoice')">
+                                        <EyeIcon class="w-5 h-5 text-green-600" />
+                                    </button>
+                                </TableRow>
+                                <TableRow>{{ materialDetail?.user_name }}</TableRow>
+                                <TableRow>
+                                    <button class="text-blue-900" @click="openEditModal(materialDetail)">
+                                        <PencilSquareIcon class="w-5 h-5 text-amber-400" />
+                                    </button>
+                                </TableRow>
+                            </tr>
                         </template>
-                    </tbody>
-                </table>
-            </div>
-
+                    </template>
+                </template>
+            </TableStructure>
             <div v-if="service_orders.data"
                 class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="service_orders.links" />
@@ -353,11 +240,14 @@ import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate, setAxiosErrors, toFormData } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import InputFile from '@/Components/InputFile.vue';
-import { EyeIcon } from '@heroicons/vue/24/outline';
+import { ChevronDownIcon, ChevronUpIcon, EyeIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import { Toaster } from 'vue-sonner';
 import { notify, notifyError } from '@/Components/Notification';
+import TableStructure from '@/Layouts/TableStructure.vue';
+import TableTitle from '@/Components/TableTitle.vue';
+import TableRow from '@/Components/TableRow.vue';
 
-const { service_order, auth,searchCondition, type } = defineProps({
+const { service_order, auth, searchCondition, type } = defineProps({
     service_order: Object,
     auth: Object,
     searchCondition: {
@@ -438,7 +328,7 @@ async function submit() {
 
 const search = async ($search) => {
     try {
-        const response = await axios.post(route('cicsa.service_orders', {type}), { searchQuery: $search });
+        const response = await axios.post(route('cicsa.service_orders', { type }), { searchQuery: $search });
         service_orders.value = response.data.service_order;
     } catch (error) {
         console.error('Error searching:', error);

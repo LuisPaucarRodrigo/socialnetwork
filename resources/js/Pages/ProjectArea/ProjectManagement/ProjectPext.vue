@@ -1,6 +1,6 @@
 <template>
 
-    <Head title="Proyectos Pint" />
+    <Head title="Proyectos Pext" />
     <AuthenticatedLayout :redirectRoute="'projectmanagement.index'">
         <template #header>
             Proyectos Pext

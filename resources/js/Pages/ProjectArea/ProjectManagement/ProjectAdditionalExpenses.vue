@@ -116,7 +116,7 @@
                     </dropdown>
                 </div>
                 <div class="flex space-x-3">
-                    <Search v-model:search="filterForm.search" fields="Ruc,Fecha Documento,Descripción,Monto"/>
+                    <Search v-model:search="filterForm.search" fields="Ruc,Fecha Documento,Descripción,Monto,Numero de Operación"/>
                 </div>
             </div>
         </div>
@@ -392,7 +392,6 @@ const props = defineProps({
     cost_center: Object,
     project_id: String,
     fixedOrAdditional: Boolean,
-    cicsaAssignation: Object,
     type: Number,
     acExpensesAmounts: Array,
     scExpensesAmounts: Array,
@@ -450,68 +449,9 @@ function handlerPreview(id) {
     );
 }
 
-// const initialExpenseFixed = [
-//     'Alquiler de Vehículos',
-//     'Alquiler de Locales',
-//     'Combustible',
-//     'Celulares',
-//     'Terceros',
-//     'Viáticos',
-//     'Seguros y Pólizas',
-//     'Gastos de Representación',
-//     'Reposición de Equipo',
-//     'Herramientas',
-//     'Equipos',
-//     'EPPs',
-//     'Adicionales',
-//     'Daños de Vehículos',
-//     'Planilla',
-//     'Otros',
-//     'Adicionales',
-//     'Daños de Vehículos',
-//     'Planilla',
-//     "Pago a Terceros",
-//     'Otros',
-// ]
-
-// const initialExpenseAdditional = [
-//     "Hospedaje",
-//     "Mensajería",
-//     "Consumibles",
-//     "Pasaje Interprovincial",
-//     "Taxis y Pasajes",
-//     "Bandeos",
-//     "Peaje",
-//     "Herramientas",
-//     "Equipos",
-//     "EPPs",
-//     "Seguros y Pólizas",
-//     "Pago a Terceros",
-//     "Otros",
-// ]
-
 const expenseTypes = props.fixedOrAdditional
     ? props.expenseTypeFixed
     : props.expenseType;
-// const costCenter = props.cost_center.map(item => item.name)
-
-// const zones = [
-//     "Arequipa",
-//     "Moquegua",
-//     "Tacna",
-//     "Cuzco",
-//     "Puno",
-//     "MDD"
-// ];
-
-// const docTypes = [
-//     "Efectivo",
-//     "Deposito",
-//     "Factura",
-//     "Boleta",
-//     "Ticket",
-//     "Yape-Plin"
-// ];
 
 const stateTypes = [
     "Pendiente",
@@ -523,7 +463,6 @@ const initialFilterFormState = {
     fixedOrAdditional: props.fixedOrAdditional,
     rejected: true,
     search: "",
-    // selectedZones: zones,
     selectedExpenseTypes: expenseTypes,
     selectedDocTypes: props.documentsType,
     selectedStateTypes: stateTypes,
@@ -543,7 +482,6 @@ watch(() => [
     filterForm.value.fixedOrAdditional,
     filterForm.value.rejected,
     filterForm.value.search,
-    // filterForm.value.selectedZones,
     filterForm.value.selectedExpenseTypes,
     filterForm.value.selectedDocTypes,
     filterForm.value.selectedStateTypes,
@@ -560,6 +498,7 @@ watch(() => [
 );
 
 async function search_advance(data) {
+    console.log(data)
     let url = route("pext.monthly.additional.expense.search_advance", {
         project_id: props.project_id,
     })

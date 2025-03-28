@@ -11,6 +11,7 @@ use App\Http\Requests\ChecklistRequest\ChecklistEppRequest;
 use App\Http\Requests\ChecklistRequest\ChecklistToolkitRequest;
 use App\Http\Requests\CostsRequest\AdditionalCostsApiRequest;
 use App\Models\AdditionalCost;
+use App\Models\Car;
 use App\Models\ChecklistCar;
 use App\Models\ChecklistDailytoolkit;
 use App\Models\ChecklistEpp;
@@ -90,6 +91,9 @@ class ChecklistsController extends Controller
     {
         $data = $request->validated();
         try {
+            // $data['maintenanceTools'] = $this->storeBase64Image($data['maintenanceTools'], 'image/checklist/checklistcar', 'maintenanceTools');
+            // $data['preventionTools'] = $this->storeBase64Image($data['preventionTools'], 'image/checklist/checklistcar', 'preventionTools');
+            // $data['imageSpareTire'] = $this->storeBase64Image($data['imageSpareTire'], 'image/checklist/checklistcar', 'imageSpareTire');
             $data['front'] = $this->storeBase64Image($data['front'], 'image/checklist/checklistcar', 'front');
             $data['leftSide'] = $this->storeBase64Image($data['leftSide'], 'image/checklist/checklistcar', 'leftSide');
             $data['rightSide'] = $this->storeBase64Image($data['rightSide'], 'image/checklist/checklistcar', 'rightSide');
@@ -104,6 +108,8 @@ class ChecklistsController extends Controller
 
             $data['user_id'] = Auth::user()->id;
             $data['user_name'] = Auth::user()->name;
+            $car = Car::find($data['car_id']);
+            $data['plate'] = $car->plate;
             ChecklistCar::create($data);
             return response()->json([], 200);
         } catch (Exception $e) {

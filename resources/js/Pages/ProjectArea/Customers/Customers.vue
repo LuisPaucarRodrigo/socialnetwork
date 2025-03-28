@@ -1,7 +1,6 @@
 <template>
 
     <Head title="Clientes" />
-
     <AuthenticatedLayout :redirectRoute="'customers.index'">
         <template #header>
             Clientes
@@ -11,70 +10,49 @@
                 class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                 + Agregar
             </button>
-            <input type="text" @input="search($event.target.value)" placeholder="Buscar...">
+            <div class="flex items-center">
+                <TextInput data-tooltip-target="search_fields" type="text" placeholder="Buscar..."
+                    @keyup.enter="search($event.target.value)" />
+                <div id="search_fields" role="tooltip"
+                    class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                    Razon Social,Categoria,Ruc
+                    <div class="tooltip-arrow" data-popper-arrow></div>
+                </div>
+            </div>
         </div>
-
-        <div class="overflow-x-auto rounded-lg shadow mt-2">
-            <table class="w-full whitespace-no-wrap">
-                <thead>
-                    <tr
-                        class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            Ruc
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            Razón Social
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            Categoría
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            Dirección
-                        </th>
-                        <th v-if="hasPermission('ProjectManager')"
-                            class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="customer in customers.data" :key="customer.id" class="text-gray-700">
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ customer.ruc }}</p>
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ customer.business_name }}</p>
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ customer.category }}</p>
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ customer.address }}</p>
-                        </td>
-                        <td v-if="hasPermission('ProjectManager')"
-                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <div class="flex justify-center space-x-3">
-                                <button type="button" @click="openEditCustomerModal(customer)"
-                                    class="text-yellow-600 whitespace-no-wrap">
-                                    <PencilIcon class="h-5 w-5 ml-1" />
-                                </button>
-                                <button type="button" @click="add_contact(customer.id)"
-                                    class="text-blue-600 whitespace-no-wrap">
-                                    <DocumentArrowUpIcon class="h-5 w-5 ml-1" />
-                                </button>
-                                <button v-if="customer.category !== 'Especial'" ype="button" @click="confirmDeleteCustomer(customer.id)"
-                                    class="text-red-600 whitespace-no-wrap">
-                                    <TrashIcon class="h-5 w-5 ml-1" />
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <TableStructure>
+            <template #thead>
+                <tr>
+                    <TableTitle>Ruc</TableTitle>
+                    <TableTitle>Razón Social</TableTitle>
+                    <TableTitle>Categoría</TableTitle>
+                    <TableTitle>Dirección</TableTitle>
+                    <TableTitle v-if="hasPermission('ProjectManager')"></TableTitle>
+                </tr>
+            </template>
+            <template #tbody>
+                <tr v-for="customer in customers.data" :key="customer.id">
+                    <TableRow>{{ customer.ruc }}</TableRow>
+                    <TableRow>{{ customer.business_name }}</TableRow>
+                    <TableRow>{{ customer.category }}</TableRow>
+                    <TableRow width="w-[400px]">{{ customer.address }}</TableRow>
+                    <TableRow>
+                        <div class="flex justify-center space-x-3">
+                            <button type="button" @click="openEditCustomerModal(customer)">
+                                <PencilIcon class="h-5 w-5 text-yellow-600" />
+                            </button>
+                            <button type="button" @click="add_contact(customer.id)">
+                                <DocumentArrowUpIcon class="h-5 w-5 text-blue-600" />
+                            </button>
+                            <button v-if="customer.category !== 'Especial'" type="button"
+                                @click="confirmDeleteCustomer(customer.id)">
+                                <TrashIcon class="h-5 w-5 text-red-600" />
+                            </button>
+                        </div>
+                    </TableRow>
+                </tr>
+            </template>
+        </TableStructure>
 
         <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
             <pagination :links="props.customers.links" />
@@ -162,7 +140,7 @@
                                     Cancelar </SecondaryButton>
                                 <button type="submit" :class="{ 'opacity-25': form.processing }"
                                     class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">{{
-        create_customer ? 'Guardar' : 'Actualizar' }}</button>
+                                        create_customer ? 'Guardar' : 'Actualizar' }}</button>
                             </div>
                         </div>
                     </div>
@@ -191,6 +169,10 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import axios from 'axios';
+import TextInput from '@/Components/TextInput.vue';
+import TableStructure from '@/Layouts/TableStructure.vue';
+import TableTitle from '@/Components/TableTitle.vue';
+import TableRow from '@/Components/TableRow.vue';
 
 const create_customer = ref(false);
 const showModal = ref(false);

@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Proyecto" />
-    <AuthenticatedLayout :redirectRoute="'projectmanagement.index'">
+    <AuthenticatedLayout :redirectRoute="redirectRoute">
         <template v-if="project" #header> Proyecto </template>
         <template v-else #header> Creación de proyecto </template>
         <div class="min-w-full p-3 rounded-lg shadow">
@@ -84,8 +84,8 @@
                                 </InputLabel>
                                 <div class="mt-2">
                                     <select :disabled="auth.user.role_id === 1
-                                            ? false
-                                            : true
+                                        ? false
+                                        : true
                                         " required id="priority" v-model="form.priority"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         <option disabled value="">
@@ -105,17 +105,15 @@
                                 </InputLabel>
                                 <div class="mt-2">
                                     <textarea :disabled="auth.user.role_id === 1
-                                            ? false
-                                            : true
+                                        ? false
+                                        : true
                                         " required v-model="form.description" id="description"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
                                     <InputError :message="form.errors.description" />
                                 </div>
                             </div>
 
-                            <div class="sm:col-span-6" v-if="
-                                project && project?.remaining_budget !== 0
-                            ">
+                            <div class="sm:col-span-6" v-if="project && project?.remaining_budget !== 0">
                                 <div class="flex gap-2">
                                     <InputLabel for="trainings" class="font-medium leading-6 text-gray-900">Miembros del
                                         equipo
@@ -132,13 +130,11 @@
                                         <p class="text-sm font-medium pb-2">
                                             Administrativos
                                         </p>
-                                        <div v-for="(
-member, index
-                                            ) in form.employees.filter(
-                                                    (item) =>
-                                                        item.pivot.charge ===
-                                                        'Administrativo'
-                                                )" :key="index" class="grid grid-cols-8 items-center my-2">
+                                        <div v-for="(member, index) in form.employees.filter(
+                                            (item) =>
+                                                item.pivot.charge ===
+                                                'Administrativo'
+                                        )" :key="index" class="grid grid-cols-8 items-center my-2">
                                             <p class="text-sm col-span-7 line-clamp-2">
                                                 {{ member.name }}
                                                 {{ member.lastname }}:
@@ -147,11 +143,11 @@ member, index
                                             <button v-if="
                                                 hasPermission('UserManager')
                                             " type="button" @click="
-                                                    delete_already_employee(
-                                                        member.pivot.id,
-                                                        index
-                                                    )
-                                                    " class="col-span-1 flex justify-end">
+                                                delete_already_employee(
+                                                    member.pivot.id,
+                                                    index
+                                                )
+                                                " class="col-span-1 flex justify-end">
                                                 <TrashIcon class="text-red-500 h-4 w-4" />
                                             </button>
                                             <div class="border-b col-span-8 border-gray-900/10"></div>
@@ -164,10 +160,10 @@ member, index
                                         <div v-for="(
 member, index
                                             ) in form.employees.filter(
-                                                    (item) =>
-                                                        item.pivot.charge ===
-                                                        'MOI - Mano de Obra Indirecta'
-                                                )" :key="index" class="grid grid-cols-8 items-center my-2">
+    (item) =>
+        item.pivot.charge ===
+        'MOI - Mano de Obra Indirecta'
+)" :key="index" class="grid grid-cols-8 items-center my-2">
                                             <p class="text-sm col-span-7 line-clamp-2">
                                                 {{ member.name }}
                                                 {{ member.lastname }}:
@@ -176,11 +172,11 @@ member, index
                                             <button v-if="
                                                 hasPermission('UserManager')
                                             " type="button" @click="
-                                                    delete_already_employee(
-                                                        member.pivot.id,
-                                                        index
-                                                    )
-                                                    " class="col-span-1 flex justify-end">
+                                                delete_already_employee(
+                                                    member.pivot.id,
+                                                    index
+                                                )
+                                                " class="col-span-1 flex justify-end">
                                                 <TrashIcon class="text-red-500 h-4 w-4" />
                                             </button>
                                             <div class="border-b col-span-8 border-gray-900/10"></div>
@@ -193,10 +189,10 @@ member, index
                                         <div v-for="(
 member, index
                                             ) in form.employees.filter(
-                                                    (item) =>
-                                                        item.pivot.charge ===
-                                                        'MOD - Mano de Obra Directa'
-                                                )" :key="index" class="grid grid-cols-8 items-center my-2">
+    (item) =>
+        item.pivot.charge ===
+        'MOD - Mano de Obra Directa'
+)" :key="index" class="grid grid-cols-8 items-center my-2">
                                             <p class="text-sm col-span-7 line-clamp-2">
                                                 {{ member.name }}
                                                 {{ member.lastname }}
@@ -204,11 +200,11 @@ member, index
                                             <button v-if="
                                                 hasPermission('UserManager')
                                             " type="button" @click="
-                                                    delete_already_employee(
-                                                        member.pivot.id,
-                                                        index
-                                                    )
-                                                    " class="col-span-1 flex justify-end">
+                                                delete_already_employee(
+                                                    member.pivot.id,
+                                                    index
+                                                )
+                                                " class="col-span-1 flex justify-end">
                                                 <TrashIcon class="text-red-500 h-4 w-4" />
                                             </button>
                                             <div class="border-b col-span-8 border-gray-900/10"></div>
@@ -345,13 +341,17 @@ const {
     numberOfProjects,
     project,
     preprojects,
+    type
 } = defineProps({
     employees: Object,
     project: Object,
     preprojects: Object,
     auth: Object,
     userPermissions: Array,
+    type: String
 });
+
+const redirectRoute = type == '2' ? 'projectmanagement.pext.index' : 'projectmanagement.index'
 
 const hasPermission = (permission) => {
     return userPermissions.includes(permission);
@@ -375,7 +375,7 @@ const submit = () => {
                 project
                     ? (showUpdateModal.value = false)
                     : (showModal.value = false);
-                router.visit(route("projectmanagement.index"));
+                router.visit(route(redirectRoute));
             }, 2000);
         },
         onError: () => {
@@ -414,7 +414,7 @@ const add_employee = () => {
                         showPersonalAddModal.value = false;
                         router.visit(
                             route("projectmanagement.update", {
-                                project_id: project.id,
+                                project_id: project.id, type: type
                             })
                         );
                     }, 1500);
@@ -441,7 +441,7 @@ const delete_already_employee = (pivot_id, index) => {
                 showPersonalRemoveModal.value = false;
                 router.visit(
                     route("projectmanagement.update", {
-                        project_id: project.id,
+                        project_id: project.id, type: type
                     })
                 );
             }, 1500);

@@ -7,7 +7,7 @@
             {{ type == 1 ? 'Pint' : 'Pext' }} - Factibilidad PINT y PEXT
         </template>
         <Toaster richColors />
-        <div class="min-w-full rounded-lg shadow">
+        <div class="min-w-full">
             <div class="flex justify-between">
                 <a :href="route('feasibilities.export', { type }) + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
@@ -23,107 +23,36 @@
                 </div>
             </div>
             <br>
-            <div class="overflow-x-auto h-[70vh]">
-                <table class="w-full whitespace-no_wrap">
-                    <thead>
-                        <tr
-                            class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Nombre de Proyecto
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Codigo de Proyecto
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Centro de Costos
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                CPE
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Fecha de Factibilidad
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Informe
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Coordinador
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                                Encargado
-                            </th>
-                            <th
-                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="item in feasibilitys.data ?? feasibilitys" :key="item.id" class="text-gray-700">
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.project_name }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.project_code }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.project?.cost_center?.name }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cpe }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ formattedDate(item.cicsa_feasibility?.feasibility_date) }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_feasibility?.report }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_feasibility?.coordinator }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <p class="text-gray-900 text-center">
-                                    {{ item.cicsa_feasibility?.user_name }}
-                                </p>
-                            </td>
-                            <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
-                                <div class="flex space-x-3 justify-center">
-                                    <button class="text-blue-900"
-                                        @click="openEditFeasibilityModal(item.id, item.cicsa_feasibility)">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
+            <TableStructure>
+                <template #thead>
+                    <TableTitle>Nombre del Proyecto</TableTitle>
+                    <TableTitle>Codigo del Proyecto</TableTitle>
+                    <TableTitle>Centro de Costos</TableTitle>
+                    <TableTitle>CPE</TableTitle>
+                    <TableTitle>Fecha de Factibilidad</TableTitle>
+                    <TableTitle>Informe</TableTitle>
+                    <TableTitle>Coordinador</TableTitle>
+                    <TableTitle>Encargado</TableTitle>
+                    <TableTitle></TableTitle>
+                </template>
+                <template #tbody>
+                    <tr v-for="item in feasibilitys.data ?? feasibilitys" :key="item.id" class="text-gray-700">
+                        <TableRow>{{ item.project_name }}</TableRow>
+                        <TableRow>{{ item.project_code }}</TableRow>
+                        <TableRow>{{ item.project.cost_center.name }}</TableRow>
+                        <TableRow>{{ item.cpe }}</TableRow>
+                        <TableRow>{{ formattedDate(item.cicsa_feasibility?.feasibility_date) }}</TableRow>
+                        <TableRow>{{ item.cicsa_feasibility?.report }}</TableRow>
+                        <TableRow>{{ item.cicsa_feasibility?.coordinator }}</TableRow>
+                        <TableRow>{{ item.cicsa_feasibility?.user_name }}</TableRow>
+                        <TableRow>
+                            <button @click="openEditFeasibilityModal(item.id, item.cicsa_feasibility)">
+                                <PencilSquareIcon class="w-5 h-5 text-amber-400" />
+                            </button>
+                        </TableRow>
+                    </tr>
+                </template>
+            </TableStructure>
             <div v-if="feasibilitys.data"
                 class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="feasibilitys.links" />
@@ -197,8 +126,8 @@
                             </div>
                             <br>
                         </div>
-                        <div class="sm:col-span-2">
-                            <table class="w-full whitespace-nowrap">
+                        <div class="sm:col-span-2 overflow-x-auto">
+                            <table class="w-full whitespace-nowrap ">
                                 <thead>
                                     <tr
                                         class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -351,6 +280,10 @@ import axios from 'axios';
 import { setAxiosErrors } from "@/utils/utils";
 import { notify, notifyError } from '@/Components/Notification';
 import { Toaster } from 'vue-sonner';
+import TableStructure from '@/Layouts/TableStructure.vue';
+import TableRow from '@/Components/TableRow.vue';
+import TableTitle from '@/Components/TableTitle.vue';
+import { PencilSquareIcon } from '@heroicons/vue/24/outline';
 
 const { feasibility, auth, searchCondition, type } = defineProps({
     feasibility: Object,

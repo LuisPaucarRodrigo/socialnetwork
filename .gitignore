@@ -4,6 +4,7 @@
 /public/hot
 /public/storage
 /public/documents/additionalcosts/*
+/public/documents/administrativecosts/*
 /public/documents/cicsa/cicsaChargeAreaOrder/*
 /public/documents/cicsa/cicsaPurchaseOrder/*
 /public/documents/cicsa/cicsaServiceOrder/*

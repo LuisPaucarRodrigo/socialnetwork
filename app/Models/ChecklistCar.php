@@ -10,6 +10,7 @@ class ChecklistCar extends Model
     use HasFactory;
 
     protected $fillable = [
+        'km',
         'reason',
         'user_id',
         'car_id',
@@ -34,8 +35,6 @@ class ChecklistCar extends Model
         'engineState',
         'batteryState',
 
-
-
         'jack',
         'spareTire',
         'towCable',
@@ -46,7 +45,10 @@ class ChecklistCar extends Model
         'chocks',
         'ladderHolder',
         'sidePlate',
-
+        
+        // 'maintenanceTools',
+        // 'preventionTools',
+        // 'imageSpareTire',
         'front',
         'leftSide',
         'rightSide',

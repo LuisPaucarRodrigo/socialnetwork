@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Gestion de Aprobaciones" />
-    <AuthenticatedLayout redirectRoute="fleet.cars.index.approvel">
+    <AuthenticatedLayout redirectRoute="fleet.cars.index">
         <Toaster richColors />
         <template #header> Aprobaciones de cambios de documentos </template>
         <div class="w-full">
@@ -26,10 +26,34 @@
                 <template #tbody>
                     <tr v-for="change in changes">
                         <TableRow>{{ change.car_document.car.plate }}</TableRow>
-                        <TableRow>{{ change.ownership_card }}</TableRow>
-                        <TableRow>{{ change.technical_review }}</TableRow>
+                        <TableRow>
+                            <a v-if="change.ownership_card" target="_blank" :href="route('fleet.cars.show_approvals_document', {
+                                approval_car: change.id,
+                                fieldName: 'ownership_card',
+                            }) + '?' + uniqueParam
+                                ">
+                                <EyeIcon class="w-5 h-5 text-green-600" />
+                            </a>
+                        </TableRow>
+                        <TableRow>
+                            <a v-if="change.technical_review" target="_blank" :href="route('fleet.cars.show_approvals_document', {
+                                approval_car: change.id,
+                                fieldName: 'technical_review',
+                            }) + '?' + uniqueParam
+                                ">
+                                <EyeIcon class="w-5 h-5 text-green-600" />
+                            </a>
+                        </TableRow>
                         <TableRow>{{ change.technical_review_date }}</TableRow>
-                        <TableRow>{{ change.soat }}</TableRow>
+                        <TableRow>
+                            <a v-if="change.soat" target="_blank" :href="route('fleet.cars.show_approvals_document', {
+                                approval_car: change.id,
+                                fieldName: 'soat',
+                            }) + '?' + uniqueParam
+                                ">
+                                <EyeIcon class="w-5 h-5 text-green-600" />
+                            </a>
+                        </TableRow>
                         <TableRow>{{ change.soat_date }}</TableRow>
                         <TableRow>{{ change.insurance }}</TableRow>
                         <TableRow>{{ change.insurance_date }}</TableRow>
@@ -39,18 +63,10 @@
                         <TableRow>
                             <div class="flex gap-x-2 justify-center">
                                 <button @click="validate(change.id)">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-green-500">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                    </svg>
+                                    <CheckCircleIcon class="w-5 h-5 text-green-500" />
                                 </button>
                                 <button @click="rejected(change.id)">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-red-500">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                    </svg>
+                                    <XCircleIcon class="w-5 h-5 text-red-500" />
                                 </button>
                             </div>
                         </TableRow>
@@ -66,6 +82,7 @@ import TableRow from '@/Components/TableRow.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
+import { CheckCircleIcon, EyeIcon, XCircleIcon } from '@heroicons/vue/24/outline';
 import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import { Toaster } from 'vue-sonner';
@@ -73,7 +90,10 @@ import { Toaster } from 'vue-sonner';
 const { change } = defineProps({
     change: Object
 })
+
 const changes = ref(change)
+const uniqueParam = `timestamp=${new Date().getTime()}`;
+
 
 async function validate(approve_id) {
     let url = route('fleet.cars.approve.change', { id: approve_id })

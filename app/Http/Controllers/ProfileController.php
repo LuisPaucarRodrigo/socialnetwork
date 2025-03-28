@@ -3,13 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
-use App\Models\HuaweiMonthlyExpense;
-use App\Models\AdditionalCost;
-use App\Models\PayrollDetailExpense;
-use App\Models\GeneralExpense;
-use App\Models\Contract;
-use App\Models\PextProjectExpense;
-use App\Models\StaticCost;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,27 +17,6 @@ use Inertia\Response;
 class ProfileController extends Controller
 {
     public function allFine(){
-        $costs = AdditionalCost::with('general_expense')->get();
-        foreach($costs as $item) {
-            $ge = $item->general_expense;
-            $ge->update([
-                'type_doc' => $item->type_doc,
-            ]);
-        }
-        $costs2 = StaticCost::with('general_expense')->get();
-        foreach($costs2 as $item) {
-            $ge = $item->general_expense;
-            $ge->update([
-                'type_doc' => $item->type_doc,
-            ]);
-        }
-        $costs3 = PextProjectExpense::with('general_expense')->get();
-        foreach($costs3 as $item) {
-            $ge = $item->general_expense;
-            $ge->update([
-                'type_doc' => $item->type_doc,
-            ]);
-        }
         return response()->json('siuuu');
     }
 
