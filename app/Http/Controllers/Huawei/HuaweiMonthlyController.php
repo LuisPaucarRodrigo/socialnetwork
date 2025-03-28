@@ -137,11 +137,11 @@ class HuaweiMonthlyController extends Controller
 
         $summary = [
             'zones' => $expenses->pluck('zone')->unique()->values(),
-            'op_numbers' => $expenses->pluck('ec_op_number')->unique()->values(),
+            'op_numbers' => $expenses->pluck('ec_op_number')->map(fn($item) => (string) $item)->uniqueStrict()->values(),
             'assigned_dius' => $expenses
                 ->map(fn($expense) => $expense->huawei_project?->assigned_diu)
-                ->unique()
                 ->filter()
+                ->uniqueStrict()
                 ->values(),
         ];
 
@@ -212,7 +212,7 @@ class HuaweiMonthlyController extends Controller
 
         $summary = [
             'zones' => $expenses->pluck('zone')->unique()->values(),
-            'op_numbers' => $expenses->pluck('ec_op_number')->unique()->values(),
+            'op_numbers' => $expenses->pluck('ec_op_number')->map(fn($item) => (string) $item)->uniqueStrict()->values(),
             'assigned_dius' => $filteredExpenses
                 ->map(fn($expense): mixed => $expense->huawei_project?->assigned_diu)
                 ->unique()
@@ -232,21 +232,25 @@ class HuaweiMonthlyController extends Controller
     {
         // Iniciar la consulta base de expenses
         $expensesQuery = HuaweiMonthlyExpense::orderBy('expense_date', 'desc');
-        $filteredExpenses = $expensesQuery->get()
-            ->filter(fn($expense) => $mode ? $expense->type === 'Fijo' : $expense->type === 'Variable');
+        $allExpenses = $expensesQuery->get();
+
+        $filteredExpenses = $allExpenses->filter(fn($expense) => $mode ? $expense->type === 'Fijo' : $expense->type === 'Variable');
+
         $summary = [
             'expense_types' => count($mode ? self::$data['static_expense_types'] : self::$data['variable_expense_types']),
-            'zones' => $expensesQuery->get()->pluck('zone')->unique()->values()->count(),
-            'op_numbers' => $expensesQuery->get()->pluck('ec_op_number')->unique()->values()->count(),
+            'zones' => $allExpenses->pluck('zone')->unique()->count(),
+            'op_numbers' => $allExpenses->pluck('ec_op_number')->map(fn($item) => (string) $item)->uniqueStrict()->count(), // <-- Aquí el cambio
             'assigned_dius' => $filteredExpenses
                 ->map(fn($expense) => $expense->huawei_project?->assigned_diu)
-                ->unique()
-                ->values()->count(),
+                ->filter()
+                ->uniqueStrict()
+                ->count(),
             'employees' => count(self::$data['employees']),
             'cdp_types' => count(self::$data['cdp_types']),
         ];
 
-        if (!empty($request->search)){
+
+        if (!empty($request->search)) {
             $searchTerm = strtolower($request->search);
             $expensesQuery->where(function ($query) use ($searchTerm) {
                 $query->whereRaw('LOWER(expense_type) LIKE ?', ["%{$searchTerm}%"])
@@ -310,7 +314,7 @@ class HuaweiMonthlyController extends Controller
         if ($request->opNoDate) {
             $expensesQuery->whereNull('ec_expense_date');
         }
-        if (count($request->ecOpNumbers) < $summary['op_numbers']){
+        if (count($request->ecOpNumbers) < $summary['op_numbers']) {
             $expensesQuery->whereIn('ec_op_number', $request->ecOpNumbers);
         }
         $expenses = $expensesQuery->orderBy('expense_date', 'desc')
@@ -510,22 +514,42 @@ class HuaweiMonthlyController extends Controller
 
             self::$data;
             $project = $row['B'] ? HuaweiProject::where('assigned_diu', $row['B'])->first() : null;
+            
+            $cdpType = $this->verifyText($row['D'], "CdpType");
+            $expenseType = $this->verifyText($row['J'], "ExpenseType");
+            $expenseDate = $this->sanitizeDate($row['C']);
+            $ecExpenseDate = $this->sanitizeDate($row['L']);
+
+            if (is_null($cdpType)) {
+                return back()->withErrors(['message' => 'Uno de los CDP no es válido: ' . $row['D']]);
+            }
+            if (is_null($expenseType)) {
+                return back()->withErrors(['message' => 'Uno de los tipos de gasto no es válido: ' . $row['J']]);
+            }
+
+            if (is_null($expenseDate)){
+                return back()->withErrors(['message' => 'Uno de las fechas de gasto no es válida: ' . $row['C']]);
+            }
+
+            if (is_null($ecExpenseDate)){
+                return back()->withErrors(['message' => 'Uno de las fechas de depósito no es válida: ' . $row['L']]);
+            }
+
             $rowObject = (object) [
                 'employee' => $this->sanitizeText($row['A'], false),
-                'project_id' => $project ? $project->id : null, // Se asigna NULL si no encuentra el proyecto
-                'expense_date' => $this->sanitizeDate($row['C']),
-                'cdp_type' => $this->sanitizeText($row['D'], true),
+                'project_id' => $project ? $project->id : null,
+                'expense_date' => $expenseDate,
+                'cdp_type' => $cdpType,
                 'doc_number' => $row['E'],
                 'op_number' => $row['F'],
                 'ruc' => $row['G'],
                 'amount' => $this->sanitizeNumber($row['H']),
                 'description' => $row['I'],
-                'expense_type' => $this->getClosestExpenseType($row['J']),
-                'ec_expense_date' => $this->sanitizeDate($row['L']),
+                'expense_type' => $expenseType,
+                'ec_expense_date' => $ecExpenseDate,
                 'ec_op_number' => $row['M'],
                 'ec_amount' => $this->sanitizeNumber($row['N']),
             ];
-
             $rowsAsObjects[] = $rowObject;
         }
 
@@ -664,40 +688,28 @@ class HuaweiMonthlyController extends Controller
         return response()->json($projects, 200);
     }
 
+
     private function sanitizeDate($date)
     {
-        // Verifica si el dato es nulo o vacío
         if (empty($date) || !is_string($date)) {
+            return "Error: La fecha es nula o no es una cadena válida.";
+        }
+    
+        $date = trim($date);
+    
+        if (!preg_match('/^\d{1,2}-\d{1,2}-\d{4}$/', $date)) {
             return null;
         }
 
-        // Elimina espacios innecesarios
-        $date = trim($date);
-
-        // Formatos permitidos
-        $formats = [
-            'd/n/Y', // Soporta días y meses sin ceros a la izquierda
-            'd/m/Y',
-            'Y-m-d',
-            'd-m-Y',
-        ];
-
-        // Intentar convertir usando cada formato
-        foreach ($formats as $format) {
-            try {
-                $parsedDate = Carbon::createFromFormat($format, $date);
-
-                // Verifica si la fecha interpretada coincide con la original
-                if ($parsedDate !== false) {
-                    return $parsedDate->format('Y-m-d');
-                }
-            } catch (\Exception $e) {
-                continue;
-            }
+        try {
+            $parsedDate = Carbon::createFromFormat('d-m-Y', $date);
+            return $parsedDate->format('Y-m-d');
+            
+        } catch (\Exception $e) {
+            return null;
         }
-
-        return null; // Si no coincide con ningún formato, retorna null
     }
+    
 
     private function sanitizeText($text, $mode)
     {
@@ -735,22 +747,16 @@ class HuaweiMonthlyController extends Controller
         return $sanitized === '' ? '0' : $sanitized;
     }
 
-    private function getClosestExpenseType($input)
+    private function verifyText($input, $type)
     {
-        $expenseTypes = array_merge(self::$data['static_expense_types'], self::$data['variable_expense_types']);
-        
-        $bestMatch = null;
-        $highestSimilarity = 0;
-    
-        foreach ($expenseTypes as $type) {
-            similar_text($input, $type, $percent);
-            if ($percent > $highestSimilarity) {
-                $highestSimilarity = $percent;
-                $bestMatch = $type;
-            }
+        $input = trim($input);
+        if ($type == "ExpenseType") {
+            $validValues = array_merge(self::$data['static_expense_types'], self::$data['variable_expense_types']);
+        } elseif ($type == "CdpType") {
+            $validValues = self::$data['cdp_types'];
+        } else {
+            return null;
         }
-    
-        return $bestMatch ?: $input;
+        return in_array($input, $validValues) ? $input : null;
     }
-    
 }
