@@ -21,6 +21,7 @@ class HuaweiProject extends Model
         'status',
         'prefix',
         'macro_project',
+        'assignation_date',
         'assigned_diu'
     ];
 

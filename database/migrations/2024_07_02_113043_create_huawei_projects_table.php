@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('zone');
             $table->string('prefix');
             $table->string('macro_project');
+            $table->date('assignation_date');
             $table->boolean('status')->nullable()->default(true);
             $table->timestamps();
         });

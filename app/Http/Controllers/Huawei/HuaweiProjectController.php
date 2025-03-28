@@ -3,15 +3,11 @@
 namespace App\Http\Controllers\Huawei;
 
 use App\Constants\HuaweiConstants;
-use App\Exports\HuaweiAdditionalCostExport;
 use App\Exports\HuaweiMonthlyExport;
 use App\Exports\HuaweiProjectEarningsExport;
 use App\Exports\HuaweiProjectRealEarningsExport;
-use App\Exports\HuaweiStaticCostExport;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Huawei\HuaweiAdditionalRequest;
 use App\Models\CostCenter;
-use App\Models\Employee;
 use App\Models\HuaweiMonthlyExpense;
 use App\Models\HuaweiProject;
 use App\Models\HuaweiProjectEmployee;
@@ -19,19 +15,15 @@ use App\Models\HuaweiProjectSchedule;
 use App\Models\HuaweiSite;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\HuaweiAdditionalCost;
 use App\Models\HuaweiEntryDetail;
 use App\Models\HuaweiEquipment;
 use App\Models\HuaweiMaterial;
 use App\Models\HuaweiProjectEarning;
 use App\Models\HuaweiProjectLiquidation;
 use App\Models\HuaweiProjectResource;
-use Illuminate\Validation\Rule;
-use Log;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Models\HuaweiPriceGuide;
 use App\Models\HuaweiProjectRealEarning;
-use App\Models\HuaweiStaticCost;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -250,6 +242,7 @@ class HuaweiProjectController extends Controller
             'description',
             'ot',
             'assigned_diu',
+            'assignation_date',
             'zone',
             'cost_center_id',
             'status',
@@ -351,6 +344,7 @@ class HuaweiProjectController extends Controller
             'assigned_diu' => 'required|unique:huawei_projects,assigned_diu',
             'zone' => 'required',
             'description' => 'nullable',
+            'assignation_date' => 'required|date',
 
             'base_lines' => 'required|array|min:1',
             'schedule' => 'required|array|min:1',
@@ -370,6 +364,8 @@ class HuaweiProjectController extends Controller
                 'assigned_diu' => $request->assigned_diu,
                 'zone' => $request->zone,
                 'description' => $request->description,
+                'assignation_date' => $request->assignation_date,
+                
                 'status' => 1
             ]);
             

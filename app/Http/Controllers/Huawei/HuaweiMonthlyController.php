@@ -517,19 +517,28 @@ class HuaweiMonthlyController extends Controller
             
             $cdpType = $this->verifyText($row['D'], "CdpType");
             $expenseType = $this->verifyText($row['J'], "ExpenseType");
+            $expenseDate = $this->sanitizeDate($row['C']);
+            $ecExpenseDate = $this->sanitizeDate($row['L']);
 
             if (is_null($cdpType)) {
                 return back()->withErrors(['message' => 'Uno de los CDP no es válido: ' . $row['D']]);
             }
-
             if (is_null($expenseType)) {
                 return back()->withErrors(['message' => 'Uno de los tipos de gasto no es válido: ' . $row['J']]);
+            }
+
+            if (is_null($expenseDate)){
+                return back()->withErrors(['message' => 'Uno de las fechas de gasto no es válida: ' . $row['C']]);
+            }
+
+            if (is_null($ecExpenseDate)){
+                return back()->withErrors(['message' => 'Uno de las fechas de depósito no es válida: ' . $row['L']]);
             }
 
             $rowObject = (object) [
                 'employee' => $this->sanitizeText($row['A'], false),
                 'project_id' => $project ? $project->id : null,
-                'expense_date' => $this->sanitizeDate($row['C']),
+                'expense_date' => $expenseDate,
                 'cdp_type' => $cdpType,
                 'doc_number' => $row['E'],
                 'op_number' => $row['F'],
@@ -537,7 +546,7 @@ class HuaweiMonthlyController extends Controller
                 'amount' => $this->sanitizeNumber($row['H']),
                 'description' => $row['I'],
                 'expense_type' => $expenseType,
-                'ec_expense_date' => $this->sanitizeDate($row['L']),
+                'ec_expense_date' => $ecExpenseDate,
                 'ec_op_number' => $row['M'],
                 'ec_amount' => $this->sanitizeNumber($row['N']),
             ];
@@ -679,40 +688,28 @@ class HuaweiMonthlyController extends Controller
         return response()->json($projects, 200);
     }
 
+
     private function sanitizeDate($date)
     {
-        // Verifica si el dato es nulo o vacío
         if (empty($date) || !is_string($date)) {
+            return "Error: La fecha es nula o no es una cadena válida.";
+        }
+    
+        $date = trim($date);
+    
+        if (!preg_match('/^\d{1,2}-\d{1,2}-\d{4}$/', $date)) {
             return null;
         }
 
-        // Elimina espacios innecesarios
-        $date = trim($date);
-
-        // Formatos permitidos
-        $formats = [
-            'd/n/Y', // Soporta días y meses sin ceros a la izquierda
-            'd/m/Y',
-            'Y-m-d',
-            'd-m-Y',
-        ];
-
-        // Intentar convertir usando cada formato
-        foreach ($formats as $format) {
-            try {
-                $parsedDate = Carbon::createFromFormat($format, $date);
-
-                // Verifica si la fecha interpretada coincide con la original
-                if ($parsedDate !== false) {
-                    return $parsedDate->format('Y-m-d');
-                }
-            } catch (\Exception $e) {
-                continue;
-            }
+        try {
+            $parsedDate = Carbon::createFromFormat('d-m-Y', $date);
+            return $parsedDate->format('Y-m-d');
+            
+        } catch (\Exception $e) {
+            return null;
         }
-
-        return null; // Si no coincide con ningún formato, retorna null
     }
+    
 
     private function sanitizeText($text, $mode)
     {

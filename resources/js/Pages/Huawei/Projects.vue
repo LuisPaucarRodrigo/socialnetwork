@@ -159,6 +159,7 @@
                         <h2 class="text-sm font-semibold mb-3 mr-3">
                             N° {{ item.code }}
                         </h2>
+                        
                         <div class="inline-flex justify-end items-start gap-x-2">
                             <button
                                 @click="openLiquidateModal(item.id)"
