@@ -60,6 +60,7 @@ class HuaweiConstants
             "TRANSPORTE",
             "ALIMENTACION",
             "COMBUSTIBLE",
+            "COCHERA",
             "ENCOMIENDA",
             "OTROS",
         ];

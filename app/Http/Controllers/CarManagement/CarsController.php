@@ -23,7 +23,7 @@ use Inertia\Inertia;
 
 class CarsController extends Controller
 {
-    public function index()
+    public function index($id = null)
     {
         $cars = Car::with(['user', 'costline', 'car_document.approvel_car_document', 'checklist', 'car_changelogs' => function ($query) {
             $query->with('car_changelog_items');
@@ -43,7 +43,8 @@ class CarsController extends Controller
         return Inertia::render('FleetCar/Index', [
             'car' => $cars,
             'costLine' => CostLine::all(),
-            'users' => $users
+            'users' => $users,
+            'id' => $id,
         ]);
     }
 
@@ -97,13 +98,34 @@ class CarsController extends Controller
                         ->orWhere('soat_date', '<=', $expirationThreshold)
                         ->orWhere('insurance_date', '<=', $expirationThreshold);
                 })
-                ->orWhereHas('car_changelogs', function ($query) {
-                    $query->whereNull('is_accepted');
-                })
+
                 ->get();
         }
         return response()->json([
             'documentsCarToExpire' => $cars,
+        ], 200);
+    }
+
+    public function getChangelogAlarms ()
+    {
+        $user = Auth::user();
+
+        $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
+
+        if($userHasCarManagerPermission){
+            $cars = Car::whereHas('car_changelogs', function ($query) {
+                $query->whereNull('is_accepted');
+                })
+            ->get();
+        }else{
+            $cars = Car::where('user_id', $user->id)
+            ->whereHas('car_changelogs', function ($query) {
+                $query->whereNull('is_accepted');
+                })
+            ->get();
+        }
+        return response()->json([
+            'carsToExpire' => $cars,
         ], 200);
     }
 
