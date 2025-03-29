@@ -8,7 +8,7 @@
             <GeneralOpciones :form="formSearch" :openModalCreate="openModalCreate" :userPermission="userPermissions" />
             <FleetCarTable v-model:cars="cars" :userPermissions="userPermissions" v-model:formSearch="formSearch"
                 :cost_line="cost_line" :openModalCreateDocument="openModalCreateDocument" :openModalEdit="openModalEdit"
-                :openCreateModalChangelog="openCreateModalChangelog" :openEditChangelog="openEditChangelog" />
+                :openCreateModalChangelog="openCreateModalChangelog" :openEditChangelog="openEditChangelog" :openModalDeleteChangelog="openModalDeleteChangelog" :carId="carId"/>
         </div>
         <Modal :show="showModalCar">
             <div class="p-6">
@@ -495,6 +495,7 @@ const props = defineProps({
     userPermissions: Array,
     costLine: Object,
     users: Object,
+    id: String,
 });
 
 const cars = ref(props.car);
@@ -505,7 +506,7 @@ const car_id = ref(null);
 const showModalDocumentCar = ref(false);
 const showChangelogModal = ref(false);
 const newItem = ref("");
-const carId = ref(null);
+const carId = ref(Number(props.id));
 const itemModal = ref(false);
 const showitems = ref([]);
 const changelogToDelete = ref(null);
@@ -831,7 +832,7 @@ function updateCar(data, action) {
         let index = validations.findIndex((item) => item.id === data.id);
         validations[index] = data;
         openModalDeleteChangelog(null);
-        if (validations[index].car_changelogs.length === 0) {
+        if (validations[index].car_changelogs.length == 0) {
             carId.value = null;
         }
         notify("Eliminación Exitosa");
@@ -881,5 +882,6 @@ async function search() {
 //     }
 //     visibleChangelogs.value = new Set(visibleChangelogs.value);
 // };
+
 
 </script>

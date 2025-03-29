@@ -81,7 +81,7 @@
                             </button>
                             <button v-if="car.car_changelogs.length > 0" type="button" @click="toogleChangelog(car)"
                                 class="text-blue-900 whitespace-no-wrap">
-                                <svg v-if="carId !== car.id" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                <svg v-if="car_id !== car.id" xmlns="http://www.w3.org/2000/svg" fill="none"
                                     viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="m19.5 8.25-7.5 7.5-7.5-7.5" />
@@ -95,7 +95,7 @@
                         </div>
                     </TableRow>
                 </tr>
-                <template v-if="carId == car.id">
+                <template v-if="car_id == car.id">
                     <tr>
                         <th class="sticky left-0 z-10 bg-gray-200 border-b-2 border-gray-20">
                             <div class="w-2"></div>
@@ -424,11 +424,12 @@ import {
 } from "@heroicons/vue/24/outline";
 import Pagination from '@/Components/Pagination.vue';
 import TableHeaderCicsaFilter from '@/Components/TableHeaderCicsaFilter.vue';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { formattedDate } from '@/utils/utils';
+import { notify } from "@/Components/Notification";
 
 const { userPermissions, formSearch, cars, cost_line, openModalCreateDocument, openModalEdit, openCreateModalChangelog, openEditChangelog
-} = defineProps({
+, openModalDeleteChangelog, carId} = defineProps({
     userPermissions: Array,
     formSearch: Object,
     cars: Object,
@@ -436,18 +437,20 @@ const { userPermissions, formSearch, cars, cost_line, openModalCreateDocument, o
     openModalCreateDocument: Function,
     openModalEdit: Function,
     openCreateModalChangelog: Function,
-    openEditChangelog: Function
+    openEditChangelog: Function,
+    openModalDeleteChangelog: Function,
+    carId: Number,
 })
 
-const carId = ref(null);
+const car_id = ref(carId);
 const visibleChangelogs = ref(new Set());
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
 
 function toogleChangelog(item) {
-    if (carId.value === item.id) {
-        carId.value = null;
+    if (car_id.value === item.id) {
+        car_id.value = null;
     } else {
-        carId.value = item.id;
+        car_id.value = item.id;
     }
 }
 
@@ -474,7 +477,7 @@ async function validateRegister(changelog_id, is_accepted) {
 }
 
 function updateCar(data, action) {
-    const validations = cars.value.data || cars.value;
+    const validations = cars;
     if (action === "create") {
         validations.unshift(data);
         openModalCar();
@@ -506,7 +509,7 @@ function updateCar(data, action) {
         validations[index] = data;
         openModalDeleteChangelog(null);
         if (validations[index].car_changelogs.length === 0) {
-            carId.value = null;
+            car_id.value = null;
         }
         notify("Eliminación Exitosa");
     } else if (action === "changeEntry") {
@@ -522,4 +525,13 @@ function updateCar(data, action) {
 function hasPermission(permission) {
     return userPermissions.includes(permission)
 }
+
+watch(
+  () => cars.map(car => car.car_changelogs?.length || 0),
+  () => {
+    const empty = cars.every(car => (car.car_changelogs?.length || 0) === 0);
+    if (empty) car_id.value = null;
+  }
+);
+
 </script>
