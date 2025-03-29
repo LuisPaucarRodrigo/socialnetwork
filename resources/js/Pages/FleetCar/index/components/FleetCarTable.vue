@@ -256,7 +256,7 @@
 </template>
 <script setup>
 import TableTitle from '@/Components/TableTitle.vue';
-import TableStructure from '../TableStructure.vue';
+import TableStructure from '@/Layouts/TableStructure.vue';
 import TableRow from '@/Components/TableRow.vue';
 import {
     EyeIcon,

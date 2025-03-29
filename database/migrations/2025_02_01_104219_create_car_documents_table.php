@@ -20,6 +20,8 @@ return new class extends Migration
             $table->date('soat_date')->nullable();
             $table->string('insurance')->nullable();
             $table->date('insurance_date')->nullable();
+            $table->string('rental_contract')->nullable();
+            $table->date('rental_contract_date')->nullable();
             $table->string('address_web')->nullable();
             $table->string('user')->nullable();
             $table->string('password')->nullable();

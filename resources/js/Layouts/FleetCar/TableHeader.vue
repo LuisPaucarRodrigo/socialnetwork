@@ -1,6 +1,6 @@
 <template>
     <div class="my-3 flex justify-between">
-        <PrimaryButton v-if="hasPermission('CarManager')" @click="openModalCreate()" type="button">
+        <PrimaryButton v-if="hasPermission('CarManager')" @click="openCreateFormCar()" type="button">
             + Agregar
         </PrimaryButton>
         <Search v-model:search="form.search" fields="Placa, Marca, Modelo, Tipo"/>
@@ -11,9 +11,9 @@
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Search from '@/Components/Search.vue';
 
-const { form, openModalCreate, userPermission } = defineProps({
+const { form, openCreateFormCar, userPermission } = defineProps({
     form: Object,
-    openModalCreate: Function,
+    openCreateFormCar: Function,
     userPermission: Array
 });
 
