@@ -1,21 +1,14 @@
 <template>
+
     <Head title="Proyectos" />
     <AuthenticatedLayout :redirectRoute="'projectmanagement.pext.index'">
         <template #header>
-            Proyectos Pext Culminados
+            Proyectos Mensuales Pext
         </template>
+        <Toaster richColors />
         <div class="min-w-full">
-            <div class="mt-6 flex items-center justify-end gap-x-6">
-                <div class="flex space-x-4">
-                    <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
-                        placeholder="Buscar..." />
-                    <div id="search_fields" role="tooltip"
-                        class="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                        Nombre
-                        <div class="tooltip-arrow" data-popper-arrow></div>
-                    </div>
-                </div>
-            </div>
+            <TableHeader :projects="projects" :userPermissions="userPermissions" :createOrEditModal="createOrEditModal"
+                :search="search" />
             <br>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 <ProjectCard v-for="item in projects.data || projects" :key="item.id" :item="item"
@@ -26,6 +19,7 @@
                 <pagination :links="projects.links" />
             </div>
         </div>
+        <FormProject :auth="auth" :projects="projects" ref="formProject" />
     </AuthenticatedLayout>
 </template>
 <script setup>
@@ -34,8 +28,10 @@ import Pagination from '@/Components/Pagination.vue'
 import axios from 'axios';
 import { ref } from 'vue';
 import { Head } from '@inertiajs/vue3';
-import TextInput from '@/Components/TextInput.vue';
-import ProjectCard from '@/Layouts/ProjectPext/ProjectCard.vue';
+import { Toaster } from 'vue-sonner';
+import ProjectCard from './components/ProjectCard.vue';
+import FormProject from './components/FormProject.vue';
+import TableHeader from './components/TableHeader.vue';
 
 const { project, userPermissions, auth } = defineProps({
     project: Object,
@@ -44,15 +40,17 @@ const { project, userPermissions, auth } = defineProps({
 })
 
 const projects = ref(project);
+const formProject = ref(null)
 
+function createOrEditModal() {
+    formProject.value.createOrEditModal()
+}
 const search = async (search) => {
     try {
-        const response = await axios.post(route('projectmanagement.pext.historial'), { searchQuery: search });
+        const response = await axios.post(route('projectmanagement.pext.index'), { searchQuery: search });
         projects.value = response.data;
     } catch (error) {
         console.error('Error searching:', error);
     }
 };
-
-
 </script>

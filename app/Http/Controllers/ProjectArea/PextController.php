@@ -36,7 +36,7 @@ class PextController extends Controller
     {
         if ($request->isMethod('get')) {
             $project = $this->pextServices->getProject(null)->paginate();
-            return Inertia::render('ProjectArea/ProjectManagement/PextProjectMonthly', [
+            return Inertia::render('ProjectArea/ProjectManagement/Pext/Monthly/PextProjectMonthly', [
                 'project' => $project,
             ]);
         } elseif ($request->isMethod('post')) {
@@ -56,7 +56,7 @@ class PextController extends Controller
     {
         if ($request->isMethod('get')) {
             $project = $this->pextServices->getProject(true)->paginate();
-            return Inertia::render('ProjectArea/ProjectManagement/Pext/PextProjectHistorial', [
+            return Inertia::render('ProjectArea/ProjectManagement/Pext/Monthly/Historial/PextProjectHistorial', [
                 'project' => $project,
             ]);
         } elseif ($request->isMethod('post')) {
@@ -66,12 +66,12 @@ class PextController extends Controller
         }
     }
 
-    public function storeOrUpdate(StoreOrUpdateAssignationRequest $request, $cicsa_assignation_id = null)
-    {
-        $validatedData = $request->validated();
-        $cicsaAssignation = $this->pextServices->storeOrUpdateAssignation($validatedData, $cicsa_assignation_id);
-        return response()->json($cicsaAssignation, 200);
-    }
+    // public function storeOrUpdate(StoreOrUpdateAssignationRequest $request, $cicsa_assignation_id = null)
+    // {
+    //     $validatedData = $request->validated();
+    //     $cicsaAssignation = $this->pextServices->storeOrUpdateAssignation($validatedData, $cicsa_assignation_id);
+    //     return response()->json($cicsaAssignation, 200);
+    // }
 
     public function storeProjectAndAssignation(StoreOrUpdateAssignationRequest $request)
     {
@@ -97,7 +97,7 @@ class PextController extends Controller
         });
         $providers = Provider::select('id', 'ruc', 'company_name')->get();
         return Inertia::render(
-            'ProjectArea/ProjectManagement/PextExpenses',
+            'ProjectArea/ProjectManagement/Pext/Monthly/Expenses/PextExpenses',
             [
                 'expense' => $expense,
                 'providers' => $providers,
@@ -193,13 +193,13 @@ class PextController extends Controller
             $project = $this->pextServices->index_additional_base($type, 1);
             $project = $type == 2 ? $project->get() : $project->paginate();
             $project = $this->pextServices->addCalculated($project);
-            $project = $project->filter(function ($item) {
+            $project = $project->each(function ($item) {
                 return $item->cicsa_charge_status !== 'Completado';
             });
             $cost_line = $this->pextServices->costCenter($type);
             $zones = $type == 1 ? PintConstants::mobileZones() : PextConstants::getZone();
 
-            return Inertia::render('ProjectArea/ProjectManagement/ProjectAdditional', [
+            return Inertia::render('ProjectArea/ProjectManagement/Pext/Additional/ProjectAdditional', [
                 'project' => $project,
                 'cost_line' => $cost_line,
                 'searchCondition' => $searchCondition,
@@ -229,7 +229,7 @@ class PextController extends Controller
         if ($request->isMethod('get')) {
             $project = $this->pextServices->index_additional_base($type, 0)->paginate();
             $cost_line = $this->pextServices->costCenter($type);
-            return Inertia::render('ProjectArea/ProjectManagement/ProjectAdditionalRejected', [
+            return Inertia::render('ProjectArea/ProjectManagement/Pext/Additional/ProjectAdditionalRejected', [
                 'project' => $project,
                 'cost_line' => $cost_line,
                 'type' => $type,
@@ -621,17 +621,17 @@ class PextController extends Controller
         ]);
     }
 
-    public function onthlyExpensePext()
-    {
-        $listCost = [4, 5];
-        $projects = Project::where('cost_line_id', 2)
-            ->whereIn('cost_center_id', $listCost)
-            ->where('initial_budget', '>', 0)
-            ->whereHas('preproject')
-            ->orderBy('created_at', 'desc')
-            ->get();
-        return response()->json($projects, 200);
-    }
+    // public function onthlyExpensePext()
+    // {
+    //     $listCost = [4, 5];
+    //     $projects = Project::where('cost_line_id', 2)
+    //         ->whereIn('cost_center_id', $listCost)
+    //         ->where('initial_budget', '>', 0)
+    //         ->whereHas('preproject')
+    //         ->orderBy('created_at', 'desc')
+    //         ->get();
+    //     return response()->json($projects, 200);
+    // }
 
     public function swapExpensesMonthly() {}
 }

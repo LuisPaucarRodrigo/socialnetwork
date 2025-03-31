@@ -177,7 +177,7 @@ class CarsController extends Controller
         }
         $car->update($data);
         $car->load(['user', 'costline', 'car_changelogs.car_changelog_items', 'checklist']);
-        return response()->json($car);
+        return response()->json($car,200);
     }
 
     public function showImage(Car $car)

@@ -6,7 +6,7 @@
         <div class="w-full">
             <TableHeader :form="formSearch" :openCreateFormCar="openCreateFormCar"
                 :userPermission="userPermissions" />
-            <FleetCarTable v-model:cars="cars" :userPermissions="userPermissions" v-model:formSearch="formSearch"
+            <FleetCarTable :cars="cars" :userPermissions="userPermissions" v-model:formSearch="formSearch"
                 :cost_line="cost_line" :openEditFormCar="openEditFormCar" />
         </div>
         <FormCar :cars="cars" :users="users" :costLine="costLine" :userPermissions="userPermissions" ref="formCar" />
