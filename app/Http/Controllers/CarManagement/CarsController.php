@@ -23,7 +23,7 @@ use Inertia\Inertia;
 
 class CarsController extends Controller
 {
-    public function index()
+    public function index($id = null)
     {
         $cars = Car::with(['user', 'costline', 'car_document.approvel_car_document', 'checklist', 'car_changelogs' => function ($query) {
             $query->with('car_changelog_items');
@@ -43,7 +43,8 @@ class CarsController extends Controller
         return Inertia::render('FleetCar/index/Index', [
             'car' => $cars,
             'costLine' => CostLine::all(),
-            'users' => $users
+            'users' => $users,
+            'id' => $id,
         ]);
     }
 
@@ -99,13 +100,34 @@ class CarsController extends Controller
                         ->orWhere('insurance_date', '<=', $expirationThreshold)
                         ->orWhere('rental_contract_date', '<=', $expirationThreshold);
                 })
-                ->orWhereHas('car_changelogs', function ($query) {
+
+                ->get();
+        }
+        return response()->json([
+            'documentsCarToExpire' => $cars,
+        ], 200);
+    }
+
+    public function getChangelogAlarms()
+    {
+        $user = Auth::user();
+
+        $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
+
+        if ($userHasCarManagerPermission) {
+            $cars = Car::whereHas('car_changelogs', function ($query) {
+                $query->whereNull('is_accepted');
+            })
+                ->get();
+        } else {
+            $cars = Car::where('user_id', $user->id)
+                ->whereHas('car_changelogs', function ($query) {
                     $query->whereNull('is_accepted');
                 })
                 ->get();
         }
         return response()->json([
-            'documentsCarToExpire' => $cars,
+            'carsToExpire' => $cars,
         ], 200);
     }
 
@@ -177,7 +199,7 @@ class CarsController extends Controller
         }
         $car->update($data);
         $car->load(['user', 'costline', 'car_changelogs.car_changelog_items', 'checklist']);
-        return response()->json($car,200);
+        return response()->json($car, 200);
     }
 
     public function showImage(Car $car)
@@ -215,7 +237,7 @@ class CarsController extends Controller
     {
         $data = $request->validated();
         try {
-            $archives = ['ownership_card', 'technical_review', 'soat', 'insurance','rental_contract'];
+            $archives = ['ownership_card', 'technical_review', 'soat', 'insurance', 'rental_contract'];
             foreach ($archives as $archive) {
                 if ($request->hasFile($archive)) {
                     $document = $request->file($archive);
@@ -224,6 +246,7 @@ class CarsController extends Controller
                 }
             }
             $carDocument = CarDocument::create($data);
+            $carDocument->load("approvel_car_document");
             return response()->json($carDocument, 200);
         } catch (Exception $e) {
             return response()->json($e->getMessage(), 500);
@@ -380,9 +403,9 @@ class CarsController extends Controller
 
         // Campos y sus traducciones
         $fields = [
-            // 'maintenanceTools' => 'Foto Herraientas de Mantenimiento',
-            // 'preventionTools' => 'Foto Herramientas de Prevencion',
-            // 'imageSpareTire' => 'Foto Llanta de Repuesto',
+            'maintenanceTools' => 'Foto Herraientas de Mantenimiento',
+            'preventionTools' => 'Foto Herramientas de Prevencion',
+            'imageSpareTire' => 'Foto Llanta de Repuesto',
             'front' => 'Foto Delantera',
             'leftSide' => 'Foto Lateral Izquierda',
             'rightSide' => 'Foto Lateral Derecha',
@@ -422,7 +445,7 @@ class CarsController extends Controller
 
     public function approveChanges($id)
     {
-        $archives = ['ownership_card', 'technical_review', 'soat', 'insurance','rental_contract'];
+        $archives = ['ownership_card', 'technical_review', 'soat', 'insurance', 'rental_contract'];
         try {
             $approve_car = ApprovalCarDocument::find($id);
             if ($approve_car) {
@@ -464,7 +487,7 @@ class CarsController extends Controller
 
     public function deleteChanges($id)
     {
-        $archives = ['ownership_card', 'technical_review', 'soat', 'insurance','rental_contract'];
+        $archives = ['ownership_card', 'technical_review', 'soat', 'insurance', 'rental_contract'];
         $changes = ApprovalCarDocument::find($id);
         foreach ($archives as $item) {
             if ($changes->$item) {

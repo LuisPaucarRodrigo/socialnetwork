@@ -113,7 +113,7 @@ function openChecklist(item) {
 }
 
 const first = [
-    // { km: "Kilometraje" },
+    { km: "Kilometraje" },
     { beak: "Pico" },
     { shovel: "Pala" },
     { chocks: "Tacos" },

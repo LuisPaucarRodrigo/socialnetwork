@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,6 +21,7 @@ class HuaweiProject extends Model
         'status',
         'prefix',
         'macro_project',
+        'assignation_date',
         'assigned_diu'
     ];
 
@@ -97,13 +99,8 @@ class HuaweiProject extends Model
 
     public function getCodeAttribute()
     {
-        $year = date('Y', strtotime($this->created_at));
-        $totalYearProjects = HuaweiProject::whereYear('created_at', $year)->count();
-        $projectNumber = HuaweiProject::whereYear('created_at', $year)
-                                        ->where('id', '<=', $this->id)
-                                        ->count();
-        $formattedProjectNumber = str_pad($projectNumber, 3, '0', STR_PAD_LEFT);
-        return $year . '-' . $formattedProjectNumber . '-' . strtoupper(substr($this->description, 0, 5));
+        $year = Carbon::parse($this->created_at)->year;
+        return $year . '-' . str_pad($this->id, 4, '0', STR_PAD_LEFT) . '-' . $this->macro_project . '-' . $this->huawei_site->name;
     }
 
     public function getStateAttribute()

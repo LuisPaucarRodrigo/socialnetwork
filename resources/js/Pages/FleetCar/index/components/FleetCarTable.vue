@@ -132,12 +132,14 @@
                             <TableRow>{{ changelog.contact_phone }}</TableRow>
                             <TableRow>{{ changelog.observation }}</TableRow>
                             <TableRow>
-                                <a target="_blank" :href="route(
+                                <div class="flex justify-center ">
+                                    <a target="_blank" :href="route(
                                     'fleet.cars.show_invoice', { car_changelog: changelog.id }
                                 )
                                     ">
                                     <DocumentIcon class="w-5 h-5 text-blue-600 items-center" />
                                 </a>
+                                </div>
                             </TableRow>
                             <TableRow>
                                 <div class="flex flex-col justify-center items-center">

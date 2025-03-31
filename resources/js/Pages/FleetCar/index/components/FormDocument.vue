@@ -222,7 +222,7 @@ async function submitDocument() {
     let formData = toFormData(formDocument);
     try {
         let response = await axios.post(url, formData);
-        if (response.data.length > 0) {
+        if (response.data) {
             updateCar(response.data, 'udpateDocument')
         } else {
             updateCar(null, 'changeEntry')
@@ -265,9 +265,7 @@ function openModalDocument() {
 function updateCar(data, action) {
     const validations = cars.data || cars;
     if (action === "udpateDocument") {
-        let index = validations.findIndex(
-            (item) => item.id === formDocument.car_id
-        );
+        const index = validations.findIndex(item => item.id === formDocument.car_id);
         validations[index].car_document = data;
         openModalDocument();
         notify("Acciòn Exitosa");

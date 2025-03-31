@@ -187,7 +187,7 @@ function updatePext(pext, action) {
         validations.unshift(pext);
         createOrEditModal()
         notify('Creacion Exitosa')
-    } if (action === "update") {
+    } else if (action === "update") {
         let index = validations.findIndex(item => item.id === pext.id)
         validations[index] = pext
         createOrEditModal()
