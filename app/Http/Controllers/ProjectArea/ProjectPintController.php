@@ -134,8 +134,8 @@ class ProjectPintController extends Controller
             ->whereYear('created_at', $currentYear)
             ->count();
 
-        if (count($existingPreproject) >= 2) {
-            return response()->json('Ya existe un proyecto creado en este mes y año.', 422);
+        if ($existingPreproject >= 2) {
+            return response()->json('Ya existen dos proyecto creados este mes.', 422);
         }
 
         DB::beginTransaction();

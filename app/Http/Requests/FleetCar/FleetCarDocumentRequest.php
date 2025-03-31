@@ -22,13 +22,15 @@ class FleetCarDocumentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ownership_card' => 'nullable|required_without_all:technical_review,soat,insurance',
-            'technical_review' => 'nullable|required_without_all:ownership_card,soat,insurance',
-            'soat' => 'nullable|required_without_all:ownership_card,technical_review,insurance',
-            'insurance' => 'nullable|required_without_all:ownership_card,technical_review,soat',
+            'ownership_card' => 'nullable|required_without_all:technical_review,soat,insurance,rental_contract',
+            'technical_review' => 'nullable|required_without_all:ownership_card,soat,insurance,rental_contract',
+            'soat' => 'nullable|required_without_all:ownership_card,technical_review,insurance,rental_contract',
+            'insurance' => 'nullable|required_without_all:ownership_card,technical_review,soat,rental_contract',
             'technical_review_date' => 'nullable|date',
             'soat_date' => 'nullable|date',
             'insurance_date' => 'nullable|date',
+            'rental_contract' => 'nullable|required_without_all:ownership_card,technical_review,soat,insurance',
+            'rental_contract_date' => 'nullable|date',
             'address_web' => 'required', 
             'user' => 'required', 
             'password' => 'required', 

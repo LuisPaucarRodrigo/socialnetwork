@@ -25,7 +25,7 @@ class ChecklistCarRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // 'km'=> 'required',
+            'km'=> 'required',
             'reason'=> 'required',
             'additionalEmployees'=> 'nullable',
             'zone'=> 'required',
@@ -61,9 +61,9 @@ class ChecklistCarRequest extends FormRequest
             'ladderHolder'=> 'required',
             'sidePlate'=> 'required',
 
-            // 'maintenanceTools'=> 'required',
-            // 'preventionTools'=> 'required',
-            // 'imageSpareTire'=> 'required',
+            'maintenanceTools'=> 'required',
+            'preventionTools'=> 'required',
+            'imageSpareTire'=> 'required',
             'front'=> 'required',
             'leftSide'=> 'required',
             'rightSide'=> 'required',

@@ -78,7 +78,7 @@ Route::middleware('permission:' . implode('|', RolesConstants::PROJECT_MODULE))-
     Route::get('/preprojects/load_resource_entries/{service_id}', [PreProjectController::class, 'load_resource_entries'])->name('load.resource_entries');
 
     //Pext Project
-    Route::post('/projectPext/storeOrUpdate/{pext_id?}', [PextController::class, 'storeOrUpdate'])->name('projectmanagement.pext.storeOrUpdate');
+    // Route::post('/projectPext/storeOrUpdate/{pext_id?}', [PextController::class, 'storeOrUpdate'])->name('projectmanagement.pext.storeOrUpdate');
     Route::post('/projectPext/storeProjectAndAssignation', [PextController::class, 'storeProjectAndAssignation'])->name('projectmanagement.pext.storeProjectAndAssignation');
     // Route::get('/projectPext/requestCicsa/{zone?}', [PextController::class, 'requestCicsa'])->name('projectmanagement.pext.requestCicsa');
 
@@ -87,7 +87,7 @@ Route::middleware('permission:' . implode('|', RolesConstants::PROJECT_MODULE))-
     Route::delete('/projectPext/expenses/delete/{expense_id}', [PextController::class, 'expenses_delete'])->name('pext.expenses.delete');
     Route::put('/projectPext/expenses/expenseValidate/{expense_id}', [PextController::class, 'expense_validate'])->name('projectmanagement.pext.expenses.validate');
 
-    Route::get('/projectPext/monthly', [PextController::class, 'onthlyExpensePext'])->name('pext.monthly');
+    // Route::get('/projectPext/monthly', [PextController::class, 'onthlyExpensePext'])->name('pext.monthly');
 
 
     //Project

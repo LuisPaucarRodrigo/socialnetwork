@@ -40,7 +40,7 @@ class CarsController extends Controller
             $cars->where('user_id', $user->id);
         }
         $cars = $cars->get();
-        return Inertia::render('FleetCar/Index', [
+        return Inertia::render('FleetCar/index/Index', [
             'car' => $cars,
             'costLine' => CostLine::all(),
             'users' => $users,
@@ -88,7 +88,8 @@ class CarsController extends Controller
             $cars = Car::with('car_document')->whereHas('car_document', function ($query) use ($expirationThreshold) {
                 $query->where('technical_review_date', '<=', $expirationThreshold)
                     ->orWhere('soat_date', '<=', $expirationThreshold)
-                    ->orWhere('insurance_date', '<=', $expirationThreshold);
+                    ->orWhere('insurance_date', '<=', $expirationThreshold)
+                    ->orWhere('rental_contract_date', '<=', $expirationThreshold);
             })
                 ->get();
         } else {
@@ -96,7 +97,8 @@ class CarsController extends Controller
                 ->whereHas('car_document', function ($query) use ($expirationThreshold) {
                     $query->where('technical_review_date', '<=', $expirationThreshold)
                         ->orWhere('soat_date', '<=', $expirationThreshold)
-                        ->orWhere('insurance_date', '<=', $expirationThreshold);
+                        ->orWhere('insurance_date', '<=', $expirationThreshold)
+                        ->orWhere('rental_contract_date', '<=', $expirationThreshold);
                 })
 
                 ->get();
@@ -106,23 +108,23 @@ class CarsController extends Controller
         ], 200);
     }
 
-    public function getChangelogAlarms ()
+    public function getChangelogAlarms()
     {
         $user = Auth::user();
 
         $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
 
-        if($userHasCarManagerPermission){
+        if ($userHasCarManagerPermission) {
             $cars = Car::whereHas('car_changelogs', function ($query) {
                 $query->whereNull('is_accepted');
-                })
-            ->get();
-        }else{
+            })
+                ->get();
+        } else {
             $cars = Car::where('user_id', $user->id)
-            ->whereHas('car_changelogs', function ($query) {
-                $query->whereNull('is_accepted');
+                ->whereHas('car_changelogs', function ($query) {
+                    $query->whereNull('is_accepted');
                 })
-            ->get();
+                ->get();
         }
         return response()->json([
             'carsToExpire' => $cars,
@@ -146,6 +148,10 @@ class CarsController extends Controller
 
         if ($document->insurance_date && $document->insurance_date <= $expirationThreshold) {
             $expiring['Seguro'] = $document->insurance_date;
+        }
+
+        if ($document->rental_contract_date && $document->rental_contract_date <= $expirationThreshold) {
+            $expiring['Contrato'] = $document->rental_contract_date;
         }
 
         return response()->json($expiring, 200);
@@ -193,7 +199,7 @@ class CarsController extends Controller
         }
         $car->update($data);
         $car->load(['user', 'costline', 'car_changelogs.car_changelog_items', 'checklist']);
-        return response()->json($car);
+        return response()->json($car, 200);
     }
 
     public function showImage(Car $car)
@@ -231,7 +237,7 @@ class CarsController extends Controller
     {
         $data = $request->validated();
         try {
-            $archives = ['ownership_card', 'technical_review', 'soat', 'insurance'];
+            $archives = ['ownership_card', 'technical_review', 'soat', 'insurance', 'rental_contract'];
             foreach ($archives as $archive) {
                 if ($request->hasFile($archive)) {
                     $document = $request->file($archive);
@@ -240,6 +246,7 @@ class CarsController extends Controller
                 }
             }
             $carDocument = CarDocument::create($data);
+            $carDocument->load("approvel_car_document");
             return response()->json($carDocument, 200);
         } catch (Exception $e) {
             return response()->json($e->getMessage(), 500);
@@ -249,7 +256,7 @@ class CarsController extends Controller
     public function updateDocument(FleetCarDocumentRequest $request, CarDocument $carDocument)
     {
         $data = $request->validated();
-        $archives = ['ownership_card', 'technical_review', 'soat', 'insurance'];
+        $archives = ['ownership_card', 'technical_review', 'soat', 'insurance', 'rental_contract'];
         $user = Auth::user();
         $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
 
@@ -289,7 +296,7 @@ class CarsController extends Controller
     public function destroyDocument(CarDocument $carDocument)
     {
         $carDocument->delete();
-        $archives = ['ownership_card', 'technical_review', 'soat', 'insurance'];
+        $archives = ['ownership_card', 'technical_review', 'soat', 'insurance', 'rental_contract'];
         foreach ($archives as $archive) {
             $fileName = $carDocument->$archive;
             $file_path = "documents/fleetcar/car_documents/$fileName";
@@ -384,7 +391,7 @@ class CarsController extends Controller
     public function showChecklist(Car $car)
     {
         $checklist = ChecklistCar::where('car_id', $car->id)->orderBy('created_at', 'desc')->paginate();
-        return Inertia::render('FleetCar/CheckList', [
+        return Inertia::render('FleetCar/checklist/CheckList', [
             'car' => $car->load('user'),
             'checklist' => $checklist
         ]);
@@ -396,9 +403,9 @@ class CarsController extends Controller
 
         // Campos y sus traducciones
         $fields = [
-            // 'maintenanceTools' => 'Foto Herraientas de Mantenimiento',
-            // 'preventionTools' => 'Foto Herramientas de Prevencion',
-            // 'imageSpareTire' => 'Foto Llanta de Repuesto',
+            'maintenanceTools' => 'Foto Herraientas de Mantenimiento',
+            'preventionTools' => 'Foto Herramientas de Prevencion',
+            'imageSpareTire' => 'Foto Llanta de Repuesto',
             'front' => 'Foto Delantera',
             'leftSide' => 'Foto Lateral Izquierda',
             'rightSide' => 'Foto Lateral Derecha',
@@ -431,14 +438,14 @@ class CarsController extends Controller
             'car_document:id,car_id',
             'car_document.car:id,plate'
         ])->get();
-        return Inertia::render("FleetCar/IndexApprovals", [
+        return Inertia::render("FleetCar/approvals/IndexApprovals", [
             'change' => $changes
         ]);
     }
 
     public function approveChanges($id)
     {
-        $archives = ['ownership_card', 'technical_review', 'soat', 'insurance'];
+        $archives = ['ownership_card', 'technical_review', 'soat', 'insurance', 'rental_contract'];
         try {
             $approve_car = ApprovalCarDocument::find($id);
             if ($approve_car) {
@@ -480,7 +487,7 @@ class CarsController extends Controller
 
     public function deleteChanges($id)
     {
-        $archives = ['ownership_card', 'technical_review', 'soat', 'insurance'];
+        $archives = ['ownership_card', 'technical_review', 'soat', 'insurance', 'rental_contract'];
         $changes = ApprovalCarDocument::find($id);
         foreach ($archives as $item) {
             if ($changes->$item) {
@@ -537,12 +544,22 @@ class CarsController extends Controller
 
     public function checkListAlarms()
     {
-        $checkList = Car::whereHas('checklist', function ($query) {
-            $query->latest()->where('created_at', '<', Carbon::now()->subDays(7));
-        })->get();
-        $checkList->each(function ($i) {
-            $i->days = Carbon::now()->diffInDays(Carbon::parse($i->checklist->first()->created_at)->addDay(7));
+        $checkList = Car::with(['checklist' => function ($query) {
+            $query->orderBy('created_at', 'desc');
+        }])->whereDoesntHave('checklist')->orWhereHas('checklist')->get();
+
+        $checkList = $checkList->filter(function ($car) {
+            $lastChecklist = $car->checklist->first();
+            return !$lastChecklist || $lastChecklist->created_at < Carbon::now()->subDays(7);
         });
-        return response()->json($checkList, 200);
+
+        $checkList->each(function ($car) {
+            $lastChecklist = $car->checklist->first();
+            $car->days = $lastChecklist
+                ? Carbon::now()->diffInDays(Carbon::parse($lastChecklist->created_at)->addDays(7)) . ' R'
+                : 'Sin checklist';
+        });
+
+        return response()->json($checkList->values(), 200);
     }
 }

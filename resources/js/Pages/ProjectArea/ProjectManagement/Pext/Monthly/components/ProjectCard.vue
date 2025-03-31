@@ -22,7 +22,10 @@
             </div>
         </div>
         <h3 class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
-            {{ item.name }}
+            {{ item.description }}
+        </h3>
+        <h3 class="text-sm font-semibold text-gray-700 line-clamp-3 mb-2">
+            {{ item.cost_center.name }}
         </h3>
         <p v-if="item?.initial_budget === 0.00" class="text-red-500 text-sm">
             No se definió un presupuesto

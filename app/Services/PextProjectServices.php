@@ -14,7 +14,7 @@ class PextProjectServices
 {
     public function getProject($status)
     {
-        $project = Project::where('cost_line_id', 2)
+        $project = Project::with('cost_center')->where('cost_line_id', 2)
             ->where('status', $status)
             ->whereHas('cost_center', function ($costCenterQuery) {
                 $costCenterQuery->where('name', 'like', "%Mantto%");
