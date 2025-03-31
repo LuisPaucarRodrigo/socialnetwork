@@ -165,6 +165,10 @@ class ChecklistsController extends Controller
     public function car_destroy($id)
     {
         $checklistCar = ChecklistCar::findOrFail($id);
+        $checklistCar->maintenanceTools && $this->file_delete($checklistCar->maintenanceTools, 'image/checklist/checklistcar');
+        $checklistCar->preventionTools && $this->file_delete($checklistCar->preventionTools, 'image/checklist/checklistcar');
+        $checklistCar->imageSpareTire && $this->file_delete($checklistCar->imageSpareTire, 'image/checklist/checklistcar');
+
         $checklistCar->front && $this->file_delete($checklistCar->front, 'image/checklist/checklistcar');
         $checklistCar->leftSide && $this->file_delete($checklistCar->leftSide, 'image/checklist/checklistcar');
         $checklistCar->rightSide && $this->file_delete($checklistCar->rightSide, 'image/checklist/checklistcar');

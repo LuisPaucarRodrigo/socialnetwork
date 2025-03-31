@@ -49,6 +49,7 @@ class ChecklistCar extends Model
         'maintenanceTools',
         'preventionTools',
         'imageSpareTire',
+        
         'front',
         'leftSide',
         'rightSide',

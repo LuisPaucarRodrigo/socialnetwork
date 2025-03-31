@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('user_name');
             $table->string('additionalEmployees')->nullable();
             $table->string('zone');
-            // $table->integer('km');
+            $table->integer('km');
             
             $table->string('plate');
             $table->string('hornState');
@@ -52,9 +52,9 @@ return new class extends Migration
             $table->string('ladderHolder');
             $table->string('sidePlate');
 
-            // $table->string('maintenanceTools');
-            // $table->string('preventionTools');
-            // $table->string('imageSpareTire');
+            $table->string('maintenanceTools');
+            $table->string('preventionTools');
+            $table->string('imageSpareTire');
             $table->string('front');
             $table->string('leftSide');
             $table->string('rightSide');
