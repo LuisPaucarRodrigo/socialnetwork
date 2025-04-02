@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('profile_photo_path', 2048)->nullable();
             $table->foreignId('role_id')->nullable()->constrained('roles')->onDelete('set null');
             $table->foreignId('area_id')->nullable()->constrained('areas')->onDelete('set null');
+            $table->string('google_drive_page_token')->nullable();
             $table->timestamps();
         });
     }
