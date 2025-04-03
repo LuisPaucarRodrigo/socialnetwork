@@ -14,7 +14,7 @@ class ManagementRolsController extends Controller
     public function rols_index()
     {
         return Inertia::render('Rols/Rol', [
-            'rols' => Role::with('permissions')->paginate(),
+            'rols' => Role::where('id', '!=', 1)->with('permissions')->paginate(),
             'permissions' => Permission::all()
         ]);
     }
@@ -48,7 +48,7 @@ class ManagementRolsController extends Controller
 
     public function details($id)
     {
-        $role = Role::with('permissions')->find($id);
+        $role = Role::where('id', '!=', 1)->with('permissions')->find($id);
         return Inertia::render('Rols/RolDetails', ['rols' => $role]);
     }
 }

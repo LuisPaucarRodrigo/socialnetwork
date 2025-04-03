@@ -57,8 +57,6 @@
                     </div>
                 </div>
             </MyTransition>
-<<<<<<< HEAD
-=======
             <MyTransition v-for="item, i in changelogAlarms" :key="i" class="ml-4"
                 :transitiondemonstration="showDocumentsCarToExpireAlarms">
                 <div class="w-full flex items-center">
@@ -74,7 +72,6 @@
                     </div>
                 </div>
             </MyTransition>
->>>>>>> origin/main
         </div>
     </template>
     <template v-if="showCheckListCarToExpireAlarms">
