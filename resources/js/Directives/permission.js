@@ -1,14 +1,19 @@
+import { checkPermissions } from "@/Helpers/permissionHelper";
+
 export default {
-    mounted(el, binding) {
-        const { permissions, role_id } = window?.appAuth || {};
-        if (role_id === 1) return;
-        const requiredPermissions = Array.isArray(binding.value) 
-            ? binding.value 
-            : [binding.value];
-        const hasPermission = requiredPermissions.some(permission => 
-            permissions.includes(permission));
-        if (!hasPermission) {
-            el.parentNode?.removeChild(el);
-        }
+    single: {
+        mounted(el, binding) {
+            checkPermissions(el, binding, "SINGLE");
+        },
+    },
+    and: {
+        mounted(el, binding) {
+            checkPermissions(el, binding, "AND");
+        },
+    },
+    or: {
+        mounted(el, binding) {
+            checkPermissions(el, binding, "OR");
+        },
     },
 };

@@ -6,7 +6,7 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import { initFlowbite } from 'flowbite';
-import permission from './Directives/permission';
+import permission from '@/Directives/permission';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -38,7 +38,9 @@ createInertiaApp({
 
         app.use(plugin);
         app.use(ZiggyVue, Ziggy);
-        app.directive("permission", permission); // Registrar la directiva
+        Object.entries(permission).forEach(([name, directive]) => {
+            app.directive(`permission-${name}`, directive);
+        });
         app.mount(el);
     },
     progress: {
