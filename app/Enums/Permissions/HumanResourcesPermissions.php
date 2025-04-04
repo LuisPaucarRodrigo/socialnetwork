@@ -6,6 +6,7 @@ enum HumanResourcesPermissions: string
 {
 
     // HUMAN RESOURCE
+    case MANAGEMENT_EMPLOYEES = 'management_employees';
     case MANAGEMENT_EMPLOYEES_DELETE = 'management_employees_delete';
     case MANAGEMENT_EMPLOYEES_FIRED = 'management_employees_fired';
     case MANAGEMENT_EMPLOYEES_REENTRY = 'management_employees_reentry';
@@ -27,6 +28,12 @@ enum HumanResourcesPermissions: string
     case DOCUMENT_DELETE = 'document_delete';
 
     
+
+
+    //////////////////////
+    case MANAGEMENT_EMPLOYEES_CREATE = 'management_employees_create';
+    case MANAGEMENT_EMPLOYEES_SHOW = 'management_employees_show';
+    case MANAGEMENT_EMPLOYEES_EDIT = 'management_employees_edit';
 
     public static function all(): array
     {
