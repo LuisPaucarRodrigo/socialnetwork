@@ -30,7 +30,7 @@
         </div>
       </div>
     </div>
-    <div class="sm:flex lg:justify-between lg:gap-8 mb-8">
+    <div class="sm:flex lg:justify-between lg:gap-8">
       <!-- Primera columna -->
       <div class="sm:w-1/2 lg:pr-4 sm:mb-0">
         <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -56,6 +56,17 @@
           <dt class="text-sm font-medium leading-6 text-gray-900">Descuento a Remuneracion</dt>
           <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
             {{ details.contract.discount_remuneration == 1 ? "Con Descuento" : "Sin Descuento" }}</dd>
+        </div>
+      </div>
+    </div>
+
+    <div class="sm:flex lg:justify-between lg:gap-8 mb-8">
+      <!-- Primera columna -->
+      <div class="sm:w-1/2 lg:pr-4 sm:mb-0">
+        <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+          <dt class="text-sm font-medium leading-6 text-gray-900">Numero de Cuenta</dt>
+          <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.contract.nro_cuenta ?? 'Sin Cuenta' }}
+          </dd>
         </div>
       </div>
     </div>

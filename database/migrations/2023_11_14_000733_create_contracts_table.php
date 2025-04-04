@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('contracts', function (Blueprint $table) {
             $table->id();
             $table->integer('basic_salary');
+            $table->string("nro_cuenta")->unique()->nullable();
             $table->float('life_ley');
             $table->string('state')->default('Active');
             $table->boolean('discount_remuneration');

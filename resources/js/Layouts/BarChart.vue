@@ -181,7 +181,7 @@ async function getZonesExpensesData() {
     const res = await axios.get(
         route("projectmanagement.pext.expense_dashboard_bar", { project_id })
     );
-    console.log("dasd",res)
+    
     zones.value = res.data.zones;
     current.value = res.data.current;
     previous.value = res.data.previous;
