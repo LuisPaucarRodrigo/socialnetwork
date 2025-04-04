@@ -35,7 +35,7 @@ class UpdateManagementEmployees extends FormRequest
             'email' => 'required|email|max:255',
             'email_company' => 'nullable|email|max:255',
             'phone1' => 'required|numeric|digits:9',
-            'phone2' => 'nullable|numeric|digits:9',
+            'nro_cuenta' => 'nullable|unique:' . Employee::class,
 
             'cost_line_id' => 'required|numeric',
             'type_contract' => 'required|string',
