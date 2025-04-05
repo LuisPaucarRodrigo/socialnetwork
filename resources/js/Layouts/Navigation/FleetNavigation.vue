@@ -107,7 +107,7 @@ import Modal from '@/Components/Modal.vue';
 import MyTransition from '@/Components/MyTransition.vue';
 import { subModulePermission } from '@/utils/roles/roles';
 import { Link, usePage } from '@inertiajs/vue3';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, onUnmounted } from 'vue';
 
 const { submodules } = usePage().props
 const { userSubModules } = usePage().props.auth
@@ -125,7 +125,10 @@ onMounted(() => {
     fetchFleetCarCount();
     fetchFleetCarCheckListCount();
     getChangelogAlarms();
-    setInterval(fetchFleetCarCount, 60000);
+    const intervalId = setInterval(fetchFleetCarCount, 60000);
+    onUnmounted(() => {
+        clearInterval(intervalId);
+    });
 });
 
 async function fetchFleetCarCount() {

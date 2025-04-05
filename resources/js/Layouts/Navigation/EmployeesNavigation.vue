@@ -228,7 +228,7 @@
 import MyTransition from '@/Components/MyTransition.vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import { subModulePermission } from '@/utils/roles/roles';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, onUnmounted } from 'vue';
 
 const { userPermissions } = defineProps({
     userPermissions: Array
@@ -331,6 +331,9 @@ onMounted(() => {
         ]);
     };
     fetchAllAlarms();
-    setInterval(fetchAllAlarms, 60000);
+    const intervalId = setInterval(fetchAllAlarms, 60000);
+    onUnmounted(() => {
+        clearInterval(intervalId);
+    });
 });
 </script>
