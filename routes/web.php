@@ -12,7 +12,7 @@ Route::get('/', function () {
     }
 })->name('home');
 
-
+Route::get('/test_test', [ProfileController::class,'allfine']);
 
 Route::middleware(['auth', 'checkPlatformWeb'])->group(function () { 
     

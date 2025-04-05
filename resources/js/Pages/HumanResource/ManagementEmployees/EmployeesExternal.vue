@@ -22,8 +22,8 @@
             <TableStructure :style="'h-[72vh]'">
                 <template #thead>
                     <tr>
-                        <TableTitle v-permission="'ee_image'">Perfil</TableTitle>
-                        <TableTitle v-permission="'ee_costline'">
+                        <TableTitle>Perfil</TableTitle>
+                        <TableTitle>
                             <div class="w-[190px]">
                                 <TableHeaderCicsaFilter label="Linea de Negocio" labelClass="text-gray-600"
                                     :options="cost_line" v-model="formSearch.cost_line" />
@@ -45,7 +45,7 @@
                 </template>
                 <template #tbody>
                     <tr v-for="employee in employees.data || employees" :key="employee.id" class="text-gray-700">
-                        <TableRow v-permission="'ee_image'">
+                        <TableRow>
                             <img :src="employee.cropped_image" alt="Empleado" class="w-12 h-13 rounded-full">
                         </TableRow>
                         <TableRow>{{ employee?.cost_line?.name }}</TableRow>
