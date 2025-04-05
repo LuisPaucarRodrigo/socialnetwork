@@ -29,14 +29,14 @@
                                     :options="cost_line" v-model="formSearch.cost_line" />
                             </div>
                         </TableTitle>
-                        <TableTitle v-permission="'ee_name'">Nombre</TableTitle>
-                        <TableTitle v-permission="'ee_lastname'">Apellido</TableTitle>
-                        <TableTitle v-permission="'ee_dni'">DNI</TableTitle>
-                        <TableTitle v-permission="'ee_phone1'">Telefono</TableTitle>
-                        <TableTitle v-permission="'ee_birthdate'">Fecha de Nacimiento</TableTitle>
-                        <TableTitle v-permission="'ee_address'">Dirección</TableTitle>
-                        <TableTitle v-permission="'ee_email'">Correo</TableTitle>
-                        <TableTitle v-permission="'ee_emailcompany'">Correo Empresarial</TableTitle>
+                        <TableTitle>Nombre</TableTitle>
+                        <TableTitle>Apellido</TableTitle>
+                        <TableTitle>DNI</TableTitle>
+                        <TableTitle>Telefono</TableTitle>
+                        <TableTitle>Fecha de Nacimiento</TableTitle>
+                        <TableTitle>Dirección</TableTitle>
+                        <TableTitle>Correo</TableTitle>
+                        <TableTitle>Correo Empresarial</TableTitle>
                         <TableTitle v-permission="'ee_salary'">Salario</TableTitle>
                         <TableTitle v-permission="'ee_sctr'">Sctr</TableTitle>
                         <TableTitle v-permission="'ee_curriculum'">Curriculum</TableTitle>
@@ -48,15 +48,15 @@
                         <TableRow v-permission="'ee_image'">
                             <img :src="employee.cropped_image" alt="Empleado" class="w-12 h-13 rounded-full">
                         </TableRow>
-                        <TableRow v-permission="'ee_costline'">{{ employee?.cost_line?.name }}</TableRow>
-                        <TableRow v-permission="'ee_name'">{{ employee.name }}</TableRow>
-                        <TableRow v-permission="'ee_lastname'">{{ employee.lastname }}</TableRow>
-                        <TableRow v-permission="'ee_dni'">{{ employee.dni }}</TableRow>
-                        <TableRow v-permission="'ee_phone1'">{{ employee.phone1 }}</TableRow>
-                        <TableRow v-permission="'ee_birthdate'">{{ employee.birthdate }}</TableRow>
-                        <TableRow v-permission="'ee_address'" :width="'w-[250px]'">{{ employee.address }}</TableRow>
-                        <TableRow v-permission="'ee_email'">{{ employee.email }}</TableRow>
-                        <TableRow v-permission="'ee_emailcompany'">{{ employee.email_company }}</TableRow>
+                        <TableRow>{{ employee?.cost_line?.name }}</TableRow>
+                        <TableRow>{{ employee.name }}</TableRow>
+                        <TableRow>{{ employee.lastname }}</TableRow>
+                        <TableRow>{{ employee.dni }}</TableRow>
+                        <TableRow>{{ employee.phone1 }}</TableRow>
+                        <TableRow>{{ employee.birthdate }}</TableRow>
+                        <TableRow :width="'w-[250px]'">{{ employee.address }}</TableRow>
+                        <TableRow>{{ employee.email }}</TableRow>
+                        <TableRow>{{ employee.email_company }}</TableRow>
                         <TableRow v-permission="'ee_salary'">{{ employee.salary }}</TableRow>
                         <TableRow v-permission="'ee_sctr'">{{ employee.sctr }}</TableRow>
                         <TableRow v-permission="'ee_curriculum'">

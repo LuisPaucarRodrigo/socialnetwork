@@ -47,20 +47,24 @@ enum HumanResourcesPermissions: string
 
 
     ////has to become policy
-    case ee_image = 'ee_image';
-    case ee_costline = 'ee_costline';
-    case ee_name = 'ee_name';
-    case ee_lastname = 'ee_lastname';
-    case ee_dni = 'ee_dni';
-    case ee_phone1 = 'ee_phone1';
-    case ee_birthdate = 'ee_birthdate';
-    case ee_address = 'ee_address';
-    case ee_email = 'ee_email';
-    case ee_emailcompany = 'ee_emailcompany';
+    // case ee_image = 'ee_image';
+    // case ee_costline = 'ee_costline';
+    // case ee_name = 'ee_name';
+    // case ee_lastname = 'ee_lastname';
+    // case ee_dni = 'ee_dni';
+    // case ee_phone1 = 'ee_phone1';
+    // case ee_birthdate = 'ee_birthdate';
+    // case ee_address = 'ee_address';
+    // case ee_email = 'ee_email';
+    // case ee_emailcompany = 'ee_emailcompany';
     case ee_salary = 'ee_salary';
     case ee_sctr = 'ee_sctr';
     case ee_curriculum = 'ee_curriculum';
     case ee_actions = 'ee_actions';
+
+    //estatus rh
+    case ds_section_additionaldocs = 'ds_section_additionaldocs';
+    case ds_section_entrydocs = 'ds_section_entrydocs';
 
 
     public static function all(): array

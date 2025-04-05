@@ -92,7 +92,7 @@ class User extends Authenticatable
     public function hasPermission($permission)
     {
         $role = $this->role; 
-        if($this->role === 1) return true;
+        if($this->role_id === 1) return true;
         if ($role) return $role->permissions()->where('name', $permission)->exists();
         return false; 
     }

@@ -3,17 +3,17 @@ import { checkPermissions } from "@/Helpers/permissionHelper";
 export default {
     single: {
         mounted(el, binding) {
-            checkPermissions(el, binding, "SINGLE");
+            checkPermissions(el, binding, "");
         },
     },
     and: {
         mounted(el, binding) {
-            checkPermissions(el, binding, "AND");
+            checkPermissions(el, binding, "and");
         },
     },
     or: {
         mounted(el, binding) {
-            checkPermissions(el, binding, "OR");
+            checkPermissions(el, binding, "or");
         },
     },
 };

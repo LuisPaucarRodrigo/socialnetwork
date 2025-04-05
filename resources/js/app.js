@@ -38,9 +38,9 @@ createInertiaApp({
 
         app.use(plugin);
         app.use(ZiggyVue, Ziggy);
-        Object.entries(permission).forEach(([name, directive]) => {
-            app.directive(`permission-${name}`, directive);
-        });
+        app.directive('permission', permission.single)
+        app.directive('permission-or', permission.or)
+        app.directive('permission-and', permission.and)
         app.mount(el);
     },
     progress: {

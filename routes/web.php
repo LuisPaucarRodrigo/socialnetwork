@@ -3,8 +3,6 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\ScraperController;
-use App\Http\Controllers\GoogleAuthController;
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -15,7 +13,6 @@ Route::get('/', function () {
 })->name('home');
 
 
-Route::get('/scrape', [ScraperController::class, 'scrape']);
 
 Route::middleware(['auth', 'checkPlatformWeb'])->group(function () { 
     
@@ -23,9 +20,6 @@ Route::middleware(['auth', 'checkPlatformWeb'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-
-    Route::get('/login/google', [GoogleAuthController::class, 'redirectToGoogle']);
-    Route::get('/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
 
     include_once 'user_admin_route.php';
     include_once 'human_resource_route.php';
