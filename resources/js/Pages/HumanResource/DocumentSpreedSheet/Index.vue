@@ -13,6 +13,7 @@
           <option v-for="item, i in costLines" :key="i">{{ item.name }}</option>
         </select>
         <PrimaryButton
+          v-permission="'document_grupal_documents_index'"
           type="button"
           @click="()=>router.visit(route('document.grupal_documents.index'))"
         >

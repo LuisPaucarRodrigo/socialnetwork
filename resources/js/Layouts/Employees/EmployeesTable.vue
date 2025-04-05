@@ -14,7 +14,13 @@
                 <TableTitle>DNI</TableTitle>
                 <TableTitle>Telefono</TableTitle>
                 <TableTitle>Fecha de Ingreso</TableTitle>
-                <TableTitle></TableTitle>
+                <TableTitle  v-permission-or="[
+                    'management_employees_show',
+                    'management_employees_edit',
+                    'management_employees_reentry',
+                    'management_employees',
+                    'management_employees_reentry',
+                ]"></TableTitle>
             </tr>
         </template>
         <template #tbody>

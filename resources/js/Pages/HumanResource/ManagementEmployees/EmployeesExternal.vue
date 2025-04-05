@@ -9,8 +9,11 @@
         <div class="min-w-full">
             <div class="mt-6 sm:flex sm:gap-4 sm:justify-between">
                 <div class="flex items-center justify-between gap-x-3 w-full">
-                    <div v-if="hasPermission('HumanResourceManager')" class="hidden sm:flex sm:items-center space-x-4">
-                        <PrimaryButton @click="modal_employees_external()" type="button">
+                    <div  class="hidden sm:flex sm:items-center space-x-4">
+                        <PrimaryButton v-permission-and="[
+                            'management_external_storeorupdate',
+                            'employees_external_index',
+                        ]" @click="modal_employees_external()" type="button">
                             + Agregar
                         </PrimaryButton>
                     </div>
@@ -19,50 +22,50 @@
             <TableStructure :style="'h-[72vh]'">
                 <template #thead>
                     <tr>
-                        <TableTitle>Perfil</TableTitle>
-                        <TableTitle>
+                        <TableTitle v-permission="'ee_image'">Perfil</TableTitle>
+                        <TableTitle v-permission="'ee_costline'">
                             <div class="w-[190px]">
                                 <TableHeaderCicsaFilter label="Linea de Negocio" labelClass="text-gray-600"
                                     :options="cost_line" v-model="formSearch.cost_line" />
                             </div>
                         </TableTitle>
-                        <TableTitle>Nombre</TableTitle>
-                        <TableTitle>Apellido</TableTitle>
-                        <TableTitle>DNI</TableTitle>
-                        <TableTitle>Telefono</TableTitle>
-                        <TableTitle>Fecha de Nacimiento</TableTitle>
-                        <TableTitle>Dirección</TableTitle>
-                        <TableTitle>Correo</TableTitle>
-                        <TableTitle>Correo Empresarial</TableTitle>
-                        <TableTitle>Salario</TableTitle>
-                        <TableTitle>Sctr</TableTitle>
-                        <TableTitle>Curriculum</TableTitle>
-                        <TableTitle></TableTitle>
+                        <TableTitle v-permission="'ee_name'">Nombre</TableTitle>
+                        <TableTitle v-permission="'ee_lastname'">Apellido</TableTitle>
+                        <TableTitle v-permission="'ee_dni'">DNI</TableTitle>
+                        <TableTitle v-permission="'ee_phone1'">Telefono</TableTitle>
+                        <TableTitle v-permission="'ee_birthdate'">Fecha de Nacimiento</TableTitle>
+                        <TableTitle v-permission="'ee_address'">Dirección</TableTitle>
+                        <TableTitle v-permission="'ee_email'">Correo</TableTitle>
+                        <TableTitle v-permission="'ee_emailcompany'">Correo Empresarial</TableTitle>
+                        <TableTitle v-permission="'ee_salary'">Salario</TableTitle>
+                        <TableTitle v-permission="'ee_sctr'">Sctr</TableTitle>
+                        <TableTitle v-permission="'ee_curriculum'">Curriculum</TableTitle>
+                        <TableTitle v-permission="'ee_actions'"></TableTitle>
                     </tr>
                 </template>
                 <template #tbody>
                     <tr v-for="employee in employees.data || employees" :key="employee.id" class="text-gray-700">
-                        <TableRow>
+                        <TableRow v-permission="'ee_image'">
                             <img :src="employee.cropped_image" alt="Empleado" class="w-12 h-13 rounded-full">
                         </TableRow>
-                        <TableRow>{{ employee?.cost_line?.name }}</TableRow>
-                        <TableRow>{{ employee.name }}</TableRow>
-                        <TableRow>{{ employee.lastname }}</TableRow>
-                        <TableRow>{{ employee.dni }}</TableRow>
-                        <TableRow>{{ employee.phone1 }}</TableRow>
-                        <TableRow>{{ employee.birthdate }}</TableRow>
-                        <TableRow :width="'w-[250px]'">{{ employee.address }}</TableRow>
-                        <TableRow>{{ employee.email }}</TableRow>
-                        <TableRow>{{ employee.email_company }}</TableRow>
-                        <TableRow>{{ employee.salary }}</TableRow>
-                        <TableRow>{{ employee.sctr }}</TableRow>
-                        <TableRow>
+                        <TableRow v-permission="'ee_costline'">{{ employee?.cost_line?.name }}</TableRow>
+                        <TableRow v-permission="'ee_name'">{{ employee.name }}</TableRow>
+                        <TableRow v-permission="'ee_lastname'">{{ employee.lastname }}</TableRow>
+                        <TableRow v-permission="'ee_dni'">{{ employee.dni }}</TableRow>
+                        <TableRow v-permission="'ee_phone1'">{{ employee.phone1 }}</TableRow>
+                        <TableRow v-permission="'ee_birthdate'">{{ employee.birthdate }}</TableRow>
+                        <TableRow v-permission="'ee_address'" :width="'w-[250px]'">{{ employee.address }}</TableRow>
+                        <TableRow v-permission="'ee_email'">{{ employee.email }}</TableRow>
+                        <TableRow v-permission="'ee_emailcompany'">{{ employee.email_company }}</TableRow>
+                        <TableRow v-permission="'ee_salary'">{{ employee.salary }}</TableRow>
+                        <TableRow v-permission="'ee_sctr'">{{ employee.sctr }}</TableRow>
+                        <TableRow v-permission="'ee_curriculum'">
                             <button v-if="employee.curriculum_vitae" @click="handlerPreview(employee.id)">
                                 <EyeIcon class="w-4 h-4 text-teal-600" />
                             </button>
                             <span v-else>-</span>
                         </TableRow>
-                        <TableRow>
+                        <TableRow v-permission="'ee_actions'">
                             <div class="flex space-x-3 justify-center">
                                 <button v-if="hasPermission('HumanResourceManager')" type="button"
                                     @click="modal_employees_external(employee)">

@@ -33,7 +33,7 @@
       <p v-else></p>
     </div>
 
-    <div v-if="hasPermission('ProjectManager')" class="inline-block min-w-full overflow-hidden rounded-lg shadow">
+    <div  class="inline-block min-w-full overflow-hidden rounded-lg shadow">
       <div v-if="props.project.initial_budget > 0" class="flex justify-end px-5 py-3">
         <button @click="openModal2" class="text-blue-600 hover:underline mr-4">Actualizar Presupuesto</button>
       </div>

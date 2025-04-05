@@ -33,7 +33,7 @@
             </button>
         </div>
     </MyTransition>
-    <template v-if="employeeBirthdayAlarms.length !== 0">
+    <template v-if="employeeBirthdayAlarms.length !== 0" v-permission="'management_employees_happy_birthday'">
         <MyTransition v-for="item in employeeBirthdayAlarms" :key="item.id" class="ml-4"
             :transitiondemonstration="showEmployeeBirthdayAlarms">
             <Link class="w-full flex items-center" :href="route('management.employees.show', { id: item.id })">

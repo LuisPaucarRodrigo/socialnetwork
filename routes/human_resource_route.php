@@ -78,9 +78,13 @@ Route::middleware('permission:' . implode('|', RolesConstants::HR_MODULE))->grou
     Route::post('/management_employees/update/{id}', [ManagementEmployees::class, 'update'])->name('management.employees.update');
 
     //Empleados Externos
-    Route::get('/management_employees/external/index', [ManagementEmployees::class, 'external_index'])->name('employees.external.index');
+    Route::get('/management_employees/external/index', [ManagementEmployees::class, 'external_index'])
+        ->middleware('permission:' . HumanResourcesPermissions::EMPLOYEES_EXTERNAL_INDEX->value)
+        ->name('employees.external.index');
     Route::post('/management_employees/external/search', [ManagementEmployees::class, 'external_search'])->name('employees.external.search');
-    Route::post('/management_employees/storeorupdate/{external_id?}', [ManagementEmployees::class, 'storeorupdate'])->name('management.external.storeorupdate');
+    Route::post('/management_employees/storeorupdate/{external_id?}', [ManagementEmployees::class, 'storeorupdate'])
+        ->middleware('permission:' . HumanResourcesPermissions::MANAGEMENT_EXTERNAL_STOREORUPDATE->value)
+        ->name('management.external.storeorupdate');
     Route::delete('/management_employees/external/delete/{id}', [ManagementEmployees::class, 'external_delete'])->name('employees.external.delete');
 
     Route::get('/management_employees/external/preview/{external_preview_id}/curriculum_vitae', [ManagementEmployees::class, 'preview_curriculum_vitae'])->name('employees.external.preview.curriculum_vitae');
@@ -135,11 +139,17 @@ Route::middleware('permission:' . implode('|', RolesConstants::HR_MODULE))->grou
     Route::put('/management_vacation/information_additional/{vacation}/update', [VacationController::class, 'update'])->name('management.vacation.information.update');
 
     //Document
-    Route::post('/documents/store', [DocumentController::class, 'create'])->name('documents.create');
-    Route::post('/documents/update/{id}', [DocumentController::class, 'update'])->name('documents.update');
+    Route::post('/documents/store', [DocumentController::class, 'create'])
+        ->middleware('permission:' . HumanResourcesPermissions::DOCUMENTS_CREATE->value)
+        ->name('documents.create');
+    Route::post('/documents/update/{id}', [DocumentController::class, 'update'])
+        ->middleware('permission:' . HumanResourcesPermissions::DOCUMENTS_UPDATE->value)
+        ->name('documents.update');
 
     //DocumentSections
-    Route::get('/document_sections', [DocumentController::class, 'showSections'])->name('documents.sections');
+    Route::get('/document_sections', [DocumentController::class, 'showSections'])
+        ->middleware('permission:' . HumanResourcesPermissions::DOCUMENTS_SECTIONS->value)
+        ->name('documents.sections');
     Route::post('/document_sections', [DocumentController::class, 'storeSection'])->name('documents.storeSection');
     Route::put('/document_sections/{section}/update', [DocumentController::class, 'updateSection'])->name('documents.updateSection');
     Route::delete('/document_sections/{section}/delete', [DocumentController::class, 'destroySection'])->name('documents.destroySection');
@@ -169,7 +179,9 @@ Route::middleware('permission:' . implode('|', RolesConstants::HR_MODULE))->grou
     Route::get('/management_employees/information_additional/details/download/{id}', [ManagementEmployees::class, 'download'])->name('management.employees.information.details.download');
     Route::post('/management_employees/index-search', [ManagementEmployees::class, 'search'])->name('management.employees.search');
 
-    Route::get('/management_employees/happy_birthday', [ManagementEmployees::class, 'happy_birthday'])->name('management.employees.happy.birthday');
+    Route::get('/management_employees/happy_birthday', [ManagementEmployees::class, 'happy_birthday'])
+        ->middleware('permission:' . HumanResourcesPermissions::MANAGEMENT_EMPLOYEES_HAPPY_BIRTHDAY->value)
+        ->name('management.employees.happy.birthday');
 
     //Nomina
     Route::get('/management_employees/payroll', [SpreadsheetsController::class, 'index'])->name('payroll.index');
@@ -210,7 +222,9 @@ Route::middleware('permission:' . implode('|', RolesConstants::HR_MODULE))->grou
     Route::get('/document_rrhh_nodoc_alarm', [DocumentSpreedSheetController::class, 'employeesNoDocumentAlarms'])->name('document.rrhh.nodoc.alarms');
 
 
-    Route::get('/documents/grupal_document', [GrupalDocumentController::class, 'index'])->name('document.grupal_documents.index');
+    Route::get('/documents/grupal_document', [GrupalDocumentController::class, 'index'])
+        ->middleware('permission:' . HumanResourcesPermissions::DOCUMENT_GRUPAL_DOCUMENTS_INDEX->value)
+        ->name('document.grupal_documents.index');
     Route::post('/documents/grupal_document/store', [GrupalDocumentController::class, 'store'])->name('document.grupal_documents.store');
     Route::post('/documents/grupal_document/update/{gd_id}', [GrupalDocumentController::class, 'update'])->name('document.grupal_documents.update');
     Route::delete('/documents/grupal_document/destroy/{gd_id}', [GrupalDocumentController::class, 'destroy'])->name('document.grupal_documents.destroy');
