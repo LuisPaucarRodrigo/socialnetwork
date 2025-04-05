@@ -388,6 +388,7 @@ Route::middleware('permission:' . implode('|', RolesConstants::PROJECT_MODULE))-
     Route::post('/projectPext/massive_update_swap', [PextController::class, 'masiveUpdateSwap'])->name('projectmanagement.pext.massiveUpdate.swap');
 
     Route::get('/projectPext/expense_dashboard/{project_id}', [PextController::class, 'expense_dashboard'])->name('projectmanagement.pext.expense_dashboard');
+    Route::post('/projectPext/expense_type_zone', [PextController::class, 'expense_type_zone'])->name('projectmanagement.pext.expenset_type_zone');
     Route::get('/projectPext/expense_dashboard_bar/{project_id}', [PextController::class, 'barChart'])->name('projectmanagement.pext.expense_dashboard_bar');
 
     //Project calendar

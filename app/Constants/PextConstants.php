@@ -58,11 +58,7 @@ class PextConstants
             'Daños de Vehículos',
             'Planilla',
             'Otros',
-            'Adicionales',
-            'Daños de Vehículos',
-            'Planilla',
             "Pago a Terceros",
-            'Otros'
         ];
     }
 

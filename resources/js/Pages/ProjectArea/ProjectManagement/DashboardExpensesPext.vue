@@ -2,8 +2,7 @@
     <AuthenticatedLayout>
         <div class="flex flex-col space-y-16">
             <BarChart :project_id="project_id" />
-            <div v-if="expenses.additional.length > 0"
-                class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
+            <div class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
                 <div class="w-full lg:w-1/2">
                     <div class="overflow-x-auto ring-1 ring-gray-200">
                         <table class="w-full whitespace-no-wrap">
@@ -29,10 +28,10 @@
                                             </p>
                                             <button @click="
                                                 prevOpenModal({
-                                                    spMod: 'static',
-                                                    expType:
+                                                    fixedOrAdditional: '0',
+                                                    expense_type:
                                                         item.expense_type,
-                                                    project_id: project.id,
+                                                    project_id: project_id,
                                                 })
                                                 " type="button" class="text-green-500 hover:text-green-300">
                                                 <InformationCircleIcon class="w-5 h-5" />
@@ -55,7 +54,7 @@
                 </div>
             </div>
 
-            <div v-if="expenses.fixed.length > 0" class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
+            <div class="flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0">
                 <div class="w-full lg:w-1/2">
                     <div class="overflow-x-auto ring-1 ring-gray-200">
                         <table class="w-full whitespace-no-wrap">
@@ -81,10 +80,10 @@
                                             </p>
                                             <button @click="
                                                 prevOpenModal({
-                                                    spMod: 'fixed',
-                                                    expType:
+                                                    fixedOrAdditional: '1',
+                                                    expense_type:
                                                         item.expense_type,
-                                                    project_id: project.id,
+                                                    project_id: project_id,
                                                 })
                                                 " type="button" class="text-green-500 hover:text-green-300">
                                                 <InformationCircleIcon class="w-5 h-5" />
@@ -107,12 +106,43 @@
                 </div>
             </div>
         </div>
+        <Modal :show="showDetailsModal" @close="closeDetailsModal">
+            <div class="p-6">
+                <table class="w-full whitespace-nowrap rounded-md shadow-sm">
+                    <thead>
+                        <tr
+                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                {{ detailsStructure.title }}
+                            </th>
+                            <th
+                                class="border-b-2 border-gray-200 bg-gray-100 px-3 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                Monto
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, i) in detailsStructure.detArray" class="text-gray-700" :key="i">
+                            <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">
+                                {{ item.zone }}
+                            </td>
+                            <td
+                                class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right tabular-nums">
+                                S/. {{ item.amount.toFixed(2) }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </Modal>
     </AuthenticatedLayout>
 </template>
 <script setup>
+import Modal from '@/Components/Modal.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import BarChart from '@/Layouts/BarChart.vue';
-// import { InformationCircleIcon } from "@heroicons/vue/24/outline";
+import { InformationCircleIcon } from "@heroicons/vue/24/outline";
 
 import { Chart, registerables } from 'chart.js/auto';
 import { onMounted, ref } from 'vue';
@@ -121,6 +151,9 @@ const { expenses, project_id } = defineProps({
     expenses: Object,
     project_id: String
 })
+
+const showDetailsModal = ref(false);
+const detailsStructure = ref({});
 
 const chartInstance2 = ref(null);
 const updateChart2 = () => {
@@ -201,12 +234,26 @@ const getRandomColor = () => {
 };
 
 onMounted(() => {
-    if (expenses.additional.length > 0) {
-        updateChart2();
-    }
-
-    if (expenses.fixed.length > 0) {
-        updateChart3();
-    }
+    updateChart2();
+    updateChart3();
 });
+
+const openDetailsModal = (details) => {
+    showDetailsModal.value = true;
+    detailsStructure.value = details;
+};
+const closeDetailsModal = () => {
+    showDetailsModal.value = false;
+    detailsStructure.value = {};
+};
+
+async function prevOpenModal(form) {
+    const url = route('projectmanagement.pext.expenset_type_zone');
+    try {
+        const response = await axios.post(url,form)
+        openDetailsModal({ title: form.expense_type, detArray: response.data });
+    } catch (error) {
+        console.error(error)
+    }
+}
 </script>
