@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Permissions\HumanResourcesPermissions;
 use App\Http\Requests\HumanResource\DocumentRegisterRequest;
 use App\Http\Requests\HumanResource\InsuranceExpDateRequest;
 use App\Models\CostLine;
@@ -10,8 +11,9 @@ use App\Models\DocumentRegister;
 use App\Models\DocumentSection;
 use App\Models\Employee;
 use App\Models\ExternalEmployee;
+use App\Policies\HumanResources\DocumentSpreedSheetPolicy;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -170,7 +172,8 @@ class DocumentSpreedSheetController extends Controller
             $emp->setRelation('document_registers', $formattedDr);
             return $emp;
         });
-        $sections = DocumentSection::with('subdivisions')->where('id', '<=', 10)->get();
+        $sectionsToSearch = app(DocumentSpreedSheetPolicy::class)->sections();
+        $sections = DocumentSection::with('subdivisions')->whereIn('id', $sectionsToSearch)->get();
         $costLines = CostLine::all();
         if ($request->isMethod('get')) {
             return Inertia::render(
@@ -253,7 +256,8 @@ class DocumentSpreedSheetController extends Controller
 
             $employee->setRelation('document_registers', $formattedDr);
         }
-        $sections = DocumentSection::with('subdivisions')->where('id', '<=', 10)->get();
+        $sectionsToSearch = app(DocumentSpreedSheetPolicy::class)->sections();
+        $sections =  DocumentSection::with('subdivisions')->whereIn('id', $sectionsToSearch)->get();
         return Inertia::render('HumanResource/DocumentSpreedSheet/EmployeeDocumentAlarms', [
             'employee' => $employee,
             'sections' => $sections,

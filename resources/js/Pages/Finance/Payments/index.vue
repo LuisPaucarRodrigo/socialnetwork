@@ -164,7 +164,7 @@
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-2 py-5 text-sm text-center">
                                         <div>
-                                            <template v-if="hasPermission('FinanceManager')">
+                                            <template >
                                                 <button v-if="!paymentDetail.state" type="button"
                                                     @click="pay_payment(paymentDetail, payment.currency)"
                                                     class="text-green-500 whitespace-no-wrap">
@@ -177,7 +177,7 @@
                                                 </button>
                                                 <p v-else class="text-green-500 whitespace-no-wrap">Pagado</p>
                                             </template>
-                                            <template v-if="hasPermission('Finance')">
+                                            <template >
                                                 <p v-if="!paymentDetail.state" class="text-red-500 whitespace-no-wrap">
                                                     Pendiente</p>
                                                 <p v-else class="text-green-500 whitespace-no-wrap">Pagado</p>

@@ -6,6 +6,7 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import { initFlowbite } from 'flowbite';
+import permission from '@/Directives/permission';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -21,17 +22,25 @@ createInertiaApp({
             }
         });
 
-         // Crear una instancia de la aplicación Vue
-         const app = createApp({
+        // Guardar role_id y permisos globalmente
+        window.appAuth = {
+            role_id: props.initialPage.props.auth?.user?.role_id || null,
+            permissions: props.initialPage.props.userPermission || []
+        };
+
+
+        const app = createApp({
             render: () => h(App, props),
             mounted() {
-                // Inicializar Flowbite aquí
                 initFlowbite();
             }
         });
 
         app.use(plugin);
         app.use(ZiggyVue, Ziggy);
+        app.directive('permission', permission.single)
+        app.directive('permission-or', permission.or)
+        app.directive('permission-and', permission.and)
         app.mount(el);
     },
     progress: {

@@ -11,7 +11,12 @@
                 <TableTitle>Email</TableTitle>
                 <TableTitle>DNI</TableTitle>
                 <TableTitle>Telefono</TableTitle>
-                <TableTitle></TableTitle>
+                <TableTitle v-permission-or="[
+                    'link_employee',
+                    'users_details',
+                    'user_edit',
+                    'user_delete',
+                ]"></TableTitle>
             </tr>
         </template>
         <template #tbody>
@@ -22,19 +27,24 @@
                 <TableRow>{{ user.email }}</TableRow>
                 <TableRow>{{ user.dni }}</TableRow>
                 <TableRow>{{ user.phone }}</TableRow>
-                <TableRow>
+                <TableRow v-permission-or="[
+                    'link_employee',
+                    'users_details',
+                    'user_edit',
+                    'user_delete',
+                ]">
                     <div class="flex space-x-3 justify-center">
-                        <button v-if="(user.platform === 'Web/Movil' || user.platform === 'Movil')
+                        <button v-permission="'link_employee'" v-if="(user.platform === 'Web/Movil' || user.platform === 'Movil')
                             && !user.employee" @click="linkEmployee(user.id)">
                             <LinkIcon class="w=6 h-6 text-green-500" />
                         </button>
-                        <Link class="text-blue-900 whitespace-no-wrap" :href="route('users.details', { id: user.id })">
+                        <Link  v-permission="'users_details'" class="text-blue-900 whitespace-no-wrap" :href="route('users.details', { id: user.id })">
                         <EyeIcon class="w-6 h-6 text-teal-500" />
                         </Link>
-                        <Link class="text-blue-900 whitespace-no-wrap" :href="route('users.edit', { id: user.id })">
+                        <Link  v-permission="'user_edit'" class="text-blue-900 whitespace-no-wrap" :href="route('users.edit', { id: user.id })">
                         <PencilSquareIcon class="w-5 h-5 text-yellow-400" />
                         </Link>
-                        <button v-if="user.id != 1" type="button" @click="confirmUserDeletion(user.id)">
+                        <button v-permission="'user_delete'" type="button" @click="confirmUserDeletion(user.id)">
                             <TrashIcon class="w-5 h-5 text-red-500" />
                         </button>
                     </div>
@@ -62,6 +72,8 @@ const { users, formSearch, platforms } = defineProps({
     formSearch: Object,
     platforms: Array,
 })
+
+
 
 const usersToDelete = defineModel('usersToDelete')
 const confirmingUserDeletion = defineModel('confirmingUserDeletion')

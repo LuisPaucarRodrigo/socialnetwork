@@ -8,7 +8,12 @@
     <div class="flex gap-4 justify-between rounded-lg">
       <div class="flex flex-col sm:flex-row gap-4 justify-between w-full">
         <div class="flex gap-4 items-center">
-          <PrimaryButton v-if="hasPermission('HumanResourceManager')" @click="openCreateDocumentModal" type="button"
+          <PrimaryButton 
+            v-permission-and="[
+              'documents_create',
+              'documents_index',
+            ]"
+          @click="openCreateDocumentModal" type="button"
             class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
             + Agregar Documento
           </PrimaryButton>
@@ -118,10 +123,10 @@
           <button @click="downloadDocument(document.id)" class="flex items-center text-blue-600 hover:underline">
             <ArrowDownIcon class="h-4 w-4 ml-1" />
           </button>
-          <button v-if="hasPermission('HumanResourceManager')" @click="openEditDocumentModal(document)" class="text-orange-200 hover:underline mr-2">
+          <button v-permission="'documents_update'" @click="openEditDocumentModal(document)" class="text-orange-200 hover:underline mr-2">
             <PencilIcon class="h-4 w-4 ml-1" />
           </button>
-          <button v-if="hasPermission('UserManager')" @click="confirmDeleteDocument(document.id)"
+          <button v-permission="'document_delete'" @click="confirmDeleteDocument(document.id)"
             class="flex items-center text-red-600 hover:underline">
             <TrashIcon class="h-4 w-4" />
           </button>
@@ -326,7 +331,6 @@ const closeModal = () => {
 };
 
 const openEditDocumentModal = (document) => {
-  console.log(document.e_employee_id)
   // Copia de los datos de la subsección existente al formulario
   editingDocument.value = JSON.parse(JSON.stringify(document));
   form.id = editingDocument.value.id;

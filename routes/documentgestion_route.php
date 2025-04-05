@@ -4,6 +4,50 @@ use App\Http\Controllers\DocumentManagement\FolderController;
 use App\Http\Controllers\DocumentGestion\ArchivesController;
 use App\Http\Controllers\DocumentManagement\LocalDriveController;
 use Illuminate\Support\Facades\Route;
+use App\Enums\Permissions\DocumentsPermissions;
+
+
+// Folders Validation
+Route::get('/document_management/folder_validation', [FolderController::class, 'folder_validation'])
+    ->middleware('permission:' . DocumentsPermissions::DOCUMENT_FOLDERS_VALIDATION->value)
+    ->name('documment.management.folders.validation');
+
+Route::post('/document_management/folder_validation/check/{folder_id}', [FolderController::class, 'folder_check'])
+    ->middleware('permission:' . DocumentsPermissions::DOCUMENT_FOLDERS_CHECK->value)
+    ->name('documment.management.folders.check');
+
+Route::delete('/document_management/folder_validation/invalidate/{folder_id}', [FolderController::class, 'folder_invalidate'])
+    ->middleware('permission:' . DocumentsPermissions::DOCUMENT_FOLDERS_INVALIDATE->value)
+    ->name('documment.management.folders.invalidate');
+
+Route::post('/document_management/folder_permissions/{folder_area_id}', [FolderController::class, 'see_dowload_permission'])
+    ->middleware('permission:' . DocumentsPermissions::DOCUMENT_FOLDERS_PERMISSION_SEE_DOWNLOAD->value)
+    ->name('documment.management.folders.permission.see_download');
+
+Route::post('/document_management/folder_permissions_create/{folder_area_id}', [FolderController::class, 'create_permission'])
+    ->middleware('permission:' . DocumentsPermissions::DOCUMENT_FOLDERS_PERMISSION_CREATE->value)
+    ->name('documment.management.folders.permission.create');
+
+Route::post('/document_management/folder_permissions_add', [FolderController::class, 'folder_permission_add'])
+    ->middleware('permission:' . DocumentsPermissions::DOCUMENT_FOLDERS_PERMISSION_ADD->value)
+    ->name('documment.management.folders.permission.add');
+
+Route::delete('/document_management/folder_permissions_delete/{folder_area_id}', [FolderController::class, 'folder_permission_remove'])
+    ->middleware('permission:' . DocumentsPermissions::DOCUMENT_FOLDERS_PERMISSION_DELETE->value)
+    ->name('documment.management.folders.permission.delete');
+
+Route::delete('document_management/folder_destroy/{folder_id}', [FolderController::class, 'folder_delete'])
+    ->middleware('permission:' . DocumentsPermissions::DOCUMENT_FOLDERS_DELETE->value)
+    ->name('document.management.folder.destroy');
+
+Route::get('/documment_management/folder_permission/{folder_id}', [FolderController::class, 'folder_permissions'])
+    ->middleware('permission:' . DocumentsPermissions::DOCUMENT_FOLDERS_PERMISSION_VIEW->value)
+    ->name('documment.management.folders.permissions');
+
+
+
+
+
 
 
 

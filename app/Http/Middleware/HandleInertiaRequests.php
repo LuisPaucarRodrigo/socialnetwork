@@ -35,26 +35,9 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request)
     {
         $user = $request->user();
-        $userModules = [];
-        $userSubmodules = [];
-        if($user) {
-            $userPermissions = $user->onePermission();
-            foreach (RolesConstants::MODULES as $module) {
-                foreach (constant("\\App\\Constants\\RolesConstants::$module") as $perm) { 
-                    if ($userPermissions->contains($perm)) {
-                        array_push($userModules, $module); break;
-                    }
-                }
-            }
-            foreach (RolesConstants::SUBMODULES as $subm) {
-                foreach (constant("\\App\\Constants\\RolesConstants::$subm") as $perm) { 
-                    if ($userPermissions->contains($perm)) {
-                        array_push($userSubmodules, $subm); break;
-                    }
-                }
-            }
-        }
-
+        $userModules = $user?->role?->modules?->where('type', 'module')->pluck('name')->toArray() ?? [];
+        $userSubmodules = $user?->role?->modules?->where('type', 'submodule')->pluck('name')->toArray() ?? [];
+        
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $user,

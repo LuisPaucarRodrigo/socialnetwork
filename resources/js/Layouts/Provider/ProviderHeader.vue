@@ -1,6 +1,6 @@
 <template>
     <div class="flex justify-between items-center gap-4">
-        <button v-if="hasPermission('PurchasingManager')" @click="add_information()" type="button"
+        <button @click="add_information()" type="button"
             class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
             + Agregar
         </button>

@@ -31,6 +31,7 @@ class PermissionMiddleware
         }
 
         $user = auth()->user();
+        if($user->role->id === 1) return $next($request);
         $permissionsArray = explode('|', $permissions);
 
         foreach ($permissionsArray as $permission) {

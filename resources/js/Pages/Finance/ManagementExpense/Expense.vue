@@ -62,7 +62,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Detalles
                             </th>
-                            <th v-if="hasPermission('FinanceManager')"
+                            <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Acciones
                             </th>
@@ -130,7 +130,7 @@
                                     <EyeIcon class="h-4 w-4 ml-1" />
                                     </Link>
                                 </td>
-                                <td v-if="hasPermission('FinanceManager')"
+                                <td
                                     class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <div v-if="expense.purchasing_requests.state == 'En progreso' && expense.state == null"
                                         class="flex space-x-3 justify-center">
