@@ -30,7 +30,7 @@ enum HumanResourcesPermissions: string
     case DOCUMENTS_UPDATE = 'documents_update';
     case DOCUMENTS_SECTIONS = 'documents_sections';
     case DOCUMENT_GRUPAL_DOCUMENTS_INDEX = 'document_grupal_documents_index';
-
+    case DOCUMENT_RRHH_STATUS_STORE = 'document_rrhh_status_store';
 
     case MANAGEMENT_EXTERNAL_STOREORUPDATE = 'management_external_storeorupdate';
     case EMPLOYEES_EXTERNAL_INDEX = 'employees_external_index';

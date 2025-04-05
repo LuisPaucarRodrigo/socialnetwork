@@ -184,7 +184,10 @@
                         }}
                       </p>
                       <div class="w-1/4 justify-end flex gap-3">
-                        <button type="button" @click="openDocModal(
+                        <button 
+                          v-permission="'document_rrhh_status_store'" 
+                          type="button" 
+                          @click="openDocModal(
                           {
                             emp_name: emp.name + ' ' + emp.lastname,
                             doc_name: sub.name,
@@ -288,7 +291,10 @@
                         }}
                       </p>
                       <div class="w-1/4 justify-end flex gap-3">
-                        <button type="button" @click="openDocModal(
+                        <button 
+                          v-permission="'document_rrhh_status_store'" 
+                          type="button" 
+                          @click="openDocModal(
                           {
                             emp_name: emp.name + ' ' + emp.lastname,
                             doc_name: sub.name,
