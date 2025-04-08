@@ -21,9 +21,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import { Toaster } from 'vue-sonner';
-import UsersTable from '@/Layouts/Users/UsersTable.vue';
-import DeleteModal from '@/Layouts/Users/DeleteModal.vue';
-import TableHeader from '@/Layouts/Users/TableHeader.vue';
+import UsersTable from './components/UsersTable.vue';
+import DeleteModal from './components/DeleteModal.vue';
+import TableHeader from './components/TableHeader.vue';
 
 const { user } = defineProps({
     user: Object
