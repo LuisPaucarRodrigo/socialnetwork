@@ -39,7 +39,7 @@ const rols = ref({
 
 function showModal(id) {
     requestRol(id)
-    toggleModal()
+    
 }
 
 function toggleModal() {
@@ -51,6 +51,7 @@ async function requestRol(id) {
     try {
         let response = await axios.get(url);
         rols.value = response.data
+        toggleModal()
     } catch (error) {
         console.error(error)
     }
