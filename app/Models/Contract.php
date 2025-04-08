@@ -15,7 +15,6 @@ class Contract extends Model
         'state_travel_expenses',
         'type_contract',
         'amount_travel_expenses',
-
         'basic_salary',
         'nro_cuenta',
         'life_ley',

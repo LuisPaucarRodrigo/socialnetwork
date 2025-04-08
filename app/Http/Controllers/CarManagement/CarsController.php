@@ -544,9 +544,18 @@ class CarsController extends Controller
 
     public function checkListAlarms()
     {
-        $checkList = Car::with(['checklist' => function ($query) {
+        $user = Auth::user();
+        $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
+
+        $checkList = !$userHasCarManagerPermission
+            ? Car::where('user_id', $user->id)
+            : Car::query();
+
+        $checkList = $checkList->with(['checklist' => function ($query) {
             $query->orderBy('created_at', 'desc');
-        }])->whereDoesntHave('checklist')->orWhereHas('checklist')->get();
+        }])->whereDoesntHave('checklist')
+            ->orWhereHas('checklist')
+            ->get();
 
         $checkList = $checkList->filter(function ($car) {
             $lastChecklist = $car->checklist->first();

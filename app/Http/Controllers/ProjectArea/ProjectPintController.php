@@ -24,7 +24,7 @@ class ProjectPintController extends Controller
 {
     public function pint_create_project($type)
     {
-        $ids = [3, 4, 5, 6, 7];
+        $ids = [3, 4, 5, 6, 7, 11];
         $contacts_cicsa = Customers_contact::where('customer_id', 1)->get();
         $cost_centers = CostCenter::whereIn('id', [1, 2])->get();
         $services = Service::whereIn('id', $ids)->get();
