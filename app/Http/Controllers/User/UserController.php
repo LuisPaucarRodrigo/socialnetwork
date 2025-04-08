@@ -54,7 +54,7 @@ class UserController extends Controller
     {
         return Inertia::render('Users/UserEdit', [
             'users' => User::with('role', 'area')->find($id),
-            'rols' => Role::all(),
+            'rols' => Role::where('id', '!=', 1)->get(),
             'areas' => Area::all()
         ]);
     }

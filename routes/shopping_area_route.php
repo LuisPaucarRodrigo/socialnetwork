@@ -1,13 +1,54 @@
 <?php
 
 use App\Constants\RolesConstants;
-use App\Http\Controllers\ProjectArea\ProjectManagementController;
 use App\Http\Controllers\ShoppingArea\ProviderController;
 use App\Http\Controllers\ShoppingArea\PurchaseOrdersController;
 use App\Http\Controllers\ShoppingArea\PurchaseRequestController;
 use Illuminate\Support\Facades\Route;
+use App\Enums\Permissions\PurchasingPermissions;
 
-Route::middleware('permission:'.implode('|', RolesConstants::PURCHASING_MODULE))->group(function () {
+//new permission routes
+
+Route::delete('/shopping_area/purchasesrequest/destroy/{id}', [PurchaseRequestController::class, 'destroy'])
+    ->middleware('permission:' . PurchasingPermissions::PURCHASE_REQUEST_DELETE->value)
+    ->name('purchasesrequest.destroy');
+// Purchasing Request Products
+Route::post('/purchasing_request_product_store', [PurchaseRequestController::class, 'purchasing_request_product_store'])
+    ->middleware('permission:' . PurchasingPermissions::PURCHASING_REQUEST_PRODUCT_STORE->value)
+    ->name('purchasing_request_product.store');
+
+Route::delete('/purchasing_request_product_delete/{purchasing_request_product_id}', [PurchaseRequestController::class, 'purchasing_request_product_delete'])
+    ->middleware('permission:' . PurchasingPermissions::PURCHASING_REQUEST_PRODUCT_DELETE->value)
+    ->name('purchasing_request_product.delete');
+
+// Providers
+Route::get('/shopping_area/providers/edit/{id}', [ProviderController::class, 'edit'])
+    ->middleware('permission:' . PurchasingPermissions::PROVIDERS_EDIT->value)
+    ->name('providersmanagement.edit');
+
+Route::post('/shopping_area/providers/update/{id}', [ProviderController::class, 'update'])
+    ->middleware('permission:' . PurchasingPermissions::PROVIDERS_UPDATE->value)
+    ->name('providersmanagement.update');
+
+Route::delete('/shopping_area/providers/destroy/{id}', [ProviderController::class, 'destroy'])
+    ->middleware('permission:' . PurchasingPermissions::PROVIDERS_DESTROY->value)
+    ->name('providersmanagement.destroy');
+
+// Purchase Request
+Route::get('/shopping_area/purchasesrequest/edit/{id}/{project_id?}', [PurchaseRequestController::class, 'edit'])
+    ->middleware('permission:' . PurchasingPermissions::PURCHASESREQUEST_EDIT->value)
+    ->name('purchasesrequest.edit');
+
+Route::put('/shopping_area/purchasesrequest/update/{id}', [PurchaseRequestController::class, 'update'])
+    ->middleware('permission:' . PurchasingPermissions::PURCHASESREQUEST_UPDATE->value)
+    ->name('purchasesrequest.update');
+
+
+
+
+
+
+Route::middleware('permission:' . implode('|', RolesConstants::PURCHASING_MODULE))->group(function () {
 
     //Providers
     Route::get('/shopping_area/providers/create', [ProviderController::class, 'create'])->name('providersmanagement.create');
@@ -31,12 +72,12 @@ Route::middleware('permission:'.implode('|', RolesConstants::PURCHASING_MODULE))
     //Purchase udpate date preproject
     Route::get('/shopping_area/purchasesrequest/purchase_quote/details/{id}', [PurchaseRequestController::class, 'purchase_quote_complete_details'])->name('purchase.quote.details.complete');
     Route::post('/shopping_area/project/purchases_request/update/quotedeadline', [PurchaseRequestController::class, 'project_purchases_request_update_quote_deadline'])->name('purchase.update_quotedeadline');
-    
+
     //Orders
     Route::post('/shopping_area/purchaseorders/state', [PurchaseOrdersController::class, 'state'])->name('purchaseorders.state');
 });
 
-Route::middleware('permission:'.implode('|', RolesConstants::PURCHASING_MODULE))->group(function () {
+Route::middleware('permission:' . implode('|', RolesConstants::PURCHASING_MODULE))->group(function () {
 
     //Providers
     Route::any('/shopping_area/providers', [ProviderController::class, 'index'])->name('providersmanagement.index');

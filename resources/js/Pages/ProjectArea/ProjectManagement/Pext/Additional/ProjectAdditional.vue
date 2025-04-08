@@ -129,7 +129,7 @@
                                             <td
                                                 class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                                                 <div class="flex justify-center">
-                                                    <input required type="number" min="0"
+                                                    <input required type="number" step="0.01" min="0"
                                                         v-model="formQuote.project_quote_valuations[index]['days']"
                                                         autocomplete="off"
                                                         class="w-20 block text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
@@ -156,7 +156,7 @@
                                             <td
                                                 class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                                                 {{
-                                                    item.days * item.metrado * item.unit_value }}</td>
+                                                    (item.days * item.metrado * item.unit_value).toFixed(2) }}</td>
                                             <td
                                                 class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                                                 <button @click="deleteValoration(index)">
@@ -200,7 +200,7 @@
                     <div class="">
                         <InputLabel for="days">Dias</InputLabel>
                         <div class="mt-2">
-                            <input type="number" v-model="valuation.days" autocomplete="off" id="days"
+                            <input type="number" step="0.1" min="0" v-model="valuation.days" autocomplete="off" id="days"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                         </div>
                     </div>

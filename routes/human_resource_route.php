@@ -10,19 +10,81 @@ use App\Http\Controllers\HumanResource\ManagementEmployees;
 use App\Http\Controllers\HumanResource\ScheduleController;
 use App\Http\Controllers\HumanResource\SpreadsheetsController;
 use App\Http\Controllers\HumanResource\VacationController;
-use Illuminate\Routing\Route as RoutingRoute;
 use Illuminate\Support\Facades\Route;
+use App\Enums\Permissions\HumanResourcesPermissions;
 
-Route::middleware('permission:'.implode('|', RolesConstants::HR_MODULE))->group(function () {
-    Route::get('/management_employees/information_additional', [ManagementEmployees::class, 'create'])->name('management.employees.create');
+//new permission routes
+
+// Human Resource
+Route::delete('/management_employees/destroy/{id}', [ManagementEmployees::class, 'destroy'])
+    ->middleware('permission:' . HumanResourcesPermissions::MANAGEMENT_EMPLOYEES_DELETE->value)
+    ->name('management.employees.destroy');
+
+Route::put('/management_employees/fired/{id}', [ManagementEmployees::class, 'fired'])
+    ->middleware('permission:' . HumanResourcesPermissions::MANAGEMENT_EMPLOYEES_FIRED->value)
+    ->name('management.employees.fired');
+
+Route::put('/management_employees/{id}/reentry', [ManagementEmployees::class, 'reentry'])
+    ->middleware('permission:' . HumanResourcesPermissions::MANAGEMENT_EMPLOYEES_REENTRY->value)
+    ->name('management.employees.reentry');
+
+// Formation Development Program
+Route::delete('/management_employees/formation_development/delete/{id}', [FormationDevelopment::class, 'formation_programs_destroy'])
+    ->middleware('permission:' . HumanResourcesPermissions::FORMATION_DEVELOPMENT_DELETE->value)
+    ->name('management.employees.formation_development.delete');
+
+Route::delete('/management_employees/formation_development/delete-employee/{efp_id}', [FormationDevelopment::class, 'formation_programs_destroy_employee'])
+    ->middleware('permission:' . HumanResourcesPermissions::FORMATION_DEVELOPMENT_EMPLOYEE_DELETE->value)
+    ->name('management.employees.formation_development.employee.delete');
+
+// Training
+Route::delete('/management_employees/formation_development/trainings/delete/{id}', [FormationDevelopment::class, 'trainings_destroy'])
+    ->middleware('permission:' . HumanResourcesPermissions::TRAININGS_DELETE->value)
+    ->name('management.employees.formation_development.trainings.destroy');
+
+// Vacation
+Route::get('/management_vacation/information_additional/{vacation}/review', [VacationController::class, 'review'])
+    ->middleware('permission:' . HumanResourcesPermissions::MANAGEMENT_VACATION_REVIEW->value)
+    ->name('management.vacation.information.review');
+
+Route::post('/management_vacation/information_additional/reviewed/decline', [VacationController::class, 'reviewed_and_decline'])
+    ->middleware('permission:' . HumanResourcesPermissions::MANAGEMENT_VACATION_REVIEW_DECLINE->value)
+    ->name('management.vacation.information.reviewed_decline');
+
+Route::delete('/management_vacation/information_additional/{vacation}/delete', [VacationController::class, 'destroy'])
+    ->middleware('permission:' . HumanResourcesPermissions::MANAGEMENT_VACATION_DELETE->value)
+    ->name('management.vacation.information.destroy');
+
+
+
+
+// Document
+Route::delete('/documents/{id}/delete', [DocumentController::class, 'destroy'])
+    ->middleware('permission:' . HumanResourcesPermissions::DOCUMENT_DELETE->value)
+    ->name('documents.destroy');
+
+
+
+
+
+Route::middleware('permission:' . implode('|', RolesConstants::HR_MODULE))->group(function () {
+    Route::get('/management_employees/information_additional', [ManagementEmployees::class, 'create'])
+        ->middleware('permission:' . HumanResourcesPermissions::MANAGEMENT_EMPLOYEES_CREATE->value)
+        ->name('management.employees.create');
     Route::post('/management_employees/information_additional/create', [ManagementEmployees::class, 'store'])->name('management.employees.store');
-    Route::get('/management_employees/edit/{id}', [ManagementEmployees::class, 'edit'])->name('management.employees.edit');
+    Route::get('/management_employees/edit/{id}', [ManagementEmployees::class, 'edit'])
+        ->middleware('permission:' . HumanResourcesPermissions::MANAGEMENT_EMPLOYEES_EDIT->value)
+        ->name('management.employees.edit');
     Route::post('/management_employees/update/{id}', [ManagementEmployees::class, 'update'])->name('management.employees.update');
 
     //Empleados Externos
-    Route::get('/management_employees/external/index', [ManagementEmployees::class, 'external_index'])->name('employees.external.index');
+    Route::get('/management_employees/external/index', [ManagementEmployees::class, 'external_index'])
+        ->middleware('permission:' . HumanResourcesPermissions::EMPLOYEES_EXTERNAL_INDEX->value)
+        ->name('employees.external.index');
     Route::post('/management_employees/external/search', [ManagementEmployees::class, 'external_search'])->name('employees.external.search');
-    Route::post('/management_employees/storeorupdate/{external_id?}', [ManagementEmployees::class, 'storeorupdate'])->name('management.external.storeorupdate');
+    Route::post('/management_employees/storeorupdate/{external_id?}', [ManagementEmployees::class, 'storeorupdate'])
+        ->middleware('permission:' . HumanResourcesPermissions::MANAGEMENT_EXTERNAL_STOREORUPDATE->value)
+        ->name('management.external.storeorupdate');
     Route::delete('/management_employees/external/delete/{id}', [ManagementEmployees::class, 'external_delete'])->name('employees.external.delete');
 
     Route::get('/management_employees/external/preview/{external_preview_id}/curriculum_vitae', [ManagementEmployees::class, 'preview_curriculum_vitae'])->name('employees.external.preview.curriculum_vitae');
@@ -77,11 +139,17 @@ Route::middleware('permission:'.implode('|', RolesConstants::HR_MODULE))->group(
     Route::put('/management_vacation/information_additional/{vacation}/update', [VacationController::class, 'update'])->name('management.vacation.information.update');
 
     //Document
-    Route::post('/documents/store', [DocumentController::class, 'create'])->name('documents.create');
-    Route::post('/documents/update/{id}', [DocumentController::class, 'update'])->name('documents.update');
+    Route::post('/documents/store', [DocumentController::class, 'create'])
+        ->middleware('permission:' . HumanResourcesPermissions::DOCUMENTS_CREATE->value)
+        ->name('documents.create');
+    Route::post('/documents/update/{id}', [DocumentController::class, 'update'])
+        ->middleware('permission:' . HumanResourcesPermissions::DOCUMENTS_UPDATE->value)
+        ->name('documents.update');
 
     //DocumentSections
-    Route::get('/document_sections', [DocumentController::class, 'showSections'])->name('documents.sections');
+    Route::get('/document_sections', [DocumentController::class, 'showSections'])
+        ->middleware('permission:' . HumanResourcesPermissions::DOCUMENTS_SECTIONS->value)
+        ->name('documents.sections');
     Route::post('/document_sections', [DocumentController::class, 'storeSection'])->name('documents.storeSection');
     Route::put('/document_sections/{section}/update', [DocumentController::class, 'updateSection'])->name('documents.updateSection');
     Route::delete('/document_sections/{section}/delete', [DocumentController::class, 'destroySection'])->name('documents.destroySection');
@@ -96,18 +164,26 @@ Route::middleware('permission:'.implode('|', RolesConstants::HR_MODULE))->group(
     Route::get('/document_sections/{section}/subdivisions/{subdivisionId}/zipdownload', [DocumentController::class, 'downloadSubdivisionDocumentsZip'])->name('documents.zipSubdivision');
     //Route::delete('/document_sections/{section}/subdivisions/{subdivisionId}/zipdelete', [DocumentController::class, 'deleteZip'])->name('documents.deleteZipSubdivision');
 
-    Route::post('/document_rrhh_status/store/{dr_id?}', [DocumentSpreedSheetController::class, 'store'])->name('document.rrhh.status.store');
+    Route::post('/document_rrhh_status/store/{dr_id?}', [DocumentSpreedSheetController::class, 'store'])
+        ->middleware('permission:' . HumanResourcesPermissions::DOCUMENT_RRHH_STATUS_STORE->value)
+        ->name('document.rrhh.status.store');
     Route::delete('/document_rrhh_status/destroy/{dr_id}', [DocumentSpreedSheetController::class, 'destroy'])->name('document.rrhh.status.destroy');
     Route::post('/document_rrhh_status/insurance_exp_date', [DocumentSpreedSheetController::class, 'insurance_exp_date'])->name('document.rrhh.status.in_expdate');
 });
 
-Route::middleware('permission:'.implode('|', RolesConstants::HR_MODULE))->group(function () {
-    Route::get('/management_employees/index', [ManagementEmployees::class, 'index'])->name('management.employees');
-    Route::get('/management_employees/information_additional/details/{id}', [ManagementEmployees::class, 'details'])->name('management.employees.show');
+Route::middleware('permission:' . implode('|', RolesConstants::HR_MODULE))->group(function () {
+    Route::get('/management_employees/index', [ManagementEmployees::class, 'index'])
+        ->middleware('permission:' . HumanResourcesPermissions::MANAGEMENT_EMPLOYEES->value)
+        ->name('management.employees');
+    Route::get('/management_employees/information_additional/details/{id}', [ManagementEmployees::class, 'details'])
+        ->middleware('permission:' . HumanResourcesPermissions::MANAGEMENT_EMPLOYEES_SHOW->value)
+        ->name('management.employees.show');
     Route::get('/management_employees/information_additional/details/download/{id}', [ManagementEmployees::class, 'download'])->name('management.employees.information.details.download');
     Route::post('/management_employees/index-search', [ManagementEmployees::class, 'search'])->name('management.employees.search');
 
-    Route::get('/management_employees/happy_birthday', [ManagementEmployees::class, 'happy_birthday'])->name('management.employees.happy.birthday');
+    Route::get('/management_employees/happy_birthday', [ManagementEmployees::class, 'happy_birthday'])
+        ->middleware('permission:' . HumanResourcesPermissions::MANAGEMENT_EMPLOYEES_HAPPY_BIRTHDAY->value)
+        ->name('management.employees.happy.birthday');
 
     //Nomina
     Route::get('/management_employees/payroll', [SpreadsheetsController::class, 'index'])->name('payroll.index');
@@ -148,7 +224,9 @@ Route::middleware('permission:'.implode('|', RolesConstants::HR_MODULE))->group(
     Route::get('/document_rrhh_nodoc_alarm', [DocumentSpreedSheetController::class, 'employeesNoDocumentAlarms'])->name('document.rrhh.nodoc.alarms');
 
 
-    Route::get('/documents/grupal_document', [GrupalDocumentController::class, 'index'])->name('document.grupal_documents.index');
+    Route::get('/documents/grupal_document', [GrupalDocumentController::class, 'index'])
+        ->middleware('permission:' . HumanResourcesPermissions::DOCUMENT_GRUPAL_DOCUMENTS_INDEX->value)
+        ->name('document.grupal_documents.index');
     Route::post('/documents/grupal_document/store', [GrupalDocumentController::class, 'store'])->name('document.grupal_documents.store');
     Route::post('/documents/grupal_document/update/{gd_id}', [GrupalDocumentController::class, 'update'])->name('document.grupal_documents.update');
     Route::delete('/documents/grupal_document/destroy/{gd_id}', [GrupalDocumentController::class, 'destroy'])->name('document.grupal_documents.destroy');

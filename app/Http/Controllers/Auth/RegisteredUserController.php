@@ -19,7 +19,7 @@ class RegisteredUserController extends Controller
     public function create(): Response
     {
         return Inertia::render('Auth/Register',[
-            'rols' => Role::all(),
+            'rols' => Role::where('id', '!=', 1)->get(),
             'areas' => Area::all()
         ]);
     }

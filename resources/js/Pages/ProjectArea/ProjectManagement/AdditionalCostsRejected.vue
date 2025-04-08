@@ -71,7 +71,6 @@
                             Descripción
                         </th>
                         <th v-if="
-                            auth.user.role_id === 1 &&
                             project_id.status === null
                         "
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
@@ -133,7 +132,6 @@
                             </p>
                         </td>
                         <td v-if="
-                            auth.user.role_id === 1 &&
                             project_id.status === null
                         " class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                             <div class="flex items-center gap-3 w-full">
@@ -194,7 +192,6 @@
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
                         <td v-if="
-                            auth.user.role_id === 1 &&
                             project_id.status === null
                         " class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <div class="flex items-center"></div>

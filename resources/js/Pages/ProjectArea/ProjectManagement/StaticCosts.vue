@@ -183,10 +183,7 @@
                             <TableHeaderFilter labelClass="text-[11px]" label="Estado" :options="stateTypes"
                                 v-model="filterForm.selectedStateTypes" width="w-48" />
                         </th>
-                        <th v-if="
-                            auth.user.role_id === 1 &&
-                            project_id.status === null
-                        "
+                        <th v-if="project_id.status === null"
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Acciones
                         </th>
@@ -276,10 +273,8 @@
                             </div>
                         </td>
                         
-                        <td v-if="
-                            auth.user.role_id === 1 &&
-                            project_id.status === null
-                        " class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
+                        <td v-if="project_id.status === null" 
+                            class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <div class="flex items-center">
                                 <button @click="openEditAdditionalModal(item)"
                                     class="text-amber-600 hover:underline mr-2">
@@ -318,10 +313,7 @@
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
-                        <td v-if="
-                            auth.user.role_id === 1 &&
-                            project_id.status === null
-                        " class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <td v-if="project_id.status === null" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <div class="flex items-center"></div>
                         </td>
                     </tr>

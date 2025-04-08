@@ -9,8 +9,11 @@
         <div class="min-w-full">
             <div class="mt-6 sm:flex sm:gap-4 sm:justify-between">
                 <div class="flex items-center justify-between gap-x-3 w-full">
-                    <div v-if="hasPermission('HumanResourceManager')" class="hidden sm:flex sm:items-center space-x-4">
-                        <PrimaryButton @click="modal_employees_external()" type="button">
+                    <div  class="hidden sm:flex sm:items-center space-x-4">
+                        <PrimaryButton v-permission-and="[
+                            'management_external_storeorupdate',
+                            'employees_external_index',
+                        ]" @click="modal_employees_external()" type="button">
                             + Agregar
                         </PrimaryButton>
                     </div>
@@ -34,10 +37,10 @@
                         <TableTitle>Dirección</TableTitle>
                         <TableTitle>Correo</TableTitle>
                         <TableTitle>Correo Empresarial</TableTitle>
-                        <TableTitle>Salario</TableTitle>
-                        <TableTitle>Sctr</TableTitle>
-                        <TableTitle>Curriculum</TableTitle>
-                        <TableTitle></TableTitle>
+                        <TableTitle v-permission="'ee_salary'">Salario</TableTitle>
+                        <TableTitle v-permission="'ee_sctr'">Sctr</TableTitle>
+                        <TableTitle v-permission="'ee_curriculum'">Curriculum</TableTitle>
+                        <TableTitle v-permission="'ee_actions'"></TableTitle>
                     </tr>
                 </template>
                 <template #tbody>
@@ -54,15 +57,15 @@
                         <TableRow :width="'w-[250px]'">{{ employee.address }}</TableRow>
                         <TableRow>{{ employee.email }}</TableRow>
                         <TableRow>{{ employee.email_company }}</TableRow>
-                        <TableRow>{{ employee.salary }}</TableRow>
-                        <TableRow>{{ employee.sctr }}</TableRow>
-                        <TableRow>
+                        <TableRow v-permission="'ee_salary'">{{ employee.salary }}</TableRow>
+                        <TableRow v-permission="'ee_sctr'">{{ employee.sctr }}</TableRow>
+                        <TableRow v-permission="'ee_curriculum'">
                             <button v-if="employee.curriculum_vitae" @click="handlerPreview(employee.id)">
                                 <EyeIcon class="w-4 h-4 text-teal-600" />
                             </button>
                             <span v-else>-</span>
                         </TableRow>
-                        <TableRow>
+                        <TableRow v-permission="'ee_actions'">
                             <div class="flex space-x-3 justify-center">
                                 <button v-if="hasPermission('HumanResourceManager')" type="button"
                                     @click="modal_employees_external(employee)">

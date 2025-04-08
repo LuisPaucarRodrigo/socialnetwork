@@ -2,7 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Permissions\DocumentsPermissions;
+use App\Enums\Permissions\HumanResourcesPermissions;
+use App\Enums\Permissions\InventoryPermissions;
+use App\Enums\Permissions\ProjectPermissions;
+use App\Enums\Permissions\PurchasingPermissions;
+use App\Enums\Permissions\UserRolePermissions;
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Permission;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,7 +24,26 @@ use Inertia\Response;
 class ProfileController extends Controller
 {
     public function allFine(){
-        return response()->json('siuuu');
+        foreach (DocumentsPermissions::cases() as $status) {
+            Permission::create(['name' => $status->value]);
+        }
+        foreach (HumanResourcesPermissions::cases() as $status) {
+            Permission::create(['name' => $status->value]);
+        }
+        foreach (InventoryPermissions::cases() as $status) {
+            Permission::create(['name' => $status->value]);
+        }
+        foreach (ProjectPermissions::cases() as $status) {
+            Permission::create(['name' => $status->value]);
+        }
+        foreach (PurchasingPermissions::cases() as $status) {
+            Permission::create(['name' => $status->value]);
+        }
+        foreach (UserRolePermissions::cases() as $status) {
+            Permission::create(['name' => $status->value]);
+        }
+        
+        return response()->json('siuu');
     }
 
     /**
