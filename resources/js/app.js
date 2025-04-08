@@ -25,7 +25,7 @@ createInertiaApp({
         // Guardar role_id y permisos globalmente
         window.appAuth = {
             role_id: props.initialPage.props.auth?.user?.role_id || null,
-            permissions: props.initialPage.props.userPermission || []
+            permissions: props.initialPage.props.userPermissions || []
         };
 
 
