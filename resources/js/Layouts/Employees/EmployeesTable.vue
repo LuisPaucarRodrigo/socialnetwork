@@ -19,7 +19,6 @@
                     'management_employees_edit',
                     'management_employees_reentry',
                     'management_employees',
-                    'management_employees_reentry',
                 ]"></TableTitle>
             </tr>
         </template>
@@ -40,7 +39,7 @@
                     'management_employees_edit',
                     'management_employees_reentry',
                     'management_employees',
-                    'management_employees_reentry',
+                    'management_employees_fired',
                 ]"
                 class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
                     <div v-if="employee.contract.fired_date == null" class="flex space-x-3 justify-center">
@@ -98,6 +97,7 @@ const { form, employees, costLine, userPermission, confirmFired, employee_fired_
     confirmFired: Function,
     employee_fired_date: Function
 })
+
 
 const hasPermission = (permission) => {
     return userPermission.includes(permission);
