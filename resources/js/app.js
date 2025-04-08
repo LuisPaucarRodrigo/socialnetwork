@@ -7,6 +7,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import { initFlowbite } from 'flowbite';
 import permission from '@/Directives/permission';
+import { appAuth } from '@/Store/auth';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -23,10 +24,7 @@ createInertiaApp({
         });
 
         // Guardar role_id y permisos globalmente
-        window.appAuth = {
-            role_id: props.initialPage.props.auth?.user?.role_id || null,
-            permissions: props.initialPage.props.userPermissions || []
-        };
+        window.appAuth = appAuth; // Para mantener compatibilidad con tu middleware
 
 
         const app = createApp({
