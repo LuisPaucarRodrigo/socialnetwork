@@ -32,9 +32,9 @@
                                     <InputError :message="form.errors.cost_center_id" />
                                 </div>
                             </div>
-                            
 
-                            
+
+
 
                             <div>
                                 <InputLabel for="customer" class="font-medium leading-6 text-gray-900">
@@ -54,8 +54,7 @@
                                 </InputLabel>
                                 <div class="mt-2">
                                     <input @input="handleProductCPE($event.target.value)" type="number"
-                                        v-model="form.cpe" id="cpe"
-                                        required
+                                        v-model="form.cpe" id="cpe" required
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.cpe" />
                                 </div>
@@ -66,7 +65,7 @@
                                     Contactos de CICSA
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <div v-for="( item, i ) in form.contacts " :key="i" class="">
+                                    <div v-for="(item, i) in form.contacts" :key="i" class="">
                                         <div
                                             class="border-b col-span-8 border-gray-900/10 grid grid-cols-8 items-center my-2">
                                             <p class=" text-sm col-span-7 line-clamp-2">
@@ -128,9 +127,9 @@
                                         TOTAL
                                     </InputLabel>
                                     <p class="font-medium text-base tracking-wider mr-8 text-indigo-900">
-                                        S/. {{ form.services.reduce((a, item) => a + parseFloat(item.rent_price ?
+                                        S/. {{form.services.reduce((a, item) => a + parseFloat(item.rent_price ?
                                             item.rent_price :
-                                            0), 0) }}
+                                            0), 0)}}
                                     </p>
                                 </div>
                             </div>
@@ -139,7 +138,7 @@
                                     Empleados
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <div v-for="( item, i ) in form.employees " :key="i" class="">
+                                    <div v-for="(item, i) in form.employees" :key="i" class="">
                                         <div
                                             class="border-b col-span-8 border-gray-900/10 grid grid-cols-8 items-center my-2">
                                             <p class=" text-sm col-span-7 line-clamp-2 whitespace-nowrap">
@@ -160,7 +159,7 @@
                                 </InputLabel>
                                 <div class="mt-2">
                                     <div v-if="form.cpe !== '' && productsCPE.length > 0"
-                                        v-for="( item, i ) in productsCPE " :key="i" class="">
+                                        v-for="(item, i) in productsCPE" :key="i" class="">
                                         <div
                                             class="border-b col-span-8 border-gray-900/10 grid grid-cols-8 items-center my-2">
                                             <p class=" text-sm col-span-7 line-clamp-2 whitespace-nowrap">
@@ -280,22 +279,22 @@ const form = useForm({
     ...initial_state
 });
 
-watch(()=>form.cost_center_id, (newVal)=>{
+watch(() => form.cost_center_id, (newVal) => {
     if (newVal == 1) {
         form.services = services.map(item => {
-        item.original_price = item.rent_price
-        if ([3, 4, 5, 6].includes(item.id)) {
-            item.profit_margin = (((21300 / item.rent_price) - 1) * 100).toFixed(5)
-            item.rent_price = 21300
-            item.days = 1
-        } else if ([7].includes(item.id)) {
-            item.profit_margin = (((22300 / item.rent_price) - 1) * 100).toFixed(5)
-            item.rent_price = 44600
-            item.days = 2
-        }
-        return item
-    })
-    } 
+            item.original_price = item.rent_price
+            if ([3, 4, 5, 6].includes(item.id)) {
+                item.profit_margin = (((21300 / item.rent_price) - 1) * 100).toFixed(5)
+                item.rent_price = 21300
+                item.days = 1
+            } else if ([7].includes(item.id)) {
+                item.profit_margin = (((22300 / item.rent_price) - 1) * 100).toFixed(5)
+                item.rent_price = 44600
+                item.days = 2
+            }
+            return item
+        })
+    }
     if (newVal == 2) {
         form.services = []
     }
@@ -311,7 +310,7 @@ watch(() => form.cost_center_id, () => {
 
 const submit = () => {
     let url = route('project.auto_store.pint')
-    
+
     form.post(url, {
         onSuccess: () => {
             showModal.value = true

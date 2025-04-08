@@ -112,8 +112,7 @@
                         <div class="sm:col-span-2">
                             <InputLabel for="nro_cuenta">Nro de Cuenta</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.nro_cuenta" id="nro_cuenta" autocomplete="off"
-                                    maxlength="9" />
+                                <TextInput type="text" v-model="form.nro_cuenta" id="nro_cuenta" autocomplete="off" />
                                 <InputError :message="form.errors.nro_cuenta" />
                             </div>
                         </div>

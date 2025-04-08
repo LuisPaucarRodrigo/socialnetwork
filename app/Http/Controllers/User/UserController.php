@@ -16,8 +16,8 @@ class UserController extends Controller
 {
     public function index_user()
     {
-        return Inertia::render('Users/Index', [
-            'user' => User::with(['role','employee:id,user_id'])->paginate(20)
+        return Inertia::render('Users/Index/Index', [
+            'user' => User::with(['role', 'employee:id,user_id'])->paginate(20)
         ]);
     }
 
@@ -81,6 +81,8 @@ class UserController extends Controller
 
     public function details($id)
     {
+        // $user = User::with('role', 'area')->find($id);
+        // return response()->json($user, 200);
         return Inertia::render('Users/UserDetails', [
             'users' => User::with('role', 'area')->find($id)
         ]);

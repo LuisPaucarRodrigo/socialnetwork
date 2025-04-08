@@ -20,7 +20,7 @@ class ManagementRolsController extends Controller
     }
 
     public function store(CreateRolRequest $request)
-    {   
+    {
         $validateData = $request->validated();
         $role = Role::create([
             'name' => $validateData['name'],
@@ -29,8 +29,8 @@ class ManagementRolsController extends Controller
         $role->permissions()->attach($validateData['permission']);
     }
 
-    public function update(CreateRolRequest $request,$rol_id)
-    {   
+    public function update(CreateRolRequest $request, $rol_id)
+    {
         $validateData = $request->validated();
         $role = Role::find($rol_id);
         $role->update([
@@ -49,6 +49,7 @@ class ManagementRolsController extends Controller
     public function details($id)
     {
         $role = Role::where('id', '!=', 1)->with('permissions')->find($id);
-        return Inertia::render('Rols/RolDetails', ['rols' => $role]);
+        return response()->json($role, 200);
+        // return Inertia::render('Rols/RolDetails', ['rols' => $role]);
     }
 }
