@@ -243,7 +243,7 @@ class DocumentController extends Controller
                     'subdivision_id' => $docItem->subdivision_id,
                     'document_id' => $docItem->id,
                     'employee_id' => $docItem->employee_id,
-                    'e_employee_id' => $docItem->exp_de_employee_idate,
+                    'e_employee_id' => $docItem->e_employee_id,
                     'exp_date' => $docItem->exp_date,
                     'state' => 'Completado',
                 ]);
@@ -310,7 +310,7 @@ class DocumentController extends Controller
                 'subdivision_id' => $docItem->subdivision_id,
                 'document_id' => $docItem->id,
                 'employee_id' => $docItem->employee_id,
-                'e_employee_id' => $docItem->exp_de_employee_idate,
+                'e_employee_id' => $docItem->e_employee_id,
                 'exp_date' => $docItem->exp_date,
                 'state' => 'Completado',
             ]);
@@ -388,6 +388,8 @@ class DocumentController extends Controller
             $docReg->delete();
         }
         $id->delete();
+
+        
         // } else {
         //     dd("El archivo no existe en la ruta: $filePath");
         // }
