@@ -378,11 +378,12 @@ class DocumentController extends Controller
             unlink($path);
         }
 
-        $docReg = $id->employee_id ? DocumentRegister::where('subdivision_id', $id->subdivision_id)
-            ->where('employee_id', $id->employee_id)->first() : (
-            $id->e_employee_id ? DocumentRegister::where('subdivision_id', $id->subdivision_id)
-                ->where('e_employee_id', $id->e_employee_id) : null
-        );
+        $docReg = $id->employee_id 
+            ? DocumentRegister::where('subdivision_id', $id->subdivision_id)->where('employee_id', $id->employee_id)->first() 
+            : ( $id->e_employee_id 
+                ? DocumentRegister::where('subdivision_id', $id->subdivision_id)->where('e_employee_id', $id->e_employee_id)->first()
+                : null
+            );
         if ($docReg) {
             $docReg->delete();
         }
