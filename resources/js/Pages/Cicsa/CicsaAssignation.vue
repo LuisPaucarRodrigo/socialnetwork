@@ -29,15 +29,17 @@
             <br>
             <TableStructure>
                 <template #thead>
-                    <TableTitle>Nombre del Proyecto</TableTitle>
-                    <TableTitle>Fecha de Asignación</TableTitle>
-                    <TableTitle>Cliente</TableTitle>
-                    <TableTitle>Centro de Costo</TableTitle>
-                    <TableTitle>Codigo de Proyecto</TableTitle>
-                    <TableTitle>CPE</TableTitle>
-                    <TableTitle>Zonas</TableTitle>
-                    <TableTitle>Gestor</TableTitle>
-                    <TableTitle>Encargado</TableTitle>
+                    <tr>
+                        <TableTitle>Nombre del Proyecto</TableTitle>
+                        <TableTitle>Fecha de Asignación</TableTitle>
+                        <TableTitle>Cliente</TableTitle>
+                        <TableTitle>Centro de Costo</TableTitle>
+                        <TableTitle>Codigo de Proyecto</TableTitle>
+                        <TableTitle>CPE</TableTitle>
+                        <TableTitle>Zonas</TableTitle>
+                        <TableTitle>Gestor</TableTitle>
+                        <TableTitle>Encargado</TableTitle>
+                    </tr>
                 </template>
                 <template #tbody>
                     <tr v-for="item in assignations.data ?? assignations" :key="item.id" class="text-gray-700">
@@ -224,7 +226,7 @@ const search = async ($search) => {
     }
 };
 
-function openModal(){
+function openModal() {
     showModal.value = !showModal.value
 }
 
