@@ -10,6 +10,7 @@ use App\Enums\Permissions\PurchasingPermissions;
 use App\Enums\Permissions\UserRolePermissions;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\Permission;
+use App\Models\Project;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -24,26 +25,9 @@ use Inertia\Response;
 class ProfileController extends Controller
 {
     public function allFine(){
-        foreach (DocumentsPermissions::cases() as $status) {
-            Permission::create(['name' => $status->value]);
-        }
-        foreach (HumanResourcesPermissions::cases() as $status) {
-            Permission::create(['name' => $status->value]);
-        }
-        foreach (InventoryPermissions::cases() as $status) {
-            Permission::create(['name' => $status->value]);
-        }
-        foreach (ProjectPermissions::cases() as $status) {
-            Permission::create(['name' => $status->value]);
-        }
-        foreach (PurchasingPermissions::cases() as $status) {
-            Permission::create(['name' => $status->value]);
-        }
-        foreach (UserRolePermissions::cases() as $status) {
-            Permission::create(['name' => $status->value]);
-        }
+        $data = Project::select('description')->with('cicsa_assignation')->where('cost_center_id', 1)->get();
         
-        return response()->json('siuu');
+        return response()->json($data);
     }
 
     /**
