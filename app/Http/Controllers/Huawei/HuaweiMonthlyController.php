@@ -6,6 +6,7 @@ use App\Constants\HuaweiConstants;
 use App\Exports\HuaweiMonthlyExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Huawei\HuaweiMonthlyExpenseRequest;
+use App\Imports\HuaweiExpensesImport;
 use App\Models\Employee;
 use App\Models\HuaweiMonthlyExpense;
 use App\Models\HuaweiMonthlyProject;
@@ -472,115 +473,16 @@ class HuaweiMonthlyController extends Controller
 
     public function importCosts(Request $request)
     {
-        // Validar que el archivo es un Excel
         $data = $request->validate([
-            'file' => 'required|mimes:xls,xlsx',
+            'file' => 'required|mimes:xlsx,xls,csv|max:2048',
         ]);
 
-        // Manejar la carga del archivo
-        $document = $request->file('file');
-
-        // Leer el archivo Excel directamente desde el stream
-        $spreadsheet = IOFactory::load($document->getRealPath());
-
-        // Obtener la primera hoja
-        /** @var Worksheet $sheet */
-        $sheet = $spreadsheet->getSheet(0);
-
-        // Definir el rango de lectura: A1 hasta la última fila en la columna D
-        $startCell = 'A1';
-        $endCell = 'N' . $sheet->getHighestRow();
-        $range = "$startCell:$endCell";
-
-        // Leer el rango especificado
-        $data = $sheet->rangeToArray($range, null, true, true, true);
-
-        // Array para almacenar los objetos
-        $rowsAsObjects = [];
-
-        // Recorrer las filas y convertir a objetos
-
-        foreach ($data as $index => $row) {
-            if ($index === 1)
-                continue;
-            $isEmptyRow = empty($row['A']) && empty($row['B']) && empty($row['C']) && empty($row['D']) &&
-                empty($row['E']) && empty($row['F']) && empty($row['G']) && empty($row['H']) &&
-                empty($row['I']) && empty($row['J']) && empty($row['L']) && empty($row['M']) &&
-                empty($row['N']);
-
-            if ($isEmptyRow) {
-                break;
-            }
-
-            self::$data;
-            $project = $row['B'] ? HuaweiProject::where('assigned_diu', $row['B'])->first() : null;
-            
-            $cdpType = $this->verifyText($row['D'], "CdpType");
-            $expenseType = $this->verifyText($row['J'], "ExpenseType");
-            $expenseDate = $this->sanitizeDate($row['C']);
-            $ecExpenseDate = $this->sanitizeDate($row['L']);
-
-            if (is_null($cdpType)) {
-                return back()->withErrors(['message' => 'Uno de los CDP no es válido: ' . $row['D']]);
-            }
-            if (is_null($expenseType)) {
-                return back()->withErrors(['message' => 'Uno de los tipos de gasto no es válido: ' . $row['J']]);
-            }
-
-            if (is_null($expenseDate)){
-                return back()->withErrors(['message' => 'Uno de las fechas de gasto no es válida: ' . $row['C']]);
-            }
-
-            if (is_null($ecExpenseDate)){
-                return back()->withErrors(['message' => 'Uno de las fechas de depósito no es válida: ' . $row['L']]);
-            }
-
-            $rowObject = (object) [
-                'employee' => $this->sanitizeText($row['A'], false),
-                'project_id' => $project ? $project->id : null,
-                'expense_date' => $expenseDate,
-                'cdp_type' => $cdpType,
-                'doc_number' => $row['E'],
-                'op_number' => $row['F'],
-                'ruc' => $row['G'],
-                'amount' => $this->sanitizeNumber($row['H']),
-                'description' => $row['I'],
-                'expense_type' => $expenseType,
-                'ec_expense_date' => $ecExpenseDate,
-                'ec_op_number' => $row['M'],
-                'ec_amount' => $this->sanitizeNumber($row['N']),
-            ];
-            $rowsAsObjects[] = $rowObject;
+        try {
+            Excel::import(new HuaweiExpensesImport, $data['file']);
+            return response()->json(['msg'=>'Datos Importados'], 200);
+        } catch (\Throwable $e) {
+            back()->withErrors(['message' => $e->getMessage()]);
         }
-
-        DB::beginTransaction();
-
-        foreach ($rowsAsObjects as $item) {
-
-            if (!$item->expense_type || !$item->expense_date || !$item->cdp_type || !$item->amount || !$item->description) {
-                DB::rollBack();
-                return back()->withErrors(['message' => 'Llene todos los campos']);
-            }
-
-            HuaweiMonthlyExpense::create([
-                'expense_type' => $item->expense_type,
-                'zone' => $item->project_id ? HuaweiProject::find($item->project_id)->huawei_site->name : 'Sin zona',
-                'employee' => $item->employee,
-                'expense_date' => $item->expense_date,
-                'cdp_type' => $item->cdp_type,
-                'doc_number' => $item->doc_number,
-                'op_number' => $item->op_number,
-                'ruc' => $item->ruc,
-                'description' => $item->description,
-                'amount' => $item->amount,
-                'ec_expense_date' => $item->ec_expense_date,
-                'ec_op_number' => $item->ec_op_number,
-                'ec_amount' => $item->ec_amount,
-                'huawei_project_id' => $item->project_id,
-            ]);
-        }
-        DB::commit();
-        return redirect()->back();
     }
 
     public function downloadTemplate()
@@ -727,36 +629,5 @@ class HuaweiMonthlyController extends Controller
 
             return $text;
         }
-    }
-
-    private function sanitizeNumber($text)
-    {
-        // Remover todos los caracteres que no sean dígitos o puntos
-        $sanitized = preg_replace('/[^0-9.]/', '', $text);
-
-        // Si hay más de un punto, conservar solo el primero
-        if (substr_count($sanitized, '.') > 1) {
-            $parts = explode('.', $sanitized);
-            $sanitized = array_shift($parts) . '.' . implode('', $parts);
-        }
-
-        // Eliminar ceros a la izquierda innecesarios
-        $sanitized = ltrim($sanitized, '0');
-
-        // Si después de limpiar queda vacío, devolver "0"
-        return $sanitized === '' ? '0' : $sanitized;
-    }
-
-    private function verifyText($input, $type)
-    {
-        $input = trim($input);
-        if ($type == "ExpenseType") {
-            $validValues = array_merge(self::$data['static_expense_types'], self::$data['variable_expense_types']);
-        } elseif ($type == "CdpType") {
-            $validValues = self::$data['cdp_types'];
-        } else {
-            return null;
-        }
-        return in_array($input, $validValues) ? $input : null;
     }
 }
