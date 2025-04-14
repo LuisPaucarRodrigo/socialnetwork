@@ -14,6 +14,7 @@
             <td> {{ $validationOC->cicsa_assignation->cost_center }} </td>
             <td> {{ $validationOC->cicsa_assignation->cpe }} </td>
             <td> {{ $validationOC->cicsa_purchase_order->oc_number }} </td>
+            <td> {{ $validationOC->cicsa_purchase_order?->amount }} </td>
             <td> {{ $validationOC->file_validation }} </td>
             <td> {{ $validationOC->materials_control }} </td>
             <td> {{ $validationOC->supervisor }} </td>
