@@ -1,7 +1,7 @@
 <?php
 
 use App\Constants\RolesConstants;
-use App\Http\Controllers\DocumentSpreedSheetController;
+use App\Http\Controllers\HumanResource\DocumentSpreedSheetController;
 use App\Http\Controllers\HumanResource\ControlEmployees;
 use App\Http\Controllers\HumanResource\DocumentController;
 use App\Http\Controllers\HumanResource\FormationDevelopment;
