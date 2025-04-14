@@ -23,7 +23,7 @@ class PurchaseOrderExport implements FromView, WithColumnWidths
         return view('Export.PurchaseOrderExport', [
             'purchaseOrders' => CicsaPurchaseOrder::with(['cicsa_assignation' => function ($query) {
                 $query->select('id', 'project_name', 'project_code', 'cpe')
-                    ->with('cicsa_installation:id,cicsa_assignation_id,projected_amount');
+                    ->with('cicsa_installation:id,cicsa_assignation_id,projected_amount,shipping_report_date');
             }])
                 ->whereHas('cicsa_assignation.project', function ($subQuery) {
                     $subQuery->where('cost_line_id', $this->type);
