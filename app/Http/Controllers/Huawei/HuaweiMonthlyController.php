@@ -479,7 +479,6 @@ class HuaweiMonthlyController extends Controller
 
         try {
             Excel::import(new HuaweiExpensesImport, $data['file']);
-            return response()->json(['msg'=>'Datos Importados'], 200);
         } catch (\Throwable $e) {
             back()->withErrors(['message' => $e->getMessage()]);
         }
