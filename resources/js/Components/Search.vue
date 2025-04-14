@@ -11,7 +11,7 @@
 </template>
 <script setup>
 import TextInput from '@/Components/TextInput.vue';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 const { fields } = defineProps({
     fields: String,
@@ -24,4 +24,8 @@ const searchQuery = ref('');
 function applySearch() {
     search.value = searchQuery.value
 }
+
+watch(search, (newVal) => {
+    searchQuery.value = newVal
+}, { immediate: true })
 </script>
