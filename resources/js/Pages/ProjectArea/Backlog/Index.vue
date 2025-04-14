@@ -28,7 +28,6 @@
                                 </p>
                             </th>
                             <th
-                                v-if="auth.user.role_id === 1"
                                 class="border border-gray-300 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600"
                             ></th>
                         </tr>
@@ -204,7 +203,6 @@
                             </td>
 
                             <td
-                                v-if="auth.user.role_id === 1"
                                 class="border-b border-gray-200 bg-white px-2 py-1"
                             >
                                 <div class="flex space-x-3 justify-center">

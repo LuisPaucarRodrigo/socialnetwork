@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\HumanResource;
 
+use App\Models\Contract;
 use App\Models\Employee;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Date;
@@ -35,7 +36,7 @@ class CreateManagementEmployees extends FormRequest
             'email' => 'required|email|max:255|unique:' . Employee::class,
             'email_company' => 'nullable|email|max:255|unique:' . Employee::class,
             'phone1' => 'required|numeric|digits:9|unique:' . Employee::class,
-            'phone2' => 'nullable|numeric|digits:9|unique:' . Employee::class,
+            'nro_cuenta' => 'nullable|unique:' . Contract::class,
 
             'cost_line_id' => 'required|numeric',
             'type_contract' => 'required|string',

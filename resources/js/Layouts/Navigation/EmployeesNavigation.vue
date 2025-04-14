@@ -1,5 +1,5 @@
 <template>
-    <a v-if="permissionsPorVencer.length + vacationPorVencer3.length + vacationPorVencer7.length > 0 || formationProgramsAlarms.length > 0 || employeeBirthdayAlarms.length > 0 || documentsToExpire.length > 0"
+    <a v-if="permissionsPorVencer.length + vacationPorVencer3.length + vacationPorVencer7.length > 0 || formationProgramsAlarms.length > 0 || employeeBirthdayAlarms?.length > 0 || documentsToExpire.length > 0"
         class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#" @click="showingHumanResource = (showingMembers && showingMembers7)
             ? false
             : !showingHumanResource;
@@ -26,14 +26,14 @@
         <div class="relative">
             <Link class="w-full" :href="route('management.employees')">Empleados</Link>
             <button @click="showEmployeeBirthdayAlarms = !showEmployeeBirthdayAlarms">
-                <span v-if="employeeBirthdayAlarms.length > 0"
+                <span v-if="employeeBirthdayAlarms?.length > 0"
                     class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
                     {{ employeeBirthdayAlarms.length }}
                 </span>
             </button>
         </div>
     </MyTransition>
-    <template v-if="employeeBirthdayAlarms.length !== 0">
+    <template v-if="employeeBirthdayAlarms?.length !== 0" v-permission="'management_employees_happy_birthday'">
         <MyTransition v-for="item in employeeBirthdayAlarms" :key="item.id" class="ml-4"
             :transitiondemonstration="showEmployeeBirthdayAlarms">
             <Link class="w-full flex items-center" :href="route('management.employees.show', { id: item.id })">
@@ -228,7 +228,7 @@
 import MyTransition from '@/Components/MyTransition.vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import { subModulePermission } from '@/utils/roles/roles';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, onUnmounted } from 'vue';
 
 const { userPermissions } = defineProps({
     userPermissions: Array
@@ -255,9 +255,11 @@ const vacationPorVencer7 = ref([])
 const {submodules} = usePage().props
 const {userSubModules} = usePage().props.auth
 
+
 async function fetchAlarmHappyBirthdayCount() {
     try {
         const response = await axios.get(route('management.employees.happy.birthday'));
+        if (response.status === 200)
         employeeBirthdayAlarms.value = response.data.happyBirthday;
     } catch (error) {
         console.error('Error al obtener el cumpleaños de los empleados:', error);
@@ -267,6 +269,7 @@ async function fetchAlarmHappyBirthdayCount() {
 async function fetchDocumentsToExpireAlarmCount() {
     try {
         const response = await axios.get(route('document.rrhh.status.alarms'));
+        if (response.status === 200)
         documentsToExpire.value = response.data;
     } catch (error) {
         console.error('Error al obtener alarma de documentos de estatus rrhh', error);
@@ -276,6 +279,7 @@ async function fetchDocumentsToExpireAlarmCount() {
 async function fetchNoDocumentsAlarmCount() {
     try {
         const response = await axios.get(route('document.rrhh.nodoc.alarms'));
+        if (response.status === 200)
         noDocuments.value = response.data;
     } catch (error) {
         console.error('Error al obtener alarma sin documentos de estatus rrhh', error);
@@ -285,6 +289,7 @@ async function fetchNoDocumentsAlarmCount() {
 async function fetchAlarmPermissionsCount() {
     try {
         const response = await axios.get(route('alarm.permissions'));
+        if (response.status === 200)
         permissionsPorVencer.value = response.data.permissions;
     } catch (error) {
         console.error('Error al obtener el contador de permissions:', error);
@@ -294,6 +299,7 @@ async function fetchAlarmPermissionsCount() {
 async function fetchAlarmVacationCount() {
     try {
         const response = await axios.get(route('alarm.vacation'));
+        if (response.status === 200)
         vacationPorVencer3.value = response.data.vacation3;
         vacationPorVencer7.value = response.data.vacation7;
     } catch (error) {
@@ -304,6 +310,7 @@ async function fetchAlarmVacationCount() {
 async function fetchFormationProgramAlarms() {
     try {
         const response = await axios.get(route('employees_in_programs.alarms'))
+        if (response.status === 200)
         formationProgramsAlarms.value = [
             ...response.data.alarm3d.map(i => ({ ...i, critical: true })),
             ...response.data.alarm7d
@@ -324,6 +331,9 @@ onMounted(() => {
         ]);
     };
     fetchAllAlarms();
-    setInterval(fetchAllAlarms, 60000);
+    const intervalId = setInterval(fetchAllAlarms, 60000);
+    onUnmounted(() => {
+        clearInterval(intervalId);
+    });
 });
 </script>

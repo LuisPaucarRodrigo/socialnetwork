@@ -10,7 +10,7 @@
         <div class="inline-block min-w-full gap-10">
             <div class="flex flex-col sm:flex-row gap-4 sm:gap-0 justify-between">
                 <div class="flex sm:items-center space-x-3">
-                    <PrimaryButton v-if="hasPermission('FinanceManager')" @click="openFormModal" type="button"
+                    <PrimaryButton @click="openFormModal" type="button"
                         class="whitespace-nowrap">
                         + Agregar
                     </PrimaryButton>

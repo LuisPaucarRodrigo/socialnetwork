@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('project_quote_valuations', function (Blueprint $table) {
             $table->id();
-            $table->integer('days');
+            $table->float('days');
             $table->string('unit');
             $table->float('metrado');
             $table->float('unit_value');

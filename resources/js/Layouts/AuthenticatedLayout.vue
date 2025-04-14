@@ -26,16 +26,30 @@
 <script setup>
 import Header from '@/Layouts/Header.vue';
 import Navigation from '@/Layouts/Navigation.vue';
+import { usePage } from '@inertiajs/vue3';
+import { onMounted } from 'vue'
+import { initFlowbite } from 'flowbite'
+import { watch } from 'vue';
+import { appAuth } from '@/Store/auth';
+
 
 const props = defineProps({
     redirectRoute: [String, Object],
 })
-import { onMounted } from 'vue'
-import { initFlowbite } from 'flowbite'
 
 
 onMounted(() => {
     initFlowbite();
 })
+
+const page = usePage();
+watch(
+    () => page.props.auth,
+    () => {
+        appAuth.role_id = page.props.auth?.user?.role_id || null;
+        appAuth.permissions = page.props.userPermissions || [];
+    },
+    { immediate: true }
+);
 
 </script>

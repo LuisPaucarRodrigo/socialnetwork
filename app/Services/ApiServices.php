@@ -75,7 +75,7 @@ class ApiServices
         }
         $project = CicsaAssignation::where('project_id', $validateData['project_id'])->first();
         $user = Auth::user();
-        $validateData['description'] = $project->project_name . "," . $user->name . ", " . $validateData['description'];
+        $validateData['description'] = $project->project_name . "-" . $user->name . ", " . $validateData['description'];
 
         if ($validateData['photo']) {
             $validateData['photo'] = $this->storeBase64Image(

@@ -260,7 +260,7 @@
                     class="flex items-center text-blue-600 hover:underline">
                     <ArrowDownIcon class="h-4 w-4 ml-1" />
                   </button>
-                  <button v-if="hasPermission('UserManager')" @click="confirmDeleteDocument(archive.id)"
+                  <button @click="confirmDeleteDocument(archive.id)"
                     class="flex items-center text-red-600 hover:underline">
                     <TrashIcon class="h-4 w-4" />
                   </button>

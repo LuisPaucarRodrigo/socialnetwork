@@ -24,7 +24,7 @@ class ProjectPintController extends Controller
 {
     public function pint_create_project($type)
     {
-        $ids = [3, 4, 5, 6, 7];
+        $ids = [3, 4, 5, 6, 7, 11];
         $contacts_cicsa = Customers_contact::where('customer_id', 1)->get();
         $cost_centers = CostCenter::whereIn('id', [1, 2])->get();
         $services = Service::whereIn('id', $ids)->get();
@@ -134,8 +134,8 @@ class ProjectPintController extends Controller
             ->whereYear('created_at', $currentYear)
             ->count();
 
-        if (count($existingPreproject) >= 2) {
-            return response()->json('Ya existe un proyecto creado en este mes y año.', 422);
+        if ($existingPreproject >= 2) {
+            return response()->json('Ya existen dos proyecto creados este mes.', 422);
         }
 
         DB::beginTransaction();

@@ -52,7 +52,7 @@ class DocumentCreateRequest extends FormRequest
                 $cant = Document::where('subdivision_id',$this->input('subdivision_id'))
                  ->where('e_employee_id', $value)->count();
                  if ($cant===1) {
-                    $fail('Este colaborador ya tiene un documento en esta subdivisión');
+                    $fail('Este colaborador externo ya tiene un documento en esta subdivisión');
                  }
                  if ($cant > 1) {
                     $fail('FATAL ERROR NOOOO');

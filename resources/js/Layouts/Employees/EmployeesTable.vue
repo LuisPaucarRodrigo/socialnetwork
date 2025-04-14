@@ -14,7 +14,12 @@
                 <TableTitle>DNI</TableTitle>
                 <TableTitle>Telefono</TableTitle>
                 <TableTitle>Fecha de Ingreso</TableTitle>
-                <TableTitle></TableTitle>
+                <TableTitle  v-permission-or="[
+                    'management_employees_show',
+                    'management_employees_edit',
+                    'management_employees_reentry',
+                    'management_employees',
+                ]"></TableTitle>
             </tr>
         </template>
         <template #tbody>
@@ -28,20 +33,40 @@
                 <TableRow>{{ employee.dni }}</TableRow>
                 <TableRow>{{ employee.phone1 }}</TableRow>
                 <TableRow>{{ formattedDate(employee.contract.hire_date) }}</TableRow>
-                <td class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
+                <td
+                v-permission-or="[
+                    'management_employees_show',
+                    'management_employees_edit',
+                    'management_employees_reentry',
+                    'management_employees',
+                    'management_employees_fired',
+                ]"
+                class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
                     <div v-if="employee.contract.fired_date == null" class="flex space-x-3 justify-center">
-                        <Link :href="route('management.employees.show', { id: employee.id })">
-                        <EyeIcon class="w-6 h-6 text-green-600" />
+                        <Link 
+                            v-permission="'management_employees_show'"
+                            :href="route('management.employees.show', { id: employee.id })">
+                            <EyeIcon class="w-6 h-6 text-green-600" />
                         </Link>
-                        <Link v-if="hasPermission('HumanResourceManager')"
+                        <Link 
+                            v-permission="'management_employees_edit'"
                             :href="route('management.employees.edit', { id: employee.id })">
                             <PencilSquareIcon class="w-6 h-6 text-yellow-400" />
                         </Link>
-                        <button v-if="hasPermission('UserManager')" type="button" @click="confirmFired(employee.id)">
+                        <button  v-permission-and="[
+                            'management_employees_reentry',
+                            'management_employees'
+                        ]"
+                        type="button" @click="confirmFired(employee.id)">
                             <ArrowDownTrayIcon class="w-6 h-6"/>
                         </button>
                     </div>
-                    <button v-if="employee.contract.fired_date" type="button" @click="employee_fired_date(employee.id)">
+                    <button
+                        v-permission-and="[
+                            'management_employees_reentry',
+                            'management_employees'
+                        ]"
+                        v-if="employee.contract.fired_date" type="button" @click="employee_fired_date(employee.id)">
                         <ArrowUpTrayIcon class="w-6 h-6"/>
                     </button>
                 </td>
@@ -72,6 +97,7 @@ const { form, employees, costLine, userPermission, confirmFired, employee_fired_
     confirmFired: Function,
     employee_fired_date: Function
 })
+
 
 const hasPermission = (permission) => {
     return userPermission.includes(permission);

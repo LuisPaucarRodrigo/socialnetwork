@@ -19,8 +19,86 @@ use App\Http\Controllers\ProjectArea\StaticCostsController;
 use App\Http\Controllers\ProjectArea\TaskManagementController;
 use App\Http\Controllers\ProjectArea\ServicesLiquidationsController;
 use App\Http\Controllers\ProjectArea\AdministrativeCostsController;
-
+use App\Enums\Permissions\ProjectPermissions;
 use Illuminate\Support\Facades\Route;
+
+//new permissions routes
+
+Route::post('/preprojects/{preproject}/update', [PreProjectController::class, 'update'])
+    ->middleware('permission:' . ProjectPermissions::PREPROJECT_UPDATE->value)
+    ->name('preprojects.update');
+
+Route::delete('/preprojects/{preproject}/destroy', [PreProjectController::class, 'destroy'])
+    ->middleware('permission:' . ProjectPermissions::PREPROJECT_DELETE->value)
+    ->name('preprojects.destroy');
+
+Route::post('/preprojects/photoreport_update/{photoreport}', [PreProjectController::class, 'photoreport_update'])
+    ->middleware('permission:' . ProjectPermissions::PREPROJECT_PHOTO_REPORT_UPDATE->value)
+    ->name('preprojects.photoreport.update');
+
+Route::delete('/preprojects/photoreport_delete/{photoreport}', [PreProjectController::class, 'photoreport_delete'])
+    ->middleware('permission:' . ProjectPermissions::PREPROJECT_PHOTO_REPORT_DELETE->value)
+    ->name('preprojects.photoreport.delete');
+
+Route::delete('/preprojects/providers_quotes/delete/{providerquote_id}', [PreProjectController::class, 'preproject_providersquotes_delete'])
+    ->middleware('permission:' . ProjectPermissions::PREPROJECT_PROVIDERS_QUOTES_DELETE->value)
+    ->name('preprojects.providersquotes.delete');
+
+Route::post('/preprojects/quote_item_delete', [PreProjectController::class, 'quote_item_delete'])
+    ->middleware('permission:' . ProjectPermissions::PREPROJECT_QUOTE_ITEM_DELETE->value)
+    ->name('preprojects.quote.item.delete');
+
+Route::post('/preprojects/quote_item_store', [PreProjectController::class, 'quote_item_store'])
+    ->middleware('permission:' . ProjectPermissions::PREPROJECT_QUOTE_ITEM_STORE->value)
+    ->name('preprojects.quote.item.store');
+
+Route::post('/preprojects/quote_product_store', [PreProjectController::class, 'quote_product_store'])
+    ->middleware('permission:' . ProjectPermissions::PREPROJECT_QUOTE_PRODUCT_STORE->value)
+    ->name('preprojects.quote.product.store');
+
+Route::delete('/preprojects/quote_product_delete/{quote_product_id}', [PreProjectController::class, 'quote_product_delete'])
+    ->middleware('permission:' . ProjectPermissions::PREPROJECT_QUOTE_PRODUCT_DELETE->value)
+    ->name('preprojects.quote.product.delete');
+
+Route::get('/projectmanagement/update/{project_id}/type/{type?}', [ProjectManagementController::class, 'project_create'])
+    ->middleware('permission:' . ProjectPermissions::PROJECT_UPDATE->value)
+    ->name('projectmanagement.update');
+
+Route::delete('/projectmanagement/delete/{project_id}', [ProjectManagementController::class, 'project_destroy'])
+    ->middleware('permission:' . ProjectPermissions::PROJECT_DELETE->value)
+    ->name('projectmanagement.delete');
+
+Route::delete('/project/update/delete-employee/{pivot_id}', [ProjectManagementController::class, 'project_delete_employee'])
+    ->middleware('permission:' . ProjectPermissions::PROJECT_DELETE_EMPLOYEE->value)
+    ->name('projectmanagement.delete.employee');
+
+// TASKS
+Route::post('/edittask/delete', [TaskManagementController::class, 'delete_employee'])
+    ->middleware('permission:' . ProjectPermissions::TASK_DELETE_EMPLOYEE->value)
+    ->name('tasks.delete.employee');
+
+Route::delete('/deletetask/{taskId}', [TaskManagementController::class, 'delete_task'])
+    ->middleware('permission:' . ProjectPermissions::TASK_DELETE->value)
+    ->name('tasks.delete');
+
+// CICSA SUBSECTION
+Route::put('/cicsaSubSections/{subSection}/update', [CicsaSectionController::class, 'updateSubSection'])
+    ->middleware('permission:' . ProjectPermissions::CICSA_SUBSECTION_UPDATE->value)
+    ->name('sections.cicsaUpdateSubSection');
+
+Route::delete('/cicsaSubSections/{subSection}/delete', [CicsaSectionController::class, 'destroySubSection'])
+    ->middleware('permission:' . ProjectPermissions::CICSA_SUBSECTION_DELETE->value)
+    ->name('sections.cicsaDestroySubSection');
+
+Route::delete('/cicsaSections/{section}', [CicsaSectionController::class, 'destroySection'])
+    ->middleware('permission:' . ProjectPermissions::CICSA_SECTION_DELETE->value)
+    ->name('sections.cicsaDestroySection');
+
+
+
+
+
+
 
 Route::middleware('permission:' . implode('|', RolesConstants::PROJECT_MODULE))->group(function () {
     //Customers
@@ -78,7 +156,7 @@ Route::middleware('permission:' . implode('|', RolesConstants::PROJECT_MODULE))-
     Route::get('/preprojects/load_resource_entries/{service_id}', [PreProjectController::class, 'load_resource_entries'])->name('load.resource_entries');
 
     //Pext Project
-    Route::post('/projectPext/storeOrUpdate/{pext_id?}', [PextController::class, 'storeOrUpdate'])->name('projectmanagement.pext.storeOrUpdate');
+    // Route::post('/projectPext/storeOrUpdate/{pext_id?}', [PextController::class, 'storeOrUpdate'])->name('projectmanagement.pext.storeOrUpdate');
     Route::post('/projectPext/storeProjectAndAssignation', [PextController::class, 'storeProjectAndAssignation'])->name('projectmanagement.pext.storeProjectAndAssignation');
     // Route::get('/projectPext/requestCicsa/{zone?}', [PextController::class, 'requestCicsa'])->name('projectmanagement.pext.requestCicsa');
 
@@ -87,7 +165,7 @@ Route::middleware('permission:' . implode('|', RolesConstants::PROJECT_MODULE))-
     Route::delete('/projectPext/expenses/delete/{expense_id}', [PextController::class, 'expenses_delete'])->name('pext.expenses.delete');
     Route::put('/projectPext/expenses/expenseValidate/{expense_id}', [PextController::class, 'expense_validate'])->name('projectmanagement.pext.expenses.validate');
 
-    Route::get('/projectPext/monthly', [PextController::class, 'onthlyExpensePext'])->name('pext.monthly');
+    // Route::get('/projectPext/monthly', [PextController::class, 'onthlyExpensePext'])->name('pext.monthly');
 
 
     //Project
@@ -96,7 +174,7 @@ Route::middleware('permission:' . implode('|', RolesConstants::PROJECT_MODULE))-
     Route::get('/projectmanagement/update/{project_id}/type/{type?}', [ProjectManagementController::class, 'project_create'])->name('projectmanagement.update');
     Route::post('/project/update/{project_id}/add-employee', [ProjectManagementController::class, 'project_add_employee'])->name('projectmanagement.add.employee');
     Route::post('/project/liquidation', [ProjectManagementController::class, 'liquidate_project'])->name('projectmanagement.liquidation');
-    
+
 
     //Project tasks
     Route::get('/project/task/create/{project_id?}', [TaskManagementController::class, 'create'])->name('tasks.create');
@@ -310,6 +388,7 @@ Route::middleware('permission:' . implode('|', RolesConstants::PROJECT_MODULE))-
     Route::post('/projectPext/massive_update_swap', [PextController::class, 'masiveUpdateSwap'])->name('projectmanagement.pext.massiveUpdate.swap');
 
     Route::get('/projectPext/expense_dashboard/{project_id}', [PextController::class, 'expense_dashboard'])->name('projectmanagement.pext.expense_dashboard');
+    Route::post('/projectPext/expense_type_zone', [PextController::class, 'expense_type_zone'])->name('projectmanagement.pext.expenset_type_zone');
     Route::get('/projectPext/expense_dashboard_bar/{project_id}', [PextController::class, 'barChart'])->name('projectmanagement.pext.expense_dashboard_bar');
 
     //Project calendar

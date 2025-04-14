@@ -91,13 +91,10 @@ class User extends Authenticatable
 
     public function hasPermission($permission)
     {
-        $role = $this->role; // Obtener el único rol del usuario
-
-        if ($role) { // Verificar si el usuario tiene un rol asignado
-            return $role->permissions()->where('name', $permission)->exists();
-        }
-
-        return false; // Si el usuario no tiene un rol asignado, retorna falso
+        $role = $this->role; 
+        if($this->role_id === 1) return true;
+        if ($role) return $role->permissions()->where('name', $permission)->exists();
+        return false; 
     }
 
     public function onePermission()

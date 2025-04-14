@@ -55,7 +55,7 @@
                                     Fecha de Inicio
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="date" v-model="form.date" id="date"
+                                    <input type="date" v-model="form.date" id="date" :min="minDate"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.date" />
                                 </div>
@@ -236,7 +236,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { TrashIcon } from '@heroicons/vue/24/outline';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
@@ -264,6 +264,13 @@ const handleProductCPE = async (cpe) => {
     let res = await axios.post(route('pext_project.products.cpe'), { cpe })
     productsCPE.value = res.data
 }
+
+const minDate = computed(() => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0"); // Mes en formato "MM"
+  return `${year}-${month}-01`; // YYYY-MM-01
+});
 
 const templates = [
     'Mantenimiento',
@@ -316,6 +323,7 @@ async function submit() {
             router.visit(route('preprojects.index', { type: type }))
         }, 2000);
     } catch (error) {
+        console.log(error)
         if (error.response) {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, form)

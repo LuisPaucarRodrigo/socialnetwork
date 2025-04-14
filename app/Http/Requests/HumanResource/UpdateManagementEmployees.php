@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\HumanResource;
 
-use App\Models\Employee;
+use App\Models\Contract;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Date;
 
@@ -22,7 +22,9 @@ class UpdateManagementEmployees extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    {
+    {   
+
+        $contract = Contract::where('employee_id', $this->route('id'))->first();
         return [
             'curriculum_vitae' => 'nullable|mimes:pdf|max:51200',
             'cropped_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -35,7 +37,7 @@ class UpdateManagementEmployees extends FormRequest
             'email' => 'required|email|max:255',
             'email_company' => 'nullable|email|max:255',
             'phone1' => 'required|numeric|digits:9',
-            'phone2' => 'nullable|numeric|digits:9',
+            'nro_cuenta' => 'nullable|unique:contracts,nro_cuenta,' . $contract->id,
 
             'cost_line_id' => 'required|numeric',
             'type_contract' => 'required|string',

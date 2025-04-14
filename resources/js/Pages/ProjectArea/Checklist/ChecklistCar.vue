@@ -34,7 +34,7 @@
                             <EyeIcon class="text-teal-500 w-5" />
                         </button>
                     </TableRow>
-                    <TableRow>
+                    <TableRow width="w-[500px]">
                         <p class="text-gray-900 whitespace-no-wrap">
                             {{ item.observation }}
                         </p>
@@ -82,7 +82,7 @@
                                         {{ item?.name }}
                                     </td>
                                     <td class="border-b border-slate-300 px-4 py-4">
-                                        <a :href="route('checklist.car.photo', {
+                                        <a v-if="item.value" :href="route('checklist.car.photo', {
                                             id: itemPhotos.id,
                                             photoProp: item.value,
                                         })
@@ -233,9 +233,6 @@ const itemArrays = ref({ docArray: [], stateArray: [], equipementArray: [] });
 function openChecklistModal(item) {
     itemArrays.value.docArray = [
         { name: "Kilometraje", value: item.km },
-        { name: "Permiso de circulación", value: item.circulation },
-        { name: "Revisión técnica", value: item.technique },
-        { name: "SOAT", value: item.soat },
     ];
     itemArrays.value.stateArray = [
         { name: "Bocinas", value: item.hornState },
@@ -281,6 +278,9 @@ const showPhotosModal = ref(false);
 const itemPhotos = ref({
     id: null,
     photos: [
+        { name: "Herramientas de Mantenimento", value: "maintenanceTools" },
+        { name: "Herramientas de Prevención", value: "preventionTools" },
+        { name: "Llanta de Repuesto", value: "imageSpareTire" },
         { name: "Frontal", value: "front" },
         { name: "Lateral Izquierdo", value: "leftSide" },
         { name: "Lateral Derecho", value: "rightSide" },
@@ -289,6 +289,9 @@ const itemPhotos = ref({
         { name: "Llanta Trasera Derecha", value: "rearRightTire" },
         { name: "LLanta Frontal Derecha", value: "frontRightTire" },
         { name: "Llanta Frontal Izquierda", value: "frontLeftTire" },
+        { name: "Trasera", value: "back" },
+        { name: "Tablero", value: "dashboard" },
+        { name: "Asiento Trasero", value: "rearSeat" },
     ],
 });
 function openPhotosModal(id) {

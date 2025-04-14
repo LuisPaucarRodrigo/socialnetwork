@@ -46,9 +46,10 @@ class ChecklistCar extends Model
         'ladderHolder',
         'sidePlate',
         
-        // 'maintenanceTools',
-        // 'preventionTools',
-        // 'imageSpareTire',
+        'maintenanceTools',
+        'preventionTools',
+        'imageSpareTire',
+        
         'front',
         'leftSide',
         'rightSide',

@@ -19,6 +19,8 @@ class CarDocument extends Model
         'soat_date',
         'insurance',
         'insurance_date',
+        'rental_contract',
+        'rental_contract_date',
         'address_web',
         'user',
         'password',

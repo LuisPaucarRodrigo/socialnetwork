@@ -5,3 +5,10 @@
         </div>
     </div>
 </template>
+<script setup>
+
+import { resetAppAuth } from '@/Store/auth';
+
+resetAppAuth();
+
+</script>

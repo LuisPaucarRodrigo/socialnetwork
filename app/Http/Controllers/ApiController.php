@@ -31,6 +31,11 @@ class ApiController extends Controller
         $this->main_directory = 'LocalDrive';
     }
 
+    public function verificationToken()
+    {
+        return response()->json([], 200);
+    }
+
     public function login(LoginMobileRequest $request)
     {
         if (Auth::attempt($request->validated())) {
@@ -465,6 +470,7 @@ class ApiController extends Controller
             });
         $cicsaProcess->whereHas('project', function ($query) use ($currentMonthStart, $currentMonthEnd) {
             $query->where('cost_line_id', 2)
+                ->where('is_accepted', 1)
                 ->where(function ($subQuery) use ($currentMonthStart, $currentMonthEnd) {
                     $subQuery->where(function ($subSubQuery) use ($currentMonthStart, $currentMonthEnd) {
                         $subSubQuery->whereHas('cost_center', function ($costCenterQuery) {
@@ -490,6 +496,7 @@ class ApiController extends Controller
             })
                 ->orDoesntHave('cicsa_charge_area');
         })
+            ->orderBy('project_name')
             ->get();
 
         $cicsaProcess->each->setAppends([]);

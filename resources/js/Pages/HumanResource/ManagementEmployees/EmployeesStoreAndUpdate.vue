@@ -110,11 +110,10 @@
                         </div>
 
                         <div class="sm:col-span-2">
-                            <InputLabel for="phone2">Telefono 2</InputLabel>
+                            <InputLabel for="nro_cuenta">Nro de Cuenta</InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.phone2" id="phone2" autocomplete="off"
-                                    maxlength="9" />
-                                <InputError :message="form.errors.phone2" />
+                                <TextInput type="text" v-model="form.nro_cuenta" id="nro_cuenta" autocomplete="off" />
+                                <InputError :message="form.errors.nro_cuenta" />
                             </div>
                         </div>
                     </div>
@@ -693,7 +692,7 @@ const form = useForm({
     email: '',
     email_company: '',
     phone1: '',
-    phone2: '',
+    nro_cuenta: '',
     cost_line_id: '',
     personal_segment: '',
     type_contract: '',
@@ -739,7 +738,6 @@ if (props.employees) {
     form.email = props.employees.email;
     form.email_company = props.employees.email_company;
     form.phone1 = props.employees.phone1;
-    form.phone2 = props.employees.phone2;
     form.cost_line_id = props.employees.contract.cost_line_id;
     form.type_contract = props.employees.contract.type_contract;
     form.state_travel_expenses = props.employees.contract.state_travel_expenses == 1 ? true : false;
@@ -747,6 +745,7 @@ if (props.employees) {
     form.discount_sctr = props.employees.contract.discount_sctr == 1 ? true : false;
     form.pension_type = props.employees.contract.pension_type;
     form.basic_salary = props.employees.contract.basic_salary;
+    form.nro_cuenta = props.employees.contract.nro_cuenta;
     form.amount_travel_expenses = props.employees.contract.amount_travel_expenses;
     form.life_ley = props.employees.contract.life_ley;
     form.hire_date = props.employees.contract.hire_date;
