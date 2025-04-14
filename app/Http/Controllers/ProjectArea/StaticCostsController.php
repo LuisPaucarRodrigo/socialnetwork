@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\ProjectArea;
 
+use App\Http\Requests\CostsRequest\StaticCostsRequest;
+use App\Services\ProjectArea\StaticCostsService;
 use App\Exports\StaticCostsExport;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CostsRequest\StaticCostsRequest;
 use App\Models\AccountStatement;
 use App\Models\Provider;
 use App\Models\StaticCost;
@@ -18,6 +19,13 @@ use ZipArchive;
 
 class StaticCostsController extends Controller
 {
+    protected StaticCostsService $staticCostsService;
+
+    public function __construct(StaticCostsService $staticCostsService)
+    {
+        $this->staticCostsService = $staticCostsService;
+    }
+
     public function index(Project $project_id)
     {
         $expenseTypes = PintConstants::scExpenseTypes();
@@ -47,56 +55,8 @@ class StaticCostsController extends Controller
 
     public function search_costs(Request $request, $project_id)
     {
-        $result = StaticCost::with('project', 'provider')->where('project_id', $project_id);
-
-        if ($request->search) {
-            $searchTerms = $request->input('search');
-            $result = $result->where(function ($query) use ($searchTerms) {
-                $query->where('ruc', 'like', "%$searchTerms%")
-                    ->orWhere('doc_number', 'like', "%$searchTerms%")
-                    ->orWhere('operation_number', 'like', "%$searchTerms%")
-                    ->orWhere('description', 'like', "%$searchTerms%")
-                    ->orWhere('amount', 'like', "%$searchTerms%");
-            });
-        }
-        if ($request->docNoDate) {
-            $result->where('doc_date', null);
-        }
-        if ($request->docStartDate) {
-            $result->where('doc_date', '>=', $request->docStartDate);
-        }
-        if ($request->docEndDate) {
-            $result->where('doc_date', '<=', $request->docEndDate);
-        }
-        if ($request->opNoDate) {
-            $result->where('operation_date', null);
-        }
-        if ($request->opStartDate) {
-            $result->where('operation_date', '>=', $request->opStartDate);
-        }
-        if ($request->opEndDate) {
-            $result->where('operation_date', '<=', $request->opEndDate);
-        }
-        if (count($request->selectedZones) < PintConstants::countScZones()) {
-            $result = $result->whereIn('zone', $request->selectedZones);
-        }
-        if (count($request->selectedExpenseTypes) < PintConstants::countScExpenseTypes()) {
-            $result = $result->whereIn('expense_type', $request->selectedExpenseTypes);
-        }
-        if (count($request->selectedDocTypes) < PintConstants::countScDocTypes()) {
-            $result = $result->whereIn('type_doc', $request->selectedDocTypes);
-        }
-        $result = $result->orderBy('doc_date')->get();
-        $result->transform(function ($item) {
-            $item->project->setAppends([]);
-            $item->setAppends(['real_amount', 'real_state']);
-            return $item;
-        });
-        if (count($request->selectedStateTypes) < PintConstants::countScStatesTypes()) {
-            $result = $result->filter(function ($item) use ($request) {
-                return in_array($item->real_state, $request->selectedStateTypes);
-            })->values()->all();
-        }
+        $query = StaticCost::with('project', 'provider')->where('project_id', $project_id);
+        $result = $this->staticCostsService->filter($request, $query);
         return response()->json($result, 200);
     }
 
@@ -241,17 +201,16 @@ class StaticCostsController extends Controller
             unlink($path);
     }
 
-    public function downloadImages($project_id)
+    public function downloadImages(Request $request, $project_id)
     {
         try {
-            $additionalCosts = StaticCost::where('project_id', $project_id)
-                ->whereIn('type_doc', ['Factura', 'Boleta', 'Voucher de Pago'])
-                ->get();
+            $query = StaticCost::where('project_id', $project_id);
+            $staticCosts = $this->staticCostsService->filter($request, $query);
             $zipFileName = 'staticCostsPhotos.zip';
             $zipFilePath = public_path("/documents/staticcosts/{$zipFileName}");
             $zip = new ZipArchive;
             if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
-                foreach ($additionalCosts as $cost) {
+                foreach ($staticCosts as $cost) {
                     if (!empty($cost->photo)) {
                         $photoPath = public_path("/documents/staticcosts/{$cost->photo}");
                         if (file_exists($photoPath)) {
