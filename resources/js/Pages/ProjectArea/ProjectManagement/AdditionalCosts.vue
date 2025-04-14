@@ -1153,6 +1153,7 @@ import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import Search from "@/Components/Search.vue";
+import qs from 'qs';
 
 const props = defineProps({
     additional_costs: Object,
@@ -1452,19 +1453,9 @@ const closeExportArchivesModal = () => {showExportArchivesModal.value = false}
 
 function exportArchives() {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
-    axios.get( route("zip.additional.descargar", { project_id: props.project_id.id })
-        ,  {
-            params: {
-                ...filterForm.value,
-                uniqueParam
-            }
-        }
-    
-    )
-    .then(()=>closeExportArchivesModal())
-    .catch(() => {
-        notifyError('No existen archivos para exportar');
-    });
+    const url = route("zip.additional.descargar", { project_id: props.project_id.id }) +
+            '?' + qs.stringify({...filterForm.value, uniqueParam}, { arrayFormat: 'brackets' });
+    window.location.href = url;
 }
 
 watch([() => form.type_doc, () => form.zone], () => {

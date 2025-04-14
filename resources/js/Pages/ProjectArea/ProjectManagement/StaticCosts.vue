@@ -802,6 +802,8 @@ import { Toaster } from "vue-sonner";
 
 import Dropdown from "@/Components/Dropdown.vue";
 import Search from "@/Components/Search.vue";
+import qs from 'qs';
+
 
 const props = defineProps({
     additional_costs: Object,
@@ -985,34 +987,10 @@ const closeExportArchivesModal = () => {showExportArchivesModal.value = false}
 
 function exportArchives() {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
-    axios.get( route("zip.static.descargar", { project_id: props.project_id.id })
-        ,  {
-            params: {
-                ...filterForm.value,
-                uniqueParam
-            }
-        }
-    )
-    .then(()=>closeExportArchivesModal())
-    .catch(() => {
-        notifyError('No existen archivos para exportar');
-    });
-    // axios.post(
-    //     route("zip.static.descargar", { project_id: props.project_id.id }),
-    //     filterForm.value,
-    //     { responseType: 'blob' }
-    // ).then(response => {
-    //     const url = window.URL.createObjectURL(new Blob([response.data]));
-    //     const link = document.createElement('a');
-    //     link.href = url;
-    //     link.setAttribute('download', 'Archivos_gastos_fijos.zip');
-    //     document.body.appendChild(link);
-    //     link.click();
-    //     document.body.removeChild(link);
-    //     closeExportArchivesModal()
-    // }).catch(() => {
-    //     notifyError('No existen archivos para exportar');
-    // });
+    const url = route("zip.static.descargar", { project_id: props.project_id.id }) +
+            '?' + qs.stringify({...filterForm.value, uniqueParam}, { arrayFormat: 'brackets' });
+    window.location.href = url;
+
 }
 
 
