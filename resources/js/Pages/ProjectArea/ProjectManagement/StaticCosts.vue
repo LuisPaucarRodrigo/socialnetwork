@@ -984,22 +984,24 @@ const openExportArchivesModal = () => {showExportArchivesModal.value = true}
 const closeExportArchivesModal = () => {showExportArchivesModal.value = false}
 
 function exportArchives() {
-    axios.post(
-        route("zip.static.descargar", { project_id: props.project_id.id }),
-        filterForm.value,
-        { responseType: 'blob' }
-    ).then(response => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'Archivos_gastos_fijos.zip');
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        closeExportArchivesModal()
-    }).catch(() => {
-        notifyError('No existen archivos para exportar');
-    });
+    router.post( route("zip.static.descargar", { project_id: props.project_id.id }),
+    filterForm.value)
+    // axios.post(
+    //     route("zip.static.descargar", { project_id: props.project_id.id }),
+    //     filterForm.value,
+    //     { responseType: 'blob' }
+    // ).then(response => {
+    //     const url = window.URL.createObjectURL(new Blob([response.data]));
+    //     const link = document.createElement('a');
+    //     link.href = url;
+    //     link.setAttribute('download', 'Archivos_gastos_fijos.zip');
+    //     document.body.appendChild(link);
+    //     link.click();
+    //     document.body.removeChild(link);
+    //     closeExportArchivesModal()
+    // }).catch(() => {
+    //     notifyError('No existen archivos para exportar');
+    // });
 }
 
 
