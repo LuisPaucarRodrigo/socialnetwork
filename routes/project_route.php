@@ -208,8 +208,8 @@ Route::middleware('permission:' . implode('|', RolesConstants::PROJECT_MODULE))-
 
 
 
-    Route::get('/descargar_zip_add/{project_id}', [AdditionalCostsController::class, 'downloadImages'])->name('zip.additional.descargar');
-    Route::get('/descargar_zip_static/{project_id}', [StaticCostsController::class, 'downloadImages'])->name('zip.static.descargar');
+    Route::post('/descargar_zip_add/{project_id}', [AdditionalCostsController::class, 'downloadImages'])->name('zip.additional.descargar');
+    Route::post('/descargar_zip_static/{project_id}', [StaticCostsController::class, 'downloadImages'])->name('zip.static.descargar');
 
 
     //massive costs actions

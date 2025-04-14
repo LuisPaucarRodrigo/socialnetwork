@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\ProjectArea;
 
+use App\Http\Requests\CostsRequest\AdditionalCostsRequest;
+use App\Services\ProjectArea\AdditionalCostsService;
 use App\Constants\PintConstants;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CostsRequest\AdditionalCostsRequest;
 use App\Imports\CostsImport;
 use App\Models\AccountStatement;
 use App\Models\PextProjectExpense;
@@ -25,6 +26,14 @@ use ZipArchive;
 
 class AdditionalCostsController extends Controller
 {
+    protected AdditionalCostsService $additionalCostsService;
+
+    public function __construct(AdditionalCostsService $additionalCostsService)
+    {
+        $this->additionalCostsService = $additionalCostsService;
+    }
+
+
     public function index(Project $project_id)
     {
         $expenseTypes = PintConstants::acExpenseTypes();
@@ -83,73 +92,12 @@ class AdditionalCostsController extends Controller
 
     public function search_costs(Request $request, $project_id)
     {
-        $result = AdditionalCost::where('project_id', $project_id)->with([
+        $query = AdditionalCost::where('project_id', $project_id)->with([
             'project:id,description',
             'provider'
         ]);
-
-        if ($request->search) {
-            $searchTerms = $request->input('search');
-            $result = $result->where(function ($query) use ($searchTerms) {
-                $query->where('ruc', 'like', "%$searchTerms%")
-                    ->orWhere('doc_number', 'like', "%$searchTerms%")
-                    ->orWhere('operation_number', 'like', "%$searchTerms%")
-                    ->orWhere('description', 'like', "%$searchTerms%")
-                    ->orWhere('amount', 'like', "%$searchTerms%");
-            });
-        }
-
-        if ($request->state === false) {
-            $result->where('is_accepted', 0);
-        } else {
-            $result->where(function ($query) {
-                $query->where('is_accepted', 1)
-                    ->orWhere('is_accepted', null);
-            });
-        }
-
-        if ($request->docNoDate) {
-            $result->where('doc_date', null);
-        }
-        if ($request->docStartDate) {
-            $result->where('doc_date', '>=', $request->docStartDate);
-        }
-        if ($request->docEndDate) {
-            $result->where('doc_date', '<=', $request->docEndDate);
-        }
-        if ($request->opNoDate) {
-            $result->where('operation_date', null);
-        }
-        if ($request->opStartDate) {
-            $result->where('operation_date', '>=', $request->opStartDate);
-        }
-        if ($request->opEndDate) {
-            $result->where('operation_date', '<=', $request->opEndDate);
-        }
-        if (count($request->selectedZones) < PintConstants::countAcZones()) {
-            $result = $result->whereIn('zone', $request->selectedZones);
-        }
-        if (count($request->selectedExpenseTypes) < PintConstants::countAcExpenseTypes()) {
-            $result = $result->whereIn('expense_type', $request->selectedExpenseTypes);
-        }
-        if (count($request->selectedDocTypes) < PintConstants::countAcDocTypes()) {
-            $result = $result->whereIn('type_doc', $request->selectedDocTypes);
-        }
-        $result = $result->orderBy('doc_date')->get();
-
-        $result->transform(function ($item) {
-            $item->project->setAppends([]);
-            $item->setAppends(['real_amount', 'real_state']);
-            return $item;
-        });
-
-        if ($request->state !== false && count($request->selectedStateTypes) < count(PintConstants::acStatesPenAccep())) {
-            $result = $result->filter(function ($item) use ($request) {
-                return in_array($item->real_state, $request->selectedStateTypes);
-            })->values()->all();
-        }
-
-        return response()->json($result, 200);
+        $data = $this->additionalCostsService->filter($request, $query);
+        return response()->json($data, 200);
     }
 
     public function store(AdditionalCostsRequest $request, $project_id)
@@ -500,13 +448,13 @@ class AdditionalCostsController extends Controller
     }
 
 
-    public function downloadImages($project_id)
+    public function downloadImages(Request $request, $project_id)
     {
         try {
-            $additionalCosts = AdditionalCost::where('project_id', $project_id)
-                ->where('is_accepted', 1)
-                ->whereIn('type_doc', ['Factura', 'Boleta', 'Voucher de Pago'])
-                ->get();
+            $query = AdditionalCost::where('project_id', $project_id)
+                ->where('is_accepted', 1);
+            $additionalCosts = $this->additionalCostsService->filter($request, $query);
+            
             $zipFileName = 'additionalCostsPhotos.zip';
             $zipFilePath = public_path("/documents/additionalcosts/{$zipFileName}");
             $zip = new ZipArchive;

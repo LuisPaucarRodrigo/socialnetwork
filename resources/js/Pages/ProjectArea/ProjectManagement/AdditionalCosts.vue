@@ -49,7 +49,7 @@
 
                     <button type="button"
                         class="rounded-md bg-blue-600 px-4 py-2 text-center text-sm text-white hover:bg-blue-500 h-full"
-                        @click="openExportPhoto" data-tooltip-target="export-photo-tooltip">
+                        @click="openExportArchivesModal" data-tooltip-target="export-photo-tooltip">
                         <svg fill="#ffffff" width="20px" height="20px" viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg">
                             <g id="SVGRepo_bgCarrier" stroke-width="0" />
@@ -1110,6 +1110,14 @@
             text="La siguiente acción ya no se podrá revertir, ¿Desea continuar?" :actionFunction="swapCosts"
             @closeModal="closeSwapCostsModal" />
 
+        <ConfirmateModal 
+            tittle="Descarga de archivos"
+            text="La descarga de archivos será en base a los filtros que están activos, si no hay filtros activos se descargarán de todos los registros." 
+            :showConfirm="showExportArchivesModal" 
+            :actionFunction="exportArchives"
+            @closeModal="closeExportArchivesModal"
+        />
+
     </AuthenticatedLayout>
 </template>
 
@@ -1438,13 +1446,15 @@ function openExportExcel() {
     window.location.href = url;
 }
 
-function openExportPhoto() {
-    const uniqueParam = `timestamp=${new Date().getTime()}`;
-    const url =
-        route("zip.additional.descargar", { project_id: props.project_id.id }) +
-        "?" +
-        uniqueParam;
-    window.location.href = url;
+const showExportArchivesModal = ref(false)
+const openExportArchivesModal = () => {showExportArchivesModal.value = true}
+const closeExportArchivesModal = () => {showExportArchivesModal.value = false}
+
+function exportArchives() {
+    axios.post(route("zip.additional.descargar", { project_id: props.project_id.id }), filterForm.value)
+        .catch(e=>{
+            notifyError('No existen archivos para exportar')
+        });
 }
 
 watch([() => form.type_doc, () => form.zone], () => {
