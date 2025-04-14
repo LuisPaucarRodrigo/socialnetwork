@@ -3,6 +3,7 @@
 namespace App\Services\ProjectArea;
 
 use App\Constants\PintConstants;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 
 class AdditionalCostsService
@@ -14,22 +15,22 @@ class AdditionalCostsService
             $searchTerms = $request->input('search');
             $query->where(function ($q) use ($searchTerms) {
                 $q->where('ruc', 'like', "%$searchTerms%")
-                    ->orWhere('doc_number', 'like', "%$searchTerms%")
-                    ->orWhere('operation_number', 'like', "%$searchTerms%")
-                    ->orWhere('description', 'like', "%$searchTerms%")
-                    ->orWhere('amount', 'like', "%$searchTerms%");
+                ->orWhere('doc_number', 'like', "%$searchTerms%")
+                ->orWhere('operation_number', 'like', "%$searchTerms%")
+                ->orWhere('description', 'like', "%$searchTerms%")
+                ->orWhere('amount', 'like', "%$searchTerms%");
             });
         }
-
+        
         if ($request->state === false) {
             $query->where('is_accepted', 0);
         } else {
             $query->where(function ($q) {
                 $q->where('is_accepted', 1)
-                    ->orWhereNull('is_accepted');
+                ->orWhereNull('is_accepted');
             });
         }
-        if ($request->docNoDate) {
+        if (filter_var($request->docNoDate, FILTER_VALIDATE_BOOLEAN)) {
             $query->whereNull('doc_date');
         }
         if ($request->docStartDate) {
@@ -39,7 +40,7 @@ class AdditionalCostsService
             $query->where('doc_date', '<=', $request->docEndDate);
         }
 
-        if ($request->opNoDate) {
+        if (filter_var($request->opNoDate, FILTER_VALIDATE_BOOLEAN)) {
             $query->whereNull('operation_date');
         }
         if ($request->opStartDate) {
@@ -49,15 +50,15 @@ class AdditionalCostsService
             $query->where('operation_date', '<=', $request->opEndDate);
         }
 
-        if ($request->selectedZones && count($request->selectedZones) < PintConstants::countAcZones()) {
+        if (count($request->selectedZones) < PintConstants::countAcZones()) {
             $query->whereIn('zone', $request->selectedZones);
         }
 
-        if ($request->selectedExpenseTypes && count($request->selectedExpenseTypes) < PintConstants::countAcExpenseTypes()) {
+        if (count($request->selectedExpenseTypes) < PintConstants::countAcExpenseTypes()) {
             $query->whereIn('expense_type', $request->selectedExpenseTypes);
         }
 
-        if ($request->selectedDocTypes && count($request->selectedDocTypes) < PintConstants::countAcDocTypes()) {
+        if (count($request->selectedDocTypes) < PintConstants::countAcDocTypes()) {
             $query->whereIn('type_doc', $request->selectedDocTypes);
         }
 
@@ -69,7 +70,7 @@ class AdditionalCostsService
             return $item;
         });
 
-        if ($request->selectedStateTypes && $request->state !== false && count($request->selectedStateTypes) < count(PintConstants::acStatesPenAccep())) {
+        if ($request->state !== false && count($request->selectedStateTypes) < count(PintConstants::acStatesPenAccep())) {
             $result = $result->filter(function ($item) use ($request) {
                 return in_array($item->real_state, $request->selectedStateTypes);
             })->values()->all();

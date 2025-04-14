@@ -19,7 +19,7 @@ class StaticCostsService
                     ->orWhere('amount', 'like', "%$searchTerms%");
             });
         }
-        if ($request->docNoDate) {
+        if (filter_var($request->docNoDate, FILTER_VALIDATE_BOOLEAN)) {
             $query->where('doc_date', null);
         }
         if ($request->docStartDate) {
@@ -28,7 +28,7 @@ class StaticCostsService
         if ($request->docEndDate) {
             $query->where('doc_date', '<=', $request->docEndDate);
         }
-        if ($request->opNoDate) {
+        if (filter_var($request->opNoDate, FILTER_VALIDATE_BOOLEAN)) {
             $query->where('operation_date', null);
         }
         if ($request->opStartDate) {
@@ -37,13 +37,13 @@ class StaticCostsService
         if ($request->opEndDate) {
             $query->where('operation_date', '<=', $request->opEndDate);
         }
-        if ($request->selectedZones && count($request->selectedZones) < PintConstants::countScZones()) {
+        if (count($request->selectedZones) < PintConstants::countScZones()) {
             $query = $query->whereIn('zone', $request->selectedZones);
         }
-        if ($request->selectedExpenseTypes && count($request->selectedExpenseTypes) < PintConstants::countScExpenseTypes()) {
+        if (count($request->selectedExpenseTypes) < PintConstants::countScExpenseTypes()) {
             $query = $query->whereIn('expense_type', $request->selectedExpenseTypes);
         }
-        if ($request->selectedDocTypes && count($request->selectedDocTypes) < PintConstants::countScDocTypes()) {
+        if (count($request->selectedDocTypes) < PintConstants::countScDocTypes()) {
             $query = $query->whereIn('type_doc', $request->selectedDocTypes);
         }
         $result = $query->orderBy('doc_date')->get();
@@ -52,7 +52,7 @@ class StaticCostsService
             $item->setAppends(['real_amount', 'real_state']);
             return $item;
         });
-        if ($request->selectedStateTypes && count($request->selectedStateTypes) < PintConstants::countScStatesTypes()) {
+        if (count($request->selectedStateTypes) < PintConstants::countScStatesTypes()) {
             $result = $result->filter(function ($item) use ($request) {
                 return in_array($item->real_state, $request->selectedStateTypes);
             })->values()->all();

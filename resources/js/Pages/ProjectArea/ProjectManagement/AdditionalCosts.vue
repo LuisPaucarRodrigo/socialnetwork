@@ -1459,7 +1459,10 @@ function exportArchives() {
                 uniqueParam
             }
         }
-    ).catch(() => {
+    
+    )
+    .then(()=>closeExportArchivesModal())
+    .catch(() => {
         notifyError('No existen archivos para exportar');
     });
 }
