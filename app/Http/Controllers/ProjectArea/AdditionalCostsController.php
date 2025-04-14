@@ -454,16 +454,15 @@ class AdditionalCostsController extends Controller
             $query = AdditionalCost::where('project_id', $project_id)
                 ->where('is_accepted', 1);
             $additionalCosts = $this->additionalCostsService->filter($request, $query);
-            
             $zipFileName = 'additionalCostsPhotos.zip';
             $zipFilePath = public_path("/documents/additionalcosts/{$zipFileName}");
             $zip = new ZipArchive;
             if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
                 foreach ($additionalCosts as $cost) {
-                    if (!empty($cost->photo)) {
-                        $photoPath = public_path("/documents/additionalcosts/{$cost->photo}");
+                    if (!empty($cost["photo"])) {
+                        $photoPath = public_path("/documents/additionalcosts/{$cost["photo"]}");
                         if (file_exists($photoPath)) {
-                            $zip->addFile($photoPath, $cost->photo);
+                            $zip->addFile($photoPath, $cost["photo"]);
                         }
                     }
                 }

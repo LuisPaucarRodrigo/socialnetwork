@@ -211,10 +211,10 @@ class StaticCostsController extends Controller
             $zip = new ZipArchive;
             if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
                 foreach ($staticCosts as $cost) {
-                    if (!empty($cost->photo)) {
-                        $photoPath = public_path("/documents/staticcosts/{$cost->photo}");
+                    if (!empty($cost["photo"])) {
+                        $photoPath = public_path("/documents/staticcosts/{$cost["photo"]}");
                         if (file_exists($photoPath)) {
-                            $zip->addFile($photoPath, $cost->photo);
+                            $zip->addFile($photoPath, $cost["photo"]);
                         }
                     }
                 }
