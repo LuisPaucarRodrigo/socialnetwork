@@ -103,7 +103,7 @@ const confirmUserDeletion = (userId) => {
 };
 
 function updateFrontEnd(action, data) {
-    const validations = users.value.data || users.value
+    const validations = users.data || users
     if (action === "updateRelations") {
         const index = validations.findIndex(item => item.dni === data.dni)
         validations[index].employee = data
