@@ -984,8 +984,17 @@ const openExportArchivesModal = () => {showExportArchivesModal.value = true}
 const closeExportArchivesModal = () => {showExportArchivesModal.value = false}
 
 function exportArchives() {
-    router.post( route("zip.static.descargar", { project_id: props.project_id.id }),
-    filterForm.value)
+    const uniqueParam = `timestamp=${new Date().getTime()}`;
+    axios.get( route("zip.static.descargar", { project_id: props.project_id.id })
+        ,  {
+            params: {
+                filterForm,
+                uniqueParam
+            }
+        }
+    ).catch(() => {
+        notifyError('No existen archivos para exportar');
+    });
     // axios.post(
     //     route("zip.static.descargar", { project_id: props.project_id.id }),
     //     filterForm.value,

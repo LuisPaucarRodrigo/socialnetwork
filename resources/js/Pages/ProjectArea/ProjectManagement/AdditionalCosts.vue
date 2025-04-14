@@ -1451,20 +1451,15 @@ const openExportArchivesModal = () => {showExportArchivesModal.value = true}
 const closeExportArchivesModal = () => {showExportArchivesModal.value = false}
 
 function exportArchives() {
-    axios.post(
-        route("zip.additional.descargar", { project_id: props.project_id.id }),
-        filterForm.value,
-        { responseType: 'blob' }
-    ).then(response => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'Archivos_gastos_variables.zip');
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        closeExportArchivesModal()
-    }).catch(() => {
+    const uniqueParam = `timestamp=${new Date().getTime()}`;
+    axios.get( route("zip.additional.descargar", { project_id: props.project_id.id })
+        ,  {
+            params: {
+                filterForm,
+                uniqueParam
+            }
+        }
+    ).catch(() => {
         notifyError('No existen archivos para exportar');
     });
 }
