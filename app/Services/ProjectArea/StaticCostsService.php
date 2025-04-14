@@ -37,13 +37,13 @@ class StaticCostsService
         if ($request->opEndDate) {
             $query->where('operation_date', '<=', $request->opEndDate);
         }
-        if (count($request->selectedZones) < PintConstants::countScZones()) {
+        if ($request->selectedZones && count($request->selectedZones) < PintConstants::countScZones()) {
             $query = $query->whereIn('zone', $request->selectedZones);
         }
-        if (count($request->selectedExpenseTypes) < PintConstants::countScExpenseTypes()) {
+        if ($request->selectedExpenseTypes && count($request->selectedExpenseTypes) < PintConstants::countScExpenseTypes()) {
             $query = $query->whereIn('expense_type', $request->selectedExpenseTypes);
         }
-        if (count($request->selectedDocTypes) < PintConstants::countScDocTypes()) {
+        if ($request->selectedDocTypes && count($request->selectedDocTypes) < PintConstants::countScDocTypes()) {
             $query = $query->whereIn('type_doc', $request->selectedDocTypes);
         }
         $result = $query->orderBy('doc_date')->get();
@@ -52,7 +52,7 @@ class StaticCostsService
             $item->setAppends(['real_amount', 'real_state']);
             return $item;
         });
-        if (count($request->selectedStateTypes) < PintConstants::countScStatesTypes()) {
+        if ($request->selectedStateTypes && count($request->selectedStateTypes) < PintConstants::countScStatesTypes()) {
             $result = $result->filter(function ($item) use ($request) {
                 return in_array($item->real_state, $request->selectedStateTypes);
             })->values()->all();

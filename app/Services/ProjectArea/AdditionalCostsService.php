@@ -49,15 +49,15 @@ class AdditionalCostsService
             $query->where('operation_date', '<=', $request->opEndDate);
         }
 
-        if (count($request->selectedZones) < PintConstants::countAcZones()) {
+        if ($request->selectedZones && count($request->selectedZones) < PintConstants::countAcZones()) {
             $query->whereIn('zone', $request->selectedZones);
         }
 
-        if (count($request->selectedExpenseTypes) < PintConstants::countAcExpenseTypes()) {
+        if ($request->selectedExpenseTypes && count($request->selectedExpenseTypes) < PintConstants::countAcExpenseTypes()) {
             $query->whereIn('expense_type', $request->selectedExpenseTypes);
         }
 
-        if (count($request->selectedDocTypes) < PintConstants::countAcDocTypes()) {
+        if ($request->selectedDocTypes && count($request->selectedDocTypes) < PintConstants::countAcDocTypes()) {
             $query->whereIn('type_doc', $request->selectedDocTypes);
         }
 
@@ -69,7 +69,7 @@ class AdditionalCostsService
             return $item;
         });
 
-        if ($request->state !== false && count($request->selectedStateTypes) < count(PintConstants::acStatesPenAccep())) {
+        if ($request->selectedStateTypes && $request->state !== false && count($request->selectedStateTypes) < count(PintConstants::acStatesPenAccep())) {
             $result = $result->filter(function ($item) use ($request) {
                 return in_array($item->real_state, $request->selectedStateTypes);
             })->values()->all();
