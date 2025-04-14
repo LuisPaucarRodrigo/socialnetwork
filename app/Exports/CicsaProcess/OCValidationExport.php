@@ -29,6 +29,7 @@ class OCValidationExport implements FromView, WithColumnWidths
                 'Centro de Costos',
                 'CPE',
                 'Orden de Compra',
+                'Monto de Orden de Compra',
                 'Validacion de Expediente',
                 'Control de Materiales',
                 'Supervisor',
