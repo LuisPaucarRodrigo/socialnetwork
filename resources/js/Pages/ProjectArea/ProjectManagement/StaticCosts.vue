@@ -988,7 +988,7 @@ function exportArchives() {
     axios.get( route("zip.static.descargar", { project_id: props.project_id.id })
         ,  {
             params: {
-                filterForm,
+                ...filterForm.value,
                 uniqueParam
             }
         }
