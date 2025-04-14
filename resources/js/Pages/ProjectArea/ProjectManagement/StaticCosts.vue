@@ -45,7 +45,7 @@
                     </div>
                     <button type="button"
                         class="rounded-md bg-blue-600 px-4 py-2 text-center text-sm text-white hover:bg-blue-500 h-full"
-                        @click="openExportPhoto" data-tooltip-target="export-photo-tooltip">
+                        @click="openExportArchivesModal" data-tooltip-target="export-photo-tooltip">
                         <svg fill="#ffffff" width="20px" height="20px" viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg">
                             <g id="SVGRepo_bgCarrier" stroke-width="0" />
@@ -766,12 +766,20 @@
 
         <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Gasto Fijo"
             :deleteFunction="deleteAdditional" @closeModal="closeModalDoc" />
+        <ConfirmateModal 
+            tittle="Descarga de archivos"
+            text="La descarga de archivos será en base a los filtros que están activos, si no hay filtros activos se descargarán de todos los registros. PARA AMBOS CASOS SOLO ES PARA REGISTROS ACEPTADOS" 
+            :showConfirm="showExportArchivesModal" 
+            :actionFunction="exportArchives"
+            @closeModal="closeExportArchivesModal"
+        />
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
+import ConfirmateModal from "@/Components/ConfirmateModal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
@@ -794,6 +802,8 @@ import { Toaster } from "vue-sonner";
 
 import Dropdown from "@/Components/Dropdown.vue";
 import Search from "@/Components/Search.vue";
+import qs from 'qs';
+
 
 const props = defineProps({
     additional_costs: Object,
@@ -971,14 +981,18 @@ function handlerPreview(id) {
     );
 }
 
-function openExportPhoto() {
+const showExportArchivesModal = ref(false)
+const openExportArchivesModal = () => {showExportArchivesModal.value = true}
+const closeExportArchivesModal = () => {showExportArchivesModal.value = false}
+
+function exportArchives() {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
-    const url =
-        route("zip.static.descargar", { project_id: props.project_id.id }) +
-        "?" +
-        uniqueParam;
+    const url = route("zip.static.descargar", { project_id: props.project_id.id }) +
+            '?' + qs.stringify({...filterForm.value, uniqueParam}, { arrayFormat: 'brackets' });
     window.location.href = url;
+    closeExportArchivesModal()
 }
+
 
 
 const initialFilterFormState = {

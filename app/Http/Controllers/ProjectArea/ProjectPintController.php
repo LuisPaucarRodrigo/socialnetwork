@@ -106,7 +106,21 @@ class ProjectPintController extends Controller
             $project->employees()->sync($template['project_employees']);
             $this->createFolder($project->code . '_' . $project->id);
 
-            //
+            //Cicsa assignation
+            CicsaAssignation::create([
+                "assignation_date" => $preproject->date,
+                "project_name" => $project->description,
+                "customer" => $preproject->customer->business_name,
+                "project_code" => $preproject->code,
+                "cpe" => $preproject->cpe,
+                "zone" => 'Arequipa',
+                "zone2" => null,
+                "manager" => 'Nikol Sheyla Rondón Neyra',
+                "user_name" => 'Nikol Sheyla Rondón Neyra',
+                "user_id" => 6,
+                "project_id" => $project->id,
+            ]);
+
 
             //ProjectFolder
             DB::commit();

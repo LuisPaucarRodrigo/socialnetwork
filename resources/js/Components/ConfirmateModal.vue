@@ -9,7 +9,7 @@
       </p>
       <div class="mt-6 flex justify-end">
         <SecondaryButton @click="closeModal">Cancelar</SecondaryButton>
-        <PrimaryButton class="ml-3" @click="doAction">Aceptar</PrimaryButton>
+        <PrimaryButton class="ml-3 uppercase tracking-widest text-xs" @click="doAction">Aceptar</PrimaryButton>
       </div>
     </div>
   </Modal>
