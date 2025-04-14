@@ -990,7 +990,7 @@ function exportArchives() {
     const url = route("zip.static.descargar", { project_id: props.project_id.id }) +
             '?' + qs.stringify({...filterForm.value, uniqueParam}, { arrayFormat: 'brackets' });
     window.location.href = url;
-
+    closeExportArchivesModal()
 }
 
 
