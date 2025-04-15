@@ -45,9 +45,9 @@ class PintConstants
     public const ADICIONALES = 'Adicionales';
     public const FILTROS_Y_ACEITES = 'Filtros y Aceites';
     public const PLANILLA = 'Planilla';
-
-
-
+    public const PRESTAMOS = 'Préstamos';
+    public const IMPLEMENTACION_DE_OFICINA = 'Implementación de Oficina';
+    public const RENOVACION_DE_OFICINA = 'Renovación de Oficina';
 
     //ac doc types
     public const SIN_COMPROBANTE = "Sin Comprobante";
@@ -55,6 +55,8 @@ class PintConstants
     public const FACTURA = "Factura";
     public const BOLETA = "Boleta";
     public const VOUCHER_DE_PAGO = "Voucher de Pago";
+    public const BOLEATA_DE_PAGO = "Boleta de Pago";
+    public const RECIBO = "Recibo";
 
     //ac state types
     public const PENDIENTE = "Pendiente";
@@ -74,6 +76,8 @@ class PintConstants
     public const SANDIA = "Sandia";
     public const OFICINA = "Oficina";
 
+
+    // ------- ADDITIONAL ----------------------
 
     public static function acExpenseTypes(): array
     {
@@ -140,6 +144,15 @@ class PintConstants
         ];
     }
 
+    public static function acExpensesThatDontCount (): array { 
+        return [
+        PintConstants::COMBUSTIBLE_GEP,
+        PintConstants::ACTIVOS,
+        PintConstants::REPOSICION_DE_EQUIPO,
+    ];}
+
+    // ------------- STATIC -------------------------------
+
     public static function scExpenseTypes() : array {
         return [
             self::ALQUILER_DE_VEHICULOS,
@@ -198,8 +211,20 @@ class PintConstants
         ];
     }
 
+    public static function scExpensesThatDontCount (): array { 
+        return [
+        PintConstants::COMBUSTIBLE_GEP,
+        PintConstants::ACTIVOS,
+        PintConstants::REPOSICION_DE_EQUIPO,
+    ];}
+
+
+    
+    // ---------- ADMINISTRATIVE -------------------------
+
     public static function admincostExpenseTypes(): array {
         return [
+            self::PRESTAMOS,
             self::HOSPEDAJE,
             self::ENCOMIENDA,
             self::CONSUMIBLES,
@@ -230,25 +255,31 @@ class PintConstants
             self::ADICIONALES,
             self::FILTROS_Y_ACEITES,
             self::PLANILLA,
+            self::IMPLEMENTACION_DE_OFICINA, 
+            self::RENOVACION_DE_OFICINA,
             self::OTROS,
         ];
     }
 
-
-
-    public static function scExpensesThatDontCount (): array { 
+    public static function admincostDocTypes(): array
+    {
         return [
-        PintConstants::COMBUSTIBLE_GEP,
-        PintConstants::ACTIVOS,
-        PintConstants::REPOSICION_DE_EQUIPO,
-    ];}
-    public static function acExpensesThatDontCount (): array { 
-        return [
-        PintConstants::COMBUSTIBLE_GEP,
-        PintConstants::ACTIVOS,
-        PintConstants::REPOSICION_DE_EQUIPO,
-    ];}
+            self::SIN_COMPROBANTE,
+            self::FACTURA,
+            self::BOLETA,
+            self::VOUCHER_DE_PAGO,
+            self::RH,
+            self::BOLEATA_DE_PAGO,
+            self::RECIBO,
+        ];
+    }
 
+
+    
+
+
+
+    // ---------- MOBILE ---------------------
 
     public static function mobileExpenses(): array
     {
@@ -318,6 +349,7 @@ class PintConstants
     public static function countScStatesTypes() : int {return count(self::scStatesTypes());}
 
     public static function countAdmincostExpenseTypes() : int {return count(self::admincostExpenseTypes());}
+    public static function countAdmincostDocTypes() : int {return count(self::admincostDocTypes());}
 
     
 }

@@ -819,6 +819,10 @@ const props = defineProps({
 });
 
 const { expenseTypes, docTypes, zones ,stateTypes } = props
+expenseTypes.sort()
+docTypes.sort()
+zones.sort()
+stateTypes.sort()
 
 const dataToRender = ref(props.additional_costs.data);
 const filterMode = ref(false);
