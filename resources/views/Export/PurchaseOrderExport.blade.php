@@ -6,6 +6,7 @@
             <th> CPE </th>
             <th> Fecha de OC </th>
             <th> Numero de OC </th>
+            <th> Fecha de Envio de Informe </th>
             <th> Monto sin IGV </th>
             <th> Formato Maestro </th>
             <th> Item 3456 </th>
@@ -22,6 +23,7 @@
             <td> {{ $purchaseOrder->cicsa_assignation->cpe }} </td>
             <td> {{ $purchaseOrder?->oc_date }} </td>
             <td> {{ $purchaseOrder?->oc_number }} </td>
+            <td> {{ $purchaseOrder?->cicsa_assignation->cicsa_installation?->shipping_report_date }} </td>
             <td> {{ $purchaseOrder?->amount }} </td>
             <td> {{ $purchaseOrder?->master_format }} </td>
             <td> {{ $purchaseOrder?->item3456 }} </td>

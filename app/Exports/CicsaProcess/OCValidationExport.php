@@ -29,6 +29,7 @@ class OCValidationExport implements FromView, WithColumnWidths
                 'Centro de Costos',
                 'CPE',
                 'Orden de Compra',
+                'Monto de Orden de Compra',
                 'Validacion de Expediente',
                 'Control de Materiales',
                 'Supervisor',
@@ -43,7 +44,7 @@ class OCValidationExport implements FromView, WithColumnWidths
             ],
             'cicsa_purchase_order_validations' => CicsaPurchaseOrderValidation::with([
                 'cicsa_purchase_order' => function ($query) {
-                    $query->select('id', 'oc_number');
+                    $query->select('id', 'oc_number','amount');
                 },
                 'cicsa_assignation' => function ($query) {
                     $query->select('id', 'project_name', 'project_code', 'cpe', 'manager');
