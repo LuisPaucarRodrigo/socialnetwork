@@ -261,7 +261,7 @@ class PintConstants
         ];
     }
 
-    public static function adminDocTypes(): array
+    public static function admincostDocTypes(): array
     {
         return [
             self::SIN_COMPROBANTE,
@@ -349,6 +349,7 @@ class PintConstants
     public static function countScStatesTypes() : int {return count(self::scStatesTypes());}
 
     public static function countAdmincostExpenseTypes() : int {return count(self::admincostExpenseTypes());}
+    public static function countAdmincostDocTypes() : int {return count(self::admincostDocTypes());}
 
     
 }
