@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 use App\Enums\Permissions\UserRolePermissions;
 
 
-
+Route::middleware(['auth', 'checkPlatformWeb'])->group(function () { 
 
 // USERS
 Route::get('users/linkEmployee/{user}', [UserController::class, 'linkEmployee'])
@@ -77,5 +77,6 @@ Route::get('rols/details/{id}', [ManagementRolsController::class, 'details'])
     ->name('rols.details');
 
 
+});
 
 

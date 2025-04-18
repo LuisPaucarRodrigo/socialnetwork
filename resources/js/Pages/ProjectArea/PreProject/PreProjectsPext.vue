@@ -276,7 +276,7 @@ const search = async ($search) => {
     }
     try {
         const response = await axios.post(
-            route('preprojects.index', {
+            route('preprojects.index.post', {
                 type: props.type,
                 preprojects_status: JSON.parse(props.preprojects_status)
             }), { searchQuery: $search });

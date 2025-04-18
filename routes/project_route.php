@@ -325,7 +325,7 @@ Route::middleware('permission:' . implode('|', RolesConstants::PROJECT_MODULE))-
 
     //PreProjects PEXT
     Route::get('/preprojects_index/{type}/{preprojects_status?}', [PreProjectController::class, 'index'])->name('preprojects.index');
-    Route::post('/preprojects_index/{type}/{preprojects_status?}', [PreProjectController::class, 'index'])->name('preprojects.index');
+    Route::post('/preprojects_index/{type}/{preprojects_status?}', [PreProjectController::class, 'index'])->name('preprojects.index.post');
 
 
     //Preproject image
