@@ -311,6 +311,9 @@ const { acExpensesAmounts, scExpensesAmounts } = defineProps({
     },
 });
 
+console.log(acExpensesAmounts)
+console.log(scExpensesAmounts)
+
 const chartInstance2 = ref(null);
 const updateChart2 = () => {
     const ctx = document.getElementById("pieChart2").getContext("2d");
