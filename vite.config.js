@@ -17,7 +17,17 @@ export default defineConfig({
             },
         }),
     ],
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    vue: ['vue', '@inertiajs/vue3'],
+                    flowbite: ['flowbite'],
+                }
+            }
+        }
+    },
     define: {
-        __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: true 
-      }
+        __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: true
+    }
 });
