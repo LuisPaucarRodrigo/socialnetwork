@@ -9,11 +9,13 @@ use Maatwebsite\Excel\Concerns\WithColumnWidths;
 
 class PextExpenseExport implements FromView, WithColumnWidths
 {
+    protected $cost_line;
     protected $project_id;
     protected $fixedOrAdditional;
 
-    public function __construct($project_id, $fixedOrAdditional)
+    public function __construct($cost_line, $project_id, $fixedOrAdditional)
     {
+        $this->cost_line = $cost_line;
         $this->project_id = $project_id;
         $this->fixedOrAdditional = $fixedOrAdditional;
     }
@@ -29,7 +31,10 @@ class PextExpenseExport implements FromView, WithColumnWidths
                 ->get();
         } else {
             $expense = PextProjectExpense::with(['provider:id,company_name'])
-                ->where('project_id',"!=", 320)
+                ->whereHas('project', function ($e){
+                    $e->where('cost_line_id', $this->cost_line);
+                })
+                ->where('project_id', "!=", 320)
                 ->where('fixedOrAdditional', $this->fixedOrAdditional)
                 ->where('is_accepted', 1)
                 ->get();

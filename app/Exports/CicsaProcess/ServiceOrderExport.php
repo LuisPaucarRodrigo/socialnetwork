@@ -23,7 +23,6 @@ class ServiceOrderExport implements FromView, WithColumnWidths
         return view('Export.ServiceOrderExport', [
             'title' => [
                 'Nombre de Proyecto',
-                'Codigo de Proyecto',
                 'Centro de Costos',
                 'CPE',
                 'Orden de Compra',
@@ -33,18 +32,14 @@ class ServiceOrderExport implements FromView, WithColumnWidths
                 'Orden de Compra',
                 'PDF Factura',
                 'ZIP Factura',
-                'Encargado',
             ],
-            'cicsa_service_orders' => CicsaServiceOrder::with(['cicsa_assignation' => function ($query) {
-                $query->select('id', 'project_name', 'project_code', 'cpe');
-            }, 'cicsa_purchase_order' => function ($query) {
-                $query->select('id', 'oc_number');
-            }])
-            ->whereHas('cicsa_assignation', function ($iQuery) {
-                $iQuery->whereHas('project', function ($subQuery) {
+            'cicsa_service_orders' => CicsaAssignation::with([
+                'project.cost_center',
+                'cicsa_service_order.cicsa_purchase_order:id,oc_number',
+            ])
+                ->whereHas('project', function ($subQuery) {
                     $subQuery->where('cost_line_id', $this->type);
-                });
-            })
+                })
                 ->get()
         ]);
     }
@@ -62,8 +57,6 @@ class ServiceOrderExport implements FromView, WithColumnWidths
             'H' => 17,
             'I' => 17,
             'J' => 17,
-            'K' => 30,
-            'L' => 30
         ];
     }
 }

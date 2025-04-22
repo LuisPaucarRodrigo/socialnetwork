@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
 class UserController extends Controller
-{
+{   
     public function index_user()
-    {
+    {   
         return Inertia::render('Users/Index/Index', [
             'user' => User::with(['role', 'employee:id,user_id'])->paginate(20)
         ]);

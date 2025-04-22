@@ -20,7 +20,6 @@ Route::middleware(['auth', 'checkPlatformWeb'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-
     include_once 'user_admin_route.php';
     include_once 'human_resource_route.php';
     include_once 'inventory_route.php';
@@ -30,6 +29,7 @@ Route::middleware(['auth', 'checkPlatformWeb'])->group(function () {
     include_once 'huawei_route.php';
     include_once 'cicsa_route.php';
     include_once 'fleet_car_route.php';
+    // include_once 'share_point.php';
 });
 
 

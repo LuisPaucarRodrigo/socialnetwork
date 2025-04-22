@@ -39,7 +39,7 @@ class CarsController extends Controller
         if (!$userHasCarManagerPermission) {
             $cars->where('user_id', $user->id);
         }
-        $cars = $cars->get();
+        $cars = $cars->paginate(20);
         return Inertia::render('FleetCar/index/Index', [
             'car' => $cars,
             'costLine' => CostLine::all(),

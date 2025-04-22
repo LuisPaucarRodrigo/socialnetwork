@@ -177,14 +177,14 @@ class PextController extends Controller
             ->where('project_id', $project_id)
             ->first();
         $fileName = 'Gastos_Pext' . '-' . $project_name->project_name . '-' . $fOrA . '.xlsx';
-        return Excel::download(new PextExpenseExport($project_id, json_decode($fixedOrAdditional)), $fileName);
+        return Excel::download(new PextExpenseExport(null, $project_id, json_decode($fixedOrAdditional)), $fileName);
     }
 
-    public function expense_export_general($fixedOrAdditional)
+    public function expense_export_general($fixedOrAdditional,$cost_line)
     {
         $fOrA = json_decode($fixedOrAdditional) ? 'Fijos' : 'Adicionales';
         $fileName = 'Gastos_Pext' . '-' . $fOrA . '.xlsx';
-        return Excel::download(new PextExpenseExport(null, json_decode($fixedOrAdditional)), $fileName);
+        return Excel::download(new PextExpenseExport($cost_line, null, json_decode($fixedOrAdditional)), $fileName);
     }
 
     public function index_additional(Request $request, $type, $searchCondition = null,)
