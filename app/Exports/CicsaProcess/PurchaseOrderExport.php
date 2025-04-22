@@ -20,6 +20,7 @@ class PurchaseOrderExport implements FromView, WithColumnWidths
     {
         return view('Export.PurchaseOrderExport', [
             'purchaseOrders' => CicsaAssignation::with([
+                'project.cost_center',
                 'cicsa_purchase_order',
                 'cicsa_installation:id,cicsa_assignation_id,projected_amount,shipping_report_date'
             ])

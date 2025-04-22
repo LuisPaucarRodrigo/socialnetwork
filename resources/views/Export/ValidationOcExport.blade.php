@@ -12,7 +12,7 @@
         @foreach($validationOC->cicsa_purchase_order_validation as $item)
         <tr>
             <td> {{ $validationOC->project_name }} </td>
-            <td> {{ $validationOC->project->cost_center->name }} </td>
+            <td> {{ $validationOC->project->cost_center?->name }} </td>
             <td> {{ $validationOC->cpe }} </td>
             <td> {{ $item->cicsa_purchase_order?->oc_number }} </td>
             <td> {{ $item->cicsa_purchase_order?->amount }} </td>

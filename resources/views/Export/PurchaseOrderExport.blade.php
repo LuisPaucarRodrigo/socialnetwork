@@ -20,7 +20,7 @@
         @foreach($purchaseOrder->cicsa_purchase_order as $item)
         <tr>
             <td> {{ $purchaseOrder->project_name }} </td>
-            <td> {{ $purchaseOrder->project->cost_center->name }} </td>
+            <td> {{ $purchaseOrder->project->cost_center?->name }} </td>
             <td> {{ $purchaseOrder?->cicsa_installation?->projected_amount }} </td>
             <td> {{ $purchaseOrder?->cicsa_installation?->shipping_report_date }} </td>
             <td> {{ $purchaseOrder->cpe }} </td>
@@ -35,7 +35,7 @@
         @else
         <tr>
             <td> {{ $purchaseOrder->project_name }} </td>
-            <td> {{ $purchaseOrder->project->cost_center->name }} </td>
+            <td> {{ $purchaseOrder->project->cost_center?->name }} </td>
             <td> {{ $purchaseOrder?->cicsa_installation?->projected_amount }} </td>
             <td> {{ $purchaseOrder?->cicsa_installation?->shipping_report_date }} </td>
             <td> {{ $purchaseOrder->cpe }} </td>
