@@ -12,7 +12,7 @@
         @foreach($cicsa_service_order->cicsa_service_order as $item)
         <tr>
             <td> {{ $cicsa_service_order->project_name }} </td>
-            <td> {{ $cicsa_service_order->project->cost_center->name }} </td>
+            <td> {{ $cicsa_service_order->project->cost_center?->name }} </td>
             <td> {{ $cicsa_service_order->cpe }} </td>
             <td> {{ $item->cicsa_purchase_order?->oc_number }} </td>
             <td> {{ $item->service_order_date }} </td>
