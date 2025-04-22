@@ -243,7 +243,7 @@ class DocumentController extends Controller
                     'subdivision_id' => $docItem->subdivision_id,
                     'document_id' => $docItem->id,
                     'employee_id' => $docItem->employee_id,
-                    'e_employee_id' => $docItem->exp_de_employee_idate,
+                    'e_employee_id' => $docItem->e_employee_id,
                     'exp_date' => $docItem->exp_date,
                     'state' => 'Completado',
                 ]);
@@ -310,7 +310,7 @@ class DocumentController extends Controller
                 'subdivision_id' => $docItem->subdivision_id,
                 'document_id' => $docItem->id,
                 'employee_id' => $docItem->employee_id,
-                'e_employee_id' => $docItem->exp_de_employee_idate,
+                'e_employee_id' => $docItem->e_employee_id,
                 'exp_date' => $docItem->exp_date,
                 'state' => 'Completado',
             ]);
@@ -323,40 +323,40 @@ class DocumentController extends Controller
     
     public function updateAllDocuments()
     {
-        $documents = Document::all();
+        // $documents = Document::all();
     
-        foreach ($documents as $document) {
-            $subdivision = Subdivision::find($document->subdivision_id);
-            $subdivision_name = $subdivision->name;
+        // foreach ($documents as $document) {
+        //     $subdivision = Subdivision::find($document->subdivision_id);
+        //     $subdivision_name = $subdivision->name;
     
-            $employee_name = null;
+        //     $employee_name = null;
     
-            if (!empty($document->employee_id)) {
-                $employee = Employee::where('id', $document->employee_id)
-                    ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
-                    ->first();
-                $employee_name = $employee->full_name ?? 'SIN NOMBRE';
-            } elseif (!empty($document->e_employee_id)) {
-                $external_employee = ExternalEmployee::where('id', $document->e_employee_id)
-                    ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
-                    ->first();
-                $employee_name = $external_employee->full_name ?? 'SIN NOMBRE';
-            } else {
-                $employee_name = 'SIN NOMBRE';
-            }
+        //     if (!empty($document->employee_id)) {
+        //         $employee = Employee::where('id', $document->employee_id)
+        //             ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
+        //             ->first();
+        //         $employee_name = $employee->full_name ?? 'SIN NOMBRE';
+        //     } elseif (!empty($document->e_employee_id)) {
+        //         $external_employee = ExternalEmployee::where('id', $document->e_employee_id)
+        //             ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
+        //             ->first();
+        //         $employee_name = $external_employee->full_name ?? 'SIN NOMBRE';
+        //     } else {
+        //         $employee_name = 'SIN NOMBRE';
+        //     }
     
-            $old_file_path = public_path('documents/documents/' . $document->title);
-            $file_extension = pathinfo($old_file_path, PATHINFO_EXTENSION) ?? 'pdf';
+        //     $old_file_path = public_path('documents/documents/' . $document->title);
+        //     $file_extension = pathinfo($old_file_path, PATHINFO_EXTENSION) ?? 'pdf';
     
-            $new_title = strtoupper($subdivision_name . ' - ' . $employee_name . '.' . $file_extension);
-            $new_file_path = public_path('documents/documents/' . $new_title);
+        //     $new_title = strtoupper($subdivision_name . ' - ' . $employee_name . '.' . $file_extension);
+        //     $new_file_path = public_path('documents/documents/' . $new_title);
     
-            if (File::exists($old_file_path)) {
-                File::move($old_file_path, $new_file_path);
-            }
+        //     if (File::exists($old_file_path)) {
+        //         File::move($old_file_path, $new_file_path);
+        //     }
     
-            $document->update(['title' => $new_title]);
-        }
+        //     $document->update(['title' => $new_title]);
+        // }
     
         return response()->json(['message' => 'Todos los documentos han sido actualizados correctamente.']);
     }
@@ -378,15 +378,18 @@ class DocumentController extends Controller
             unlink($path);
         }
 
-        $docReg = $id->employee_id ? DocumentRegister::where('subdivision_id', $id->subdivision_id)
-            ->where('employee_id', $id->employee_id)->first() : (
-            $id->e_employee_id ? DocumentRegister::where('subdivision_id', $id->subdivision_id)
-                ->where('e_employee_id', $id->e_employee_id) : null
-        );
+        $docReg = $id->employee_id 
+            ? DocumentRegister::where('subdivision_id', $id->subdivision_id)->where('employee_id', $id->employee_id)->first() 
+            : ( $id->e_employee_id 
+                ? DocumentRegister::where('subdivision_id', $id->subdivision_id)->where('e_employee_id', $id->e_employee_id)->first()
+                : null
+            );
         if ($docReg) {
             $docReg->delete();
         }
         $id->delete();
+
+        
         // } else {
         //     dd("El archivo no existe en la ruta: $filePath");
         // }

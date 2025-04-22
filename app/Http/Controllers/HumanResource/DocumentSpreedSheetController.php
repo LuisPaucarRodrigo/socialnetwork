@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\HumanResource;
 
+use App\Http\Controllers\Controller;
 use App\Enums\Permissions\HumanResourcesPermissions;
 use App\Http\Requests\HumanResource\DocumentRegisterRequest;
 use App\Http\Requests\HumanResource\InsuranceExpDateRequest;

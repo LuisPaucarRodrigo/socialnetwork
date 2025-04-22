@@ -10,6 +10,8 @@ use App\Enums\Permissions\PurchasingPermissions;
 use App\Enums\Permissions\UserRolePermissions;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\Permission;
+use App\Models\Project;
+use App\Models\CicsaAssignation;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -23,27 +25,38 @@ use Inertia\Response;
 
 class ProfileController extends Controller
 {
-    public function allFine(){
-        foreach (DocumentsPermissions::cases() as $status) {
-            Permission::create(['name' => $status->value]);
-        }
-        foreach (HumanResourcesPermissions::cases() as $status) {
-            Permission::create(['name' => $status->value]);
-        }
-        foreach (InventoryPermissions::cases() as $status) {
-            Permission::create(['name' => $status->value]);
-        }
-        foreach (ProjectPermissions::cases() as $status) {
-            Permission::create(['name' => $status->value]);
-        }
-        foreach (PurchasingPermissions::cases() as $status) {
-            Permission::create(['name' => $status->value]);
-        }
-        foreach (UserRolePermissions::cases() as $status) {
-            Permission::create(['name' => $status->value]);
-        }
-        
-        return response()->json('siuu');
+    public function allFine()
+    {
+        // $data = Project::with('cicsa_assignation', 'preproject.customer')
+        //     ->where('cost_center_id', 1)
+        //     ->whereIn('id', [368, 424, 451])
+        //     ->get();
+
+        // DB::beginTransaction();
+        // try {
+        //     foreach ($data as $project) {
+        //         $preproject = $project->preproject;
+        //         CicsaAssignation::create([
+        //             "assignation_date" => $preproject->date,
+        //             "project_name" => $project->description,
+        //             "customer" => $preproject->customer->business_name,
+        //             "project_code" => $preproject->code,
+        //             "cpe" => $preproject->cpe,
+        //             "zone" => 'Arequipa',
+        //             "zone2" => null,
+        //             "manager" => 'Nikol Sheyla Rondón Neyra',
+        //             "user_name" => 'Nikol Sheyla Rondón Neyra',
+        //             "user_id" => 6,
+        //             "project_id" => $project->id,
+        //         ]);
+        //     }
+        //     DB::commit();
+        //     return response()->json('all fine');
+        // } catch (Exception $e) {
+        //     DB::rollBack();
+        //     return $e->getMessage();
+        // }
+
     }
 
     /**

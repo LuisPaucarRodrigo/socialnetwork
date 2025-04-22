@@ -367,7 +367,7 @@ Route::middleware('permission:' . implode('|', RolesConstants::PROJECT_MODULE))-
     Route::get('/projectPext/expenses/monthly/{project_id}/index/{fixedOrAdditional}/status/{status?}', [PextController::class, 'index_expenses'])->name('projectmanagement.pext.expenses.index');
     Route::get('/projectPext/expenses/showImage/{expense_id}', [PextController::class, 'expense_show_image'])->name('projectmanagement.pext.expenses.image.show');
     Route::get('/projectPext/expenses/{project_id}/export/{fixedOrAdditional}', [PextController::class, 'expense_export'])->name('projectmanagement.pext.expenses.export');
-    Route::get('/projectPext/expenses/export/general/{fixedOrAdditional}', [PextController::class, 'expense_export_general'])->name('projectmanagement.pext.expenses.general.export');
+    Route::get('/projectPext/expenses/export/general/{fixedOrAdditional}/cost_line/{cost_line}', [PextController::class, 'expense_export_general'])->name('projectmanagement.pext.expenses.general.export');
 
     //Project Pext Additional
     Route::any('/projectPext/additional_index/{type}/{searchCondition?}', [PextController::class, 'index_additional'])->name('projectmanagement.pext.additional.index');

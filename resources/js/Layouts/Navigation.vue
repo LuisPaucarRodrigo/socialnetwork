@@ -12,7 +12,7 @@
 
         <nav class="mt-10" x-data="{ isMultiLevelMenuOpen: false }">
             <template v-for="module in navModules" :key="module.name">
-                <!-- <component 
+                <!-- <component p
                     v-if="modulePermission(module.name, userModules)"
                     :is="module.component"
                 /> -->

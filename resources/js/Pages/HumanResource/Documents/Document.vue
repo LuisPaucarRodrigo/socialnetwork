@@ -11,7 +11,6 @@
           <PrimaryButton 
             v-permission-and="[
               'documents_create',
-              'documents_index',
             ]"
           @click="openCreateDocumentModal" type="button"
             class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">

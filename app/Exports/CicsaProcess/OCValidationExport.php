@@ -3,8 +3,6 @@
 namespace App\Exports\CicsaProcess;
 
 use App\Models\CicsaAssignation;
-use App\Models\CicsaPurchaseOrder;
-use App\Models\CicsaPurchaseOrderValidation;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
@@ -29,6 +27,7 @@ class OCValidationExport implements FromView, WithColumnWidths
                 'Centro de Costos',
                 'CPE',
                 'Orden de Compra',
+                'Monto de Orden de Compra',
                 'Validacion de Expediente',
                 'Control de Materiales',
                 'Supervisor',
@@ -41,20 +40,28 @@ class OCValidationExport implements FromView, WithColumnWidths
                 'Encargado',
                 'Gestor'
             ],
-            'cicsa_purchase_order_validations' => CicsaPurchaseOrderValidation::with([
-                'cicsa_purchase_order' => function ($query) {
-                    $query->select('id', 'oc_number');
-                },
-                'cicsa_assignation' => function ($query) {
-                    $query->select('id', 'project_name', 'project_code', 'cpe', 'manager');
-                }
+            'cicsa_purchase_order_validations' => CicsaAssignation::with([
+                'project.cost_center',
+                'cicsa_purchase_order_validation.cicsa_purchase_order:id,oc_number,amount',
             ])
-                ->whereHas('cicsa_assignation', function ($iQuery) {
-                    $iQuery->whereHas('project', function ($subQuery) {
-                        $subQuery->where('cost_line_id', $this->type);
-                    });
+                ->whereHas('project', function ($subQuery) {
+                    $subQuery->where('cost_line_id', $this->type);
                 })
                 ->get()
+            // 'cicsa_purchase_order_validations' => CicsaPurchaseOrderValidation::with([
+            //     'cicsa_purchase_order' => function ($query) {
+            //         $query->select('id', 'oc_number','amount');
+            //     },
+            //     'cicsa_assignation' => function ($query) {
+            //         $query->select('id', 'project_name', 'project_code', 'cpe', 'manager');
+            //     }
+            // ])
+            //     ->whereHas('cicsa_assignation', function ($iQuery) {
+            //         $iQuery->whereHas('project', function ($subQuery) {
+            //             $subQuery->where('cost_line_id', $this->type);
+            //         });
+            //     })
+            //     ->get()
         ]);
     }
 

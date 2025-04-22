@@ -8,19 +8,30 @@
     </thead>
     <tbody>
         @foreach($cicsa_charge_areas as $cicsa_charge_area)
-        <tr>
-            <td> {{ $cicsa_charge_area->cicsa_assignation->project_name }} </td>
-            <td> {{ $cicsa_charge_area->cicsa_assignation->project_code }} </td>
-            <td> {{ $cicsa_charge_area->cicsa_assignation->project->cost_center->name }} </td>
-            <td> {{ $cicsa_charge_area->cicsa_assignation->cpe }} </td>
-            <td> {{ $cicsa_charge_area->cicsa_purchase_order?->oc_number }} </td>
-            <td> {{ $cicsa_charge_area->invoice_number }} </td>
-            <td> {{ $cicsa_charge_area->invoice_date }} </td>
-            <td> {{ $cicsa_charge_area->credit_to }} </td>
-            <td> {{ $cicsa_charge_area->deposit_date }} </td>
-            <td> {{ $cicsa_charge_area->amount }} </td>
-            <td> {{ $cicsa_charge_area->user_name }} </td>
-        </tr>
+            @if($cicsa_charge_area->cicsa_charge_area && $cicsa_charge_area->cicsa_charge_area->isNotEmpty())
+                @foreach($cicsa_charge_area->cicsa_charge_area as $item)
+                <tr>
+                    <td> {{ $cicsa_charge_area->project_name }} </td>
+                    <td> {{ $cicsa_charge_area->project_code }} </td>
+                    <td> {{ $cicsa_charge_area->project->cost_center->name }} </td>
+                    <td> {{ $cicsa_charge_area->cpe }} </td>
+                    <td> {{ $item->cicsa_purchase_order?->oc_number }} </td>
+                    <td> {{ $item->invoice_number }} </td>
+                    <td> {{ $item->invoice_date }} </td>
+                    <td> {{ $item->credit_to }} </td>
+                    <td> {{ $item->deposit_date }} </td>
+                    <td> {{ $item->amount }} </td>
+                    <td> {{ $item->user_name }} </td>
+                </tr>
+                @endforeach
+            @else
+            <tr>
+                <td> {{ $cicsa_charge_area->project_name }} </td>
+                <td> {{ $cicsa_charge_area->project_code }} </td>
+                <td> {{ $cicsa_charge_area->project->cost_center?->name }} </td>
+                <td> {{ $cicsa_charge_area->cpe }} </td>
+            </tr>
+            @endif
         @endforeach
     </tbody>
 </table>

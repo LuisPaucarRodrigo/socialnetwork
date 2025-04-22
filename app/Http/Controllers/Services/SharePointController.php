@@ -32,9 +32,7 @@ class SharePointController extends Controller
         $client = new Client();
         $siteId = 'ccip1985.sharepoint.com,acf3ab51-6a0a-4058-b226-16b62b3b9e83,59d75c2a-3c66-436b-b177-b50b81a17a48';
         $driveId = 'b!UavzrApqWECyJha2Kzuegypc11lmPGtDsXe1C4GhekjuGlgZcm4eQr45JFRCk8Nj';
-        $itemId = '';
-        $urlItemPart = $itemId ? "items/{$itemId}" : "root";
-        $response = $client->get("https://graph.microsoft.com/v1.0/sites/{$siteId}/drives/{$driveId}/{$urlItemPart}/children", [
+        $response = $client->get("https://graph.microsoft.com/v1.0/sites/{$siteId}/drives/{$driveId}/root/children", [
             'headers' => [
                 'Authorization' => 'Bearer ' . $accessToken,
                 'Content-Type' => 'application/json',
@@ -47,7 +45,5 @@ class SharePointController extends Controller
             'accessToken' => $accessToken,
             'data' => $content
         ]);
-        // $content = json_decode($response->getBody(), true);
-        // dd($content);
     }
 }

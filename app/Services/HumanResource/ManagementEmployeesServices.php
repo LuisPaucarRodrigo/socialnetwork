@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\HumanResource;
 
 use App\Models\Address;
 use App\Models\Contract;
@@ -16,7 +16,6 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-use function PHPUnit\Framework\isEmpty;
 
 class ManagementEmployeesServices
 {
