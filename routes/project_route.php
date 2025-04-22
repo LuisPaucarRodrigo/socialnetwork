@@ -20,7 +20,11 @@ use App\Http\Controllers\ProjectArea\TaskManagementController;
 use App\Http\Controllers\ProjectArea\ServicesLiquidationsController;
 use App\Http\Controllers\ProjectArea\AdministrativeCostsController;
 use App\Enums\Permissions\ProjectPermissions;
+use App\Http\Controllers\Services\SharePointController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/sharepoint/index_cost_line', [SharePointController::class, 'index'])->name('sharepoint.index');
+
 
 //new permissions routes
 

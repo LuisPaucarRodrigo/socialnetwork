@@ -23,7 +23,6 @@ class OCValidationExport implements FromView, WithColumnWidths
         return view('Export.ValidationOcExport', [
             'title' => [
                 'Nombre de Proyecto',
-                'Codigo de Proyecto',
                 'Centro de Costos',
                 'CPE',
                 'Orden de Compra',
@@ -37,8 +36,6 @@ class OCValidationExport implements FromView, WithColumnWidths
                 'SuperIntendente',
                 'Observaciones',
                 'Fecha de Validacion',
-                'Encargado',
-                'Gestor'
             ],
             'cicsa_purchase_order_validations' => CicsaAssignation::with([
                 'project.cost_center',
@@ -82,8 +79,6 @@ class OCValidationExport implements FromView, WithColumnWidths
             'L' => 17,
             'M' => 30,
             'N' => 20,
-            'O' => 30,
-            'P' => 30
         ];
     }
 }

@@ -23,7 +23,6 @@ class ChargeAreaExport implements FromView, WithColumnWidths
         return view('Export.ChargeAreaExport', [
             'title' => [
                 'Nombre de Proyecto',
-                'Codigo de Proyecto',
                 'Centro de Costos',
                 'CPE',
                 'Numero de OC',
@@ -32,7 +31,6 @@ class ChargeAreaExport implements FromView, WithColumnWidths
                 'Credito',
                 'Fecha de Deposito',
                 'Monto',
-                'Encargado'
             ],
             'cicsa_charge_areas' => CicsaAssignation::with([
                 'project.cost_center',
@@ -56,8 +54,7 @@ class ChargeAreaExport implements FromView, WithColumnWidths
             'F' => 17,
             'G' => 17,
             'H' => 17,
-            'I' => 30,
-            'J' => 30
+            'I' => 17,
         ];
     }
 }

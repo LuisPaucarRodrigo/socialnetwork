@@ -42,7 +42,7 @@ class PurchaseOrderExport implements FromView, WithColumnWidths
             'G' => 17,
             'H' => 17,
             'I' => 17,
-            'J' => 30,
+            'J' => 17,
         ];
     }
 }

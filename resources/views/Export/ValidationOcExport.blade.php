@@ -12,7 +12,6 @@
         @foreach($validationOC->cicsa_purchase_order_validation as $item)
         <tr>
             <td> {{ $validationOC->project_name }} </td>
-            <td> {{ $validationOC->project_code }} </td>
             <td> {{ $validationOC->project->cost_center->name }} </td>
             <td> {{ $validationOC->cpe }} </td>
             <td> {{ $item->cicsa_purchase_order?->oc_number }} </td>
@@ -26,14 +25,11 @@
             <td> {{ $item->superintendent }} </td>
             <td> {{ $item->observations }} </td>
             <td> {{ $item->validation_date }} </td>
-            <td> {{ $item->user_name }} </td>
-            <td> {{ $validationOC->manager }} </td>
         </tr>
         @endforeach
         @else
         <tr>
             <td> {{ $validationOC->project_name }} </td>
-            <td> {{ $validationOC->project_code }} </td>
             <td> {{ $validationOC->project->cost_center?->name }} </td>
             <td> {{ $validationOC->cpe }} </td>
         </tr>

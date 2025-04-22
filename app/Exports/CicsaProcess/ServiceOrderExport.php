@@ -23,7 +23,6 @@ class ServiceOrderExport implements FromView, WithColumnWidths
         return view('Export.ServiceOrderExport', [
             'title' => [
                 'Nombre de Proyecto',
-                'Codigo de Proyecto',
                 'Centro de Costos',
                 'CPE',
                 'Orden de Compra',
@@ -33,7 +32,6 @@ class ServiceOrderExport implements FromView, WithColumnWidths
                 'Orden de Compra',
                 'PDF Factura',
                 'ZIP Factura',
-                'Encargado',
             ],
             'cicsa_service_orders' => CicsaAssignation::with([
                 'project.cost_center',
@@ -59,8 +57,6 @@ class ServiceOrderExport implements FromView, WithColumnWidths
             'H' => 17,
             'I' => 17,
             'J' => 17,
-            'K' => 30,
-            'L' => 30
         ];
     }
 }

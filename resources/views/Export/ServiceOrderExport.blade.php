@@ -12,7 +12,6 @@
         @foreach($cicsa_service_order->cicsa_service_order as $item)
         <tr>
             <td> {{ $cicsa_service_order->project_name }} </td>
-            <td> {{ $cicsa_service_order->project_code }} </td>
             <td> {{ $cicsa_service_order->project->cost_center->name }} </td>
             <td> {{ $cicsa_service_order->cpe }} </td>
             <td> {{ $item->cicsa_purchase_order?->oc_number }} </td>
@@ -22,13 +21,11 @@
             <td> {{ $item->purchase_order }} </td>
             <td> {{ $item->pdf_invoice }} </td>
             <td> {{ $item->zip_invoice }} </td>
-            <td> {{ $item->user_name }} </td>
         </tr>
         @endforeach
         @else
         <tr>
             <td> {{ $cicsa_service_order->project_name }} </td>
-            <td> {{ $cicsa_service_order->project_code }} </td>
             <td> {{ $cicsa_service_order->project->cost_center?->name }} </td>
             <td> {{ $cicsa_service_order->cpe }} </td>
         </tr>
