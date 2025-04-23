@@ -19,17 +19,17 @@ Route::middleware(['auth', 'checkPlatformWeb'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
-    
-    require 'user_admin_route.php';
-    require 'human_resource_route.php';
-    require 'inventory_route.php';
-    require 'project_route.php';
-    require 'shopping_area_route.php';
-    require 'finance_route.php';
-    require 'huawei_route.php';
-    require 'cicsa_route.php';
-    require 'fleet_car_route.php';
+
+    include_once 'user_admin_route.php';
+    include_once 'human_resource_route.php';
+    include_once 'inventory_route.php';
+    include_once 'project_route.php';
+    include_once 'shopping_area_route.php';
+    include_once 'finance_route.php';
+    include_once 'huawei_route.php';
+    include_once 'cicsa_route.php';
+    include_once 'fleet_car_route.php';
+    // include_once 'share_point.php';
     require 'documentgestion_route.php';
 });
 

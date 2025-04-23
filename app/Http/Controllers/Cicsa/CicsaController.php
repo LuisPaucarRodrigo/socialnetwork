@@ -608,9 +608,10 @@ class CicsaController extends Controller
         abort(404, 'Imagen no encontrada');
     }
 
-    public function exportChargeArea()
+    public function exportChargeArea($cost_line_id)
     {
-        return Excel::download(new ChargeAreaExport, 'Cobranza ' . date('d-m-Y') . '.xlsx');
+        // dd($cost_line_id);
+        return Excel::download(new ChargeAreaExport($cost_line_id), 'Cobranza ' . date('d-m-Y') . '.xlsx');
     }
 
     public function exportMaterialsSummary($ca_id)
