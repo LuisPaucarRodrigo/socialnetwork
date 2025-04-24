@@ -273,6 +273,7 @@ import { TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { formattedDate } from "@/utils/utils";
 import { ref } from "vue";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
+import { notify, notifyError } from "@/Components/Notification";
 
 const { expenses, userPermissions, actionForm, filterForm, zones, docTypes, expenseTypes, stateTypes, openEditAdditionalModal } = defineProps({
     expenses: Object,
@@ -311,13 +312,18 @@ async function validateRegister(expense_id, is_accepted) {
     const url = route("projectmanagement.pext.expenses.validate", { 'expense_id': expense_id })
     try {
         await axios.put(url, { 'is_accepted': is_accepted });
-        if (filterForm.value.rejected) {
+        if (filterForm.rejected) {
             updateExpense(expense_id, "validate", is_accepted)
         } else {
             updateExpense(expense_id, "rejectedValidate")
         }
-    } catch (e) {
-        console.log(e);
+    } catch (error) {
+        console.log(error);
+        if (error.response) {
+            notifyError(`Server Error: ${error.response.data}`)
+        } else {
+            notifyError('Server Error')
+        }
     }
 }
 
