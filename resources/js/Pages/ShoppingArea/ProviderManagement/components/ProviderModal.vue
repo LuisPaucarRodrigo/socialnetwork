@@ -158,7 +158,7 @@ import TextInput from '@/Components/TextInput.vue';
 import { setAxiosErrors } from '@/utils/utils';
 import { useForm } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
-import FormInput from '../FormInput.vue';
+import FormInput from '@/Layouts/FormInput.vue';
 
 const { showModalStoreOrUpdate, form, category, closeModalStoreOrUpdate } = defineProps({
     showModalStoreOrUpdate: Boolean,

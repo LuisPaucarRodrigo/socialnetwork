@@ -6,8 +6,7 @@
             Proveedores
         </template>
         <Toaster richColors />
-        <ProviderHeader v-model:providers="providers" :permissions="userPermissions"
-            :add_information="add_information" />
+        <ProviderHeader v-model:providers="providers" :add_information="add_information" />
         <ProviderTable :providers="providers" :auth="auth" :add_information="add_information" />
         <ProviderModal :showModalStoreOrUpdate="showModalStoreOrUpdate" v-model:providers="providers" :form="form"
             :category="category" :closeModalStoreOrUpdate="closeModalStoreOrUpdate" />
@@ -18,14 +17,13 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import { Toaster } from 'vue-sonner';
-import ProviderTable from '@/Layouts/Provider/ProviderTable.vue';
-import ProviderHeader from '@/Layouts/Provider/ProviderHeader.vue';
-import ProviderModal from '@/Layouts/Provider/ProviderModal.vue';
+import ProviderTable from './components/ProviderTable.vue';
+import ProviderHeader from './components/ProviderHeader.vue';
+import ProviderModal from './components/ProviderModal.vue';
 
-const { provider, auth, userPermissions, category } = defineProps({
+const { provider, auth , category } = defineProps({
     provider: Object,
     auth: Object,
-    userPermissions: Array,
     category: Object
 });
 
