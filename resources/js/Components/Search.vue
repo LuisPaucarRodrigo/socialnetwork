@@ -11,10 +11,14 @@
 </template>
 <script setup>
 import TextInput from '@/Components/TextInput.vue';
-import { onMounted, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 
-const { fields } = defineProps({
+const { fields, searchFunction } = defineProps({
     fields: String,
+    searchFunction: {
+        required: false,
+        type: Function
+    }
 })
 
 const search = defineModel('search')
@@ -23,6 +27,9 @@ const searchQuery = ref('');
 
 function applySearch() {
     search.value = searchQuery.value
+    if(searchFunction){
+        searchFunction()
+    }
 }
 
 watch(search, (newVal) => {
