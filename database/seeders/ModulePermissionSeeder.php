@@ -798,10 +798,216 @@ class ModulePermissionSeeder extends Seeder
                 'permissions' => [
                     'projectmanagement.index',
                     'projectmanagement.liquidation',
-                    ''
+                ]
+            ],
+            [
+                'display_name' => 'Tareas de un proyecto',
+                'group_name' => 'pro_pint_tasks',
+                'module' => 'ppropint_submodule',
+                'permissions' => [
+                    'projectmanagement.index',
+                    'tasks.index',
+                    'tasks.create',
+                    'tasks.edit.status',
+                    'tasks.duplicated',
+                    'tasks.edit.date',
+                    'tasks.delete',
+                ]
+            ],
+            [
+                'display_name' => 'Calendario de un proyecto',
+                'group_name' => 'pro_pint_one_calendar',
+                'module' => 'ppropint_submodule',
+                'permissions' => [
+                    'projectmanagement.index',
+                    'projectscalendar.show',
+                ]
+            ],
+
+            //servicios
+            [
+                'display_name' => 'Compras y gastos de un proyecto',
+                'group_name' => 'pro_pint_one_purchase_expenses',
+                'module' => 'ppropint_submodule',
+                'permissions' => [
+                    'projectmanagement.index',
+                    'projectmanagement.purchases_request.index',
+                    'projectmanagement.additionalCosts',
+                    'projectmanagement.staticCosts',
+                    'projectmanagement.purchases_request.details',
+                    'projectmanagement.purchases_request.edit',
+                    'purchasesrequest.destroy',
+                    'projectmanagement.purchases_request.create',
+                    'projectmanagement.update_due_date',
+                    //expenses
+                    'projectmanagement.expenses',
+                    'projectmanagement.last12.utilities',
+                    'project.expenses.zones.details',
+                    'projectmanagement.zoneexpenses.chart',
+                    //additional
+                    'projectmanagement.additionalCosts.rejected',
+                    'additionalcost.excel.export',
+                    'additionalcost.archive',
+                    'projectmanagement.storeAdditionalCost',
+                    'projectmanagement.updateAdditionalCost',
+                    'projectmanagement.deleteAdditionalCost',
+                    'additionalcost.advance.search',
+                    'projectmanagement.importAdditionalCost',
+                    'zip.additional.descargar',
+                    'projectmanagement.validateAdditionalCost',
+                    'projectmanagement.additionalCosts.massiveUpdate',
+                    'projectmanagement.additionalCosts.swapCosts',
+                    'projectmanagement.addctoaddproject.swapCosts',
+                    'projectmanagement.regularprojects.all',
+                    'projectmanagement.regularproject.swapCosts',
+                    //static
+                    'staticcost.archive',
+                    'projectmanagement.storeStaticCost',
+                    'projectmanagement.updateStaticCost',
+                    'projectmanagement.deleteStaticCost',
+                    'zip.static.descargar',
+                    'staticcost.advance.search',
+                    'staticcost.excel.export',
+                    'projectmanagement.staticCosts.massiveUpdate',
+                ]
+            ],
+
+
+            //asignar productos
+            // liquidaciones
+            [
+                'display_name' => 'Archivos de un proyecto',
+                'group_name' => 'pro_pint_archives',
+                'module' => 'ppropint_submodule',
+                'permissions' => [
+                    'projectmanagement.index',
+                    'project.document.index',
+                    'project.folder.download',
+                    'project.document.store',
+                    'project.folder.delete',
+                    'documment.management.folders'
                 ]
             ],
         ];
+
+        $ppropextSubModule = [
+            [
+                'display_name' => 'Ver cards de proyectos (incluye buscador)',
+                'group_name' => 'see_pro_pext_cards',
+                'module' => 'ppropext_submodule',
+                'permissions' => [
+                    'projectmanagement.pext.index'
+                ]
+            ],
+            [
+                'display_name' => 'Agregar y editar proyecto',
+                'group_name' => 'see_pro_pext_cards',
+                'module' => 'ppropext_submodule',
+                'permissions' => [
+                    'projectmanagement.pext.index',
+                    'projectmanagement.pext.storeProjectAndAssignation',
+                    'projectmanagement.pext.requestProjectOrPreproject',
+                ]
+            ],
+            [
+                'display_name' => 'Ver historial de proyectos',
+                'group_name' => 'see_pro_pext_history',
+                'module' => 'ppropext_submodule',
+                'permissions' => [
+                    'projectmanagement.pext.index',
+                    'projectmanagement.pext.historial',
+                ]
+            ],
+            [
+                'display_name' => 'Gestión de proyectos adicionales',
+                'group_name' => 'pro_pext_additional_management',
+                'module' => 'ppropext_submodule',
+                'permissions' => [
+                    'projectmanagement.pext.index',
+                    'projectmanagement.pext.additional.index',
+                    'projectmanagement.pext.store.quote',
+                    'projectmanagement.pext.additional.store',
+                    'pext.additional.expense.general.index',
+                    'pext.expenses.storeOrUpdate',
+                    'pext.expenses.delete',
+                    'projectmanagement.pext.expenses.image.show',
+                    'pext.additional.expense.general.getCicsaAssignation',
+                    'pext.monthly.additional.expense.general.search_advance',
+                    'projectmanagement.pext.expenses.general.export',
+                    'projectmanagement.pext.expenses.validate',
+                    'projectmanagement.pext.massiveUpdate',
+                    'projectmanagement.pext.massiveUpdate.swap',
+                    'projectmanagement.pext.export.pdf.quote',
+                    'projectmanagement.pext.additional.reject',
+                    'projectmanagement.pext.additional.index_rejected',
+                    'pext.additional.expense.index',
+                ]
+            ],
+            [
+                'display_name' => 'Tareas de un proyecto',
+                'group_name' => 'pro_pext_tasks',
+                'module' => 'ppropext_submodule',
+                'permissions' => [
+                    'projectmanagement.pext.index',
+                    'tasks.index',
+                    'tasks.create',
+                    'tasks.edit.status',
+                    'tasks.duplicated',
+                    'tasks.edit.date',
+                    'tasks.delete',
+                ]
+            ],
+            [
+                'display_name' => 'Calendario de un proyecto',
+                'group_name' => 'pro_pext_one_calendar',
+                'module' => 'ppropext_submodule',
+                'permissions' => [
+                    'projectmanagement.pext.index',
+                    'projectscalendar.show',
+                ]
+            ],
+            [
+                'display_name' => 'Liquidar proyecto',
+                'group_name' => 'pro_pext_liquidate',
+                'module' => 'ppropext_submodule',
+                'permissions' => [
+                    'projectmanagement.pext.index',
+                    'projectmanagement.liquidation',
+                ]
+            ],
+            [
+                'display_name' => 'Ver detalle de proyecto',
+                'group_name' => 'pro_pext_details',
+                'module' => 'ppropext_submodule',
+                'permissions' => [
+                    'projectmanagement.pext.index',
+                    'projectmanagement.update',
+                ]
+            ],
+            [
+                'display_name' => 'Compras y gastos de un proyecto',
+                'group_name' => 'pro_pext_purchase_expenses',
+                'module' => 'ppropext_submodule',
+                'permissions' => [
+                    'projectmanagement.pext.index',
+                    'projectmanagement.pext.expenses.index',
+                    'projectmanagement.pext.historial',
+                    'pext.monthly.additional.expense.search_advance',
+                    'projectmanagement.pext.massiveUpdate.swap',
+                    'pext.expenses.storeOrUpdate',
+                    'projectmanagement.pext.massiveUpdate',
+                    'pext.expenses.delete',
+                    'projectmanagement.pext.expenses.validate',
+                    'projectmanagement.pext.expenses.image.show',
+                    'projectmanagement.pext.expense_dashboard',
+                    'projectmanagement.pext.expenses.export',
+                    'projectmanagement.pext.expenset_type_zone',
+                    'projectmanagement.pext.expense_dashboard_bar',
+                ]
+            ],
+
+        ];
+
 
 
         [
@@ -832,6 +1038,7 @@ class ModulePermissionSeeder extends Seeder
             $pprepintSubModule,
             $prepextSubModule,
             $ppropintSubModule,
+            $ppropextSubModule,
 
 
         ];

@@ -1,7 +1,7 @@
 <template>
     <div class="mt-6 flex items-center justify-between gap-x-6">
         <div class="hidden sm:flex sm:items-center sm:space-x-3">
-            <PrimaryButton data-tooltip-target="add_preproject" v-if="hasPermission('ProjectManager')"
+            <PrimaryButton data-tooltip-target="add_preproject""
                 @click="createOrEditModal()" type="button" customColor="bg-green-600 hover:bg-green-500">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-5 h-5">
@@ -46,19 +46,19 @@
                 <template #content class="origin-left">
                     <div>
                         <div class="dropdown">
-                            <div v-if="hasPermission('ProjectManager')" class="dropdown-menu">
+                            <div class="dropdown-menu">
                                 <button @click="createOrEditModal()"
                                     class="dropdown-item block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                     Agregar Proyecto
                                 </button>
                             </div>
-                            <div v-if="hasPermission('ProjectManager')" class="dropdown-menu">
+                            <div class="dropdown-menu">
                                 <Link :href="route('projectmanagement.pext.additional.index', { type: 2 })"
                                     class="dropdown-item block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                 P. Adicionales
                                 </Link>
                             </div>
-                            <div v-if="hasPermission('ProjectManager')" class="dropdown-menu">
+                            <div class="dropdown-menu">
                                 <Link :href="route('projectmanagement.pext.historial')"
                                     class="dropdown-item block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                 Historial
