@@ -1061,7 +1061,7 @@ class ProjectRoutes
                 'name' => 'preprojects.titles',
             ],
 
-            // PreProjects PEXT
+            // PreProjects
             [
                 'uri' => '/preprojects_index/{type}/{preprojects_status?}',
                 'method' => 'get',
@@ -1079,7 +1079,7 @@ class ProjectRoutes
 
             // Preproject image
             [
-                'uri' => '/preprojects/{preproject_id}/report/image',
+                'uri' => '/preprojects/{preproject_id}/report/image_index',
                 'method' => 'get',
                 'action' => [PreProjectController::class, 'index_image'],
                 'permission' => true,

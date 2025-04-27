@@ -394,6 +394,101 @@ class ModulePermissionSeeder extends Seeder
             ],
         ];
 
+        //Area Proyectos -> Anteproyectos PINT
+        $pprepintSubModule = [
+            [
+                'display_name' => 'Ver cards de anteproyectos pint activos, aprobados y anulados',
+                'group_name' => 'see_prepro_pint_cards',
+                'module' => 'pprepint_submodule',
+                'permissions' => ['preprojects.index']
+            ],
+            [
+                'display_name' => 'Asignar usuarios',
+                'group_name' => 'add_prepro_pint_users',
+                'module' => 'pprepint_submodule',
+                'permissions' => ['preprojects.index', 'preprojects.assign.users']
+            ],
+            [
+                'display_name' => 'Descargar imágenes',
+                'group_name' => 'download_prepro_pint_images',
+                'module' => 'pprepint_submodule',
+                'permissions' => [
+                    'preprojects.index',
+                    'preprojects.imagereport.index',
+                    'preprojects.report.download',
+                    'preprojects.imagereport.delete',
+                    'preprojects.imagereport.download',
+                    'preprojects.imagereport.show',
+                    'preprojects.imagereport.approveReject',
+                    'preprojects.stages.delete',
+                    'preprojects.stages.store',
+                    'preprojects.codereport.approveCode',
+                    'preprojects.codereport.approveTitle',
+                    'preprojects.codereport.approveImages'
+                ]
+            ],
+            [
+                'display_name' => 'Informe fotográfico',
+                'group_name' => 'prepro_pint_photoreport',
+                'module' => 'pprepint_submodule',
+                'permissions' => [
+                    'preprojects.index',
+                    'preprojects.photoreport.index',
+                    'preprojects.photoreport.download',
+                    'preprojects.photoreport.update',
+                    'preprojects.photoreport.store',
+                    'preprojects.photoreport.delete',
+                    'preprojects.photoreport_pdf.download',
+                    'preprojects.photoreport.show'
+                ]
+            ],
+            [
+                'display_name' => 'Productos de almacén',
+                'group_name' => 'prepro_pint_warehouseproducts',
+                'module' => 'pprepint_submodule',
+                'permissions' => [
+                    'preprojects.index',
+                    'preprojects.products',
+                    'preprojects.warehouse_products',
+                    'preprojects.inventory_products',
+                    'preprojects.products.store',
+                    'projectmanagement.products.delete',
+                    'projectmanagement.products.update',
+                ]
+            ],
+            [
+                'display_name' => 'Solicitud de compras',
+                'group_name' => 'prepro_pint_purchaserequest',
+                'module' => 'pprepint_submodule',
+                'permissions' => [
+                    'preprojects.index',
+                    'preprojects.request.index',
+                    'preprojects.request.details',
+                    'preprojects.request.edit',
+                    'purchasesrequest.destroy',
+                    'preprojects.request.create',
+                    'preprojects.request.update',
+                    'preprojects.request.store',
+                    'purchasing_request_product.store',
+                    'purchasing_request_product.delete'
+                ]
+            ],
+            [
+                'display_name' => 'Cotizaciones de compras',
+                'group_name' => 'prepro_pint_purchasequotes',
+                'module' => 'pprepint_submodule',
+                'permissions' => [
+                    'preprojects.index',
+                    'preprojects.purchase_quote',
+                    'preprojects.purchase.quote.details',
+                    'purchasesrequest.show',
+                    'preprojects.purchase_quote.accept_decline',
+                    'purchase.update_quotedeadline',
+                    'purchasesrequest.quote_deadline.complete'
+                ]
+            ]
+        ];
+
 
         [
             'display_name' => '',
@@ -420,6 +515,7 @@ class ModulePermissionSeeder extends Seeder
 
             $pclientsSubModule,
             $pproSubModule,
+            $pprepintSubModule,
 
 
 
