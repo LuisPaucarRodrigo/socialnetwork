@@ -5,15 +5,15 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class FuncionalityPermission extends Seeder
+class FuncionalityPermissionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-         // Usuarios y Roles -> Usuarios
-         $UsersSubModule = [
+        // Usuarios y Roles -> Usuarios
+        $UsersSubModule = [
             [
                 'display_name' => 'Ver tabla usuarios (incluye buscar)',
                 'key_name' => 'see_users_table',
@@ -1209,8 +1209,6 @@ class FuncionalityPermission extends Seeder
 
             $billingpintSubModule,
             $billingpextSubModule,
-
-
         ];
     }
 }

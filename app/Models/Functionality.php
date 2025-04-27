@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Functionality extends Model
 {
     use HasFactory;
+
+    protected $table = 'functionalities';
+
+    protected $fillable = [
+        "key_name",
+        "display_name",
+        "module_id",
+    ];
 }
