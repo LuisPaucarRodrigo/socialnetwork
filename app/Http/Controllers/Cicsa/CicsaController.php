@@ -294,12 +294,32 @@ class CicsaController extends Controller
                     'errorMessage' => 'Ingrese un archivo Excel'
                 ], 400);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'errorMessage' => 'Error durante la Importacion: ' . $e->getMessage()
             ], 500);
         }
     }
+
+    public function deleteMaterial($c_m_id)
+    {
+        try {
+            $material = CicsaMaterial::findOrFail($c_m_id);
+            $material->delete();
+            $materialItems = CicsaMaterialsItem::where('cicsa_material_id', $c_m_id)->get();
+            foreach($materialItems as $item) {
+                $item->delete();
+            }
+            return response()->json(['msg' => true]);
+        } catch (Exception $e) {
+            return response()->json([
+                'errorMessage' => 'Error durante la eliminación: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+
 
     public function indexPurchaseOrder(Request $request, $type, $searchCondition = null)
     {

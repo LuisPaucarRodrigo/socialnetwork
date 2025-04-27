@@ -69,3 +69,7 @@ Route::get('/cicsa_charge_areas_export/{cost_line_id}', [CicsaController::class,
 Route::post('/cicsa_advance_search/{type}', [CicsaController::class, 'search'])->name('cicsa.advance.search');
 
 Route::get('/cicsa_export_materials_summary/{ca_id}', [CicsaController::class, 'exportMaterialsSummary'])->name('cicsa.export.materials.summary');
+
+
+//material delete
+Route::delete('/cicsa_material_delete/{c_m_id}', [CicsaController::class, 'deleteMaterial'])->name('material.delete');
