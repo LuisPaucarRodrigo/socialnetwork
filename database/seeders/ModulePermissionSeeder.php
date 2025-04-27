@@ -322,10 +322,77 @@ class ModulePermissionSeeder extends Seeder
                 'module' => 'pclients_submodule',
                 'permissions' => ['customers.index', 'customers.contacts.index', 'customers.contacts.destroy.update']
             ],
-
-            
         ];
 
+        //Area Proyectos -> PRO
+        $pproSubModule = [
+            [
+                'display_name' => 'Ver tabla títulos',
+                'group_name' => 'see_pro_titles_table',
+                'module' => 'ppro_submodule',
+                'permissions' => ['preprojects.titles']
+            ],
+            [
+                'display_name' => 'Agregar título ',
+                'group_name' => 'add_pro_title',
+                'module' => 'ppro_submodule',
+                'permissions' => ['preprojects.titles', 'preprojects.titles.post']
+            ],
+            [
+                'display_name' => 'Editar título ',
+                'group_name' => 'edit_pro_title',
+                'module' => 'ppro_submodule',
+                'permissions' => ['preprojects.titles', 'preprojects.titles.put']
+            ],
+            [
+                'display_name' => 'Eliminar títulos ',
+                'group_name' => 'delete_pro_title',
+                'module' => 'ppro_submodule',
+                'permissions' => ['preprojects.titles', 'preprojects.titles.delete']
+            ],
+            [
+                'display_name' => 'Ver tabla códigos',
+                'group_name' => 'see_pro_codes_table',
+                'module' => 'ppro_submodule',
+                'permissions' => ['preprojects.titles', 'preprojects.codes']
+            ],
+            [
+                'display_name' => 'Agregar código',
+                'group_name' => 'add_pro_code',
+                'module' => 'ppro_submodule',
+                'permissions' => ['preprojects.titles', 'preprojects.codes', 'preprojects.codes.post']
+            ],
+            [
+                'display_name' => 'Agregar imágenes de ejemplo del código',
+                'group_name' => 'add_pro_code_images',
+                'module' => 'ppro_submodule',
+                'permissions' => ['preprojects.titles', 'preprojects.codes', 'preprojects.code.images.store']
+            ],
+            [
+                'display_name' => 'Ver imágenes de ejemplo del código',
+                'group_name' => 'see_pro_code_images',
+                'module' => 'ppro_submodule',
+                'permissions' => ['preprojects.titles', 'preprojects.codes', 'preprojects.code.images.show', 'preprojects.code.images.index']
+            ],
+            [
+                'display_name' => 'Eliminar imágenes de ejemplo del código',
+                'group_name' => 'delete_pro_code_images',
+                'module' => 'ppro_submodule',
+                'permissions' => ['preprojects.titles', 'preprojects.code', 'preprojects.code.images.index', 'preprojects.code.images.delete']
+            ],
+            [
+                'display_name' => 'Editar código',
+                'group_name' => 'edit_pro_code',
+                'module' => 'ppro_submodule',
+                'permissions' => ['preprojects.titles', 'preprojects.codes', 'preprojects.codes.put']
+            ],
+            [
+                'display_name' => 'Eliminar código',
+                'group_name' => 'delete_pro_code',
+                'module' => 'ppro_submodule',
+                'permissions' => ['preprojects.titles', 'preprojects.codes', 'preprojects.codes.delete']
+            ],
+        ];
 
 
         [
@@ -351,7 +418,8 @@ class ModulePermissionSeeder extends Seeder
             //Ordenes
             //Compras Completadas
 
-            $pclientsSubModule
+            $pclientsSubModule,
+            $pproSubModule,
 
 
 

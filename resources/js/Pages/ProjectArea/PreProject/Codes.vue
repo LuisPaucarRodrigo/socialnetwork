@@ -7,7 +7,7 @@
             Códigos
         </template>
         <div class="mt-6 flex items-center justify-between gap-x-6">
-            <button v-if="hasPermission('ProjectManager')" @click="add_code" type="button"
+            <button @click="add_code" type="button"
                 class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                 + Agregar
             </button>
@@ -26,7 +26,7 @@
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             Descripción
                         </th>
-                        <th v-if="hasPermission('ProjectManager')"
+                        <th 
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                         </th>
                     </tr>
@@ -39,7 +39,7 @@
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
                             <p class="text-gray-900 whitespace-no-wrap">{{ code.description }}</p>
                         </td>
-                        <td v-if="hasPermission('ProjectManager')"
+                        <td 
                             class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
                             <div class="flex justify-center space-x-3">
                                 <button @click="modalStoreImage(code.id)">
@@ -246,10 +246,6 @@ const props = defineProps({
 })
 
 const codes = ref(props.code)
-
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission)
-}
 
 const add_code = () => {
     create_code.value = true;
