@@ -1526,7 +1526,7 @@ class ProjectRoutes
             ],
                 // Pint auto
             [
-                'uri' => '/preproject/auto-create/pint/{type}',
+                'uri' => '/preproject/auto-create/index/{type}',
                 'method' => 'get',
                 'action' => [ProjectPintController::class, 'pint_create_project'],
                 'permission' => true,

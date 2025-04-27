@@ -106,7 +106,7 @@ class PreProjectController extends Controller
             'type' => $type,
             'cost_line' => CostLine::with(['cost_center' => function ($query) {
                 $query->where('name', 'not like', '%Mantto%');
-            }])->find(2)
+            }])->find($type)
         ]);
     }
 

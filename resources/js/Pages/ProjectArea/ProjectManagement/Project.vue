@@ -8,7 +8,7 @@
         <div class="min-w-full rounded-lg shadow">
             <div class="mt-6 flex items-center justify-between gap-x-6">
                 <div class="hidden sm:flex sm:items-center sm:space-x-4">
-                    <button v-if="hasPermission('ProjectManager')" @click="add_project" type="button"
+                    <button @click="add_project" type="button"
                         class="whitespace-nowrap inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                         + Agregar
                     </button>
@@ -42,7 +42,7 @@
                         <template #content class="origin-left">
                             <div> <!-- Alineación a la derecha -->
                                 <div class="dropdown">
-                                    <div v-if="hasPermission('ProjectManager')" class="dropdown-menu">
+                                    <div class="dropdown-menu">
                                         <button @click="add_project"
                                             class="dropdown-item block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                             Agregar
@@ -53,7 +53,7 @@
                                     Calendario
                                 </dropdown-link>
                                 <div class="dropdown">
-                                    <div v-if="hasPermission('ProjectManager')" class="dropdown-menu">
+                                    <div class="dropdown-menu">
                                         <button @click="()=>router.visit(route('projectmanagement.historial'))"
                                             class="dropdown-item block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                             Historial
@@ -75,7 +75,7 @@
                         <h2 class="text-sm font-semibold mb-3">
                             N° {{ item.code }}
                         </h2>
-                        <div v-if="auth.user.role_id === 1 || hasPermission('ProjectManager') " class="inline-flex justify-end items-start gap-x-2">
+                        <div v-if="auth.user.role_id === 1 " class="inline-flex justify-end items-start gap-x-2">
                             <button
                                 @click="()=>{router.post(route('projectmanagement.liquidation'),{project_id: item.id}, {
                                     onSuccess: () => router.visit(route('projectmanagement.index'))
@@ -170,10 +170,6 @@ const props = defineProps({
     auth: Object,
     userPermissions:Array
 })
-
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
 
 const projects = ref(props.projects);
 const confirmingProjectDeletion = ref(false);
