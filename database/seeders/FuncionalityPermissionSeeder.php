@@ -4,6 +4,10 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Module;
+use App\Models\Functionality;
+use App\Models\Permission;
+use App\Models\FunctionalityPermission;
 
 class FuncionalityPermissionSeeder extends Seeder
 {
@@ -1210,5 +1214,23 @@ class FuncionalityPermissionSeeder extends Seeder
             $billingpintSubModule,
             $billingpextSubModule,
         ];
+
+        foreach($Submodules as $sm) {
+            foreach($sm as $func) {
+                $module = Module::where('name', $func['module'])->first();
+                $functionality = Functionality::create([
+                    'key_name' => $func['key_name'],
+                    'display_name' => $func['display_name'],
+                    'module_id' => $module->id
+                ]);
+                foreach($func['permissions'] as $funcperm){
+                    $permission = Permission::where('name', $funcperm)->first();
+                    FunctionalityPermission::create([
+                        'functionality_id' => $functionality->id,
+                        'permission_id' => $permission->id
+                    ]);
+                }
+            }
+        }
     }
 }
