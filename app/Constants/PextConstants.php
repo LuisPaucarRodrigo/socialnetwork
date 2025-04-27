@@ -14,7 +14,8 @@ class PextConstants
             "Tacna",
             "Cuzco",
             "Puno",
-            "MDD",
+            "MDD1-PM",
+            "MDD2-MAZ",
             "Sandia"
         ];
     }
