@@ -5,42 +5,42 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class ModulePermissionSeeder extends Seeder
+class FuncionalityPermission extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        // Usuarios y Roles -> Usuarios
-        $UsersSubModule = [
+         // Usuarios y Roles -> Usuarios
+         $UsersSubModule = [
             [
                 'display_name' => 'Ver tabla usuarios (incluye buscar)',
-                'group_name' => 'see_users_table',
+                'key_name' => 'see_users_table',
                 'module' => 'user_submodule',
                 'permissions' => ['users.index', 'users.search']
             ],
             [
                 'display_name' => 'Agregar usuario',
-                'group_name' => 'add_user',
+                'key_name' => 'add_user',
                 'module' => 'user_submodule',
                 'permissions' => ['users.index', 'register', 'register.post']
             ],
             [
                 'display_name' => 'Ver usuario',
-                'group_name' => 'see_user',
+                'key_name' => 'see_user',
                 'module' => 'user_submodule',
                 'permissions' => ['users.index', 'users.details']
             ],
             [
                 'display_name' => 'Editar usuario (incluye contraseña)',
-                'group_name' => 'edit_user',
+                'key_name' => 'edit_user',
                 'module' => 'user_submodule',
                 'permissions' => ['users.index', 'users.edit', 'users.update', 'password.update']
             ],
             [
                 'display_name' => 'Eliminar usuario',
-                'group_name' => 'delete_user',
+                'key_name' => 'delete_user',
                 'module' => 'user_submodule',
                 'permissions' => ['users.index', 'users.destroy']
             ]
@@ -50,31 +50,31 @@ class ModulePermissionSeeder extends Seeder
         $RolesSubModule = [
             [
                 'display_name' => 'Ver tabla roles',
-                'group_name' => 'see_roles_table',
+                'key_name' => 'see_roles_table',
                 'module' => 'roles_submodule',
                 'permissions' => ['rols.index',]
             ],
             [
                 'display_name' => 'Agregar rol',
-                'group_name' => 'add_role',
+                'key_name' => 'add_role',
                 'module' => 'roles_submodule',
                 'permissions' => ['rols.index', 'rols.store']
             ],
             [
                 'display_name' => 'Ver rol',
-                'group_name' => 'see_role',
+                'key_name' => 'see_role',
                 'module' => 'roles_submodule',
                 'permissions' => ['rols.index', 'rols.details']
             ],
             [
                 'display_name' => 'Editar rol',
-                'group_name' => 'edit_role',
+                'key_name' => 'edit_role',
                 'module' => 'roles_submodule',
                 'permissions' => ['rols.index', 'rols.update']
             ],
             [
                 'display_name' => 'Eliminar rol',
-                'group_name' => 'delete_role',
+                'key_name' => 'delete_role',
                 'module' => 'roles_submodule',
                 'permissions' => ['rols.index', 'rols.delete']
             ],
@@ -84,43 +84,43 @@ class ModulePermissionSeeder extends Seeder
         $HremployeesSubModule = [
             [
                 'display_name' => 'Ver tabla empleados activos (incluye buscar)',
-                'group_name' => 'see_active_employees_table',
+                'key_name' => 'see_active_employees_table',
                 'module' => 'hremployees_submodule',
                 'permissions' => ['management.employees', 'management.employees.search']
             ],
             [
                 'display_name' => 'Ver tabla de empleados inactivos (incluye buscar)',
-                'group_name' => '',
+                'key_name' => '',
                 'module' => 'hremployees_submodule',
                 'permissions' => ['management.employees', 'management.employees.search']
             ],
             [
                 'display_name' => 'Agregar empleado',
-                'group_name' => 'add_employee',
+                'key_name' => 'add_employee',
                 'module' => 'hremployees_submodule',
                 'permissions' => ['management.employees', 'management.employees.create', 'management.employees.store']
             ],
             [
                 'display_name' => 'Ver empleado',
-                'group_name' => 'see_employee',
+                'key_name' => 'see_employee',
                 'module' => 'hremployees_submodule',
                 'permissions' => ['management.employees', 'management.employees.show', 'management.employees.information.details.download']
             ],
             [
                 'display_name' => 'Editar empleado',
-                'group_name' => 'edit_employee',
+                'key_name' => 'edit_employee',
                 'module' => 'hremployees_submodule',
                 'permissions' => ['management.employees', 'management.employees.edit', 'management.employees.update']
             ],
             [
                 'display_name' => 'Despido y recontratación de empleado',
-                'group_name' => 'fired_reentry_employee',
+                'key_name' => 'fired_reentry_employee',
                 'module' => 'hremployees_submodule',
                 'permissions' => ['management.employees', 'management.employees.fired', 'roles_submodule']
             ],
             [
                 'display_name' => 'Alarma cumpleaños empleados',
-                'group_name' => 'happy_birthday_alarm',
+                'key_name' => 'happy_birthday_alarm',
                 'module' => 'hremployees_submodule',
                 'permissions' => ['management.employees.happy.birthday']
             ]
@@ -130,25 +130,25 @@ class ModulePermissionSeeder extends Seeder
         $HreemployeesSubModule = [
             [
                 'display_name' => 'Ver tabla empleados externos',
-                'group_name' => 'see_external_employee_table',
+                'key_name' => 'see_external_employee_table',
                 'module' => 'hreemployees_submodule',
                 'permissions' => ['employees.external.index']
             ],
             [
                 'display_name' => 'Agregar y editar empleado externo',
-                'group_name' => 'add_external_employee',
+                'key_name' => 'add_external_employee',
                 'module' => 'hreemployees_submodule',
                 'permissions' => ['employees.external.index', 'management.external.storeorupdate']
             ],
             [
                 'display_name' => 'Eliminar empleado externo',
-                'group_name' => 'delete_external_employee',
+                'key_name' => 'delete_external_employee',
                 'module' => 'hreemployees_submodule',
                 'permissions' => ['employees.external.index', 'employees.external.delete']
             ],
             [
                 'display_name' => 'Ver y descargar currículum vitae de empleado externo',
-                'group_name' => 'see_external_employee_document',
+                'key_name' => 'see_external_employee_document',
                 'module' => 'hreemployees_submodule',
                 'permissions' => ['employees.external.index', 'employees.external.preview.curriculum_vitae']
             ],
@@ -160,55 +160,55 @@ class ModulePermissionSeeder extends Seeder
         $HrresdocSubModule = [
             [
                 'display_name' => 'Ver cards de documentos (incluye buscador y filtro)',
-                'group_name' => 'see_document_cards_hr',
+                'key_name' => 'see_document_cards_hr',
                 'module' => 'hrresdoc_submodule',
                 'permissions' => ['documents.index', 'documents.filter.section', 'documents.filter.subdivision', 'documents.search']
             ],
             [
                 'display_name' => 'Agregar documento',
-                'group_name' => 'add_document_hr',
+                'key_name' => 'add_document_hr',
                 'module' => 'hrresdoc_submodule',
                 'permissions' => ['documents.index', 'documents.create']
             ],
             [
                 'display_name' => 'Gestionar secciones y subdivisiones (sin eliminar)',
-                'group_name' => 'manage_sections_subdivisions_hr',
+                'key_name' => 'manage_sections_subdivisions_hr',
                 'module' => 'hrresdoc_submodule',
                 'permissions' => ['documents.index', 'documents.zipSection', 'documents.updateSection', 'documents.sections', 'documents.storeSection', 'documents.subdivisions', 'documents.zipSubdivision', 'documents.updateSubdivision', 'documents.storeSubdivision']
             ],
             [
                 'display_name' => 'Eliminar secciones nuevas',
-                'group_name' => 'delete_new_sections_hr',
+                'key_name' => 'delete_new_sections_hr',
                 'module' => 'hrresdoc_submodule',
                 'permissions' => ['documents.index', 'documents.sections', 'documents.destroySection']
             ],
             [
                 'display_name' => 'Eliminar subdivisiones nuevas',
-                'group_name' => 'delete_new_subdivisions_hr',
+                'key_name' => 'delete_new_subdivisions_hr',
                 'module' => 'hrresdoc_submodule',
                 'permissions' => ['documents.index', 'documents.sections', 'documents.subdivision', 'documents.destroySubdivision']
             ],
             [
                 'display_name' => 'Editar documento',
-                'group_name' => 'edit_document_hr',
+                'key_name' => 'edit_document_hr',
                 'module' => 'hrresdoc_submodule',
                 'permissions' => ['documents.index', 'documents.update']
             ],
             [
                 'display_name' => 'Ver documento',
-                'group_name' => 'see_document_hr',
+                'key_name' => 'see_document_hr',
                 'module' => 'hrresdoc_submodule',
                 'permissions' => ['documents.index', 'documents.show']
             ],
             [
                 'display_name' => 'Descargar documento',
-                'group_name' => 'download_document_hr',
+                'key_name' => 'download_document_hr',
                 'module' => 'hrresdoc_submodule',
                 'permissions' => ['documents.index', 'documents.download']
             ],
             [
                 'display_name' => 'Eliminar documento',
-                'group_name' => 'delete_document_hr',
+                'key_name' => 'delete_document_hr',
                 'module' => 'hrresdoc_submodule',
                 'permissions' => ['documents.index', 'documents.destroy']
             ],
@@ -219,25 +219,25 @@ class ModulePermissionSeeder extends Seeder
         $HrhrstateSubModule = [
             [
                 'display_name' => 'Ver tabla Estatus RRHH y filtro',
-                'group_name' => 'see_estatus_rrhh_table',
+                'key_name' => 'see_estatus_rrhh_table',
                 'module' => 'hrhrstate_submodule',
                 'permissions' => ['document.rrhh.status']
             ],
             [
                 'display_name' => 'Modificar estados de documentos',
-                'group_name' => 'modify_document_status',
+                'key_name' => 'modify_document_status',
                 'module' => 'hrhrstate_submodule',
                 'permissions' => ['document.rrhh.status', 'document.rrhh.status.store', 'document.rrhh.status.destroy', 'document.rrhh.status.in_expdate']
             ],
             [
                 'display_name' => 'Gestionar documentos grupales (sin eliminar)',
-                'group_name' => 'manage_grupal_documents_hr',
+                'key_name' => 'manage_grupal_documents_hr',
                 'module' => 'hrhrstate_submodule',
                 'permissions' => ['document.rrhh.status', 'document.grupal_documents.index', 'document.grupal_documents.store', 'document.grupal_documents.update', 'document.grupal_documents.download']
             ],
             [
                 'display_name' => 'Eliminar documentos grupales',
-                'group_name' => 'delete_grupal_documents_hr',
+                'key_name' => 'delete_grupal_documents_hr',
                 'module' => 'hrhrstate_submodule',
                 'permissions' => ['document.rrhh.status', 'document.grupal_documents.index', 'document.grupal_documents.destroy']
             ]
@@ -250,31 +250,31 @@ class ModulePermissionSeeder extends Seeder
         $pproviderSubModule = [
             [
                 'display_name' => 'Ver tabla de proveedores (incluye buscar)',
-                'group_name' => 'see_providers_table',
+                'key_name' => 'see_providers_table',
                 'module' => 'pprovider_submodule',
                 'permissions' => ['providersmanagement.index']
             ],
             [
                 'display_name' => 'Agregar proveedor',
-                'group_name' => 'add_provider',
+                'key_name' => 'add_provider',
                 'module' => 'pprovider_submodule',
                 'permissions' => ['providersmanagement.index', 'providersmanagement.store', 'provider.segments.list']
             ],
             [
                 'display_name' => 'Editar proveedor',
-                'group_name' => 'edit_provider',
+                'key_name' => 'edit_provider',
                 'module' => 'pprovider_submodule',
                 'permissions' => ['providersmanagement.index', 'providersmanagement.update', 'provider.segments.list']
             ],
             [
                 'display_name' => 'Gestionar categorias y segmentos',
-                'group_name' => 'manage_categorys_segments',
+                'key_name' => 'manage_categorys_segments',
                 'module' => 'pprovider_submodule',
                 'permissions' => ['providersmanagement.index', 'provider.category.post', 'provider.segment.post']
             ],
             [
                 'display_name' => 'Eliminar proveedor',
-                'group_name' => 'delete_provider',
+                'key_name' => 'delete_provider',
                 'module' => 'pprovider_submodule',
                 'permissions' => ['providersmanagement.index', 'providersmanagement.destroy']
             ],
@@ -288,37 +288,37 @@ class ModulePermissionSeeder extends Seeder
         $pclientsSubModule = [
             [
                 'display_name' => 'Ver tabla de clientes (incluye buscar)',
-                'group_name' => 'see_customers_table',
+                'key_name' => 'see_customers_table',
                 'module' => 'pclients_submodule',
                 'permissions' => ['customers.index', 'customers.search']
             ],
             [
                 'display_name' => 'Agregar cliente',
-                'group_name' => 'add_client',
+                'key_name' => 'add_client',
                 'module' => 'pclients_submodule',
                 'permissions' => ['customers.index', 'customers.store']
             ],
             [
                 'display_name' => 'Editar cliente',
-                'group_name' => 'edit_client',
+                'key_name' => 'edit_client',
                 'module' => 'pclients_submodule',
                 'permissions' => ['customers.index', 'customers.update']
             ],
             [
                 'display_name' => 'Eliminar cliente',
-                'group_name' => 'delete_client',
+                'key_name' => 'delete_client',
                 'module' => 'pclients_submodule',
                 'permissions' => ['customers.index', 'customers.destroy']
             ],
             [
                 'display_name' => 'Gestionar contactos de cliente (no eliminar)',
-                'group_name' => 'manage_client_contacts',
+                'key_name' => 'manage_client_contacts',
                 'module' => 'pclients_submodule',
                 'permissions' => ['customers.index', 'customers.contacts.index', 'customers.contacts.store', 'customers.contacts.update']
             ],
             [
                 'display_name' => 'Eliminar contacto de cliente',
-                'group_name' => 'delete_client_contact',
+                'key_name' => 'delete_client_contact',
                 'module' => 'pclients_submodule',
                 'permissions' => ['customers.index', 'customers.contacts.index', 'customers.contacts.destroy.update']
             ],
@@ -328,67 +328,67 @@ class ModulePermissionSeeder extends Seeder
         $pproSubModule = [
             [
                 'display_name' => 'Ver tabla títulos',
-                'group_name' => 'see_pro_titles_table',
+                'key_name' => 'see_pro_titles_table',
                 'module' => 'ppro_submodule',
                 'permissions' => ['preprojects.titles']
             ],
             [
                 'display_name' => 'Agregar título ',
-                'group_name' => 'add_pro_title',
+                'key_name' => 'add_pro_title',
                 'module' => 'ppro_submodule',
                 'permissions' => ['preprojects.titles', 'preprojects.titles.post']
             ],
             [
                 'display_name' => 'Editar título ',
-                'group_name' => 'edit_pro_title',
+                'key_name' => 'edit_pro_title',
                 'module' => 'ppro_submodule',
                 'permissions' => ['preprojects.titles', 'preprojects.titles.put']
             ],
             [
                 'display_name' => 'Eliminar títulos ',
-                'group_name' => 'delete_pro_title',
+                'key_name' => 'delete_pro_title',
                 'module' => 'ppro_submodule',
                 'permissions' => ['preprojects.titles', 'preprojects.titles.delete']
             ],
             [
                 'display_name' => 'Ver tabla códigos',
-                'group_name' => 'see_pro_codes_table',
+                'key_name' => 'see_pro_codes_table',
                 'module' => 'ppro_submodule',
                 'permissions' => ['preprojects.titles', 'preprojects.codes']
             ],
             [
                 'display_name' => 'Agregar código',
-                'group_name' => 'add_pro_code',
+                'key_name' => 'add_pro_code',
                 'module' => 'ppro_submodule',
                 'permissions' => ['preprojects.titles', 'preprojects.codes', 'preprojects.codes.post']
             ],
             [
                 'display_name' => 'Agregar imágenes de ejemplo del código',
-                'group_name' => 'add_pro_code_images',
+                'key_name' => 'add_pro_code_images',
                 'module' => 'ppro_submodule',
                 'permissions' => ['preprojects.titles', 'preprojects.codes', 'preprojects.code.images.store']
             ],
             [
                 'display_name' => 'Ver imágenes de ejemplo del código',
-                'group_name' => 'see_pro_code_images',
+                'key_name' => 'see_pro_code_images',
                 'module' => 'ppro_submodule',
                 'permissions' => ['preprojects.titles', 'preprojects.codes', 'preprojects.code.images.show', 'preprojects.code.images.index']
             ],
             [
                 'display_name' => 'Eliminar imágenes de ejemplo del código',
-                'group_name' => 'delete_pro_code_images',
+                'key_name' => 'delete_pro_code_images',
                 'module' => 'ppro_submodule',
                 'permissions' => ['preprojects.titles', 'preprojects.code', 'preprojects.code.images.index', 'preprojects.code.images.delete']
             ],
             [
                 'display_name' => 'Editar código',
-                'group_name' => 'edit_pro_code',
+                'key_name' => 'edit_pro_code',
                 'module' => 'ppro_submodule',
                 'permissions' => ['preprojects.titles', 'preprojects.codes', 'preprojects.codes.put']
             ],
             [
                 'display_name' => 'Eliminar código',
-                'group_name' => 'delete_pro_code',
+                'key_name' => 'delete_pro_code',
                 'module' => 'ppro_submodule',
                 'permissions' => ['preprojects.titles', 'preprojects.codes', 'preprojects.codes.delete']
             ],
@@ -398,19 +398,19 @@ class ModulePermissionSeeder extends Seeder
         $pprepintSubModule = [
             [
                 'display_name' => 'Ver cards de anteproyectos activos, aprobados y anulados (incluye buscador)',
-                'group_name' => 'see_prepro_pint_cards',
+                'key_name' => 'see_prepro_pint_cards',
                 'module' => 'pprepint_submodule',
                 'permissions' => ['preprojects.index']
             ],
             [
                 'display_name' => 'Asignar usuarios',
-                'group_name' => 'add_prepro_pint_users',
+                'key_name' => 'add_prepro_pint_users',
                 'module' => 'pprepint_submodule',
                 'permissions' => ['preprojects.index', 'preprojects.assign.users']
             ],
             [
                 'display_name' => 'Descargar imágenes',
-                'group_name' => 'download_prepro_pint_images',
+                'key_name' => 'download_prepro_pint_images',
                 'module' => 'pprepint_submodule',
                 'permissions' => [
                     'preprojects.index',
@@ -429,7 +429,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Informe fotográfico',
-                'group_name' => 'prepro_pint_photoreport',
+                'key_name' => 'prepro_pint_photoreport',
                 'module' => 'pprepint_submodule',
                 'permissions' => [
                     'preprojects.index',
@@ -444,7 +444,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Productos de almacén',
-                'group_name' => 'prepro_pint_warehouseproducts',
+                'key_name' => 'prepro_pint_warehouseproducts',
                 'module' => 'pprepint_submodule',
                 'permissions' => [
                     'preprojects.index',
@@ -458,7 +458,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Solicitud de compras',
-                'group_name' => 'prepro_pint_purchaserequest',
+                'key_name' => 'prepro_pint_purchaserequest',
                 'module' => 'pprepint_submodule',
                 'permissions' => [
                     'preprojects.index',
@@ -475,7 +475,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Cotizaciones de compras',
-                'group_name' => 'prepro_pint_purchasequotes',
+                'key_name' => 'prepro_pint_purchasequotes',
                 'module' => 'pprepint_submodule',
                 'permissions' => [
                     'preprojects.index',
@@ -489,7 +489,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Cotización para proyecto',
-                'group_name' => 'prepro_pint_projectquote',
+                'key_name' => 'prepro_pint_projectquote',
                 'module' => 'pprepint_submodule',
                 'permissions' => [
                     'preprojects.index',
@@ -509,7 +509,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Agregar y editar preproyecto (manera extendida)',
-                'group_name' => 'addedit_prepro_pint',
+                'key_name' => 'addedit_prepro_pint',
                 'module' => 'pprepint_submodule',
                 'permissions' => [
                     'preprojects.index',
@@ -521,7 +521,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Agregar y editar preproyecto (manera extendida)',
-                'group_name' => 'addedit_prepro_pint',
+                'key_name' => 'addedit_prepro_pint',
                 'module' => 'pprepint_submodule',
                 'permissions' => [
                     'preprojects.index',
@@ -533,7 +533,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Agregar preproyecto, proyecto y asignación cicsa (manera corta)',
-                'group_name' => 'add_prepro_pro_ca_pint',
+                'key_name' => 'add_prepro_pro_ca_pint',
                 'module' => 'pprepint_submodule',
                 'permissions' => [
                     'preprojects.index',
@@ -544,7 +544,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Eliminar preproyecto, proyecto y asignación cicsa',
-                'group_name' => 'delete_prepro_pint',
+                'key_name' => 'delete_prepro_pint',
                 'module' => 'pprepint_submodule',
                 'permissions' => [
                     'preprojects.index',
@@ -557,19 +557,19 @@ class ModulePermissionSeeder extends Seeder
         $prepextSubModule = [
             [
                 'display_name' => 'Ver cards de anteproyectos activos, aprobados y anulados (incluye buscador)',
-                'group_name' => 'see_prepro_pext_cards',
+                'key_name' => 'see_prepro_pext_cards',
                 'module' => 'pprepext_submodule',
                 'permissions' => ['preprojects.index']
             ],
             [
                 'display_name' => 'Asignar usuarios',
-                'group_name' => 'add_prepro_pext_users',
+                'key_name' => 'add_prepro_pext_users',
                 'module' => 'pprepext_submodule',
                 'permissions' => ['preprojects.index', 'preprojects.assign.users']
             ],
             [
                 'display_name' => 'Descargar imágenes',
-                'group_name' => 'download_prepro_pext_images',
+                'key_name' => 'download_prepro_pext_images',
                 'module' => 'pprepext_submodule',
                 'permissions' => [
                     'preprojects.index',
@@ -588,7 +588,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Informe fotográfico',
-                'group_name' => 'prepro_pext_photoreport',
+                'key_name' => 'prepro_pext_photoreport',
                 'module' => 'pprepext_submodule',
                 'permissions' => [
                     'preprojects.index',
@@ -603,7 +603,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Productos de almacén',
-                'group_name' => 'prepro_pext_warehouseproducts',
+                'key_name' => 'prepro_pext_warehouseproducts',
                 'module' => 'pprepext_submodule',
                 'permissions' => [
                     'preprojects.index',
@@ -617,7 +617,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Solicitud de compras',
-                'group_name' => 'prepro_pext_purchaserequest',
+                'key_name' => 'prepro_pext_purchaserequest',
                 'module' => 'pprepext_submodule',
                 'permissions' => [
                     'preprojects.index',
@@ -634,7 +634,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Cotizaciones de compras',
-                'group_name' => 'prepro_pext_purchasequotes',
+                'key_name' => 'prepro_pext_purchasequotes',
                 'module' => 'pprepext_submodule',
                 'permissions' => [
                     'preprojects.index',
@@ -648,7 +648,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Cotización para proyecto',
-                'group_name' => 'prepro_pext_projectquote',
+                'key_name' => 'prepro_pext_projectquote',
                 'module' => 'pprepext_submodule',
                 'permissions' => [
                     'preprojects.index',
@@ -668,7 +668,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Agregar y editar preproyecto (manera extendida)',
-                'group_name' => 'addedit_prepro_pext',
+                'key_name' => 'addedit_prepro_pext',
                 'module' => 'pprepext_submodule',
                 'permissions' => [
                     'preprojects.index',
@@ -680,7 +680,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Agregar y editar preproyecto (manera extendida)',
-                'group_name' => 'addedit_prepro_pext',
+                'key_name' => 'addedit_prepro_pext',
                 'module' => 'pprepext_submodule',
                 'permissions' => [
                     'preprojects.index',
@@ -692,7 +692,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Agregar preproyecto, proyecto y asignación cicsa (manera corta)',
-                'group_name' => 'add_prepro_pro_ca_pext',
+                'key_name' => 'add_prepro_pro_ca_pext',
                 'module' => 'pprepext_submodule',
                 'permissions' => [
                     'preprojects.index',
@@ -704,7 +704,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Eliminar preproyecto, proyecto y asignación cicsa',
-                'group_name' => 'delete_prepro_pext',
+                'key_name' => 'delete_prepro_pext',
                 'module' => 'pprepext_submodule',
                 'permissions' => [
                     'preprojects.index',
@@ -713,11 +713,11 @@ class ModulePermissionSeeder extends Seeder
             ],
         ];
 
-        //Area Proyectos -> Anteproyectos PEXT
+        //Area Proyectos -> Proyectos PINT
         $ppropintSubModule = [
             [
                 'display_name' => 'Ver cards de proyectos (incluye buscador)',
-                'group_name' => 'see_pro_pint_cards',
+                'key_name' => 'see_pro_pint_cards',
                 'module' => 'ppropint_submodule',
                 'permissions' => [
                     'projectmanagement.index',
@@ -725,7 +725,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Agregar proyecto',
-                'group_name' => 'add_pro_pint',
+                'key_name' => 'add_pro_pint',
                 'module' => 'ppropint_submodule',
                 'permissions' => [
                     'projectmanagement.index',
@@ -737,7 +737,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Editar proyecto',
-                'group_name' => 'edit_pro_pint',
+                'key_name' => 'edit_pro_pint',
                 'module' => 'ppropint_submodule',
                 'permissions' => [
                     'projectmanagement.index',
@@ -749,7 +749,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Calendario de proyectos',
-                'group_name' => 'pro_pint_calendars',
+                'key_name' => 'pro_pint_calendars',
                 'module' => 'ppropint_submodule',
                 'permissions' => [
                     'projectmanagement.index',
@@ -759,7 +759,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Ver historial de proyectos',
-                'group_name' => 'pro_pint_historial',
+                'key_name' => 'pro_pint_historial',
                 'module' => 'ppropint_submodule',
                 'permissions' => [
                     'projectmanagement.index',
@@ -768,7 +768,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Gestión de proyectos adicionales',
-                'group_name' => 'pro_pint_additional_management',
+                'key_name' => 'pro_pint_additional_management',
                 'module' => 'ppropint_submodule',
                 'permissions' => [
                     'projectmanagement.index',
@@ -793,7 +793,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Liquidar proyecto',
-                'group_name' => 'pro_pint_liquidate',
+                'key_name' => 'pro_pint_liquidate',
                 'module' => 'ppropint_submodule',
                 'permissions' => [
                     'projectmanagement.index',
@@ -802,7 +802,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Tareas de un proyecto',
-                'group_name' => 'pro_pint_tasks',
+                'key_name' => 'pro_pint_tasks',
                 'module' => 'ppropint_submodule',
                 'permissions' => [
                     'projectmanagement.index',
@@ -816,7 +816,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Calendario de un proyecto',
-                'group_name' => 'pro_pint_one_calendar',
+                'key_name' => 'pro_pint_one_calendar',
                 'module' => 'ppropint_submodule',
                 'permissions' => [
                     'projectmanagement.index',
@@ -827,7 +827,7 @@ class ModulePermissionSeeder extends Seeder
             //servicios
             [
                 'display_name' => 'Compras y gastos de un proyecto',
-                'group_name' => 'pro_pint_one_purchase_expenses',
+                'key_name' => 'pro_pint_one_purchase_expenses',
                 'module' => 'ppropint_submodule',
                 'permissions' => [
                     'projectmanagement.index',
@@ -877,7 +877,7 @@ class ModulePermissionSeeder extends Seeder
             // liquidaciones
             [
                 'display_name' => 'Archivos de un proyecto',
-                'group_name' => 'pro_pint_archives',
+                'key_name' => 'pro_pint_archives',
                 'module' => 'ppropint_submodule',
                 'permissions' => [
                     'projectmanagement.index',
@@ -890,10 +890,11 @@ class ModulePermissionSeeder extends Seeder
             ],
         ];
 
+        //Area Proyectos -> Proyectos PEXT
         $ppropextSubModule = [
             [
                 'display_name' => 'Ver cards de proyectos (incluye buscador)',
-                'group_name' => 'see_pro_pext_cards',
+                'key_name' => 'see_pro_pext_cards',
                 'module' => 'ppropext_submodule',
                 'permissions' => [
                     'projectmanagement.pext.index'
@@ -901,7 +902,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Agregar y editar proyecto',
-                'group_name' => 'see_pro_pext_cards',
+                'key_name' => 'see_pro_pext_cards',
                 'module' => 'ppropext_submodule',
                 'permissions' => [
                     'projectmanagement.pext.index',
@@ -911,7 +912,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Ver historial de proyectos',
-                'group_name' => 'see_pro_pext_history',
+                'key_name' => 'see_pro_pext_history',
                 'module' => 'ppropext_submodule',
                 'permissions' => [
                     'projectmanagement.pext.index',
@@ -920,7 +921,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Gestión de proyectos adicionales',
-                'group_name' => 'pro_pext_additional_management',
+                'key_name' => 'pro_pext_additional_management',
                 'module' => 'ppropext_submodule',
                 'permissions' => [
                     'projectmanagement.pext.index',
@@ -945,7 +946,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Tareas de un proyecto',
-                'group_name' => 'pro_pext_tasks',
+                'key_name' => 'pro_pext_tasks',
                 'module' => 'ppropext_submodule',
                 'permissions' => [
                     'projectmanagement.pext.index',
@@ -959,7 +960,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Calendario de un proyecto',
-                'group_name' => 'pro_pext_one_calendar',
+                'key_name' => 'pro_pext_one_calendar',
                 'module' => 'ppropext_submodule',
                 'permissions' => [
                     'projectmanagement.pext.index',
@@ -968,7 +969,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Liquidar proyecto',
-                'group_name' => 'pro_pext_liquidate',
+                'key_name' => 'pro_pext_liquidate',
                 'module' => 'ppropext_submodule',
                 'permissions' => [
                     'projectmanagement.pext.index',
@@ -977,7 +978,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Ver detalle de proyecto',
-                'group_name' => 'pro_pext_details',
+                'key_name' => 'pro_pext_details',
                 'module' => 'ppropext_submodule',
                 'permissions' => [
                     'projectmanagement.pext.index',
@@ -986,7 +987,7 @@ class ModulePermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Compras y gastos de un proyecto',
-                'group_name' => 'pro_pext_purchase_expenses',
+                'key_name' => 'pro_pext_purchase_expenses',
                 'module' => 'ppropext_submodule',
                 'permissions' => [
                     'projectmanagement.pext.index',
@@ -1008,16 +1009,174 @@ class ModulePermissionSeeder extends Seeder
 
         ];
 
+        //Area Proyectos -> G. Administrativos
+        $padmexpenSubModule = [
+            [
+                'display_name' => 'Gestión de gastos administrativos',
+                'key_name' => 'administrative_expense_manage',
+                'module' => 'padmexpen_submodule',
+                'permissions' => [
+                    'monthproject.index',
+                    'projectmanagement.administrativeCosts',
+                    'monthproject.store',
+                    'monthproject.destroy',
+                    'administrativeCosts.archive',
+                    'projectmanagement.storeAdministrativeCost',
+                    'projectmanagement.updateAdministrativeCost',
+                    'projectmanagement.deleteAdministrativeCost',
+                    'administrativeCosts.archive',
+                    'zip.administrative.descargar',
+                    'administrativeCosts.advance.search',
+                    'administrativeCosts.excel.export',
+                    'projectmanagement.administrativeCosts.massiveUpdate'
+                ]
+            ]
 
+        ];
 
-        [
-            'display_name' => '',
-            'group_name' => '',
-            'module' => '',
-            'permissions' => []
-        ]
+        //Area Proyectos -> Checklist
+        $pchecklistSubModule = [
+            [
+                'display_name' => 'Gestión de checklist',
+                'key_name' => 'pro_checklist_manager',
+                'module' => 'pchecklist_submodule',
+                'permissions' => [
+                    'checklist.index',
+                    'checklist.car.index',
+                    'checklist.toolkit.index',
+                    'checklist.dailytoolkit.index',
+                    'checklist.epp.index',
+                    'checklist.car.photo',
+                    'checklist.car.destroy',
+                    'checklist.toolkit.photo',
+                    'checklist.toolkit.destroy',
+                    'checklist.dailytoolkit.destroy',
+                    'checklist.epp.destroy',
+                ]
+            ]
+        ];
 
-        ;
+        //Area Proyectos -> Backlog
+
+        //Finanzas -> Presupuestos
+        //Finanzas -> Aprobación de compras
+        //Finanzas -> Depósitos
+        //Finanzas -> Pagos OC
+
+        //Finanzas -> Estado de cuenta
+        $faccstatementSubModule = [
+            [
+                'display_name' => 'Gestión de estado de cuenta',
+                'key_name' => 'finance_account_statement',
+                'module' => 'faccstatement_submodule',
+                'permissions' => [
+                    'finance.account_statement',
+                    'finance.search_costs',
+                    'finance.account_statement.store',
+                    'finance.account_statement.search',
+                    'finance.account_statement.delete',
+                    'finance.account_statement.import',
+                    'finance.account_statement.costs',
+                    'finance.account_statement.masivedelete',
+                    'finance.account_statement.dsdownload',
+                ]
+            ]
+
+        ];
+
+        //Facturación -> PINT
+
+        $billingpintSubModule = [
+            [
+                'display_name' => 'Gestión de facturación pint',
+                'key_name' => 'billing_pint_manage',
+                'module' => 'billingpint_submodule',
+                'permissions' => [
+                    'cicsa.index',
+                    'cicsa.export',
+                    'cicsa.assignation.destroy',
+                    'assignation.index',
+                    'assignation.export',
+                    'feasibilities.index',
+                    'feasibilities.storeOrUpdate',
+                    'feasibilities.export',
+                    'material.index',
+                    'material.store',
+                    'material.update',
+                    'material.search.material',
+                    'material.export',
+                    'material.import',
+                    'purchase.order.index',
+                    'purchaseOrder.storeOrUpdate',
+                    'purchase.order.showDocument',
+                    'purchase.order.export',
+                    'cicsa.installation.index',
+                    'cicsa.installation.store',
+                    'cicsa.installation.export',
+                    'cicsa.purchase_orders.validation',
+                    'cicsa.purchase_orders.validation.update',
+                    'cicsa.purchase_orders.validation.export',
+                    'cicsa.service_orders',
+                    'cicsa.service_orders.update',
+                    'cicsa.service_orders.showDocument',
+                    'cicsa.service_orders.export',
+                    'cicsa.charge_areas',
+                    'cicsa.charge_areas.update',
+                    'cicsa.charge_areas.showDocument',
+                    'cicsa.charge_areas.export',
+                    'cicsa.advance.search',
+                    'cicsa.export.materials.summary',
+                ]
+            ]
+
+        ];
+
+        //Facturación -> PEXT
+        $billingpextSubModule = [
+            [
+                'display_name' => 'Gestión de facturación pext',
+                'key_name' => 'billing_pext_manage',
+                'module' => 'billingpext_submodule',
+                'permissions' => [
+                    'cicsa.index',
+                    'cicsa.export',
+                    'cicsa.assignation.destroy',
+                    'assignation.index',
+                    'assignation.export',
+                    'feasibilities.index',
+                    'feasibilities.storeOrUpdate',
+                    'feasibilities.export',
+                    'material.index',
+                    'material.store',
+                    'material.update',
+                    'material.search.material',
+                    'material.export',
+                    'material.import',
+                    'purchase.order.index',
+                    'purchaseOrder.storeOrUpdate',
+                    'purchase.order.showDocument',
+                    'purchase.order.export',
+                    'cicsa.installation.index',
+                    'cicsa.installation.store',
+                    'cicsa.installation.export',
+                    'cicsa.purchase_orders.validation',
+                    'cicsa.purchase_orders.validation.update',
+                    'cicsa.purchase_orders.validation.export',
+                    'cicsa.service_orders',
+                    'cicsa.service_orders.update',
+                    'cicsa.service_orders.showDocument',
+                    'cicsa.service_orders.export',
+                    'cicsa.charge_areas',
+                    'cicsa.charge_areas.update',
+                    'cicsa.charge_areas.showDocument',
+                    'cicsa.charge_areas.export',
+                    'cicsa.advance.search',
+                    'cicsa.export.materials.summary',
+                ]
+            ]
+
+        ];
+
         $Submodules = [
             $UsersSubModule,
             $RolesSubModule,
@@ -1039,6 +1198,17 @@ class ModulePermissionSeeder extends Seeder
             $prepextSubModule,
             $ppropintSubModule,
             $ppropextSubModule,
+            $padmexpenSubModule,
+            $pchecklistSubModule,
+
+            //presupuestos
+            //aprobacion de compras
+            //depósitos
+            //pagos OC
+            $faccstatementSubModule,
+
+            $billingpintSubModule,
+            $billingpextSubModule,
 
 
         ];
