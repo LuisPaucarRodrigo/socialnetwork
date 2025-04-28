@@ -448,13 +448,6 @@ class ProjectRoutes
                 'name' => 'projectmanagement.store',
             ],
             [
-                'uri' => 'projectmanagement/update/{project_id}/type/{type?}',
-                'method' => 'get',
-                'action' => [ProjectManagementController::class, 'project_create'],
-                'permission' => true,
-                'name' => 'projectmanagement.update',
-            ],
-            [
                 'uri' => 'project/update/{project_id}/add-employee',
                 'method' => 'post',
                 'action' => [ProjectManagementController::class, 'project_add_employee'],
@@ -1447,13 +1440,6 @@ class ProjectRoutes
                 'name' => 'projectmanagement.additionalCosts.rejected',
             ],
             [
-                'uri' => '/additionalcost_photo/{additional_cost_id}',
-                'method' => 'get',
-                'action' => [AdditionalCostsController::class, 'download_ac_photo'],
-                'permission' => true,
-                'name' => 'additionalcost.archive',
-            ],
-            [
                 'uri' => '/additionalcost_advancesearch/{project_id}',
                 'method' => 'post',
                 'action' => [AdditionalCostsController::class, 'search_costs'],
@@ -1651,8 +1637,6 @@ class ProjectRoutes
                 'permission' => true,
                 'name' => 'projectmanagement.deleteStaticCost',
             ],
-
-
         ];
 
     }

@@ -1,8 +1,10 @@
 <?php
 namespace App\Support\RouteDefinitions;
 
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\ManagementRolsController;
+use App\Http\Controllers\Auth\PasswordController;
 
 
 class UserAdminRoutes
@@ -33,6 +35,13 @@ class UserAdminRoutes
                 'name' => 'users.update',
             ],
             [
+                'uri' => 'password/{user_id?}',
+                'method' => 'put',
+                'action' => [PasswordController::class, 'update'],
+                'permission' => true,
+                'name' => 'password.update',
+            ],
+            [
                 'uri' => 'users/delete/{id}',
                 'method' => 'post',
                 'action' => [UserController::class, 'delete'],
@@ -60,7 +69,21 @@ class UserAdminRoutes
                 'permission' => true,
                 'name' => 'users.details',
             ],
-
+            [
+                'uri' => 'register',
+                'method' => 'get',
+                'action' => [RegisteredUserController::class, 'create'],
+                'permission' => true,
+                'name' => 'register',
+            ],
+            [
+                'uri' => 'register',
+                'method' => 'post',
+                'action' => [RegisteredUserController::class, 'post'],
+                'permission' => true,
+                'name' => 'register.post',
+            ],
+        
             // Rols
             [
                 'uri' => 'rols',
