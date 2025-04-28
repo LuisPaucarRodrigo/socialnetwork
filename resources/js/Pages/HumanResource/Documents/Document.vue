@@ -16,7 +16,7 @@
             class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
             + Agregar Documento
           </PrimaryButton>
-          <PrimaryButton v-if="hasPermission('HumanResourceManager')" @click="management_section" type="button"
+          <PrimaryButton @click="management_section" type="button"
             class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
             Gestionar Secciones
           </PrimaryButton>
@@ -287,9 +287,6 @@ const props = defineProps({
   search: [String, null]
 });
 
-const hasPermission = (permission) => {
-  return props.userPermissions.includes(permission);
-}
 
 const form = useForm({
   id: '',

@@ -67,12 +67,12 @@
                         </TableRow>
                         <TableRow v-permission="'ee_actions'">
                             <div class="flex space-x-3 justify-center">
-                                <button v-if="hasPermission('HumanResourceManager')" type="button"
+                                <button type="button"
                                     @click="modal_employees_external(employee)">
                                     <PencilSquareIcon class="w-5 h-5 text-yellow-400" />
 
                                 </button>
-                                <button v-if="hasPermission('HumanResourceManager')" type="button"
+                                <button type="button"
                                     @click="confirmUserDeletion(employee.id)">
                                     <TrashIcon class="w-5 h-5 text-red-500" />
                                 </button>
@@ -266,9 +266,7 @@ const props = defineProps({
     userPermissions: Array,
     costLines: Object,
 })
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
+
 const employees = ref(props.employee)
 const cost_line = props.costLines.map(item => item.name)
 
