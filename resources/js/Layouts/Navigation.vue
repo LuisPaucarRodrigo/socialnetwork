@@ -87,5 +87,9 @@ export default {
     methods: {
         modulePermission: modulePermission
     },
+    mounted() {
+        // Código que quieres que se ejecute cuando se monte el componente
+        console.log('El componente fue montado');
+    },
 }
 </script>

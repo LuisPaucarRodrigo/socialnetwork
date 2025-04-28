@@ -742,14 +742,6 @@ class HumanResourceRoutes
                 'permission' => true,
                 'name' => 'document.grupal_documents.download',
             ],
-
-            [
-                'uri' => 'documents/megaupdate/',
-                'method' => 'get',
-                'action' => [DocumentController::class, 'megaupdate'],
-                'permission' => true,
-                'name' => 'documents.megaupdate',
-            ],
         ];
 
     }

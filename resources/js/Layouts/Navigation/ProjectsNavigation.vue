@@ -116,7 +116,7 @@
 import MyTransition from '@/Components/MyTransition.vue';
 import { subModulePermission } from '@/utils/roles/roles';
 import { Link, usePage } from '@inertiajs/vue3';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, onUnmounted } from 'vue';
 
 const {submodules} = usePage().props
 const {userSubModules} = usePage().props.auth
@@ -143,8 +143,16 @@ async function fetchCicsaSubSectionsCount() {
 }
 
 onMounted(() => {
-    fetchCicsaSubSectionsCount();
-    setInterval(fetchCicsaSubSectionsCount,60000)
+    const fetchAllAlarms = () => {
+        return Promise.all([
+            fetchCicsaSubSectionsCount()
+        ]);
+    };
+    fetchAllAlarms();
+    const intervalId = setInterval(fetchAllAlarms, 60000);
+    onUnmounted(() => {
+        clearInterval(intervalId);
+    });
+});
 
-})
 </script>

@@ -25,9 +25,6 @@ const { permissions, add_information } = defineProps({
 
 const providers = defineModel('providers')
 
-function hasPermission(permission) {
-    return permissions.includes(permission)
-}
 
 async function search(search) {
     let url = route('providersmanagement.index')

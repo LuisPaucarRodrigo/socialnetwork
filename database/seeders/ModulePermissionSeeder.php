@@ -174,19 +174,19 @@ class ModulePermissionSeeder extends Seeder
                 'display_name' => 'Gestionar secciones y subdivisiones (sin eliminar)',
                 'group_name' => 'manage_sections_subdivisions_hr',
                 'module' => 'hrresdoc_submodule',
-                'permissions' => ['documents.index', 'documents.zipSection', 'documents.updateSection', 'documents.sections', 'documents.storeSection', 'documents.subdivisions', 'documents.zipSubdivision', 'documents.updateSubdivision', 'documents.storeSubdivision' ]
+                'permissions' => ['documents.index', 'documents.zipSection', 'documents.updateSection', 'documents.sections', 'documents.storeSection', 'documents.subdivisions', 'documents.zipSubdivision', 'documents.updateSubdivision', 'documents.storeSubdivision']
             ],
             [
                 'display_name' => 'Eliminar secciones nuevas',
                 'group_name' => 'delete_new_sections_hr',
                 'module' => 'hrresdoc_submodule',
-                'permissions' => ['documents.index', 'documents.sections', 'documents.destroySection' ]
+                'permissions' => ['documents.index', 'documents.sections', 'documents.destroySection']
             ],
             [
                 'display_name' => 'Eliminar subdivisiones nuevas',
                 'group_name' => 'delete_new_subdivisions_hr',
                 'module' => 'hrresdoc_submodule',
-                'permissions' => ['documents.index', 'documents.sections', 'documents.subdivision', 'documents.destroySubdivision' ]
+                'permissions' => ['documents.index', 'documents.sections', 'documents.subdivision', 'documents.destroySubdivision']
             ],
             [
                 'display_name' => 'Editar documento',
@@ -218,13 +218,114 @@ class ModulePermissionSeeder extends Seeder
         // Recursos Humanos -> Estatus RRHH
         $HrhrstateSubModule = [
             [
-                'display_name' => 'Ver tabla Estatus RRHH',
+                'display_name' => 'Ver tabla Estatus RRHH y filtro',
                 'group_name' => 'see_estatus_rrhh_table',
                 'module' => 'hrhrstate_submodule',
                 'permissions' => ['document.rrhh.status']
             ],
-
+            [
+                'display_name' => 'Modificar estados de documentos',
+                'group_name' => 'modify_document_status',
+                'module' => 'hrhrstate_submodule',
+                'permissions' => ['document.rrhh.status', 'document.rrhh.status.store', 'document.rrhh.status.destroy', 'document.rrhh.status.in_expdate']
+            ],
+            [
+                'display_name' => 'Gestionar documentos grupales (sin eliminar)',
+                'group_name' => 'manage_grupal_documents_hr',
+                'module' => 'hrhrstate_submodule',
+                'permissions' => ['document.rrhh.status', 'document.grupal_documents.index', 'document.grupal_documents.store', 'document.grupal_documents.update', 'document.grupal_documents.download']
+            ],
+            [
+                'display_name' => 'Eliminar documentos grupales',
+                'group_name' => 'delete_grupal_documents_hr',
+                'module' => 'hrhrstate_submodule',
+                'permissions' => ['document.rrhh.status', 'document.grupal_documents.index', 'document.grupal_documents.destroy']
+            ]
         ];
+
+        // Inventario -> Productos
+        // Inventario -> Almacenes
+
+        //Area de Compras -> Proveedores
+        $pproviderSubModule = [
+            [
+                'display_name' => 'Ver tabla de proveedores (incluye buscar)',
+                'group_name' => 'see_providers_table',
+                'module' => 'pprovider_submodule',
+                'permissions' => ['providersmanagement.index']
+            ],
+            [
+                'display_name' => 'Agregar proveedor',
+                'group_name' => 'add_provider',
+                'module' => 'pprovider_submodule',
+                'permissions' => ['providersmanagement.index', 'providersmanagement.store', 'provider.segments.list']
+            ],
+            [
+                'display_name' => 'Editar proveedor',
+                'group_name' => 'edit_provider',
+                'module' => 'pprovider_submodule',
+                'permissions' => ['providersmanagement.index', 'providersmanagement.update', 'provider.segments.list']
+            ],
+            [
+                'display_name' => 'Gestionar categorias y segmentos',
+                'group_name' => 'manage_categorys_segments',
+                'module' => 'pprovider_submodule',
+                'permissions' => ['providersmanagement.index', 'provider.category.post', 'provider.segment.post']
+            ],
+            [
+                'display_name' => 'Eliminar proveedor',
+                'group_name' => 'delete_provider',
+                'module' => 'pprovider_submodule',
+                'permissions' => ['providersmanagement.index', 'providersmanagement.destroy']
+            ],
+        ];
+
+        //Area de Compras -> Solicitudes
+        //Area de Compras -> Ordenes
+        //Area de Compras -> Compras Completadas
+
+        //Area Proyectos -> Clientes
+        $pclientsSubModule = [
+            [
+                'display_name' => 'Ver tabla de clientes (incluye buscar)',
+                'group_name' => 'see_customers_table',
+                'module' => 'pclients_submodule',
+                'permissions' => ['customers.index', 'customers.search']
+            ],
+            [
+                'display_name' => 'Agregar cliente',
+                'group_name' => 'add_client',
+                'module' => 'pclients_submodule',
+                'permissions' => ['customers.index', 'customers.store']
+            ],
+            [
+                'display_name' => 'Editar cliente',
+                'group_name' => 'edit_client',
+                'module' => 'pclients_submodule',
+                'permissions' => ['customers.index', 'customers.update']
+            ],
+            [
+                'display_name' => 'Eliminar cliente',
+                'group_name' => 'delete_client',
+                'module' => 'pclients_submodule',
+                'permissions' => ['customers.index', 'customers.destroy']
+            ],
+            [
+                'display_name' => 'Gestionar contactos de cliente (no eliminar)',
+                'group_name' => 'manage_client_contacts',
+                'module' => 'pclients_submodule',
+                'permissions' => ['customers.index', 'customers.contacts.index', 'customers.contacts.store', 'customers.contacts.update']
+            ],
+            [
+                'display_name' => 'Eliminar contacto de cliente',
+                'group_name' => 'delete_client_contact',
+                'module' => 'pclients_submodule',
+                'permissions' => ['customers.index', 'customers.contacts.index', 'customers.contacts.destroy.update']
+            ],
+
+            
+        ];
+
 
 
         [
@@ -238,11 +339,20 @@ class ModulePermissionSeeder extends Seeder
         $Submodules = [
             $UsersSubModule,
             $RolesSubModule,
+
             $HremployeesSubModule,
             $HreemployeesSubModule,
             //nomina
             $$HrresdocSubModule,
             $HrhrstateSubModule,
+
+            $pproviderSubModule,
+            //Solicitudes
+            //Ordenes
+            //Compras Completadas
+
+            $pclientsSubModule
+
 
 
         ];
