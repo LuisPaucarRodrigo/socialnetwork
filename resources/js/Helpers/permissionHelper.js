@@ -1,5 +1,6 @@
 export function checkPermissions(el, binding, mode) {
-    const { permissions, role_id } = window?.appAuth || {};
+    const { functionalities:permissions, role_id } = window?.appAuth || {};
+    console.log(permissions)
     if (role_id === 1) return;
 
     const requiredPermissions = Array.isArray(binding.value) ? binding.value : [binding.value];

@@ -56,4 +56,8 @@ const { userPermission, form } = defineProps({
     form: Object
 })
 
+const hasPermission = (permission) => {
+    return userPermission.includes(permission);
+}
+
 </script>

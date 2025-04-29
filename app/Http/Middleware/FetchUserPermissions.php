@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Log;
 
 class FetchUserPermissions
 {
@@ -24,11 +25,12 @@ class FetchUserPermissions
     {
 
         $user = auth()->user();
-
         if ($user) {
-            // $permissions = $user->onePermission();
-            
-            // Inertia::share('userPermissions', $permissions);
+            $functionalities = $user->role->functionalities->pluck('key_name');
+            Log::info($functionalities);
+            $permissions = $user->onePermission();
+            Inertia::share('userFunctionalities', $functionalities);
+            Inertia::share('userPermissions', $permissions);
         }
 
         return $next($request);

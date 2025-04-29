@@ -44,7 +44,6 @@ class HandleInertiaRequests extends Middleware
             $userModules = $user?->role?->getCurrentModules()['modules'];
             $userSubModules = $user?->role?->getCurrentModules()['submodules'];;
         }
-
         
         return array_merge(parent::share($request), [
             'auth' => [

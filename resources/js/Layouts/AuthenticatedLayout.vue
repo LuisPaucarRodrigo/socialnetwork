@@ -47,7 +47,7 @@ watch(
     () => page.props.auth,
     () => {
         appAuth.role_id = page.props.auth?.user?.role_id || null;
-        appAuth.permissions = page.props.userPermissions || [];
+        appAuth.functionalities = page.props.userFunctionalities || [];
     },
     { immediate: true }
 );
