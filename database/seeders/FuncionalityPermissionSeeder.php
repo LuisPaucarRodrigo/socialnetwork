@@ -94,7 +94,7 @@ class FuncionalityPermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Ver tabla de empleados inactivos (incluye buscar)',
-                'key_name' => '',
+                'key_name' => 'see_inactive_employees_table',
                 'module' => 'hremployees_submodule',
                 'permissions' => ['management.employees', 'management.employees.search']
             ],
@@ -120,7 +120,7 @@ class FuncionalityPermissionSeeder extends Seeder
                 'display_name' => 'Despido y recontratación de empleado',
                 'key_name' => 'fired_reentry_employee',
                 'module' => 'hremployees_submodule',
-                'permissions' => ['management.employees', 'management.employees.fired', 'roles_submodule']
+                'permissions' => ['management.employees', 'management.employees.fired', 'management.employees.reentry']
             ],
             [
                 'display_name' => 'Alarma cumpleaños empleados',
@@ -190,7 +190,7 @@ class FuncionalityPermissionSeeder extends Seeder
                 'display_name' => 'Eliminar subdivisiones nuevas',
                 'key_name' => 'delete_new_subdivisions_hr',
                 'module' => 'hrresdoc_submodule',
-                'permissions' => ['documents.index', 'documents.sections', 'documents.subdivision', 'documents.destroySubdivision']
+                'permissions' => ['documents.index', 'documents.sections', 'documents.subdivisions', 'documents.destroySubdivision']
             ],
             [
                 'display_name' => 'Editar documento',
@@ -324,7 +324,7 @@ class FuncionalityPermissionSeeder extends Seeder
                 'display_name' => 'Eliminar contacto de cliente',
                 'key_name' => 'delete_client_contact',
                 'module' => 'pclients_submodule',
-                'permissions' => ['customers.index', 'customers.contacts.index', 'customers.contacts.destroy.update']
+                'permissions' => ['customers.index', 'customers.contacts.index', 'customers.contacts.destroy']
             ],
         ];
 
@@ -382,7 +382,7 @@ class FuncionalityPermissionSeeder extends Seeder
                 'display_name' => 'Eliminar imágenes de ejemplo del código',
                 'key_name' => 'delete_pro_code_images',
                 'module' => 'ppro_submodule',
-                'permissions' => ['preprojects.titles', 'preprojects.code', 'preprojects.code.images.index', 'preprojects.code.images.delete']
+                'permissions' => ['preprojects.titles', 'preprojects.codes', 'preprojects.code.images.index', 'preprojects.code.images.delete']
             ],
             [
                 'display_name' => 'Editar código',
@@ -509,18 +509,6 @@ class FuncionalityPermissionSeeder extends Seeder
                     'preproject_quote.rejected',
                     'preproject_quote.canceled'
 
-                ]
-            ],
-            [
-                'display_name' => 'Agregar y editar preproyecto (manera extendida)',
-                'key_name' => 'addedit_prepro_pint',
-                'module' => 'pprepint_submodule',
-                'permissions' => [
-                    'preprojects.index',
-                    'preprojects.create',
-                    'preprojects.update',
-                    'preprojects.store',
-                    'preprojects.update'
                 ]
             ],
             [
@@ -668,18 +656,6 @@ class FuncionalityPermissionSeeder extends Seeder
                     'preproject_quote.rejected',
                     'preproject_quote.canceled'
 
-                ]
-            ],
-            [
-                'display_name' => 'Agregar y editar preproyecto (manera extendida)',
-                'key_name' => 'addedit_prepro_pext',
-                'module' => 'pprepext_submodule',
-                'permissions' => [
-                    'preprojects.index',
-                    'preprojects.create',
-                    'preprojects.update',
-                    'preprojects.store',
-                    'preprojects.update'
                 ]
             ],
             [
@@ -906,7 +882,7 @@ class FuncionalityPermissionSeeder extends Seeder
             ],
             [
                 'display_name' => 'Agregar y editar proyecto',
-                'key_name' => 'see_pro_pext_cards',
+                'key_name' => 'add_pro_pext',
                 'module' => 'ppropext_submodule',
                 'permissions' => [
                     'projectmanagement.pext.index',
@@ -1188,7 +1164,7 @@ class FuncionalityPermissionSeeder extends Seeder
             $HremployeesSubModule,
             $HreemployeesSubModule,
             //nomina
-            $$HrresdocSubModule,
+            $HrresdocSubModule,
             $HrhrstateSubModule,
 
             $pproviderSubModule,

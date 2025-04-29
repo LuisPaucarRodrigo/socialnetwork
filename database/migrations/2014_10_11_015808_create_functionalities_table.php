@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('functionalities', function (Blueprint $table) {
             $table->id();
             $table->string('key_name')->unique();
-            $table->string('display_name')->unique();
+            $table->string('display_name');
             $table->foreignId('module_id')->constrained('modules')->cascadeOnDelete();
             $table->timestamps();
         });

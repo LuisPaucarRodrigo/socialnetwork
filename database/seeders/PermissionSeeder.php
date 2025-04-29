@@ -60,6 +60,11 @@ class PermissionSeeder extends Seeder
         Permission::insert($routes);
         $routes = array_map(function ($route) {
             return ['name' => $route['name']];
+        }, ShoppingAreaRoutes::all());
+
+        Permission::insert($routes);
+        $routes = array_map(function ($route) {
+            return ['name' => $route['name']];
         }, ProjectRoutes::all());
         Permission::insert($routes);
 

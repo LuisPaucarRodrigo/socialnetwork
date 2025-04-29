@@ -1469,6 +1469,13 @@ class ProjectRoutes
                 'permission' => true,
                 'name' => 'staticcost.advance.search',
             ],
+            [
+                'uri' => '/ad_st_costs_details',
+                'method' => 'post',
+                'action' => [ProjectManagementController::class, 'project_expense_details'],
+                'permission' => true,
+                'name' => 'project.expenses.zones.details',
+            ],
 
             // Project product
             [
