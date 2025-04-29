@@ -35,11 +35,11 @@ class PermissionMiddleware
 
         $user = auth()->user();
         if($user->role->id === 1) return $next($request);
-        $functionalities = $user->role->functionalities()->pluck('id');
-        $permission = Permission::where('name', $permissions);
+        $functionalities = $user->role->functionalities()->get()->pluck('id');
+        $permission = Permission::where('name', $permissions)->first();
 
         $hasOne = FunctionalityPermission::whereIn('functionality_id', $functionalities)
-            ->where('permission_id', $permission)->first();
+            ->where('permission_id', $permission->id)->first();
         if ($hasOne) {
             return $next($request);
         }

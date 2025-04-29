@@ -10,7 +10,7 @@ use App\Http\Controllers\Huawei\HuaweiMonthlyController;
 use App\Http\Controllers\Huawei\HuaweiProjectController;
 use App\Http\Controllers\Huawei\QuickMaterialsController;
 
-Route::middleware('permission:'.implode('|', RolesConstants::HUAWEI_MODULE))->group(function () {
+Route::middleware('permission:HuaweiManager')->group(function () {
     // Route::get('/huaweiLoads', [HuaweiController::class, 'show'])->name('huawei.loads');
     // Route::post('/huaweiLoads/import', [HuaweiController::class, 'import'])->name('huawei.loads.import');
     // Route::get('/huaweiLoads/{loadId}/products/{noPg?}', [HuaweiController::class, 'renderByLoad'])->name('huawei.loads.products');

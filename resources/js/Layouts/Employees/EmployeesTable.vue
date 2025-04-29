@@ -99,7 +99,4 @@ const { form, employees, costLine, userPermission, confirmFired, employee_fired_
 })
 
 
-const hasPermission = (permission) => {
-    return userPermission.includes(permission);
-}
 </script>
