@@ -36,10 +36,10 @@
                         <TableTitle>Dirección</TableTitle>
                         <TableTitle>Correo</TableTitle>
                         <TableTitle>Correo Empresarial</TableTitle>
-                        <TableTitle v-permission="'ee_salary'">Salario</TableTitle>
-                        <TableTitle v-permission="'ee_sctr'">Sctr</TableTitle>
-                        <TableTitle v-permission="'ee_curriculum'">Curriculum</TableTitle>
-                        <TableTitle v-permission="'ee_actions'"></TableTitle>
+                        <TableTitle v-permission="'ee_salary_politic'">Salario</TableTitle>
+                        <TableTitle v-permission="'ee_salary_politic'">Sctr</TableTitle>
+                        <TableTitle v-permission="'ee_salary_politic'">Curriculum</TableTitle>
+                        <TableTitle v-permission="'ee_salary_politic'"></TableTitle>
                     </tr>
                 </template>
                 <template #tbody>
@@ -56,15 +56,15 @@
                         <TableRow :width="'w-[250px]'">{{ employee.address }}</TableRow>
                         <TableRow>{{ employee.email }}</TableRow>
                         <TableRow>{{ employee.email_company }}</TableRow>
-                        <TableRow v-permission="'ee_salary'">{{ employee.salary }}</TableRow>
-                        <TableRow v-permission="'ee_sctr'">{{ employee.sctr }}</TableRow>
-                        <TableRow v-permission="'ee_curriculum'">
+                        <TableRow v-permission="'ee_salary_politic'">{{ employee.salary }}</TableRow>
+                        <TableRow v-permission="'ee_sctr_politic'">{{ employee.sctr }}</TableRow>
+                        <TableRow v-permission="'ee_curriculum_politic'">
                             <button v-if="employee.curriculum_vitae" @click="handlerPreview(employee.id)">
                                 <EyeIcon class="w-4 h-4 text-teal-600" />
                             </button>
                             <span v-else>-</span>
                         </TableRow>
-                        <TableRow v-permission="'ee_actions'">
+                        <TableRow v-permission="'ee_actions_politic'">
                             <div class="flex space-x-3 justify-center">
                                 <button type="button"
                                     @click="modal_employees_external(employee)">
