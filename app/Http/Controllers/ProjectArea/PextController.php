@@ -191,7 +191,7 @@ class PextController extends Controller
     {
         if ($request->isMethod('get')) {
             $project = $this->pextServices->index_additional_base($type, 1);
-            $project = $type == 2 ? $project->get() : $project->paginate();
+            $project = $type == 2 ? $project->get() : $project->get();
             $project = $this->pextServices->addCalculated($project);
             $project = $project->each(function ($item) {
                 return $item->cicsa_charge_status !== 'Completado';
