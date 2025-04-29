@@ -10,7 +10,7 @@
         <div class="flex gap-4 items-center">
           <PrimaryButton 
             v-permission-and="[
-              'documents_create',
+              'add_document_hr',
             ]"
           @click="openCreateDocumentModal" type="button"
             class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
@@ -122,10 +122,10 @@
           <button @click="downloadDocument(document.id)" class="flex items-center text-blue-600 hover:underline">
             <ArrowDownIcon class="h-4 w-4 ml-1" />
           </button>
-          <button v-permission="'documents_update'" @click="openEditDocumentModal(document)" class="text-orange-200 hover:underline mr-2">
+          <button v-permission="'edit_document_hr'" @click="openEditDocumentModal(document)" class="text-orange-200 hover:underline mr-2">
             <PencilIcon class="h-4 w-4 ml-1" />
           </button>
-          <button v-permission="'document_delete'" @click="confirmDeleteDocument(document.id)"
+          <button v-permission="'delete_document_hr'" @click="confirmDeleteDocument(document.id)"
             class="flex items-center text-red-600 hover:underline">
             <TrashIcon class="h-4 w-4" />
           </button>

@@ -53,16 +53,13 @@
                             </h1>
                         </div>
                         <template 
-                            v-permission-or="[
-                                'preprojects.codereport.approveImages',
-                                'preprojects.codereport.approveCode'
-                            ]"
+                          
                         >
                             <div class="sm:col-span-2 space-x-3 text-right" v-if="!imageCode.status">
-                                <PrimaryButton v-permission="'preprojects.codereport.approveImages'" @click="approveImages(imageCode.id)" type="button">
+                                <PrimaryButton @click="approveImages(imageCode.id)" type="button">
                                     Aprobar Imagenes
                                 </PrimaryButton>
-                                <PrimaryButton  v-permission="'preprojects.codereport.approveCode'" @click="verifyApproveModal(preprojectImage.id, imageCode.id)"
+                                <PrimaryButton  @click="verifyApproveModal(preprojectImage.id, imageCode.id)"
                                     type="button">
                                     Aprobar Codigo
                                 </PrimaryButton>

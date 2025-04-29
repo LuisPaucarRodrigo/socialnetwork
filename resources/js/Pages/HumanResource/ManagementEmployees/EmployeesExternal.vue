@@ -11,8 +11,7 @@
                 <div class="flex items-center justify-between gap-x-3 w-full">
                     <div  class="hidden sm:flex sm:items-center space-x-4">
                         <PrimaryButton v-permission-and="[
-                            'management_external_storeorupdate',
-                            'employees_external_index',
+                            'add_external_employee',
                         ]" @click="modal_employees_external()" type="button">
                             + Agregar
                         </PrimaryButton>
