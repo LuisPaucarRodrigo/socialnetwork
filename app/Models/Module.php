@@ -19,4 +19,8 @@ class Module extends Model
     {
         return $this->hasMany(Module::class, 'parent_id');
     }
+
+    public function functionalities() {
+        return $this->hasMany(Functionality::class, 'module_id');
+    }
 }

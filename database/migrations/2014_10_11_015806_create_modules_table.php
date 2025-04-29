@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('modules', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
+            $table->string('display_name');
             $table->foreignId('parent_id')->nullable()->constrained('modules')->nullOnDelete();
             $table->string('type');
             $table->timestamps();

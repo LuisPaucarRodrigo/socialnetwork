@@ -9,6 +9,7 @@ use App\Enums\Permissions\ProjectPermissions;
 use App\Enums\Permissions\PurchasingPermissions;
 use App\Enums\Permissions\UserRolePermissions;
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Module;
 use App\Models\Permission;
 use App\Models\Project;
 use App\Models\CicsaAssignation;
@@ -27,6 +28,13 @@ class ProfileController extends Controller
 {
     public function allFine()
     {
+        $modules = Permission::with(['functionalities' => function ($query) {
+            $query->select('functionalities.id', 'key_name');
+        }])->get();
+        
+        return response()->json($modules);
+
+
         // $data = Project::with('cicsa_assignation', 'preproject.customer')
         //     ->where('cost_center_id', 1)
         //     ->whereIn('id', [368, 424, 451])
