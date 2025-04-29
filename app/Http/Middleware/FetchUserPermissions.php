@@ -26,9 +26,9 @@ class FetchUserPermissions
         $user = auth()->user();
 
         if ($user) {
-            $permissions = $user->onePermission();
+            // $permissions = $user->onePermission();
             
-            Inertia::share('userPermissions', $permissions);
+            // Inertia::share('userPermissions', $permissions);
         }
 
         return $next($request);

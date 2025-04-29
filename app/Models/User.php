@@ -97,17 +97,17 @@ class User extends Authenticatable
         return false; 
     }
 
-    public function onePermission()
-    {
-        $role = $this->role; // Obtener el único rol del usuario
+    // public function onePermission()
+    // {
+    //     $role = $this->role; // Obtener el único rol del usuario
 
-        if ($role) { // Verificar si el usuario tiene un rol asignado
-            return $role->permissions()->pluck('name');
-        }
+    //     if ($role) { // Verificar si el usuario tiene un rol asignado
+    //         return $role->permissions()->pluck('name');
+    //     }
 
-        // No se encontraron permisos, retornar una colección vacía o null
-        return collect(); // o return null;
-    }
+    //     // No se encontraron permisos, retornar una colección vacía o null
+    //     return collect(); // o return null;
+    // }
 
     public function preprojects()
     {

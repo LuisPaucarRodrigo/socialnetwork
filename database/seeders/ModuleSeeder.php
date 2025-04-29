@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ModuleRole;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Module;
@@ -119,13 +120,23 @@ class ModuleSeeder extends Seeder
         foreach ($MODULES as $mod) {
             $module = Module::create([
                 'name' => $mod['name'],
-                'display_name' => $mod['display_name']
+                'display_name' => $mod['display_name'],
+                'type' => 'module',
+            ]);
+            ModuleRole::create([
+                'role_id' => 1,
+                'module_id' => $module->id
             ]);
             foreach ($mod['submodules'] as $sub_name => $sub_display_name) {
-                Module::create([
+                $submodule = Module::create([
                     'name' => $sub_name,
                     'display_name' => $sub_display_name,
-                    'parent_id' => $module->id
+                    'parent_id' => $module->id,
+                    'type' => 'submodule',
+                ]);
+                ModuleRole::create([
+                    'role_id' => 1,
+                    'module_id' => $submodule->id
                 ]);
             }
         }
