@@ -47,7 +47,46 @@
                     </div>
                     <div>
                         <InputLabel for="permission">Permisos</InputLabel>
-                        <select
+                        <br />
+                        <div
+                            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+                        >
+                            <div v-for="item in modules" :key="item.id">
+                                <h3 class="font-semibold">
+                                    {{ item.display_name }}
+                                </h3>
+                                <div class="space-y-2">
+                                    <div v-for="subitem in item.submodules">
+                                        <h4 class="text-normal mb-1 underline">
+                                            {{ subitem.display_name }}
+                                        </h4>
+                                        <div class="grid grid-cols-2 gap-1">
+                                            <div
+                                                v-for="subsubitem in subitem.functionalities"
+                                            >
+                                                <div class="space-x-1 ">
+                                                    <input
+                                                    class="mt-[1px]"
+                                                        type="checkbox"
+                                                        :id="subsubitem.id"
+                                                        :value="subsubitem.id"
+                                                        v-model="form.functionalities"
+                                                    />
+                                                    <label
+                                                        :for="subsubitem.id"
+                                                        class="text-sm select-none"
+                                                        >
+                                                            {{ subsubitem.display_name }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- <select
                             required
                             multiple
                             v-model="form.permission"
@@ -68,7 +107,8 @@
                                 {{ permission.description }}
                             </option>
                         </select>
-                        <InputError :message="form.errors.permission" />
+                        -->
+                        <InputError :message="form.errors.functionalities" /> 
                     </div>
                     <div class="mt-6 flex items-center justify-end gap-x-3">
                         <SecondaryButton @click="closeModal">
@@ -104,6 +144,7 @@ import { ref } from "vue";
 
 const props = defineProps({
     permissions: Object,
+    modules: Object,
 });
 
 const showModal = ref(false);
@@ -114,7 +155,7 @@ const rol_id_update = ref(null);
 const form = useForm({
     name: "",
     description: "",
-    permission: [],
+    functionalities: []
 });
 
 const add_rol = () => {
@@ -150,7 +191,7 @@ function editModalRol(rol) {
     stateCreateUpdate.value = false;
     form.name = rol.name;
     form.description = rol.description;
-    form.permission = rol.permissions.map((permission) => permission.id);
+    form.functionalities = rol.functionalities.map((functionality) => functionality.id);
     create_rol.value = true;
 }
 

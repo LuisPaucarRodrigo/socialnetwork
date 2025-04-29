@@ -3,14 +3,12 @@
         <template #thead>
             <tr>
                 <TableTitle>Nombre</TableTitle>
-                <TableTitle>Nombre</TableTitle>
                 <TableTitle>Descripcion</TableTitle>
                 <TableTitle></TableTitle>
             </tr>
         </template>
         <template #tbody>
             <tr v-for="rol in rols.data" :key="rol.id">
-                <TableRow>{{ rol.id }}</TableRow>
                 <TableRow>{{ rol.name }}</TableRow>
                 <TableRow>{{ rol.description }}</TableRow>
                 <TableRow>
