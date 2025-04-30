@@ -113,6 +113,13 @@ class CicsaRoutes
                 'permission' => true,
                 'name' => 'material.import',
             ],
+            [
+                'uri' => 'cicsa_material_delete/{c_m_id}',
+                'method' => 'delete',
+                'action' => [CicsaController::class, 'deleteMaterial'],
+                'permission' => true,
+                'name' => 'material.delete',
+            ],
 
             // Rutas Cicsa Purchase Order
             [

@@ -166,7 +166,7 @@ function openExportExcel() {
     const url =
         route("projectmanagement.pext.expenses.export", {
             project_id: project_id,
-            fixedOrAdditional: filterForm.fixedOrAdditional
+            fixedOrAdditional: filterForm.value.fixedOrAdditional
         }) +
         "?" +
         uniqueParam;
@@ -174,7 +174,7 @@ function openExportExcel() {
 }
 
 function rejectedExpenses() {
-    filterForm.rejected = !filterForm.rejected
+    filterForm.value.rejected = !filterForm.value.rejected
 }
 
 const openOpNuDaModal = () => {

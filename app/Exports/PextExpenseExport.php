@@ -24,14 +24,12 @@ class PextExpenseExport implements FromView, WithColumnWidths
     {
         $expense = null;
         if ($this->project_id) {
-            $expense = PextProjectExpense::with(['provider:id,company_name'])
-                ->where('project_id', $this->project_id)
+            $expense = PextProjectExpense::where('project_id', $this->project_id)
                 ->where('fixedOrAdditional', $this->fixedOrAdditional)
                 ->where('is_accepted', 1)
                 ->get();
         } else {
-            $expense = PextProjectExpense::with(['provider:id,company_name'])
-                ->whereHas('project', function ($e){
+            $expense = PextProjectExpense::whereHas('project', function ($e){
                     $e->where('cost_line_id', $this->cost_line);
                 })
                 ->where('project_id', "!=", 320)
@@ -39,7 +37,9 @@ class PextExpenseExport implements FromView, WithColumnWidths
                 ->where('is_accepted', 1)
                 ->get();
         }
-
+        $expense->each->setAppends([
+            'real_state'
+        ]);
         return view('Export/PextExpenseExport', [
             'expenses' => $expense
         ]);

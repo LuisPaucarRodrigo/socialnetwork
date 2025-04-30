@@ -18,13 +18,11 @@
 <script setup>
 import TextInput from '@/Components/TextInput.vue';
 
-const { permissions, add_information } = defineProps({
-    permissions: Array,
+const { add_information } = defineProps({
     add_information: Function
 })
 
 const providers = defineModel('providers')
-
 
 async function search(search) {
     let url = route('providersmanagement.index')
