@@ -1208,5 +1208,46 @@ class FuncionalityPermissionSeeder extends Seeder
                 }
             }
         }
+
+        $carFunctionalities = [
+            [
+                'display_name' => 'Manager administrativo de UM',
+                'key_name' => 'CarManager',
+                'module' => 'cchanappro_submodule',
+                'permissions' => [
+                    'fleet.cars.show_approvals_document',
+                    'fleet.cars.approve.change',
+                    'fleet.cars.rejected.change',
+                    'fleet.cars.index.approvel',
+                ],
+            ],
+            [
+                'display_name' => 'Gestión de UM',
+                'key_name' => 'Car',
+                'module' => 'cmobileunit_submodule',
+                'permissions' => [
+                    'fleet.cars.index',
+                    'fleet.cars.show_checklist.send_images',
+                    'fleet.cars.show.image',
+                    'fleet.cars.show_checklist',
+                    'fleet.cars.show_invoice',
+                    'fleet.cars.show_checklist.accept_or_decline',
+                    'fleet.cars.destroy',
+                    'fleet.cars.destroy_changelog',
+                    'fleet.cars.update',
+                    'fleet.cars.store',
+                    'fleet.cars.show_invoice',
+                    'fleet.cars.update_changelog',
+                    'fleet.cars.store_changelog',
+                    'fleet.cars.show_documents',
+                    'fleet.cars.update.document',
+                    'fleet.cars.store_document',
+                    'fleet.cars.search',
+                    'fleet.cars.index',
+                ],
+            ]
+        ];
+
+
     }
 }

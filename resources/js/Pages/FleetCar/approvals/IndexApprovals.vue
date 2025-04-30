@@ -1,6 +1,6 @@
 <template>
     <Head title="Gestion de Aprobaciones" />
-    <AuthenticatedLayout redirectRoute="fleet.cars.index">
+    <AuthenticatedLayout redirectRoute="fleet.cars.index.approvel">
         <Toaster richColors />
         <template #header> Aprobaciones de cambios de documentos </template>
         <ApprovalsTable :change="change"/>
