@@ -469,4 +469,9 @@ Route::middleware('permission:' . implode('|', RolesConstants::PROJECT_MODULE))-
     Route::post('/projectmanagement/purchases_request/static_costs/{additional_cost}/update', [StaticCostsController::class, 'update'])->name('projectmanagement.updateStaticCost');
     Route::delete('/projectmanagement/purchases_request/{project_id}/static_costs/{additional_cost}/destroy', [StaticCostsController::class, 'destroy'])->name('projectmanagement.deleteStaticCost');
 
+
+
+
+
+    Route::post('/project/statics_to_addproject_massive_swap/', [StaticCostsController::class, 'swapCostsToAdditionalProject'])->name('projectmanagement.statitoaddproject.swapCosts');
 });
