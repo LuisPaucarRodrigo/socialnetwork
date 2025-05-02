@@ -484,11 +484,13 @@ class PextController extends Controller
         if ($type == 1) {
             $cicsa_assignation = CicsaAssignation::select('id', 'project_name', 'project_id', 'zone')
                 ->whereHas('project', function ($query) {
-                    $query->whereIn('cost_center_id', [3]);
+                    $query->whereIn('cost_center_id', [3])
+                    ->where('is_accepted', true);
                 })
                 ->when($zone, function ($query, $zone) {
                     return $query->where('zone', $zone);
                 })
+                ->orderBy('project_name')
                 ->get();
         }
 
