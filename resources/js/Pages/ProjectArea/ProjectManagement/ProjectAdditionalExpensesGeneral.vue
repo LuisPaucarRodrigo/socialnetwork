@@ -703,7 +703,8 @@ const props = defineProps({
     zones: Array,
     expenseType: Array,
     documentsType: Array,
-    expenseTypeFixed: Array
+    expenseTypeFixed: Array,
+    additional_projects: Array,
 });
 
 const expenses = ref(props.expense);

@@ -8,6 +8,7 @@ use App\Exports\PextExpenseExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PextProjectRequest\StoreOrUpdateAssignationRequest;
 use App\Http\Requests\PextProjectRequest\StoreOrUpdateExpenseRequest;
+use App\Http\Requests\PextProjectRequest\SwapAdditionalToAdditionalRequest;
 use App\Models\AccountStatement;
 use App\Models\CicsaAssignation;
 use App\Models\CostLine;
@@ -180,14 +181,14 @@ class PextController extends Controller
         return Excel::download(new PextExpenseExport(null, $project_id, json_decode($fixedOrAdditional)), $fileName);
     }
 
-    public function expense_export_general($fixedOrAdditional,$cost_line)
+    public function expense_export_general($fixedOrAdditional, $cost_line)
     {
         $fOrA = json_decode($fixedOrAdditional) ? 'Fijos' : 'Adicionales';
         $fileName = 'Gastos_Pext' . '-' . $fOrA . '.xlsx';
         return Excel::download(new PextExpenseExport($cost_line, null, json_decode($fixedOrAdditional)), $fileName);
     }
 
-    public function index_additional(Request $request, $type, $searchCondition = null,)
+    public function index_additional(Request $request, $type, $searchCondition = null, )
     {
         if ($request->isMethod('get')) {
             $project = $this->pextServices->index_additional_base($type, 1);
@@ -335,6 +336,9 @@ class PextController extends Controller
         $scArr = $this->pextServices->expense_calculation($project_id, 1)->get();
         $scExpensesAmounts = $this->pextServices->map_expenses($scArr);
 
+        $cost_center_id = $type == 1 ? 3 : 9;
+        $additionalProjects = Project::whereNot('id', $project_id)->where('cost_line_id', $type)->where('cost_center_id', $cost_center_id)->select('id', 'description')->where('is_accepted', true)->orderBy('description')->get();
+
         return Inertia::render(
             'ProjectArea/ProjectManagement/ProjectAdditionalExpenses',
             [
@@ -349,9 +353,34 @@ class PextController extends Controller
                 'zones' => PextConstants::getZone(),
                 'expenseType' => PextConstants::getExpenseType(),
                 'expenseTypeFixed' => PextConstants::getExpenseTypeFixed(),
-                'documentsType' => PextConstants::getDocumentsType()
+                'documentsType' => PextConstants::getDocumentsType(),
+                'additional_projects' => $additionalProjects,
             ]
         );
+    }
+
+    public function swap_additionalToAdditional(SwapAdditionalToAdditionalRequest $request)
+    {
+        $data = $request->validated();
+        if ( $data['type_project'] === 'same_project' ) {
+            $first = PextProjectExpense::find($data['ids'][0]);
+            $project_id = $first->project_id;
+            $fixedOrAdditional = !$first->fixedOrAdditional;
+        }
+        if ( $data['type_project'] === 'different_project' ) {
+            $project_id = $data['project_id'];
+            $fixedOrAdditional = (bool)(int)$data['type_expense'];
+        }
+        foreach ($data['ids'] as $id) {
+            $ppe = PextProjectExpense::find($id);
+            $newData = collect($ppe->toArray())
+                ->except(['id', 'project_id'])
+                ->toArray();
+            $newData['project_id'] = $project_id;
+            $newData['fixedOrAdditional'] = $fixedOrAdditional;
+            $ppe->update($newData);
+        }
+        return response()->json(true, 200);
     }
 
     public function additional_expense_index_general($fixedOrAdditional, $type)
@@ -679,5 +708,7 @@ class PextController extends Controller
     //     return response()->json($projects, 200);
     // }
 
-    public function swapExpensesMonthly() {}
+    public function swapExpensesMonthly()
+    {
+    }
 }

@@ -474,4 +474,5 @@ Route::middleware('permission:' . implode('|', RolesConstants::PROJECT_MODULE))-
 
 
     Route::post('/project/statics_to_addproject_massive_swap/', [StaticCostsController::class, 'swapCostsToAdditionalProject'])->name('projectmanagement.statitoaddproject.swapCosts');
+    Route::post('/project/additional_to_addproject_massive_swap/', [PextController::class, 'swap_additionalToAdditional'])->name('projectmanagement.additionalToAdditional.swapCosts');
 });
