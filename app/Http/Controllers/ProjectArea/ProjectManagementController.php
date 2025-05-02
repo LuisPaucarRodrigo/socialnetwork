@@ -142,6 +142,8 @@ class ProjectManagementController extends Controller
                 abort(403, "Solo admin puede editar");
             }
             $project = Project::find($request->id);
+            $preproject = Preproject::find($project?->preproject_id);
+            $preproject->update(['cpe'=>$data['cpe']]);
             $project->update($data);
         } else {
             $project = Project::create($data);
