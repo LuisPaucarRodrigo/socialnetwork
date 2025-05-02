@@ -14,10 +14,12 @@ use App\Models\HuaweiProject;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log as FacadesLog;
 use Inertia\Inertia;
 use Log;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use ZipArchive;
 
 class HuaweiMonthlyController extends Controller
 {
@@ -47,7 +49,7 @@ class HuaweiMonthlyController extends Controller
             ->latest()
             ->get()
             ->each->setAppends(['real_state', 'type']); // una sola línea
-    
+
         // Agrupamos por tipo (usando accessor) y luego por expense_type
         $grouped = $expenses->groupBy('type')->map(function ($itemsByType) {
             return $itemsByType->groupBy('expense_type')->map(function ($group) {
@@ -57,14 +59,14 @@ class HuaweiMonthlyController extends Controller
                 ];
             })->values();
         });
-    
+
         return Inertia::render('Huawei/GeneralBalance', [
             'expenses' => $expenses,
             'acExpensesAmounts' => $grouped->get('Variable', collect())->values(),
             'scExpensesAmounts' => $grouped->get('Fijo', collect())->values(),
         ]);
     }
-    
+
 
     public function getExpensesByZone($expenseType)
     {
@@ -213,7 +215,7 @@ class HuaweiMonthlyController extends Controller
                 ->filter()
                 ->map(fn($item) => (string) $item)
                 ->uniqueStrict()
-                ->values(),            
+                ->values(),
             'assigned_dius' => $allExpenses
                 ->map(fn($expense): mixed => $expense->huawei_project?->assigned_diu)
                 ->unique()
@@ -318,7 +320,7 @@ class HuaweiMonthlyController extends Controller
         if (count($request->ecOpNumbers) < $summary['op_numbers'] - 1) {
             $ecOpNumbers = $request->ecOpNumbers;
             if (!in_array('(vacio)', $ecOpNumbers)) {
-                $expensesQuery->whereNotNull('ec_op_number');
+                $expensesQuery->whereIn('ec_op_number', $request->ecOpNumbers)->whereNotNull('ec_op_number');
             } else {
                 $expensesQuery->whereIn('ec_op_number', $request->ecOpNumbers)
                     ->orWhereNull('ec_op_number');
