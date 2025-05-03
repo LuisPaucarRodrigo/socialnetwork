@@ -293,6 +293,7 @@
                                 :class="[
                                     item.state === 'Abono' && 'bg-gray-500',
                                     item.state === 'Validado' && 'bg-green-500',
+                                    item.state === 'Excedido' && 'bg-blue-500',
                                     item.state === 'Por validar' &&
                                     'bg-yellow-400',
                                     item.state === 'No validado' &&
