@@ -24,7 +24,7 @@ use App\Http\Controllers\Services\SharePointController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/sharepoint/index_cost_line', [SharePointController::class, 'index'])->name('sharepoint.index');
-
+Route::post('/import_excel_expenses/expenses', [PextController::class, 'import_excel_expenses'])->name('importar.excel.expenses');
 
 //new permissions routes
 

@@ -92,7 +92,7 @@ Route::middleware('permission:' . implode('|', RolesConstants::PURCHASING_MODULE
 
     //Purchase Orders
     Route::get('/shopping_area/purchaseorders', [PurchaseOrdersController::class, 'index'])->name('purchaseorders.index');
-    Route::get('/shopping_area/purchaseorders/search/{request}/{history}', [PurchaseOrdersController::class, 'search'])->name('purchaseorders.search');
+    Route::post('/shopping_area/purchaseorders/search', [PurchaseOrdersController::class, 'search'])->name('purchaseorders.search');
 
     Route::get('/shopping_area/purchaseorders_details/{purchase_order_id}', [PurchaseOrdersController::class, 'purchase_order_view'])->name('purchaseorders.details');
 

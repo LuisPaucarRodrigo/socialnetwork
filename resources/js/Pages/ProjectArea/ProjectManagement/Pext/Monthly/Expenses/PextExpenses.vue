@@ -11,14 +11,15 @@
             <TableHeader :userPermissions="userPermissions" v-model:filterForm="filterForm" :project_id="project_id"
                 :fixedOrAdditional="fixedOrAdditional" :status="status" :actionForm="actionForm"
                 v-model:showSwapCostsModal="showSwapCostsModal" v-model:showOpNuDatModal="showOpNuDatModal"
-                :initialFilterFormState="initialFilterFormState"
-                :openCreateAdditionalModal="openCreateAdditionalModal" />
+                :initialFilterFormState="initialFilterFormState" :openCreateAdditionalModal="openCreateAdditionalModal"
+                :openModalImport="openModalImport" />
         </div>
         <ExpensesTable :expenses="expenses" :userPermissions="userPermissions" :actionForm="actionForm"
             :filterForm="filterForm" :zones="zones" :docTypes="docTypes" :expenseTypes="expenseTypes"
             :stateTypes="stateTypes" :openEditAdditionalModal="openEditAdditionalModal" />
 
         <MasiveUpdate :expenses="expenses" v-model:showOpNuDatModal="showOpNuDatModal" />
+        <ExpensesImport :project_id="project_id" :fixedOrAdditional="fixedOrAdditional" ref="expensesImport"/>
         <FormExpenses :expenses="expenses" :fixedOrAdditional="fixedOrAdditional" :project_id="project_id"
             :zones="zones" :docTypes="docTypes" :expenseTypes="expenseTypes" :providers="providers"
             ref="formExpenses" />
@@ -40,6 +41,7 @@ import TableHeader from "./components/TableHeader.vue";
 import ExpensesTable from "./components/ExpensesTable.vue";
 import FormExpenses from "./components/FormExpenses.vue";
 import MasiveUpdate from "./components/MasiveUpdate.vue";
+import ExpensesImport from "./components/ExpensesImport.vue";
 
 const props = defineProps({
     expense: Object,
@@ -60,6 +62,7 @@ const showOpNuDatModal = ref(false)
 const redirectRoute = props.status ? 'projectmanagement.pext.historial' : 'projectmanagement.pext.index'
 const formExpenses = ref(false);
 const showSwapCostsModal = ref(false)
+const expensesImport = ref(false)
 
 function openCreateAdditionalModal() {
     formExpenses.value.openCreateAdditionalModal()
@@ -67,6 +70,10 @@ function openCreateAdditionalModal() {
 
 function openEditAdditionalModal(additional) {
     formExpenses.value.openEditAdditionalModal(additional)
+};
+
+function openModalImport() {
+    expensesImport.value.toogleModalImport()
 };
 
 const expenseTypes = props.fixedOrAdditional

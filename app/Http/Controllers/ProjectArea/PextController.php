@@ -8,6 +8,7 @@ use App\Exports\PextExpenseExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PextProjectRequest\StoreOrUpdateAssignationRequest;
 use App\Http\Requests\PextProjectRequest\StoreOrUpdateExpenseRequest;
+use App\Imports\PextProjectExpensesImport;
 use App\Models\AccountStatement;
 use App\Models\CicsaAssignation;
 use App\Models\CostLine;
@@ -180,7 +181,7 @@ class PextController extends Controller
         return Excel::download(new PextExpenseExport(null, $project_id, json_decode($fixedOrAdditional)), $fileName);
     }
 
-    public function expense_export_general($fixedOrAdditional,$cost_line)
+    public function expense_export_general($fixedOrAdditional, $cost_line)
     {
         $fOrA = json_decode($fixedOrAdditional) ? 'Fijos' : 'Adicionales';
         $fileName = 'Gastos_Pext' . '-' . $fOrA . '.xlsx';
@@ -680,4 +681,20 @@ class PextController extends Controller
     // }
 
     public function swapExpensesMonthly() {}
+
+    public function import_excel_expenses(Request $request)
+    {
+        $validateData = $request->validate([
+            'project_id' => 'required',
+            'fixedOrAdditional' => 'required',
+            'file' => 'required',
+        ]);
+        try {
+            $import = new PextProjectExpensesImport($validateData['project_id'], $validateData['fixedOrAdditional']);
+            Excel::import($import, $request->file('file'));
+            return response()->json([], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 422);
+        }
+    }
 }
