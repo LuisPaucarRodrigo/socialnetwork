@@ -341,6 +341,8 @@
                                     item.state === 'Abono' && 'text-gray-500',
                                     item.state === 'Validado' &&
                                     'text-green-500',
+                                    item.state === 'Excedido' &&
+                                    'text-blue-500',
                                     item.state === 'Por validar' &&
                                     'text-yellow-400',
                                     item.state === 'No validado' &&
@@ -741,7 +743,7 @@ const hasPermission = (per) => {
 const initStateCostsFounded = {
     geData: [],
 };
-const stateOptions = ["Abono", "Validado", "Por validar", "No validado"];
+const stateOptions = ["Abono", "Validado", "Excedido", "Por validar", "No validado"];
 const dataToRender = ref({
     accountStatements,
     previousBalance,
