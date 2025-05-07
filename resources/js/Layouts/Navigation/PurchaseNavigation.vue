@@ -128,18 +128,18 @@ async function fetchPurchaseOrderAlarms(params) {
 }
 
 
+let intervalId;
+const fetchAllAlarms = () => {
+  return Promise.all([
+  fetchPurchasesRequest(),
+    fetchPurchaseOrderAlarms(),
+  ]);
+};
 onMounted(() => {
-    const fetchAllAlarms = () => {
-        return Promise.all([
-        fetchPurchasesRequest(),
-        fetchPurchaseOrderAlarms(),
-        ]);
-    };
-    fetchAllAlarms();
-    const intervalId = setInterval(fetchAllAlarms, 60000);
-    onUnmounted(() => {
-        clearInterval(intervalId);
-    });
+  fetchAllAlarms();
+  intervalId = setInterval(fetchAllAlarms, 60000);
 });
-
+onUnmounted(() => {
+  clearInterval(intervalId);
+});
 </script>

@@ -142,18 +142,20 @@ async function fetchPaymentsAlarm() {
 }
 
 
+
+let intervalId;
+const fetchAllAlarms = () => {
+  return Promise.all([
+  fetchFinancePurchases(),
+  fetchPaymentsAlarm(),
+  ]);
+};
 onMounted(() => {
-    const fetchAllAlarms = () => {
-        return Promise.all([
-        fetchFinancePurchases(),
-        fetchPaymentsAlarm(),
-        ]);
-    };
-    fetchAllAlarms();
-    const intervalId = setInterval(fetchAllAlarms, 60000);
-    onUnmounted(() => {
-        clearInterval(intervalId);
-    });
+  fetchAllAlarms();
+  intervalId = setInterval(fetchAllAlarms, 60000);
+});
+onUnmounted(() => {
+  clearInterval(intervalId);
 });
 
 </script>

@@ -142,17 +142,20 @@ async function fetchCicsaSubSectionsCount() {
     }
 }
 
+
+
+let intervalId;
+const fetchAllAlarms = () => {
+  return Promise.all([
+    fetchCicsaSubSectionsCount()
+  ]);
+};
 onMounted(() => {
-    const fetchAllAlarms = () => {
-        return Promise.all([
-            fetchCicsaSubSectionsCount()
-        ]);
-    };
-    fetchAllAlarms();
-    const intervalId = setInterval(fetchAllAlarms, 60000);
-    onUnmounted(() => {
-        clearInterval(intervalId);
-    });
+  fetchAllAlarms();
+  intervalId = setInterval(fetchAllAlarms, 60000);
+});
+onUnmounted(() => {
+  clearInterval(intervalId);
 });
 
 </script>

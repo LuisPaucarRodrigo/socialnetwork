@@ -89,11 +89,10 @@
                                 </TableRow>
                                 <TableRow>
                                     <button class="text-blue-900"
-                                        @click="deleteMaterial(materialDetail.id)">
+                                        @click="deleteMaterial(materialDetail.id, item)">
                                         <TrashIcon class="w-5 h-5 text-red-400" />
                                     </button>
                                 </TableRow>
-                                <TableRow></TableRow>
                             </tr>
                         </template>
                     </template>
@@ -685,13 +684,12 @@ if (searchCondition) {
     search(searchCondition)
 }
 
-async function deleteMaterial(id) {
+async function deleteMaterial(id, item) {
     const res = await axios.delete(route('material.delete', {c_m_id:id}))
     if (res.status === 200) {
         notify('Material eliminado')
-        setTimeout(()=>{
-            router.visit(route('material.index', {type}))
-        }, 1500)
+        item.cicsa_materials = item.cicsa_materials.filter((material) => material.id != id)
+        if(item.cicsa_materials.length == 0 ) {materialRow.value = 0}
     } else {
         notifyError('SERVER ERROR')
     }

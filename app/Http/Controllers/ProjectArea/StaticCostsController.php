@@ -6,12 +6,13 @@ use App\Http\Requests\CostsRequest\StaticCostsRequest;
 use App\Services\ProjectArea\StaticCostsService;
 use App\Exports\StaticCostsExport;
 use App\Http\Controllers\Controller;
+use App\Models\PextProjectExpense;
 use App\Models\AccountStatement;
-use App\Models\Provider;
 use App\Models\StaticCost;
+use App\Models\Provider;
+use App\Models\Project;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\Project;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Log;
 use App\Constants\PintConstants;
@@ -39,6 +40,7 @@ class StaticCostsController extends Controller
             $item->setAppends(['real_amount', 'real_state']);
             return $item;
         });
+        $additionalProjects = Project::where('cost_line_id', 1)->where('cost_center_id', 3)->select('id', 'description')->where('is_accepted', true)->orderBy('description')->get();
         $searchQuery = '';
         $providers = Provider::all();
         return Inertia::render('ProjectArea/ProjectManagement/StaticCosts', [
@@ -50,6 +52,7 @@ class StaticCostsController extends Controller
             'expenseTypes' => $expenseTypes,
             'docTypes' => $docTypes,
             'stateTypes' => $stateTypes,
+            'additional_projects' => $additionalProjects,
         ]);
     }
 
@@ -236,5 +239,37 @@ class StaticCostsController extends Controller
     public function export($project_id)
     {
         return Excel::download(new StaticCostsExport($project_id), 'Gastos_Fijos.xlsx');
+    }
+
+
+    public function swapCostsToAdditionalProject(Request $request)
+    {
+        $data = $request->validate([
+            'ids' => 'required | array | min:1',
+            'project_id' => 'required'
+        ]);
+        foreach ($data['ids'] as $id) {
+            $sc = StaticCost::find($id);
+            $newData = collect($sc->toArray())->except(['id', 'project_id'])->toArray();
+            $newData['project_id'] = $data['project_id'];
+            $sc->photo && $this->file_move_toAdditional($sc->photo);
+            $newData['fixedOrAdditional'] = true;
+            $newData['is_accepted'] = true;
+            PextProjectExpense::create($newData);
+        }
+        StaticCost::whereIn('id', $data['ids'])->delete();
+        return response()->json(true, 200);
+    }
+
+
+    public function file_move_toAdditional($fileName)
+    {
+        $sourcePath = public_path('documents/additionalcosts/' . $fileName);
+        $destinationPath = public_path('documents/expensesPext/' . $fileName);
+        if (file_exists($sourcePath)) {
+            rename($sourcePath, $destinationPath);
+            return true;
+        }
+        return true;
     }
 }

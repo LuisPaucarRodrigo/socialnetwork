@@ -1644,6 +1644,20 @@ class ProjectRoutes
                 'permission' => true,
                 'name' => 'projectmanagement.deleteStaticCost',
             ],
+            [
+                'uri' => '/project/statics_to_addproject_massive_swap/',
+                'method' => 'post',
+                'action' => [StaticCostsController::class, 'swapCostsToAdditionalProject'],
+                'permission' => true,
+                'name' => 'projectmanagement.statitoaddproject.swapCosts',
+            ],
+            [
+                'uri' => '/project/additional_to_addproject_massive_swap/',
+                'method' => 'post',
+                'action' => [PextController::class, 'swap_additionalToAdditional'],
+                'permission' => true,
+                'name' => 'projectmanagement.additionalToAdditional.swapCosts',
+            ],
         ];
 
     }
