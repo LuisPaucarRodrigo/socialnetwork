@@ -1195,10 +1195,14 @@ class FuncionalityPermissionSeeder extends Seeder
                     'fleet.cars.update.document',
                     'fleet.cars.store_document',
                     'fleet.cars.search',
-                    'fleet.cars.index',
+
+                    'fleet.cars.alarms',
+                    'fleet.cars.checklist.alarms',
+                    'fleet.cars.specific.alarms',
+                    'fleet.cars.alarms.changelogs',
                 ],
             ]
-            ];
+        ];
 
 
 
@@ -1240,15 +1244,15 @@ class FuncionalityPermissionSeeder extends Seeder
             $cmobileunitSubModule,
         ];
 
-        foreach($Submodules as $sm) {
-            foreach($sm as $func) {
+        foreach ($Submodules as $sm) {
+            foreach ($sm as $func) {
                 $module = Module::where('name', $func['module'])->first();
                 $functionality = Functionality::create([
                     'key_name' => $func['key_name'],
                     'display_name' => $func['display_name'],
                     'module_id' => $module->id
                 ]);
-                foreach($func['permissions'] as $funcperm){
+                foreach ($func['permissions'] as $funcperm) {
                     $permission = Permission::where('name', $funcperm)->first();
                     FunctionalityPermission::create([
                         'functionality_id' => $functionality->id,
@@ -1258,7 +1262,7 @@ class FuncionalityPermissionSeeder extends Seeder
             }
         }
 
-        
+
 
 
     }

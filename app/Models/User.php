@@ -99,15 +99,13 @@ class User extends Authenticatable
 
     public function onePermission()
     {
-        // $role = $this->role; // Obtener el único rol del usuario
+        $role = $this->role; // Obtener el único rol del usuario
 
-        // if ($role) { // Verificar si el usuario tiene un rol asignado
-        //     return $role->permissions()->pluck('name');
-        // }
+        if ($role) { // Verificar si el usuario tiene un rol asignado
+            return $role->permissions()->pluck('name');
+        }
 
-        // No se encontraron permisos, retornar una colección vacía o null
-        return null;
-        // return collect(); // o return null;
+        return collect(); // o return null;
     }
 
     public function preprojects()

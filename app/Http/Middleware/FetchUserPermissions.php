@@ -26,7 +26,7 @@ class FetchUserPermissions
 
         $user = auth()->user();
         if ($user) {
-            $functionalities = $user->role->functionalities->pluck('key_name');
+            $functionalities = $user?->role?->functionalities?->pluck('key_name');
             Log::info($functionalities);
             $permissions = $user->onePermission();
             Inertia::share('userFunctionalities', $functionalities);
