@@ -16,7 +16,8 @@ class CicsaServices
 
     public function cicsaBaseQuery($type): Builder
     {
-        $query = CicsaAssignation::whereHas('project', function ($subQuery) use ($type) {
+        $list = [247, 253, 254];
+        $query = CicsaAssignation::whereNotIn('id', $list)->whereHas('project', function ($subQuery) use ($type) {
             $subQuery->where('cost_line_id', $type)
                 ->where('is_accepted', 1);
         })

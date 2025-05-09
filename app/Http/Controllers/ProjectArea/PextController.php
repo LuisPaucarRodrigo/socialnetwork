@@ -8,6 +8,8 @@ use App\Exports\PextExpenseExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PextProjectRequest\StoreOrUpdateAssignationRequest;
 use App\Http\Requests\PextProjectRequest\StoreOrUpdateExpenseRequest;
+use App\Imports\PextProjectExpensesImport;
+use App\Http\Requests\PextProjectRequest\SwapAdditionalToAdditionalRequest;
 use App\Models\AccountStatement;
 use App\Models\CicsaAssignation;
 use App\Models\CostLine;
@@ -177,21 +179,21 @@ class PextController extends Controller
             ->where('project_id', $project_id)
             ->first();
         $fileName = 'Gastos_Pext' . '-' . $project_name->project_name . '-' . $fOrA . '.xlsx';
-        return Excel::download(new PextExpenseExport($project_id, json_decode($fixedOrAdditional)), $fileName);
+        return Excel::download(new PextExpenseExport(null, $project_id, json_decode($fixedOrAdditional)), $fileName);
     }
 
-    public function expense_export_general($fixedOrAdditional)
+    public function expense_export_general($fixedOrAdditional, $cost_line)
     {
         $fOrA = json_decode($fixedOrAdditional) ? 'Fijos' : 'Adicionales';
         $fileName = 'Gastos_Pext' . '-' . $fOrA . '.xlsx';
-        return Excel::download(new PextExpenseExport(null, json_decode($fixedOrAdditional)), $fileName);
+        return Excel::download(new PextExpenseExport($cost_line, null, json_decode($fixedOrAdditional)), $fileName);
     }
 
-    public function index_additional(Request $request, $type, $searchCondition = null,)
+    public function index_additional(Request $request, $type, $searchCondition = null, )
     {
         if ($request->isMethod('get')) {
             $project = $this->pextServices->index_additional_base($type, 1);
-            $project = $type == 2 ? $project->get() : $project->paginate();
+            $project = $type == 2 ? $project->get() : $project->get();
             $project = $this->pextServices->addCalculated($project);
             $project = $project->each(function ($item) {
                 return $item->cicsa_charge_status !== 'Completado';
@@ -331,9 +333,11 @@ class PextController extends Controller
         $cost_line = CostLine::where('name', 'PEXT')->with('cost_center')->first();
 
         $acArr = $this->pextServices->expense_calculation($project_id, 0)->get();
-        $acExpensesAmounts = $this->pextServices->map_expenses($acArr);
+        
         $scArr = $this->pextServices->expense_calculation($project_id, 1)->get();
-        $scExpensesAmounts = $this->pextServices->map_expenses($scArr);
+        
+        $cost_center_id = $type == 1 ? 3 : 9;
+        $additionalProjects = Project::whereNot('id', $project_id)->where('cost_line_id', $type)->where('cost_center_id', $cost_center_id)->select('id', 'description')->where('is_accepted', true)->orderBy('description')->get();
 
         return Inertia::render(
             'ProjectArea/ProjectManagement/ProjectAdditionalExpenses',
@@ -344,14 +348,49 @@ class PextController extends Controller
                 'cost_center' => $cost_line->cost_center,
                 'fixedOrAdditional' => json_decode($fixedOrAdditional),
                 'type' => $type,
-                'acExpensesAmounts' => $acExpensesAmounts,
-                'scExpensesAmounts' => $scExpensesAmounts,
+                
                 'zones' => PextConstants::getZone(),
                 'expenseType' => PextConstants::getExpenseType(),
                 'expenseTypeFixed' => PextConstants::getExpenseTypeFixed(),
-                'documentsType' => PextConstants::getDocumentsType()
+                'documentsType' => PextConstants::getDocumentsType(),
+                'additional_projects' => $additionalProjects,
             ]
         );
+    }
+
+    public function additional_project_expensese($project_id) {
+        $acArr = $this->pextServices->expense_calculation($project_id, 0)->get();
+        $scArr = $this->pextServices->expense_calculation($project_id, 1)->get();
+        $acExpensesAmounts = $this->pextServices->map_expenses($acArr);
+        $scExpensesAmounts = $this->pextServices->map_expenses($scArr);
+        return response()->json([
+            'acExpensesAmounts' => $acExpensesAmounts,
+            'scExpensesAmounts' => $scExpensesAmounts,
+        ]);
+    }
+
+    public function swap_additionalToAdditional(SwapAdditionalToAdditionalRequest $request)
+    {
+        $data = $request->validated();
+        if ( $data['type_project'] === 'same_project' ) {
+            $first = PextProjectExpense::find($data['ids'][0]);
+            $project_id = $first->project_id;
+            $fixedOrAdditional = !$first->fixedOrAdditional;
+        }
+        if ( $data['type_project'] === 'different_project' ) {
+            $project_id = $data['project_id'];
+            $fixedOrAdditional = (bool)(int)$data['type_expense'];
+        }
+        foreach ($data['ids'] as $id) {
+            $ppe = PextProjectExpense::find($id);
+            $newData = collect($ppe->toArray())
+                ->except(['id', 'project_id'])
+                ->toArray();
+            $newData['project_id'] = $project_id;
+            $newData['fixedOrAdditional'] = $fixedOrAdditional;
+            $ppe->update($newData);
+        }
+        return response()->json(true, 200);
     }
 
     public function additional_expense_index_general($fixedOrAdditional, $type)
@@ -455,11 +494,13 @@ class PextController extends Controller
         if ($type == 1) {
             $cicsa_assignation = CicsaAssignation::select('id', 'project_name', 'project_id', 'zone')
                 ->whereHas('project', function ($query) {
-                    $query->whereIn('cost_center_id', [3]);
+                    $query->whereIn('cost_center_id', [3])
+                    ->where('is_accepted', true);
                 })
                 ->when($zone, function ($query, $zone) {
                     return $query->where('zone', $zone);
                 })
+                ->orderBy('project_name')
                 ->get();
         }
 
@@ -680,4 +721,20 @@ class PextController extends Controller
     // }
 
     public function swapExpensesMonthly() {}
+
+    public function import_excel_expenses(Request $request)
+    {
+        $validateData = $request->validate([
+            'project_id' => 'required',
+            'fixedOrAdditional' => 'required',
+            'file' => 'required',
+        ]);
+        try {
+            $import = new PextProjectExpensesImport($validateData['project_id'], $validateData['fixedOrAdditional']);
+            Excel::import($import, $request->file('file'));
+            return response()->json([], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 422);
+        }
+    }
 }

@@ -123,15 +123,22 @@ const caducationsList = ref(null)
 const showSpecificAlarm = ref(false)
 const changelogAlarms = ref([]);
 
+let intervalId;
+const fetchAllAlarms = () => {
+  return Promise.all([
+    fetchFleetCarCount(),
+    fetchFleetCarCheckListCount(),
+    getChangelogAlarms(),
+  ]);
+};
 onMounted(() => {
-    fetchFleetCarCount();
-    fetchFleetCarCheckListCount();
-    getChangelogAlarms();
-    const intervalId = setInterval(fetchFleetCarCount, 60000);
-    onUnmounted(() => {
-        clearInterval(intervalId);
-    });
+  fetchAllAlarms();
+  intervalId = setInterval(fetchAllAlarms, 60000);
 });
+onUnmounted(() => {
+  clearInterval(intervalId);
+});
+
 
 async function fetchFleetCarCount() {
     try {

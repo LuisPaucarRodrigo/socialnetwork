@@ -967,7 +967,7 @@
         <Modal :show="showSwapAPModal" @close="closeSwapAPModal">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900 mb-2">
-                    Gastos a Proyecto Adicional
+                    Gastos Variables a Proyecto Adicional
                 </h2>
                 <h4 class="text-sm font-light text-green-900 bg-green-500/10 rounded-lg p-3 ">
                     Los registros pasarán al proyecto especificado, según el tipo de gasto se insertaran en fijos o

@@ -142,7 +142,8 @@
                     </dropdown>
                 </div>
                 <div class="flex space-x-3">
-                    <Search v-model:search="filterForm.search" fields="Ruc,Fecha Documento,Descripción,Monto,Numero de Operación" />
+                    <Search v-model:search="filterForm.search"
+                        fields="Ruc,Fecha Documento,Descripción,Monto,Numero de Operación" />
                 </div>
             </div>
         </div>
@@ -702,7 +703,8 @@ const props = defineProps({
     zones: Array,
     expenseType: Array,
     documentsType: Array,
-    expenseTypeFixed: Array
+    expenseTypeFixed: Array,
+    additional_projects: Array,
 });
 
 const expenses = ref(props.expense);
@@ -928,7 +930,8 @@ function openExportExcel() {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
     const url =
         route("projectmanagement.pext.expenses.general.export", {
-            fixedOrAdditional: filterForm.value.fixedOrAdditional
+            fixedOrAdditional: filterForm.value.fixedOrAdditional,
+            cost_line: props.type
         }) +
         "?" +
         uniqueParam;

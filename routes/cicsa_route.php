@@ -61,7 +61,7 @@ Route::get('/cicsa_service_orders_export/{type}', [CicsaController::class, 'expo
 Route::any('/cicsa_charge_areas_index/{type}/{searchCondition?}', [CicsaController::class, 'indexChargeArea'])->name('cicsa.charge_areas');
 Route::post('/cicsa_charge_areas_update/{cicsa_charge_area_id}', [CicsaController::class, 'updateChargeArea'])->name('cicsa.charge_areas.update');
 Route::get('/cicsa_charge_areas_showDocument/{chargeAreaOrder}', [CicsaController::class, 'showChargeAreaDocument'])->name('cicsa.charge_areas.showDocument');
-Route::get('/cicsa_charge_areas_export', [CicsaController::class, 'exportChargeArea'])->name('cicsa.charge_areas.export');
+Route::get('/cicsa_charge_areas_export/{cost_line_id}', [CicsaController::class, 'exportChargeArea'])->name('cicsa.charge_areas.export');
 
 
 //search
@@ -69,3 +69,7 @@ Route::get('/cicsa_charge_areas_export', [CicsaController::class, 'exportChargeA
 Route::post('/cicsa_advance_search/{type}', [CicsaController::class, 'search'])->name('cicsa.advance.search');
 
 Route::get('/cicsa_export_materials_summary/{ca_id}', [CicsaController::class, 'exportMaterialsSummary'])->name('cicsa.export.materials.summary');
+
+
+//material delete
+Route::delete('/cicsa_material_delete/{c_m_id}', [CicsaController::class, 'deleteMaterial'])->name('material.delete');

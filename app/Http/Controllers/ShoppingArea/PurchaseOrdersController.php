@@ -8,14 +8,15 @@ use App\Models\Purchase_order;
 use Inertia\Inertia;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class PurchaseOrdersController extends Controller
 {
     public function index()
     {
-        return Inertia::render('ShoppingArea/PurchaseOrders/Orders', [
-            'orders' => Purchase_order::with('purchase_quote.purchasing_requests','purchase_quote.provider')
+        return Inertia::render('ShoppingArea/PurchaseOrders/Orders/Index', [
+            'order' => Purchase_order::with('purchase_quote.purchasing_requests', 'purchase_quote.provider')
                 ->where('state', '!=', 'Completada')
                 ->where('state', '!=', 'Completada/Aprobada')
                 ->paginate()
@@ -24,13 +25,13 @@ class PurchaseOrdersController extends Controller
 
     public function history()
     {
-        $completedOrders = Purchase_order::with('purchase_quote.purchasing_requests','purchase_quote.payment')
+        $completedOrders = Purchase_order::with('purchase_quote.purchasing_requests', 'purchase_quote.payment')
             ->where(function ($query) {
                 $query->where('state', 'Completada')
                     ->orWhere('state', 'Completada/Aprobada');
             })
             ->paginate(10);
-        return Inertia::render('ShoppingArea/PurchaseOrders/HistoryOrders', ['orders' => $completedOrders]);
+        return Inertia::render('ShoppingArea/PurchaseOrders/Historial/HistoryOrders', ['order' => $completedOrders]);
     }
 
 
@@ -48,9 +49,9 @@ class PurchaseOrdersController extends Controller
             $documentNameRemission = time() . '._' . $document->getClientOriginalName();
             $document->move(public_path('documents/purchaseorder/remission/'), $documentNameRemission);
         }
-        
+
         $purchase_order = Purchase_order::find($request->id);
- 
+
         $purchase_order->update([
             'state' => $request->state,
             'serie_number' => $request->serie_number,
@@ -62,6 +63,8 @@ class PurchaseOrdersController extends Controller
             'remission_guide_date' => $request->remission_guide_date,
             'remission_guide_number' => $request->remission_guide_number,
         ]);
+
+        return response()->json($purchase_order, 200);
     }
 
     public function purchase_orders_alarms()
@@ -91,14 +94,14 @@ class PurchaseOrdersController extends Controller
     public function purchase_order_view($purchase_order_id)
     {
         return Inertia::render('ShoppingArea/PurchaseOrders/OrderDetails', [
-            'purchase_order' => Purchase_order::with('purchase_quote.provider','purchase_quote.purchasing_requests.project.preproject')->find($purchase_order_id)
+            'purchase_order' => Purchase_order::with('purchase_quote.provider', 'purchase_quote.purchasing_requests.project.preproject')->find($purchase_order_id)
         ]);
     }
 
     public function purchase_orders_export(Purchase_order $id)
     {
         $user = Auth::user();
-        $purchase_order = $id->load('purchase_quote.payment', 'purchase_quote.provider','purchase_quote.purchasing_requests', 'purchase_quote.purchase_quote_products.purchase_product');
+        $purchase_order = $id->load('purchase_quote.payment', 'purchase_quote.provider', 'purchase_quote.purchasing_requests', 'purchase_quote.purchase_quote_products.purchase_product');
         $pdf = Pdf::loadView('pdf.PurchaseOrderPDF', compact('purchase_order', 'user'));
         return $pdf->stream();
     }
@@ -113,13 +116,13 @@ class PurchaseOrdersController extends Controller
         abort(404, 'Documento no encontrado');
     }
 
-    public function search($request, $history)
+    public function search(Request $request)
     {
-        $searchTerm = strtolower($request); // Convertir a minúsculas
-        
+        $searchTerm = strtolower($request->form['searchTerm']); // Convertir a minúsculas
+
         $query = Purchase_order::with('purchase_quote.purchasing_requests', 'purchase_quote.payment');
 
-        if ($history == 'history') {
+        if ($request->history == 'history') {
             $query->where(function ($query) {
                 $query->where('state', 'Completada')
                     ->orWhere('state', 'Completada/Aprobada');
@@ -127,7 +130,7 @@ class PurchaseOrdersController extends Controller
         } else {
             $query->whereNotIn('state', ['Completada', 'Completada/Aprobada']);
         }
-    
+
 
         $purchase_orders_by_code = $query->get()->filter(function ($purchase_order) use ($searchTerm) {
             return str_contains(strtolower($purchase_order->code), $searchTerm);
@@ -143,17 +146,6 @@ class PurchaseOrdersController extends Controller
 
         $combined_purchase_orders = $purchase_orders_by_code->merge($purchase_orders_request_title)->merge($purchase_orders_request_code)->unique();
 
-        if($history == 'history'){
-            return Inertia::render('ShoppingArea/PurchaseOrders/HistoryOrders', [
-                'orders' => $combined_purchase_orders,
-                'search' => $request
-            ]);
-        }else{
-            return Inertia::render('ShoppingArea/PurchaseOrders/Orders', [
-                'orders' => $combined_purchase_orders,
-                'search' => $request
-            ]);
-        }
+        return response()->json($combined_purchase_orders, 200);
     }
-
 }

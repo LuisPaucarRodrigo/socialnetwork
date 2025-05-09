@@ -41,7 +41,7 @@ const clasesDinamic = ref({
   PersonalInformation: 'text-white bg-gray-900',
   PrivateInformation: 'hover:bg-gray-700 hover:text-white',
   ResourceHumanInformation: 'hover:bg-gray-700 hover:text-white',
-}); 
+});
 
 function cambiarComponente(component) {
   componentDinamic.value = component;

@@ -509,4 +509,27 @@ class CicsaAssignation extends Model
         }
         return $total_materials;
     }
+
+    protected static function booted()
+    {
+
+        static::updating(function ($item) {
+            $project = $item->project;
+            $preproject = $item->project?->preproject;
+            if ($project) {
+               $project->update([
+                'description' => $item->project_name
+               ]);
+            }
+            if ($preproject) {
+               $preproject->update([
+                'cpe' => $item->cpe
+               ]);
+            }
+        });
+
+    }
+
+
+
 }

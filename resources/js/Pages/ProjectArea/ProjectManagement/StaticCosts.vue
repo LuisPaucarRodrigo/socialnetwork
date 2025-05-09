@@ -94,6 +94,14 @@
                                             class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                             Swap
                                         </button>
+                                        <button @click="openSwapAPModal"
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Swap (proyectos adicionales)
+                                        </button>
+                                        <button @click="openSwapRPModal"
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Swap (proyectos mensuales/gep)
+                                        </button>
                                     </div>
                                 </div>
                             </template>
@@ -764,6 +772,53 @@
             </div>
         </Modal>
 
+        <!-- Swap to proyectos adicionales -->
+        <Modal :show="showSwapAPModal" @close="closeSwapAPModal">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900 mb-2">
+                    Gastos fijos a Proyecto Adicional
+                </h2>
+                <h4 class="text-sm font-light text-green-900 bg-green-500/10 rounded-lg p-3 ">
+                    Los registros pasarán al proyecto especificado, en la sección de gastos fijos.
+                    Solo se listan los proyectos adicionales que proceden
+                </h4>
+                <form @submit.prevent="submitSwapAPModal">
+                    <div class="space-y-12">
+                        <div class="border-b grid grid-cols-1 gap-6 border-gray-900/10 pb-12">
+                            <div class="mt-4">
+                                <InputLabel for="project_id" class="font-medium leading-6 text-gray-900">
+                                    Proyecto Adicional
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <select v-model="staticProjectForm.project_id" id="project_id"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option disabled value="">
+                                            Seleccionar Proyecto
+                                        </option>
+                                        <option v-for="item in additional_projects" :key="item.id" :value="item.id">
+                                            {{ item.description }}
+                                        </option>
+                                    </select>
+                                    <InputError :message="staticProjectForm.errors.project_id" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <SecondaryButton @click="closeSwapAPModal">
+                                Cancelar
+                            </SecondaryButton>
+                            <button type="submit" :disabled="isFetching" :class="{ 'opacity-25': isFetching }"
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </Modal>
+
+
+
         <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Gasto Fijo"
             :deleteFunction="deleteAdditional" @closeModal="closeModalDoc" />
         <ConfirmateModal 
@@ -816,6 +871,7 @@ const props = defineProps({
     expenseTypes: Array,
     docTypes: Array,
     stateTypes: Array,
+    additional_projects: Array,
 });
 
 const { expenseTypes, docTypes, zones ,stateTypes } = props
@@ -1141,6 +1197,53 @@ const submitOpNuDatModal = async () => {
     dataToRender.value = updatedArray
     closeOpNuDatModal();
     notify("Registros Seleccionados Actualizados");
+}
+
+
+
+//swap to other projects
+
+const staticProjectForm = useForm({
+    project_id: '',
+})
+const showSwapAPModal = ref(false)
+const closeSwapAPModal = () => {
+    showSwapAPModal.value = false
+    isFetching.value = false
+    staticProjectForm.reset()
+    staticProjectForm.clearErrors()
+}
+const openSwapAPModal = () => {
+    if (actionForm.value.ids.length === 0) {
+        notifyWarning("No hay registros seleccionados");
+        return;
+    }
+    showSwapAPModal.value = true
+}
+
+const submitSwapAPModal = async () => {
+    isFetching.value = true;
+    const res = await axios
+        .post(route("projectmanagement.statitoaddproject.swapCosts"), {
+            ...staticProjectForm.data(),
+            ...actionForm.value
+        })
+        .catch((e) => {
+            isFetching.value = false;
+            if (e.response?.data?.errors) {
+                setAxiosErrors(e.response.data.errors, staticProjectForm);
+            } else {
+                notifyError("Server Error");
+            }
+        });
+
+    dataToRender.value = dataToRender.value.filter(
+        (item) => !actionForm.value.ids.includes(item.id)
+    );
+    actionForm.value.ids = []
+
+    closeSwapAPModal();
+    notify("Registros Movidos con éxito")
 }
 
 

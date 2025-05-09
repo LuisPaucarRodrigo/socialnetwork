@@ -13,12 +13,16 @@ class ChargeAreaExport implements FromView, WithColumnWidths
     /**
      * @return \Illuminate\Support\Collection
      */
+    protected $type;
+    public function __construct($type)
+    {
+        $this->type = $type;
+    }
     public function view(): View
     {
         return view('Export.ChargeAreaExport', [
             'title' => [
                 'Nombre de Proyecto',
-                'Codigo de Proyecto',
                 'Centro de Costos',
                 'CPE',
                 'Numero de OC',
@@ -27,16 +31,13 @@ class ChargeAreaExport implements FromView, WithColumnWidths
                 'Credito',
                 'Fecha de Deposito',
                 'Monto',
-                'Encargado'
             ],
-            'cicsa_charge_areas' => CicsaChargeArea::with([
-                'cicsa_assignation:id,project_name,project_code,cpe,project_id',
-                'cicsa_assignation.project:id,cost_center_id',
-                'cicsa_assignation.project.cost_center',
-                'cicsa_purchase_order:id,oc_number'
+            'cicsa_charge_areas' => CicsaAssignation::with([
+                'project.cost_center',
+                'cicsa_charge_area.cicsa_purchase_order:id,oc_number'
             ])
-                ->whereHas('cicsa_assignation.project', function ($subQuery) {
-                    $subQuery->where('cost_line_id', 2);
+                ->whereHas('project', function ($subQuery) {
+                    $subQuery->where('cost_line_id', $this->type);
                 })
                 ->get()
         ]);
@@ -53,8 +54,7 @@ class ChargeAreaExport implements FromView, WithColumnWidths
             'F' => 17,
             'G' => 17,
             'H' => 17,
-            'I' => 30,
-            'J' => 30
+            'I' => 17,
         ];
     }
 }

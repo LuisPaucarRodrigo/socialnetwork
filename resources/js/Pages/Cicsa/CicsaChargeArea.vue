@@ -7,7 +7,7 @@
         </template>
         <div class="min-w-full ">
             <div class="flex justify-between">
-                <a :href="route('cicsa.charge_areas.export') + '?' + uniqueParam"
+                <a :href="route('cicsa.charge_areas.export', { cost_line_id: type }) + '?' + uniqueParam"
                     class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500">Exportar</a>
                 <div class="flex items-center mt-4 space-x-3 sm:mt-0">
                     <TextInput data-tooltip-target="search_fields" type="text" @input="search($event.target.value)"
@@ -43,7 +43,7 @@
                                     <button v-if="item.cicsa_charge_area.length > 0" type="button"
                                         @click="toggleDetails(item?.cicsa_charge_area)"
                                         class="text-blue-900 whitespace-no-wrap">
-                                        <ChevronDownIcon v-if="charge_area_row !== item.id" class="w-6 h-6"/>
+                                        <ChevronDownIcon v-if="charge_area_row !== item.id" class="w-6 h-6" />
                                         <ChevronUpIcon v-else class="w-6 h-6" />
                                     </button>
                                 </div>

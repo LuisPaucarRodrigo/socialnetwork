@@ -14,8 +14,17 @@ class PextConstants
             "Tacna",
             "Cuzco",
             "Puno",
-            "MDD",
+            "MDD1-PM",
+            "MDD2-MAZ",
             "Sandia"
+        ];
+    }
+
+    public static function getZoneSinIGV(): array
+    {
+        return [
+            "MDD1-PM",
+            "MDD2-MAZ",
         ];
     }
 

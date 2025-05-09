@@ -3,8 +3,6 @@
 namespace App\Exports\CicsaProcess;
 
 use App\Models\CicsaAssignation;
-use App\Models\CicsaPurchaseOrder;
-use App\Models\CicsaPurchaseOrderValidation;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
@@ -25,7 +23,6 @@ class OCValidationExport implements FromView, WithColumnWidths
         return view('Export.ValidationOcExport', [
             'title' => [
                 'Nombre de Proyecto',
-                'Codigo de Proyecto',
                 'Centro de Costos',
                 'CPE',
                 'Orden de Compra',
@@ -39,23 +36,29 @@ class OCValidationExport implements FromView, WithColumnWidths
                 'SuperIntendente',
                 'Observaciones',
                 'Fecha de Validacion',
-                'Encargado',
-                'Gestor'
             ],
-            'cicsa_purchase_order_validations' => CicsaPurchaseOrderValidation::with([
-                'cicsa_purchase_order' => function ($query) {
-                    $query->select('id', 'oc_number','amount');
-                },
-                'cicsa_assignation' => function ($query) {
-                    $query->select('id', 'project_name', 'project_code', 'cpe', 'manager');
-                }
+            'cicsa_purchase_order_validations' => CicsaAssignation::with([
+                'project.cost_center',
+                'cicsa_purchase_order_validation.cicsa_purchase_order:id,oc_number,amount',
             ])
-                ->whereHas('cicsa_assignation', function ($iQuery) {
-                    $iQuery->whereHas('project', function ($subQuery) {
-                        $subQuery->where('cost_line_id', $this->type);
-                    });
+                ->whereHas('project', function ($subQuery) {
+                    $subQuery->where('cost_line_id', $this->type);
                 })
                 ->get()
+            // 'cicsa_purchase_order_validations' => CicsaPurchaseOrderValidation::with([
+            //     'cicsa_purchase_order' => function ($query) {
+            //         $query->select('id', 'oc_number','amount');
+            //     },
+            //     'cicsa_assignation' => function ($query) {
+            //         $query->select('id', 'project_name', 'project_code', 'cpe', 'manager');
+            //     }
+            // ])
+            //     ->whereHas('cicsa_assignation', function ($iQuery) {
+            //         $iQuery->whereHas('project', function ($subQuery) {
+            //             $subQuery->where('cost_line_id', $this->type);
+            //         });
+            //     })
+            //     ->get()
         ]);
     }
 
@@ -76,8 +79,6 @@ class OCValidationExport implements FromView, WithColumnWidths
             'L' => 17,
             'M' => 30,
             'N' => 20,
-            'O' => 30,
-            'P' => 30
         ];
     }
 }

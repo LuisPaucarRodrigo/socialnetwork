@@ -1,6 +1,6 @@
 <template>
 
-    <Head title="ChecklistDiarioHerramientas" />
+    <Head title="ChecklistEPPS" />
     <AuthenticatedLayout :redirectRoute="'checklist.index'">
         <template #header> Checklist EPPS </template>
         <TableStructure>

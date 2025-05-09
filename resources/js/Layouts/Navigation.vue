@@ -12,8 +12,11 @@
 
         <nav class="mt-10" x-data="{ isMultiLevelMenuOpen: false }">
             <template v-for="module in navModules" :key="module.name">
-                <component 
+                <!-- <component p
                     v-if="modulePermission(module.name, userModules)"
+                    :is="module.component"
+                /> -->
+                <component
                     :is="module.component"
                 />
             </template>
@@ -34,6 +37,7 @@ import PurchaseNavigation from './Navigation/PurchaseNavigation.vue';
 import BillingNavigation from './Navigation/BillingNavigation.vue';
 import UserNavigation from './Navigation/UserNavigation.vue';
 import HuaweiNavigation from '@/Layouts/Navigation/HuaweiNavigation.vue';
+import SharePointNavigation from './Navigation/SharePointNavigation.vue';
 import { modulePermission } from '@/utils/roles/roles';
 
 // import DocumentGestionNavigation from './Navigation/DocumentGestionNavigation.vue';
@@ -58,6 +62,7 @@ export default {
         PurchaseNavigation,
         BillingNavigation,
         HuaweiNavigation,
+        SharePointNavigation
         // DocumentGestionNavigation
     },
 
@@ -73,7 +78,8 @@ export default {
                 { name: 'FINANCE_MODULE', component: 'FinanceNavigation' },
                 { name: 'BILLING_MODULE', component: 'BillingNavigation' },
                 { name: 'HUAWEI_MODULE', component: 'HuaweiNavigation' },
-                { name: 'CAR_MODULE', component: 'FleetNavigation' }
+                { name: 'CAR_MODULE', component: 'FleetNavigation' },
+                { name: 'SHARE_POINT_MODULE', component: 'SharePointNavigation' }
             ],
         };
     },

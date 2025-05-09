@@ -8,25 +8,32 @@
     </thead>
     <tbody>
         @foreach($cicsa_purchase_order_validations as $validationOC)
+        @if($validationOC->cicsa_purchase_order_validation && $validationOC->cicsa_purchase_order_validation->isNotEmpty())
+        @foreach($validationOC->cicsa_purchase_order_validation as $item)
         <tr>
-            <td> {{ $validationOC->cicsa_assignation->project_name }} </td>
-            <td> {{ $validationOC->cicsa_assignation->project_code }} </td>
-            <td> {{ $validationOC->cicsa_assignation->cost_center }} </td>
-            <td> {{ $validationOC->cicsa_assignation->cpe }} </td>
-            <td> {{ $validationOC->cicsa_purchase_order->oc_number }} </td>
-            <td> {{ $validationOC->cicsa_purchase_order?->amount }} </td>
-            <td> {{ $validationOC->file_validation }} </td>
-            <td> {{ $validationOC->materials_control }} </td>
-            <td> {{ $validationOC->supervisor }} </td>
-            <td> {{ $validationOC->warehouse }} </td>
-            <td> {{ $validationOC->boss }} </td>
-            <td> {{ $validationOC->liquidator }} </td>
-            <td> {{ $validationOC->superintendent }} </td>
-            <td> {{ $validationOC->observations }} </td>
-            <td> {{ $validationOC->validation_date }} </td>
-            <td> {{ $validationOC->user_name }} </td>
-            <td> {{ $validationOC->cicsa_assignation->manager }} </td>
+            <td> {{ $validationOC->project_name }} </td>
+            <td> {{ $validationOC->project->cost_center?->name }} </td>
+            <td> {{ $validationOC->cpe }} </td>
+            <td> {{ $item->cicsa_purchase_order?->oc_number }} </td>
+            <td> {{ $item->cicsa_purchase_order?->amount }} </td>
+            <td> {{ $item->file_validation }} </td>
+            <td> {{ $item->materials_control }} </td>
+            <td> {{ $item->supervisor }} </td>
+            <td> {{ $item->warehouse }} </td>
+            <td> {{ $item->boss }} </td>
+            <td> {{ $item->liquidator }} </td>
+            <td> {{ $item->superintendent }} </td>
+            <td> {{ $item->observations }} </td>
+            <td> {{ $item->validation_date }} </td>
         </tr>
+        @endforeach
+        @else
+        <tr>
+            <td> {{ $validationOC->project_name }} </td>
+            <td> {{ $validationOC->project->cost_center?->name }} </td>
+            <td> {{ $validationOC->cpe }} </td>
+        </tr>
+        @endif
         @endforeach
     </tbody>
 </table>
