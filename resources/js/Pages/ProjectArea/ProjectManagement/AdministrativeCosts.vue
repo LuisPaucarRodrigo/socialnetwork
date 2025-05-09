@@ -805,6 +805,8 @@ const props = defineProps({
     stateTypes: Array,
 });
 
+console.log(props.month_project_id.id)
+
 const { expenseTypes, docTypes, zones ,stateTypes } = props
 expenseTypes.sort()
 docTypes.sort()

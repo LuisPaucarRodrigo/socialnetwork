@@ -333,10 +333,9 @@ class PextController extends Controller
         $cost_line = CostLine::where('name', 'PEXT')->with('cost_center')->first();
 
         $acArr = $this->pextServices->expense_calculation($project_id, 0)->get();
-        $acExpensesAmounts = $this->pextServices->map_expenses($acArr);
+        
         $scArr = $this->pextServices->expense_calculation($project_id, 1)->get();
-        $scExpensesAmounts = $this->pextServices->map_expenses($scArr);
-
+        
         $cost_center_id = $type == 1 ? 3 : 9;
         $additionalProjects = Project::whereNot('id', $project_id)->where('cost_line_id', $type)->where('cost_center_id', $cost_center_id)->select('id', 'description')->where('is_accepted', true)->orderBy('description')->get();
 
@@ -349,8 +348,7 @@ class PextController extends Controller
                 'cost_center' => $cost_line->cost_center,
                 'fixedOrAdditional' => json_decode($fixedOrAdditional),
                 'type' => $type,
-                'acExpensesAmounts' => $acExpensesAmounts,
-                'scExpensesAmounts' => $scExpensesAmounts,
+                
                 'zones' => PextConstants::getZone(),
                 'expenseType' => PextConstants::getExpenseType(),
                 'expenseTypeFixed' => PextConstants::getExpenseTypeFixed(),
@@ -358,6 +356,17 @@ class PextController extends Controller
                 'additional_projects' => $additionalProjects,
             ]
         );
+    }
+
+    public function additional_project_expensese($project_id) {
+        $acArr = $this->pextServices->expense_calculation($project_id, 0)->get();
+        $scArr = $this->pextServices->expense_calculation($project_id, 1)->get();
+        $acExpensesAmounts = $this->pextServices->map_expenses($acArr);
+        $scExpensesAmounts = $this->pextServices->map_expenses($scArr);
+        return response()->json([
+            'acExpensesAmounts' => $acExpensesAmounts,
+            'scExpensesAmounts' => $scExpensesAmounts,
+        ]);
     }
 
     public function swap_additionalToAdditional(SwapAdditionalToAdditionalRequest $request)

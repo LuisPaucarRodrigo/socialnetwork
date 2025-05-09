@@ -157,8 +157,7 @@
         <div class="overflow-x-auto h-[85vh]">
             <div class="mb-4">
                 <ChartsAdditionalExpenses 
-                    :acExpensesAmounts="acExpensesAmounts"
-                    :scExpensesAmounts="scExpensesAmounts"
+                    :project_id="Number(project_id)" :reload_flag="reload_flag"
                 />
             </div>
             <table class="w-full">
@@ -509,9 +508,7 @@ const props = defineProps({
     cost_center: Object,
     project_id: String,
     fixedOrAdditional: Boolean,
-    type: Number,
-    acExpensesAmounts: Array,
-    scExpensesAmounts: Array,
+    type: String,
     zones:Array,
     expenseType:Array,
     documentsType:Array,
@@ -519,7 +516,8 @@ const props = defineProps({
     additional_projects: Array,
 });
 
-const expenses = ref(props.expense);
+const expenses = ref({...props.expense});
+const reload_flag = ref(true)
 // const filterMode = ref(false);
 // const subCostCenterZone = ref(null);
 // const subCostCenter = ref(null)
@@ -710,7 +708,7 @@ const openSwapAPModal = () => {
 
 const submitSwapAPModal = async () => {
     isFetching.value = true;
-    const res = await axios
+    await axios
         .post(route("projectmanagement.additionalToAdditional.swapCosts"), {
             ...additionalProjectForm.data(),
             ...actionForm.value
@@ -731,7 +729,7 @@ const submitSwapAPModal = async () => {
             expenses.value = expenses.value.filter((item) => 
             !actionForm.value.ids.includes(item.id));
         }
-
+    reload_flag.value = !reload_flag.value
     actionForm.value.ids = []
 
     closeSwapAPModal();
