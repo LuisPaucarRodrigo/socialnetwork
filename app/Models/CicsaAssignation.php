@@ -521,8 +521,8 @@ class CicsaAssignation extends Model
                 'description' => $item->project_name
                ]);
             }
-            if ($project) {
-               $project->update([
+            if ($preproject) {
+               $preproject->update([
                 'cpe' => $item->cpe
                ]);
             }
