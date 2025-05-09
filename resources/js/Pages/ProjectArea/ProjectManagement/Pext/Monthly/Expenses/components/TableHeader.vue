@@ -31,12 +31,19 @@
                 <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
 
+            <button v-if="hasPermission('UserManager')" type="button"
+                class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500"
+                @click="openModalImport">
+                Importar Gastos
+            </button>
+
             <button data-tooltip-target="rejected_tooltip" type="button"
                 class="rounded-md bg-gray-100 px-4 py-1 text-center text-lg font-bold ring-2 hover:bg-gray-100/2"
                 :class="filterForm.rejected ? 'text-red-600 ring-red-400' : 'text-green-600 ring-green-400'"
                 @click="rejectedExpenses">
                 {{ filterForm.rejected ? "R" : "A" }}
             </button>
+
             <div id="rejected_tooltip" role="tooltip"
                 class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                 Rechazados
@@ -144,14 +151,15 @@ import { Link } from "@inertiajs/vue3";
 import { ServerIcon } from "@heroicons/vue/24/outline";
 import { notifyWarning } from "@/Components/Notification";
 
-const { userPermissions, project_id, fixedOrAdditional, status, actionForm, initialFilterFormState, openCreateAdditionalModal } = defineProps({
+const { userPermissions, project_id, fixedOrAdditional, status, actionForm, initialFilterFormState, openCreateAdditionalModal, openModalImport } = defineProps({
     userPermissions: Array,
     project_id: String,
     fixedOrAdditional: Boolean,
     status: String,
     actionForm: Object,
     initialFilterFormState: Object,
-    openCreateAdditionalModal: Function
+    openCreateAdditionalModal: Function,
+    openModalImport: Function
 })
 
 const showSwapCostsModal = defineModel('showSwapCostsModal')

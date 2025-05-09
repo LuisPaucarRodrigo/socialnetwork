@@ -26,8 +26,8 @@ class PurchaseRequestController extends Controller
 {
     public function index()
     {
-        return Inertia::render('ShoppingArea/PurchaseRequest/Purchases', [
-            'purchases' => Purchasing_request::with('project', 'preproject', 'purchase_quotes')
+        return Inertia::render('ShoppingArea/PurchaseRequest/Index/Purchases', [
+            'purchase' => Purchasing_request::with('project', 'preproject', 'purchase_quotes')
                 ->withCount([
                     'purchase_quotes',
                     'purchase_quotes as purchase_quotes_with_state_count' => function ($query) {
@@ -43,7 +43,7 @@ class PurchaseRequestController extends Controller
 
     public function create()
     {
-        return Inertia::render('ShoppingArea/PurchaseRequest/CreateAndUpdateRequest', [
+        return Inertia::render('ShoppingArea/PurchaseRequest/FormPurchaseRequest/CreateAndUpdateRequest', [
             'allProducts' => Purchase_product::with('resource_type')->get(),
             'typeProduct' => TypeProduct::all(),
             'resourceType' => ResourceType::all()
@@ -69,7 +69,7 @@ class PurchaseRequestController extends Controller
         $purchase = Purchasing_request::with('products')->find($id);
         $type = $purchase->products->first()->type;
         
-        return Inertia::render('ShoppingArea/PurchaseRequest/CreateAndUpdateRequest', [
+        return Inertia::render('ShoppingArea/PurchaseRequest/FormPurchaseRequest/CreateAndUpdateRequest', [
             'purchase' => $purchase,
             'typeProduct' => TypeProduct::all(),
             'allProducts' => Purchase_product::with('resource_type')->where('type',$type)->get(),
@@ -233,11 +233,7 @@ class PurchaseRequestController extends Controller
         });
 
         $combined_purchasing_requests = $purchasing_requests_by_title->merge($purchasing_requests_by_code)->unique();
-
-        return Inertia::render('ShoppingArea/PurchaseRequest/Purchases', [
-            'purchases' => $combined_purchasing_requests,
-            'search' => $request
-        ]);
+        return response()->json($combined_purchasing_requests,200);
     }
 
     public function purchase_quote_complete_details(Purchase_quote $id)

@@ -20,6 +20,14 @@ class PextConstants
         ];
     }
 
+    public static function getZoneSinIGV(): array
+    {
+        return [
+            "MDD1-PM",
+            "MDD2-MAZ",
+        ];
+    }
+
     public static function getExpenseType(): array
     {
         return [

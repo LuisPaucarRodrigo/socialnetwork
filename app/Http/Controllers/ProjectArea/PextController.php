@@ -8,6 +8,7 @@ use App\Exports\PextExpenseExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PextProjectRequest\StoreOrUpdateAssignationRequest;
 use App\Http\Requests\PextProjectRequest\StoreOrUpdateExpenseRequest;
+use App\Imports\PextProjectExpensesImport;
 use App\Http\Requests\PextProjectRequest\SwapAdditionalToAdditionalRequest;
 use App\Models\AccountStatement;
 use App\Models\CicsaAssignation;
@@ -719,7 +720,21 @@ class PextController extends Controller
     //     return response()->json($projects, 200);
     // }
 
-    public function swapExpensesMonthly()
+    public function swapExpensesMonthly() {}
+
+    public function import_excel_expenses(Request $request)
     {
+        $validateData = $request->validate([
+            'project_id' => 'required',
+            'fixedOrAdditional' => 'required',
+            'file' => 'required',
+        ]);
+        try {
+            $import = new PextProjectExpensesImport($validateData['project_id'], $validateData['fixedOrAdditional']);
+            Excel::import($import, $request->file('file'));
+            return response()->json([], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 422);
+        }
     }
 }
