@@ -509,7 +509,7 @@ const props = defineProps({
     cost_center: Object,
     project_id: String,
     fixedOrAdditional: Boolean,
-    type: Number,
+    type: String,
     acExpensesAmounts: Array,
     scExpensesAmounts: Array,
     zones:Array,
@@ -519,7 +519,7 @@ const props = defineProps({
     additional_projects: Array,
 });
 
-const expenses = ref(props.expense);
+const expenses = ref({...props.expense});
 // const filterMode = ref(false);
 // const subCostCenterZone = ref(null);
 // const subCostCenter = ref(null)
