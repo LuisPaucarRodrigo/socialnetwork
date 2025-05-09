@@ -83,7 +83,7 @@ class SpreadsheetsController extends Controller
             $spreadsheet = $this->payrollServices->getPayrollDetails($payroll_id)->get();
             $total = $this->payrollServices->calculateTotal($spreadsheet);
 
-            return Inertia::render('HumanResource/Payroll/Spreadsheets/Index', [
+            return Inertia::render('HumanResource/Payroll/Spreadsheets/Index/Index', [
                 'spreadsheet' => $spreadsheet,
                 'payroll' => $payroll,
                 'total' => $total,
@@ -102,6 +102,14 @@ class SpreadsheetsController extends Controller
                 200
             );
         }
+    }
+
+    public function index_payroll_detail($payroll_details_id, $employee_id)
+    {
+        return Inertia::render("HumanResource/Payroll/Spreadsheets/Detail/Index", [
+            'payroll_details_id' => $payroll_details_id,
+            'employee_id' => $employee_id,
+        ]);
     }
 
     public function update_payroll_salary(Request $request, $payroll_details_id)
@@ -162,5 +170,11 @@ class SpreadsheetsController extends Controller
         } catch (Exception $e) {
             return response()->json($e->getMessage(), 500);
         }
+    }
+
+    public function index_worder_data($employee_id)
+    {
+        $response = Employee::with(['contract:employee_id,hire_date,fired_date,pension_type,id'])->find($employee_id);
+        return response()->json($response, 200);
     }
 }

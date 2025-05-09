@@ -7,8 +7,7 @@
             <form @submit.prevent="submitDiscount">
                 <div class="border-b border-gray-900/10">
                     <div class="mt-2">
-                        <InputLabel for="discount">Monto
-                        </InputLabel>
+                        <InputLabel for="discount">Monto</InputLabel>
                         <div class="mt-2">
                             <TextInput type="number" id="discount" v-model="formDiscount.discount" maxlength="6" />
                             <InputError :message="formDiscount.errors.discount" />

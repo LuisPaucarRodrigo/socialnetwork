@@ -188,6 +188,7 @@ Route::middleware('permission:' . implode('|', RolesConstants::HR_MODULE))->grou
     //Nomina
     Route::get('/management_employees/payroll', [SpreadsheetsController::class, 'index'])->name('payroll.index');
     Route::any('/management_employees/spreadsheets/{payroll_id}', [SpreadsheetsController::class, 'index_payroll'])->name('spreadsheets.index');
+    Route::get('/management_employees/spreadsheets_details/{payroll_details_id}/employee/{employee_id}', [SpreadsheetsController::class, 'index_payroll_detail'])->name('spreadsheets.details.index');
 
     //Formation and Development
     Route::get('/management_employees/formation_development', [FormationDevelopment::class, 'index'])->name('management.employees.formation_development');
@@ -233,5 +234,7 @@ Route::middleware('permission:' . implode('|', RolesConstants::HR_MODULE))->grou
     Route::get('/documents/grupal_document/download/{gd_id}', [GrupalDocumentController::class, 'download'])->name('document.grupal_documents.download');
 
     Route::get('/documents/megaupdate/', [DocumentController::class, 'megaupdate'])->name('documents.megaupdate');
-
 });
+
+
+Route::get('/management_employees/worker_data/{employee_id}', [SpreadsheetsController::class, 'index_worder_data'])->name('index.worker.data');
