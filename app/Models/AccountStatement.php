@@ -38,11 +38,14 @@ class AccountStatement extends Model
             $total = $this->general_expenses()->get()->sum('amount');
             $chargeFormatted = number_format($this->charge, 2, '.', '');
             $totalFormatted = number_format($total, 2, '.', '');
-            if ((float)$totalFormatted >= (float)$chargeFormatted) {
+            if ((float)$totalFormatted === (float)$chargeFormatted) {
                 return 'Validado';
+            } elseif ((float)$totalFormatted > (float)$chargeFormatted) {
+                return 'Excedido';
             } elseif ((float)$totalFormatted > 0) {
                 return 'Por validar';
-            } else {
+            }  
+            else {
                 return 'No validado';
             }
         }
