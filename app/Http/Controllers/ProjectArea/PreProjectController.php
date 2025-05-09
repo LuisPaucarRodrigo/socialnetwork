@@ -612,7 +612,7 @@ class PreProjectController extends Controller
 
     public function request_shopping_create($id)
     {
-        return Inertia::render('ProjectArea/PreProject/CreateAndUpdateRequest', [
+        return Inertia::render('ProjectArea/PreProject/PurchaseRequest/CreateAndUpdateRequest', [
             'allProducts' => Purchase_product::all(),
             'preproject' => Preproject::find($id),
             'typeProduct' => TypeProduct::all()

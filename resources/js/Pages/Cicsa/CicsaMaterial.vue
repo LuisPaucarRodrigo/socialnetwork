@@ -445,7 +445,7 @@ const { material, auth, searchCondition, type } = defineProps({
     type: Number
 })
 
-const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
+// const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
 const materials = ref(material)
 const arrayMaterials = ref([])
 
@@ -476,6 +476,7 @@ const showModalImport = ref(false);
 const dateModal = ref({});
 
 function closeAddMaterialModal() {
+    cicsa_material_id.value = null
     cicsa_assignation_id.value = null;
     showAddEditModal.value = false
     form.defaults({ ...initialState })
@@ -548,7 +549,7 @@ const material_item = ref({
 
 function addFeasibility() {
     if (material_item.value.name && material_item.value.unit && material_item.value.quantity) {
-        const newFeasibility = {
+        const newMaterials = {
             code_ax: material_item.value.code_ax,
             name: material_item.value.name,
             unit: material_item.value.unit,
@@ -556,7 +557,7 @@ function addFeasibility() {
             quantity: material_item.value.quantity,
             total_quantity: material_item.value.quantity
         };
-        form.cicsa_material_items.push(newFeasibility);
+        form.cicsa_material_items.push(newMaterials);
         cleanArrayMaterial()
     } else {
         console.error('Por favor completa todos los campos del formulario.');

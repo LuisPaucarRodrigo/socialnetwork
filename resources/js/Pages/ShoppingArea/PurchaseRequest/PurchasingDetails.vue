@@ -98,7 +98,4 @@ function setBadgeColor(date, state) {
     }
 }
 
-
-
-
 </script>

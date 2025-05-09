@@ -263,7 +263,7 @@ class ProjectManagementController extends Controller
 
     public function project_purchases_request_create($project_id)
     {
-        return Inertia::render('ShoppingArea/PurchaseRequest/CreateAndUpdateRequest', [
+        return Inertia::render('ShoppingArea/PurchaseRequest/FormPurchaseRequest/CreateAndUpdateRequest', [
             'allProducts' => Purchase_product::all(),
             'typeProduct' => TypeProduct::all(),
             'project' => Project::find($project_id),
@@ -303,7 +303,7 @@ class ProjectManagementController extends Controller
     public function project_purchases_request_edit($project_id = null, $id)
     {
         $purchase = Purchasing_request::with('products')->find($id);
-        return Inertia::render('ShoppingArea/PurchaseRequest/CreateAndUpdateRequest', [
+        return Inertia::render('ShoppingArea/PurchaseRequest/FormPurchaseRequest/CreateAndUpdateRequest', [
             'purchase' => $purchase,
             'allProducts' => Purchase_product::all(),
             'project' => Project::find($project_id),
