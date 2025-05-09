@@ -710,7 +710,7 @@ const openSwapAPModal = () => {
 
 const submitSwapAPModal = async () => {
     isFetching.value = true;
-    const res = await axios
+    await axios
         .post(route("projectmanagement.additionalToAdditional.swapCosts"), {
             ...additionalProjectForm.data(),
             ...actionForm.value
