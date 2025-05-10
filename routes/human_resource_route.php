@@ -229,7 +229,7 @@ Route::middleware('permission:' . implode('|', RolesConstants::HR_MODULE))->grou
     Route::delete('/documents/grupal_document/destroy/{gd_id}', [GrupalDocumentController::class, 'destroy'])->name('document.grupal_documents.destroy');
     Route::get('/documents/grupal_document/download/{gd_id}', [GrupalDocumentController::class, 'download'])->name('document.grupal_documents.download');
 
-    Route::get('/documents/megaupdate/', [DocumentController::class, 'megaupdate'])->name('documents.megaupdate');
+    //Route::get('/documents/megaupdate/', [DocumentController::class, 'megaupdate'])->name('documents.megaupdate');
 
 
     //NUEVAS RUTAS
