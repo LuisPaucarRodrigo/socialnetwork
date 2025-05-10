@@ -54,13 +54,22 @@ class HuaweiExpensesImport implements ToModel
 
             $cdpType = $this->validateText($row[3], "CdpType");
             $expenseType = $this->validateText($row[9], "ExpenseType");
-            
+            $amount = $this->sanitizeNumber($row[7]);
+            $ec_amount = $this->sanitizeNumber($row[13]);
+
             if (is_null($cdpType)) {
                 throw new \Exception("Error en la fila {$rowError}: El CDP especificado no está admitido.");
             }
             if (is_null($expenseType)) {
                 throw new \Exception("Error en la fila {$rowError}: El Tipo de Gasto especificado no está admitido.");
             }
+            if (is_null($amount)) {
+                throw new \Exception("Error en la fila {$rowError}: El Monto está en un formato no admitido.");
+            }
+            if (is_null($ec_amount)) {
+                throw new \Exception("Error en la fila {$rowError}: El Monto de E.C. está en un formato no admitido.");
+            }
+
 
             $project = $row[1] ? HuaweiProject::where('assigned_diu', $row[1])->first() : null;
 
@@ -125,12 +134,12 @@ class HuaweiExpensesImport implements ToModel
                 'doc_number' => $row[4],
                 'op_number' => $row[5],
                 'ruc' => $row[6],
-                'amount' => $this->sanitizeNumber($row[7]),
+                'amount' => $amount,
                 'description' => $row[8],
                 'expense_type' => $expenseType,
                 'ec_expense_date' => $opDate,
                 'ec_op_number' => $row[12],
-                'ec_amount' => $this->sanitizeNumber($row[13]),
+                'ec_amount' => $ec_amount,
             ]);
 
             $this->rowNumber++;
@@ -145,25 +154,38 @@ class HuaweiExpensesImport implements ToModel
 
     private function sanitizeNumber($text)
     {
-        // Remover todos los caracteres que no sean dígitos o puntos
-        $sanitized = preg_replace('/[^0-9.]/', '', $text);
-
-        // Si hay más de un punto, conservar solo el primero
-        if (substr_count($sanitized, '.') > 1) {
-            $parts = explode('.', $sanitized);
-            $sanitized = array_shift($parts) . '.' . implode('', $parts);
+        // Buscar primer número en el texto
+        if (!preg_match('/[0-9]/', $text, $matches, PREG_OFFSET_CAPTURE)) {
+            return null; // No hay ningún número
         }
-
-        // Eliminar ceros a la izquierda innecesarios
-        $sanitized = ltrim($sanitized, '0');
-
-        // Si después de limpiar queda vacío, devolver "0"
-        return $sanitized === '' ? '0' : $sanitized;
+    
+        $firstDigitPos = $matches[0][1];
+        $numericPart = substr($text, $firstDigitPos);
+    
+        // Reemplazar comas por puntos (para manejar decimales)
+        $numericPart = str_replace(',', '.', $numericPart);
+    
+        // Verificar que la parte restante contenga solo dígitos y como mucho un punto
+        if (!preg_match('/^\d+(\.\d+)?$/', $numericPart)) {
+            return null;
+        }
+    
+        // Eliminar ceros a la izquierda (excepto si el valor es "0" o "0.xxx")
+        if (strpos($numericPart, '.') !== false) {
+            list($intPart, $decPart) = explode('.', $numericPart, 2);
+            $intPart = ltrim($intPart, '0') ?: '0';
+            $numericPart = $intPart . '.' . $decPart;
+        } else {
+            $numericPart = ltrim($numericPart, '0') ?: '0';
+        }
+    
+        return $numericPart;
     }
-
 
     private function validateText($input, $type)
     {
+        $inputToVerify = trim((string)$input);
+
         if ($type == "ExpenseType") {
             $validValues = array_merge(self::$data['static_expense_types'], self::$data['variable_expense_types']);
         } elseif ($type == "CdpType") {
@@ -171,7 +193,7 @@ class HuaweiExpensesImport implements ToModel
         } else {
             return null;
         }
-        return in_array($input, $validValues) ? $input : null;
+        return in_array($inputToVerify, $validValues) ? $input : null;
     }
 
 }

@@ -24,7 +24,7 @@ class DocumentController extends Controller
     {
         $sections = DocumentSection::all();
         return Inertia::render('HumanResource/Documents/Sections', [
-            'sections' => $sections
+            'sections' => $sections->load('subdivisions')
         ]);
     }
 
@@ -34,9 +34,10 @@ class DocumentController extends Controller
             'name' => 'required|string',
         ]);
 
-        DocumentSection::create([
+        $section = DocumentSection::create([
             'name' => $request->name,
         ]);
+        return response()->json(data: $section);
     }
 
     public function updateSection(DocumentSection $section, Request $request)
@@ -44,37 +45,36 @@ class DocumentController extends Controller
         $data = $request->validate([
             'name' => 'required|string'
         ]);
-
+    
         $section->update($data);
+    
+        // Cargar la relación subdivisions
+        $section->load('subdivisions');
+    
+        return response()->json($section);
     }
+    
 
     public function destroySection(DocumentSection $section)
     {
         $section->delete();
-        return to_route('documents.sections');
+        return response()->json([
+            'message' => 'success',
+        ]);    
     }
 
     //Subdivisions
-
-    public function showSubdivisions(DocumentSection $section)
-    {
-        $subdivisions = Subdivision::where('section_id', $section->id)->get();
-        return Inertia::render('HumanResource/Documents/Subdivisions', [
-            'subdivisions' => $subdivisions,
-            'section' => $section,
-        ]);
-    }
-
     public function storeSubdivision(DocumentSection $section, Request $request)
     {
         $request->validate([
             'name' => 'required|string',
         ]);
 
-        Subdivision::create([
+        $sub = Subdivision::create([
             'name' => $request->name,
             'section_id' => $section->id,
         ]);
+        return response()->json(data: $sub);
     }
 
     public function updateSubdivision($section, Subdivision $subdivision, Request $request)
@@ -82,14 +82,23 @@ class DocumentController extends Controller
         $data = $request->validate([
             'name' => 'required|string'
         ]);
-
+    
         $subdivision->update($data);
+    
+        return response()->json([
+            'id' => $subdivision->id,
+            'name' => $subdivision->name,
+            'section_id' => $subdivision->section_id,
+        ]);
     }
+    
 
     public function destroySubdivision($section, Subdivision $subdivision)
     {
         $subdivision->delete();
-        return to_route('documents.sections');
+        return response()->json([
+            'message' => 'success',
+        ]);
     }
 
     //Documents
@@ -98,7 +107,7 @@ class DocumentController extends Controller
     {
         return Inertia::render('HumanResource/Documents/Document', [
             'documents' => Document::with('subdivision.section')->paginate(15),
-            'sections' => DocumentSection::all(),
+            'sections' => DocumentSection::with('subdivisions')->get(),
             'subdivisions' => Subdivision::all(),
             'employees' => Employee::orderBy('name')->get(),
             'e_employees' => ExternalEmployee::orderBy('name')->get(),
@@ -107,97 +116,30 @@ class DocumentController extends Controller
             'search' => ''
         ]);
     }
-
-    public function search($section, $subdivision, $request)
+    public function filterDocument(Request $request)
     {
-        $searchTerm = strtolower($request);
-        $query = Document::with('subdivision.section', 'employee')
-            ->whereRaw('LOWER(title) LIKE ?', ["%{$searchTerm}%"])
-            ->orWhereHas('employee', function ($query) use ($searchTerm) {
-                $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"])
-                    ->orWhereRaw('LOWER(lastname) LIKE ?', ["%{$searchTerm}%"]);
-            });
-
-        if ($section !== 'no') {
-            $query->whereHas('subdivision', function ($query) use ($section) {
-                $query->where('section_id', $section);
+        $searchTerm = strtolower($request->search);
+        $query = Document::with('subdivision.section', 'employee');
+    
+        if (!empty($searchTerm)) {
+            $query->where(function ($q) use ($searchTerm) {
+                $q->whereRaw('LOWER(title) LIKE ?', ["%{$searchTerm}%"])
+                    ->orWhereHas('employee', function ($q2) use ($searchTerm) {
+                        $q2->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"])
+                            ->orWhereRaw('LOWER(lastname) LIKE ?', ["%{$searchTerm}%"]);
+                    });
             });
         }
-
-        if ($subdivision !== 'no') {
-            $query->where('subdivision_id', $subdivision);
+    
+        // Filtro por subdivisiones si vienen
+        if (!empty($request->subdivisions)) {
+            $query->whereIn('subdivision_id', $request->subdivisions);
         }
-
-        $documents = $query->get();
-
-        return Inertia::render('HumanResource/Documents/Document', [
-            'documents' => $documents,
-            'sections' => DocumentSection::all(),
-            'subdivisions' => Subdivision::all(),
-            'employees' => Employee::orderBy('name')->get(),
-            'e_employees' => ExternalEmployee::orderBy('name')->get(),
-            'section' => $section == 'no' ? '' : $section,
-            'subdivision' => $subdivision == 'no' ? '' : $subdivision,
-            'search' => $request
-        ]);
+    
+        return response()->json($query->get());
     }
-
-    public function sectionFilter($section, $request = null)
-    {
-        // Construir la consulta base con el filtro de sección
-        $query = Document::whereHas('subdivision', function ($query) use ($section) {
-            $query->where('section_id', $section);
-        });
-
-        // Si hay un término de búsqueda, aplicarlo a la consulta
-        if ($request) {
-            $searchTerm = strtolower($request);
-            $query->whereRaw('LOWER(title) LIKE ?', ["%{$searchTerm}%"]);
-        }
-
-        // Ejecutar la consulta para obtener los documentos
-        $documents = $query->get();
-
-        // Retornar la vista con los datos necesarios
-        return Inertia::render('HumanResource/Documents/Document', [
-            'documents' => $documents->load('subdivision.section'),
-            'sections' => DocumentSection::all(),
-            'subdivisions' => Subdivision::all(),
-            'employees' => Employee::orderBy('name')->get(),
-            'e_employees' => ExternalEmployee::orderBy('name')->get(),
-            'section' => $section,
-            'subdivision' => '',
-            'search' => $request
-        ]);
-    }
-
-    public function subdivisionFilter($section, $subdivision, $request = null)
-    {
-        // Construir la consulta base con el filtro de sección
-        $query = Document::where('subdivision_id', $subdivision);
-
-        // Si hay un término de búsqueda, aplicarlo a la consulta
-        if ($request) {
-            $searchTerm = strtolower($request);
-            $query->whereRaw('LOWER(title) LIKE ?', ["%{$searchTerm}%"]);
-        }
-
-        // Ejecutar la consulta para obtener los documentos
-        $documents = $query->get();
-
-        // Retornar la vista con los datos necesarios
-        return Inertia::render('HumanResource/Documents/Document', [
-            'documents' => $documents->load('subdivision.section'),
-            'sections' => DocumentSection::all(),
-            'subdivisions' => Subdivision::all(),
-            'employees' => Employee::orderBy('name')->get(),
-            'e_employees' => ExternalEmployee::orderBy('name')->get(),
-            'section' => $section,
-            'subdivision' => $subdivision,
-            'search' => $request
-        ]);
-    }
-
+    
+    
 
     public function create(DocumentCreateRequest $request)
     {

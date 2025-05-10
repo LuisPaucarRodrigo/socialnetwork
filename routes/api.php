@@ -63,4 +63,11 @@
         Route::get('/pextconstants/mobile', [ApiController::class, 'getPextMobileConstants']);
 
         Route::get('/constans_checkList/{cost_line_id}', [ApiController::class, 'contantsCheckList']);
+    
+        
+
+        //NUEVAS RUTAS
+        Route::get('/huawei/expenses/{macro}/fetch_sites', [ApiController::class, 'fetchSites']);
+        Route::get('/huawei/expenses/{macro}/{site_id}/fetch_projects', [ApiController::class, 'fetchProjects']);
+        Route::post('/huawei/expenses/storeExpense/post', [ApiController::class, 'storeExpense']);
     });
