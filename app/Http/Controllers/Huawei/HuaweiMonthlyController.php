@@ -628,4 +628,45 @@ class HuaweiMonthlyController extends Controller
         }
     }
 
+
+    //test
+    public function storeHuaweiExpense (Request $request)
+    {
+        $data = $request->validate([
+            'huawei_project_id' => 'nullable',
+            'expense_type' => 'required|string',
+            'employee' => 'required|string',
+            'cdp_type' => 'required|string',
+            'doc_number' => 'required|string',
+            'op_number' => 'required|string',
+            'ruc' => 'required|string',
+            'description' => 'required|string',
+            'amount' => 'required|numeric',
+            'image' => 'nullable',
+        ]);
+
+        $data['expense_date'] = Carbon::now();
+
+        DB::beginTransaction();
+
+        try {
+            $new_expense = HuaweiMonthlyExpense::create($data);
+            $expenseDirectory = 'documents/huawei/expenses/';
+            if (isset($data['image'])) {
+                $new_image = $this->apiService->storeBase64Image($data['image'], $expenseDirectory, null);
+                $new_expense->update(['image' => $new_image]);
+                DB::commit();
+                return response()->json([], 200);
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
+        $expense = HuaweiMonthlyExpense::create($data);
+
+        return response()->json($expense, 200);
+    }
 }
