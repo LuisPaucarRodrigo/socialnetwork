@@ -1,19 +1,89 @@
 <template>
+    <template v-if="!isLoading">
+        <div
+            class="flex flex-col sm:flex-row gap-6 justify-center items-center"
+        >
+            <!-- Pie Chart 1 -->
+            <div
+                v-if="acExpensesAmounts.length > 0"
+                class="sm:w-1/2 flex justify-center items-start"
+            >
+                <div class="relative h-36 w-full">
+                    <canvas id="pieChart2" class="w-full"></canvas>
+                </div>
+            </div>
+            <div
+                v-else
+                class="sm:w-1/2 flex justify-center items-center italic text-gray-500 h-36"
+            >
+                No hay gastos variables
+            </div>
+
+            <!-- Pie Chart 2 -->
+            <div
+                v-if="scExpensesAmounts.length > 0"
+                class="sm:w-1/2 flex justify-center items-start"
+            >
+                <div class="relative h-36 w-full">
+                    <canvas id="pieChart3"></canvas>
+                </div>
+            </div>
+            <div
+                v-else
+                class="sm:w-1/2 flex justify-center items-center italic text-gray-500 h-36"
+            >
+                No hay gastos fijos
+            </div>
+        </div>
+    </template>
+    <!-- Skeleton de gráficos de pastel -->
+    <!-- Skeleton de gráficos con labels -->
+    <!-- Skeleton de gráficos con labels centrados verticalmente -->
     <div
-        v-if="acExpensesAmounts.length > 0 || scExpensesAmounts.length > 0"
-        class="flex flex-col sm:flex-row gap-6 justify-center items-center"
+        v-if="isLoading"
+        class="flex flex-col sm:flex-row gap-6 justify-center items-center animate-pulse"
     >
-        <!-- Pie Chart 1 -->
-        <div class="sm:w-1/2 flex justify-center items-start overflow-auto">
-            <div class="relative h-40 w-full">
-                <canvas id="pieChart2" class="w-full"></canvas>
+        <!-- Sección 1 -->
+        <div class="sm:w-1/2 flex justify-between items-center gap-4 w-full">
+            <!-- Labels simulados -->
+            <div class="flex flex-col gap-2 w-1/2 items-start">
+                <div
+                    class="h-4 bg-gray-300 dark:bg-gray-700 rounded w-3/4"
+                ></div>
+                <div
+                    class="h-4 bg-gray-300 dark:bg-gray-700 rounded w-1/2"
+                ></div>
+                <div
+                    class="h-4 bg-gray-300 dark:bg-gray-700 rounded w-2/3"
+                ></div>
+            </div>
+            <!-- Gráfico simulado -->
+            <div class="flex justify-center items-center w-1/2">
+                <div
+                    class="rounded-full bg-gray-300 dark:bg-gray-700 w-36 h-36"
+                ></div>
             </div>
         </div>
 
-        <!-- Pie Chart 2 -->
-        <div class="sm:w-1/2 flex justify-center items-start">
-            <div class="relative h-40 w-full">
-                <canvas id="pieChart3"></canvas>
+        <!-- Sección 2 -->
+        <div class="sm:w-1/2 flex justify-between items-center gap-4 w-full">
+            <!-- Labels simulados -->
+            <div class="flex flex-col gap-2 w-1/2 items-start">
+                <div
+                    class="h-4 bg-gray-300 dark:bg-gray-700 rounded w-3/4"
+                ></div>
+                <div
+                    class="h-4 bg-gray-300 dark:bg-gray-700 rounded w-1/2"
+                ></div>
+                <div
+                    class="h-4 bg-gray-300 dark:bg-gray-700 rounded w-2/3"
+                ></div>
+            </div>
+            <!-- Gráfico simulado -->
+            <div class="flex justify-center items-center w-1/2">
+                <div
+                    class="rounded-full bg-gray-300 dark:bg-gray-700 w-36 h-36"
+                ></div>
             </div>
         </div>
     </div>
@@ -21,18 +91,16 @@
 
 <script setup>
 import { Chart, registerables } from "chart.js/auto";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
+import axios from "axios";
 
-const { acExpensesAmounts, scExpensesAmounts } = defineProps({
-    acExpensesAmounts: {
-        type: Array,
-        required: true,
-    },
-    scExpensesAmounts: {
-        type: Array,
-        required: true,
-    },
+const { project_id, reload_flag } = defineProps({
+    project_id: Number,
+    reload_flag: Boolean,
 });
+const isLoading = ref(false);
+const acExpensesAmounts = ref([]);
+const scExpensesAmounts = ref([]);
 
 // Pie Chart 1
 const chartInstance2 = ref(null);
@@ -41,7 +109,7 @@ const updateChart2 = () => {
     if (chartInstance2.value) {
         chartInstance2.value.destroy();
     }
-    const sortedData = acExpensesAmounts
+    const sortedData = acExpensesAmounts.value
         .map((item) => ({
             expense_type: item.expense_type,
             total_amount: item.total_amount,
@@ -133,7 +201,7 @@ const updateChart3 = () => {
     if (chartInstance3.value) {
         chartInstance3.value.destroy();
     }
-    const sortedData = scExpensesAmounts
+    const sortedData = scExpensesAmounts.value
         .map((item) => ({
             expense_type: item.expense_type,
             total_amount: item.total_amount,
@@ -230,11 +298,33 @@ const getRandomColor = () => {
     return color;
 };
 
+async function getExpensesFromAdditionalProjects() {
+    isLoading.value = true;
+    const res = await axios.get(
+        route("projectmanagement.projectadditional.expenses", { project_id })
+    );
+    isLoading.value = false;
+    if (res.status === 200) {
+        acExpensesAmounts.value = res.data.acExpensesAmounts;
+        scExpensesAmounts.value = res.data.scExpensesAmounts;
+    }
+}
+
+async function loadCharts() {
+    await getExpensesFromAdditionalProjects();
+    if (acExpensesAmounts.value.length > 0) updateChart2();
+    if (scExpensesAmounts.value.length > 0) updateChart3();
+}
+
 // Inicializa los gráficos
 onMounted(() => {
-    if (acExpensesAmounts.length > 0) updateChart2();
-    if (scExpensesAmounts.length > 0) updateChart3();
+    loadCharts();
 });
+
+watch(
+    () => reload_flag,
+    () => loadCharts()
+);
 
 // Registrar Chart.js
 Chart.register(...registerables);

@@ -26,6 +26,7 @@ class CreateProjectRequest extends FormRequest
             'priority' => 'required|in:Alta,Media,Baja,otros',
             'description' => 'required|string',
             'initial_budget' => 'nullable|numeric',
+            'cpe' => 'nullable'
         ];
     }
 }

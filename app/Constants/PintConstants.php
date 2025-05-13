@@ -54,8 +54,10 @@ class PintConstants
     public const RH = "Recibo por Honorarios";
     public const FACTURA = "Factura";
     public const BOLETA = "Boleta";
+    public const BOLETA_DE_VENTA = "Boleta de Venta";
     public const VOUCHER_DE_PAGO = "Voucher de Pago";
-    public const BOLEATA_DE_PAGO = "Boleta de Pago";
+    public const BOLETA_DE_PAGO = "Boleta de Pago";
+    public const COMPROBANTE_DE_PAGO = "Comprobante de Pago";
     public const RECIBO = "Recibo";
 
     //ac state types
@@ -264,13 +266,14 @@ class PintConstants
     public static function admincostDocTypes(): array
     {
         return [
-            self::SIN_COMPROBANTE,
+            self::BOLETA_DE_VENTA,
+            self::BOLETA_DE_PAGO,
             self::FACTURA,
-            self::BOLETA,
-            self::VOUCHER_DE_PAGO,
-            self::RH,
-            self::BOLEATA_DE_PAGO,
             self::RECIBO,
+            self::RH,
+            self::SIN_COMPROBANTE,
+            self::COMPROBANTE_DE_PAGO,
+            self::VOUCHER_DE_PAGO,
         ];
     }
 

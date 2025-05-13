@@ -142,6 +142,8 @@ class ProjectManagementController extends Controller
                 abort(403, "Solo admin puede editar");
             }
             $project = Project::find($request->id);
+            $preproject = Preproject::find($project?->preproject_id);
+            $preproject->update(['cpe'=>$data['cpe']]);
             $project->update($data);
         } else {
             $project = Project::create($data);
@@ -261,7 +263,7 @@ class ProjectManagementController extends Controller
 
     public function project_purchases_request_create($project_id)
     {
-        return Inertia::render('ShoppingArea/PurchaseRequest/CreateAndUpdateRequest', [
+        return Inertia::render('ShoppingArea/PurchaseRequest/FormPurchaseRequest/CreateAndUpdateRequest', [
             'allProducts' => Purchase_product::all(),
             'typeProduct' => TypeProduct::all(),
             'project' => Project::find($project_id),
@@ -301,7 +303,7 @@ class ProjectManagementController extends Controller
     public function project_purchases_request_edit($project_id = null, $id)
     {
         $purchase = Purchasing_request::with('products')->find($id);
-        return Inertia::render('ShoppingArea/PurchaseRequest/CreateAndUpdateRequest', [
+        return Inertia::render('ShoppingArea/PurchaseRequest/FormPurchaseRequest/CreateAndUpdateRequest', [
             'purchase' => $purchase,
             'allProducts' => Purchase_product::all(),
             'project' => Project::find($project_id),

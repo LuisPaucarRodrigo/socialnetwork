@@ -167,4 +167,13 @@ class Preproject extends Model
 
         return $allStatusFilled;
     }
+
+    protected static function booted()
+    {
+        static::updating(function ($item) {
+            $pr = Project::where('preproject_id', $item?->id)->first();
+            $ca = CicsaAssignation::where('project_id', $pr->id)->first();
+            if ($ca) $ca->update(['cpe' => $item['cpe']]);
+        });
+    }
 }

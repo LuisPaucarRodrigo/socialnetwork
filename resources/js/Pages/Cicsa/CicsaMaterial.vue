@@ -87,7 +87,12 @@
                                         <PencilSquareIcon class="w-5 h-5 text-amber-400" />
                                     </button>
                                 </TableRow>
-                                <TableRow></TableRow>
+                                <TableRow>
+                                    <button class="text-blue-900"
+                                        @click="deleteMaterial(materialDetail.id, item)">
+                                        <TrashIcon class="w-5 h-5 text-red-400" />
+                                    </button>
+                                </TableRow>
                             </tr>
                         </template>
                     </template>
@@ -423,7 +428,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import { formattedDate, setAxiosErrors } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
-import { EyeIcon, PlusCircleIcon, ChevronDownIcon, ChevronUpIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
+import { EyeIcon, PlusCircleIcon, ChevronDownIcon, ChevronUpIcon, PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import { Toaster } from 'vue-sonner';
 import { notify, notifyError } from '@/Components/Notification';
 import TableStructure from '@/Layouts/TableStructure.vue';
@@ -440,7 +445,7 @@ const { material, auth, searchCondition, type } = defineProps({
     type: Number
 })
 
-const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
+// const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
 const materials = ref(material)
 const arrayMaterials = ref([])
 
@@ -471,6 +476,7 @@ const showModalImport = ref(false);
 const dateModal = ref({});
 
 function closeAddMaterialModal() {
+    cicsa_material_id.value = null
     cicsa_assignation_id.value = null;
     showAddEditModal.value = false
     form.defaults({ ...initialState })
@@ -543,7 +549,7 @@ const material_item = ref({
 
 function addFeasibility() {
     if (material_item.value.name && material_item.value.unit && material_item.value.quantity) {
-        const newFeasibility = {
+        const newMaterials = {
             code_ax: material_item.value.code_ax,
             name: material_item.value.name,
             unit: material_item.value.unit,
@@ -551,7 +557,7 @@ function addFeasibility() {
             quantity: material_item.value.quantity,
             total_quantity: material_item.value.quantity
         };
-        form.cicsa_material_items.push(newFeasibility);
+        form.cicsa_material_items.push(newMaterials);
         cleanArrayMaterial()
     } else {
         console.error('Por favor completa todos los campos del formulario.');
@@ -677,5 +683,16 @@ function updateMaterial(item, material) {
 
 if (searchCondition) {
     search(searchCondition)
+}
+
+async function deleteMaterial(id, item) {
+    const res = await axios.delete(route('material.delete', {c_m_id:id}))
+    if (res.status === 200) {
+        notify('Material eliminado')
+        item.cicsa_materials = item.cicsa_materials.filter((material) => material.id != id)
+        if(item.cicsa_materials.length == 0 ) {materialRow.value = 0}
+    } else {
+        notifyError('SERVER ERROR')
+    }
 }
 </script>

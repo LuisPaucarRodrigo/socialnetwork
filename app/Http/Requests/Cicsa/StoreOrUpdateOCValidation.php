@@ -23,7 +23,7 @@ class StoreOrUpdateOCValidation extends FormRequest
     public function rules(): array
     {
         return [
-            'validation_date' => 'required',
+            'validation_date' => 'nullable',
             'materials_control' => 'required',
             'file_validation' => 'required',
             'supervisor' => 'required',

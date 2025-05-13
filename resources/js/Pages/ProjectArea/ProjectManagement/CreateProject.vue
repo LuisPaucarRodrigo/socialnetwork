@@ -77,8 +77,18 @@
                                     </InputLabel>
                                 </div>
                             </div>
+                            
                         </div>
                         <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
+                            <div class="sm:col-span-3">
+                                <InputLabel for="cpe">CPE:
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="text" v-model="form.cpe" id="cpe" 
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.cpe" />
+                                </div>
+                            </div>
                             <div class="sm:col-span-3">
                                 <InputLabel for="priority" class="font-medium leading-6 text-gray-900">Prioridad
                                 </InputLabel>
@@ -328,6 +338,7 @@ import { UserPlusIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import ErrorOperationModal from "@/Components/ErrorOperationModal.vue";
+import TextInput from "@/Components/TextInput.vue";
 
 const showModal = ref(false);
 const showUpdateModal = ref(false);
@@ -362,9 +373,10 @@ const initialState = {
     priority: "",
     description: "",
     employees: [],
+    cpe: ""
 };
 
-const form = useForm(project ? { ...project } : { ...initialState });
+const form = useForm(project ? { ...project, cpe:project.preproject.cpe } : { ...initialState });
 
 const submit = () => {
     form.post(route("projectmanagement.store"), {

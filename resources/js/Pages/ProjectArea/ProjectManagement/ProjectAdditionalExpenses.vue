@@ -51,6 +51,40 @@
                         Rechazados
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
+                    <div>
+                        <dropdown align="left">
+                            <template #trigger>
+                                <button data-tooltip-target="action_button_tooltip"
+                                    @click="dropdownOpen = !dropdownOpen"
+                                    class="relative block overflow-hidden rounded-md text-white hover:bg-indigo-400 text-center text-sm bg-indigo-500 p-2">
+                                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 6H20M4 12H20M4 18H20" stroke="#ffffff" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </button>
+                                <div id="action_button_tooltip" role="tooltip"
+                                    class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700 whitespace-nowrap">
+                                    Acciones
+                                    <div class="tooltip-arrow" data-popper-arrow></div>
+                                </div>
+                            </template>
+
+                            <template #content class="origin-left">
+                                <div>
+                                    <!-- Alineación a la derecha -->
+
+                                    <div class="">
+                                        <button @click="openSwapAPModal"
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Swap
+                                        </button>
+                                        
+                                    </div>
+                                </div>
+                            </template>
+                        </dropdown>
+                    </div>
 
                     <Link v-if="fixedOrAdditional"
                         class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
@@ -123,8 +157,7 @@
         <div class="overflow-x-auto h-[85vh]">
             <div class="mb-4">
                 <ChartsAdditionalExpenses 
-                    :acExpensesAmounts="acExpensesAmounts"
-                    :scExpensesAmounts="scExpensesAmounts"
+                    :project_id="Number(project_id)" :reload_flag="reload_flag"
                 />
             </div>
             <table class="w-full">
@@ -362,6 +395,84 @@
             class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
             <pagination :links="expenses.links" />
         </div>
+        <Modal :show="showSwapAPModal" @close="closeSwapAPModal">
+            <div class="p-6 space-y-3">
+                <h2 class="text-base font-medium leading-7 text-gray-900">
+                    Mover gastos
+                </h2>
+                <h4 class="text-sm font-light text-green-900 bg-green-500/10 rounded-lg p-3 ">
+                    Los gastos seleccionados serán movidos al proyecto especificado en el tipo de gasto especificado.
+                    Solo se listan los proyectos adicionales que proceden
+                </h4>
+                <form @submit.prevent="submitSwapAPModal">
+                    <div class="space-y-4">
+                        <div>
+                            <InputLabel for="project_id" class="font-medium leading-6 text-gray-900">
+                                Seleccionar movimiento
+                            </InputLabel>
+                            <div class="w-full flex justify-start gap-4 mt-2">
+                                <label class="flex gap-2 items-center text-sm">
+                                    <input type="radio" :value="'same_project'" v-model="additionalProjectForm.type_project"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                    Al mismo proyecto ({{ fixedOrAdditional ? 'Adicionales' : 'Fijos' }})
+                                </label>
+                                <label class="flex gap-2 items-center text-sm">
+                                    <input type="radio" :value="'different_project'" v-model="additionalProjectForm.type_project"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                    A otro proyecto adicional
+                                </label>
+                            </div>
+                        </div>
+                        <div v-if="additionalProjectForm.type_project === 'different_project'">
+                            <InputLabel for="project_id" class="font-medium leading-6 text-gray-900">
+                                Seleccionar a que tipo de gasto mover
+                            </InputLabel>
+                            <div class="w-full flex justify-start gap-4 mt-2">
+                                <label class="flex gap-2 items-center text-sm">
+                                    <input type="radio" :value="'0'" v-model="additionalProjectForm.type_expense"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                    Gastos variables
+                                </label>
+                                <label class="flex gap-2 items-center text-sm">
+                                    <input type="radio" :value="'1'" v-model="additionalProjectForm.type_expense"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                    Gastos fijos
+                                </label>
+                            </div>
+                        </div>
+
+                        <div v-if="additionalProjectForm.type_project === 'different_project'" class="border-b grid grid-cols-1 gap-6 border-gray-900/10 pb-12">
+                            <div>
+                                <InputLabel for="project_id" class="font-medium leading-6 text-gray-900">
+                                    Proyecto Adicional
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <select v-model="additionalProjectForm.project_id" id="project_id"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option disabled value="">
+                                            Seleccionar Proyecto
+                                        </option>
+                                        <option v-for="item in additional_projects" :key="item.id" :value="item.id">
+                                            {{ item.description }}
+                                        </option>
+                                    </select>
+                                    <InputError :message="additionalProjectForm.errors.project_id" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <SecondaryButton @click="closeSwapAPModal">
+                                Cancelar
+                            </SecondaryButton>
+                            <button type="submit" :disabled="isFetching" :class="{ 'opacity-25': isFetching }"
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </Modal>
         <!-- <SuccessOperationModal :confirming="confirmValidation" :title="'Validación'"
             :message="'La validación del gasto fue exitosa.'" /> -->
     </AuthenticatedLayout>
@@ -383,6 +494,11 @@ import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import ChartsAdditionalExpenses from "./ChartsAdditionalExpenses.vue";
 import Search from "@/Components/Search.vue";
+import Modal from "@/Components/Modal.vue";
+import { notify, notifyWarning, notifyError } from "@/Components/Notification";
+import InputError from "@/Components/InputError.vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 const props = defineProps({
     expense: Object,
@@ -392,16 +508,16 @@ const props = defineProps({
     cost_center: Object,
     project_id: String,
     fixedOrAdditional: Boolean,
-    type: Number,
-    acExpensesAmounts: Array,
-    scExpensesAmounts: Array,
+    type: String,
     zones:Array,
     expenseType:Array,
     documentsType:Array,
-    expenseTypeFixed:Array
+    expenseTypeFixed:Array,
+    additional_projects: Array,
 });
 
-const expenses = ref(props.expense);
+const expenses = ref({...props.expense});
+const reload_flag = ref(true)
 // const filterMode = ref(false);
 // const subCostCenterZone = ref(null);
 // const subCostCenter = ref(null)
@@ -564,6 +680,66 @@ watch(
     () => { actionForm.value = { ids: [] }; },
     { deep: true }
 );
+
+
+
+
+//swap to other projects
+const isFetching = ref(false)
+const additionalProjectForm = useForm({
+    project_id: '',
+    type_project: 'same_project',
+    type_expense: '',
+})
+const showSwapAPModal = ref(false)
+const closeSwapAPModal = () => {
+    showSwapAPModal.value = false
+    isFetching.value = false
+    additionalProjectForm.reset()
+    additionalProjectForm.clearErrors()
+}
+const openSwapAPModal = () => {
+    if (actionForm.value.ids.length === 0) {
+        notifyWarning("No hay registros seleccionados");
+        return;
+    }
+    showSwapAPModal.value = true
+}
+
+const submitSwapAPModal = async () => {
+    isFetching.value = true;
+    await axios
+        .post(route("projectmanagement.additionalToAdditional.swapCosts"), {
+            ...additionalProjectForm.data(),
+            ...actionForm.value
+        })
+        .catch((e) => {
+            isFetching.value = false;
+            if (e.response?.data?.errors) {
+                setAxiosErrors(e.response.data.errors, additionalProjectForm);
+            } else {
+                notifyError("Server Error");
+            }
+        });
+        if (expenses.value.data) {
+            expenses.value.data = expenses.value.data.filter((item) => 
+                !actionForm.value.ids.includes(item.id));
+        } 
+        else {
+            expenses.value = expenses.value.filter((item) => 
+            !actionForm.value.ids.includes(item.id));
+        }
+    reload_flag.value = !reload_flag.value
+    actionForm.value.ids = []
+
+    closeSwapAPModal();
+    notify("Registros Movidos con éxito")
+}
+
+watch(()=>additionalProjectForm.type_project, ()=> {
+    additionalProjectForm.type_expense = ''
+    additionalProjectForm.project_id = ''
+})
 
 
 </script>

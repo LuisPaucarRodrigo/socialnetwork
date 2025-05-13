@@ -74,10 +74,7 @@
                                     Añadir {{ resorceOrProduct === true ? 'Producto' : 'Activo' }}
                                 </h2>
                                 <button v-if="auth.user.role_id === 1 || !purchase || purchase.purchase_quotes === null"
-                                    type="button" @click="() => {
-                                        product_selected = resorceOrProduct ? allProducts.filter(product => product.type_product !== null) : allProducts.filter(resource => resource.type === 'Activo')
-                                        showProductModal = true
-                                    }">
+                                    type="button" @click="openModal()">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="indigo" class="w-6 h-6">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -124,62 +121,9 @@
                 </PrimaryButton>
             </div>
         </form>
-        <Modal :show="showProductModal">
-            <form class="p-6" @submit.prevent="addProduct">
-                <h2 class="text-lg font-medium text-gray-900">
-                    Añadir {{ resorceOrProduct ? 'Producto' : 'Activo' }}
-                </h2>
-                <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-2">
-                    <div class="sm:col-span-3">
-                        <InputLabel for="unit">{{ resorceOrProduct ? 'Producto' : 'Activo' }}</InputLabel>
-                        <div class="mt-2">
-                            <input required id="unit" list="options" @input="handleAutocomplete" autocomplete="off"
-                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-
-                            <datalist id="options">
-                                <option v-for="item in product_selected" :value="item.code" :data-value="item">
-                                    {{ item.name }}
-                                </option>
-                            </datalist>
-                        </div>
-                    </div>
-
-                    <div class="sm:col-span-3">
-                        <InputLabel for="quantity">Cantidad</InputLabel>
-                        <div class="mt-2">
-                            <TextInput required type="number" v-model="productToAdd.quantity" min="1" id="quantity" />
-                        </div>
-                    </div>
-
-                    <div class="sm:col-span-3">
-                        <InputLabel class="leading-6 text-gray-100">Nombre:</InputLabel>
-                        <div class="mt-2">
-                            <InputLabel class="leading-6 text-gray-100">{{ productToAdd.name }}
-                            </InputLabel>
-                        </div>
-                    </div>
-
-                    <div class="sm:col-span-3">
-                        <InputLabel class="leading-6 text-gray-100">Unidad:</InputLabel>
-                        <div class="mt-2">
-                            <InputLabel class="leading-6 text-gray-100">{{ productToAdd.unit }}
-                            </InputLabel>
-                        </div>
-                    </div>
-                </div>
-                <div class="mt-6 flex gap-3 justify-end">
-                    <SecondaryButton type="button" @click="closeModal"> Cerrar </SecondaryButton>
-                    <PrimaryButton type="submit"> Agregar </PrimaryButton>
-                </div>
-            </form>
-        </Modal>
+        <AddProducts ref="addProducts" v-model:resorceOrProduct="resorceOrProduct"
+            v-model:product_selected="product_selected" :allProducts="allProducts" :form="form" :purchase="purchase" />
         <ConfirmCreateModal :confirmingcreation="showModal" itemType="solicitud" />
-        <SuccessOperationModal :confirming="showModal2" title="Producto añadido"
-            message="Se añadió un nuevo producto a la solicitud" />
-        <SuccessOperationModal :confirming="showModal3" title="Producto eliminado"
-            message="Se quitó el producto de la solicitud" />
-        <ErrorOperationModal :showError="showErroModal" title="Error"
-            message="El producto ya fue añadido o es inválido" />
     </AuthenticatedLayout>
 </template>
 
@@ -187,27 +131,23 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
-import Modal from '@/Components/Modal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputError from '@/Components/InputError.vue'
 import { Head, useForm, router } from '@inertiajs/vue3';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
-import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
-import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { TrashIcon } from '@heroicons/vue/24/outline';
 import { ref, watch } from 'vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
+import AddProducts from './components/AddProducts.vue';
+import { notify } from '@/Components/Notification';
 
 const showModal = ref(false);
-const showModal2 = ref(false);
-const showModal3 = ref(false);
-const showErroModal = ref(false);
-const type_product = ref('')
+// const type_product = ref('')
 const product_selected = ref([]);
 const resorceOrProduct = ref(true);
+const addProducts = ref(null)
 
 const { purchase, allProducts, project, typeProduct, resourceType } = defineProps({
     purchase: {
@@ -229,13 +169,13 @@ if (purchase) {
     resorceOrProduct.value = allProducts[0].type === "Activo" ? false : true
 }
 
-function handleTypeProduct(product_value) {
-    product_selected.value = allProducts.filter(product => product.type_product === product_value);
-}
+// function handleTypeProduct(product_value) {
+//     product_selected.value = allProducts.filter(product => product.type_product === product_value);
+// }
 
-function handleTypeResource(resource_id) {
-    product_selected.value = allProducts.filter(resource => resource.resource_type_id == resource_id);
-}
+// function handleTypeResource(resource_id) {
+//     product_selected.value = allProducts.filter(resource => resource.resource_type_id == resource_id);
+// }
 
 const initialState = {
     title: '',
@@ -277,83 +217,14 @@ const submit = () => {
 }
 
 //Modal
-const showProductModal = ref(false)
-const initialStateProduct = {
-    id: '',
-    code: '',
-    name: '',
-    unit: '',
-    quantity: '',
-    pivot: {}
-}
-const productToAdd = ref(JSON.parse(JSON.stringify(initialStateProduct)))
-
-
-function closeModal() {
-    showProductModal.value = false
-    productToAdd.value = JSON.parse(JSON.stringify(initialStateProduct))
-}
-
-
-const formProduct = useForm({
-    purchase_product_id: '',
-    purchasing_request_id: '',
-    quantity: '',
-})
-
-function addProduct() {
-    if (productToAdd.value.id && form.products.find(item => item.id == productToAdd.value.id) == undefined) {
-        if (purchase) {
-            formProduct.purchase_product_id = productToAdd.value.id
-            formProduct.purchasing_request_id = purchase.id
-            formProduct.quantity = productToAdd.value.quantity
-            axios.post(route('purchasing_request_product.store'), formProduct)
-                .then((response) => {
-                    if (response.status === 200) {
-                        productToAdd.value.pivot.quantity = productToAdd.value.quantity
-                        productToAdd.value.pivot.id = response.data.newProductId
-                        form.products.push(JSON.parse(JSON.stringify(productToAdd.value)))
-                        closeModal()
-                        showModal2.value = true
-                        setTimeout(() => {
-                            showModal2.value = false
-                        }, 1000)
-                    }
-                })
-                .catch(error => console.error(error));
-        } else {
-            form.products.push(JSON.parse(JSON.stringify(productToAdd.value)))
-            closeModal()
-        }
-    } else {
-        showErroModal.value = true
-        setTimeout(() => {
-            showErroModal.value = false
-        }, 1000)
-    }
-}
-
-
-
-
-const handleAutocomplete = (e) => {
-    const code = e.target.value;
-    let findedProduct = product_selected.value.find(item => item.code === code)
-    if (findedProduct) {
-        productToAdd.value.id = findedProduct.id
-        productToAdd.value.code = findedProduct.code
-        productToAdd.value.name = findedProduct.name
-        productToAdd.value.unit = findedProduct.unit
-    }
-}
-
 function deleteProduct(index, id = null) {
     if (id) router.delete(route('purchasing_request_product.delete', { purchasing_request_product_id: id }), {
         onSuccess: () => {
-            showModal3.value = true
-            setTimeout(() => {
-                showModal3.value = false
-            }, 1000)
+            notify("Se quitó el producto de la solicitud")
+            // showModal3.value = true
+            // setTimeout(() => {
+            //     showModal3.value = false
+            // }, 1000)
         }
     })
     form.products.splice(index, 1)
@@ -371,4 +242,8 @@ watch(form.products, (newProducts) => {
             console.error('Error al hacer la petición:', error);
         });
 });
+
+function openModal() {
+    addProducts.value.openModal()
+}
 </script>

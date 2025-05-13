@@ -28,9 +28,9 @@ class ProfileController extends Controller
     public function allFine()
     {
         // $data = Project::with('cicsa_assignation', 'preproject.customer')
-        //     ->where('cost_center_id', 1)
-        //     ->whereIn('id', [368, 424, 451])
-        //     ->get();
+        //      ->where('cost_center_id', 2)
+        //      ->whereIn('id', [372, 425, 452])
+        //      ->get();
 
         // DB::beginTransaction();
         // try {
