@@ -319,21 +319,26 @@ async function fetchFormationProgramAlarms() {
         console.error('Error al obtener alarmas de programa de formación:', error);
     }
 }
+
+let intervalId;
+const fetchAllAlarms = () => {
+  return Promise.all([
+    fetchAlarmHappyBirthdayCount(),
+    fetchDocumentsToExpireAlarmCount(),
+    fetchNoDocumentsAlarmCount(),
+    fetchAlarmPermissionsCount(),
+    fetchAlarmVacationCount(),
+    fetchFormationProgramAlarms(),
+  ]);
+};
+
 onMounted(() => {
-    const fetchAllAlarms = () => {
-        return Promise.all([
-            fetchAlarmHappyBirthdayCount(),
-            fetchDocumentsToExpireAlarmCount(),
-            fetchNoDocumentsAlarmCount(),
-            fetchAlarmPermissionsCount(),
-            fetchAlarmVacationCount(),
-            fetchFormationProgramAlarms(),
-        ]);
-    };
-    fetchAllAlarms();
-    const intervalId = setInterval(fetchAllAlarms, 60000);
-    onUnmounted(() => {
-        clearInterval(intervalId);
-    });
+  fetchAllAlarms();
+  intervalId = setInterval(fetchAllAlarms, 60000);
 });
+
+onUnmounted(() => {
+  clearInterval(intervalId);
+});
+
 </script>
