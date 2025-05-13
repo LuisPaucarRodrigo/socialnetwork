@@ -234,4 +234,5 @@ Route::middleware('permission:' . implode('|', RolesConstants::HR_MODULE))->grou
 
     //NUEVAS RUTAS
     Route::post('/documents/filter_document/get', [DocumentController::class, 'filterDocument'])->name('documents.filter_document');
+    Route::post('/document_sections/subdivisions/drag_and_drop', [DocumentController::class, 'dragandrop'])->name('documents.drag_and_drop');
 });

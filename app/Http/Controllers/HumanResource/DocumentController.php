@@ -101,6 +101,23 @@ class DocumentController extends Controller
         ]);
     }
 
+    public function dragandrop(Request $request)
+    {
+        $data = $request->validate([
+            'subdivision_id' => 'required|integer',
+            'section_id' => 'required|integer',
+        ]);
+
+        $subdivision = Subdivision::find($data['subdivision_id']);
+        $subdivision->section_id = $data['section_id'];
+        $subdivision->save();
+        $subdivision->load('section');
+        return response()->json([
+            'id' => $subdivision->id,
+            'name' => $subdivision->name,
+            'section_id' => $subdivision->section_id,
+        ]);
+    }
     //Documents
 
     public function index()
