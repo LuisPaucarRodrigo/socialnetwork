@@ -50,4 +50,38 @@ class Document extends Model
         }
         return null;
     }
+
+    protected static function booted()
+    {
+        static::creating(function ($item) {
+            DocumentRegister::create([
+                'subdivision_id' => $item->subdivision_id,
+                'document_id' => $item->id,
+                'employee_id' => $item->employee_id,
+                'e_employee_id' => $item->e_employee_id,
+                'exp_date' => $item->exp_date,
+                'state' => 'Completado',
+            ]);
+        });
+
+        static::updating(function ($item) {
+            $docreg = DocumentRegister::where('document_id', $item->id)->first();
+            $docreg->update([
+                'subdivision_id' => $item->subdivision_id,
+                'document_id' => $item->id,
+                'employee_id' => $item->employee_id,
+                'e_employee_id' => $item->e_employee_id,
+                'exp_date' => $item->exp_date,
+                'state' => 'Completado',
+            ]);
+        });
+
+        static::deleting(function ($item) {
+            $docreg = DocumentRegister::where('document_id', $item->id)->first();
+            if ($docreg) {
+                $docreg->delete();
+            }
+        });
+
+    }
 }

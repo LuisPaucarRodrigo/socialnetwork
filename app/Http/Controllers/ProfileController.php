@@ -9,6 +9,8 @@ use App\Enums\Permissions\ProjectPermissions;
 use App\Enums\Permissions\PurchasingPermissions;
 use App\Enums\Permissions\UserRolePermissions;
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Document;
+use App\Models\DocumentRegister;
 use App\Models\Permission;
 use App\Models\Project;
 use App\Models\CicsaAssignation;
@@ -27,35 +29,19 @@ class ProfileController extends Controller
 {
     public function allFine()
     {
-        // $data = Project::with('cicsa_assignation', 'preproject.customer')
-        //      ->where('cost_center_id', 2)
-        //      ->whereIn('id', [372, 425, 452])
-        //      ->get();
-
-        // DB::beginTransaction();
-        // try {
-        //     foreach ($data as $project) {
-        //         $preproject = $project->preproject;
-        //         CicsaAssignation::create([
-        //             "assignation_date" => $preproject->date,
-        //             "project_name" => $project->description,
-        //             "customer" => $preproject->customer->business_name,
-        //             "project_code" => $preproject->code,
-        //             "cpe" => $preproject->cpe,
-        //             "zone" => 'Arequipa',
-        //             "zone2" => null,
-        //             "manager" => 'Nikol Sheyla Rondón Neyra',
-        //             "user_name" => 'Nikol Sheyla Rondón Neyra',
-        //             "user_id" => 6,
-        //             "project_id" => $project->id,
-        //         ]);
-        //     }
-        //     DB::commit();
-        //     return response()->json('all fine');
-        // } catch (Exception $e) {
-        //     DB::rollBack();
-        //     return $e->getMessage();
-        // }
+        $data = DocumentRegister::all();
+        $notsync = [];
+        foreach($data as $item) {
+            if($item->state !== 'No corresponse') {
+                $document = Document::find('document_id', $item->document_id);
+                if ($document) {
+                   
+                } else {
+                   
+                }
+            }
+        }
+        return response()->json($notsync);
 
     }
 
