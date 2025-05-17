@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('huawei_project_schedules', function (Blueprint $table) {
+        Schema::create('huawei_project_assignations', function (Blueprint $table) {
             $table->id();
-            $table->string('activity');
-            $table->integer('days');
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->string('employee')->nullable();
             $table->foreignId('huawei_project_id')->constrained('huawei_projects')->onDelete('cascade');
+            $table->string('po');
+            $table->date('assignation_date');
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('huawei_project_schedules');
+        Schema::dropIfExists('huawei_project_assignations');
     }
 };

@@ -14,6 +14,9 @@ class HuaweiProjectSchedule extends Model
     protected $fillable = [
         'activity',
         'days',
+        'start_date',
+        'end_date',
+        'employee',
         'huawei_project_id'
     ];
 
