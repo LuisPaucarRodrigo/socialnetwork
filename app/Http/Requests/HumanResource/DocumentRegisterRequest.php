@@ -21,7 +21,7 @@ class DocumentRegisterRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'subdivision_id'=> 'required',
             'document_id'=> 'nullable',
             'employee_id'=> 'nullable',
@@ -30,5 +30,9 @@ class DocumentRegisterRequest extends FormRequest
             'state'=> 'required',
             'observations'=> 'nullable',
         ];
+        if ($this->input('state') === 'Completado') {
+            $rules['document'] = 'required';
+        }
+        return $rules;
     }
 }
