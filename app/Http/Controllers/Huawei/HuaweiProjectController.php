@@ -153,7 +153,6 @@ class HuaweiProjectController extends Controller
     {
         $employees = HuaweiConstants::getEmployees();
         return Inertia::render('Huawei/ProjectForm', [
-            'huawei_sites' => HuaweiSite::orderBy('name')->get(),
             'employees' => $employees,
             'cost_centers' => CostCenter::where('cost_line_id', 3)->get(),
             'price_guides' => HuaweiPriceGuide::all(),
@@ -331,6 +330,16 @@ class HuaweiProjectController extends Controller
         return Inertia::render('Huawei/ProjectBalance', [
             'huawei_project' => $huawei_project
         ]);
+    }
+
+    public function fetchSites(Request $request)
+    {
+        $data = $request->validate([
+            'prefix' => 'required'
+        ]);
+
+        $sites = HuaweiSite::where('prefix', $data['prefix'])->get();
+        return response()->json($sites);
     }
 
     public function store(Request $request)

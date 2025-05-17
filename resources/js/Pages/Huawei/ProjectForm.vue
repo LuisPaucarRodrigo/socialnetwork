@@ -124,6 +124,9 @@
                                     <select
                                         required
                                         id="prefix"
+                                        @change="
+                                            (e) => fetchSites(e.target.value)
+                                        "
                                         v-model="form.prefix"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     >
@@ -154,7 +157,7 @@
                                             Seleccione uno
                                         </option>
                                         <option
-                                            v-for="item in props.huawei_sites"
+                                            v-for="item in availableSites"
                                             :key="item.id"
                                             :value="item.id"
                                         >
@@ -1555,11 +1558,11 @@ import InputFile from "@/Components/InputFile.vue";
 import { notifyError } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import { formattedDate } from "@/utils/utils";
+import axios from "axios";
 
 const showModal = ref(false);
 const showUpdateModal = ref(false);
 const props = defineProps({
-    huawei_sites: Object,
     cost_centers: Object,
     price_guides: Object,
     huawei_project: Object,
@@ -1872,4 +1875,18 @@ const hasBaseLines = computed(() => {
         return assignation.base_lines && assignation.base_lines.length > 0;
     });
 });
+
+const availableSites = ref([]);
+
+const fetchSites = async (prefix) => {
+    try {
+        const res = await axios.post(
+            route("huawei.projects.create.fetchsites"),
+            { prefix: prefix }
+        );
+        availableSites.value = res.data;
+    } catch (error) {
+        console.error(res);
+    }
+};
 </script>
