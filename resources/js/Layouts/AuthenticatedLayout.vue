@@ -30,7 +30,7 @@ import { usePage } from '@inertiajs/vue3';
 import { onMounted } from 'vue'
 import { initFlowbite } from 'flowbite'
 import { watch } from 'vue';
-import { role_id, permissions } from '@/Store/auth';
+import { appAuth } from '@/Store/auth';
 
 
 

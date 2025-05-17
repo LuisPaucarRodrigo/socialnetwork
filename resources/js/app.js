@@ -7,7 +7,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import { initFlowbite } from 'flowbite';
 import permission from '@/Directives/permission';
-import { role_id, permissions } from '@/Store/auth';
+import { appAuth } from '@/Store/auth';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
