@@ -21,20 +21,20 @@
                     <div class="border-b border-gray-900 pb-12">
                         <h2
                             v-if="props.huawei_project"
-                            class="text-base font-semibold leading-7 text-gray-900"
+                            class="text-base font-semibold leading-7 text-lg text-gray-900"
                         >
                             {{ props.huawei_project.name }} |
                             {{ props.huawei_project.code }}
                         </h2>
                         <h2
                             v-else
-                            class="text-base font-semibold leading-7 text-gray-900"
+                            class="text-base font-semibold leading-7 text-lg text-gray-900"
                         >
                             Registrar nuevo proyecto
                         </h2>
                         <br />
 
-                        <h2 class="font-black">Datos Generales:</h2>
+                        <h2 class="font-black text-lg">Datos Generales:</h2>
 
                         <div
                             v-if="!props.huawei_project"
@@ -42,20 +42,22 @@
                         >
                             <div class="sm:col-span-3">
                                 <InputLabel
-                                    for="name"
+                                    for="assigned_diu"
                                     class="font-medium leading-6 text-gray-900"
-                                    >Nombre
+                                    >DU del Proyecto
                                 </InputLabel>
                                 <div class="mt-2">
                                     <TextInput
-                                        v-model="form.name"
-                                        id="description"
+                                        type="text"
+                                        v-model="form.assigned_diu"
+                                        id="assigned_diu"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     />
-                                    <InputError :message="form.errors.name" />
+                                    <InputError
+                                        :message="form.errors.assigned_diu"
+                                    />
                                 </div>
                             </div>
-
                             <div class="sm:col-span-3">
                                 <InputLabel
                                     for="cost_center_id"
@@ -67,6 +69,7 @@
                                         required
                                         id="cost_center_id"
                                         v-model="form.cost_center_id"
+                                        :disabled="hasBaseLines"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     >
                                         <option disabled value="">
@@ -85,31 +88,6 @@
                                     :message="form.errors.huawei_site_id"
                                 />
                             </div>
-
-                            <div class="sm:col-span-3">
-                                <InputLabel
-                                    for="prefix"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >Operador
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <select
-                                        required
-                                        id="prefix"
-                                        v-model="form.prefix"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    >
-                                        <option disabled value="">
-                                            Seleccione uno
-                                        </option>
-                                        <option>Claro</option>
-                                        <option>Entel</option>
-                                        <option>Telefonica</option>
-                                    </select>
-                                </div>
-                                <InputError :message="form.errors.prefix" />
-                            </div>
-
                             <div class="sm:col-span-3">
                                 <InputLabel
                                     for="prefix"
@@ -136,77 +114,29 @@
                                     :message="form.errors.macro_project"
                                 />
                             </div>
-                        </div>
-
-                        <div
-                            v-else
-                            class="grid grid-cols-1 md:grid-cols-2 mt-5 gap-y-2"
-                        >
-                            <div class="flex gap-2 items-center">
-                                <h2 class="font-black text-black">
-                                    Nombre del Proyecto:
-                                </h2>
-                                <div>
-                                    <input
-                                        type="text"
-                                        id="editName"
-                                        v-model="editForm.name"
-                                        class="block w-60 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError
-                                        :message="editForm.errors.name"
-                                    />
-                                </div>
-                            </div>
-
-                            <div class="flex gap-2 items-center">
-                                <h2 class="font-black text-black">
-                                    Centro de Costos:
-                                </h2>
-                                <p class="text-gray-600 font-medium">
-                                    {{ props.huawei_project.cost_center?.name }}
-                                </p>
-                            </div>
-                            <div class="flex gap-2 items-center">
-                                <h2 class="font-black text-black">
-                                    Macroproyecto:
-                                </h2>
-                                <p class="text-gray-600 font-medium">
-                                    {{ props.huawei_project.macro_project }}
-                                </p>
-                            </div>
-                            <div class="flex gap-2 items-center">
-                                <h2 class="font-black text-black">Operador:</h2>
-                                <p class="text-gray-600 font-medium">
-                                    {{ props.huawei_project.prefix }}
-                                </p>
-                            </div>
-                        </div>
-
-                        <hr class="border-1 border-gray-500 my-10 black" />
-                        <h2 class="font-black">Datos Específicos:</h2>
-
-                        <div
-                            v-if="!props.huawei_project"
-                            class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-5"
-                        >
                             <div class="sm:col-span-3">
                                 <InputLabel
-                                    for="ot"
+                                    for="prefix"
                                     class="font-medium leading-6 text-gray-900"
-                                    >PO
+                                    >Operador
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input
-                                        type="text"
-                                        v-model="form.ot"
-                                        id="ot"
-                                        class="block w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError :message="form.errors.ot" />
+                                    <select
+                                        required
+                                        id="prefix"
+                                        v-model="form.prefix"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    >
+                                        <option disabled value="">
+                                            Seleccione uno
+                                        </option>
+                                        <option>Claro</option>
+                                        <option>Entel</option>
+                                        <option>Telefonica</option>
+                                    </select>
                                 </div>
+                                <InputError :message="form.errors.prefix" />
                             </div>
-
                             <div class="sm:col-span-3">
                                 <InputLabel
                                     for="huawei_site_id"
@@ -239,25 +169,6 @@
 
                             <div class="sm:col-span-3">
                                 <InputLabel
-                                    for="assigned_diu"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >DU del Proyecto
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <TextInput
-                                        type="text"
-                                        v-model="form.assigned_diu"
-                                        id="assigned_diu"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError
-                                        :message="form.errors.assigned_diu"
-                                    />
-                                </div>
-                            </div>
-
-                            <div class="sm:col-span-3">
-                                <InputLabel
                                     for="zone"
                                     class="font-medium leading-6 text-gray-900"
                                     >Zona
@@ -266,6 +177,7 @@
                                     <select
                                         required
                                         id="zone"
+                                        :disabled="hasBaseLines"
                                         v-model="form.zone"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     >
@@ -281,8 +193,7 @@
                                 <InputError :message="form.errors.zone" />
                             </div>
 
-                            <div class="sm:col-span-3"
-                            >
+                            <div class="sm:col-span-3">
                                 <InputLabel
                                     for="assignation_date"
                                     class="font-medium leading-6 text-gray-900"
@@ -301,8 +212,7 @@
                                 </div>
                             </div>
 
-                            <div class="sm:col-span-3"
-                            >
+                            <div class="sm:col-span-3">
                                 <InputLabel
                                     for="name"
                                     class="font-medium leading-6 text-gray-900"
@@ -323,23 +233,36 @@
 
                         <div
                             v-else
-                            class="grid grid-cols-1 md:grid-cols-2 mt-5 gap-y-2"
+                            class="grid grid-cols-1 md:grid-cols-2 mt-5 gap-y-2 text-lg"
                         >
                             <div class="flex gap-2 items-center">
-                                <h2 class="font-black text-black">PO:</h2>
-                                <p class="text-gray-600 font-medium">
-                                    {{ props.huawei_project.ot }}
-                                </p>
-                            </div>
-                            <div class="flex flex-wrap gap-2 items-center">
                                 <h2 class="font-black text-black">DU:</h2>
-                                <p
-                                    class="text-gray-600 font-medium break-words"
-                                >
+                                <p class="text-gray-600 font-medium">
                                     {{ props.huawei_project.assigned_diu }}
                                 </p>
                             </div>
-
+                            <div class="flex gap-2 items-center">
+                                <h2 class="font-black text-black">
+                                    Centro de Costos:
+                                </h2>
+                                <p class="text-gray-600 font-medium">
+                                    {{ props.huawei_project.cost_center?.name }}
+                                </p>
+                            </div>
+                            <div class="flex gap-2 items-center">
+                                <h2 class="font-black text-black">
+                                    Macroproyecto:
+                                </h2>
+                                <p class="text-gray-600 font-medium">
+                                    {{ props.huawei_project.macro_project }}
+                                </p>
+                            </div>
+                            <div class="flex gap-2 items-center">
+                                <h2 class="font-black text-black">Operador:</h2>
+                                <p class="text-gray-600 font-medium">
+                                    {{ props.huawei_project.prefix }}
+                                </p>
+                            </div>
                             <div class="flex gap-2 items-center">
                                 <h2 class="font-black text-black">Site:</h2>
                                 <p class="text-gray-600 font-medium">
@@ -352,40 +275,49 @@
                                     {{ props.huawei_project.zone }}
                                 </p>
                             </div>
-                            <div class="flex gap-2 items-center">
-                                <h2 class="font-black text-black">Fecha de Asignación:</h2>
+                            <div class="flex gap-2 items-start">
+                                <h2 class="font-black text-black">
+                                    Fecha de Asignación:
+                                </h2>
                                 <p class="text-gray-600 font-medium">
-                                    {{ formattedDate(props.huawei_project.assignation_date) }}
+                                    {{
+                                        formattedDate(
+                                            props.huawei_project
+                                                .assignation_date
+                                        )
+                                    }}
                                 </p>
                             </div>
-                            <div
-                                class="flex gap-2 items-start"
-                            >
+                            <div class="flex gap-2 items-start">
                                 <h2 class="font-black text-black">
                                     Descripción:
                                 </h2>
-                                <textarea
-                                    id="editDescription"
-                                    v-model="editForm.description"
-                                    class="block w-[80%] rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                />
-                                <InputError
-                                    :message="editForm.errors.description"
-                                />
+                                <div>
+                                    <textarea
+                                        id="editName"
+                                        v-model="editForm.description"
+                                        class="block w-60 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                    <InputError
+                                        :message="editForm.errors.description"
+                                    />
+                                </div>
                             </div>
                         </div>
 
                         <hr class="border-1 border-gray-500 my-10 black" />
                         <div class="flex flex-space gap-2">
-                            <h2 class="font-black">Líneas Base:</h2>
+                            <h2 class="font-black">
+                                {{
+                                    props.huawei_project
+                                        ? "POs Asignadas"
+                                        : "Agregar PO"
+                                }}
+                            </h2>
                             <button
+                                v-if="!props.huawei_project"
                                 type="button"
-                                v-if="
-                                    form.cost_center_id &&
-                                    form.zone &&
-                                    !props.huawei_project
-                                "
-                                @click="openBaseLine"
+                                @click="createAssignation"
                                 class="px-1"
                             >
                                 <svg
@@ -403,231 +335,519 @@
                                     />
                                 </svg>
                             </button>
-                            <button
-                                type="button"
-                                v-if="form.cost_center_id && form.zone"
-                                class="rounded-md text-center text-sm text-green-400"
-                                @click="openImportExcel"
+                        </div>
+                        <TransitionGroup
+                            tag="div"
+                            enter-active-class="transition duration-300 ease-out"
+                            enter-from-class="opacity-0 -translate-y-2"
+                            enter-to-class="opacity-100 translate-y-0"
+                            leave-active-class="transition duration-200 ease-in"
+                            leave-from-class="opacity-100 translate-y-0"
+                            leave-to-class="opacity-0 -translate-y-2"
+                        >
+                            <div
+                                v-for="(
+                                    assignation, index
+                                ) in props.huawei_project
+                                    ? props.huawei_project
+                                          .huawei_project_assignations
+                                    : form.assignations"
+                                :key="index"
+                                class="bg-[#eaeded] p-5 mt-5 rounded-md shadow-md"
                             >
-                                <svg
-                                    class="w-5 h-5"
-                                    viewBox="0 0 24 24"
-                                    xmlns="http://www.w3.org/2000/svg"
+                                <div class="flex justify-between items-center">
+                                    <div class="flex gap-5 items-center">
+                                        <h2 class="font-black">
+                                            PO Asignada N°
+                                            {{ index + 1 }}
+                                        </h2>
+                                        <button
+                                            v-if="!props.huawei_project"
+                                            type="button"
+                                            class="text-red-600"
+                                            @click="deleteAssignation(index)"
+                                        >
+                                            <TrashIcon class="w-6 h-6" />
+                                        </button>
+                                    </div>
+                                    <div class="flex flex-space gap-2">
+                                        <button
+                                            type="button"
+                                            @click="toggleAssignation(index)"
+                                        >
+                                            <ChevronDownIcon
+                                                v-if="isOpen(index)"
+                                                class="h-7 w-7 text-gray-900"
+                                            />
+                                            <ChevronRightIcon
+                                                v-else
+                                                class="h-7 w-7 text-gray-900"
+                                            />
+                                        </button>
+                                    </div>
+                                </div>
+                                <Transition
+                                    enter-active-class="transition duration-300 ease-out"
+                                    enter-from-class="opacity-0 -translate-y-2"
+                                    enter-to-class="opacity-100 translate-y-0"
+                                    leave-active-class="transition duration-200 ease-in"
+                                    leave-from-class="opacity-100 translate-y-0"
+                                    leave-to-class="opacity-0 -translate-y-2"
                                 >
-                                    <title />
-
-                                    <g id="Complete">
-                                        <g id="upload">
-                                            <g>
-                                                <path
-                                                    d="M3,12.3v7a2,2,0,0,0,2,2H19a2,2,0,0,0,2-2v-7"
-                                                    fill="none"
-                                                    stroke="green"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                />
-
-                                                <g>
-                                                    <polyline
-                                                        data-name="Right"
-                                                        fill="none"
-                                                        id="Right-2"
-                                                        points="7.9 6.7 12 2.7 16.1 6.7"
-                                                        stroke="green"
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                    />
-
-                                                    <line
-                                                        fill="none"
-                                                        stroke="green"
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        x1="12"
-                                                        x2="12"
-                                                        y1="16.3"
-                                                        y2="4.8"
-                                                    />
-                                                </g>
-                                            </g>
-                                        </g>
-                                    </g>
-                                </svg>
-                            </button>
-                        </div>
-
-                        <div class="mt-5">
-                            <div class="overflow-x-auto mt-3">
-                                <table class="w-full whitespace-no-wrap">
-                                    <thead>
-                                        <tr
-                                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
+                                    <div v-if="isOpen(index)">
+                                        <div
+                                            v-if="!props.huawei_project"
+                                            class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-5"
                                         >
-                                            <th
-                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
-                                            >
-                                                N°
-                                            </th>
-                                            <th
-                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
-                                            >
-                                                Código
-                                            </th>
-                                            <th
-                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 w-[400px] text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
-                                            >
-                                                Descripción
-                                            </th>
-                                            <th
-                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
-                                            >
-                                                Unidad
-                                            </th>
-                                            <th
-                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
-                                            >
-                                                Precio Unitario
-                                            </th>
-                                            <th
-                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
-                                            >
-                                                Cantidad
-                                            </th>
-                                            <th
-                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
-                                            >
-                                                Precio Total
-                                            </th>
-                                            <th
-                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
-                                            >
-                                                Evidencia
-                                            </th>
-                                            <th
-                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
-                                            >
-                                                Hito
-                                            </th>
-                                            <th
-                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
-                                            >
-                                                Observación
-                                            </th>
-                                            <th
-                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
-                                            ></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr
-                                            v-for="(
-                                                item, index
-                                            ) in props.huawei_project
-                                                ? props.huawei_project
-                                                      .huawei_project_earnings
-                                                : form.base_lines"
-                                            :key="index"
-                                            class="text-gray-700"
-                                        >
-                                            <td
-                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
-                                            >
-                                                {{ index + 1 }}
-                                            </td>
-                                            <td
-                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
-                                            >
-                                                {{ item.code }}
-                                            </td>
-                                            <td
-                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
-                                            >
-                                                {{ item.description }}
-                                            </td>
-                                            <td
-                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
-                                            >
-                                                {{ item.unit }}
-                                            </td>
-                                            <td
-                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
-                                            >
-                                                {{ item.unit_price }}
-                                            </td>
-                                            <td
-                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
-                                            >
-                                                <input
-                                                    v-if="!props.huawei_project"
-                                                    type="number"
-                                                    v-model="
-                                                        form.base_lines[index]
-                                                            .quantity
-                                                    "
-                                                    @input="
-                                                        updateTotalPrice(index)
-                                                    "
-                                                    class="w-full border border-gray-300 rounded-md text-center p-1 focus:ring focus:ring-indigo-500 focus:border-indigo-500"
-                                                    min="0"
-                                                />
-                                                <p v-else>
-                                                    {{ item.quantity }}
-                                                </p>
-                                            </td>
-                                            <td
-                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
-                                            >
-                                                {{
-                                                    props.huawei_project
-                                                        ? item.amount.toFixed(2)
-                                                        : item.total_price
-                                                }}
-                                            </td>
-                                            <td
-                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
-                                            >
-                                                {{ item.evidence }}
-                                            </td>
-                                            <td
-                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
-                                            >
-                                                {{ item.goal }}
-                                            </td>
-                                            <td
-                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
-                                            >
-                                                {{ item.observation }}
-                                            </td>
-                                            <td
-                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
-                                            >
-                                                <div
-                                                    v-if="!props.huawei_project"
-                                                    class="flex items-center"
+                                            <div class="sm:col-span-3">
+                                                <InputLabel
+                                                    for="po"
+                                                    class="font-medium leading-6 text-gray-900"
                                                 >
-                                                    <button
-                                                        @click.prevent="
-                                                            delete_base_line(
+                                                    PO
+                                                </InputLabel>
+                                                <div class="mt-2">
+                                                    <input
+                                                        type="text"
+                                                        v-model="
+                                                            form.assignations[
                                                                 index
-                                                            )
+                                                            ].po
                                                         "
-                                                        class="text-red-600 hover:underline mr-2"
-                                                    >
-                                                        <TrashIcon
-                                                            class="h-5 w-5"
-                                                        />
-                                                    </button>
+                                                        id="po"
+                                                        class="block w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                    />
+                                                    <InputError
+                                                        :message="
+                                                            form.errors[
+                                                                `assignations.${index}.po`
+                                                            ]
+                                                        "
+                                                    />
                                                 </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                            </div>
+
+                                            <div class="sm:col-span-3">
+                                                <InputLabel
+                                                    for="assignation_date_po"
+                                                    class="font-medium leading-6 text-gray-900"
+                                                >
+                                                    Fecha de Asignación de la PO
+                                                </InputLabel>
+                                                <div class="mt-2">
+                                                    <input
+                                                        type="date"
+                                                        v-model="
+                                                            form.assignations[
+                                                                index
+                                                            ].assignation_date
+                                                        "
+                                                        id="assignation_date_po"
+                                                        class="block w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                    />
+                                                    <InputError
+                                                        :message="
+                                                            form.errors[
+                                                                `assignations.${index}.assignation_date`
+                                                            ]
+                                                        "
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div
+                                                class="sm:col-span-3 md:col-span-6"
+                                            >
+                                                <InputLabel
+                                                    for="description_po"
+                                                    class="font-medium leading-6 text-gray-900"
+                                                >
+                                                    Descripción de la PO
+                                                </InputLabel>
+                                                <div class="mt-2">
+                                                    <textarea
+                                                        v-model="
+                                                            form.assignations[
+                                                                index
+                                                            ].description
+                                                        "
+                                                        id="description_po"
+                                                        class="block w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                    />
+                                                    <InputError
+                                                        :message="
+                                                            form.errors[
+                                                                `assignations.${index}.description`
+                                                            ]
+                                                        "
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div
+                                            v-else
+                                            class="grid grid-cols-1 md:grid-cols-2 mt-5 gap-y-2"
+                                        >
+                                            <div
+                                                class="flex gap-2 items-center"
+                                            >
+                                                <h2
+                                                    class="font-black text-black"
+                                                >
+                                                    PO:
+                                                </h2>
+                                                <p
+                                                    class="text-gray-600 font-medium"
+                                                >
+                                                    {{ assignation.po }}
+                                                </p>
+                                            </div>
+                                            <div class="flex gap-2 items-start">
+                                                <h2
+                                                    class="font-black text-black"
+                                                >
+                                                    Fecha de Asignación:
+                                                </h2>
+                                                <p
+                                                    class="text-gray-600 font-medium"
+                                                >
+                                                    {{
+                                                        formattedDate(
+                                                            assignation.assignation_date
+                                                        )
+                                                    }}
+                                                </p>
+                                            </div>
+                                            <div
+                                                class="flex gap-2 items-center"
+                                            >
+                                                <h2
+                                                    class="font-black text-black"
+                                                >
+                                                    Descripción de la PO:
+                                                </h2>
+                                                <p
+                                                    class="text-gray-600 font-medium"
+                                                >
+                                                    {{
+                                                        assignation.description
+                                                    }}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex flex-space gap-2 mt-5">
+                                            <h2 class="font-black">
+                                                Líneas Base:
+                                            </h2>
+                                            <button
+                                                type="button"
+                                                v-if="
+                                                    form.cost_center_id &&
+                                                    form.zone &&
+                                                    !props.huawei_project
+                                                "
+                                                @click="openBaseLine(index)"
+                                                class="px-1"
+                                            >
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke-width="1.5"
+                                                    stroke="currentColor"
+                                                    class="w-6 h-6 text-indigo-500"
+                                                >
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                                    />
+                                                </svg>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                v-if="
+                                                    form.cost_center_id &&
+                                                    form.zone
+                                                "
+                                                class="rounded-md text-center text-sm text-green-400"
+                                                @click="openImportExcel(index)"
+                                            >
+                                                <svg
+                                                    class="w-5 h-5"
+                                                    viewBox="0 0 24 24"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                >
+                                                    <title />
+
+                                                    <g id="Complete">
+                                                        <g id="upload">
+                                                            <g>
+                                                                <path
+                                                                    d="M3,12.3v7a2,2,0,0,0,2,2H19a2,2,0,0,0,2-2v-7"
+                                                                    fill="none"
+                                                                    stroke="green"
+                                                                    stroke-linecap="round"
+                                                                    stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                />
+
+                                                                <g>
+                                                                    <polyline
+                                                                        data-name="Right"
+                                                                        fill="none"
+                                                                        id="Right-2"
+                                                                        points="7.9 6.7 12 2.7 16.1 6.7"
+                                                                        stroke="green"
+                                                                        stroke-linecap="round"
+                                                                        stroke-linejoin="round"
+                                                                        stroke-width="2"
+                                                                    />
+
+                                                                    <line
+                                                                        fill="none"
+                                                                        stroke="green"
+                                                                        stroke-linecap="round"
+                                                                        stroke-linejoin="round"
+                                                                        stroke-width="2"
+                                                                        x1="12"
+                                                                        x2="12"
+                                                                        y1="16.3"
+                                                                        y2="4.8"
+                                                                    />
+                                                                </g>
+                                                            </g>
+                                                        </g>
+                                                    </g>
+                                                </svg>
+                                            </button>
+                                        </div>
+
+                                        <div class="mt-5">
+                                            <div class="overflow-x-auto mt-3">
+                                                <table
+                                                    class="w-full whitespace-no-wrap"
+                                                >
+                                                    <thead>
+                                                        <tr
+                                                            class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
+                                                        >
+                                                            <th
+                                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                                            >
+                                                                N°
+                                                            </th>
+                                                            <th
+                                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                                            >
+                                                                Código
+                                                            </th>
+                                                            <th
+                                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 w-[400px] text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                                            >
+                                                                Descripción
+                                                            </th>
+                                                            <th
+                                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                                            >
+                                                                Unidad
+                                                            </th>
+                                                            <th
+                                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                                            >
+                                                                Precio Unitario
+                                                            </th>
+                                                            <th
+                                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                                            >
+                                                                Cantidad
+                                                            </th>
+                                                            <th
+                                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                                            >
+                                                                Precio Total
+                                                            </th>
+                                                            <th
+                                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                                            >
+                                                                Evidencia
+                                                            </th>
+                                                            <th
+                                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                                            >
+                                                                Hito
+                                                            </th>
+                                                            <th
+                                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                                            >
+                                                                Observación
+                                                            </th>
+                                                            <th
+                                                                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                                            ></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr
+                                                            v-for="(
+                                                                item, idx
+                                                            ) in props.huawei_project
+                                                                ? props
+                                                                      .huawei_project
+                                                                      .huawei_project_assignations[
+                                                                      index
+                                                                  ]
+                                                                      .huawei_project_earnings
+                                                                : form
+                                                                      .assignations[
+                                                                      index
+                                                                  ].base_lines"
+                                                            :key="idx"
+                                                            class="text-gray-700"
+                                                        >
+                                                            <td
+                                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                                            >
+                                                                {{ idx + 1 }}
+                                                            </td>
+                                                            <td
+                                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                                            >
+                                                                {{ item.code }}
+                                                            </td>
+                                                            <td
+                                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                                            >
+                                                                {{
+                                                                    item.description
+                                                                }}
+                                                            </td>
+                                                            <td
+                                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                                            >
+                                                                {{ item.unit }}
+                                                            </td>
+                                                            <td
+                                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                                            >
+                                                                {{
+                                                                    item.unit_price
+                                                                }}
+                                                            </td>
+                                                            <td
+                                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                                            >
+                                                                <input
+                                                                    v-if="
+                                                                        !props.huawei_project
+                                                                    "
+                                                                    type="number"
+                                                                    v-model="
+                                                                        form
+                                                                            .assignations[
+                                                                            index
+                                                                        ]
+                                                                            .base_lines[
+                                                                            idx
+                                                                        ]
+                                                                            .quantity
+                                                                    "
+                                                                    @input="
+                                                                        updateTotalPrice(
+                                                                            index,
+                                                                            idx
+                                                                        )
+                                                                    "
+                                                                    class="w-full border border-gray-300 rounded-md text-center p-1 focus:ring focus:ring-indigo-500 focus:border-indigo-500"
+                                                                    min="0"
+                                                                />
+                                                                <p v-else>
+                                                                    {{
+                                                                        item.quantity
+                                                                    }}
+                                                                </p>
+                                                            </td>
+                                                            <td
+                                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                                            >
+                                                                {{
+                                                                    props.huawei_project
+                                                                        ? item.amount.toFixed(
+                                                                              2
+                                                                          )
+                                                                        : item.total_price
+                                                                }}
+                                                            </td>
+                                                            <td
+                                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                                            >
+                                                                {{
+                                                                    item.evidence
+                                                                }}
+                                                            </td>
+                                                            <td
+                                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                                            >
+                                                                {{ item.goal }}
+                                                            </td>
+                                                            <td
+                                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                                            >
+                                                                {{
+                                                                    item.observation
+                                                                }}
+                                                            </td>
+                                                            <td
+                                                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                                            >
+                                                                <div
+                                                                    v-if="
+                                                                        !props.huawei_project
+                                                                    "
+                                                                    class="flex items-center"
+                                                                >
+                                                                    <button
+                                                                        @click.prevent="
+                                                                            delete_base_line(
+                                                                                index,
+                                                                                idx
+                                                                            )
+                                                                        "
+                                                                        class="text-red-600 hover:underline mr-2"
+                                                                    >
+                                                                        <TrashIcon
+                                                                            class="h-5 w-5"
+                                                                        />
+                                                                    </button>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <InputError
+                                                :message="
+                                                    form.errors.base_lines
+                                                "
+                                            />
+                                        </div>
+                                        <InputError
+                                            :message="
+                                                form.errors[
+                                                    `assignations.${index}.base_lines`
+                                                ]
+                                            "
+                                        />
+                                    </div>
+                                </Transition>
                             </div>
-                            <InputError :message="form.errors.base_lines" />
-                        </div>
+                        </TransitionGroup>
+
+                        <InputError
+                            class="mt-5"
+                            :message="form.errors.assignations"
+                        />
                         <div>
                             <hr class="border-1 border-gray-500 my-10 black" />
                             <div class="flex flex-space gap-2">
@@ -672,9 +892,24 @@
                                                     Actividad
                                                 </th>
                                                 <th
-                                                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 w-[400px] text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
                                                 >
                                                     Días
+                                                </th>
+                                                <th
+                                                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                                >
+                                                    Fecha de Inicio
+                                                </th>
+                                                <th
+                                                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                                >
+                                                    Fecha de Fin
+                                                </th>
+                                                <th
+                                                    class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
+                                                >
+                                                    Empleado
                                                 </th>
                                                 <th
                                                     class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 text-center"
@@ -706,6 +941,29 @@
                                                     class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
                                                 >
                                                     {{ item.days }}
+                                                </td>
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                                >
+                                                    {{
+                                                        formattedDate(
+                                                            item.start_date
+                                                        )
+                                                    }}
+                                                </td>
+                                                <td
+                                                    class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                                >
+                                                    {{
+                                                        formattedDate(
+                                                            item.end_date
+                                                        )
+                                                    }}
+                                                </td>
+                                                <td
+                                                    class="border-b whitespace-nowrap border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                                >
+                                                    {{ item.employee }}
                                                 </td>
                                                 <td
                                                     class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
@@ -993,17 +1251,20 @@
                     <div
                         class="bg-indigo-50 border-l-4 text-sm border-indigo-500 p-4 rounded-lg shadow-sm mt-2"
                     >
-                        <p class="text-gray-700">
+                        <p class="text-gray-700 flex items-center gap-1">
                             <span class="font-semibold text-indigo-600">•</span>
                             Descargue la
                             <a
                                 :href="
                                     route('huawei.projects.baselines.template')
                                 "
-                                class="font-black text-indigo-600 hover:underline"
-                                >ESTRUCTURA DE DATOS.</a
+                                class="font-black text-indigo-600 underline inline-flex items-center"
                             >
+                                ESTRUCTURA DE DATOS
+                                <ArrowDownTrayIcon class="w-5 h-5" />
+                            </a>
                         </p>
+
                         <p class="text-gray-700">
                             <span class="font-semibold text-indigo-600">•</span>
                             La importación
@@ -1172,6 +1433,80 @@
                                         />
                                     </div>
                                 </div>
+                                <div>
+                                    <InputLabel
+                                        for="start_date"
+                                        class="font-medium leading-6 text-gray-900"
+                                    >
+                                        Fecha de Inicio
+                                    </InputLabel>
+                                    <div class="mt-2">
+                                        <input
+                                            type="date"
+                                            id="start_date"
+                                            v-model="scheduleForm.start_date"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        />
+                                        <InputError
+                                            :message="
+                                                scheduleForm.errors.start_date
+                                            "
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <InputLabel
+                                        for="end_date"
+                                        class="font-medium leading-6 text-gray-900"
+                                    >
+                                        Fecha de Fin
+                                    </InputLabel>
+                                    <div class="mt-2">
+                                        <input
+                                            type="date"
+                                            id="end_date"
+                                            v-model="scheduleForm.end_date"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        />
+                                        <InputError
+                                            :message="
+                                                scheduleForm.errors.end_date
+                                            "
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <InputLabel
+                                        for="employee"
+                                        class="font-medium leading-6 text-gray-900"
+                                    >
+                                        Empleado
+                                    </InputLabel>
+                                    <div class="mt-2">
+                                        <input
+                                            list="employee-list"
+                                            id="employee"
+                                            v-model="scheduleForm.employee"
+                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            placeholder="Seleccione un empleado"
+                                        />
+                                        <datalist id="employee-list">
+                                            <option
+                                                v-for="(
+                                                    employee, index
+                                                ) in props.employees"
+                                                :key="index"
+                                                :value="employee"
+                                            />
+                                        </datalist>
+
+                                        <InputError
+                                            :message="
+                                                scheduleForm.errors.employee
+                                            "
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="mt-8 flex justify-end gap-4">
@@ -1206,9 +1541,14 @@ import ConfirmUpdateModal from "@/Components/ConfirmUpdateModal.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
 import Modal from "@/Components/Modal.vue";
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import { Head, router, useForm } from "@inertiajs/vue3";
-import { TrashIcon } from "@heroicons/vue/24/outline";
+import {
+    TrashIcon,
+    ChevronRightIcon,
+    ChevronDownIcon,
+    ArrowDownTrayIcon,
+} from "@heroicons/vue/24/outline";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputFile from "@/Components/InputFile.vue";
@@ -1223,6 +1563,7 @@ const props = defineProps({
     cost_centers: Object,
     price_guides: Object,
     huawei_project: Object,
+    employees: Object,
     auth: Object,
     userPermissions: Array,
 });
@@ -1232,25 +1573,22 @@ const hasPermission = (permission) => {
 };
 
 const initialState = {
-    name: "",
     description: "",
     zone: "",
     huawei_site_id: "",
     cost_center_id: "",
-    ot: "",
     prefix: "",
-    pre_report: null,
-    employees: [],
-    base_lines: [],
+    //pre_report: null,
+    //employees: [],
     schedule: [],
-    initial_amount: "",
+    //initial_amount: "",
     assigned_diu: "",
     assignation_date: "",
     macro_project: "",
+    assignations: [],
 };
 
 const editForm = useForm({
-    name: props.huawei_project ? props.huawei_project.name : "",
     description: props.huawei_project ? props.huawei_project.description : "",
 });
 
@@ -1271,6 +1609,9 @@ const submit = () => {
                     );
                 }, 2000);
             },
+            onError: (e) => {
+                console.error(e);
+            },
         });
     } else {
         editForm.put(
@@ -1289,6 +1630,9 @@ const submit = () => {
                             })
                         );
                     }, 2000);
+                },
+                onError: (e) => {
+                    console.error(e);
                 },
             }
         );
@@ -1315,18 +1659,20 @@ const handleAutocomplete = () => {
     const selectedGuide = price_guides.value.find(
         (guide) => guide.code === baseForm.code
     );
-
     if (selectedGuide) {
         baseForm.description = selectedGuide.description || "";
         baseForm.unit = selectedGuide.unit || "";
         baseForm.quantity = selectedGuide.quantity || "";
-
+        baseForm.evidence = selectedGuide.evidence || "";
+        baseForm.goal = selectedGuide.goal || "";
         const zoneKey = form.zone.toLowerCase();
         baseForm.unit_price = selectedGuide[zoneKey] || 0;
     } else {
         baseForm.description = "";
         baseForm.unit = "";
         baseForm.quantity = "";
+        baseForm.evidence = "";
+        baseForm.goal = "";
         baseForm.unit_price = 0;
     }
 };
@@ -1352,8 +1698,12 @@ watch(
     }
 );
 
-const openBaseLine = () => {
+const assigantionIndex = ref(null);
+const openBaseLine = (index) => {
     baseForm.reset();
+    baseline_modal.value
+        ? (assigantionIndex.value = null)
+        : (assigantionIndex.value = index);
     baseline_modal.value = !baseline_modal.value;
 };
 
@@ -1370,16 +1720,17 @@ const addBaseLine = () => {
         notifyError("Todos los campos son requeridos");
         return;
     }
-    form.base_lines.push({ ...baseForm });
+    form.assignations[assigantionIndex.value].base_lines.push({ ...baseForm });
     baseForm.reset();
+    assigantionIndex.value = null;
     baseline_modal.value = false;
 };
 
-const delete_base_line = (index) => {
-    form.base_lines.splice(index, 1);
+const delete_base_line = (index, idx) => {
+    form.assignations[index].base_lines.splice(idx, 1);
 };
-const updateTotalPrice = (index) => {
-    const line = form.base_lines[index];
+const updateTotalPrice = (index, idx) => {
+    const line = form.assignations[index].base_lines[idx];
     line.total_price = (line.unit_price * line.quantity).toFixed(2);
 };
 
@@ -1387,8 +1738,11 @@ const formFile = useForm({
     file: "",
 });
 
-const openImportExcel = () => {
+const openImportExcel = (index) => {
     formFile.reset();
+    show_import.value
+        ? (assigantionIndex.value = null)
+        : (assigantionIndex.value = index);
     show_import.value = !show_import.value;
 };
 
@@ -1407,7 +1761,9 @@ const importExcel = async () => {
                 Accept: "application/json",
             },
         });
-        form.base_lines.push(...response.data.lines);
+        form.assignations[assigantionIndex.value].base_lines.push(
+            ...response.data.lines
+        );
         openImportExcel();
     } catch (error) {
         if (error.response.data.error) {
@@ -1430,14 +1786,90 @@ const delete_schedule = (index) => {
 const scheduleForm = useForm({
     activity: "",
     days: "",
+    start_date: "",
+    end_date: "",
+    employee: "",
 });
 
 const add_schedule = () => {
-    if (!scheduleForm.activity || !scheduleForm.days) {
+    if (
+        !scheduleForm.activity ||
+        !scheduleForm.days ||
+        !scheduleForm.start_date ||
+        !scheduleForm.end_date ||
+        !scheduleForm.employee
+    ) {
         notifyError("Todos los campos son requeridos");
+        return;
+    }
+    if (!props.employees.includes(scheduleForm.employee)) {
+        notifyError("Debe seleccionar un empleado válido de la lista");
         return;
     }
     form.schedule.push({ ...scheduleForm });
     scheduleForm.reset();
 };
+
+//assignations
+const createAssignation = () => {
+    const newIndex = form.assignations.length;
+    form.assignations.push({
+        index: "",
+        assignation_date: "",
+        po: "",
+        description: "",
+        base_lines: [],
+    });
+    assignationForm.index = newIndex;
+    openAssignations.value.push(newIndex);
+};
+
+const assignationForm = useForm({
+    index: "",
+    assignation_date: "",
+    po: "",
+    description: "",
+    base_lines: [],
+});
+
+const addAssignation = () => {
+    const index = assignationForm.index;
+
+    if (index !== "" && form.assignations[index] !== undefined) {
+        form.assignations[index] = {
+            assignation_date: assignationForm.assignation_date,
+            po: assignationForm.po,
+            description: assignationForm.description,
+            base_lines: [...assignationForm.base_lines],
+        };
+    }
+    assignationForm.reset();
+    assignationForm.base_lines = [];
+};
+
+const deleteAssignation = (index) => {
+    form.assignations.splice(index, 1);
+};
+
+//toggle
+const openAssignations = ref([]);
+
+function toggleAssignation(index) {
+    const i = openAssignations.value.indexOf(index);
+    if (i === -1) {
+        openAssignations.value.push(index);
+    } else {
+        openAssignations.value.splice(i, 1);
+    }
+}
+
+function isOpen(index) {
+    return openAssignations.value.includes(index);
+}
+
+const hasBaseLines = computed(() => {
+    return form.assignations.some((assignation) => {
+        return assignation.base_lines && assignation.base_lines.length > 0;
+    });
+});
 </script>

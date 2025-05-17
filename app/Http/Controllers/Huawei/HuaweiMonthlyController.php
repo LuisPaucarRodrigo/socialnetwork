@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Log as FacadesLog;
 use Inertia\Inertia;
 use Log;
 use Maatwebsite\Excel\Facades\Excel;
+use Pest\Plugins\Parallel\Handlers\Laravel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use ZipArchive;
 
@@ -270,7 +271,6 @@ class HuaweiMonthlyController extends Controller
                     });
             });
         }
-
         if (count($request->selectedExpenseTypes) < $summary['expense_types']) {
             $expensesQuery->whereIn('expense_type', $request->selectedExpenseTypes);
         }
@@ -280,9 +280,10 @@ class HuaweiMonthlyController extends Controller
         if (count($request->selectedEmployees) < $summary['employees']) {
             $expensesQuery->whereIn('employee', $request->selectedEmployees);
         }
-        if (count($request->selectedZones) < $summary['zones']) {
+        if (!empty($request->selectedZones) && ($request->selectedZones) < $summary['zones']) {
             $expensesQuery->whereIn('zone', $request->selectedZones);
         }
+        
         if (count($request->selectedDus) < $summary['assigned_dius'] + 1) {
             $selectedDus = $request->selectedDus;
 
@@ -372,7 +373,6 @@ class HuaweiMonthlyController extends Controller
             });
         }
 
-        // Convertir la colección a array antes de enviarla en la respuesta JSON
         return response()->json(["expenses" => $expenses->values()->toArray()], 200);
     }
 
@@ -629,44 +629,5 @@ class HuaweiMonthlyController extends Controller
     }
 
 
-    //test
-    public function storeHuaweiExpense (Request $request)
-    {
-        $data = $request->validate([
-            'huawei_project_id' => 'nullable',
-            'expense_type' => 'required|string',
-            'employee' => 'required|string',
-            'cdp_type' => 'required|string',
-            'doc_number' => 'required|string',
-            'op_number' => 'required|string',
-            'ruc' => 'required|string',
-            'description' => 'required|string',
-            'amount' => 'required|numeric',
-            'image' => 'nullable',
-        ]);
 
-        $data['expense_date'] = Carbon::now();
-
-        DB::beginTransaction();
-
-        try {
-            $new_expense = HuaweiMonthlyExpense::create($data);
-            $expenseDirectory = 'documents/huawei/expenses/';
-            if (isset($data['image'])) {
-                $new_image = $this->apiService->storeBase64Image($data['image'], $expenseDirectory, null);
-                $new_expense->update(['image' => $new_image]);
-                DB::commit();
-                return response()->json([], 200);
-            }
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
-        }
-
-        $expense = HuaweiMonthlyExpense::create($data);
-
-        return response()->json($expense, 200);
-    }
 }

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('description');
             $table->string('unit');
             $table->double('unit_price');
-            $table->foreignId('huawei_project_id')->constrained('huawei_projects')->onDelete('cascade');
+            $table->foreignId('huawei_pa_id')->constrained('huawei_project_assignations')->onDelete('cascade');
             $table->integer('quantity');
             $table->string('observation');
             $table->string('evidence');

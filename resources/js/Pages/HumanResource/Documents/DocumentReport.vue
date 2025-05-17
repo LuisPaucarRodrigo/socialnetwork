@@ -4,7 +4,7 @@
         <template #header> Documentos </template>
         <div class="flex gap-4 justify-between rounded-lg">
             <div class="flex flex-col sm:flex-row gap-4 justify-between w-full">
-                <div class="flex gap-4 items-center px-2">
+                <div class="flex gap-4 items-center">
                     <PrimaryButton
                         v-permission-and="['documents_create']"
                         @click="openCreateDocumentModal"
@@ -72,209 +72,139 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div
-                                        v-if="
-                                            filterForm.employees.length > 0 ||
-                                            filterForm.external_employees
-                                                .length > 0 ||
-                                            filterForm.sections.length > 0 ||
-                                            filterForm.subdivisions.length > 0
-                                        "
-                                        class="dropdown"
-                                    >
-                                        <div class="dropdown-menu">
-                                            <button
-                                                @click="applyFilters"
-                                                type="button"
-                                                class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                                            >
-                                                Generar Reporte
-                                            </button>
-                                        </div>
-                                    </div>
                                 </div>
                             </template>
                         </dropdown>
                     </div>
                 </div>
-                <div>
-                    <PrimaryButton
-                        v-if="
-                            filterForm.employees.length > 0 ||
-                            filterForm.external_employees.length > 0 ||
-                            filterForm.sections.length > 0 ||
-                            filterForm.subdivisions.length > 0
-                        "
-                        @click="applyFilters"
-                        type="button"
-                        class="hidden sm:block mr-4 rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500"
-                    >
-                        Generar Reporte
-                    </PrimaryButton>
-                </div>
             </div>
         </div>
-        <div
-            class="flex flex-col md:flex-row w-full gap-2 mt-5 h-auto md:h-[70vh]"
-        >
-            <!-- Filtro -->
-            <div class="md:w-[20%] flex flex-col rounded-md overflow-hidden">
-                <!-- Buscador siempre visible -->
-                <div class="px-2 flex justify-between items-stretch gap-4">
-                    <TextInput
-                        type="text"
-                        placeholder="Buscar..."
-                        v-model="filterForm.search"
-                        @input="handleSearchInput"
-                        @keydown.enter.prevent="goToNextMatch"
-                        class="w-full"
-                    />
-                    <div class="flex items-center">
-                        <input
-                            type="checkbox"
-                            :checked="isAllEmpSelected"
-                            @change="toggleEmpSelectAll"
-                            class="form-checkbox w-6 h-6 aspect-square rounded-sm text-indigo-600"
-                        />
-                    </div>
-                </div>
-
-                <!-- Lista con scroll que ocupa el espacio restante -->
-                <div
-                    class="px-4 pr-1 space-y-2 mt-5 overflow-y-scroll h-[200px] sm:h-[10%] md:h-full"
-                >
-                    <div
-                        v-for="(employee, index) in mergedEmployees"
-                        :key="`${employee.type}-${employee.id}`"
-                        :id="`employee-match-${index}`"
-                        class="flex items-center space-x-2"
-                    >
-                        <label
-                            class="flex items-center space-x-2 cursor-pointer"
-                        >
-                            <input
-                                type="checkbox"
-                                :value="employee.id"
-                                :checked="
-                                    employee.type === 'external'
-                                        ? filterForm.external_employees.includes(
-                                              employee.id
-                                          )
-                                        : filterForm.employees.includes(
-                                              employee.id
-                                          )
-                                "
-                                @change="handleEmployeeToggle(employee)"
-                                class="form-checkbox h-4 w-4 text-indigo-600"
-                            />
-                            <span
-                                class="text-sm text-gray-700"
-                                v-html="highlightMatch(employee.name)"
-                            ></span>
-                            <span
-                                class="ml-1 text-xs text-gray-400 uppercase"
-                                v-if="employee.type === 'external'"
-                            >
-                                (Externo)
-                            </span>
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Contenido de secciones -->
-            <div class="px-5 md:w-[80%]">
-                <div class="flex justify-end mb-2">
-                    <label class="flex items-center space-x-2 cursor-pointer">
-                        <input
-                            type="checkbox"
-                            :checked="isAllSubSelected"
-                            @change="toggleSelectAll"
-                            class="form-checkbox h-4 w-4 text-indigo-600"
-                        />
-                        <span class="text-sm text-gray-700"
-                            >Seleccionar Todo</span
-                        >
-                    </label>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div
-                        v-for="section in props.sections"
-                        :key="section.id"
-                        class="bg-white p-4 rounded-sm shadow-sm border border-gray-300 relative"
-                    >
-                        <!-- Encabezado de la sección -->
-                        <div class="flex items-center justify-between mb-2">
-                            <label
-                                class="flex items-center justify-between w-full cursor-pointer"
-                            >
-                                <span
-                                    class="text-sm font-semibold text-gray-800 break-words"
+        <div class="flex w-full mt-5">
+            <!-- Tabla -->
+            <div class="w-[100%] overflow-x-auto">
+                <div class="max-h-[77vh] overflow-y-auto border rounded-md">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th
+                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                 >
-                                    {{ section.name }}
-                                </span>
-                                <input
-                                    type="checkbox"
-                                    :checked="
-                                        filterForm.sections.includes(section.id)
-                                    "
-                                    @change.stop="
-                                        handleSectionCheckbox(section)
-                                    "
-                                    class="form-checkbox h-4 w-4 text-indigo-600 ml-2"
-                                />
-                            </label>
-                        </div>
-
-                        <div class="border-t border-gray-200 my-2"></div>
-
-                        <!-- Subdivisiones -->
-                        <div class="space-y-2">
-                            <div
-                                v-for="subdivision in section.subdivisions"
-                                :key="subdivision.id"
-                                class="flex items-center justify-between"
-                            >
-                                <label
-                                    class="flex items-center justify-between w-full cursor-pointer"
+                                    Nombre
+                                </th>
+                                <th
+                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                 >
-                                    <span
-                                        class="text-sm text-gray-700 break-words font-medium"
-                                    >
-                                        {{ subdivision.name }}
-                                    </span>
-                                    <input
-                                        type="checkbox"
-                                        :checked="
-                                            filterForm.subdivisions.includes(
-                                                subdivision.id
-                                            )
-                                        "
-                                        @change.stop="
-                                            handleSubdivisionToggle(
-                                                section.id,
-                                                subdivision.id
-                                            )
-                                        "
-                                        class="form-checkbox h-4 w-4 text-indigo-600 ml-2"
-                                    />
-                                </label>
-                            </div>
-                        </div>
-                    </div>
+                                    Sección
+                                </th>
+                                <th
+                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
+                                    Subdivisión
+                                </th>
+                                <th
+                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
+                                    Empleado
+                                </th>
+                                <th
+                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr
+                                v-for="document in dataToRender"
+                                :key="document.id"
+                            >
+                                <td
+                                    class="px-6 max-w-[230px] py-4 text-sm font-medium text-gray-900"
+                                >
+                                    {{ getDocumentName(document.title) }}
+                                </td>
+                                <td
+                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                                >
+                                    {{ document.subdivision?.section?.name }}
+                                </td>
+                                <td
+                                    class="px-6 max-w-[100px] py-4 text-sm text-gray-700"
+                                >
+                                    {{ document.subdivision?.name }}
+                                </td>
+                                <td
+                                    class="px-6 py-4 max-w-[150px] text-sm text-gray-700"
+                                >
+                                    {{ document.emp_name }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center space-x-3">
+                                        <button
+                                            v-if="
+                                                document.title &&
+                                                /\.(pdf|png|jpe?g)$/.test(
+                                                    document.title
+                                                )
+                                            "
+                                            @click="
+                                                openPreviewDocumentModal(
+                                                    document.id
+                                                )
+                                            "
+                                            class="text-green-600 hover:underline"
+                                        >
+                                            <EyeIcon class="h-5 w-5" />
+                                        </button>
+                                        <button
+                                            @click="
+                                                downloadDocument(document.id)
+                                            "
+                                            class="text-blue-600 hover:underline"
+                                        >
+                                            <ArrowDownIcon class="h-5 w-5" />
+                                        </button>
+                                        <button
+                                            v-permission="'documents_update'"
+                                            @click="
+                                                openEditDocumentModal(document)
+                                            "
+                                            class="text-orange-400 hover:underline"
+                                        >
+                                            <PencilIcon class="h-5 w-5" />
+                                        </button>
+                                        <button
+                                            v-permission="'document_delete'"
+                                            @click="
+                                                confirmDeleteDocument(
+                                                    document.id
+                                                )
+                                            "
+                                            class="text-red-600 hover:underline"
+                                        >
+                                            <TrashIcon class="h-5 w-5" />
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
-        <Modal :show="create_document">
+        <Modal :show="create_document || update_document">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
                     {{
-                        "Subir Documento"
+                        create_document
+                            ? "Subir Documento"
+                            : "Actualizar Documento"
                     }}
                 </h2>
                 <form
-                    @submit.prevent="submit"
+                    @submit.prevent="create_document ? submit() : submitEdit()"
                 >
                     <div class="border-b border-gray-900/10 pb-12">
                         <div class="mt-2">
@@ -460,7 +390,10 @@
 
                         <div class="mt-6 flex items-center justify-end gap-x-6">
                             <SecondaryButton
-                                @click="closeModal
+                                @click="
+                                    create_document
+                                        ? closeModal()
+                                        : closeEditModal()
                                 "
                             >
                                 Cancelar
@@ -477,8 +410,18 @@
             </div>
         </Modal>
 
+        <ConfirmDeleteModal
+            :confirmingDeletion="confirmingDocDeletion"
+            itemType="documento"
+            :deleteFunction="deleteDocument"
+            @closeModal="closeModalDoc"
+        />
         <ConfirmCreateModal
             :confirmingcreation="showModal"
+            itemType="documento"
+        />
+        <ConfirmUpdateModal
+            :confirmingupdate="showEditModal"
             itemType="documento"
         />
     </AuthenticatedLayout>
@@ -487,6 +430,8 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import ConfirmCreateModal from "@/Components/ConfirmCreateModal.vue";
+import ConfirmUpdateModal from "@/Components/ConfirmUpdateModal.vue";
+import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
@@ -494,38 +439,35 @@ import InputFile from "@/Components/InputFile.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
 import Modal from "@/Components/Modal.vue";
-import { ref, computed, nextTick, watchEffect, reactive, watch } from "vue";
+import { ref, computed, watch } from "vue";
 import { Head, useForm, router } from "@inertiajs/vue3";
+import {
+    TrashIcon,
+    ArrowDownIcon,
+    EyeIcon,
+    PencilIcon,
+    ChevronDownIcon,
+    ChevronRightIcon,
+} from "@heroicons/vue/24/outline";
 import Dropdown from "@/Components/Dropdown.vue";
+import Pagination from "@/Components/Pagination.vue";
+import Employees from "../ManagementEmployees/Employees.vue";
+import { setAxiosErrors, toFormData } from "@/utils/utils";
+import { notifyError } from "@/Components/Notification";
 
 const props = defineProps({
     sections: Object,
+    documents: Object,
     subdivisions: Object,
     employees: Array,
     e_employees: Array,
     userPermissions: Array,
+    section: [String, null],
+    subdivision: [String, null],
+    search: [String, null],
 });
 
-const mergedEmployeesRaw = computed(() => {
-    return [
-        ...props.employees.map((e) => ({
-            id: e.id,
-            name: `${e.name} ${e.lastname}`,
-            type: "normal",
-        })),
-        ...props.e_employees.map((e) => ({
-            id: e.id,
-            name: `${e.name} ${e.lastname}`,
-            type: "external",
-        })),
-    ];
-});
-
-const mergedEmployees = ref([]);
-
-watchEffect(() => {
-    mergedEmployees.value = mergedEmployeesRaw.value;
-});
+console.log(props.documents);
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
@@ -547,7 +489,14 @@ const filteredSubdivisions = ref([]);
 const create_document = ref(false);
 const update_document = ref(false);
 const showModal = ref(false);
+const showEditModal = ref(false);
+const confirmingDocDeletion = ref(false);
+const docToDelete = ref(null);
+const editingDocument = ref(null);
 const selectedSection = ref("");
+const newSection = ref(props.section);
+const newSubdivision = ref(props.subdivision);
+const dataToRender = ref(props.documents);
 
 const management_section = () => {
     router.get(route("documents.sections"));
@@ -563,6 +512,26 @@ const closeModal = () => {
     create_document.value = false;
 };
 
+const openEditDocumentModal = (document) => {
+    // Copia de los datos de la subsección existente al formulario
+    editingDocument.value = JSON.parse(JSON.stringify(document));
+    form.id = editingDocument.value.id;
+    form.document = editingDocument.value.name;
+    form.section_id = editingDocument.value.subdivision.section_id;
+    form.subdivision_id = editingDocument.value.subdivision_id;
+    form.employee_id = editingDocument.value.employee_id;
+    form.e_employee_id = document.e_employee_id;
+    form.has_exp_date = editingDocument.value.exp_date ? 1 : 0;
+    form.employeeType = editingDocument.value.employee_id ? 1 : 0;
+    update_document.value = true;
+};
+
+const closeEditModal = () => {
+    form.reset();
+    form.clearErrors();
+    update_document.value = false;
+};
+
 function submit() {
     let url = route("documents.create");
     // try{
@@ -572,7 +541,7 @@ function submit() {
     // }
     form.post(url, {
         onSuccess: () => {
-            closeModal();
+            closeEditModal();
             showModal.value = true;
             setTimeout(() => {
                 showModal.value = false;
@@ -585,14 +554,56 @@ function submit() {
     });
 }
 
-//new_test_filter
-const filterForm = reactive({
-    search: "",
-    sections: [],
-    subdivisions: [],
-    employees: [],
-    external_employees: [],
-});
+const submitEdit = () => {
+    form.post(route("documents.update", { id: form.id }), {
+        onSuccess: () => {
+            closeModal();
+            showEditModal.value = true;
+            setTimeout(() => {
+                showEditModal.value = false;
+                router.visit(route("documents.index"));
+            }, 2000);
+        },
+        onError: (e) => {
+            console.log(e);
+        },
+    });
+};
+
+const confirmDeleteDocument = (documentId) => {
+    docToDelete.value = documentId;
+    confirmingDocDeletion.value = true;
+};
+
+const closeModalDoc = () => {
+    confirmingDocDeletion.value = false;
+};
+
+const deleteDocument = () => {
+    const docId = docToDelete.value;
+    if (docId) {
+        router.delete(route("documents.destroy", { id: docId }), {
+            onSuccess: () => closeModalDoc(),
+        });
+    }
+};
+
+function downloadDocument(documentId) {
+    const backendDocumentUrl = route("documents.download", {
+        document: documentId,
+    });
+    window.open(backendDocumentUrl, "_blank");
+}
+
+function openPreviewDocumentModal(documentId) {
+    const routeToShow = route("documents.show", { document: documentId });
+    window.open(routeToShow, "_blank");
+}
+
+const getDocumentName = (documentTitle) => {
+    const parts = documentTitle.split("_");
+    return parts.length > 1 ? parts.slice(1).join("_") : documentTitle;
+};
 
 const selectedSubdivision = ref("");
 
@@ -630,9 +641,144 @@ watch(
     }
 );
 
+const searchForm = useForm({
+    search: props.search,
+    section: props.section,
+    subdivision: props.subdivision,
+});
+
+const search = () => {
+    if (!searchForm.search) {
+        if (props.section) {
+            if (props.subdivision) {
+                router.visit(
+                    route("documents.filter.subdivision", {
+                        section: props.section,
+                        subdivision: props.subdivision,
+                    })
+                );
+            } else {
+                router.visit(
+                    route("documents.filter.section", {
+                        section: props.section,
+                    })
+                );
+            }
+        } else {
+            router.visit(route("documents.index"));
+        }
+    } else {
+        const url = route("documents.search", {
+            section: props.section ? props.section : "no",
+            subdivision: props.subdivision ? props.subdivision : "no",
+            request: searchForm.search,
+        });
+        router.visit(url);
+    }
+};
+
+const filterSection = (e) => {
+    newSection.value = e.target.value;
+    searchForm.section = newSection;
+    searchForm.subdivision = "";
+    if (!newSection.value) {
+        if (props.search) {
+            router.visit(
+                route("documents.search", {
+                    section: "no",
+                    subdivision: "no",
+                    request: searchForm.search,
+                })
+            );
+        } else {
+            router.visit(route("documents.index"));
+        }
+    } else {
+        if (props.search) {
+            router.visit(
+                route("documents.filter.section", {
+                    section: newSection.value,
+                    request: searchForm.search,
+                })
+            );
+        } else {
+            router.visit(
+                route("documents.filter.section", { section: newSection.value })
+            );
+        }
+    }
+};
+
+const filterSubdivision = (e) => {
+    newSubdivision.value = e.target.value;
+    searchForm.subdivision = newSubdivision.value;
+    if (!newSubdivision.value) {
+        if (props.search) {
+            router.visit(
+                route("documents.filter.section", {
+                    section: props.section,
+                    request: searchForm.search,
+                })
+            );
+        } else {
+            router.visit(
+                route("documents.filter.section", { section: props.section })
+            );
+        }
+    } else {
+        if (props.search) {
+            router.visit(
+                route("documents.filter.subdivision", {
+                    section: props.section,
+                    subdivision: newSubdivision.value,
+                    request: searchForm.search,
+                })
+            );
+        } else {
+            router.visit(
+                route("documents.filter.subdivision", {
+                    section: props.section,
+                    subdivision: newSubdivision.value,
+                })
+            );
+        }
+    }
+};
+
+watch(
+    () => form.employeeType,
+    () => {
+        if (create_document.value) {
+            form.employee_id = "";
+            form.e_employee_id = "";
+        }
+    }
+);
+watch(
+    () => form.has_exp_date,
+    () => {
+        form.exp_date = "";
+    }
+);
+
+//new_test_filter
+const filterForm = useForm({
+    search: "",
+    sections: [], // array de section ids
+    subdivisions: [], // array de subdivision ids
+});
+
 const expandedSections = ref([]);
 const isFetching = ref(false);
 
+function toggleSection(id) {
+    const index = expandedSections.value.indexOf(id);
+    if (index > -1) {
+        expandedSections.value.splice(index, 1);
+    } else {
+        expandedSections.value.push(id);
+    }
+}
 function handleSectionCheckbox(section) {
     const sectionId = section.id;
     const isSelected = filterForm.sections.includes(sectionId);
@@ -649,12 +795,14 @@ function handleSectionCheckbox(section) {
             (id) => id !== sectionId
         );
     } else {
+        // Marcar sección y subdivisiones
         filterForm.sections.push(sectionId);
         section.subdivisions.forEach((sub) => {
             if (!filterForm.subdivisions.includes(sub.id)) {
                 filterForm.subdivisions.push(sub.id);
             }
         });
+        // Asegurar que esté expandida
         if (!expandedSections.value.includes(sectionId)) {
             expandedSections.value.push(sectionId);
         }
@@ -665,10 +813,12 @@ function handleSubdivisionToggle(sectionId, subId) {
     const isChecked = filterForm.subdivisions.includes(subId);
 
     if (isChecked) {
+        // Quitar subdivisión
         filterForm.subdivisions = filterForm.subdivisions.filter(
             (id) => id !== subId
         );
 
+        // Verificar si quedan subdivisiones seleccionadas de esta sección
         const section = props.sections.find((s) => s.id === sectionId);
         const anySelected = section.subdivisions.some((sub) =>
             filterForm.subdivisions.includes(sub.id)
@@ -680,146 +830,41 @@ function handleSubdivisionToggle(sectionId, subId) {
             );
         }
     } else {
+        // Agregar subdivisión
         filterForm.subdivisions.push(subId);
 
+        // Asegurar que la sección esté marcada
         if (!filterForm.sections.includes(sectionId)) {
             filterForm.sections.push(sectionId);
         }
 
+        // Asegurar que esté expandida
         if (!expandedSections.value.includes(sectionId)) {
             expandedSections.value.push(sectionId);
         }
     }
 }
 
+function cleanFilters() {
+    filterForm.search = "";
+    filterForm.sections = [];
+    filterForm.subdivisions = [];
+    expandedSections.value = [];
+}
+
 async function applyFilters() {
-    const form = useForm({
-        employees: filterForm.employees,
-        external_employees: filterForm.external_employees,
-        subdivisions: filterForm.subdivisions,
-    });
-    form.post(route("documents.filter_document"), {
-        onError: (e) => {
-            console.log(e);
-        },
-    });
-}
+    isFetching.value = true;
 
-function handleEmployeeToggle(employee) {
-    if (employee.type === "external") {
-        const index = filterForm.external_employees.indexOf(employee.id);
-        if (index > -1) {
-            filterForm.external_employees = [
-                ...filterForm.external_employees.slice(0, index),
-                ...filterForm.external_employees.slice(index + 1),
-            ];
-        } else {
-            filterForm.external_employees = [
-                ...filterForm.external_employees,
-                employee.id,
-            ];
-        }
-    } else {
-        const index = filterForm.employees.indexOf(employee.id);
-        if (index > -1) {
-            filterForm.employees = [
-                ...filterForm.employees.slice(0, index),
-                ...filterForm.employees.slice(index + 1),
-            ];
-        } else {
-            filterForm.employees = [...filterForm.employees, employee.id];
-        }
+    const url = route("documents.filter_document");
+
+    try {
+        const res = await axios.post(url, filterForm);
+        dataToRender.value.data = res.data;
+        isFetching.value = false;
+    } catch (error) {
+        console.error(error);
+        isFetching.value = false;
+        notifyError("Server Error");
     }
 }
-
-//search
-const matchedIndexes = ref([]);
-const currentMatchIndex = ref(0);
-
-const handleSearchInput = (event) => {
-    filterForm.search = event.target.value;
-    currentMatchIndex.value = 0;
-    findMatches();
-};
-
-const findMatches = () => {
-    matchedIndexes.value = [];
-
-    const keyword = filterForm.search.toLowerCase().trim();
-    if (!keyword) return;
-
-    mergedEmployees.value.forEach((emp, index) => {
-        const fullName = emp.name.toLowerCase();
-        if (fullName.includes(keyword)) {
-            matchedIndexes.value.push(index);
-        }
-    });
-
-    if (matchedIndexes.value.length > 0) {
-        scrollToMatch(0);
-    }
-};
-
-const highlightMatch = (text) => {
-    const keyword = filterForm.search.trim();
-    if (!keyword) return text;
-
-    const regex = new RegExp(`(${keyword})`, "ig");
-    return text.replace(regex, '<mark class="bg-yellow-300">$1</mark>');
-};
-
-const goToNextMatch = () => {
-    if (!matchedIndexes.value.length) return;
-
-    currentMatchIndex.value =
-        (currentMatchIndex.value + 1) % matchedIndexes.value.length;
-
-    scrollToMatch(currentMatchIndex.value);
-};
-
-const scrollToMatch = (index) => {
-    nextTick(() => {
-        const el = document.getElementById(
-            `employee-match-${matchedIndexes.value[index]}`
-        );
-        if (el) {
-            el.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
-    });
-};
-
-const isAllSubSelected = computed(() => {
-    return filterForm.sections.length > 0 || filterForm.subdivisions.length > 0;
-});
-
-const toggleSelectAll = () => {
-    if (isAllSubSelected.value) {
-        filterForm.sections = [];
-        filterForm.subdivisions = [];
-    } else {
-        filterForm.sections = props.sections.map((section) => section.id);
-        filterForm.subdivisions = props.sections.flatMap((section) =>
-            section.subdivisions.map((subdivision) => subdivision.id)
-        );
-    }
-};
-
-const isAllEmpSelected = computed(() => {
-    return (
-        filterForm.employees.length > 0 ||
-        filterForm.external_employees.length > 0
-    );
-});
-
-const toggleEmpSelectAll = () => {
-    if (isAllEmpSelected.value) {
-        filterForm.employees = [];
-        filterForm.external_employees = [];
-    } else {
-        filterForm.employees = props.employees.map((employee) => employee.id);
-        filterForm.external_employees = props.e_employees.map(
-            (external_employee) => external_employee.id
-        );
-    }
-};
 </script>

@@ -20,6 +20,8 @@ return new class extends Migration
             $table->double('b2');
             $table->double('b3');
             $table->double('b4');
+            $table->string('evidence')->nullable();
+            $table->string('goal')->nullable();
             $table->foreignId('cost_center_id')->constrained('cost_centers')->onDelete('cascade');
             $table->timestamps();
         });

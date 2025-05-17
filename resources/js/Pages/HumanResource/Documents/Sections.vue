@@ -2,7 +2,7 @@
     <div>
         <Head title="Gestion de Secciones" />
         <AuthenticatedLayout :redirectRoute="'documents.index'">
-          <Toaster richColors />
+            <Toaster richColors />
 
             <template #header> Gestión de Secciones </template>
             <div
@@ -16,6 +16,8 @@
                         v-for="section in dataToRender"
                         :key="section.id"
                         class="bg-white p-4 rounded-sm shadow-sm border border-gray-300"
+                        @dragover.prevent
+                        @drop="handleDrop(section.id)"
                     >
                         <!-- Encabezado: Título y botones -->
                         <div
@@ -29,7 +31,9 @@
                             <div class="flex flex-wrap items-center gap-2">
                                 <button
                                     type="button"
-                                    @click="openCreateSubdivisionModal(section.id)"
+                                    @click="
+                                        openCreateSubdivisionModal(section.id)
+                                    "
                                     class="ml-2"
                                 >
                                     <svg
@@ -82,7 +86,11 @@
                             <div
                                 v-for="subdivision in section.subdivisions"
                                 :key="subdivision.id"
-                                class="flex items-start justify-between"
+                                class="flex items-start justify-between hover:bg-gray-100 hover:border hover:border-black hover:rounded border-transparent transition"
+                                draggable="true"
+                                @dragstart="
+                                    handleDragStart(subdivision, section.id)
+                                "
                             >
                                 <!-- Nombre (65%) -->
                                 <p
@@ -290,8 +298,12 @@
                 :deleteFunction="deleteSection"
                 @closeModal="closeModalSection"
             />
-            <ConfirmDeleteModal :confirmingDeletion="create_subdivision" itemType="Subdivisión"
-            :deleteFunction="deleteSubdivision" @closeModal="closeModalSubdivision" />
+            <ConfirmDeleteModal
+                :confirmingDeletion="create_subdivision"
+                itemType="Subdivisión"
+                :deleteFunction="deleteSubdivision"
+                @closeModal="closeModalSubdivision"
+            />
         </AuthenticatedLayout>
     </div>
 </template>
@@ -367,37 +379,41 @@ const closeUpdateSectionModal = () => {
 };
 
 const submit = async (update) => {
-  isFetching.value = true;
+    isFetching.value = true;
 
-  const url = update
-    ? route("documents.updateSection", { section: form.id })
-    : route("documents.storeSection");
+    const url = update
+        ? route("documents.updateSection", { section: form.id })
+        : route("documents.storeSection");
 
-  const formData = toFormData(form);
+    const formData = toFormData(form);
 
-  try {
-    const res = await axios.post(url, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    try {
+        const res = await axios.post(url, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
 
-    const section = res.data;
+        const section = res.data;
 
-    const map = new Map(dataToRender.value.map((s) => [s.id, s]));
-    map.set(section.id, section);
-    dataToRender.value = Array.from(map.values());
+        const map = new Map(dataToRender.value.map((s) => [s.id, s]));
+        map.set(section.id, section);
+        dataToRender.value = Array.from(map.values());
 
-    update ? closeUpdateSectionModal() : closeCreateSectionModal();
-    notify(update ? "Se actualizó correctamente la sección" : "Se creó correctamente la sección");
-  } catch (e) {
-    console.error(e);
-    isFetching.value = false;
+        update ? closeUpdateSectionModal() : closeCreateSectionModal();
+        notify(
+            update
+                ? "Se actualizó correctamente la sección"
+                : "Se creó correctamente la sección"
+        );
+    } catch (e) {
+        console.error(e);
+        isFetching.value = false;
 
-    if (e.response?.data?.errors) {
-      setAxiosErrors(e.response.data.errors, form);
-    } else {
-      notifyError("Error del servidor");
+        if (e.response?.data?.errors) {
+            setAxiosErrors(e.response.data.errors, form);
+        } else {
+            notifyError("Error del servidor");
+        }
     }
-  }
 };
 
 const confirmDeleteSection = (sectionId) => {
@@ -410,22 +426,25 @@ const closeModalSection = () => {
 };
 
 const deleteSection = async () => {
-  try {
-    const sectionIdValue = sectionToDelete.value;
+    try {
+        const sectionIdValue = sectionToDelete.value;
 
-    const res = await axios.delete(route("documents.destroySection", { section: sectionIdValue }));
+        const res = await axios.delete(
+            route("documents.destroySection", { section: sectionIdValue })
+        );
 
-    if (res.data.message === "success") {
-      dataToRender.value = dataToRender.value.filter(section => section.id !== sectionIdValue);
-      notify("Sección eliminada correctamente");
-      closeModalSection();
+        if (res.data.message === "success") {
+            dataToRender.value = dataToRender.value.filter(
+                (section) => section.id !== sectionIdValue
+            );
+            notify("Sección eliminada correctamente");
+            closeModalSection();
+        }
+    } catch (error) {
+        console.error(error);
+        notifyError("Error al eliminar la sección");
     }
-  } catch (error) {
-    console.error(error);
-    notifyError("Error al eliminar la sección");
-  }
 };
-
 
 //subdivisions
 const openCreateSubdivisionModal = (section) => {
@@ -460,77 +479,140 @@ const formSub = useForm({
 });
 
 const submitSub = async (update) => {
-  isFetching.value = true;
+    isFetching.value = true;
 
-  const url = !update
-    ? route("documents.storeSubdivision", { section: sectionId.value })
-    : route("documents.updateSubdivision", { section: sectionId.value, subdivision: formSub.id });
+    const url = !update
+        ? route("documents.storeSubdivision", { section: sectionId.value })
+        : route("documents.updateSubdivision", {
+              section: sectionId.value,
+              subdivision: formSub.id,
+          });
 
-  const formData = toFormData(formSub);
+    const formData = toFormData(formSub);
 
-  try {
-    const res = await axios.post(url, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    try {
+        const res = await axios.post(url, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
 
-    const newSub = res.data;
+        const newSub = res.data;
 
-    const section = dataToRender.value.find((s) => s.id === newSub.section_id);
+        const section = dataToRender.value.find(
+            (s) => s.id === newSub.section_id
+        );
 
-    if (section) {
-      const subMap = new Map(section.subdivisions.map((s) => [s.id, s]));
-      subMap.set(newSub.id, newSub);
-      section.subdivisions = Array.from(subMap.values());
-    } else {
-      console.warn("Sección no encontrada para la subdivisión");
+        if (section) {
+            const subMap = new Map(section.subdivisions.map((s) => [s.id, s]));
+            subMap.set(newSub.id, newSub);
+            section.subdivisions = Array.from(subMap.values());
+        } else {
+            console.warn("Sección no encontrada para la subdivisión");
+        }
+
+        update ? closeUpdateSubdivisionModal() : closeCreateSubdivisionModal();
+        notify(
+            update
+                ? "Se actualizó correctamente la subdivisión"
+                : "Se creó correctamente la subdivisión"
+        );
+    } catch (e) {
+        console.error(e);
+        isFetching.value = false;
+
+        if (e.response?.data?.errors) {
+            setAxiosErrors(e.response.data.errors, formSub);
+        } else {
+            notifyError("Error del servidor");
+        }
     }
-
-    update ? closeUpdateSubdivisionModal() : closeCreateSubdivisionModal();
-    notify(update ? "Se actualizó correctamente la subdivisión" : "Se creó correctamente la subdivisión");
-  } catch (e) {
-    console.error(e);
-    isFetching.value = false;
-
-    if (e.response?.data?.errors) {
-      setAxiosErrors(e.response.data.errors, formSub);
-    } else {
-      notifyError("Error del servidor");
-    }
-  }
 };
 
 const confirmDeleteSubdivision = (section, subdivisionId) => {
-  subdivisionToDelete.value = subdivisionId;
-  sectionId.value = section;
-  create_subdivision.value = true;
+    subdivisionToDelete.value = subdivisionId;
+    sectionId.value = section;
+    create_subdivision.value = true;
 };
 
 const closeModalSubdivision = () => {
-  create_subdivision.value = false;
+    create_subdivision.value = false;
 };
 
 const deleteSubdivision = async () => {
-  try {
-    const res = await axios.delete(route("documents.destroySubdivision", {
-      section: sectionId.value,
-      subdivision: subdivisionToDelete.value,
-    }));
-
-    if (res.data.message === 'success') {
-      const section = dataToRender.value.find(s => s.id === sectionId.value);
-      if (section) {
-        section.subdivisions = section.subdivisions.filter(
-          sub => sub.id !== subdivisionToDelete.value
+    try {
+        const res = await axios.delete(
+            route("documents.destroySubdivision", {
+                section: sectionId.value,
+                subdivision: subdivisionToDelete.value,
+            })
         );
-      }
-      closeModalSubdivision();
-      notify("Subdivisión eliminada correctamente");
+
+        if (res.data.message === "success") {
+            const section = dataToRender.value.find(
+                (s) => s.id === sectionId.value
+            );
+            if (section) {
+                section.subdivisions = section.subdivisions.filter(
+                    (sub) => sub.id !== subdivisionToDelete.value
+                );
+            }
+            closeModalSubdivision();
+            notify("Subdivisión eliminada correctamente");
+        }
+    } catch (error) {
+        console.error(error);
+        notifyError("Error al eliminar la subdivisión");
     }
-  } catch (error) {
-    console.error(error);
-    notifyError("Error al eliminar la subdivisión");
-  }
 };
 
+//drag and drop
+const draggedSubdivision = ref(null);
 
+function handleDragStart(subdivision, sectionId) {
+    draggedSubdivision.value = { ...subdivision, fromSectionId: sectionId };
+}
+
+async function handleDrop(targetSectionId) {
+    if (
+        draggedSubdivision.value &&
+        draggedSubdivision.value.fromSectionId !== targetSectionId
+    ) {
+        const fromSectionIndex = dataToRender.value.findIndex(
+            (s) => s.id === draggedSubdivision.value.fromSectionId
+        );
+        const toSectionIndex = dataToRender.value.findIndex(
+            (s) => s.id === targetSectionId
+        );
+
+        if (fromSectionIndex === -1 || toSectionIndex === -1) return;
+
+        const fromSection = dataToRender.value[fromSectionIndex];
+        const toSection = dataToRender.value[toSectionIndex];
+
+        const subdivisionIndex = fromSection.subdivisions.findIndex(
+            (s) => s.id === draggedSubdivision.value.id
+        );
+
+        if (subdivisionIndex !== -1) {
+            const movedSubdivision = fromSection.subdivisions[subdivisionIndex];
+
+            try {
+                await axios.post(route("documents.drag_and_drop"), {
+                    subdivision_id: movedSubdivision.id,
+                    section_id: targetSectionId,
+                });
+
+                fromSection.subdivisions.splice(subdivisionIndex, 1);
+                movedSubdivision.section_id = targetSectionId;
+                toSection.subdivisions.push(movedSubdivision);
+
+                notify("Subdivisión movida correctamente");
+            } catch (error) {
+                console.error("Error al actualizar el backend:", error);
+                notify("Error al mover la subdivisión", "error");
+            }
+        }
+
+        draggedSubdivision.value = null;
+    }
+}
 </script>

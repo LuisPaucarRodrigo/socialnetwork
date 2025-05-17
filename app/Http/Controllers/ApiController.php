@@ -735,7 +735,6 @@ class ApiController extends Controller
             'employee' => 'required|string',
             'cdp_type' => 'required|string',
             'doc_number' => 'required|string',
-            'op_number' => 'required|string',
             'ruc' => 'required|string',
             'description' => 'required|string',
             'amount' => 'required|numeric',
