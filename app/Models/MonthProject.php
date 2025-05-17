@@ -18,7 +18,6 @@ class MonthProject extends Model
 
     public function getNameAttribute()
     {
-        Log::info($this->date);
         if (preg_match('/^\d{4}-\d{2}$/', $this->date)) {
             return Carbon::createFromFormat('Y-m', $this->date)->translatedFormat('F Y');
         }

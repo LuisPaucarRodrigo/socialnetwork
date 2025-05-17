@@ -30,7 +30,8 @@ import { usePage } from '@inertiajs/vue3';
 import { onMounted } from 'vue'
 import { initFlowbite } from 'flowbite'
 import { watch } from 'vue';
-import { appAuth } from '@/Store/auth';
+import { role_id, permissions } from '@/Store/auth';
+
 
 
 const props = defineProps({
@@ -51,5 +52,6 @@ watch(
     },
     { immediate: true }
 );
+
 
 </script>

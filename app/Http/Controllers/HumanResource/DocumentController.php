@@ -205,7 +205,7 @@ class DocumentController extends Controller
         $fileName = $docItem->title;
         $filePath = "documents/documents/$fileName";
         $path = public_path($filePath);
-        if (file_exists($path)) {
+        if (file_exists($path) && is_file($path)) {
             unlink($path);
         }
         if ($request->hasFile('document')) {

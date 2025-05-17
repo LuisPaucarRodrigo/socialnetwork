@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class Document extends Model
 {
@@ -26,11 +27,13 @@ class Document extends Model
     {
         return $this->belongsTo(Subdivision::class, 'subdivision_id');
     }
-    public function employee(){
+    public function employee()
+    {
         return $this->belongsTo(Employee::class, 'employee_id');
     }
 
-    public function e_employee(){
+    public function e_employee()
+    {
         return $this->belongsTo(ExternalEmployee::class, 'e_employee_id');
     }
 
@@ -41,39 +44,27 @@ class Document extends Model
         return $fileInfo['extension'] ?? null;
     }
 
-    public function getEmpNameAttribute() {
-        if($emp = $this->employee()->first()){
-            return $emp->name. ' '. $emp->lastname;
+    public function getEmpNameAttribute()
+    {
+        if ($emp = $this->employee()->first()) {
+            return $emp->name . ' ' . $emp->lastname;
         }
-        if ($emp = $this->e_employee()->first()){
-            return $emp->name. ' '. $emp->lastname;
+        if ($emp = $this->e_employee()->first()) {
+            return $emp->name . ' ' . $emp->lastname;
         }
         return null;
     }
 
     protected static function booted()
     {
-        static::creating(function ($item) {
-            DocumentRegister::create([
-                'subdivision_id' => $item->subdivision_id,
-                'document_id' => $item->id,
-                'employee_id' => $item->employee_id,
-                'e_employee_id' => $item->e_employee_id,
-                'exp_date' => $item->exp_date,
-                'state' => 'Completado',
-            ]);
+        static::created(function ($item) {
+            $docreg = static::getDocumentRegister($item);
+            static::storeDocumentRegisters($docreg, $item);
         });
 
-        static::updating(function ($item) {
-            $docreg = DocumentRegister::where('document_id', $item->id)->first();
-            $docreg->update([
-                'subdivision_id' => $item->subdivision_id,
-                'document_id' => $item->id,
-                'employee_id' => $item->employee_id,
-                'e_employee_id' => $item->e_employee_id,
-                'exp_date' => $item->exp_date,
-                'state' => 'Completado',
-            ]);
+        static::updated(function ($item) {
+            $docreg = static::getDocumentRegister($item);
+            static::storeDocumentRegisters($docreg, $item);
         });
 
         static::deleting(function ($item) {
@@ -83,5 +74,42 @@ class Document extends Model
             }
         });
 
+    }
+
+    protected static function getDocumentRegister($item)
+    {
+        return $item->employee_id
+            ? DocumentRegister::where('subdivision_id', $item->subdivision_id)
+                ->where('employee_id', $item->employee_id)
+                ->first()
+            : ($item->e_employee_id
+                ? DocumentRegister::where('subdivision_id', $item->subdivision_id)
+                    ->where('e_employee_id', $item->e_employee_id)
+                    ->first()
+                : null
+            );
+    }
+
+    protected static function storeDocumentRegisters($docreg, $item)
+    {
+        if ($docreg) {
+            $docreg->update([
+                'subdivision_id' => $item->subdivision_id,
+                'document_id' => $item->id,
+                'employee_id' => $item->employee_id,
+                'e_employee_id' => $item->e_employee_id,
+                'exp_date' => $item->exp_date,
+                'state' => 'Completado',
+            ]);
+        } else {
+            $docreg = DocumentRegister::create([
+                'subdivision_id' => $item->subdivision_id,
+                'document_id' => $item->id,
+                'employee_id' => $item->employee_id,
+                'e_employee_id' => $item->e_employee_id,
+                'exp_date' => $item->exp_date,
+                'state' => 'Completado',
+            ]);
+        }
     }
 }

@@ -198,6 +198,8 @@
                             exp_date: emp.document_registers[sub.id]?.exp_date,
                             state: emp.document_registers[sub.id]?.state ? emp.document_registers[sub.id]?.state : '',
                             observations: emp.document_registers[sub.id]?.observations,
+                            has_exp_date: emp.document_registers[sub.id]?.exp_date ? 1 : 0,
+                            document: null
                           }
                         )">
                           <InformationCircleIcon class="h-6 w-6 text-blue-700 hover:text-blue-400"
@@ -305,6 +307,8 @@
                             exp_date: emp.document_registers[sub.id]?.exp_date,
                             state: emp.document_registers[sub.id]?.state ? emp.document_registers[sub.id]?.state : '',
                             observations: emp.document_registers[sub.id]?.observations,
+                            has_exp_date: emp.document_registers[sub.id]?.exp_date ? 1 : 0,
+                            document: null
                           }
                         )">
                           <InformationCircleIcon class="h-6 w-6 text-blue-700 hover:text-blue-400"
@@ -332,7 +336,7 @@
           <form @submit.prevent="submit">
             <div class="pb-6 pt-3 border-t border-b border-gray-900/10 ">
               <div class=" grid sm:grid-cols-2 gap-6">
-                <div>
+                <div class="sm:col-span-2">
                   <InputLabel> Estado <span class="text-red-600 text-normal">*</span></InputLabel>
                   <div class="mt-2">
                     <select v-model="docForm.state" id="rols" required
@@ -345,14 +349,60 @@
                     <InputError :message="docForm.errors.state" />
                   </div>
                 </div>
-                <div>
-                  <InputLabel> Fecha de Vencimiento</InputLabel>
-                  <div class="mt-2">
-                    <TextInput type="date" v-model="docForm.exp_date" :class="disabledExpDate && 'opacity-50'"
-                      :disabled="disabledExpDate" autocomplete="off" />
-                    <InputError :message="docForm.errors.exp_date" />
+                <template v-if="docForm.state === 'Completado'">
+                  <div class="sm:col-span-2">
+                      <InputLabel for="documentFile"
+                          >Documento <span class="text-red-600 text-normal">*</span> </InputLabel
+                      >
+                      <div class="mt-2">
+                          <InputFile
+                              type="file"
+                              v-model="docForm.document"
+                              id="documentFile"
+                              class="w-full ring-1 ring-gray-300"
+                              accept=".pdf, .png, .jpeg, .jpg"
+                          />
+                          <InputError :message="docForm.errors.document" />
+                      </div>
                   </div>
-                </div>
+                  <div class="sm:col-span-2">
+                    <div class=" flex items-center gap-4 text-normal">
+                      <InputLabel>¿Tiene Fecha de Vencimiento?</InputLabel>
+                      <label
+                          class="flex gap-2 items-center text-xs"
+                          for="hasExpDateYes"
+                      >
+                          Si
+                          <input
+                              id="hasExpDateYes"
+                              type="radio"
+                              :value="1"
+                              v-model="docForm.has_exp_date"
+                              class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                          />
+                      </label>
+                      <label
+                          class="flex gap-2 items-center text-xs"
+                          for="hasExpDateNo"
+                      >
+                          No
+                          <input
+                              id="hasExpDateNo"
+                              type="radio"
+                              :value="0"
+                              v-model="docForm.has_exp_date"
+                              class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                          />
+                      </label>
+                      <span class="text-red-600 text-normal">*</span>
+                  </div>
+                    <div  v-if="docForm.has_exp_date" class="mt-2 ">
+                      <TextInput type="date" v-model="docForm.exp_date"
+                         autocomplete="off" />
+                      <InputError :message="docForm.errors.exp_date" />
+                    </div>
+                  </div>
+                </template>
                 <div class="sm:col-span-2">
                   <InputLabel> Observaciones</InputLabel>
                   <div class="mt-2">
@@ -418,6 +468,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
+import InputFile from '@/Components/InputFile.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
@@ -430,6 +481,7 @@ import { principalData, personalData, getProp } from './constants';
 import { Toaster } from 'vue-sonner';
 import { notify, notifyError } from '@/Components/Notification';
 import FilterProcess from '@/Components/FilterProcess.vue';
+import { toFormData } from '@/utils/utils';
 
 const { employees, e_employees, sections, costLines } = defineProps({
   employees: Object,
@@ -438,8 +490,8 @@ const { employees, e_employees, sections, costLines } = defineProps({
   costLines: Array,
 });
 
-const employeesData = ref(employees)
-const e_employeesData = ref(e_employees)
+const employeesData = ref([...employees])
+const e_employeesData = ref([...e_employees])
 
 const showDocModal = ref(false)
 const docForm = useForm({})
@@ -448,7 +500,8 @@ const docForm = useForm({})
 //Each cell post transaction
 function openDocModal(item) {
   showDocModal.value = true
-  docForm.defaults({ ...item })
+  const cleanItem = JSON.parse(JSON.stringify(item));
+  docForm.defaults(cleanItem);
   docForm.reset()
 }
 
@@ -465,7 +518,8 @@ async function submit() {
   isLoading.value = true
   let url = route('document.rrhh.status.store', { dr_id: docForm?.id })
   try {
-    const res = await axios.post(url, docForm)
+    const formToSend = toFormData(docForm.data());
+    const res = await axios.post(url, formToSend)
     if (docForm.employee_id) {
       let index = employeesData.value.findIndex(item => item.id == docForm.employee_id)
       let emp = employeesData.value[index]
@@ -526,16 +580,6 @@ async function destroy() {
   }
 }
 
-//No Corresponde and maybe En proceso
-const disabledExpDate = ref(false)
-watch([() => docForm.state], () => {
-  if (docForm.state === 'No Corresponde') {
-    docForm.exp_date = undefined
-    disabledExpDate.value = true
-  } else {
-    disabledExpDate.value = false
-  }
-})
 
 //Section visible
 let sectionsArray = ['Datos Personales', ...sections.map(item => item.name)]
@@ -613,4 +657,17 @@ async function filterExpenseLine(search) {
     notifyError(error)
   }
 }
+
+
+watch(()=>docForm.has_exp_date, ()=>{
+  if(!docForm.has_exp_date) docForm.exp_date = ''
+})
+
+watch(()=>docForm.state, ()=>{
+  if(docForm.state !== 'Completado') {
+    docForm.document = null
+    docForm.exp_date = ''
+  }
+})
+
 </script>
