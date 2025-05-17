@@ -3,22 +3,12 @@
 namespace App\Services\Huawei;
 
 use App\Constants\HuaweiConstants;
-use App\Constants\PintConstants;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 
 class CostService
 {
-    private static array $data;
 
-    public function __construct()
-    {
-        self::$data = [
-            'employees' => HuaweiConstants::getEmployees(),
-            'static_expense_types' => HuaweiConstants::getStaticExpenseTypes(),
-            'variable_expense_types' => HuaweiConstants::getVariableExpenseTypes(),
-            'cdp_types' => HuaweiConstants::getCDPTypes(),
-        ];
-    }
     public function filter(Request $request, $query)
     {
         if ($request->search) {
@@ -26,13 +16,13 @@ class CostService
             $query->where(function ($q) use ($searchTerms) {
                 $q->where('ruc', 'like', "%$searchTerms%")
                 ->orWhere('doc_number', 'like', "%$searchTerms%")
-                ->orWhere('operation_number', 'like', "%$searchTerms%")
+                ->orWhere('op_number', 'like', "%$searchTerms%")
                 ->orWhere('description', 'like', "%$searchTerms%")
                 ->orWhere('amount', 'like', "%$searchTerms%");
             });
         }
-        
-        if ($request->state === false) {
+
+        if ($request->selectedStates === false) {
             $query->where('is_accepted', 0);
         } else {
             $query->where(function ($q) {
@@ -40,14 +30,14 @@ class CostService
                 ->orWhereNull('is_accepted');
             });
         }
-        if (filter_var($request->docNoDate, FILTER_VALIDATE_BOOLEAN)) {
+        if (filter_var($request->exNoDate, FILTER_VALIDATE_BOOLEAN)) {
             $query->whereNull('expense_date');
         }
-        if ($request->docStartDate) {
-            $query->where('expense_date', '>=', $request->docStartDate);
+        if ($request->exStartDate) {
+            $query->where('expense_date', '>=', $request->exStartDate);
         }
-        if ($request->docEndDate) {
-            $query->where('expense_date', '<=', $request->docEndDate);
+        if ($request->exEndDate) {
+            $query->where('expense_date', '<=', $request->exEndDate);
         }
 
         if (filter_var($request->opNoDate, FILTER_VALIDATE_BOOLEAN)) {
@@ -59,14 +49,13 @@ class CostService
         if ($request->opEndDate) {
             $query->where('ec_expense_date', '<=', $request->opEndDate);
         }
-        
-        $totalExpenseTypes = count(self::$data['static_expense_types']) + count(self::$data['variable_expense_types']);
-        if (count($request->selectedExpenseTypes) < $totalExpenseTypes) {
-            $query->whereIn('expense_type', $request->selectedExpenseTypes);
+
+        if (count($request->selectedZones) < PintConstants::countAcZones()) {
+            $query->whereIn('zone', $request->selectedZones);
         }
 
-        if (count($request->selectedCDPTypes) < count($data['cdp_types'])) {
-            $query->whereIn('cdp_type', $request->selectedCDPTypes);
+        if (count($request->selectedExpenseTypes) < PintConstants::countAcExpenseTypes()) {
+            $query->whereIn('expense_type', $request->selectedExpenseTypes);
         }
 
         if (count($request->selectedDocTypes) < PintConstants::countAcDocTypes()) {
