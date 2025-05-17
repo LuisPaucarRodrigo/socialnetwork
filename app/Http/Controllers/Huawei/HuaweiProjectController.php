@@ -518,7 +518,7 @@ class HuaweiProjectController extends Controller
     public function getSites()
     {
         return Inertia::render('Huawei/Sites', [
-            'sites' => HuaweiSite::select('id', 'name', 'address')->orderBy('name')->paginate(10)
+            'sites' => HuaweiSite::select('id', 'name', 'address', 'prefix', 'code', 'latitude', 'longitude')->orderBy('name')->paginate(10)
         ]);
     }
 
@@ -529,10 +529,12 @@ class HuaweiProjectController extends Controller
         $query = HuaweiSite::query();
 
         $query->whereRaw('LOWER(name) LIKE ?', ["%{$searchTerm}%"])
-            ->orWhereRaw('LOWER(address) LIKE?', ["%{$searchTerm}%"]);
+            ->orWhereRaw('LOWER(address) LIKE?', ["%{$searchTerm}%"])
+            ->orWhereRaw('LOWER(prefix) LIKE?', ["%{$searchTerm}%"])
+            ->orWhereRaw('LOWER(code) LIKE?', ["%{$searchTerm}%"]);
 
         return Inertia::render('Huawei/Sites', [
-            'sites' => $query->select('id', 'name', 'address')->orderBy('name')->get(),
+            'sites' => $query->select('id', 'name', 'address', 'prefix', 'code', 'latitude', 'longitude')->orderBy('name')->get(),
             'search' => $request
         ]);
     }
@@ -541,7 +543,11 @@ class HuaweiProjectController extends Controller
     {
         $data = $request->validate([
             'name' => 'required',
-            'address' => 'required'
+            'code' => 'required',
+            'address' => 'nullable',
+            'prefix' => 'required',
+            'latitude' => 'nullable',
+            'longitude' => 'nullable',
         ]);
 
         HuaweiSite::create($data);
@@ -559,7 +565,11 @@ class HuaweiProjectController extends Controller
     {
         $data = $request->validate([
             'name' => 'required',
-            'address' => 'required'
+            'code' => 'required',
+            'address' => 'nullable',
+            'prefix' => 'required',
+            'latitude' => 'nullable',
+            'longitude' => 'nullable',
         ]);
 
         $site->update($data);

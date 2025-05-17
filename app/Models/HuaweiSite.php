@@ -14,7 +14,11 @@ class HuaweiSite extends Model
 
     protected $fillable = [
         'name',
-        'address'
+        'address',
+        'prefix',
+        'code',
+        'latitude',
+        'longitude',
     ];
 
     public function huawei_projects ()

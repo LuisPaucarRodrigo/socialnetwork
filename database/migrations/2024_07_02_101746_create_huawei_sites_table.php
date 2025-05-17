@@ -14,7 +14,11 @@ return new class extends Migration
         Schema::create('huawei_sites', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('address');
+            $table->string('address')->nullable();
+            $table->string('prefix');
+            $table->string('code');
+            $table->string('latitude')->nullable();
+            $table->string('longitude')->nullable();
             $table->timestamps();
         });
     }
