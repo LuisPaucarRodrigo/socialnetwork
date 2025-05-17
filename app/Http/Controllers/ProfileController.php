@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\File;
 use Exception;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -29,19 +30,36 @@ class ProfileController extends Controller
 {
     public function allFine()
     {
-        $data = DocumentRegister::all();
-        $notsync = [];
-        foreach($data as $item) {
-            if($item->state !== 'No corresponse') {
-                $document = Document::find('document_id', $item->document_id);
-                if ($document) {
-                   
-                } else {
-                   
-                }
-            }
+        // $path = public_path('documents/documents');
+
+        // if (!File::exists($path)) {
+        //     return response()->json(['error' => 'Ruta no encontrada'], 404);
+        // }
+        // $files = File::files($path);
+        // $fileNames = collect($files)->map(function ($file) {
+        //     return $file->getFilename();
+        // });
+        // $orphans = [];
+        // foreach ($fileNames as $name) {
+        //     $reg = Document::where('title', $name)->first();
+        //     if(!$reg)
+        //     array_push($orphans, $name);
+        // }
+
+        // return response()->json($orphans);
+
+        $docregs = DocumentRegister::whereNull('subdivision_id')->get();
+
+        foreach($docregs as $item) {
+            $docitem = Document::find($item->document_id);
+            $residual = DocumentRegister::where('subdivision_id', $docitem->subdivision_id)
+                ->where('employee_id', $docitem->employee_id)->whereNull('document_id')->first();
+               if($residual) $residual->delete();
+            $item->update([
+                'subdivision_id' => $docitem->subdivision_id
+            ]);
         }
-        return response()->json($notsync);
+        return response()->json('all fine');
 
     }
 
