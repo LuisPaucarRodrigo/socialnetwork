@@ -522,7 +522,7 @@ async function submit() {
     const res = await axios.post(url, formToSend)
     if (docForm.employee_id) {
       let index = employeesData.value.findIndex(item => item.id == docForm.employee_id)
-      let emp = employeesData.value[index]
+      let emp = JSON.parse(JSON.stringify(employeesData.value[index]))
       employeesData.value[index].document_registers = {
         ...emp.document_registers,
         ...res.data,
@@ -530,7 +530,7 @@ async function submit() {
     }
     if (docForm.e_employee_id) {
       let index = e_employeesData.value.findIndex(item => item.id == docForm.e_employee_id)
-      let emp = e_employeesData.value[index]
+      let emp =  JSON.parse(JSON.stringify(e_employeesData.value[index])) 
       e_employeesData.value[index].document_registers = {
         ...emp.document_registers,
         ...res.data,
