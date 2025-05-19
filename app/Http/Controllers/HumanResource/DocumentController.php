@@ -32,6 +32,7 @@ class DocumentController extends Controller
     {
         $request->validate([
             'name' => 'required|string',
+            'is_visible' => 'required|boolean',
         ]);
 
         $section = DocumentSection::create([
@@ -43,7 +44,8 @@ class DocumentController extends Controller
     public function updateSection(DocumentSection $section, Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string'
+            'name' => 'required|string',
+            'is_visible' => 'required|boolean',
         ]);
 
         $section->update($data);

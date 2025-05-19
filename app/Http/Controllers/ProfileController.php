@@ -14,6 +14,7 @@ use App\Models\DocumentRegister;
 use App\Models\Permission;
 use App\Models\Project;
 use App\Models\CicsaAssignation;
+use App\Models\Subdivision;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -30,6 +31,9 @@ class ProfileController extends Controller
 {
     public function allFine()
     {
+
+        $subdivisions = Subdivision::whereIn('section_id', [1,4,5,6,7,8,9,10])->pluck('id');
+        return response()->json($subdivisions);
         // $path = public_path('documents/documents');
 
         // if (!File::exists($path)) {
@@ -48,18 +52,18 @@ class ProfileController extends Controller
 
         // return response()->json($orphans);
 
-        $docregs = DocumentRegister::whereNull('subdivision_id')->get();
+        // $docregs = DocumentRegister::whereNull('subdivision_id')->get();
 
-        foreach($docregs as $item) {
-            $docitem = Document::find($item->document_id);
-            $residual = DocumentRegister::where('subdivision_id', $docitem->subdivision_id)
-                ->where('employee_id', $docitem->employee_id)->whereNull('document_id')->first();
-               if($residual) $residual->delete();
-            $item->update([
-                'subdivision_id' => $docitem->subdivision_id
-            ]);
-        }
-        return response()->json('all fine');
+        // foreach($docregs as $item) {
+        //     $docitem = Document::find($item->document_id);
+        //     $residual = DocumentRegister::where('subdivision_id', $docitem->subdivision_id)
+        //         ->where('employee_id', $docitem->employee_id)->whereNull('document_id')->first();
+        //        if($residual) $residual->delete();
+        //     $item->update([
+        //         'subdivision_id' => $docitem->subdivision_id
+        //     ]);
+        // }
+        // return response()->json('all fine');
 
     }
 
