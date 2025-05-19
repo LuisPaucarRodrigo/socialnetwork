@@ -521,7 +521,8 @@ const submitSub = async (update) => {
 
         if (section) {
             const index = section.subdivisions.findIndex((sd)=>sd.id === newSub.id)
-            section.subdivisions[index] = newSub
+            if(index === -1) section.subdivisions.push(newSub)
+            else section.subdivisions[index] = newSub
         } else {
             console.warn("Sección no encontrada para la subdivisión");
         }
@@ -562,15 +563,13 @@ const deleteSubdivision = async () => {
                 subdivision: subdivisionToDelete.value,
             })
         );
-
         if (res.data.message === "success") {
             const section = dataToRender.value.find(
                 (s) => s.id === sectionId.value
             );
             if (section) {
-                section.subdivisions = section.subdivisions.filter(
-                    (sub) => sub.id !== subdivisionToDelete.value
-                );
+                const index = section.subdivisions.findIndex((sd)=>sd.id === subdivisionToDelete.id)
+                section.subdivisions.splice(index, 1);
             }
             closeModalSubdivision();
             notify("Subdivisión eliminada correctamente");

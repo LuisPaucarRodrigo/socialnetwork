@@ -76,6 +76,7 @@ class DocumentController extends Controller
         $sub = Subdivision::create([
             'name' => $request->name,
             'section_id' => $section->id,
+            'is_visible' => $request->is_visible,
         ]);
         return response()->json(data: $sub);
     }
