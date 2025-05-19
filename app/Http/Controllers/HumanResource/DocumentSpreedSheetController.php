@@ -259,8 +259,12 @@ class DocumentSpreedSheetController extends Controller
 
             $employee->setRelation('document_registers', $formattedDr);
         }
-        $sectionsToSearch = app(DocumentSpreedSheetPolicy::class)->sections();
-        $sections =  DocumentSection::with('subdivisions')->whereIn('id', $sectionsToSearch)->get();
+        //$sectionsToSearch = app(DocumentSpreedSheetPolicy::class)->sections();
+        $sections =  DocumentSection::with(['subdivisions' => function($subq) {
+                $subq->where('is_visible', true);
+            }])
+            ->whereIn('is_visible', true)
+            ->get();
         return Inertia::render('HumanResource/DocumentSpreedSheet/EmployeeDocumentAlarms', [
             'employee' => $employee,
             'sections' => $sections,

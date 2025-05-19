@@ -70,6 +70,7 @@ class DocumentController extends Controller
     {
         $request->validate([
             'name' => 'required|string',
+            'is_visible' => 'required|boolean'
         ]);
 
         $sub = Subdivision::create([
@@ -82,16 +83,13 @@ class DocumentController extends Controller
     public function updateSubdivision($section, Subdivision $subdivision, Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string'
+            'name' => 'required|string',
+            'is_visible' => 'required|boolean',
         ]);
 
         $subdivision->update($data);
 
-        return response()->json([
-            'id' => $subdivision->id,
-            'name' => $subdivision->name,
-            'section_id' => $subdivision->section_id,
-        ]);
+        return response()->json($subdivision);
     }
 
 

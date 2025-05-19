@@ -96,7 +96,7 @@
                                 <p
                                     class="text-sm text-gray-700 w-2/3 break-words"
                                 >
-                                    <span class="font-medium"  :class="section.is_visible && 'text-indigo-700'">{{
+                                    <span class="font-medium"  :class="subdivision.is_visible && 'text-indigo-700'">{{
                                         subdivision.name
                                     }}</span>
                                 </p>
@@ -408,9 +408,7 @@ const submit = async (update) => {
     const formData = form.data();
 
     try {
-        const res = await axios.post(url, formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-        });
+        const res = await axios.post(url, formData);
 
         const section = res.data;
 
@@ -510,12 +508,10 @@ const submitSub = async (update) => {
               section: sectionId.value,
               subdivision: formSub.id,
           });
-    const formData = formSub.data();
+    const formData = formSub.data()
 
     try {
-        const res = await axios.post(url, formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-        });
+        const res = await axios.post(url, formData);
 
         const newSub = res.data;
 
@@ -524,9 +520,8 @@ const submitSub = async (update) => {
         );
 
         if (section) {
-            const subMap = new Map(section.subdivisions.map((s) => [s.id, s]));
-            subMap.set(newSub.id, newSub);
-            section.subdivisions = Array.from(subMap.values());
+            const index = section.subdivisions.findIndex((sd)=>sd.id === newSub.id)
+            section.subdivisions[index] = newSub
         } else {
             console.warn("Sección no encontrada para la subdivisión");
         }
