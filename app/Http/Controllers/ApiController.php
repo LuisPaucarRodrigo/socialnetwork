@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\HuaweiConstants;
 use App\Constants\PextConstants;
 use App\Constants\PintConstants;
 use App\Http\Requests\LoginMobileRequest;
@@ -726,6 +727,32 @@ class ApiController extends Controller
 
         return response()->json($projects, 200);
     }
+
+    public function getHuaweiConstants()
+    {
+        return response()->json([
+            'expenseTypes' => HuaweiConstants::getVariableExpenseTypes(),
+            'cdpTypes' => HuaweiConstants::getCDPTypes(),
+        ], 200);
+    }
+
+    public function getExpensesHistory($user_id)
+    {
+        $employee = Employee::selectRaw("UPPER(CONCAT(name, ' ', lastname)) AS full_name")
+            ->where('user_id', $user_id)
+            ->first();
+
+        if (!$employee) {
+            return response()->json(['error' => 'Employee not found'], 404);
+        }
+
+        $expenses = HuaweiMonthlyExpense::where('employee', $employee->full_name)
+            ->get()
+            ->makeHidden(['huawei_project', 'general_expense']);
+
+        return response()->json($expenses, 200);
+    }
+
 
     public function storeHuaweiExpense(Request $request)
     {

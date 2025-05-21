@@ -2,6 +2,8 @@
     <Head title="Gestion de Documentos" />
     <AuthenticatedLayout :redirectRoute="'documents.index'">
         <template #header> Documentos </template>
+        <Toaster richColors />
+
         <div class="flex gap-4 justify-between rounded-lg">
             <div class="flex flex-col sm:flex-row gap-4 justify-between w-full">
                 <div class="flex gap-4 items-center px-2">
@@ -82,7 +84,10 @@
                                         "
                                         class="dropdown"
                                     >
-                                        <div class="dropdown-menu">
+                                        <div
+                                            v-if="!activatedFilter"
+                                            class="dropdown-menu"
+                                        >
                                             <button
                                                 @click="applyFilters"
                                                 type="button"
@@ -97,7 +102,7 @@
                         </dropdown>
                     </div>
                 </div>
-                <div>
+                <div v-if="!activatedFilter">
                     <PrimaryButton
                         v-if="
                             filterForm.employees.length > 0 ||
@@ -112,11 +117,57 @@
                         Generar Reporte
                     </PrimaryButton>
                 </div>
+                <div v-else>
+                    <PrimaryButton
+                        v-if="
+                            filterForm.employees.length > 0 ||
+                            filterForm.external_employees.length > 0 ||
+                            filterForm.sections.length > 0 ||
+                            filterForm.subdivisions.length > 0
+                        "
+                        @click="massiveZip"
+                        type="button"
+                        class="hidden sm:block mr-4 rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500"
+                    >
+                        Descargar ZIP
+                    </PrimaryButton>
+                </div>
             </div>
         </div>
         <div
+            v-if="!activatedFilter"
             class="flex flex-col md:flex-row w-full gap-2 mt-5 h-auto md:h-[70vh]"
         >
+            <transition name="fade">
+                <div
+                    v-if="isFetching"
+                    class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white bg-opacity-75"
+                >
+                    <svg
+                        class="animate-spin h-8 w-8 text-gray-600 mb-2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                    >
+                        <circle
+                            class="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            stroke-width="4"
+                        ></circle>
+                        <path
+                            class="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                        ></path>
+                    </svg>
+                    <span class="text-gray-700 text-sm font-medium"
+                        >Cargando...</span
+                    >
+                </div>
+            </transition>
             <!-- Filtro -->
             <div class="md:w-[20%] flex flex-col rounded-md overflow-hidden">
                 <!-- Buscador siempre visible -->
@@ -266,15 +317,144 @@
             </div>
         </div>
 
-        <Modal :show="create_document">
+        <div v-else class="flex w-full mt-5 gap-2">
+            <div
+                class="overflow-x-auto"
+                :class="{
+                    'w-full': !fileUrl,
+                    'w-[50%]': fileUrl,
+                }"
+            >
+                <div class="max-h-[77vh] overflow-y-auto border rounded-md">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th
+                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
+                                    Nombre
+                                </th>
+                                <th
+                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
+                                    Sección
+                                </th>
+                                <th
+                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
+                                    Subdivisión
+                                </th>
+                                <th
+                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
+                                    Empleado
+                                </th>
+                                <th
+                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr
+                                v-for="document in dataToRender"
+                                :key="document.id"
+                            >
+                                <td
+                                    class="px-6 py-4 text-sm font-medium text-gray-900"
+                                >
+                                    {{ getDocumentName(document.title) }}
+                                </td>
+                                <td
+                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                                >
+                                    {{ document.subdivision?.section?.name }}
+                                </td>
+                                <td
+                                    class="px-6 max-w-[100px] py-4 text-sm text-gray-700"
+                                >
+                                    {{ document.subdivision?.name }}
+                                </td>
+                                <td
+                                    class="px-6 py-4 max-w-[150px] text-sm text-gray-700"
+                                >
+                                    {{ document.emp_name }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center space-x-3">
+                                        <button
+                                            v-if="
+                                                document.title &&
+                                                /\.(pdf|png|jpe?g)$/.test(
+                                                    document.title
+                                                )
+                                            "
+                                            @click="
+                                                openPreviewDocumentModal(
+                                                    document.id
+                                                )
+                                            "
+                                            class="text-green-600 hover:underline"
+                                        >
+                                            <EyeIcon class="h-5 w-5" />
+                                        </button>
+                                        <button
+                                            @click="
+                                                downloadDocument(document.id)
+                                            "
+                                            class="text-blue-600 hover:underline"
+                                        >
+                                            <ArrowDownIcon class="h-5 w-5" />
+                                        </button>
+                                        <button
+                                            v-permission="'documents_update'"
+                                            @click="
+                                                openEditDocumentModal(document)
+                                            "
+                                            class="text-orange-400 hover:underline"
+                                        >
+                                            <PencilIcon class="h-5 w-5" />
+                                        </button>
+                                        <button
+                                            v-permission="'document_delete'"
+                                            @click="
+                                                confirmDeleteDocument(
+                                                    document.id
+                                                )
+                                            "
+                                            class="text-red-600 hover:underline"
+                                        >
+                                            <TrashIcon class="h-5 w-5" />
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div v-if="fileUrl" class="w-[50%] h-[940px]">
+                <iframe
+                    :src="fileUrl"
+                    class="w-full h-full border rounded"
+                    frameborder="0"
+                ></iframe>
+            </div>
+        </div>
+
+        <Modal :show="create_document || update_document">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
                     {{
-                        "Subir Documento"
+                        create_document
+                            ? "Subir Documento"
+                            : "Actualizar Documento"
                     }}
                 </h2>
                 <form
-                    @submit.prevent="submit"
+                    @submit.prevent="create_document ? submit() : submitEdit()"
                 >
                     <div class="border-b border-gray-900/10 pb-12">
                         <div class="mt-2">
@@ -460,7 +640,10 @@
 
                         <div class="mt-6 flex items-center justify-end gap-x-6">
                             <SecondaryButton
-                                @click="closeModal
+                                @click="
+                                    create_document
+                                        ? closeModal()
+                                        : closeEditModal()
                                 "
                             >
                                 Cancelar
@@ -477,8 +660,18 @@
             </div>
         </Modal>
 
+        <ConfirmDeleteModal
+            :confirmingDeletion="confirmingDocDeletion"
+            itemType="documento"
+            :deleteFunction="deleteDocument"
+            @closeModal="closeModalDoc"
+        />
         <ConfirmCreateModal
             :confirmingcreation="showModal"
+            itemType="documento"
+        />
+        <ConfirmUpdateModal
+            :confirmingupdate="showEditModal"
             itemType="documento"
         />
     </AuthenticatedLayout>
@@ -487,6 +680,8 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import ConfirmCreateModal from "@/Components/ConfirmCreateModal.vue";
+import ConfirmUpdateModal from "@/Components/ConfirmUpdateModal.vue";
+import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
@@ -497,6 +692,14 @@ import Modal from "@/Components/Modal.vue";
 import { ref, computed, nextTick, watchEffect, reactive, watch } from "vue";
 import { Head, useForm, router } from "@inertiajs/vue3";
 import Dropdown from "@/Components/Dropdown.vue";
+import {
+    TrashIcon,
+    ArrowDownIcon,
+    EyeIcon,
+    PencilIcon,
+} from "@heroicons/vue/24/outline";
+import { Toaster } from "vue-sonner";
+import { notifyError, notifyWarning } from "@/Components/Notification";
 
 const props = defineProps({
     sections: Object,
@@ -548,6 +751,10 @@ const create_document = ref(false);
 const update_document = ref(false);
 const showModal = ref(false);
 const selectedSection = ref("");
+const showEditModal = ref(false);
+const confirmingDocDeletion = ref(false);
+const docToDelete = ref(null);
+const editingDocument = ref(null);
 
 const management_section = () => {
     router.get(route("documents.sections"));
@@ -561,6 +768,25 @@ const closeModal = () => {
     form.reset();
     form.clearErrors();
     create_document.value = false;
+};
+
+const openEditDocumentModal = (document) => {
+    editingDocument.value = JSON.parse(JSON.stringify(document));
+    form.id = editingDocument.value.id;
+    form.document = editingDocument.value.name;
+    form.section_id = editingDocument.value.subdivision.section_id;
+    form.subdivision_id = editingDocument.value.subdivision_id;
+    form.employee_id = editingDocument.value.employee_id;
+    form.e_employee_id = document.e_employee_id;
+    form.has_exp_date = editingDocument.value.exp_date ? 1 : 0;
+    form.employeeType = editingDocument.value.employee_id ? 1 : 0;
+    update_document.value = true;
+};
+
+const closeEditModal = () => {
+    form.reset();
+    form.clearErrors();
+    update_document.value = false;
 };
 
 function submit() {
@@ -584,6 +810,22 @@ function submit() {
         },
     });
 }
+
+const submitEdit = () => {
+    form.post(route("documents.update", { id: form.id }), {
+        onSuccess: () => {
+            closeModal();
+            showEditModal.value = true;
+            setTimeout(() => {
+                showEditModal.value = false;
+                router.visit(route("documents.index"));
+            }, 2000);
+        },
+        onError: (e) => {
+            console.log(e);
+        },
+    });
+};
 
 //new_test_filter
 const filterForm = reactive({
@@ -692,18 +934,32 @@ function handleSubdivisionToggle(sectionId, subId) {
     }
 }
 
+const activatedFilter = ref(false);
+const dataToRender = ref([]);
+
 async function applyFilters() {
+    isFetching.value = true;
     const form = useForm({
         employees: filterForm.employees,
         external_employees: filterForm.external_employees,
         subdivisions: filterForm.subdivisions,
     });
-    form.post(route("documents.filter_document"), {
-        onError: (e) => {
-            console.log(e);
-        },
-    });
+    try {
+        const res = await axios.post(route("documents.filter_document"), form);
+        dataToRender.value = res.data;
+        isFetching.value = false;
+        activatedFilter.value = true;
+    } catch (error) {
+        isFetching.value = false;
+        notifyError("Server Error");
+        console.error(error);
+    }
 }
+
+const getDocumentName = (documentTitle) => {
+    const parts = documentTitle.split("_");
+    return parts.length > 1 ? parts.slice(1).join("_") : documentTitle;
+};
 
 function handleEmployeeToggle(employee) {
     if (employee.type === "external") {
@@ -822,4 +1078,77 @@ const toggleEmpSelectAll = () => {
         );
     }
 };
+
+const confirmDeleteDocument = (documentId) => {
+    docToDelete.value = documentId;
+    confirmingDocDeletion.value = true;
+};
+
+const closeModalDoc = () => {
+    confirmingDocDeletion.value = false;
+};
+
+const deleteDocument = () => {
+    const docId = docToDelete.value;
+    if (docId) {
+        router.delete(route("documents.destroy", { id: docId }), {
+            onSuccess: () => {
+                closeModalDoc();
+                setTimeout(() => {
+                    showEditModal.value = false;
+                    router.visit(route("documents.index"));
+                }, 2000);
+            },
+        });
+    }
+};
+
+function downloadDocument(documentId) {
+    const backendDocumentUrl = route("documents.download", {
+        document: documentId,
+    });
+    window.open(backendDocumentUrl, "_blank");
+}
+
+const fileUrl = ref(null);
+
+function openPreviewDocumentModal(documentId) {
+    fileUrl.value = route("documents.show", { document: documentId });
+}
+
+async function massiveZip() {
+  const ids = dataToRender.value.map((document) => document.id);
+  const url = route("documents.filter_document.massive_zip");
+
+  try {
+    const response = await axios.post(url, { ids }, { responseType: "blob" });
+
+    // Crear blob y URL
+    const blob = new Blob([response.data], { type: 'application/zip' });
+    const downloadUrl = window.URL.createObjectURL(blob);
+
+    // Extraer el nombre del archivo desde headers (si viene)
+    const disposition = response.headers['content-disposition'];
+    let fileName = "download.zip";
+    if (disposition && disposition.indexOf('filename=') !== -1) {
+      const matches = disposition.match(/filename="?(.+)"?/);
+      if (matches.length === 2) fileName = matches[1];
+    }
+
+    // Crear elemento <a> y forzar descarga
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.setAttribute('download', fileName);
+    document.body.appendChild(link);
+    link.click();
+
+    // Limpiar
+    link.remove();
+    window.URL.revokeObjectURL(downloadUrl);
+
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 </script>
