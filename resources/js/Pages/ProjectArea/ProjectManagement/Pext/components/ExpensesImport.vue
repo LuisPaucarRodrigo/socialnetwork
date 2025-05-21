@@ -74,10 +74,10 @@ async function submit() {
             if (error.response.data.errors) {
                 setAxiosErrors(error.response.data.errors, form)
             } else {
-                notifyError('Server Error', error.response.data)
+                notifyError(`Server Error ${error.response.data.error}`)
             }
         } else {
-            notifyError('Server Error')
+            notifyError('Network Error')
         }
     }
 }
