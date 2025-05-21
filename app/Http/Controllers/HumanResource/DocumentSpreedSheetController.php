@@ -11,11 +11,13 @@ use App\Models\Document;
 use App\Models\DocumentRegister;
 use App\Models\DocumentSection;
 use App\Models\Employee;
+use App\Models\Subdivision;
 use App\Models\ExternalEmployee;
 use App\Policies\HumanResources\DocumentSpreedSheetPolicy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class DocumentSpreedSheetController extends Controller
@@ -173,8 +175,11 @@ class DocumentSpreedSheetController extends Controller
             $emp->setRelation('document_registers', $formattedDr);
             return $emp;
         });
-        $sectionsToSearch = app(DocumentSpreedSheetPolicy::class)->sections();
-        $sections = DocumentSection::with('subdivisions')->whereIn('id', $sectionsToSearch)->get();
+        $sections =  DocumentSection::with(['subdivisions' => function($subq) {
+            $subq->where('is_visible', true);
+        }])
+        ->where('is_visible', true)
+        ->get();
         $costLines = CostLine::all();
         if ($request->isMethod('get')) {
             return Inertia::render(
@@ -257,8 +262,12 @@ class DocumentSpreedSheetController extends Controller
 
             $employee->setRelation('document_registers', $formattedDr);
         }
-        $sectionsToSearch = app(DocumentSpreedSheetPolicy::class)->sections();
-        $sections =  DocumentSection::with('subdivisions')->whereIn('id', $sectionsToSearch)->get();
+        //$sectionsToSearch = app(DocumentSpreedSheetPolicy::class)->sections();
+        $sections =  DocumentSection::with(['subdivisions' => function($subq) {
+                $subq->where('is_visible', true);
+            }])
+            ->where('is_visible', true)
+            ->get();
         return Inertia::render('HumanResource/DocumentSpreedSheet/EmployeeDocumentAlarms', [
             'employee' => $employee,
             'sections' => $sections,
@@ -271,17 +280,48 @@ class DocumentSpreedSheetController extends Controller
     public function store(DocumentRegisterRequest $request, $dr_id = null)
     {
         $data = $request->validated();
-        $item = DocumentRegister::find($dr_id);
-        if ($item) {
-            $item->update($data);
+       
+        if ($data['state'] === 'Completado') { 
+            $docItem = $data['employee_id']
+                ? Document::where('subdivision_id', $data['subdivision_id'])
+                    ->where('employee_id', $data['employee_id'])
+                    ->first()
+                : ($data['e_employee_id']
+                    ? Document::where('subdivision_id', $data['subdivision_id'])
+                        ->where('e_employee_id', $data['e_employee_id'])
+                        ->first()
+                    : null
+                );
+            $document = $request->file('document');
+            $employee_name = $request->employee_id ? Employee::where('id', $data['employee_id'])
+                ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
+                ->first() : ExternalEmployee::where('id', $data['e_employee_id'])
+                ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
+                ->first();
+            $data['title'] = Subdivision::find($data['subdivision_id'])->name . ' - ' . $employee_name->full_name . '.' . $document->getClientOriginalExtension();
+            if($docItem) {
+                $fileName = $docItem->title;
+                $filePath = "documents/documents/$fileName";
+                $path = public_path($filePath);
+                if (file_exists($path) && is_file($path)) {
+                    unlink($path);
+                }
+                $document->move(public_path('documents/documents/'), $data['title']);
+                $docItem->updated_at = now();
+                $docItem->save();
+            } else {
+                $document->move(public_path('documents/documents/'), $data['title']);
+                $docItem = Document::create($data);
+            }
+            $item = DocumentRegister::where('document_id', $docItem->id)->first();
         } else {
-            $item = DocumentRegister::create($data);
+            $item = DocumentRegister::find($dr_id);
+            if ($item) {
+                $item->update($data);
+            } else {
+                $item = DocumentRegister::create($data);
+            }
         }
-        $docItem = Document::find($item->document_id);
-        if ($docItem && $docItem->exp_date === null) {
-            $docItem->update(['exp_date' => $item->exp_date]);
-        }
-
         $item->without('document');
         return response()->json([$item->subdivision_id => $item], 200);
     }

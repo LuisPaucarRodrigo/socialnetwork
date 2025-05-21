@@ -105,6 +105,28 @@
                         Exportar Excel
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
+
+                    <button type="button"
+                        class="rounded-md bg-blue-600 px-4 py-2 text-center text-sm text-white hover:bg-blue-500 h-full"
+                        @click="openExportArchivesModal" data-tooltip-target="export-photo-tooltip">
+                        <svg fill="#ffffff" width="20px" height="20px" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0" />
+
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
+
+                            <g id="SVGRepo_iconCarrier">
+                                <path
+                                    d="M22.71,6.29a1,1,0,0,0-1.42,0L20,7.59V2a1,1,0,0,0-2,0V7.59l-1.29-1.3a1,1,0,0,0-1.42,1.42l3,3a1,1,0,0,0,.33.21.94.94,0,0,0,.76,0,1,1,0,0,0,.33-.21l3-3A1,1,0,0,0,22.71,6.29ZM19,13a1,1,0,0,0-1,1v.38L16.52,12.9a2.79,2.79,0,0,0-3.93,0l-.7.7L9.41,11.12a2.85,2.85,0,0,0-3.93,0L4,12.6V7A1,1,0,0,1,5,6h8a1,1,0,0,0,0-2H5A3,3,0,0,0,2,7V19a3,3,0,0,0,3,3H17a3,3,0,0,0,3-3V14A1,1,0,0,0,19,13ZM5,20a1,1,0,0,1-1-1V15.43l2.9-2.9a.79.79,0,0,1,1.09,0l3.17,3.17,0,0L15.46,20Zm13-1a.89.89,0,0,1-.18.53L13.31,15l.7-.7a.77.77,0,0,1,1.1,0L18,17.21Z" />
+                            </g>
+                        </svg>
+                    </button>
+                    <div id="export-photo-tooltip" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                        Facturas, Boletas y Vouchers de Pago
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
+
                     <div>
                         <dropdown align="left">
                             <template #trigger>
@@ -355,7 +377,7 @@
                         >
                             <TableAutocompleteFilter
                                 labelClass="text-[11px]"
-                                label="Comprobante de Pago"
+                                label="Tipo de Documento"
                                 :options="cdp_types"
                                 v-model="filterForm.selectedCDPTypes"
                                 width="w-48"
@@ -423,6 +445,7 @@
                                 label="N° de Operación de E.C."
                                 :options="op_numbers"
                                 v-model="filterForm.ecOpNumbers"
+                                :empty="true"
                                 width="w-48"
                             />
                         </th>
@@ -699,7 +722,7 @@
                                               0
                                           )
                                           .toFixed(2)
-                                    
+
                             }}
                         </td>
 
@@ -867,7 +890,7 @@
                                 <InputLabel
                                     for="cdp_type"
                                     class="font-medium leading-6 text-gray-900"
-                                    >Tipo de CDP
+                                    >Tipo de Documento
                                 </InputLabel>
                                 <div class="mt-2">
                                     <select
@@ -876,7 +899,7 @@
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     >
                                         <option disabled value="">
-                                            Seleccionar Tipo de CDP
+                                            Seleccionar Tipo de Documento
                                         </option>
                                         <option v-for="cdp in cdp_types">
                                             {{ cdp }}
@@ -1440,6 +1463,13 @@
             :title="'Éxito'"
             :message="successMessage"
         />
+        <ConfirmateModal
+            tittle="Descarga de archivos"
+            text="La descarga de archivos será en base a los filtros que están activos, si no hay filtros activos se descargarán de todos los registros. PARA AMBOS CASOS SOLO ES PARA REGISTROS ACEPTADOS"
+            :showConfirm="showExportArchivesModal"
+            :actionFunction="exportArchives"
+            @closeModal="closeExportArchivesModal"
+        />
     </AuthenticatedLayout>
 </template>
 
@@ -1450,6 +1480,7 @@ import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
+import ConfirmateModal from "@/Components/ConfirmateModal.vue";
 import Modal from "@/Components/Modal.vue";
 import { ref, watch } from "vue";
 import { Head, useForm, router } from "@inertiajs/vue3";
@@ -1475,7 +1506,6 @@ const props = defineProps({
     data: Object,
     mode: String,
 });
-
 
 const expenses = ref(props.expense);
 const filterMode = ref(false);
@@ -1946,4 +1976,16 @@ const importExcel = () => {
         },
     });
 };
+
+const showExportArchivesModal = ref(false)
+const openExportArchivesModal = () => {showExportArchivesModal.value = true}
+const closeExportArchivesModal = () => {showExportArchivesModal.value = false}
+function exportArchives() {
+    const uniqueParam = `timestamp=${new Date().getTime()}`;
+    const url = route("zip.additional.descargar", { project_id: props.project_id.id }) +
+            '?' + qs.stringify({...filterForm.value, uniqueParam}, { arrayFormat: 'brackets' });
+    window.location.href = url;
+    closeExportArchivesModal()
+}
+
 </script>

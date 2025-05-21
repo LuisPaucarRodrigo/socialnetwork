@@ -14,10 +14,13 @@ use App\Models\HuaweiProject;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log as FacadesLog;
 use Inertia\Inertia;
 use Log;
 use Maatwebsite\Excel\Facades\Excel;
+use Pest\Plugins\Parallel\Handlers\Laravel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use ZipArchive;
 
 class HuaweiMonthlyController extends Controller
 {
@@ -37,44 +40,34 @@ class HuaweiMonthlyController extends Controller
 
     public function getGeneralBalance()
     {
-        $prevExpense = HuaweiMonthlyExpense::with([
-            'general_expense',
-        ])
+        // Solo traemos lo necesario, más liviano
+        $expenses = HuaweiMonthlyExpense::with('general_expense')
+            ->select(['id', 'expense_type', 'amount', 'is_accepted', 'created_at']) // solo lo que se usa
             ->where(function ($query) {
                 $query->where('is_accepted', 1)
-                    ->orWhere('is_accepted', null);
+                    ->orWhereNull('is_accepted');
             })
-            ->orderBy('created_at', 'desc')
-            ->get();
+            ->latest()
+            ->get()
+            ->each->setAppends(['real_state', 'type']); // una sola línea
 
-        foreach ($prevExpense as $exp) {
-            $exp->setAppends(['real_state', 'type']);
-        }
-
-        $acExpensesAmounts = $prevExpense->filter(function ($cost) {
-            return $cost->type === 'Variable';
-        })->groupBy('expense_type')->map(function ($group) {
-            return [
-                'expense_type' => $group->first()->expense_type,
-                'total_amount' => $group->sum('amount'),
-            ];
-        })->values()->toArray();
-
-        $scExpensesAmounts = $prevExpense->filter(function ($cost) {
-            return $cost->type === 'Fijo';
-        })->groupBy('expense_type')->map(function ($group) {
-            return [
-                'expense_type' => $group->first()->expense_type,
-                'total_amount' => $group->sum('amount'),
-            ];
-        })->values()->toArray();
+        // Agrupamos por tipo (usando accessor) y luego por expense_type
+        $grouped = $expenses->groupBy('type')->map(function ($itemsByType) {
+            return $itemsByType->groupBy('expense_type')->map(function ($group) {
+                return [
+                    'expense_type' => $group->first()->expense_type,
+                    'total_amount' => $group->sum('amount'),
+                ];
+            })->values();
+        });
 
         return Inertia::render('Huawei/GeneralBalance', [
-            'expenses' => $prevExpense,
-            'acExpensesAmounts' => $acExpensesAmounts,
-            'scExpensesAmounts' => $scExpensesAmounts,
+            'expenses' => $expenses,
+            'acExpensesAmounts' => $grouped->get('Variable', collect())->values(),
+            'scExpensesAmounts' => $grouped->get('Fijo', collect())->values(),
         ]);
     }
+
 
     public function getExpensesByZone($expenseType)
     {
@@ -102,8 +95,9 @@ class HuaweiMonthlyController extends Controller
 
     public function getExpenses($mode = null)
     {
-        $expenses = HuaweiMonthlyExpense::query()
-            ->orderBy('expense_date', 'desc')
+        $expenses = HuaweiMonthlyExpense::query();
+        $allExpenses = $expenses->get();
+        $expenses = $expenses->orderBy('expense_date', 'desc')
             ->with([
                 'huawei_project' => function ($query) {
                     $query->select('id', 'assigned_diu', 'huawei_site_id', 'macro_project');
@@ -137,9 +131,13 @@ class HuaweiMonthlyController extends Controller
             ->filter(fn($expense) => $mode ? $expense->type === 'Fijo' : $expense->type === 'Variable');
 
         $summary = [
-            'zones' => $expenses->pluck('zone')->unique()->values(),
-            'op_numbers' => $expenses->pluck('ec_op_number')->map(fn($item) => (string) $item)->uniqueStrict()->values(),
-            'assigned_dius' => $expenses
+            'zones' => $allExpenses->pluck('zone')->filter()->unique()->values(),
+            'op_numbers' => $allExpenses->pluck('ec_op_number')
+                ->filter()
+                ->map(fn($item) => (string) $item)
+                ->uniqueStrict()
+                ->values(),
+            'assigned_dius' => $allExpenses
                 ->map(fn($expense) => $expense->huawei_project?->assigned_diu)
                 ->filter()
                 ->uniqueStrict()
@@ -159,8 +157,9 @@ class HuaweiMonthlyController extends Controller
     {
         $searchTerm = strtolower($request);
 
-        $expensesQuery = HuaweiMonthlyExpense::query()
-            ->where(function ($query) use ($searchTerm) {
+        $expensesQuery = HuaweiMonthlyExpense::query();
+        $allExpenses = $expensesQuery->get();
+        $expensesQuery = $expensesQuery->where(function ($query) use ($searchTerm) {
                 $query->whereRaw('LOWER(expense_type) LIKE ?', ["%{$searchTerm}%"])
                     ->orWhereRaw('LOWER(zone) LIKE ?', ["%{$searchTerm}%"])
                     ->orWhereRaw('LOWER(employee) LIKE ?', ["%{$searchTerm}%"])
@@ -212,9 +211,13 @@ class HuaweiMonthlyController extends Controller
         $filteredExpenses = $expenses->filter(fn($expense) => $mode ? $expense->type === 'Fijo' : $expense->type === 'Variable');
 
         $summary = [
-            'zones' => $expenses->pluck('zone')->unique()->values(),
-            'op_numbers' => $expenses->pluck('ec_op_number')->map(fn($item) => (string) $item)->uniqueStrict()->values(),
-            'assigned_dius' => $filteredExpenses
+            'zones' => $allExpenses->pluck('zone')->filter()->unique()->values(),
+            'op_numbers' => $allExpenses->pluck('ec_op_number')
+                ->filter()
+                ->map(fn($item) => (string) $item)
+                ->uniqueStrict()
+                ->values(),
+            'assigned_dius' => $allExpenses
                 ->map(fn($expense): mixed => $expense->huawei_project?->assigned_diu)
                 ->unique()
                 ->values(),
@@ -268,7 +271,6 @@ class HuaweiMonthlyController extends Controller
                     });
             });
         }
-
         if (count($request->selectedExpenseTypes) < $summary['expense_types']) {
             $expensesQuery->whereIn('expense_type', $request->selectedExpenseTypes);
         }
@@ -278,9 +280,10 @@ class HuaweiMonthlyController extends Controller
         if (count($request->selectedEmployees) < $summary['employees']) {
             $expensesQuery->whereIn('employee', $request->selectedEmployees);
         }
-        if (count($request->selectedZones) < $summary['zones']) {
+        if (!empty($request->selectedZones) && ($request->selectedZones) < $summary['zones']) {
             $expensesQuery->whereIn('zone', $request->selectedZones);
         }
+        
         if (count($request->selectedDus) < $summary['assigned_dius'] + 1) {
             $selectedDus = $request->selectedDus;
 
@@ -315,9 +318,16 @@ class HuaweiMonthlyController extends Controller
         if ($request->opNoDate) {
             $expensesQuery->whereNull('ec_expense_date');
         }
-        if (count($request->ecOpNumbers) < $summary['op_numbers']) {
-            $expensesQuery->whereIn('ec_op_number', $request->ecOpNumbers);
+        if (count($request->ecOpNumbers) < $summary['op_numbers'] - 1) {
+            $ecOpNumbers = $request->ecOpNumbers;
+            if (!in_array('(vacio)', $ecOpNumbers)) {
+                $expensesQuery->whereIn('ec_op_number', $request->ecOpNumbers)->whereNotNull('ec_op_number');
+            } else {
+                $expensesQuery->whereIn('ec_op_number', $request->ecOpNumbers)
+                    ->orWhereNull('ec_op_number');
+            }
         }
+
         $expenses = $expensesQuery->orderBy('expense_date', 'desc')
             ->with([
                 'huawei_project' => function ($query) {
@@ -363,7 +373,6 @@ class HuaweiMonthlyController extends Controller
             });
         }
 
-        // Convertir la colección a array antes de enviarla en la respuesta JSON
         return response()->json(["expenses" => $expenses->values()->toArray()], 200);
     }
 
@@ -589,44 +598,36 @@ class HuaweiMonthlyController extends Controller
         return response()->json($projects, 200);
     }
 
-
-    private function sanitizeDate($date)
+    public function downloadImages($mode= null, Request $request)
     {
-        if (empty($date) || !is_string($date)) {
-            return "Error: La fecha es nula o no es una cadena válida.";
-        }
-    
-        $date = trim($date);
-    
-        if (!preg_match('/^\d{1,2}-\d{1,2}-\d{4}$/', $date)) {
-            return null;
-        }
-
         try {
-            $parsedDate = Carbon::createFromFormat('d-m-Y', $date);
-            return $parsedDate->format('Y-m-d');
-            
+            $query = HuaweiMonthlyExpense::where('is_accepted', 1);
+            $additionalCosts = $this->additionalCostsService->filter($request, $query);
+            $zipFileName = 'additionalCostsPhotos.zip';
+            $zipFilePath = public_path("/documents/additionalcosts/{$zipFileName}");
+            $zip = new ZipArchive;
+            if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
+                foreach ($additionalCosts as $cost) {
+                    if (!empty($cost["photo"])) {
+                        $photoPath = public_path("/documents/additionalcosts/{$cost["photo"]}");
+                        if (file_exists($photoPath)) {
+                            $zip->addFile($photoPath, $cost["photo"]);
+                        }
+                    }
+                }
+                $zip->close();
+                ob_end_clean();
+                return response()->download($zipFilePath)->deleteFileAfterSend(true);
+            } else {
+                Log::error('No se pudo abrir el archivo ZIP para escritura.');
+                return response()->json(['error' => 'No se pudo abrir el archivo ZIP para escritura.'], 500);
+            }
         } catch (\Exception $e) {
-            return null;
+            Log::error('Error al crear el archivo ZIP: ' . $e->getMessage());
+            return response()->json(['error' => 'No se pudo crear el archivo ZIP.'], 500);
         }
     }
-    
 
-    private function sanitizeText($text, $mode)
-    {
-        if ($mode) {
-            $text = mb_convert_case(mb_strtolower($text, 'UTF-8'), MB_CASE_TITLE, 'UTF-8');
-            return $text;
-        } else {
-            $text = strtoupper($text);
 
-            $text = str_replace(
-                ['Á', 'É', 'Í', 'Ó', 'Ú', 'Ñ'],
-                ['A', 'E', 'I', 'O', 'U', 'N'],
-                $text
-            );
 
-            return $text;
-        }
-    }
 }

@@ -1,6 +1,6 @@
 <template>
     <div :class="['relative flex justify-between items-center', widthClass]" ref="popup">
-        <p :class="labelClass">{{ label }}</p>
+        <p :class="{labelClass, 'text-purple-700 border border-purple-700 px-1' : isActive}">{{ label }}</p>
         <button @click="togglePopup">
             <BarsArrowDownIcon class="h-5 w-5" />
         </button>
@@ -78,6 +78,12 @@ const selectedOptions = ref([...props.modelValue]);
 const selectAll = ref(true);
 const filteredOptions = ref([...props.options]);
 const popup = ref(null);
+const isActive = ref(false);
+
+watch(selectAll, (newVal)=>{
+    if (newVal === true) isActive.value = false
+    else isActive.value = true
+})
 
 const widthClass = computed(() => props.width);
 

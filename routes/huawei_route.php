@@ -214,6 +214,11 @@ Route::middleware('permission:'.implode('|', RolesConstants::HUAWEI_MODULE))->gr
     Route::get('huawei/projects/general_expenses/{macro}/{site_id}/fetch_projects/get', [HuaweiMonthlyController::class, 'fetchProjects'])->name('huawei.projects.general.expenses.fetchprojects');
     Route::post('huawei/monthly_projects/general_expenses/import_costs/post', [HuaweiMonthlyController::class, 'importCosts'])->name('huawei.projects.general.expenses.import');
     Route::get('huawei/projects/general_expenses/donwload_template/get', [HuaweiMonthlyController::class, 'downloadTemplate'])->name('huawei.projects.general.expenses.donwloadtemplate');
+    Route::get('/huawei/projects/general_expenses/download_zip/{project_id}/{mode?}', [HuaweiMonthlyController::class, 'downloadImages'])->name('huawei.projects.general.expenses.downloadzip');
+
+
+    //nuevas rutas
+    Route::post('/huawei/projects/create/fetch_sites/post', [HuaweiProjectController::class, 'fetchSites'])->name('huawei.projects.create.fetchsites');
 });
 
 

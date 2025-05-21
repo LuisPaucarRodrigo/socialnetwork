@@ -14,7 +14,7 @@ class HuaweiProjectEarning extends Model
     protected $fillable = [
         'code',
         'description',
-        'huawei_project_id',
+        'huawei_pa_id',
         'unit_price',
         'unit',
         'quantity',
@@ -27,9 +27,9 @@ class HuaweiProjectEarning extends Model
         'amount'
     ];
 
-    public function huawei_project ()
+    public function huawei_assignation ()
     {
-        return $this->belongsTo(HuaweiProject::class, 'huawei_project_id');
+        return $this->belongsTo(HuaweiProjectAssignation::class, 'huawei_pa_id');
     }
 
     public function getAmountAttribute()

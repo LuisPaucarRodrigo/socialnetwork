@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('subdivisions', function (Blueprint $table) {
+        Schema::create('huawei_project_assignations', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->foreignId('section_id')->constrained('document_sections')->onDelete('cascade');
-            $table->boolean('is_visible');
+            $table->foreignId('huawei_project_id')->constrained('huawei_projects')->onDelete('cascade');
+            $table->string('po');
+            $table->date('assignation_date');
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('subdivisions');
+        Schema::dropIfExists('huawei_project_assignations');
     }
 };

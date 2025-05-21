@@ -9,6 +9,8 @@ use App\Http\Requests\PextProjectRequest\ApiStoreExpensesRequest;
 use App\Http\Requests\PreprojectRequest\ImageRequest;
 use App\Models\CicsaAssignation;
 use App\Models\Employee;
+use App\Models\HuaweiMonthlyExpense;
+use App\Models\HuaweiProject;
 use App\Models\Imagespreproject;
 use App\Models\PreprojectCode;
 use App\Models\PextProjectExpense;
@@ -133,7 +135,7 @@ class ApiController extends Controller
         $data = $request->validated();
         DB::beginTransaction();
         try {
-            $data['image']  = $this->apiService->storeBase64Image($data['photo'], "image/imagereportpreproject/", null);
+            $data['image'] = $this->apiService->storeBase64Image($data['photo'], "image/imagereportpreproject/", null);
             Imagespreproject::create([
                 'description' => $data['description'],
                 'image' => $data['image'],
@@ -677,4 +679,91 @@ class ApiController extends Controller
             'car' => $car,
         ], 200);
     }
+
+    //test
+
+    public function fetchSites($macro)
+    {
+        $projects = HuaweiProject::where('macro_project', $macro)->get();
+
+        $sites = $projects->flatMap(function ($project) {
+            return $project->huawei_site()->get()->map(function ($site) {
+                return [
+                    'id' => $site->id,
+                    'name' => $site->name,
+                ];
+            });
+        })->unique('id');
+
+        return response()->json($sites, 200);
+    }
+
+    public function fetchProjects($macro, $site_id)
+    {
+        $projects = HuaweiProject::select('id', 'name', 'assigned_diu')
+            ->where('macro_project', $macro)
+            ->where('huawei_site_id', $site_id)
+            ->get()
+            ->makeHidden([
+                'code',
+                'additional_cost_total',
+                'static_cost_total',
+                'materials_in_project',
+                'equipments_in_project',
+                'materials_liquidated',
+                'equipments_liquidated',
+                'total_earnings',
+                'total_real_earnings',
+                'total_real_earnings_without_deposit',
+                'total_project_cost',
+                'total_employee_costs',
+                'total_essalud_employee_cost',
+                'huawei_project_resources'
+            ])
+            ->filter(function ($project) {
+                return $project->state == 1;
+            });
+
+        return response()->json($projects, 200);
+    }
+
+    public function storeHuaweiExpense(Request $request)
+    {
+        $data = $request->validate([
+            'huawei_project_id' => 'nullable',
+            'expense_type' => 'required|string',
+            'employee' => 'required|string',
+            'cdp_type' => 'required|string',
+            'doc_number' => 'required|string',
+            'ruc' => 'required|string',
+            'description' => 'required|string',
+            'amount' => 'required|numeric',
+            'image' => 'nullable',
+        ]);
+
+        $data['expense_date'] = Carbon::now();
+
+        DB::beginTransaction();
+
+        try {
+            $new_expense = HuaweiMonthlyExpense::create($data);
+            $expenseDirectory = 'documents/huawei/expenses/';
+            if (isset($data['image'])) {
+                $new_image = $this->apiService->storeBase64Image($data['image'], $expenseDirectory, null);
+                $new_expense->update(['image' => $new_image]);
+                DB::commit();
+                return response()->json([], 200);
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
+        $expense = HuaweiMonthlyExpense::create($data);
+
+        return response()->json($expense, 200);
+    }
+
 }

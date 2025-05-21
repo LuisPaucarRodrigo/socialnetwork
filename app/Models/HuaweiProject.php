@@ -12,12 +12,10 @@ class HuaweiProject extends Model
     protected $table = 'huawei_projects';
 
     protected $fillable = [
-        'name',
         'huawei_site_id',
         'cost_center_id',
         'zone',
         'description',
-        'ot',
         'status',
         'prefix',
         'macro_project',
@@ -67,9 +65,9 @@ class HuaweiProject extends Model
         return $this->hasMany(HuaweiProjectResource::class, 'huawei_project_id');
     }
 
-    public function huawei_project_earnings ()
+    public function huawei_project_assignations ()
     {
-        return $this->hasMany(HuaweiProjectEarning::class, 'huawei_project_id');
+        return $this->hasMany(HuaweiProjectAssignation::class, 'huawei_project_id');
     }
 
     public function huawei_project_real_earnings ()
@@ -99,7 +97,7 @@ class HuaweiProject extends Model
 
     public function getCodeAttribute()
     {
-        $year = Carbon::parse($this->created_at)->year;
+        $year = Carbon::parse($this->assignation_date)->year;
         return $year . '-' . str_pad($this->id, 4, '0', STR_PAD_LEFT) . '-' . $this->macro_project . '-' . $this->huawei_site->name;
     }
 

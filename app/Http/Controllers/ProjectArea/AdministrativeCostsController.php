@@ -116,7 +116,6 @@ class AdministrativeCostsController extends Controller
         }
         $item = AdministrativeCost::create($data);
         $item->load('month_project', 'provider:id,company_name');
-        Log::info($item);
         $item->month_project->setAppends([]);
         $item->setAppends(['real_amount', 'real_state']);
         return response()->json($item, 200);

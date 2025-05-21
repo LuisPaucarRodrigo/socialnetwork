@@ -151,15 +151,14 @@ Route::middleware('permission:' . implode('|', RolesConstants::HR_MODULE))->grou
         ->middleware('permission:' . HumanResourcesPermissions::DOCUMENTS_SECTIONS->value)
         ->name('documents.sections');
     Route::post('/document_sections', [DocumentController::class, 'storeSection'])->name('documents.storeSection');
-    Route::put('/document_sections/{section}/update', [DocumentController::class, 'updateSection'])->name('documents.updateSection');
+    Route::post('/document_sections/{section}/update', [DocumentController::class, 'updateSection'])->name('documents.updateSection');
     Route::delete('/document_sections/{section}/delete', [DocumentController::class, 'destroySection'])->name('documents.destroySection');
     Route::get('/document_sections/{sectionId}/zipdownload', [DocumentController::class, 'downloadSectionDocumentsZip'])->name('documents.zipSection');
     //Route::delete('/document_sections/{sectionId}/zipdelete', [DocumentController::class, 'deleteSectionZip'])->name('documents.deleteZipSection');
 
     //Subdivisions
-    Route::get('/document_sections/{section}/subdivisions', [DocumentController::class, 'showSubdivisions'])->name('documents.subdivisions');
     Route::post('/document_sections/{section}/subdivisions/post', [DocumentController::class, 'storeSubdivision'])->name('documents.storeSubdivision');
-    Route::put('/document_sections/{section}/subdivisions/{subdivision}/update', [DocumentController::class, 'updateSubdivision'])->name('documents.updateSubdivision');
+    Route::post('/document_sections/{section}/subdivisions/{subdivision}/update', [DocumentController::class, 'updateSubdivision'])->name('documents.updateSubdivision');
     Route::delete('/document_sections/{section}/subdivisions/{subdivision}/delete', [DocumentController::class, 'destroySubdivision'])->name('documents.destroySubdivision');
     Route::get('/document_sections/{section}/subdivisions/{subdivisionId}/zipdownload', [DocumentController::class, 'downloadSubdivisionDocumentsZip'])->name('documents.zipSubdivision');
     //Route::delete('/document_sections/{section}/subdivisions/{subdivisionId}/zipdelete', [DocumentController::class, 'deleteZip'])->name('documents.deleteZipSubdivision');
@@ -213,9 +212,7 @@ Route::middleware('permission:' . implode('|', RolesConstants::HR_MODULE))->grou
     Route::get('/documents/index', [DocumentController::class, 'index'])->name('documents.index');
     Route::get('/documents/{document}/download', [DocumentController::class, 'downloadDocument'])->name('documents.download');
     Route::get('/documents/{document}/preview', [DocumentController::class, 'showDocument'])->name('documents.show');
-    Route::get('/documents/filter/{section}/section/{request?}', [DocumentController::class, 'sectionFilter'])->name('documents.filter.section');
-    Route::get('/documents/filter/{section}/section/{subdivision}/subdivision/{request?}', [DocumentController::class, 'subdivisionFilter'])->name('documents.filter.subdivision');
-    Route::get('/documents/search/{section}/{subdivision}/{request}/get', [DocumentController::class, 'search'])->name('documents.search');
+
 
     //Document Spreed Sheet
     Route::any('/documents_rrhh_status', [DocumentSpreedSheetController::class, 'index'])->name('document.rrhh.status');
@@ -232,6 +229,10 @@ Route::middleware('permission:' . implode('|', RolesConstants::HR_MODULE))->grou
     Route::delete('/documents/grupal_document/destroy/{gd_id}', [GrupalDocumentController::class, 'destroy'])->name('document.grupal_documents.destroy');
     Route::get('/documents/grupal_document/download/{gd_id}', [GrupalDocumentController::class, 'download'])->name('document.grupal_documents.download');
 
-    Route::get('/documents/megaupdate/', [DocumentController::class, 'megaupdate'])->name('documents.megaupdate');
+    //Route::get('/documents/megaupdate/', [DocumentController::class, 'megaupdate'])->name('documents.megaupdate');
 
+
+    //NUEVAS RUTAS
+    Route::post('/documents/filter_document/post', [DocumentController::class, 'documentReport'])->name('documents.filter_document');
+    Route::post('/document_sections/subdivisions/drag_and_drop', [DocumentController::class, 'dragandrop'])->name('documents.drag_and_drop');
 });

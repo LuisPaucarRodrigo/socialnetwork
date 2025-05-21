@@ -20,6 +20,8 @@ class HuaweiPriceGuide extends Model
         'b2',
         'b3',
         'b4',
+        'evidence',
+        'goal',
         'cost_center_id',
     ];
 

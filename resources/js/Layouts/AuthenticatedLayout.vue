@@ -33,6 +33,7 @@ import { watch } from 'vue';
 import { appAuth } from '@/Store/auth';
 
 
+
 const props = defineProps({
     redirectRoute: [String, Object],
 })
@@ -51,5 +52,6 @@ watch(
     },
     { immediate: true }
 );
+
 
 </script>

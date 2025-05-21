@@ -32,7 +32,6 @@ class AccountStatementImport implements ToModel
             $dateValue = $row[0];
 
             if (!preg_match('/^\d{2}-\d{2}$/', $dateValue)) {
-                Log::info($row[0]);
                 throw new \Exception("Error en la fila {$this->rowNumber}: Formato de fecha inválido en la columna Fecha. Debe ser 'DD-MM'.");
             }
             list($day, $month) = explode('-', $dateValue);
