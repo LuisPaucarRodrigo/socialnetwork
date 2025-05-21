@@ -24,7 +24,7 @@
                             class="flex flex-row items-start justify-between mb-2 gap-2"
                         >
                             <h2
-                                class="text-sm font-semibold text-gray-800 flex-1 break-words"
+                                class="text-sm font-semibold text-gray-800 flex-1 break-words" :class="section.is_visible && 'text-indigo-700'"
                             >
                                 {{ section.name }}
                             </h2>
@@ -96,7 +96,7 @@
                                 <p
                                     class="text-sm text-gray-700 w-2/3 break-words"
                                 >
-                                    <span class="font-medium">{{
+                                    <span class="font-medium"  :class="subdivision.is_visible && 'text-indigo-700'">{{
                                         subdivision.name
                                     }}</span>
                                 </p>
@@ -162,7 +162,7 @@
                         "
                     >
                         <div class="space-y-12">
-                            <div class="border-b border-gray-900/10 pb-12">
+                            <div class="border-b border-gray-900/10 pb-12 space-y-4">
                                 <div>
                                     <InputLabel for="name"
                                         >{{
@@ -182,6 +182,15 @@
                                             :message="form.errors.name"
                                         />
                                     </div>
+                                </div>
+                                <div>
+                                    <label :for="`isVisible`" class="flex items-center gap-3 w-full ">
+                                        <p class="text-sm text-gray-900 ">
+                                            ¿Mostrar en el estatus RRHH?
+                                        </p>
+                                        <input class="text-gray-700 focus:ring-gray-700" v-model="form.is_visible" :id="`isVisible`"
+                                            type="checkbox" />
+                                    </label>
                                 </div>
                                 <div
                                     class="mt-6 flex items-center justify-end gap-x-6"
@@ -235,7 +244,7 @@
                         "
                     >
                         <div class="space-y-12">
-                            <div class="border-b border-gray-900/10 pb-12">
+                            <div class="border-b border-gray-900/10 pb-12 space-y-4">
                                 <div>
                                     <InputLabel for="name">{{
                                         isCreateSubdivisionModalOpen
@@ -253,6 +262,15 @@
                                             :message="formSub.errors.name"
                                         />
                                     </div>
+                                </div>
+                                <div>
+                                    <label :for="`isVisible`" class="flex items-center gap-3 w-full ">
+                                        <p class="text-sm text-gray-900 ">
+                                            ¿Mostrar en el estatus RRHH?
+                                        </p>
+                                        <input class="text-gray-700 focus:ring-gray-700" v-model="formSub.is_visible" :id="`isVisible`"
+                                            type="checkbox" />
+                                    </label>
                                 </div>
                                 <div
                                     class="mt-6 flex items-center justify-end gap-x-6"
@@ -343,6 +361,7 @@ const dataToRender = ref(props.sections);
 const form = useForm({
     id: "",
     name: "",
+    is_visible: false,
 });
 
 const isCreateSectionModalOpen = ref(false);
@@ -365,6 +384,7 @@ const openUpdateSectionModal = (item) => {
     editingSection.value = JSON.parse(JSON.stringify(item));
     form.id = editingSection.value.id;
     form.name = editingSection.value.name;
+    form.is_visible = Boolean(editingSection.value.is_visible)
     isUpdateSectionModalOpen.value = true;
 };
 
@@ -385,12 +405,10 @@ const submit = async (update) => {
         ? route("documents.updateSection", { section: form.id })
         : route("documents.storeSection");
 
-    const formData = toFormData(form);
+    const formData = form.data();
 
     try {
-        const res = await axios.post(url, formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-        });
+        const res = await axios.post(url, formData);
 
         const section = res.data;
 
@@ -455,8 +473,10 @@ const openCreateSubdivisionModal = (section) => {
 const openUpdateSubdivisionModal = (section, item) => {
     sectionId.value = section;
     editingSubdivision.value = JSON.parse(JSON.stringify(item));
+    console.log(editingSubdivision)
     formSub.id = editingSubdivision.value.id;
     formSub.name = editingSubdivision.value.name;
+    formSub.is_visible = Boolean(editingSubdivision.value.is_visible);
     isUpdateSubdivisionModalOpen.value = true;
 };
 
@@ -475,6 +495,7 @@ const closeUpdateSubdivisionModal = () => {
 const formSub = useForm({
     id: "",
     name: "",
+    is_visible: false,
     section_id: "",
 });
 
@@ -487,13 +508,10 @@ const submitSub = async (update) => {
               section: sectionId.value,
               subdivision: formSub.id,
           });
-
-    const formData = toFormData(formSub);
+    const formData = formSub.data()
 
     try {
-        const res = await axios.post(url, formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-        });
+        const res = await axios.post(url, formData);
 
         const newSub = res.data;
 
@@ -502,9 +520,9 @@ const submitSub = async (update) => {
         );
 
         if (section) {
-            const subMap = new Map(section.subdivisions.map((s) => [s.id, s]));
-            subMap.set(newSub.id, newSub);
-            section.subdivisions = Array.from(subMap.values());
+            const index = section.subdivisions.findIndex((sd)=>sd.id === newSub.id)
+            if(index === -1) section.subdivisions.push(newSub)
+            else section.subdivisions[index] = newSub
         } else {
             console.warn("Sección no encontrada para la subdivisión");
         }
@@ -545,15 +563,13 @@ const deleteSubdivision = async () => {
                 subdivision: subdivisionToDelete.value,
             })
         );
-
         if (res.data.message === "success") {
             const section = dataToRender.value.find(
                 (s) => s.id === sectionId.value
             );
             if (section) {
-                section.subdivisions = section.subdivisions.filter(
-                    (sub) => sub.id !== subdivisionToDelete.value
-                );
+                const index = section.subdivisions.findIndex((sd)=>sd.id === subdivisionToDelete.id)
+                section.subdivisions.splice(index, 1);
             }
             closeModalSubdivision();
             notify("Subdivisión eliminada correctamente");

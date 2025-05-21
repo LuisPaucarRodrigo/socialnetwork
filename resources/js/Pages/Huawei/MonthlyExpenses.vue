@@ -126,7 +126,7 @@
                         Facturas, Boletas y Vouchers de Pago
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
-                    
+
                     <div>
                         <dropdown align="left">
                             <template #trigger>
@@ -377,7 +377,7 @@
                         >
                             <TableAutocompleteFilter
                                 labelClass="text-[11px]"
-                                label="Comprobante de Pago"
+                                label="Tipo de Documento"
                                 :options="cdp_types"
                                 v-model="filterForm.selectedCDPTypes"
                                 width="w-48"
@@ -722,7 +722,7 @@
                                               0
                                           )
                                           .toFixed(2)
-                                    
+
                             }}
                         </td>
 
@@ -890,7 +890,7 @@
                                 <InputLabel
                                     for="cdp_type"
                                     class="font-medium leading-6 text-gray-900"
-                                    >Tipo de CDP
+                                    >Tipo de Documento
                                 </InputLabel>
                                 <div class="mt-2">
                                     <select
@@ -899,7 +899,7 @@
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     >
                                         <option disabled value="">
-                                            Seleccionar Tipo de CDP
+                                            Seleccionar Tipo de Documento
                                         </option>
                                         <option v-for="cdp in cdp_types">
                                             {{ cdp }}
@@ -1463,10 +1463,10 @@
             :title="'Éxito'"
             :message="successMessage"
         />
-        <ConfirmateModal 
+        <ConfirmateModal
             tittle="Descarga de archivos"
-            text="La descarga de archivos será en base a los filtros que están activos, si no hay filtros activos se descargarán de todos los registros. PARA AMBOS CASOS SOLO ES PARA REGISTROS ACEPTADOS" 
-            :showConfirm="showExportArchivesModal" 
+            text="La descarga de archivos será en base a los filtros que están activos, si no hay filtros activos se descargarán de todos los registros. PARA AMBOS CASOS SOLO ES PARA REGISTROS ACEPTADOS"
+            :showConfirm="showExportArchivesModal"
             :actionFunction="exportArchives"
             @closeModal="closeExportArchivesModal"
         />

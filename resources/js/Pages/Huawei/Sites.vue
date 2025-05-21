@@ -4,7 +4,7 @@
         <AuthenticatedLayout>
             <template #header> Gestión de Sites Huawei </template>
             <div
-                class="inline-block min-w-full overflow-hidden rounded-lg shadow"
+                class="overflow-hidden rounded-lg shadow"
             >
                 <div class="flex gap-4 justify-between rounded-lg">
                     <div

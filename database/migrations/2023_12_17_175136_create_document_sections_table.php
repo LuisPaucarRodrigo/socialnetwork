@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('document_sections', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->boolean('is_visible');
             $table->timestamps();
         });
     }

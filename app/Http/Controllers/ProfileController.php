@@ -9,9 +9,12 @@ use App\Enums\Permissions\ProjectPermissions;
 use App\Enums\Permissions\PurchasingPermissions;
 use App\Enums\Permissions\UserRolePermissions;
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Document;
+use App\Models\DocumentRegister;
 use App\Models\Permission;
 use App\Models\Project;
 use App\Models\CicsaAssignation;
+use App\Models\Subdivision;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,6 +22,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\File;
 use Exception;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -27,35 +31,39 @@ class ProfileController extends Controller
 {
     public function allFine()
     {
-        // $data = Project::with('cicsa_assignation', 'preproject.customer')
-        //      ->where('cost_center_id', 2)
-        //      ->whereIn('id', [372, 425, 452])
-        //      ->get();
 
-        // DB::beginTransaction();
-        // try {
-        //     foreach ($data as $project) {
-        //         $preproject = $project->preproject;
-        //         CicsaAssignation::create([
-        //             "assignation_date" => $preproject->date,
-        //             "project_name" => $project->description,
-        //             "customer" => $preproject->customer->business_name,
-        //             "project_code" => $preproject->code,
-        //             "cpe" => $preproject->cpe,
-        //             "zone" => 'Arequipa',
-        //             "zone2" => null,
-        //             "manager" => 'Nikol Sheyla Rondón Neyra',
-        //             "user_name" => 'Nikol Sheyla Rondón Neyra',
-        //             "user_id" => 6,
-        //             "project_id" => $project->id,
-        //         ]);
-        //     }
-        //     DB::commit();
-        //     return response()->json('all fine');
-        // } catch (Exception $e) {
-        //     DB::rollBack();
-        //     return $e->getMessage();
+        $subdivisions = Subdivision::whereIn('section_id', [1,4,5,6,7,8,9,10])->pluck('id');
+        return response()->json($subdivisions);
+        // $path = public_path('documents/documents');
+
+        // if (!File::exists($path)) {
+        //     return response()->json(['error' => 'Ruta no encontrada'], 404);
         // }
+        // $files = File::files($path);
+        // $fileNames = collect($files)->map(function ($file) {
+        //     return $file->getFilename();
+        // });
+        // $orphans = [];
+        // foreach ($fileNames as $name) {
+        //     $reg = Document::where('title', $name)->first();
+        //     if(!$reg)
+        //     array_push($orphans, $name);
+        // }
+
+        // return response()->json($orphans);
+
+        // $docregs = DocumentRegister::whereNull('subdivision_id')->get();
+
+        // foreach($docregs as $item) {
+        //     $docitem = Document::find($item->document_id);
+        //     $residual = DocumentRegister::where('subdivision_id', $docitem->subdivision_id)
+        //         ->where('employee_id', $docitem->employee_id)->whereNull('document_id')->first();
+        //        if($residual) $residual->delete();
+        //     $item->update([
+        //         'subdivision_id' => $docitem->subdivision_id
+        //     ]);
+        // }
+        // return response()->json('all fine');
 
     }
 

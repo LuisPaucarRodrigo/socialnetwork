@@ -32,6 +32,7 @@ class DocumentController extends Controller
     {
         $request->validate([
             'name' => 'required|string',
+            'is_visible' => 'required|boolean',
         ]);
 
         $section = DocumentSection::create([
@@ -43,7 +44,8 @@ class DocumentController extends Controller
     public function updateSection(DocumentSection $section, Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string'
+            'name' => 'required|string',
+            'is_visible' => 'required|boolean',
         ]);
 
         $section->update($data);
@@ -68,11 +70,13 @@ class DocumentController extends Controller
     {
         $request->validate([
             'name' => 'required|string',
+            'is_visible' => 'required|boolean'
         ]);
 
         $sub = Subdivision::create([
             'name' => $request->name,
             'section_id' => $section->id,
+            'is_visible' => $request->is_visible,
         ]);
         return response()->json(data: $sub);
     }
@@ -80,16 +84,13 @@ class DocumentController extends Controller
     public function updateSubdivision($section, Subdivision $subdivision, Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string'
+            'name' => 'required|string',
+            'is_visible' => 'required|boolean',
         ]);
 
         $subdivision->update($data);
 
-        return response()->json([
-            'id' => $subdivision->id,
-            'name' => $subdivision->name,
-            'section_id' => $subdivision->section_id,
-        ]);
+        return response()->json($subdivision);
     }
 
 
@@ -206,40 +207,39 @@ class DocumentController extends Controller
                 $document->move(public_path('documents/documents/'), $data['title']);
             }
             $docItem = Document::create($data);
-            $docReg = $docItem->employee_id
-                ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
-                    ->where('employee_id', $docItem->employee_id)
-                    ->first()
-                : ($docItem->e_employee_id
-                    ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
-                        ->where('e_employee_id', $docItem->e_employee_id)
-                        ->first()
-                    : null
-                );
-
-            if ($docReg) {
-                $dataDocReg['document_id'] = $docItem->id;
-                if ($docReg->exp_date === null) {
-                    $dataDocReg['exp_date'] = $docItem->exp_date;
-                }
-                if (isset($data['exp_date']) && $docReg->exp_date) {
-                    $newExpDate = Carbon::parse($data['exp_date']);
-                    $pastExpDate = Carbon::parse($docReg->exp_date);
-                    if ($newExpDate >= $pastExpDate) {
-                        $dataDocReg['exp_date'] = $docItem->exp_date;
-                    }
-                }
-                $docReg->update($dataDocReg);
-            } else {
-                DocumentRegister::create([
-                    'subdivision_id' => $docItem->subdivision_id,
-                    'document_id' => $docItem->id,
-                    'employee_id' => $docItem->employee_id,
-                    'e_employee_id' => $docItem->e_employee_id,
-                    'exp_date' => $docItem->exp_date,
-                    'state' => 'Completado',
-                ]);
-            }
+            // $docReg = $docItem->employee_id
+            //     ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
+            //         ->where('employee_id', $docItem->employee_id)
+            //         ->first()
+            //     : ($docItem->e_employee_id
+            //         ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
+            //             ->where('e_employee_id', $docItem->e_employee_id)
+            //             ->first()
+            //         : null
+            //     );  
+            // if ($docReg) {
+            //     $dataDocReg['document_id'] = $docItem->id;
+            //     if ($docReg->exp_date === null) {
+            //         $dataDocReg['exp_date'] = $docItem->exp_date;
+            //     }
+            //     if (isset($data['exp_date']) && $docReg->exp_date) {
+            //         $newExpDate = Carbon::parse($data['exp_date']);
+            //         $pastExpDate = Carbon::parse($docReg->exp_date);
+            //         if ($newExpDate >= $pastExpDate) {
+            //             $dataDocReg['exp_date'] = $docItem->exp_date;
+            //         }
+            //     }
+            //     $docReg->update($dataDocReg);
+            // } else {
+            //     DocumentRegister::create([
+            //         'subdivision_id' => $docItem->subdivision_id,
+            //         'document_id' => $docItem->id,
+            //         'employee_id' => $docItem->employee_id,
+            //         'e_employee_id' => $docItem->e_employee_id,
+            //         'exp_date' => $docItem->exp_date,
+            //         'state' => 'Completado',
+            //     ]);
+            // }
 
             return redirect()->back();
         } catch (Exception $e) {
@@ -255,10 +255,9 @@ class DocumentController extends Controller
         $fileName = $docItem->title;
         $filePath = "documents/documents/$fileName";
         $path = public_path($filePath);
-        if (file_exists($path)) {
+        if (file_exists($path) && is_file($path)) {
             unlink($path);
         }
-        $documentName = null;
         if ($request->hasFile('document')) {
             $document = $request->file('document');
             $employee_name = $request->employee_id ? Employee::where('id', $data['employee_id'])
@@ -272,41 +271,41 @@ class DocumentController extends Controller
 
 
         $docItem->update($data);
-        $docReg = $docItem->employee_id
-            ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
-                ->where('employee_id', $docItem->employee_id)
-                ->first()
-            : ($docItem->e_employee_id
-                ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
-                    ->where('e_employee_id', $docItem->e_employee_id)
-                    ->first()
-                : null
-            );
-        if ($docReg) {
-            $dataDocReg['document_id'] = $docItem->id;
-            $dataDocReg['employee_id'] = $docItem->employee_id;
-            $dataDocReg['e_employee_id'] = $docItem->e_employee_id;
-            if ($docReg->exp_date === null) {
-                $dataDocReg['exp_date'] = $docItem->exp_date;
-            }
-            if (isset($data['exp_date']) && $docReg->exp_date) {
-                $newExpDate = Carbon::parse($data['exp_date']);
-                $pastExpDate = Carbon::parse($docReg->exp_date);
-                if ($newExpDate >= $pastExpDate) {
-                    $dataDocReg['exp_date'] = $docItem->exp_date;
-                }
-            }
-            $docReg->update($dataDocReg);
-        } else {
-            DocumentRegister::create([
-                'subdivision_id' => $docItem->subdivision_id,
-                'document_id' => $docItem->id,
-                'employee_id' => $docItem->employee_id,
-                'e_employee_id' => $docItem->e_employee_id,
-                'exp_date' => $docItem->exp_date,
-                'state' => 'Completado',
-            ]);
-        }
+        // $docReg = $docItem->employee_id
+        //     ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
+        //         ->where('employee_id', $docItem->employee_id)
+        //         ->first()
+        //     : ($docItem->e_employee_id
+        //         ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
+        //             ->where('e_employee_id', $docItem->e_employee_id)
+        //             ->first()
+        //         : null
+        //     );
+        // if ($docReg) {
+        //     $dataDocReg['document_id'] = $docItem->id;
+        //     $dataDocReg['employee_id'] = $docItem->employee_id;
+        //     $dataDocReg['e_employee_id'] = $docItem->e_employee_id;
+        //     if ($docReg->exp_date === null) {
+        //         $dataDocReg['exp_date'] = $docItem->exp_date;
+        //     }
+        //     if (isset($data['exp_date']) && $docReg->exp_date) {
+        //         $newExpDate = Carbon::parse($data['exp_date']);
+        //         $pastExpDate = Carbon::parse($docReg->exp_date);
+        //         if ($newExpDate >= $pastExpDate) {
+        //             $dataDocReg['exp_date'] = $docItem->exp_date;
+        //         }
+        //     }
+        //     $docReg->update($dataDocReg);
+        // } else {
+        //     DocumentRegister::create([
+        //         'subdivision_id' => $docItem->subdivision_id,
+        //         'document_id' => $docItem->id,
+        //         'employee_id' => $docItem->employee_id,
+        //         'e_employee_id' => $docItem->e_employee_id,
+        //         'exp_date' => $docItem->exp_date,
+        //         'state' => 'Completado',
+        //     ]);
+        // }
 
         return redirect()->back();
     }

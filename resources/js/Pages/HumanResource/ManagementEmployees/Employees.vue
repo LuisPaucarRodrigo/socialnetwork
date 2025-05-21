@@ -40,26 +40,26 @@
         <Modal :show="showModalFired">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
-                    Despido del Empleado
+                    Baja del Empleado
                 </h2>
                 <form @submit.prevent="submit">
                     <div class="border-b border-gray-900/10 pb-12">
                         <div class="mt-2">
-                            <InputLabel for="fired_date">Fecha de Despido:
+                            <InputLabel for="fired_date">Fecha de Baja:
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="date" id="fired_date" v-model="form.fired_date" />
                                 <InputError :message="form.errors.fired_date" />
                             </div>
                         </div>
-                        <div class="mt-6">
+                        <!-- <div class="mt-6">
                             <InputLabel for="days_taken">Dias Tomados:
                             </InputLabel>
                             <div class="mt-2">
                                 <TextInput type="text" id="days_taken" v-model="form.days_taken" />
                                 <InputError :message="form.errors.days_taken" />
                             </div>
-                        </div>
+                        </div> -->
                         <div class="mt-6 flex items-center justify-end gap-x-6">
                             <SecondaryButton @click="closeFiredModal"> Cancel </SecondaryButton>
                             <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->foreignId('section_id')->constrained('document_sections')->onDelete('cascade');
+            $table->boolean('is_visible');
             $table->timestamps();
         });
     }

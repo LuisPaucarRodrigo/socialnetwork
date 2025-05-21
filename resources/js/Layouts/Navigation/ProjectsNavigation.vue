@@ -1,70 +1,138 @@
 <template>
-    <a v-if="cicsasubSectionsPorVencer.length + cicsasubSectionsPorVencer7.length > 0"
-        class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
-        @click="showingProyectArea = (cicsashowingMembers && cicsashowingMembers7) ? false : !showingProyectArea; cicsashowingMembers = cicsashowingMembers7 = false">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="red"
-            class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z" />
+    <a
+        v-if="
+            cicsasubSectionsPorVencer.length +
+                cicsasubSectionsPorVencer7.length >
+            0
+        "
+        class="flex items-center mt-4 py-2 px-6 text-gray-100"
+        href="#"
+        @click="
+            showingProyectArea =
+                cicsashowingMembers && cicsashowingMembers7
+                    ? false
+                    : !showingProyectArea;
+            cicsashowingMembers = cicsashowingMembers7 = false;
+        "
+    >
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="red"
+            class="w-6 h-6"
+        >
+            <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z"
+            />
         </svg>
         <span class="mx-3">Area de Proyectos</span>
     </a>
-    <a v-else class="flex items-center mt-4 py-2 px-6 text-gray-100" href="#"
-        @click="showingProyectArea = !showingProyectArea">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z" />
+    <a
+        v-else
+        class="flex items-center mt-4 py-2 px-6 text-gray-100"
+        href="#"
+        @click="showingProyectArea = !showingProyectArea"
+    >
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6"
+        >
+            <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z"
+            />
         </svg>
         <span class="mx-3">Area de Proyectos</span>
     </a>
-    <MyTransition 
-         v-if="subModulePermission(submodules.pclients_submodule, userSubModules)"
-        :transitiondemonstration="showingProyectArea">
+    <MyTransition
+        v-if="
+            subModulePermission(submodules.pclients_submodule, userSubModules)
+        "
+        :transitiondemonstration="showingProyectArea"
+    >
         <Link class="w-full" :href="route('customers.index')">Clientes</Link>
     </MyTransition>
-    <MyTransition 
-         v-if="subModulePermission(submodules.ppro_submodule, userSubModules)"
-        :transitiondemonstration="showingProyectArea">
+    <MyTransition
+        v-if="subModulePermission(submodules.ppro_submodule, userSubModules)"
+        :transitiondemonstration="showingProyectArea"
+    >
         <Link class="w-full" :href="route('preprojects.titles')">PRO</Link>
     </MyTransition>
-    <MyTransition 
-         v-if="subModulePermission(submodules.pprepint_submodule, userSubModules)"
-        :transitiondemonstration="showingProyectArea">
-        <Link class="w-full" :href="route('preprojects.index', { type: 1 })">Anteproyectos Pint</Link>
+    <MyTransition
+        v-if="
+            subModulePermission(submodules.pprepint_submodule, userSubModules)
+        "
+        :transitiondemonstration="showingProyectArea"
+    >
+        <Link class="w-full" :href="route('preprojects.index', { type: 1 })"
+            >Anteproyectos Pint</Link
+        >
     </MyTransition>
-    <MyTransition 
-         v-if="subModulePermission(submodules.pprepext_submodule, userSubModules)"
-        :transitiondemonstration="showingProyectArea">
-        <Link class="w-full" :href="route('preprojects.index', { type: 2 })">Anteproyectos Pext</Link>
+    <MyTransition
+        v-if="
+            subModulePermission(submodules.pprepext_submodule, userSubModules)
+        "
+        :transitiondemonstration="showingProyectArea"
+    >
+        <Link class="w-full" :href="route('preprojects.index', { type: 2 })"
+            >Anteproyectos Pext</Link
+        >
     </MyTransition>
-    <MyTransition 
-         v-if="subModulePermission(submodules.ppropint_submodule, userSubModules)"
-        :transitiondemonstration="showingProyectArea">
-        <Link class="w-full" :href="route('projectmanagement.index')">Proyectos Pint</Link>
+    <MyTransition
+        v-if="
+            subModulePermission(submodules.ppropint_submodule, userSubModules)
+        "
+        :transitiondemonstration="showingProyectArea"
+    >
+        <Link class="w-full" :href="route('projectmanagement.index')"
+            >Proyectos Pint</Link
+        >
     </MyTransition>
-    <MyTransition 
-         v-if="subModulePermission(submodules.ppropext_submodule, userSubModules)"
-        :transitiondemonstration="showingProyectArea">
-        <Link class="w-full" :href="route('projectmanagement.pext.index')">Proyectos Pext</Link>
+    <MyTransition
+        v-if="
+            subModulePermission(submodules.ppropext_submodule, userSubModules)
+        "
+        :transitiondemonstration="showingProyectArea"
+    >
+        <Link class="w-full" :href="route('projectmanagement.pext.index')"
+            >Proyectos Pext</Link
+        >
     </MyTransition>
-    <MyTransition 
-         v-if="subModulePermission(submodules.padmexpen_submodule, userSubModules)"
-        :transitiondemonstration="showingProyectArea">
-        <Link class="w-full" :href="route('monthproject.index')">G. Administrativos</Link>
+    <MyTransition
+        v-if="
+            subModulePermission(submodules.padmexpen_submodule, userSubModules)
+        "
+        :transitiondemonstration="showingProyectArea"
+    >
+        <Link class="w-full" :href="route('monthproject.index')"
+            >G. Administrativos</Link
+        >
     </MyTransition>
-    <MyTransition 
-         v-if="subModulePermission(submodules.pchecklist_submodule, userSubModules)"
-        :transitiondemonstration="showingProyectArea">
-        <Link class="w-full" :href="route('checklist.index')">
-        Checklist
-        </Link>
+    <MyTransition
+        v-if="
+            subModulePermission(submodules.pchecklist_submodule, userSubModules)
+        "
+        :transitiondemonstration="showingProyectArea"
+    >
+        <Link class="w-full" :href="route('checklist.index')"> Checklist </Link>
     </MyTransition>
-    <MyTransition 
-         v-if="subModulePermission(submodules.pbacklog_submodule, userSubModules)"
-        :transitiondemonstration="showingProyectArea">
+    <MyTransition
+        v-if="
+            subModulePermission(submodules.pbacklog_submodule, userSubModules)
+        "
+        :transitiondemonstration="showingProyectArea"
+    >
         <Link class="w-full" :href="route('project.backlog.index')">
-        Backlog
+            Backlog
         </Link>
     </MyTransition>
     <!-- <MyTransition 
@@ -113,49 +181,46 @@
     </template> -->
 </template>
 <script setup>
-import MyTransition from '@/Components/MyTransition.vue';
-import { subModulePermission } from '@/utils/roles/roles';
-import { Link, usePage } from '@inertiajs/vue3';
-import { onMounted, ref, onUnmounted } from 'vue';
+import MyTransition from "@/Components/MyTransition.vue";
+import { subModulePermission } from "@/utils/roles/roles";
+import { Link, usePage } from "@inertiajs/vue3";
+import { onMounted, ref, onUnmounted } from "vue";
 
-const {submodules} = usePage().props
-const {userSubModules} = usePage().props.auth
+const { submodules } = usePage().props;
+const { userSubModules } = usePage().props.auth;
 
-const showingProyectArea = ref(false)
-const cicsashowingMembers = ref(false)
-const cicsashowingMembers7 = ref(false)
-const cicsasubSectionsPorVencer = ref([])
-const cicsasubSectionsPorVencer7 = ref([])
+const showingProyectArea = ref(false);
+const cicsashowingMembers = ref(false);
+const cicsashowingMembers7 = ref(false);
+const cicsasubSectionsPorVencer = ref([]);
+const cicsasubSectionsPorVencer7 = ref([]);
 
-function toggleMembersCicsa(){
-    cicsashowingMembers7.value = !cicsashowingMembers7.value
-    cicsashowingMembers.value = !cicsashowingMembers.value
+function toggleMembersCicsa() {
+    cicsashowingMembers7.value = !cicsashowingMembers7.value;
+    cicsashowingMembers.value = !cicsashowingMembers.value;
 }
 
 async function fetchCicsaSubSectionsCount() {
     try {
-        const response = await axios.get(route('member.cicsa.alarm'));
+        const response = await axios.get(route("member.cicsa.alarm"));
         cicsasubSectionsPorVencer.value = response.data.subSections;
         cicsasubSectionsPorVencer7.value = response.data.subSections7;
     } catch (error) {
-        console.error('Error al obtener el contador de subsecciones:', error);
+        console.error("Error al obtener el contador de subsecciones:", error);
     }
 }
 
-
-
 let intervalId;
 const fetchAllAlarms = () => {
-  return Promise.all([
-    fetchCicsaSubSectionsCount()
-  ]);
+    return Promise.all([
+        //fetchCicsaSubSectionsCount()
+    ]);
 };
 onMounted(() => {
-  fetchAllAlarms();
-  intervalId = setInterval(fetchAllAlarms, 60000);
+    fetchAllAlarms();
+    intervalId = setInterval(fetchAllAlarms, 60000);
 });
 onUnmounted(() => {
-  clearInterval(intervalId);
+    clearInterval(intervalId);
 });
-
 </script>

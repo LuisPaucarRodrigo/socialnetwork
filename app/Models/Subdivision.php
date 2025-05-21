@@ -9,7 +9,7 @@ class Subdivision extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'section_id'];
+    protected $fillable = ['name', 'section_id', 'is_visible'];
 
     public function documents()
     {
