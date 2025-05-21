@@ -92,6 +92,8 @@ Route::post('/finance/desposits/generateSummary/post', [DepositController::class
 
 
 
+//new routes
+Route::get('/finance/account_statement_excel_export', [AccountStatementController::class, 'excel_export'])->name('finance.account_statement.excel.export');
 
 
 

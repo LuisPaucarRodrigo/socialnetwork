@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Finance;
 
+use App\Exports\AccountStatementExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AccountStatement\AccountStatementImportRequest;
 use App\Http\Requests\AccountStatement\AccountStatementRequest;
@@ -82,6 +83,10 @@ class AccountStatementController extends Controller
         AccountStatement::whereIn('id', $data['ids'])->delete();
         $data = $this->getAccountVariables($request->month, $request->endMonth,$request->all);
         return response()->json(['dataToRender'=>$data], 200);
+    }
+
+    public function excel_export (Request $request) {
+        return Excel::download(new AccountStatementExport($request), 'Estado_de_cuenta.xlsx');
     }
 
 

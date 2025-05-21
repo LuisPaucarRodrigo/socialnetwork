@@ -80,7 +80,7 @@
                         <button
                             data-tooltip-target="export_register_tooltip"
                             type="button"
-                            @click=""
+                            @click="handleExportExcel()"
                             class="p-2 bg-green-500 rounded-md text-slate-900 hover:bg-green-400"
                         >
                             <CloudArrowDownIcon
@@ -991,6 +991,7 @@ import {
     ArrowsUpDownIcon,
 } from "@heroicons/vue/24/outline";
 import { CloudArrowDownIcon } from "@/Components/icons";
+import qs from 'qs';
 
 const {
     accountStatements,
@@ -1156,13 +1157,15 @@ function handleSearchClient() {
                         : false) ||
                     (item.payment
                         ? item.payment.toString().toLowerCase().includes(search)
-                        : false) ||
-                    (item.operation_date
-                        ? formattedDate(item.operation_date).includes(search)
-                        : false) ||
-                    (item.balance
-                        ? item.balance.toString().toLowerCase().includes(search)
-                        : false));
+                        : false) 
+                    //     ||
+                    // (item.operation_date
+                    //     ? formattedDate(item.operation_date).includes(search)
+                    //     : false) ||
+                    // (item.balance
+                    //     ? item.balance.toString().toLowerCase().includes(search)
+                    //     : false)
+                    );
         }
         if (filterForm.value.stateOptions) {
             let stateOptions = filterForm.value.stateOptions;
@@ -1408,7 +1411,8 @@ const yearInput = ref("");
 watch(yearInput, () => {
     if (yearInput.value) {
         isFetchingAll.value = true;
-        monthInput.value = ""
+        filterForm.value = { ...initialFilterFormState };
+        monthInput.value = "";
         handleSearch(`${yearInput.value}-01`, `${yearInput.value}-12`, false);
     }
 });
@@ -1417,8 +1421,29 @@ watch(yearInput, () => {
 watch(monthInput, () => {
     if (monthInput.value) {
         isFetchingAll.value = true;
+        filterForm.value = { ...initialFilterFormState };
         yearInput.value = "";
         handleSearch(monthInput.value);
     }
 });
+
+//Export
+function handleExportExcel() {
+    const exportFilter = {...filterForm.value, monthInput: monthInput.value, yearInput: yearInput.value}
+
+    const uniqueParam = `timestamp=${new Date().getTime()}`;
+    const url = route("finance.account_statement.excel.export") +
+        "?" + qs.stringify({...exportFilter, uniqueParam}, { arrayFormat: 'brackets' });
+    window.location.href = url;
+}
+
+
+function getFirstDay (monthString) {
+    return `${monthString}-01`;
+}
+function getLastDay (monthString) {
+    const [year, month] = monthString.split('-').map(Number);
+    const lastDay = new Date(year, month, 0).toISOString().split('T')[0];
+    return lastDay
+}
 </script>
