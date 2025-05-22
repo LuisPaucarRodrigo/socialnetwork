@@ -968,7 +968,7 @@ function rejectedExpenses() {
     filterForm.value.rejected = !filterForm.value.rejected
 }
 
-const actionForm = ref({ ids: [], });
+const actionForm = ref({ ids: [] });
 
 const handleCheckAll = (e) => {
     if (e.target.checked) { actionForm.value.ids = expenses.value.map((item) => item.id); }
