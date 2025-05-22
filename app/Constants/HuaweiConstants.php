@@ -48,22 +48,24 @@ class HuaweiConstants
     public static function getVariableExpenseTypes(): array
     {
         return [
-            "ADICIONAL CAMIONETA",
             "ADICIONAL",
+            "ADICIONAL CAMIONETA",
+            "ALIMENTACION",
+            "COCHERA",
+            "COMBUSTIBLE",
             "CONSUMIBLES",
+            "ENCOMIENDA",
             "EPPS",
             "FLETES",
             "HERRAMIENTAS",
             "HOSPEDAJE",
             "MATERIALES",
             "MOVILIDAD",
+            "PEAJE",
             "TRANSPORTE",
-            "ALIMENTACION",
-            "COMBUSTIBLE",
-            "COCHERA",
-            "ENCOMIENDA",
-            "OTROS",
+            "OTROS"
         ];
+
     }
 
     public static function getStaticExpenseTypes(): array
