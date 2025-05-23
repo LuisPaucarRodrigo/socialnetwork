@@ -21,7 +21,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Log;
 class ApiController extends Controller
 {
 
@@ -32,6 +32,19 @@ class ApiController extends Controller
     {
         $this->apiService = $apiService;
         $this->main_directory = 'LocalDrive';
+    }
+
+    public function checkVersion(Request $request)
+    {
+        $clientVersion = $request->header('X-App-Version');
+        $currentVersion = '2.6.0';
+        if (version_compare($clientVersion, $currentVersion, '<')) {
+            return response()->json([
+                'update_required' => true,
+                'error' => "Tu app está desactualizada. Actualiza a la versión $currentVersion."
+            ], 426);
+        }
+        return response()->json([], 200);
     }
 
     public function verificationToken()
@@ -701,7 +714,7 @@ class ApiController extends Controller
 
     public function fetchProjects($macro, $site_id)
     {
-        $projects = HuaweiProject::select('id','assigned_diu')
+        $projects = HuaweiProject::select('id', 'assigned_diu')
             ->where('macro_project', $macro)
             ->where('huawei_site_id', $site_id)
             ->get()
@@ -754,7 +767,6 @@ class ApiController extends Controller
         return response()->json($expenses, 200);
     }
 
-
     public function storeHuaweiExpense(Request $request)
     {
         $user = Auth::user();
@@ -772,27 +784,23 @@ class ApiController extends Controller
 
         $data['expense_date'] = Carbon::now();
         $data['employee'] = $user->name;
-        DB::beginTransaction();
 
+        DB::beginTransaction();
         try {
-            $new_expense = HuaweiMonthlyExpense::create($data);
-            $expenseDirectory = 'documents/huawei/expenses/';
+            
+            $expenseDirectory = 'documents/huawei/monthly_expenses/';
             if (isset($data['image'])) {
-                $new_image = $this->apiService->storeBase64Image($data['image'], $expenseDirectory, null);
-                $new_expense->update(['image' => $new_image]);
-                DB::commit();
-                return response()->json([], 200);
+                $data['image'] = $this->apiService->storeBase64Image($data['image'], $expenseDirectory, null);
             }
+            HuaweiMonthlyExpense::create($data);
+            DB::commit();
+            return response()->json([], 200);
         } catch (\Exception $e) {
+            Log::info('Error storing Huawei expense: ' . $e->getMessage());
             DB::rollBack();
             return response()->json([
                 'error' => $e->getMessage()
             ], 500);
         }
-
-        $expense = HuaweiMonthlyExpense::create($data);
-
-        return response()->json($expense, 200);
     }
-
 }
