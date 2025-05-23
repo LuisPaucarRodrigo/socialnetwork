@@ -6,6 +6,7 @@
 
     Route::post('/login', [ApiController::class, 'login']);
 
+    Route::get('/version/check', [ApiController::class, 'checkVersion']);
 
     Route::get('/checklistcar', [ChecklistsController::class, 'car_index']);
     Route::middleware(['auth:sanctum'])->group(function () {
