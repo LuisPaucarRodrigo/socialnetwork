@@ -340,7 +340,7 @@ class PextController extends Controller
         $additionalProjects = Project::whereNot('id', $project_id)->where('cost_line_id', $type)->where('cost_center_id', $cost_center_id)->select('id', 'description')->where('is_accepted', true)->orderBy('description')->get();
 
         return Inertia::render(
-            'ProjectArea/ProjectManagement/ProjectAdditionalExpenses',
+            'ProjectArea/ProjectManagement/Pext/Additional/Expenses/ProjectAdditionalExpenses',
             [
                 'expense' => $expense,
                 'providers' => $providers,

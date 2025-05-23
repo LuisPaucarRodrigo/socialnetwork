@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\HuaweiConstants;
 use App\Constants\PextConstants;
 use App\Constants\PintConstants;
 use App\Http\Requests\LoginMobileRequest;
@@ -700,7 +701,7 @@ class ApiController extends Controller
 
     public function fetchProjects($macro, $site_id)
     {
-        $projects = HuaweiProject::select('id', 'name', 'assigned_diu')
+        $projects = HuaweiProject::select('id','assigned_diu')
             ->where('macro_project', $macro)
             ->where('huawei_site_id', $site_id)
             ->get()
@@ -727,12 +728,40 @@ class ApiController extends Controller
         return response()->json($projects, 200);
     }
 
+    public function getHuaweiConstants()
+    {
+        return response()->json([
+            'expenseTypes' => HuaweiConstants::getVariableExpenseTypes(),
+            'cdpTypes' => HuaweiConstants::getCDPTypes(),
+        ], 200);
+    }
+
+    public function getExpensesHistory()
+    {
+        $user = Auth::user();
+        $employee = Employee::selectRaw("UPPER(CONCAT(name, ' ', lastname)) AS full_name")
+            ->where('user_id', $user->id)
+            ->first();
+
+        if (!$employee) {
+            return response()->json(['error' => 'Employee not found'], 404);
+        }
+
+        $expenses = HuaweiMonthlyExpense::where('employee', $employee->full_name)
+            ->get()
+            ->makeHidden(['huawei_project', 'general_expense']);
+
+        return response()->json($expenses, 200);
+    }
+
+
     public function storeHuaweiExpense(Request $request)
     {
+        $user = Auth::user();
         $data = $request->validate([
             'huawei_project_id' => 'nullable',
             'expense_type' => 'required|string',
-            'employee' => 'required|string',
+            // 'employee' => 'required|string',
             'cdp_type' => 'required|string',
             'doc_number' => 'required|string',
             'ruc' => 'required|string',
@@ -742,7 +771,7 @@ class ApiController extends Controller
         ]);
 
         $data['expense_date'] = Carbon::now();
-
+        $data['employee'] = $user->name;
         DB::beginTransaction();
 
         try {

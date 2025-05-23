@@ -163,17 +163,7 @@ class DocumentController extends Controller
                 }
             });
         $documents = $query->get();
-        return Inertia::render('HumanResource/Documents/DocumentReport', [
-            'documents' => $documents,
-            'sections' => DocumentSection::with('subdivisions')->get(),
-            'subdivisions' => Subdivision::all(),
-            'employees' => Employee::whereHas('contract', function ($query) {
-                $query->where('state', 'Active');
-            })
-                ->orderBy('name')
-                ->get(),
-            'e_employees' => ExternalEmployee::orderBy('name')->get(),
-        ]);
+        return response()->json($documents);
     }
 
 
@@ -420,6 +410,58 @@ class DocumentController extends Controller
         }
         abort(404, 'Documento no encontrado');
     }
+
+    public function massiveZip(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer',
+        ]);
+
+        $documents = Document::with('subdivision.section')->whereIn('id', $request->ids)->get();
+
+        $zipFileName = "Documentos_Seccionados_" . now()->format('Ymd_His') . ".zip";
+        $zipFilePath = public_path("/documents/documents/{$zipFileName}");
+
+        if (file_exists($zipFilePath)) {
+            unlink($zipFilePath);
+        }
+
+        $zip = new ZipArchive;
+
+        if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+            Log::error("No se pudo crear el archivo ZIP.");
+            return response()->json(['error' => 'No se pudo abrir el archivo ZIP.'], 500);
+        }
+
+        foreach ($documents as $doc) {
+            $subdivision = $doc->subdivision;
+            $section = $subdivision?->section;
+
+            if (!$subdivision || !$section) {
+                Log::warning("Documento sin relaciones válidas: ID {$doc->id}");
+                continue;
+            }
+
+            $sectionName = preg_replace('/[\/\\\\?%*:|"<>]/', '-', $section->name);
+            $subdivisionName = preg_replace('/[\/\\\\?%*:|"<>]/', '-', $subdivision->name);
+            $fileName = preg_replace('/[\/\\\\?%*:|"<>]/', '-', $doc->title);
+
+            $documentPath = public_path('/documents/documents/' . $doc->title);
+
+            if (file_exists($documentPath)) {
+                $zip->addFile($documentPath, "{$sectionName}/{$subdivisionName}/{$fileName}");
+            } else {
+                Log::warning("Archivo no encontrado: " . $documentPath);
+            }
+        }
+
+        $zip->close();
+
+        ob_end_clean();
+        return response()->download($zipFilePath)->deleteFileAfterSend(true);
+    }
+
 
     public function downloadSubdivisionDocumentsZip($section, $subdivisionId)
     {

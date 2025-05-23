@@ -69,5 +69,7 @@
         //NUEVAS RUTAS
         Route::get('/huawei/expenses/{macro}/fetch_sites', [ApiController::class, 'fetchSites']);
         Route::get('/huawei/expenses/{macro}/{site_id}/fetch_projects', [ApiController::class, 'fetchProjects']);
-        Route::post('/huawei/expenses/storeExpense/post', [ApiController::class, 'storeExpense']);
+        Route::post('/huawei/expenses/storeExpense/post', [ApiController::class, 'storeHuaweiExpense']);
+        Route::get('/huawei/expenses/get_constants', [ApiController::class, 'getHuaweiConstants']);
+        Route::get('/huawei/expenses/get_history', [ApiController::class, 'getExpensesHistory']);
     });

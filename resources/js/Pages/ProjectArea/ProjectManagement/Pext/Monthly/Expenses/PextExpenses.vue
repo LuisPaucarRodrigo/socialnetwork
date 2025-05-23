@@ -41,7 +41,7 @@ import TableHeader from "./components/TableHeader.vue";
 import ExpensesTable from "./components/ExpensesTable.vue";
 import FormExpenses from "./components/FormExpenses.vue";
 import MasiveUpdate from "./components/MasiveUpdate.vue";
-import ExpensesImport from "./components/ExpensesImport.vue";
+import ExpensesImport from "../../components/ExpensesImport.vue";
 
 const props = defineProps({
     expense: Object,
