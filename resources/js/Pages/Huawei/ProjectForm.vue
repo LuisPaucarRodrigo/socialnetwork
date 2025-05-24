@@ -298,11 +298,11 @@
                                 <div>
                                     <textarea
                                         id="editName"
-                                        v-model="editForm.description"
+                                        v-model="form.description"
                                         class="block w-60 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     />
                                     <InputError
-                                        :message="editForm.errors.description"
+                                        :message="form.errors.description"
                                     />
                                 </div>
                             </div>
@@ -318,7 +318,6 @@
                                 }}
                             </h2>
                             <button
-                                v-if="!props.huawei_project"
                                 type="button"
                                 @click="createAssignation"
                                 class="px-1"
@@ -351,10 +350,7 @@
                             <div
                                 v-for="(
                                     assignation, index
-                                ) in props.huawei_project
-                                    ? props.huawei_project
-                                          .huawei_project_assignations
-                                    : form.assignations"
+                                ) in form.assignations"
                                 :key="index"
                                 class="bg-[#eaeded] p-5 mt-5 rounded-md shadow-md"
                             >
@@ -365,7 +361,7 @@
                                             {{ index + 1 }}
                                         </h2>
                                         <button
-                                            v-if="!props.huawei_project"
+                                            v-if="!assignation.id"
                                             type="button"
                                             class="text-red-600"
                                             @click="deleteAssignation(index)"
@@ -399,7 +395,6 @@
                                 >
                                     <div v-if="isOpen(index)">
                                         <div
-                                            v-if="!props.huawei_project"
                                             class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6 mt-5"
                                         >
                                             <div class="sm:col-span-3">
@@ -487,7 +482,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div
+                                        <!-- <div
                                             v-else
                                             class="grid grid-cols-1 md:grid-cols-2 mt-5 gap-y-2"
                                         >
@@ -537,7 +532,7 @@
                                                     }}
                                                 </p>
                                             </div>
-                                        </div>
+                                        </div> -->
 
                                         <div class="flex flex-space gap-2 mt-5">
                                             <h2 class="font-black">
@@ -547,8 +542,7 @@
                                                 type="button"
                                                 v-if="
                                                     form.cost_center_id &&
-                                                    form.zone &&
-                                                    !props.huawei_project
+                                                    form.zone
                                                 "
                                                 @click="openBaseLine(index)"
                                                 class="px-1"
@@ -695,17 +689,10 @@
                                                         <tr
                                                             v-for="(
                                                                 item, idx
-                                                            ) in props.huawei_project
-                                                                ? props
-                                                                      .huawei_project
-                                                                      .huawei_project_assignations[
-                                                                      index
-                                                                  ]
-                                                                      .huawei_project_earnings
-                                                                : form
-                                                                      .assignations[
-                                                                      index
-                                                                  ].base_lines"
+                                                            ) in form
+                                                                .assignations[
+                                                                index
+                                                            ].base_lines"
                                                             :key="idx"
                                                             class="text-gray-700"
                                                         >
@@ -742,9 +729,6 @@
                                                                 class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
                                                             >
                                                                 <input
-                                                                    v-if="
-                                                                        !props.huawei_project
-                                                                    "
                                                                     type="number"
                                                                     v-model="
                                                                         form
@@ -765,17 +749,17 @@
                                                                     class="w-full border border-gray-300 rounded-md text-center p-1 focus:ring focus:ring-indigo-500 focus:border-indigo-500"
                                                                     min="0"
                                                                 />
-                                                                <p v-else>
+                                                                <!-- <p v-else>
                                                                     {{
                                                                         item.quantity
                                                                     }}
-                                                                </p>
+                                                                </p> -->
                                                             </td>
                                                             <td
                                                                 class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
                                                             >
                                                                 {{
-                                                                    props.huawei_project
+                                                                    item.id
                                                                         ? item.amount.toFixed(
                                                                               2
                                                                           )
@@ -806,7 +790,7 @@
                                                             >
                                                                 <div
                                                                     v-if="
-                                                                        !props.huawei_project
+                                                                        !item.id
                                                                     "
                                                                     class="flex items-center"
                                                                 >
@@ -856,7 +840,6 @@
                             <div class="flex flex-space gap-2">
                                 <h2 class="font-black">Cronograma:</h2>
                                 <button
-                                    v-if="!props.huawei_project"
                                     type="button"
                                     @click="open_schedule"
                                     class="px-1"
@@ -920,78 +903,170 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr
+                                            <template
                                                 v-for="(
                                                     item, index
-                                                ) in props.huawei_project
-                                                    ? props.huawei_project
-                                                          .huawei_project_schedules
-                                                    : form.schedule"
+                                                ) in form.schedule"
                                                 :key="index"
                                                 class="text-gray-700"
                                             >
-                                                <td
-                                                    class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
-                                                >
-                                                    {{ index + 1 }}
-                                                </td>
-                                                <td
-                                                    class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
-                                                >
-                                                    {{ item.activity }}
-                                                </td>
-                                                <td
-                                                    class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
-                                                >
-                                                    {{ item.days }}
-                                                </td>
-                                                <td
-                                                    class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
-                                                >
-                                                    {{
-                                                        formattedDate(
-                                                            item.start_date
-                                                        )
-                                                    }}
-                                                </td>
-                                                <td
-                                                    class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
-                                                >
-                                                    {{
-                                                        formattedDate(
-                                                            item.end_date
-                                                        )
-                                                    }}
-                                                </td>
-                                                <td
-                                                    class="border-b whitespace-nowrap border-gray-200 bg-white px-5 py-5 text-sm text-center"
-                                                >
-                                                    {{ item.employee }}
-                                                </td>
-                                                <td
-                                                    class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
-                                                >
-                                                    <div
-                                                        v-if="
-                                                            !props.huawei_project
-                                                        "
-                                                        class="flex items-center"
+                                                <tr>
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                                    >
+                                                        {{ index + 1 }}
+                                                    </td>
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                                    >
+                                                        {{ item.activity }}
+                                                    </td>
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                                    >
+                                                        {{ item.days }}
+                                                    </td>
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                                    >
+                                                        {{
+                                                            formattedDate(
+                                                                item.start_date
+                                                            )
+                                                        }}
+                                                    </td>
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                                    >
+                                                        {{
+                                                            formattedDate(
+                                                                item.end_date
+                                                            )
+                                                        }}
+                                                    </td>
+                                                    <td
+                                                        class="border-b whitespace-nowrap border-gray-200 bg-white px-5 py-5 text-sm text-center"
                                                     >
                                                         <button
-                                                            @click.prevent="
-                                                                delete_schedule(
-                                                                    index
+                                                            type="button"
+                                                            @click="
+                                                                toggleRow(
+                                                                    item.id
                                                                 )
                                                             "
-                                                            class="text-red-600 hover:underline mr-2"
+                                                            class="w-5 h-5 text-blue-900"
                                                         >
-                                                            <TrashIcon
-                                                                class="h-5 w-5"
+                                                            <ChevronUpIcon
+                                                                v-if="
+                                                                    showRows.includes(
+                                                                        item.id
+                                                                    )
+                                                                "
+                                                            />
+                                                            <ChevronDownIcon
+                                                                v-else
                                                             />
                                                         </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
+                                                    </td>
+                                                    <td
+                                                        class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center"
+                                                    >
+                                                        <div
+                                                            class="flex items-center"
+                                                        >
+                                                            <button
+                                                                @click.prevent="
+                                                                    edit_schedule(
+                                                                        item,
+                                                                        index
+                                                                    )
+                                                                "
+                                                                class="text-yellow-500 hover:underline mr-2"
+                                                            >
+                                                                <PencilSquareIcon
+                                                                    class="h-5 w-5"
+                                                                />
+                                                            </button>
+                                                            <button
+                                                                @click.prevent="
+                                                                    delete_schedule(
+                                                                        index,
+                                                                        item.id
+                                                                    )
+                                                                "
+                                                                class="text-red-600 hover:underline mr-2"
+                                                            >
+                                                                <TrashIcon
+                                                                    class="h-5 w-5"
+                                                                />
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <template
+                                                    v-if="
+                                                        showRows.includes(
+                                                            item.id
+                                                        )
+                                                    "
+                                                >
+                                                    <tr class="bg-white h-16">
+                                                        <td
+                                                            colspan="11"
+                                                            class="py-1 px-2"
+                                                        >
+                                                            <table
+                                                                class="w-full"
+                                                            >
+                                                                <thead>
+                                                                    <tr
+                                                                        class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500"
+                                                                    >
+                                                                        <th
+                                                                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600"
+                                                                        >
+                                                                            N°
+                                                                        </th>
+                                                                        <th
+                                                                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[9px] font-semibold uppercase tracking-wider text-gray-600"
+                                                                        >
+                                                                            Empleado
+                                                                        </th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr
+                                                                        class="text-gray-700"
+                                                                        v-for="(
+                                                                            employee,
+                                                                            i
+                                                                        ) in item.employees"
+                                                                        :key="i"
+                                                                    >
+                                                                        <td
+                                                                            class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]"
+                                                                        >
+                                                                            {{
+                                                                                i +
+                                                                                1
+                                                                            }}
+                                                                        </td>
+                                                                        <td
+                                                                            class="border-b border-gray-200 bg-white px-1 py-1 text-center text-[12px]"
+                                                                        >
+                                                                            {{
+                                                                                employee.id
+                                                                                    ? employee.employee
+                                                                                    : employee
+                                                                            }}
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                            </template>
                                         </tbody>
                                     </table>
                                 </div>
@@ -1045,7 +1120,7 @@
                                         />
                                         <datalist id="price_guide_list">
                                             <option
-                                                v-for="pg in price_guides"
+                                                v-for="pg in props.price_guides"
                                                 :key="pg.id"
                                                 :value="pg.code"
                                             >
@@ -1478,34 +1553,34 @@
                                         />
                                     </div>
                                 </div>
-                                <div>
+                                <div class="col-span-1 md:col-span-2">
                                     <InputLabel
                                         for="employee"
                                         class="font-medium leading-6 text-gray-900"
                                     >
-                                        Empleado
+                                        Empleados
                                     </InputLabel>
                                     <div class="mt-2">
-                                        <input
-                                            list="employee-list"
+                                        <select
                                             id="employee"
-                                            v-model="scheduleForm.employee"
-                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                            placeholder="Seleccione un empleado"
-                                        />
-                                        <datalist id="employee-list">
+                                            v-model="scheduleForm.employees"
+                                            multiple
+                                            class="block w-full h-[200px] rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        >
                                             <option
                                                 v-for="(
                                                     employee, index
                                                 ) in props.employees"
                                                 :key="index"
                                                 :value="employee"
-                                            />
-                                        </datalist>
+                                            >
+                                                {{ employee }}
+                                            </option>
+                                        </select>
 
                                         <InputError
                                             :message="
-                                                scheduleForm.errors.employee
+                                                scheduleForm.errors.employees
                                             "
                                         />
                                     </div>
@@ -1550,7 +1625,9 @@ import {
     TrashIcon,
     ChevronRightIcon,
     ChevronDownIcon,
+    ChevronUpIcon,
     ArrowDownTrayIcon,
+    PencilSquareIcon,
 } from "@heroicons/vue/24/outline";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
@@ -1576,24 +1653,33 @@ const hasPermission = (permission) => {
 };
 
 const initialState = {
-    description: "",
-    zone: "",
+    description: props.huawei_project ? props.huawei_project.description : "",
+    zone: props.huawei_project ? props.huawei_project.zone : "",
     huawei_site_id: "",
-    cost_center_id: "",
+    cost_center_id: props.huawei_project
+        ? props.huawei_project.cost_center_id
+        : "",
     prefix: "",
     //pre_report: null,
     //employees: [],
-    schedule: [],
+    schedule: props.huawei_project
+        ? props.huawei_project.huawei_project_schedules.map((a) => ({
+              ...a,
+              employees: a.huawei_project_employees ?? [],
+          }))
+        : [],
     //initial_amount: "",
     assigned_diu: "",
     assignation_date: "",
     macro_project: "",
-    assignations: [],
+    assignations:
+        props.huawei_project && props.huawei_project.huawei_project_assignations
+            ? props.huawei_project.huawei_project_assignations.map((a) => ({
+                  ...a,
+                  base_lines: a.huawei_project_earnings ?? [],
+              }))
+            : [],
 };
-
-const editForm = useForm({
-    description: props.huawei_project ? props.huawei_project.description : "",
-});
 
 const form = useForm({ ...initialState });
 
@@ -1617,7 +1703,7 @@ const submit = () => {
             },
         });
     } else {
-        editForm.put(
+        form.put(
             route("huawei.projects.update", {
                 huawei_project: props.huawei_project.id,
             }),
@@ -1654,7 +1740,8 @@ watch(
         price_guides.value = props.price_guides.filter(
             (pg) => pg.cost_center_id === newVal
         );
-    }
+    },
+    { immediate: true }
 );
 
 const handleAutocomplete = () => {
@@ -1723,6 +1810,15 @@ const addBaseLine = () => {
         notifyError("Todos los campos son requeridos");
         return;
     }
+    const currentAssignation = form.assignations[assigantionIndex.value];
+    const duplicate = currentAssignation.base_lines.some(
+        (line) => line.code === baseForm.code
+    );
+
+    if (duplicate) {
+        notifyError(`Ya existe una linea con el código "${baseForm.code}"`);
+        return;
+    }
     form.assignations[assigantionIndex.value].base_lines.push({ ...baseForm });
     baseForm.reset();
     assigantionIndex.value = null;
@@ -1779,6 +1875,7 @@ const importExcel = async () => {
 const schedule_modal = ref(false);
 
 const open_schedule = () => {
+    scheduleForm.reset();
     schedule_modal.value = !schedule_modal.value;
 };
 
@@ -1787,12 +1884,31 @@ const delete_schedule = (index) => {
 };
 
 const scheduleForm = useForm({
+    id: "",
     activity: "",
     days: "",
     start_date: "",
     end_date: "",
-    employee: "",
+    employees: [],
+    index: "",
 });
+
+const edit_schedule = (item, index) => {
+    if (!schedule_modal.value) {
+        scheduleForm.id = item.id ?? "";
+        scheduleForm.index = index;
+        scheduleForm.activity = item.activity;
+        scheduleForm.days = item.days;
+        scheduleForm.start_date = item.start_date;
+        scheduleForm.end_date = item.end_date;
+        scheduleForm.employees = item.employees.some((e) => e.id !== undefined)
+            ? item.employees.map((e) => e.employee)
+            : item.employees;
+    } else {
+        scheduleForm.reset();
+    }
+    schedule_modal.value = !schedule_modal.value;
+};
 
 const add_schedule = () => {
     if (
@@ -1800,16 +1916,17 @@ const add_schedule = () => {
         !scheduleForm.days ||
         !scheduleForm.start_date ||
         !scheduleForm.end_date ||
-        !scheduleForm.employee
+        !scheduleForm.employees
     ) {
         notifyError("Todos los campos son requeridos");
         return;
     }
-    if (!props.employees.includes(scheduleForm.employee)) {
-        notifyError("Debe seleccionar un empleado válido de la lista");
-        return;
+    if (scheduleForm.index !== "") {
+        form.schedule[scheduleForm.index] = { ...scheduleForm };
+        schedule_modal.value = !schedule_modal.value;
+    } else {
+        form.schedule.push({ ...scheduleForm });
     }
-    form.schedule.push({ ...scheduleForm });
     scheduleForm.reset();
 };
 
@@ -1828,6 +1945,7 @@ const createAssignation = () => {
 };
 
 const assignationForm = useForm({
+    id: "",
     index: "",
     assignation_date: "",
     po: "",
@@ -1889,4 +2007,14 @@ const fetchSites = async (prefix) => {
         console.error(res);
     }
 };
+
+const showRows = ref([]);
+function toggleRow(id) {
+    const index = showRows.value.indexOf(id);
+    if (index > -1) {
+        showRows.value.splice(index, 1);
+    } else {
+        showRows.value.push(id);
+    }
+}
 </script>

@@ -7,6 +7,7 @@ use App\Exports\HuaweiMonthlyExport;
 use App\Exports\HuaweiProjectEarningsExport;
 use App\Exports\HuaweiProjectRealEarningsExport;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Huawei\HuaweiProjectRequest;
 use App\Models\CostCenter;
 use App\Models\HuaweiMonthlyExpense;
 use App\Models\HuaweiProject;
@@ -254,7 +255,7 @@ class HuaweiProjectController extends Controller
                 'huawei_site',
                 'cost_center',
                 'huawei_project_assignations.huawei_project_earnings',
-                'huawei_project_schedules',
+                'huawei_project_schedules.huawei_project_employees',
             ])->first()
             ->makeHidden([
                 'additional_cost_total',
@@ -275,10 +276,14 @@ class HuaweiProjectController extends Controller
         if (!$huawei_project->status) {
             abort(403, 'Acción no permitida');
         }
+        $employees = HuaweiConstants::getEmployees();
 
         return Inertia::render('Huawei/ProjectForm', [
             'huawei_project' => $huawei_project,
             'huawei_sites' => HuaweiSite::orderBy('name')->get(),
+            'employees' => $employees,
+            'cost_centers' => CostCenter::where('cost_line_id', 3)->get(),
+            'price_guides' => HuaweiPriceGuide::all(),
         ]);
     }
 
@@ -342,34 +347,9 @@ class HuaweiProjectController extends Controller
         return response()->json($sites);
     }
 
-    public function store(Request $request)
+    public function store(HuaweiProjectRequest $request)
     {
-        $request->validate([
-            'assigned_diu' => 'required|unique:huawei_projects,assigned_diu',
-            'cost_center_id' => 'required',
-            'macro_project' => 'required',
-            'prefix' => 'required',
-            'huawei_site_id' => 'required',
-            'zone' => 'required',
-            'assignation_date' => 'required|date',
-            'description' => 'nullable',
-
-            'assignations' => 'required|array|min:1',
-            'assignations.*.assignation_date' => 'required|date',
-            'assignations.*.description' => 'required|string',
-            'assignations.*.po' => 'required|string',
-            'assignations.*.index' => 'nullable|string',
-
-            'assignations.*.base_lines' => 'required|array|min:1',
-
-            'schedule' => 'required|array|min:1',
-            'schedule.*.employee' => 'required|string',
-            'schedule.*.start_date' => 'required|date',
-            'schedule.*.end_date' => 'required|date|after_or_equal:schedule.*.start_date',
-            'schedule.*.days' => 'required|numeric',
-            'schedule.*.activity' => 'required|string',
-        ]);
-
+        $request->validated();
         DB::beginTransaction();
 
         try {
@@ -418,18 +398,24 @@ class HuaweiProjectController extends Controller
             }
 
             foreach ($request->schedule as $activity) {
-                HuaweiProjectSchedule::create([
+                $schedule = HuaweiProjectSchedule::create([
                     'activity' => $activity['activity'],
                     'days' => $activity['days'],
                     'start_date' => $activity['start_date'],
                     'end_date' => $activity['end_date'],
-                    'employee' => $activity['employee'],
                     'huawei_project_id' => $project->id
                 ]);
+                foreach ($activity['employees'] as $employee) {
+                    HuaweiProjectEmployee::create([
+                        'huawei_project_schedule_id' => $schedule->id,
+                        'employee' => $employee
+                    ]);
+                }
             }
 
         } catch (\Throwable $th) {
             DB::rollBack();
+            Log::info($th);
             abort(403, 'Error al crear el proyecto');
         }
 
@@ -438,18 +424,145 @@ class HuaweiProjectController extends Controller
         return redirect()->back();
     }
 
-    public function update(HuaweiProject $huawei_project, Request $request)
+    public function update(HuaweiProject $huawei_project, HuaweiProjectRequest $request)
     {
         if (!$huawei_project->status) {
             abort(403, 'Acción no permitida');
         }
 
-        $data = $request->validate([
-            'description' => 'nullable',
-        ]);
+        $data = $request->validated();
+        Log::info($data);
 
-        $huawei_project->update($data);
+        DB::beginTransaction();
 
+        try {
+            $huawei_project->update([
+                'description' => $data['description'],
+            ]);
+
+            foreach ($data['assignations'] as $assignation) {
+                if (isset($assignation['id']) && $assignation['id']) {
+                    $huawei_project_assignation = HuaweiProjectAssignation::find($assignation['id']);
+                    $huawei_project_assignation->update([
+                        'po' => $assignation['po'],
+                        'assignation_date' => $assignation['assignation_date'],
+                        'description' => $assignation['description'],
+                    ]);
+                    foreach ($assignation['base_lines'] as $line) {
+                        if (isset($line['id']) && $line['id']) {
+                            $huawei_project_earning = HuaweiProjectEarning::find($line['id']);
+                            $huawei_project_earning->update([
+                                'quantity' => $line['quantity'],
+                            ]);
+                        } else {
+                            $code = HuaweiPriceGuide::where('code', $line['code'])->first();
+                            if ($code) {
+                                if ($code->goal !== $line['goal'] || $code->evidence !== $line['evidence']) {
+                                    $code->update([
+                                        'goal' => $line['goal'] ?? $code->goal,
+                                        'evidence' => $line['evidence'] ?? $code->evidence,
+                                    ]);
+                                }
+                            }
+                            $new_line = HuaweiProjectEarning::create([
+                                'code' => $line['code'],
+                                'description' => $line['description'],
+                                'unit' => $line['unit'],
+                                'unit_price' => $line['unit_price'],
+                                'quantity' => $line['quantity'],
+                                'evidence' => $line['evidence'],
+                                'goal' => $line['goal'],
+                                'observation' => $line['observation'],
+                                'huawei_pa_id' => $huawei_project_assignation->id
+                            ]);
+                        }
+                    }
+                } else {
+                    $new_assignation = HuaweiProjectAssignation::create([
+                        'po' => $assignation['po'],
+                        'assignation_date' => $assignation['assignation_date'],
+                        'description' => $assignation['description'],
+                        'huawei_project_id' => $huawei_project->id,
+                    ]);
+
+                    foreach ($assignation['base_lines'] as $line) {
+                        $code = HuaweiPriceGuide::where('code', $line['code'])->first();
+                        if ($code) {
+                            if ($code->goal !== $line['goal'] || $code->evidence !== $line['evidence']) {
+                                $code->update([
+                                    'goal' => $line['goal'] ?? $code->goal,
+                                    'evidence' => $line['evidence'] ?? $code->evidence,
+                                ]);
+                            }
+                        }
+                        HuaweiProjectEarning::create([
+                            'code' => $line['code'],
+                            'description' => $line['description'],
+                            'unit' => $line['unit'],
+                            'unit_price' => $line['unit_price'],
+                            'quantity' => $line['quantity'],
+                            'evidence' => $line['evidence'],
+                            'goal' => $line['goal'],
+                            'observation' => $line['observation'],
+                            'huawei_pa_id' => $new_assignation->id
+                        ]);
+                    }
+                }
+            }
+
+            $scheduleIdsFromRequest = collect($data['schedule'])
+                ->pluck('id')
+                ->filter()
+                ->all();
+
+            $currentSchedules = $huawei_project->huawei_project_schedules;
+            $currentSchedules->each(function ($schedule) use ($scheduleIdsFromRequest) {
+                if (!in_array($schedule->id, $scheduleIdsFromRequest)) {
+                    $schedule->huawei_project_employees()->delete();
+                    $schedule->delete();
+                }
+            });
+
+            foreach ($data['schedule'] as $schedule) {
+                if ($schedule['id']) {
+                    $huawei_project_schedule = HuaweiProjectSchedule::find($schedule['id']);
+                    $huawei_project_schedule->update([
+                        'activity' => $schedule['activity'],
+                        'days' => $schedule['days'],
+                        'start_date' => $schedule['start_date'],
+                        'end_date' => $schedule['end_date'],
+                    ]);
+                    $huawei_project_schedule->huawei_project_employees()->delete();
+                    foreach ($schedule['employees'] as $employee) {
+                        HuaweiProjectEmployee::create([
+                            'huawei_project_schedule_id' => $huawei_project_schedule->id,
+                            'employee' => (is_array($employee) && isset($employee['employee'])) ? $employee['employee'] : $employee
+                        ]);
+                    }
+                } else {
+                    $new_schedule = HuaweiProjectSchedule::create([
+                        'activity' => $schedule['activity'],
+                        'days' => $schedule['days'],
+                        'start_date' => $schedule['start_date'],
+                        'end_date' => $schedule['end_date'],
+                        'huawei_project_id' => $huawei_project->id
+                    ]);
+                    foreach ($schedule['employees'] as $employee) {
+                        HuaweiProjectEmployee::create([
+                            'huawei_project_schedule_id' => $new_schedule->id,
+                            'employee' => $employee
+                        ]);
+                    }
+                }
+            }
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            Log::info($data);
+            Log::info($th);
+            abort(403, 'Error al actualizar el proyecto');
+        }
+        DB::commit();
         return redirect()->back();
     }
 
