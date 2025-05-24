@@ -5,7 +5,6 @@
             <button @click="toogleModalForm" class="pb-1 text-green-500">
                 + Agregar
             </button>
-            <form @submit.prevent="submit">
                 <TableStructure>
                     <template #thead>
                         <tr>
@@ -15,7 +14,7 @@
                         </tr>
                     </template>
                     <template #tbody>
-                        <tr v-for="(item, index) in form.notSubsidized" :key="item.id">
+                        <tr v-for="(item, index) in form.non_subsidized_days" :key="item.id">
                             <TableRow>{{ item.name }}</TableRow>
                             <TableRow>{{ item.quantity }}</TableRow>
                             <TableRow>
@@ -34,11 +33,7 @@
                     <SecondaryButton type="button" @click="toogleModal">
                         Cerrar
                     </SecondaryButton>
-                    <PrimaryButton type="submit">
-                        Guardar
-                    </PrimaryButton>
                 </div>
-            </form>
         </div>
     </Modal>
     <Modal :show="showModalForm">
@@ -140,7 +135,7 @@ function addMaterial() {
             name: materialObject.value.name,
             quantity: materialObject.value.quantity,
         };
-        form.notSubsidized.push(newMaterial);
+        form.non_subsidized_days.push(newMaterial);
 
         materialObject.value.id = "";
         materialObject.value.name = "";
@@ -154,7 +149,7 @@ function addMaterial() {
 
 function deleteMaterial(index) {
     if (index !== -1) {
-        form.notSubsidized.splice(index, 1);
+        form.non_subsidized_days.splice(index, 1);
     } else {
         console.error(`No se encontró ningún material con el nombre '${materialName}'.`);
     }

@@ -4,12 +4,14 @@ namespace App\Http\Controllers\HumanResource;
 
 use App\Exports\Payroll\PayrollExport;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailWorkScheduleRequest;
 use App\Http\Requests\HumanResource\StorePayrollRequest;
 use App\Models\Contract;
 use App\Models\Employee;
 use App\Models\Payroll;
 use App\Models\PayrollDetail;
 use App\Models\PayrollDetailExpense;
+use App\Models\PayrollDetailWorkSchedule;
 use App\Models\Pension;
 use Exception;
 use Illuminate\Http\Request;
@@ -107,7 +109,9 @@ class SpreadsheetsController extends Controller
     public function index_payroll_detail($payroll_details_id, $employee_id)
     {
         return Inertia::render("HumanResource/Payroll/Spreadsheets/Detail/Index", [
-            'payroll_details_id' => $payroll_details_id,
+            'payroll_detail' => PayrollDetail::find($payroll_details_id)
+                ->setAppends([])
+                ->setAppends(['mod_days']),
             'employee_id' => $employee_id,
         ]);
     }
@@ -176,5 +180,20 @@ class SpreadsheetsController extends Controller
     {
         $response = Employee::with(['contract:employee_id,hire_date,fired_date,pension_type,id'])->find($employee_id);
         return response()->json($response, 200);
+    }
+
+    public function show_payroll_detail_work_schedule ($payroll_detail_id) {
+        $data = PayrollDetailWorkSchedule::where('payroll_detail_id', $payroll_detail_id)->first();
+        return response()->json($data);
+    }
+
+
+    public function store_payroll_detail_work_schedule(StorePayrollDetailWorkScheduleRequest $request)
+    {
+        $data = $request->validated();
+        $data['regular_hours'] =  $data['regular_hours_0'] . ':' . $data['regular_hours_1'];
+        $data['overtime_hours'] = $data['overtime_hours_0'] . ':' . $data['overtime_hours_1'];
+        PayrollDetailWorkSchedule::updateOrCreate(['id'=>$data['id']], $data);
+        return response()->json();
     }
 }

@@ -76,7 +76,7 @@ class PayrollDetail extends Model
     public function getTruncatedVacationsAttribute()
     {
         return $this->fired_date !== null && $this->state === 'Inactive'
-            ? ($this->salary / 12 * $this->truncated_month  +
+            ? ($this->salary / 12 * $this->truncated_month +
                 ($this->salary / (30 * 12) * $this->truncated_days)) -
             (($this->basic_salary / 30) * $this->days_taken)
             : 0;
@@ -215,5 +215,15 @@ class PayrollDetail extends Model
     public function payroll_detail_expense(): HasMany
     {
         return $this->hasMany(PayrollDetailExpense::class);
+    }
+
+
+    //////////////new
+
+    public function getModDaysAttribute() {
+        return $this->payroll->days;
+    }
+    public function payroll_detail_work_schedule() {
+        return $this->hasOne(PayrollDetailWorkSchedule::class);
     }
 }

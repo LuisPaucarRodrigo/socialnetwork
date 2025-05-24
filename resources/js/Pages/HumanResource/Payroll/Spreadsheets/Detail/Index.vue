@@ -1,7 +1,8 @@
 <template>
 
     <Head title="Informacion Personal" />
-    <AuthenticatedLayout :redirectRoute="{ route: 'spreadsheets.index', params: { payroll_id: payroll_details_id } }">
+    <AuthenticatedLayout :redirectRoute="{ route: 'spreadsheets.index', params: { payroll_id: payroll_detail.id } }">
+        <Toaster richColors />
         <div>
             <div class="flex flex-1 items-center justify-center sm:items-stretch ">
                 <div class="sm:ml-6 sm:block mb-6">
@@ -9,7 +10,7 @@
                         <button @click="changeComponent('WorkerData')" :class="clasesDinamic.WorkerData"
                             class="text-gray-400 rounded-md px-3 py-2 text-sm font-medium">Datos del Trabajador</button>
                         <button @click="changeComponent('WorkSchedule')" :class="clasesDinamic.WorkSchedule"
-                            class="text-gray-400 rounded-md px-3 py-2 text-sm font-medium">Jornada Laboral</button>
+                            class="text-gray-400 rounded-md px-3 py-2 text-sm font-medium" :objectData="objectData">Jornada Laboral</button>
                         <button @click="changeComponent('MonetaryIncome')" :class="clasesDinamic.MonetaryIncome"
                             class="text-gray-400 rounded-md px-3 py-2 text-sm font-medium">Ingresos</button>
                         <button @click="changeComponent('MonetaryDiscounts')" :class="clasesDinamic.MonetaryDiscounts"
@@ -34,14 +35,15 @@ import WorkSchedule from './components/WorkSchedule.vue';
 import MonetaryIncome from './components/MonetaryIncome.vue';
 import MonetaryDiscounts from './components/MonetaryDiscounts.vue';
 import TaxesAndContributions from './components/TaxesAndContributions.vue';
+import { Toaster } from "vue-sonner";
 
-const { payroll_details_id, employee_id } = defineProps({
-    payroll_details_id: String,
+const { payroll_detail, employee_id } = defineProps({
+    payroll_detail: Object,
     employee_id: String
 });
 
 const objectData = ({
-    payroll_details_id: payroll_details_id,
+    payroll_detail: payroll_detail,
     employee_id: employee_id,
 })
 

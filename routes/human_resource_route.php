@@ -235,7 +235,11 @@ Route::middleware('permission:' . implode('|', RolesConstants::HR_MODULE))->grou
 
     //NUEVAS RUTAS
     Route::post('/documents/filter_document/get', [DocumentController::class, 'filterDocument'])->name('documents.filter_document');
+
 });
 
 
 Route::get('/management_employees/worker_data/{employee_id}', [SpreadsheetsController::class, 'index_worder_data'])->name('index.worker.data');
+Route::get('/management_employees/payroll_show_pdws/{payroll_detail_id}', [SpreadsheetsController::class, 'show_payroll_detail_work_schedule'])->name('payroll.show.payroll.detail.work.schedule');
+Route::post('/management_employees/payroll_store_pdws', [SpreadsheetsController::class, 'store_payroll_detail_work_schedule'])->name('payroll.store.payroll.detail.work.schedule');
+
