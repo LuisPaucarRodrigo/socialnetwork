@@ -31,6 +31,7 @@ return new class extends Migration
             $table->foreignId('huawei_project_id')->nullable()->constrained('huawei_projects')->onDelete('set null');
             $table->foreignId('account_statement_id')->nullable()->constrained('account_statements')->onDelete('set null');
             $table->foreignId('general_expense_id')->constrained('general_expenses')->cascadeOnDelete();
+            $table->foreignId('employee_id')->nullable()->constrained('employees')->cascadeOnDelete();
             $table->timestamps();
         });
     }
