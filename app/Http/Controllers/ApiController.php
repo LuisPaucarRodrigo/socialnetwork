@@ -783,6 +783,7 @@ class ApiController extends Controller
 
         $data['expense_date'] = Carbon::now();
         $data['user_id'] = $user->id;
+        $data['employee'] = $user->name;
         $data['description'] = $user->name . ',' . $data['description'];
         DB::beginTransaction();
         try {
