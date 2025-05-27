@@ -54,6 +54,11 @@ class HuaweiMonthlyExpense extends Model
         return $this->belongsTo(HuaweiProject::class, 'huawei_project_id');
     }
 
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class, 'employee_id');
+    }
+
     protected static function booted()
     {
         static::creating(function ($item) {

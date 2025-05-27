@@ -25,4 +25,8 @@ class HuaweiProjectSchedule extends Model
     {
         return $this->belongsTo(HuaweiProject::class, 'huawei_project_id');
     }
+    public function huawei_project_employees()
+    {
+        return $this->hasMany(HuaweiProjectEmployee::class, 'huawei_project_schedule_id');
+    }
 }

@@ -752,7 +752,7 @@ class ApiController extends Controller
     public function getExpensesHistory()
     {
         $user = Auth::user();
-        $employee = Employee::selectRaw("UPPER(CONCAT(name, ' ', lastname)) AS full_name")
+        $employee = Employee::select('id', 'user_id')
             ->where('user_id', $user->id)
             ->first();
 
@@ -760,7 +760,7 @@ class ApiController extends Controller
             return response()->json(['error' => 'Employee not found'], 404);
         }
 
-        $expenses = HuaweiMonthlyExpense::where('employee', $employee->full_name)
+        $expenses = HuaweiMonthlyExpense::where('employee_id', $employee->id)
             ->get()
             ->makeHidden(['huawei_project', 'general_expense']);
 
