@@ -30,9 +30,24 @@ use App\Models\HuaweiProjectRealEarning;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use function Laravel\Prompts\select;
 
 class HuaweiProjectController extends Controller
 {
+
+    private static array $data;
+
+    public function __construct()
+    {
+        self::$data = [
+            'employees' => HuaweiConstants::getEmployees(),
+            'static_expense_types' => HuaweiConstants::getStaticExpenseTypes(),
+            'variable_expense_types' => HuaweiConstants::getVariableExpenseTypes(),
+            'cdp_types' => HuaweiConstants::getCDPTypes(),
+            'macro_projects' => HuaweiConstants::getMacroProjects(),
+            'operators' => HuaweiConstants::getOperators(),
+        ];
+    }
     public function show($status, $prefix)
     {
         $state = null;
@@ -84,7 +99,9 @@ class HuaweiProjectController extends Controller
         return Inertia::render('Huawei/Projects', [
             'projects' => $projects,
             'prefix' => $prefix,
-            'status' => $status
+            'status' => $status,
+            'operators' => self::$data['operators'],
+
         ]);
     }
 
@@ -107,9 +124,7 @@ class HuaweiProjectController extends Controller
 
         $searchTerm = strtolower($request);
         $projects = HuaweiProject::select('id', 'assigned_diu', 'description', 'zone', 'prefix', 'assignation_date', 'macro_project', 'huawei_site_id', 'status')->where('status', $state)->where('prefix', $prefix)->where(function ($query) use ($searchTerm) {
-            $query->whereRaw('LOWER(name) like ?', ['%' . $searchTerm . '%'])
-                ->orWhereRaw('LOWER(description) like ?', ['%' . $searchTerm . '%'])
-                ->orWhereRaw('LOWER(ot) LIKE ?', ["%{$searchTerm}%"])
+            $query->WhereRaw('LOWER(description) like ?', ['%' . $searchTerm . '%'])
                 ->orWhereRaw('LOWER(zone) LIKE ?', ["%{$searchTerm}%"])
                 ->orWhereRaw('LOWER(assigned_diu) LIKE ?', ["%{$searchTerm}%"])
                 ->orWhereRaw('LOWER(macro_project) LIKE ?', ["%{$searchTerm}%"])
@@ -141,12 +156,12 @@ class HuaweiProjectController extends Controller
                             'huawei_project',
                         ]));
         });
-
         return Inertia::render('Huawei/Projects', [
             'projects' => $projects,
             'search' => $request,
             'prefix' => $prefix,
-            'status' => $status
+            'status' => $status,
+            'operators' => self::$data['operators'],
         ]);
     }
 
@@ -157,6 +172,8 @@ class HuaweiProjectController extends Controller
             'employees' => $employees,
             'cost_centers' => CostCenter::where('cost_line_id', 3)->get(),
             'price_guides' => HuaweiPriceGuide::all(),
+            'operators' => self::$data['operators'],
+            'macro_projects' => self::$data['macro_projects'],
         ]);
     }
 
@@ -816,17 +833,7 @@ class HuaweiProjectController extends Controller
     }
 
     //additional costs
-    private static array $data;
 
-    public function __construct()
-    {
-        self::$data = [
-            'employees' => HuaweiConstants::getEmployees(),
-            'static_expense_types' => HuaweiConstants::getStaticExpenseTypes(),
-            'variable_expense_types' => HuaweiConstants::getVariableExpenseTypes(),
-            'cdp_types' => HuaweiConstants::getCDPTypes(),
-        ];
-    }
     public function getAdditionalCosts(HuaweiProject $huawei_project, $mode = null)
     {
         $expenses = HuaweiMonthlyExpense::query()

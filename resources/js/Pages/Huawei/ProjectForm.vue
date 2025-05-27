@@ -104,10 +104,12 @@
                                         <option disabled value="">
                                             Seleccione uno
                                         </option>
-                                        <option>IPRAN24</option>
-                                        <option>DWDM</option>
-                                        <option>FTTH</option>
-                                        <option>NAZCANEWPECOM</option>
+                                        <option
+                                            v-for="macro in props.macro_projects"
+                                            :value="macro"
+                                        >
+                                            {{ macro }}
+                                        </option>
                                     </select>
                                 </div>
                                 <InputError
@@ -133,9 +135,12 @@
                                         <option disabled value="">
                                             Seleccione uno
                                         </option>
-                                        <option>Claro</option>
-                                        <option>Entel</option>
-                                        <option>Telefonica</option>
+                                        <option
+                                            v-for="op in props.operators"
+                                            :value="op"
+                                        >
+                                            {{ op }}
+                                        </option>
                                     </select>
                                 </div>
                                 <InputError :message="form.errors.prefix" />
@@ -1075,9 +1080,7 @@
                         </div>
                     </div>
                 </div>
-                <div
-                    class="mt-3 flex items-center justify-end gap-x-6"
-                >
+                <div class="mt-3 flex items-center justify-end gap-x-6">
                     <button
                         type="submit"
                         :class="{ 'opacity-25': form.processing }"
@@ -1645,6 +1648,8 @@ const props = defineProps({
     employees: Object,
     auth: Object,
     userPermissions: Array,
+    operators: Array,
+    macro_projects: Array,
 });
 
 const hasPermission = (permission) => {

@@ -90,5 +90,25 @@ class HuaweiConstants
         ];
     }
 
+    public static function getMacroProjects(): array
+    {
+        return [
+            "IP 2024",
+            "FTTH 2024",
+            "DWDM 2024",
+            "IP 2025",
+            "FTTH 2025",
+            "DWDM 2025",
+        ];
+    }
+
+    public static function getOperators(): array
+    {
+        return [
+            "Claro",
+            "Entel",
+            'Telefonica',
+        ];
+    }
     //commit
 }
