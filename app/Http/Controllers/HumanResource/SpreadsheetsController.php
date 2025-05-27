@@ -4,13 +4,17 @@ namespace App\Http\Controllers\HumanResource;
 
 use App\Exports\Payroll\PayrollExport;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailMonetaryIncome;
+use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailMonetaryIncomeRequest;
 use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailWorkScheduleRequest;
 use App\Http\Requests\HumanResource\StorePayrollRequest;
 use App\Models\Contract;
 use App\Models\Employee;
+use App\Models\IncomeParam;
 use App\Models\Payroll;
 use App\Models\PayrollDetail;
 use App\Models\PayrollDetailExpense;
+use App\Models\PayrollDetailMonetaryIncome;
 use App\Models\PayrollDetailWorkSchedule;
 use App\Models\Pension;
 use Exception;
@@ -182,11 +186,12 @@ class SpreadsheetsController extends Controller
         return response()->json($response, 200);
     }
 
+    ///////////////////////////
+
     public function show_payroll_detail_work_schedule ($payroll_detail_id) {
         $data = PayrollDetailWorkSchedule::where('payroll_detail_id', $payroll_detail_id)->first();
         return response()->json($data);
     }
-
 
     public function store_payroll_detail_work_schedule(StorePayrollDetailWorkScheduleRequest $request)
     {
@@ -195,5 +200,24 @@ class SpreadsheetsController extends Controller
         $data['overtime_hours'] = $data['overtime_hours_0'] . ':' . $data['overtime_hours_1'];
         PayrollDetailWorkSchedule::updateOrCreate(['id'=>$data['id']], $data);
         return response()->json();
+    }
+
+    public function show_payroll_detail_monetary_income ($payroll_detail_id) {
+        $income_params = IncomeParam::all();
+        $monetary_incomes = PayrollDetailMonetaryIncome::where('payroll_detail_id', $payroll_detail_id)->get()
+        ->keyBy('income_param_id')->toArray();
+        return response()->json( [
+            'income_params' => $income_params, 
+            'monetary_incomes' => (object)$monetary_incomes
+        ]
+    );
+    }
+
+    public function store_payroll_monetary_income (StorePayrollDetailMonetaryIncomeRequest $request)
+    {
+        $data = $request->validated();
+        $rg = PayrollDetailMonetaryIncome::updateOrCreate(['id'=>$data['id']], $data);
+        $res = PayrollDetailMonetaryIncome::find($rg->id);
+        return response()->json($res);
     }
 }

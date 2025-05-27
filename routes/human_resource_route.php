@@ -243,3 +243,5 @@ Route::get('/management_employees/worker_data/{employee_id}', [SpreadsheetsContr
 Route::get('/management_employees/payroll_show_pdws/{payroll_detail_id}', [SpreadsheetsController::class, 'show_payroll_detail_work_schedule'])->name('payroll.show.payroll.detail.work.schedule');
 Route::post('/management_employees/payroll_store_pdws', [SpreadsheetsController::class, 'store_payroll_detail_work_schedule'])->name('payroll.store.payroll.detail.work.schedule');
 
+Route::get('/management_employees/payroll_show_pdmi/{payroll_detail_id}', [SpreadsheetsController::class, 'show_payroll_detail_monetary_income'])->name('payroll.show.payroll.detail.monetary.income');
+Route::post('/management_employees/payroll_store_pdmi', [SpreadsheetsController::class, 'store_payroll_monetary_income'])->name('payroll.store.payroll.detail.monetary.income');

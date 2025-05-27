@@ -226,4 +226,7 @@ class PayrollDetail extends Model
     public function payroll_detail_work_schedule() {
         return $this->hasOne(PayrollDetailWorkSchedule::class);
     }
+    public function payroll_detail_monetary_income() {
+        return $this->hasOne(PayrollDetailMonetaryIncome::class);
+    }
 }
