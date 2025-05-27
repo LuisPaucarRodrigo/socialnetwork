@@ -32,12 +32,17 @@ class HuaweiMonthlyExpense extends Model
         'account_statement_id',
         'general_expense_id',
         'huawei_project_id',
-        'employee_id'
+        'user_id'
     ];
     protected $appends = [
         'real_state',
         'type'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
 
     public function general_expense()
     {

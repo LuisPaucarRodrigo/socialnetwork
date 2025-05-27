@@ -773,7 +773,6 @@ class ApiController extends Controller
         $data = $request->validate([
             'huawei_project_id' => 'nullable',
             'expense_type' => 'required|string',
-            // 'employee' => 'required|string',
             'cdp_type' => 'required|string',
             'doc_number' => 'required|string',
             'ruc' => 'required|string',
@@ -783,11 +782,11 @@ class ApiController extends Controller
         ]);
 
         $data['expense_date'] = Carbon::now();
+        $data['user_id'] = $user->id;
         $data['employee'] = $user->name;
-
+        $data['description'] = $user->name . ',' . $data['description'];
         DB::beginTransaction();
         try {
-            
             $expenseDirectory = 'documents/huawei/monthly_expenses/';
             if (isset($data['image'])) {
                 $data['image'] = $this->apiService->storeBase64Image($data['image'], $expenseDirectory, null);

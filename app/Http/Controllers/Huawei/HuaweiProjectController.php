@@ -843,7 +843,6 @@ class HuaweiProjectController extends Controller
             ->get()
             ->filter(fn($expense) => $mode ? $expense->type === 'Fijo' : $expense->type === 'Variable');
 
-
         return Inertia::render('Huawei/AdditionalCosts', [
             'expense' => $expenses->values(),
             'project' => $huawei_project,
