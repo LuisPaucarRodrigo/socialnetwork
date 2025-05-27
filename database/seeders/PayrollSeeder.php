@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\IncomeParam;
+use App\Models\DiscountParam;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -25,5 +26,12 @@ class PayrollSeeder extends Seeder
             [ 'code' => '0928' , 'concept' => 'Devolución retención exceso de imp renta 5ta cat.' ],
         ];
         IncomeParam::insert($incomeParams);
+        $discountParams = [
+            [ 'code' => '0701' , 'concept' => 'Adelanto' ],
+            [ 'code' => '0702' , 'concept' => 'Cuota sindical' ],
+            [ 'code' => '0705' , 'concept' => 'Inasistencias' ],
+            [ 'code' => '0706' , 'concept' => 'Otros desc. no deduc. de base imponib.' ],
+        ];
+        DiscountParam::insert($discountParams);
     }
 }
