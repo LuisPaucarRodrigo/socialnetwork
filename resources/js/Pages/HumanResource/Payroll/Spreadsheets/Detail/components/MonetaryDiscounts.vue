@@ -1,7 +1,9 @@
 <template>
-    <div>
+    <div class="space-y-4">
         <h1>Descuentos:</h1>
-        <hr>
+        <h4 class="text-sm font-light text-green-900 bg-green-500/10 rounded-lg p-3 ">
+            Para guardar el registro presionar la tecla enter, el punto púrpura indica que no esta guardado aún.
+        </h4>
         <form class="block">
             <TableStructure>
                 <template #thead>
@@ -92,10 +94,6 @@ async function handleSubmit(item, discount_param_id) {
 }
 
 
-function toogle(id, prop) {
-    savedArray.value[id][prop] = false;
-    return;
-}
 
 onMounted(async () => {
     const res = await axios
@@ -121,7 +119,6 @@ onMounted(async () => {
                         amount: 0,
                     };
             });
-            console.log(original)
             monetaryDiscounts.value = original;
         }
     }

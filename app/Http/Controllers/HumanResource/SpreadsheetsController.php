@@ -6,6 +6,7 @@ use App\Exports\Payroll\PayrollExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailMonetaryDiscountRequest;
 use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailMonetaryIncomeRequest;
+use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailTaxAndContributionRequest;
 use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailWorkScheduleRequest;
 use App\Http\Requests\HumanResource\StorePayrollRequest;
 use App\Models\Contract;
@@ -17,8 +18,10 @@ use App\Models\PayrollDetail;
 use App\Models\PayrollDetailExpense;
 use App\Models\PayrollDetailMonetaryIncome;
 use App\Models\PayrollDetailMonetaryDiscount;
+use App\Models\PayrollDetailTaxAndContribution;
 use App\Models\PayrollDetailWorkSchedule;
 use App\Models\Pension;
+use App\Models\TaxAndContributionParam;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -239,6 +242,24 @@ class SpreadsheetsController extends Controller
         $data = $request->validated();
         $rg = PayrollDetailMonetaryDiscount::updateOrCreate(['id'=>$data['id']], $data);
         $res = PayrollDetailMonetaryDiscount::find($rg->id);
+        return response()->json($res);
+    }
+
+    public function show_payroll_detail_tax_and_contribution ($payroll_detail_id) {
+        $tax_and_contribution_params = TaxAndContributionParam::all();
+        $taxes_contributions = PayrollDetailTaxAndContribution::where('payroll_detail_id', $payroll_detail_id)->get()
+        ->keyBy('t_a_c_param_id')->toArray();
+        return response()->json( [
+            'tax_and_contribution_params' => $tax_and_contribution_params, 
+            'taxes_contributions' => (object)$taxes_contributions
+        ]);
+    }
+
+    public function store_payroll_tax_and_contribution (StorePayrollDetailTaxAndContributionRequest $request)
+    {
+        $data = $request->validated();
+        $rg = PayrollDetailTaxAndContribution::updateOrCreate(['id'=>$data['id']], $data);
+        $res = PayrollDetailTaxAndContribution::find($rg->id);
         return response()->json($res);
     }
 }

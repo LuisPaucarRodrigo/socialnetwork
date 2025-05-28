@@ -46,6 +46,7 @@
                         </button>
                         <button
                             @click="changeComponent('TaxesAndContributions')"
+                            :objectData="objectData"
                             :class="clasesDinamic.TaxesAndContributions"
                             class="text-gray-400 rounded-md px-3 py-2 text-sm font-medium"
                         >
