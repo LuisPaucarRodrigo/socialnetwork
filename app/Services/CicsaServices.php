@@ -77,7 +77,7 @@ class CicsaServices
         }
         if (!empty($request->search)) {
             $search = $request->search;
-            $searchTerms = explode(' ', $search);
+            $searchTerms = [$search];
             $projectsCicsa = $projectsCicsa->where(function ($query) use ($searchTerms) {
                 foreach ($searchTerms as $term) {
                     $this->searchBase($query, $term);
