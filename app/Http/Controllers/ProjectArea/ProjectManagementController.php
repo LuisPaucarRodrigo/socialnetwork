@@ -137,10 +137,6 @@ class ProjectManagementController extends Controller
 
         $data = $request->validated();
         if ($request->id) {
-            $user = Auth::user();
-            if ($user->role_id !== 1) {
-                abort(403, "Solo admin puede editar");
-            }
             $project = Project::find($request->id);
             $preproject = Preproject::find($project?->preproject_id);
             $preproject->update(['cpe'=>$data['cpe']]);
