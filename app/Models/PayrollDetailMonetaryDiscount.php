@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PayrollMonetaryDiscount extends Model
+class PayrollDetailMonetaryDiscount extends Model
 {
     use HasFactory;
     protected $fillable = [ 

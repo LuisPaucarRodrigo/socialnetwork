@@ -4,17 +4,19 @@ namespace App\Http\Controllers\HumanResource;
 
 use App\Exports\Payroll\PayrollExport;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailMonetaryIncome;
+use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailMonetaryDiscountRequest;
 use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailMonetaryIncomeRequest;
 use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailWorkScheduleRequest;
 use App\Http\Requests\HumanResource\StorePayrollRequest;
 use App\Models\Contract;
 use App\Models\Employee;
 use App\Models\IncomeParam;
+use App\Models\DiscountParam;
 use App\Models\Payroll;
 use App\Models\PayrollDetail;
 use App\Models\PayrollDetailExpense;
 use App\Models\PayrollDetailMonetaryIncome;
+use App\Models\PayrollDetailMonetaryDiscount;
 use App\Models\PayrollDetailWorkSchedule;
 use App\Models\Pension;
 use Exception;
@@ -218,6 +220,25 @@ class SpreadsheetsController extends Controller
         $data = $request->validated();
         $rg = PayrollDetailMonetaryIncome::updateOrCreate(['id'=>$data['id']], $data);
         $res = PayrollDetailMonetaryIncome::find($rg->id);
+        return response()->json($res);
+    }
+
+
+    public function show_payroll_detail_monetary_discount ($payroll_detail_id) {
+        $discount_params = DiscountParam::all();
+        $monetary_discounts = PayrollDetailMonetaryDiscount::where('payroll_detail_id', $payroll_detail_id)->get()
+        ->keyBy('discount_param_id')->toArray();
+        return response()->json( [
+            'discount_params' => $discount_params, 
+            'monetary_discounts' => (object)$monetary_discounts
+        ]);
+    }
+
+    public function store_payroll_monetary_discount (StorePayrollDetailMonetaryDiscountRequest $request)
+    {
+        $data = $request->validated();
+        $rg = PayrollDetailMonetaryDiscount::updateOrCreate(['id'=>$data['id']], $data);
+        $res = PayrollDetailMonetaryDiscount::find($rg->id);
         return response()->json($res);
     }
 }

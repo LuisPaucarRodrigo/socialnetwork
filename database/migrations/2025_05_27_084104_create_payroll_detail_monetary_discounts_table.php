@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('payroll_monetary_discounts', function (Blueprint $table) {
+        Schema::create('payroll_detail_monetary_discounts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('payroll_detail_id')->constrained('payroll_details')->cascadeOnDelete();
             $table->foreignId('discount_param_id')->constrained('discount_params')->cascadeOnDelete();
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('payroll_monetary_discounts');
+        Schema::dropIfExists('payroll_detail_monetary_discounts');
     }
 };

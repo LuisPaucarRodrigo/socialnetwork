@@ -245,3 +245,6 @@ Route::post('/management_employees/payroll_store_pdws', [SpreadsheetsController:
 
 Route::get('/management_employees/payroll_show_pdmi/{payroll_detail_id}', [SpreadsheetsController::class, 'show_payroll_detail_monetary_income'])->name('payroll.show.payroll.detail.monetary.income');
 Route::post('/management_employees/payroll_store_pdmi', [SpreadsheetsController::class, 'store_payroll_monetary_income'])->name('payroll.store.payroll.detail.monetary.income');
+
+Route::get('/management_employees/payroll_show_pdmd/{payroll_detail_id}', [SpreadsheetsController::class, 'show_payroll_detail_monetary_discount'])->name('payroll.show.payroll.detail.monetary.discount');
+Route::post('/management_employees/payroll_store_pdmd', [SpreadsheetsController::class, 'store_payroll_monetary_discount'])->name('payroll.store.payroll.detail.monetary.discount');
