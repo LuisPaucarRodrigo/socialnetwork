@@ -1,7 +1,9 @@
 <template>
     <Head title="Gestion de Costos" />
     <AuthenticatedLayout :redirectRoute="'huawei.projects.generalbalance'">
-        <template #header> Gastos Generales {{ props.mode ? 'Fijos' : 'Variables' }}</template>
+        <template #header>
+            Gastos Generales {{ props.mode ? "Fijos" : "Variables" }}</template
+        >
         <br />
         <Toaster richColors />
         <div class="inline-block min-w-full mb-4">
@@ -106,23 +108,39 @@
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
 
-                    <button type="button"
+                    <button
+                        type="button"
                         class="rounded-md bg-blue-600 px-4 py-2 text-center text-sm text-white hover:bg-blue-500 h-full"
-                        @click="openExportArchivesModal" data-tooltip-target="export-photo-tooltip">
-                        <svg fill="#ffffff" width="20px" height="20px" viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg">
+                        @click="openExportArchivesModal"
+                        data-tooltip-target="export-photo-tooltip"
+                    >
+                        <svg
+                            fill="#ffffff"
+                            width="20px"
+                            height="20px"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
                             <g id="SVGRepo_bgCarrier" stroke-width="0" />
 
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
+                            <g
+                                id="SVGRepo_tracerCarrier"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
 
                             <g id="SVGRepo_iconCarrier">
                                 <path
-                                    d="M22.71,6.29a1,1,0,0,0-1.42,0L20,7.59V2a1,1,0,0,0-2,0V7.59l-1.29-1.3a1,1,0,0,0-1.42,1.42l3,3a1,1,0,0,0,.33.21.94.94,0,0,0,.76,0,1,1,0,0,0,.33-.21l3-3A1,1,0,0,0,22.71,6.29ZM19,13a1,1,0,0,0-1,1v.38L16.52,12.9a2.79,2.79,0,0,0-3.93,0l-.7.7L9.41,11.12a2.85,2.85,0,0,0-3.93,0L4,12.6V7A1,1,0,0,1,5,6h8a1,1,0,0,0,0-2H5A3,3,0,0,0,2,7V19a3,3,0,0,0,3,3H17a3,3,0,0,0,3-3V14A1,1,0,0,0,19,13ZM5,20a1,1,0,0,1-1-1V15.43l2.9-2.9a.79.79,0,0,1,1.09,0l3.17,3.17,0,0L15.46,20Zm13-1a.89.89,0,0,1-.18.53L13.31,15l.7-.7a.77.77,0,0,1,1.1,0L18,17.21Z" />
+                                    d="M22.71,6.29a1,1,0,0,0-1.42,0L20,7.59V2a1,1,0,0,0-2,0V7.59l-1.29-1.3a1,1,0,0,0-1.42,1.42l3,3a1,1,0,0,0,.33.21.94.94,0,0,0,.76,0,1,1,0,0,0,.33-.21l3-3A1,1,0,0,0,22.71,6.29ZM19,13a1,1,0,0,0-1,1v.38L16.52,12.9a2.79,2.79,0,0,0-3.93,0l-.7.7L9.41,11.12a2.85,2.85,0,0,0-3.93,0L4,12.6V7A1,1,0,0,1,5,6h8a1,1,0,0,0,0-2H5A3,3,0,0,0,2,7V19a3,3,0,0,0,3,3H17a3,3,0,0,0,3-3V14A1,1,0,0,0,19,13ZM5,20a1,1,0,0,1-1-1V15.43l2.9-2.9a.79.79,0,0,1,1.09,0l3.17,3.17,0,0L15.46,20Zm13-1a.89.89,0,0,1-.18.53L13.31,15l.7-.7a.77.77,0,0,1,1.1,0L18,17.21Z"
+                                />
                             </g>
                         </svg>
                     </button>
-                    <div id="export-photo-tooltip" role="tooltip"
-                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                    <div
+                        id="export-photo-tooltip"
+                        role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                    >
                         Facturas, Boletas y Vouchers de Pago
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
@@ -716,13 +734,9 @@
                         >
                             S/.
                             {{
-                                    expenses
-                                          ?.reduce(
-                                              (a, item) => a + item.amount,
-                                              0
-                                          )
-                                          .toFixed(2)
-
+                                expenses
+                                    ?.reduce((a, item) => a + item.amount, 0)
+                                    .toFixed(2)
                             }}
                         </td>
 
@@ -769,9 +783,12 @@
                                                 <option disabled value="">
                                                     Seleccionar Macroproyecto
                                                 </option>
-                                                <option>DWDM</option>
-                                                <option>IPRAN24</option>
-                                                <option>FTTH</option>
+                                                <option
+                                                    v-for="macro in props.data.macro_projects"
+                                                    :value="macro"
+                                                >
+                                                    {{ macro }}
+                                                </option>
                                             </select>
                                         </div>
                                     </div>
@@ -1099,7 +1116,6 @@
                                     <InputError :message="form.errors.image" />
                                 </div>
                             </div>
-
                         </div>
                         <div class="mt-6 flex items-center justify-end gap-x-6">
                             <SecondaryButton @click="closeModal">
@@ -1255,18 +1271,29 @@
                 <div
                     class="bg-indigo-50 border-l-4 text-sm border-indigo-500 p-4 rounded-lg shadow-sm mt-2"
                 >
-                <p class="text-gray-700">
+                    <p class="text-gray-700">
                         <span class="font-semibold text-indigo-600">•</span>
                         Descargue la
-                        <a :href="route('huawei.projects.general.expenses.donwloadtemplate')" class="font-black text-indigo-600 hover:underline">ESTRUCTURA DE DATOS.</a>
-
+                        <a
+                            :href="
+                                route(
+                                    'huawei.projects.general.expenses.donwloadtemplate'
+                                )
+                            "
+                            class="font-black text-indigo-600 hover:underline"
+                            >ESTRUCTURA DE DATOS.</a
+                        >
                     </p>
                     <p class="text-gray-700">
                         <span class="font-semibold text-indigo-600">•</span>
                         La importación
-                        <span class="font-black text-indigo-600">NO VA A SOBREESCRIBIR</span>
+                        <span class="font-black text-indigo-600"
+                            >NO VA A SOBREESCRIBIR</span
+                        >
                         los datos actuales, solo
-                        <span class="font-black text-indigo-600">CREARÁ NUEVOS REGISTROS</span>.
+                        <span class="font-black text-indigo-600"
+                            >CREARÁ NUEVOS REGISTROS</span
+                        >.
                     </p>
                     <p class="text-gray-700">
                         <span class="font-semibold text-indigo-600">•</span> El
@@ -1377,9 +1404,7 @@
                         <span class="font-black text-indigo-700"
                             >Columna K:</span
                         >
-                        <span class="text-gray-700"
-                            >Tipo de cuenta</span
-                        >
+                        <span class="text-gray-700">Tipo de cuenta</span>
                     </div>
                     <div
                         class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
@@ -1387,7 +1412,9 @@
                         <span class="font-black text-indigo-700"
                             >Columna L:</span
                         >
-                        <span class="text-gray-700">Fecha de Depósito E.C.</span>
+                        <span class="text-gray-700"
+                            >Fecha de Depósito E.C.</span
+                        >
                     </div>
                     <div
                         class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
@@ -1608,15 +1635,19 @@ async function submit(update) {
             expenses.value.map((item) => [item.id, item])
         );
         const newExpense = res.data;
-        newExpense.amount = Number(newExpense.amount)
-        newExpense.ec_amount = Number(newExpense.ec_amount)
+        newExpense.amount = Number(newExpense.amount);
+        newExpense.ec_amount = Number(newExpense.ec_amount);
 
         originalMap.set(newExpense.id, newExpense);
         expenses.value = Array.from(originalMap.values());
         closeModal();
-        notify(update ? "Se actualizó el registro correctamente" : "Se creó el registro correctamente");
+        notify(
+            update
+                ? "Se actualizó el registro correctamente"
+                : "Se creó el registro correctamente"
+        );
     } catch (e) {
-        console.error(e)
+        console.error(e);
         isFetching.value = false;
         if (e.response?.data?.errors) {
             setAxiosErrors(e.response.data.errors, form);
@@ -1644,9 +1675,7 @@ async function deleteAdditional() {
             route("huawei.projects.general.expenses.delete", { expense: docId })
         );
         if (response.data == true) {
-            const index = expenses.value.findIndex(
-                (item) => item.id === docId
-            );
+            const index = expenses.value.findIndex((item) => item.id === docId);
             if (index !== -1) {
                 expenses.value.splice(index, 1);
                 closeModalDoc();
@@ -1664,7 +1693,9 @@ const openPreviewDocumentModal = (expense) => {
 };
 
 const employees = props.data.employees;
-const expenseTypes = props.mode ? props.data.static_expense_types : props.data.variable_expense_types;
+const expenseTypes = props.mode
+    ? props.data.static_expense_types
+    : props.data.variable_expense_types;
 const cdp_types = props.data.cdp_types;
 const op_numbers = props.summary.op_numbers;
 
@@ -1708,7 +1739,9 @@ watch(
     { deep: true }
 );
 async function search_advance($data) {
-    let url = route("huawei.projects.general.expenses.searchadvance", {mode: props.mode});
+    let url = route("huawei.projects.general.expenses.searchadvance", {
+        mode: props.mode,
+    });
     try {
         let response = await axios.post(url, $data);
         expenses.value = response.data.expenses;
@@ -1718,7 +1751,9 @@ async function search_advance($data) {
 }
 
 function openExportExcel() {
-    const url = route("huawei.projects.general.expenses.export", {mode: props.mode});
+    const url = route("huawei.projects.general.expenses.export", {
+        mode: props.mode,
+    });
     window.location.href = url;
 }
 
@@ -1742,12 +1777,16 @@ async function validateRegister(expense_id, is_accepted) {
             expenses.value.map((item) => [item.id, item])
         );
         const newExpense = response.data;
-        newExpense.amount = Number(newExpense.amount)
-        newExpense.ec_amount = Number(newExpense.ec_amount)
+        newExpense.amount = Number(newExpense.amount);
+        newExpense.ec_amount = Number(newExpense.ec_amount);
 
         originalMap.set(newExpense.id, newExpense);
         expenses.value = Array.from(originalMap.values());
-        notify(is_accepted ? "Registro validado correctamente" : "Registro rechazado correctamente");
+        notify(
+            is_accepted
+                ? "Registro validado correctamente"
+                : "Registro rechazado correctamente"
+        );
     } catch (e) {
         console.log(e);
         notifyError("Error al validar el registro");
@@ -1759,9 +1798,7 @@ function updateExpense(expense, action, state) {
         expenses.value.unshift(expense);
         notify("Gasto Guardado");
     } else if (action === "update") {
-        let index = expenses.value.findIndex(
-            (item) => item.id == expense.id
-        );
+        let index = expenses.value.findIndex((item) => item.id == expense.id);
         expenses.value[index] = expense;
         notify("Gasto Actualizado");
     } else if (action === "delete") {
@@ -1778,17 +1815,16 @@ const searchForm = useForm({
     searchTerm: props.search ? props.search : "",
 });
 
-
 const search = () => {
     if (searchForm.searchTerm == "") {
         router.visit(
-            route("huawei.projects.general.expenses", {mode: props.mode})
+            route("huawei.projects.general.expenses", { mode: props.mode })
         );
     } else {
         router.visit(
             route("huawei.projects.general.expenses.search", {
                 request: searchForm.searchTerm,
-                mode: props.mode
+                mode: props.mode,
             })
         );
     }
@@ -1869,9 +1905,7 @@ const submitOpNuDatModal = async () => {
             }
         });
 
-    const originalMap = new Map(
-        expenses.value.map((item) => [item.id, item])
-    );
+    const originalMap = new Map(expenses.value.map((item) => [item.id, item]));
     res.data.forEach((update) => {
         if (originalMap.has(update.id)) {
             originalMap.set(update.id, update);
@@ -1899,9 +1933,7 @@ const massiveValidate = async () => {
             }
         });
 
-    const originalMap = new Map(
-        expenses.value.map((item) => [item.id, item])
-    );
+    const originalMap = new Map(expenses.value.map((item) => [item.id, item]));
     res.data.forEach((update) => {
         if (originalMap.has(update.id)) {
             originalMap.set(update.id, update);
@@ -1966,9 +1998,7 @@ const importExcel = () => {
             show_import.value = false;
             notify("Se importó el archivo correctamente");
             setTimeout(() => {
-                router.visit(
-                    route("huawei.projects.general.expenses")
-                );
+                router.visit(route("huawei.projects.general.expenses"));
             }, 2000);
         },
         onError: (e) => {
@@ -1977,15 +2007,23 @@ const importExcel = () => {
     });
 };
 
-const showExportArchivesModal = ref(false)
-const openExportArchivesModal = () => {showExportArchivesModal.value = true}
-const closeExportArchivesModal = () => {showExportArchivesModal.value = false}
+const showExportArchivesModal = ref(false);
+const openExportArchivesModal = () => {
+    showExportArchivesModal.value = true;
+};
+const closeExportArchivesModal = () => {
+    showExportArchivesModal.value = false;
+};
 function exportArchives() {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
-    const url = route("zip.additional.descargar", { project_id: props.project_id.id }) +
-            '?' + qs.stringify({...filterForm.value, uniqueParam}, { arrayFormat: 'brackets' });
+    const url =
+        route("zip.additional.descargar", { project_id: props.project_id.id }) +
+        "?" +
+        qs.stringify(
+            { ...filterForm.value, uniqueParam },
+            { arrayFormat: "brackets" }
+        );
     window.location.href = url;
-    closeExportArchivesModal()
+    closeExportArchivesModal();
 }
-
 </script>

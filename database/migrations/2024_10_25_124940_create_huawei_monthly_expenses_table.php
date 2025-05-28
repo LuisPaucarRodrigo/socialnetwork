@@ -28,9 +28,11 @@ return new class extends Migration
             $table->date('ec_expense_date')->nullable();
             $table->string('ec_op_number')->nullable();
             $table->double('ec_amount')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('huawei_project_id')->nullable()->constrained('huawei_projects')->onDelete('set null');
             $table->foreignId('account_statement_id')->nullable()->constrained('account_statements')->onDelete('set null');
             $table->foreignId('general_expense_id')->constrained('general_expenses')->cascadeOnDelete();
+            $table->foreignId('employee_id')->nullable()->constrained('employees')->cascadeOnDelete();
             $table->timestamps();
         });
     }

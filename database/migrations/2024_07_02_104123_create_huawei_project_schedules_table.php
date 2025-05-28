@@ -17,7 +17,6 @@ return new class extends Migration
             $table->integer('days');
             $table->date('start_date');
             $table->date('end_date');
-            $table->string('employee')->nullable();
             $table->foreignId('huawei_project_id')->constrained('huawei_projects')->onDelete('cascade');
             $table->timestamps();
         });
