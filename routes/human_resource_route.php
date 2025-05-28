@@ -238,6 +238,7 @@ Route::middleware('permission:' . implode('|', RolesConstants::HR_MODULE))->grou
 
 });
 
+//new payroll routes
 
 Route::get('/management_employees/worker_data/{employee_id}', [SpreadsheetsController::class, 'index_worder_data'])->name('index.worker.data');
 Route::get('/management_employees/payroll_show_pdws/{payroll_detail_id}', [SpreadsheetsController::class, 'show_payroll_detail_work_schedule'])->name('payroll.show.payroll.detail.work.schedule');
@@ -251,3 +252,7 @@ Route::post('/management_employees/payroll_store_pdmd', [SpreadsheetsController:
 
 Route::get('/management_employees/payroll_show_pdtac/{payroll_detail_id}', [SpreadsheetsController::class, 'show_payroll_detail_tax_and_contribution'])->name('payroll.show.payroll.detail.tax.contribution');
 Route::post('/management_employees/payroll_store_pdtac', [SpreadsheetsController::class, 'store_payroll_tax_and_contribution'])->name('payroll.store.payroll.detail.tax.contribution');
+
+Route::get('/management_employees/payroll_external_detail_index/{payroll_id}', [SpreadsheetsController::class, 'index_payroll_external_detail'])->name('payroll.index.payroll.external.detail');
+Route::post('/management_employees/payroll_external_detail_store', [SpreadsheetsController::class, 'store_payroll_external_detail'])->name('payroll.store.payroll.external.detail');
+Route::delete('/management_employees/payroll_external_detail_delete/{payroll_detail_id}', [SpreadsheetsController::class, 'destroy_payroll_external_detail'])->name('payroll.store.payroll.external.destroy');

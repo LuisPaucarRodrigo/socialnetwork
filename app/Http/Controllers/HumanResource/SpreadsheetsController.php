@@ -8,9 +8,11 @@ use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailMonetaryDiscountRe
 use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailMonetaryIncomeRequest;
 use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailTaxAndContributionRequest;
 use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailWorkScheduleRequest;
+use App\Http\Requests\HumanResource\Payroll\StorePayrollExternalDetailRequest;
 use App\Http\Requests\HumanResource\StorePayrollRequest;
 use App\Models\Contract;
 use App\Models\Employee;
+use App\Models\ExternalEmployee;
 use App\Models\IncomeParam;
 use App\Models\DiscountParam;
 use App\Models\Payroll;
@@ -20,6 +22,7 @@ use App\Models\PayrollDetailMonetaryIncome;
 use App\Models\PayrollDetailMonetaryDiscount;
 use App\Models\PayrollDetailTaxAndContribution;
 use App\Models\PayrollDetailWorkSchedule;
+use App\Models\PayrollExternalDetail;
 use App\Models\Pension;
 use App\Models\TaxAndContributionParam;
 use Exception;
@@ -261,5 +264,29 @@ class SpreadsheetsController extends Controller
         $rg = PayrollDetailTaxAndContribution::updateOrCreate(['id'=>$data['id']], $data);
         $res = PayrollDetailTaxAndContribution::find($rg->id);
         return response()->json($res);
+    }
+
+
+    //for 4ta category -- external employees
+    public function index_payroll_external_detail ($payroll_id) {
+        $data = PayrollExternalDetail::with('external_employee')->where('payroll_id', $payroll_id)->get();
+        $external_employees = ExternalEmployee::all();
+        return Inertia::render('HumanResource/Payroll/Spreadsheets/ExternalDetail/Index', [
+            'payroll_external_details' => $data,
+            'external_employees' => $external_employees,
+            'payroll_id' => (Integer)$payroll_id
+        ]);
+    }
+
+    public function store_payroll_external_detail (StorePayrollExternalDetailRequest $request) {
+        $data = $request->validated();
+        $rg = PayrollExternalDetail::updateOrCreate(['id'=>$data['id']], $data);
+        $res = PayrollExternalDetail::with('external_employee')->find($rg->id);
+        return response()->json($res);
+    }
+    public function destroy_payroll_external_detail ($payroll_detail_id) {
+        $rg = PayrollExternalDetail::findOrFail($payroll_detail_id);
+        $rg->delete();
+        return response()->json();
     }
 }

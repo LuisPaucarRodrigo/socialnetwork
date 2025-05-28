@@ -20,6 +20,10 @@
                             fill="#228b22" />
                     </svg>
                 </a>
+                <Link :href="route('payroll.index.payroll.external.detail', {payroll_id: payrolls.id})"
+                    class="bg-indigo-600 hover:bg-indigo-500 rounded-md px-4 py-2 text-center text-sm text-white">
+                    PS 4ta categoría
+                </Link>
             </div>
             <div class="sm:hidden">
                 <dropdown align='left'>
@@ -58,6 +62,7 @@
 import Dropdown from '@/Components/Dropdown.vue';
 import { notifyError } from '@/Components/Notification';
 import TextInput from '@/Components/TextInput.vue';
+import { Link } from '@inertiajs/vue3';
 
 const { payrolls, openPayrollApprove } = defineProps({
     payrolls: Object,
