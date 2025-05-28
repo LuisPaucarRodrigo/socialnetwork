@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use FFI;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -37,5 +37,13 @@ class Payroll extends Model
         return $this->payroll_details->sum(function ($detail) {
             return $detail->net_pay;
         });
+    }
+
+
+    public function getDaysAttribute()
+    {
+        $monthString = $this->month;
+        $date = Carbon::createFromFormat('Y-m', $monthString);
+        return $date->daysInMonth;
     }
 }

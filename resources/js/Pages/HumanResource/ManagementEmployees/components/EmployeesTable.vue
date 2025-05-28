@@ -85,7 +85,7 @@ import TableRow from '@/Components/TableRow.vue';
 import Pagination from '@/Components/Pagination.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import { Link } from '@inertiajs/vue3';
-import TableStructure from '../TableStructure.vue';
+import TableStructure from '@/Layouts/TableStructure.vue';
 import { ArrowDownTrayIcon, ArrowUpTrayIcon, EyeIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
 
 
