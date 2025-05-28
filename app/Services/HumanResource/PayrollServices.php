@@ -8,6 +8,7 @@ use App\Models\PayrollDetail;
 use App\Models\PayrollDetailExpense;
 use App\Models\Pension;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 
 class PayrollServices
 {
@@ -80,7 +81,11 @@ class PayrollServices
             'days_taken' => $employee->contract->days_taken,
             'pension_id' => $listPension->pension->firstWhere('type', $employee->contract->pension_type)?->id
         ];
-
+        if($employee->id === 32) {
+            Log::info($data);
+            Log::info($employee->contract->pension_type);
+            Log::info($listPension->pension);
+        }
         return $this->createPayrollDetail($data);
     }
 

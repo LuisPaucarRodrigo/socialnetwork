@@ -267,7 +267,7 @@ onMounted(async () => {
             payroll_detail_id: payroll_detail.id,
         })
     ).catch(e=>notifyWarning('Cant obtain pdws'));
-    if (res.status === 200 && res.data) {
+    if (res.status === 200 && Object.keys(res.data).length !== 0 ) {
         const payroll_detail_work_schedule = res.data;
         form.defaults({ ...getInitialState(payroll_detail_work_schedule) });
         form.reset();
