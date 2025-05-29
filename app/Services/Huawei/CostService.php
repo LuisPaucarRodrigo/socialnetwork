@@ -9,25 +9,31 @@ use Illuminate\Http\Request;
 class CostService
 {
 
-    public function filter(Request $request, $query)
+    public function filter(Request $request, $query, $mode)
     {
         if ($request->search) {
-            $searchTerms = $request->input('search');
-            $query->where(function ($q) use ($searchTerms) {
-                $q->where('ruc', 'like', "%$searchTerms%")
-                ->orWhere('doc_number', 'like', "%$searchTerms%")
-                ->orWhere('op_number', 'like', "%$searchTerms%")
-                ->orWhere('description', 'like', "%$searchTerms%")
-                ->orWhere('amount', 'like', "%$searchTerms%");
-            });
-        }
+            $searchTerm = $request->input('search');
+            $query->whereRaw('LOWER(expense_type) LIKE ?', ["%{$searchTerm}%"])
+                ->orWhereRaw('LOWER(zone) LIKE ?', ["%{$searchTerm}%"])
+                ->orWhereRaw('LOWER(employee) LIKE ?', ["%{$searchTerm}%"])
+                ->orWhereRaw('LOWER(cdp_type) LIKE ?', ["%{$searchTerm}%"])
+                ->orWhereRaw('LOWER(doc_number) LIKE ?', ["%{$searchTerm}%"])
+                ->orWhereRaw('LOWER(op_number) LIKE ?', ["%{$searchTerm}%"])
+                ->orWhereRaw('LOWER(ruc) LIKE ?', ["%{$searchTerm}%"])
+                ->orWhereRaw('LOWER(description) LIKE ?', ["%{$searchTerm}%"])
+                ->orWhereRaw('LOWER(ec_op_number) LIKE ?', ["%{$searchTerm}%"])
+                ->orWhereHas('huawei_project', function ($query) use ($searchTerm) {
+                    $query->whereRaw('LOWER(assigned_diu) LIKE ?', ["%{$searchTerm}%"]);
+                });
+        };
+
 
         if ($request->selectedStates === false) {
             $query->where('is_accepted', 0);
         } else {
             $query->where(function ($q) {
                 $q->where('is_accepted', 1)
-                ->orWhereNull('is_accepted');
+                    ->orWhereNull('is_accepted');
             });
         }
         if (filter_var($request->exNoDate, FILTER_VALIDATE_BOOLEAN)) {
@@ -50,34 +56,43 @@ class CostService
             $query->where('ec_expense_date', '<=', $request->opEndDate);
         }
 
-        if (count($request->selectedZones) < PintConstants::countAcZones()) {
+        if (count($request->selectedZones) < count(HuaweiConstants::getZones())) {
             $query->whereIn('zone', $request->selectedZones);
         }
 
-        if (count($request->selectedExpenseTypes) < PintConstants::countAcExpenseTypes()) {
-            $query->whereIn('expense_type', $request->selectedExpenseTypes);
+        if ($mode){
+            if (count($request->selectedExpenseTypes) < count(HuaweiConstants::getVariableExpenseTypes())) {
+                $query->whereIn('expense_type', $request->selectedExpenseTypes);
+            }
+        }else{
+            if (count($request->selectedExpenseTypes) < count(HuaweiConstants::getStaticExpenseTypes())) {
+                $query->whereIn('expense_type', $request->selectedExpenseTypes);
+            }
         }
 
-        if (count($request->selectedDocTypes) < PintConstants::countAcDocTypes()) {
-            $query->whereIn('type_doc', $request->selectedDocTypes);
+        if (count($request->selectedCDPTypes) < count(HuaweiConstants::getCDPTypes())) {
+            $query->whereIn('cdp_type', $request->selectedCDPTypes);
         }
 
-        $result = $query->orderBy('doc_date')->get();
+        $result = $query->orderBy('expense_date')->get();
 
         $result->transform(function ($item) {
-            $item->project->setAppends([]);
-            $item->setAppends(['real_amount', 'real_state']);
+            $item->setAppends(['real_state']);
             return $item;
         });
 
-        if ($request->state !== false && count($request->selectedStateTypes) < count(PintConstants::acStatesPenAccep())) {
-            $result = $result->filter(function ($item) use ($request) {
-                return in_array($item->real_state, $request->selectedStateTypes);
-            })->values()->all();
+        if (count($request->selectedStates) < 4) {
+            $selectedStates = $request->selectedStates;
+
+            $filteredStates = array_filter($selectedStates, function ($state) {
+                return in_array($state, ["Aceptado", "Rechazado", "Pendiente", "Aceptado-Validado"]);
+            });
+
+            $result = $result->filter(function ($expense) use ($filteredStates) {
+                return in_array($expense->real_state, $filteredStates);
+            });
         }
 
         return $result;
     }
-
-
 }

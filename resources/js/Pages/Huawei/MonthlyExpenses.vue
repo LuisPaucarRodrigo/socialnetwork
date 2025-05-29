@@ -1525,6 +1525,7 @@ import Dropdown from "@/Components/Dropdown.vue";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import { setAxiosErrors, toFormData } from "@/utils/utils";
+import qs from 'qs';
 
 const props = defineProps({
     expense: Object,
@@ -2017,7 +2018,7 @@ const closeExportArchivesModal = () => {
 function exportArchives() {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
     const url =
-        route("zip.additional.descargar", { project_id: props.project_id.id }) +
+        route("huawei.projects.monthlyexpenses.downloadimages", { mode: props.mode }) +
         "?" +
         qs.stringify(
             { ...filterForm.value, uniqueParam },

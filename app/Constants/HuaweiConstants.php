@@ -4,6 +4,7 @@ namespace App\Constants;
 
 use App\Models\Employee;
 use App\Models\ExternalEmployee;
+use App\Models\HuaweiMonthlyExpense;
 
 class HuaweiConstants
 {
@@ -109,6 +110,15 @@ class HuaweiConstants
             "Entel",
             'Telefonica',
         ];
+    }
+
+    public static function getZones(): array
+    {
+        return HuaweiMonthlyExpense::pluck('zone')
+        ->filter()
+        ->unique()
+        ->values()
+        ->toArray();
     }
     //commit
 }

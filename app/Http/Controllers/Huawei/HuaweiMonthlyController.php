@@ -11,12 +11,12 @@ use App\Models\Employee;
 use App\Models\HuaweiMonthlyExpense;
 use App\Models\HuaweiMonthlyProject;
 use App\Models\HuaweiProject;
+use App\Services\Huawei\CostService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log as FacadesLog;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
-use Log;
 use Maatwebsite\Excel\Facades\Excel;
 use Pest\Plugins\Parallel\Handlers\Laravel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -26,8 +26,9 @@ class HuaweiMonthlyController extends Controller
 {
 
     private static array $data;
+    protected CostService $costService;
 
-    public function __construct()
+    public function __construct(CostService $costService)
     {
         self::$data = [
             'employees' => HuaweiConstants::getEmployees(),
@@ -36,7 +37,10 @@ class HuaweiMonthlyController extends Controller
             'cdp_types' => HuaweiConstants::getCDPTypes(),
             'macro_projects' => HuaweiConstants::getMacroProjects(),
         ];
+
+        $this->costService = $costService;
     }
+
     //expenses
 
     public function getGeneralBalance()
@@ -284,7 +288,7 @@ class HuaweiMonthlyController extends Controller
         if (!empty($request->selectedZones) && ($request->selectedZones) < $summary['zones']) {
             $expensesQuery->whereIn('zone', $request->selectedZones);
         }
-        
+
         if (count($request->selectedDus) < $summary['assigned_dius'] + 1) {
             $selectedDus = $request->selectedDus;
 
@@ -599,20 +603,21 @@ class HuaweiMonthlyController extends Controller
         return response()->json($projects, 200);
     }
 
-    public function downloadImages($mode= null, Request $request)
+    public function downloadImages(Request $request, $mode= null)
     {
         try {
             $query = HuaweiMonthlyExpense::where('is_accepted', 1);
-            $additionalCosts = $this->additionalCostsService->filter($request, $query);
-            $zipFileName = 'additionalCostsPhotos.zip';
-            $zipFilePath = public_path("/documents/additionalcosts/{$zipFileName}");
+            $additionalCosts = $this->costService->filter($request, $query, $mode);
+            $zipFileName = 'HuaweiCost_' . time() . '.zip';
+            $zipFilePath = public_path("/documents/huawei/monthly_expenses/{$zipFileName}");
             $zip = new ZipArchive;
+
             if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
                 foreach ($additionalCosts as $cost) {
-                    if (!empty($cost["photo"])) {
-                        $photoPath = public_path("/documents/additionalcosts/{$cost["photo"]}");
+                    if (!empty($cost["image"])) {
+                        $photoPath = public_path("/documents/huawei/monthly_expenses/{$cost["image"]}");
                         if (file_exists($photoPath)) {
-                            $zip->addFile($photoPath, $cost["photo"]);
+                            $zip->addFile($photoPath, $cost["image"]);
                         }
                     }
                 }

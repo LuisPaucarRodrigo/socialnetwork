@@ -219,6 +219,7 @@ Route::middleware('permission:'.implode('|', RolesConstants::HUAWEI_MODULE))->gr
 
     //nuevas rutas
     Route::post('/huawei/projects/create/fetch_sites/post', [HuaweiProjectController::class, 'fetchSites'])->name('huawei.projects.create.fetchsites');
+    Route::get('/huawei/projects/monthly_expenses/download_images/post/{mode?}', [HuaweiMonthlyController::class, 'downloadImages'])->name('huawei.projects.monthlyexpenses.downloadimages');
 });
 
 

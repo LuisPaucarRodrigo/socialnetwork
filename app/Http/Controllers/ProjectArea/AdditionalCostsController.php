@@ -318,7 +318,7 @@ class AdditionalCostsController extends Controller
             })
             ->get();
         return response()->json($data);
-    }   
+    }
 
     public function swapCostsToRegularProject(Request $request)
     {
@@ -405,7 +405,7 @@ class AdditionalCostsController extends Controller
         $ac = AdditionalCost::with('project', 'provider')
             ->find($ac_id);
         $ac->update($data);
-        
+
         //Automatic swap
         // if ($ac->is_accepted) {
         //     $project = Project::with('preproject.quote')->find($ac->project_id);
