@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('payroll_external_details', function (Blueprint $table) {
             $table->id();
             $table->foreignId('payroll_id')->constrained('payrolls')->cascadeOnDelete();
-            $table->foreignId('external_employee_id')->constrained('external_employees')->cascadeOnDelete();
+            $table->string('name');
+            $table->string('lastname');
             $table->string('doc_type');
             $table->string('doc_number');
             $table->float('amount');

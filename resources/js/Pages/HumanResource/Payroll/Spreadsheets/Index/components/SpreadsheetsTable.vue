@@ -11,19 +11,31 @@
                 <TableTitle>REG. PEN</TableTitle>
                 <TableTitle>Fecha Ingreso</TableTitle>
                 <TableTitle>Sueldo</TableTitle>
-                <TableTitle>Pago por días</TableTitle>
+
+                <TableTitle>Ingresos devengados</TableTitle>
+                <TableTitle>Ingresos pagados</TableTitle>
+                <TableTitle>Descuentos</TableTitle>
+                <TableTitle>Aporte de trabajador</TableTitle>
+                <TableTitle>Neto a pagar</TableTitle>
+                <TableTitle>Aporte empleador</TableTitle>
+
+                <!-- <TableTitle>Pago por días</TableTitle>
                 <TableTitle>Descuento</TableTitle>
+
                 <TableTitle>Vac. Truncas</TableTitle>
                 <TableTitle>Ingreso Total</TableTitle>
                 <TableTitle>Tot.B.G.Sis. Pensionario</TableTitle>
+
                 <TableTitle>%.SNP</TableTitle>
                 <TableTitle>SNP/ONP</TableTitle>
                 <TableTitle>%.COM</TableTitle>
+
                 <TableTitle>%.Com. Sobre R.A.</TableTitle>
                 <TableTitle>% SEG</TableTitle>
                 <TableTitle>PRIMA SEGURO</TableTitle>
                 <TableTitle>% APORT. OBLIG.</TableTitle>
                 <TableTitle>MONTO OBLIGA.</TableTitle>
+
                 <TableTitle>DESCUENTO TOTAL</TableTitle>
                 <TableTitle>Viáticos</TableTitle>
                 <TableTitle>NETO PAGAR</TableTitle>
@@ -32,7 +44,7 @@
                 <TableTitle>VIDA LEY</TableTitle>
                 <TableTitle>SCTR P</TableTitle>
                 <TableTitle>SCTR S</TableTitle>
-                <TableTitle>APORTE TOTAL</TableTitle>
+                <TableTitle>APORTE TOTAL</TableTitle> -->
                 <TableTitle></TableTitle>
             </tr>
         </template>
@@ -45,8 +57,17 @@
                 </TableRow>
                 <TableRow>{{ spreadsheet.pension.type }}</TableRow>
                 <TableRow>{{ formattedDate(spreadsheet.hire_date) }}</TableRow>
-                <TableRow>S/ {{ spreadsheet.basic_salary.toFixed(2) }}</TableRow>
-                <TableRow>S/ {{ spreadsheet.payment_until_today.toFixed(2) }}</TableRow>
+                <TableRow :style="'tabular-nums flex justify-end'">S/ {{ spreadsheet.basic_salary.toFixed(2) }}</TableRow>
+
+                <TableRow>S/ {{ spreadsheet.new_totals.income_accrued_total.toFixed(2) }}</TableRow>
+                <TableRow>S/ {{ spreadsheet.new_totals.income_paid_total.toFixed(2) }}</TableRow>
+                <TableRow>S/ {{ spreadsheet.new_totals.discount_total.toFixed(2) }}</TableRow>
+                <TableRow>S/ {{ spreadsheet.new_totals.employee_tac_total.toFixed(2) }}</TableRow>
+                <TableRow :style="'bg-green-200'">S/ {{ spreadsheet.new_totals.net_pay.toFixed(2) }}</TableRow>
+                <TableRow>S/ {{ spreadsheet.new_totals.employer_tac_total.toFixed(2) }}</TableRow>
+
+                
+                <!-- <TableRow>S/ {{ spreadsheet.payment_until_today.toFixed(2) }}</TableRow>
                 <TableRow>
                     <div class="flex gap-x-3">
                         <p class="text-gray-900 whitespace-nowrap">
@@ -123,7 +144,7 @@
                 </TableRow>
                 <TableRow>S/ {{ spreadsheet.discount_sctr ? spreadsheet.sctr_s.toFixed(2) : 0.00 }}
                 </TableRow>
-                <TableRow>S/ {{ spreadsheet.total_contribution.toFixed(2) }}</TableRow>
+                <TableRow>S/ {{ spreadsheet.total_contribution.toFixed(2) }}</TableRow> -->
                 <TableRow>
                     <Link
                         :href="route('spreadsheets.details.index', { payroll_details_id: spreadsheet.id, employee_id: spreadsheet.employee_id })">
@@ -138,7 +159,13 @@
             <tr class="sticky bottom-0 z-5">
                 <TableRow :colspan="4">Totales:</TableRow>
                 <TableRow>S/ {{ totals.sum_salary.toFixed(2) }}</TableRow>
-                <TableRow>S/ {{ totals.sum_payment_until_today.toFixed(2) }}</TableRow>
+                <TableRow>S/ {{ totals.income_accrued_total.toFixed(2) }}</TableRow>
+                <TableRow>S/ {{ totals.income_paid_total.toFixed(2) }}</TableRow>
+                <TableRow>S/ {{ totals.discount_total.toFixed(2) }}</TableRow>
+                <TableRow>S/ {{ totals.employee_tac_total.toFixed(2) }}</TableRow>
+                <TableRow>S/ {{ totals.net_pay.toFixed(2) }}</TableRow>
+                <TableRow>S/ {{ totals.employer_tac_total.toFixed(2) }}</TableRow>
+                <!-- <TableRow>S/ {{ totals.sum_payment_until_today.toFixed(2) }}</TableRow>
                 <TableRow>S/ {{ totals.sum_discount.toFixed(2) }}</TableRow>
                 <TableRow>S/ {{ totals.sum_truncated_vacations.toFixed(2) }}</TableRow>
                 <TableRow>S/ {{ totals.sum_total_income.toFixed(2) }}</TableRow>
@@ -158,7 +185,7 @@
                     totals.sum_life_ley.toFixed(2) }}</TableRow>
                 <TableRow>S/ {{ totals.sum_sctr_p.toFixed(2) }}</TableRow>
                 <TableRow>S/ {{ totals.sum_sctr_s.toFixed(2) }}</TableRow>
-                <TableRow>S/ {{ totals.sum_total_contribution.toFixed(2) }}</TableRow>
+                <TableRow>S/ {{ totals.sum_total_contribution.toFixed(2) }}</TableRow> -->
                 <TableRow></TableRow>
             </tr>
         </template>
@@ -181,6 +208,8 @@ const { spreadsheets, totals, payrolls, userPermissions, openPaymentTravelExpens
     openPaymentSalaryModal: Function,
     openDiscountModal: Function
 })
+
+console.log(spreadsheets)
 
 function permissions(permission) {
     return userPermissions.includes(permission)

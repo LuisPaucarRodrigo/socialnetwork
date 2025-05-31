@@ -49,7 +49,8 @@ class PayrollDetail extends Model
         'healths',
         'sctr_p',
         'sctr_s',
-        'total_contribution'
+        'total_contribution',
+        // 'new_totals',
     ];
 
     public function getEmployeeNameAttribute()
@@ -229,4 +230,33 @@ class PayrollDetail extends Model
     public function payroll_detail_monetary_income() {
         return $this->hasOne(PayrollDetailMonetaryIncome::class);
     }
+    public function payroll_detail_monetary_discounts() {
+        return $this->hasOne(PayrollDetailMonetaryDiscount::class);
+    }
+    public function payroll_detail_tax_and_contributions() {
+        return $this->hasOne(PayrollDetailTaxAndContribution::class);
+    }
+
+
+    public function getNewTotalsAttribute () {
+        $income_accrued_total = $this->payroll_detail_monetary_income()->sum('accrued_amount');
+        $income_paid_total = $this->payroll_detail_monetary_income()->sum('paid_amount');
+        $discount_total = $this->payroll_detail_monetary_discounts()->sum('amount');
+        $employee_tac_total = $this->payroll_detail_tax_and_contributions()
+            ->whereHas('tax_and_contribution_param', function($query){$query->where('type', 'employee');})
+            ->sum('amount');
+        $employer_tac_total = $this->payroll_detail_tax_and_contributions()
+            ->whereHas('tax_and_contribution_param', function($query){$query->where('type', 'employer');})
+            ->sum('amount');
+        $net_pay=0;
+        return compact(
+            'income_accrued_total',
+            'income_paid_total',
+            'discount_total',
+            'employee_tac_total',
+            'net_pay',
+            'employer_tac_total'
+        );
+    }
+
 }

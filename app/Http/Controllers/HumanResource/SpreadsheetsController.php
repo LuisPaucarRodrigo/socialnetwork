@@ -94,7 +94,7 @@ class SpreadsheetsController extends Controller
         if ($request->isMethod('get')) {
             // Obtener nómina y detalles con el servicio
             $payroll = Payroll::find($payroll_id);
-            $spreadsheet = $this->payrollServices->getPayrollDetails($payroll_id)->get();
+            $spreadsheet = $this->payrollServices->getPayrollDetails($payroll_id)->get()->each->append('new_totals');
             $total = $this->payrollServices->calculateTotal($spreadsheet);
 
             return Inertia::render('HumanResource/Payroll/Spreadsheets/Index/Index', [
@@ -105,7 +105,7 @@ class SpreadsheetsController extends Controller
         } elseif ($request->isMethod('post')) {
             // Buscar detalles con filtro de búsqueda
             $searchQuery = $request->searchQuery;
-            $spreadsheet = $this->payrollServices->getPayrollDetails($payroll_id, $searchQuery)->get();
+            $spreadsheet = $this->payrollServices->getPayrollDetails($payroll_id, $searchQuery)->get()->each->append('new_totals');
             $total = $this->payrollServices->calculateTotal($spreadsheet);
 
             return response()->json(
