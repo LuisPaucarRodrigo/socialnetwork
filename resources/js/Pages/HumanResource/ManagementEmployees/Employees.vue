@@ -84,8 +84,8 @@ import { ref, watch } from 'vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { notifyError } from '@/Components/Notification';
-import EmployeesFilter from '@/Layouts/Employees/EmployeesFilter.vue';
-import EmployeesTable from '@/Layouts/Employees/EmployeesTable.vue';
+import EmployeesFilter from './components/EmployeesFilter.vue';
+import EmployeesTable from './components/EmployeesTable.vue';
 
 // const confirmingUserDeletion = ref(false);
 // const deleteButtonText = 'Eliminar';

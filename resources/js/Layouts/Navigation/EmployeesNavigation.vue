@@ -320,7 +320,6 @@ async function fetchFormationProgramAlarms() {
     }
 }
 
-
 let intervalId;
 const fetchAllAlarms = () => {
   return Promise.all([

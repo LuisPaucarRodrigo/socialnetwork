@@ -4,13 +4,27 @@ namespace App\Http\Controllers\HumanResource;
 
 use App\Exports\Payroll\PayrollExport;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailMonetaryDiscountRequest;
+use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailMonetaryIncomeRequest;
+use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailTaxAndContributionRequest;
+use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailWorkScheduleRequest;
+use App\Http\Requests\HumanResource\Payroll\StorePayrollExternalDetailRequest;
 use App\Http\Requests\HumanResource\StorePayrollRequest;
 use App\Models\Contract;
 use App\Models\Employee;
+use App\Models\ExternalEmployee;
+use App\Models\IncomeParam;
+use App\Models\DiscountParam;
 use App\Models\Payroll;
 use App\Models\PayrollDetail;
 use App\Models\PayrollDetailExpense;
+use App\Models\PayrollDetailMonetaryIncome;
+use App\Models\PayrollDetailMonetaryDiscount;
+use App\Models\PayrollDetailTaxAndContribution;
+use App\Models\PayrollDetailWorkSchedule;
+use App\Models\PayrollExternalDetail;
 use App\Models\Pension;
+use App\Models\TaxAndContributionParam;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -83,7 +97,7 @@ class SpreadsheetsController extends Controller
             $spreadsheet = $this->payrollServices->getPayrollDetails($payroll_id)->get();
             $total = $this->payrollServices->calculateTotal($spreadsheet);
 
-            return Inertia::render('HumanResource/Payroll/Spreadsheets/Index', [
+            return Inertia::render('HumanResource/Payroll/Spreadsheets/Index/Index', [
                 'spreadsheet' => $spreadsheet,
                 'payroll' => $payroll,
                 'total' => $total,
@@ -102,6 +116,16 @@ class SpreadsheetsController extends Controller
                 200
             );
         }
+    }
+
+    public function index_payroll_detail($payroll_details_id, $employee_id)
+    {
+        return Inertia::render("HumanResource/Payroll/Spreadsheets/Detail/Index", [
+            'payroll_detail' => PayrollDetail::find($payroll_details_id)
+                ->setAppends([])
+                ->setAppends(['mod_days']),
+            'employee_id' => $employee_id,
+        ]);
     }
 
     public function update_payroll_salary(Request $request, $payroll_details_id)
@@ -162,5 +186,107 @@ class SpreadsheetsController extends Controller
         } catch (Exception $e) {
             return response()->json($e->getMessage(), 500);
         }
+    }
+
+    public function index_worder_data($employee_id)
+    {
+        $response = Employee::with(['contract:employee_id,hire_date,fired_date,pension_type,id'])->find($employee_id);
+        return response()->json($response, 200);
+    }
+
+    ///////////////////////////
+
+    public function show_payroll_detail_work_schedule ($payroll_detail_id) {
+        $data = PayrollDetailWorkSchedule::where('payroll_detail_id', $payroll_detail_id)->first();
+        return response()->json($data);
+    }
+
+    public function store_payroll_detail_work_schedule(StorePayrollDetailWorkScheduleRequest $request)
+    {
+        $data = $request->validated();
+        $data['regular_hours'] =  $data['regular_hours_0'] . ':' . $data['regular_hours_1'];
+        $data['overtime_hours'] = $data['overtime_hours_0'] . ':' . $data['overtime_hours_1'];
+        PayrollDetailWorkSchedule::updateOrCreate(['id'=>$data['id']], $data);
+        return response()->json();
+    }
+
+    public function show_payroll_detail_monetary_income ($payroll_detail_id) {
+        $income_params = IncomeParam::all();
+        $monetary_incomes = PayrollDetailMonetaryIncome::where('payroll_detail_id', $payroll_detail_id)->get()
+        ->keyBy('income_param_id')->toArray();
+        return response()->json( [
+            'income_params' => $income_params, 
+            'monetary_incomes' => (object)$monetary_incomes
+        ]
+    );
+    }
+
+    public function store_payroll_monetary_income (StorePayrollDetailMonetaryIncomeRequest $request)
+    {
+        $data = $request->validated();
+        $rg = PayrollDetailMonetaryIncome::updateOrCreate(['id'=>$data['id']], $data);
+        $res = PayrollDetailMonetaryIncome::find($rg->id);
+        return response()->json($res);
+    }
+
+
+    public function show_payroll_detail_monetary_discount ($payroll_detail_id) {
+        $discount_params = DiscountParam::all();
+        $monetary_discounts = PayrollDetailMonetaryDiscount::where('payroll_detail_id', $payroll_detail_id)->get()
+        ->keyBy('discount_param_id')->toArray();
+        return response()->json( [
+            'discount_params' => $discount_params, 
+            'monetary_discounts' => (object)$monetary_discounts
+        ]);
+    }
+
+    public function store_payroll_monetary_discount (StorePayrollDetailMonetaryDiscountRequest $request)
+    {
+        $data = $request->validated();
+        $rg = PayrollDetailMonetaryDiscount::updateOrCreate(['id'=>$data['id']], $data);
+        $res = PayrollDetailMonetaryDiscount::find($rg->id);
+        return response()->json($res);
+    }
+
+    public function show_payroll_detail_tax_and_contribution ($payroll_detail_id) {
+        $tax_and_contribution_params = TaxAndContributionParam::all();
+        $taxes_contributions = PayrollDetailTaxAndContribution::where('payroll_detail_id', $payroll_detail_id)->get()
+        ->keyBy('t_a_c_param_id')->toArray();
+        return response()->json( [
+            'tax_and_contribution_params' => $tax_and_contribution_params, 
+            'taxes_contributions' => (object)$taxes_contributions
+        ]);
+    }
+
+    public function store_payroll_tax_and_contribution (StorePayrollDetailTaxAndContributionRequest $request)
+    {
+        $data = $request->validated();
+        $rg = PayrollDetailTaxAndContribution::updateOrCreate(['id'=>$data['id']], $data);
+        $res = PayrollDetailTaxAndContribution::find($rg->id);
+        return response()->json($res);
+    }
+
+
+    //for 4ta category -- external employees
+    public function index_payroll_external_detail ($payroll_id) {
+        $data = PayrollExternalDetail::with('external_employee')->where('payroll_id', $payroll_id)->get();
+        $external_employees = ExternalEmployee::all();
+        return Inertia::render('HumanResource/Payroll/Spreadsheets/ExternalDetail/Index', [
+            'payroll_external_details' => $data,
+            'external_employees' => $external_employees,
+            'payroll_id' => (Integer)$payroll_id
+        ]);
+    }
+
+    public function store_payroll_external_detail (StorePayrollExternalDetailRequest $request) {
+        $data = $request->validated();
+        $rg = PayrollExternalDetail::updateOrCreate(['id'=>$data['id']], $data);
+        $res = PayrollExternalDetail::with('external_employee')->find($rg->id);
+        return response()->json($res);
+    }
+    public function destroy_payroll_external_detail ($payroll_detail_id) {
+        $rg = PayrollExternalDetail::findOrFail($payroll_detail_id);
+        $rg->delete();
+        return response()->json();
     }
 }

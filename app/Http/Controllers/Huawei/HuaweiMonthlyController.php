@@ -34,6 +34,7 @@ class HuaweiMonthlyController extends Controller
             'static_expense_types' => HuaweiConstants::getStaticExpenseTypes(),
             'variable_expense_types' => HuaweiConstants::getVariableExpenseTypes(),
             'cdp_types' => HuaweiConstants::getCDPTypes(),
+            'macro_projects' => HuaweiConstants::getMacroProjects(),
         ];
     }
     //expenses
@@ -571,7 +572,7 @@ class HuaweiMonthlyController extends Controller
 
     public function fetchProjects($macro, $site_id)
     {
-        $projects = HuaweiProject::select('id', 'name', 'assigned_diu')
+        $projects = HuaweiProject::select('id', 'assigned_diu')
             ->where('macro_project', $macro)
             ->where('huawei_site_id', $site_id)
             ->get()
