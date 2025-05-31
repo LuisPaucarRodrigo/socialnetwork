@@ -752,18 +752,10 @@ class ApiController extends Controller
     public function getExpensesHistory()
     {
         $user = Auth::user();
-        $employee = Employee::selectRaw("UPPER(CONCAT(name, ' ', lastname)) AS full_name")
-            ->where('user_id', $user->id)
-            ->first();
 
-        if (!$employee) {
-            return response()->json(['error' => 'Employee not found'], 404);
-        }
-
-        $expenses = HuaweiMonthlyExpense::where('employee', $employee->full_name)
+        $expenses = HuaweiMonthlyExpense::where('user_id', $user->id)
             ->get()
             ->makeHidden(['huawei_project', 'general_expense']);
-
         return response()->json($expenses, 200);
     }
 
@@ -774,8 +766,8 @@ class ApiController extends Controller
             'huawei_project_id' => 'nullable',
             'expense_type' => 'required|string',
             'cdp_type' => 'required|string',
-            'doc_number' => 'required|string',
-            'ruc' => 'required|string',
+            'doc_number' => 'nullable|string',
+            'ruc' => 'nullable|string',
             'description' => 'required|string',
             'amount' => 'required|numeric',
             'image' => 'nullable',

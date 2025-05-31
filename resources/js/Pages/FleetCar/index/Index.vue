@@ -1,8 +1,8 @@
 <template>
     <Head title="Gestion de Empleados" />
     <AuthenticatedLayout :redirectRoute="'fleet.cars.index'">
-        <Toaster richColors />
         <template #header> Vehiculos </template>
+        <Toaster richColors />
         <div class="w-full">
             <TableHeader :form="formSearch" :openCreateFormCar="openCreateFormCar"
                 :userPermission="userPermissions" />

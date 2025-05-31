@@ -1,0 +1,96 @@
+<template>
+    <TableStructure :style="'h-[72vh]'">
+        <template #thead>
+            <tr>
+                <TableTitle>Perfil</TableTitle>
+                <TableTitle>
+                    <div class="w-[190px]">
+                        <TableHeaderCicsaFilter label="Linea de Negocio" labelClass="text-gray-600" :options="cost_line"
+                            v-model="formSearch.cost_line" />
+                    </div>
+                </TableTitle>
+                <TableTitle>Nombre</TableTitle>
+                <TableTitle>Apellido</TableTitle>
+                <TableTitle>DNI</TableTitle>
+                <TableTitle>Telefono</TableTitle>
+                <TableTitle>Fecha de Nacimiento</TableTitle>
+                <TableTitle>Dirección</TableTitle>
+                <TableTitle>Correo</TableTitle>
+                <TableTitle>Correo Empresarial</TableTitle>
+                <TableTitle v-permission="'ee_salary'">Salario</TableTitle>
+                <TableTitle v-permission="'ee_sctr'">Sctr</TableTitle>
+                <TableTitle v-permission="'ee_curriculum'">Curriculum</TableTitle>
+                <TableTitle v-permission="'ee_actions'"></TableTitle>
+            </tr>
+        </template>
+        <template #tbody>
+            <tr v-for="employee in employees.data || employees" :key="employee.id" class="text-gray-700">
+                <TableRow>
+                    <img :src="employee.cropped_image" alt="Empleado" class="w-12 h-13 rounded-full">
+                </TableRow>
+                <TableRow>{{ employee?.cost_line?.name }}</TableRow>
+                <TableRow>{{ employee.name }}</TableRow>
+                <TableRow>{{ employee.lastname }}</TableRow>
+                <TableRow>{{ employee.dni }}</TableRow>
+                <TableRow>{{ employee.phone1 }}</TableRow>
+                <TableRow>{{ employee.birthdate }}</TableRow>
+                <TableRow :width="'w-[250px]'">{{ employee.address }}</TableRow>
+                <TableRow>{{ employee.email }}</TableRow>
+                <TableRow>{{ employee.email_company }}</TableRow>
+                <TableRow v-permission="'ee_salary'">{{ employee.salary }}</TableRow>
+                <TableRow v-permission="'ee_sctr'">{{ employee.sctr }}</TableRow>
+                <TableRow v-permission="'ee_curriculum'">
+                    <button v-if="employee.curriculum_vitae" @click="handlerPreview(employee.id)">
+                        <EyeIcon class="w-4 h-4 text-teal-600" />
+                    </button>
+                    <span v-else>-</span>
+                </TableRow>
+                <TableRow v-permission="'ee_actions'">
+                    <div class="flex space-x-3 justify-center">
+                        <button v-if="hasPermission('HumanResourceManager')" type="button"
+                            @click="openExternal(employee)">
+                            <PencilSquareIcon class="w-5 h-5 text-yellow-400" />
+
+                        </button>
+                        <button v-if="hasPermission('HumanResourceManager')" type="button"
+                            @click="confirmUserDeletion(employee.id)">
+                            <TrashIcon class="w-5 h-5 text-red-500" />
+                        </button>
+                    </div>
+                </TableRow>
+            </tr>
+        </template>
+    </TableStructure>
+    <div v-if="employees.data"
+        class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+        <Pagination :links="employees.links" />
+    </div>
+</template>
+<script setup>
+import TableHeaderCicsaFilter from '@/Components/TableHeaderCicsaFilter.vue';
+import TableStructure from '@/Layouts/TableStructure.vue';
+import TableTitle from '@/Components/TableTitle.vue';
+import TableRow from '@/Components/TableRow.vue';
+import Pagination from '@/Components/Pagination.vue';
+import { EyeIcon, TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
+
+const { employees, userPermissions, formSearch, cost_line, openExternal, confirmUserDeletion } = defineProps({
+    employees: Object,
+    userPermissions: Array,
+    formSearch: Object,
+    cost_line: Array,
+    openExternal: Function,
+    confirmUserDeletion: Function
+})
+
+function handlerPreview(id) {
+    window.open(
+        route("employees.external.preview.curriculum_vitae", { external_preview_id: id }),
+        '_blank'
+    );
+}
+
+const hasPermission = (permission) => {
+    return userPermissions.includes(permission);
+}
+</script>

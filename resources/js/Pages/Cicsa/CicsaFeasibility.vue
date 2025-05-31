@@ -386,7 +386,7 @@ function addFeasibility() {
 function delete_material(materialName) {
     const index = form.cicsa_feasibility_materials.findIndex(material => material.name === materialName);
     if (index !== -1) {
-        form.cicsa_feasibility_materials.splice(index, 1);
+        form.cicsa_feasibility_materials.splice(index, 1)
     } else {
         console.error(`No se encontró ningún material con el nombre '${materialName}'.`);
     }
