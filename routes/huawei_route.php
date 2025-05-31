@@ -208,8 +208,7 @@ Route::middleware('permission:'.implode('|', RolesConstants::HUAWEI_MODULE))->gr
     Route::put('huawei/projects/general_expenses/{expense}/validate', [HuaweiMonthlyController::class, 'validateExpense'])->name('huawei.projects.general.expenses.validate');
     Route::get('huawei/projects/general_expenses/{expense}/show_image', [HuaweiMonthlyController::class, 'showImage'])->name('huawei.projects.general.expenses.showimage');
     Route::get('huawei/projects/general_expenses/export/excel/{mode?}', [HuaweiMonthlyController::class, 'exportMonthlyExpenses'])->name('huawei.projects.general.expenses.export');
-    Route::post('huawei/projects/general_expenses/massive_update/post', [HuaweiMonthlyController::class, 'massiveUpdate'])->name('huawei.projects.general.expenses.massiveupdate');
-    Route::post('huawei/projects/general_expenses/massive_validate/post', [HuaweiMonthlyController::class, 'massiveValidate'])->name('huawei.projects.general.expenses.massivevalidate');
+    Route::post('huawei/projects/general_expenses/massive_update/{mode}/post', [HuaweiMonthlyController::class, 'massiveUpdate'])->name('huawei.projects.general.expenses.massiveupdate');
     Route::get('huawei/projects/general_expenses/{macro}/fetch_sites/get', [HuaweiMonthlyController::class, 'fetchSites'])->name('huawei.projects.general.expenses.fetchsites');
     Route::get('huawei/projects/general_expenses/{macro}/{site_id}/fetch_projects/get', [HuaweiMonthlyController::class, 'fetchProjects'])->name('huawei.projects.general.expenses.fetchprojects');
     Route::post('huawei/monthly_projects/general_expenses/import_costs/post', [HuaweiMonthlyController::class, 'importCosts'])->name('huawei.projects.general.expenses.import');
@@ -219,6 +218,11 @@ Route::middleware('permission:'.implode('|', RolesConstants::HUAWEI_MODULE))->gr
 
     //nuevas rutas
     Route::post('/huawei/projects/create/fetch_sites/post', [HuaweiProjectController::class, 'fetchSites'])->name('huawei.projects.create.fetchsites');
+    Route::get('/huawei/projects/monthly_expenses/download_images/post/{mode?}', [HuaweiMonthlyController::class, 'downloadImages'])->name('huawei.projects.monthlyexpenses.downloadimages');
+
+    //deleted
+    //Route::post('huawei/projects/general_expenses/massive_validate/post', [HuaweiMonthlyController::class, 'massiveValidate'])->name('huawei.projects.general.expenses.massivevalidate');
+
 });
 
 

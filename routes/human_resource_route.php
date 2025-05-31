@@ -101,7 +101,7 @@ Route::middleware('permission:' . implode('|', RolesConstants::HR_MODULE))->grou
     Route::any('/management_employees/issuance_documentation/index', [ControlEmployees::class, 'issuance_documentation_index'])->name('controlEmployees.issuance.documentation.index');
     Route::post('/management_employees/issuance_documentation/storeOrUpdate/{fixed_documentation_id?}', [ControlEmployees::class, 'issuance_documentation_storeOrUpdate'])->name('controlEmployees.issuance.documentation.storeOrUpdate');
 
-    //Schedule    
+    //Schedule
     Route::get('/management_employees/schedule/index', [ScheduleController::class, 'index'])->name('management.employees.schedule.index');
     Route::post('/management_employees/schedule/post', [ScheduleController::class, 'upload'])->name('management.employees.schedule.post');
     Route::get('/management_employees/schedule/preview/{schedule}', [ScheduleController::class, 'preview'])->name('management.employees.schedule.preview');
@@ -236,7 +236,7 @@ Route::middleware('permission:' . implode('|', RolesConstants::HR_MODULE))->grou
     //NUEVAS RUTAS
     Route::post('/documents/filter_document/post', [DocumentController::class, 'documentReport'])->name('documents.filter_document');
     Route::post('/document_sections/subdivisions/drag_and_drop', [DocumentController::class, 'dragandrop'])->name('documents.drag_and_drop');
-    Route::post('/documents/filter_document/massive_zip/post', [DocumentController::class, 'massiveZip'])->name('documents.filter_document.massive_zip');
+    Route::get('/documents/filter_document/massive_zip/get', [DocumentController::class, 'massiveZip'])->name('documents.filter_document.massive_zip');
 });
 
 //new payroll routes

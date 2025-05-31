@@ -184,22 +184,12 @@
 
                             <template #content class="origin-left">
                                 <div>
-                                    <!-- Alineación a la derecha -->
-
                                     <div class="">
                                         <button
                                             @click="openNuUpdateModal"
                                             class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                                         >
                                             Actualizar Operación
-                                        </button>
-                                    </div>
-                                    <div class="">
-                                        <button
-                                            @click="openMassiveValidate"
-                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                                        >
-                                            Aceptar o Rechazar
                                         </button>
                                     </div>
                                 </div>
@@ -784,7 +774,8 @@
                                                     Seleccionar Macroproyecto
                                                 </option>
                                                 <option
-                                                    v-for="macro in props.data.macro_projects"
+                                                    v-for="macro in props.data
+                                                        .macro_projects"
                                                     :value="macro"
                                                 >
                                                     {{ macro }}
@@ -1140,10 +1131,10 @@
                 <h2 class="text-base font-medium leading-7 text-gray-900">
                     Actualización Masiva
                 </h2>
-                <form @submit.prevent="submitOpNuDatModal">
+                <form @submit.prevent="submitOpNuDatModal(true)">
                     <div class="space-y-12">
                         <div
-                            class="border-b grid grid-cols-1 gap-6 border-gray-900/10 pb-12"
+                            class="grid grid-cols-1 gap-6 border-gray-900/10"
                         >
                             <div>
                                 <InputLabel
@@ -1187,74 +1178,61 @@
                                     />
                                 </div>
                             </div>
-                        </div>
-                        <div class="mt-6 flex items-center justify-end gap-x-6">
-                            <SecondaryButton @click="closeOpNuDatModal">
-                                Cancelar
-                            </SecondaryButton>
-                            <button
-                                type="submit"
-                                :disabled="isFetching"
-                                :class="{ 'opacity-25': isFetching }"
-                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                            >
-                                Guardar
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </Modal>
 
-        <Modal :show="showValidateModal" @close="closeMassiveValidate">
-            <div class="p-6">
-                <h2
-                    class="text-base font-medium leading-7 text-gray-900 text-center"
-                >
-                    Aceptar o Rechazar
-                </h2>
-                <form @submit.prevent="massiveValidate">
-                    <div class="mt-6 flex flex-col items-center space-y-4">
-                        <InputLabel
-                            for="operation_decision"
-                            class="font-medium leading-6 text-gray-900 text-center"
-                        >
-                            Seleccione una opción
-                        </InputLabel>
-                        <div class="flex space-x-8">
-                            <label class="flex items-center space-x-2">
-                                <input
-                                    type="radio"
-                                    v-model="validateForm.state"
-                                    :value="1"
-                                    class="h-5 w-5 text-indigo-600 border-gray-300 focus:ring-indigo-500"
-                                />
-                                <span class="text-gray-700">Aceptar</span>
-                            </label>
-                            <label class="flex items-center space-x-2">
-                                <input
-                                    type="radio"
-                                    v-model="validateForm.state"
-                                    :value="0"
-                                    class="h-5 w-5 text-indigo-600 border-gray-300 focus:ring-indigo-500"
-                                />
-                                <span class="text-gray-700">Rechazar</span>
-                            </label>
+                            <div>
+                                <InputLabel
+                                    for="ec_amount"
+                                    class="font-medium leading-6 text-gray-900"
+                                    >Monto en E.C.
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input
+                                        type="text"
+                                        v-model="opNuDateForm.ec_amount"
+                                        id="ec_amount"
+                                        min="6"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                    <InputError
+                                        :message="
+                                            opNuDateForm.errors.ec_amount
+                                        "
+                                    />
+                                </div>
+                            </div>
                         </div>
-                        <InputError :message="validateForm.errors.state" />
-                    </div>
-                    <div class="mt-8 flex justify-center gap-4">
-                        <SecondaryButton @click="closeMassiveValidate">
-                            Cancelar
-                        </SecondaryButton>
-                        <button
-                            type="submit"
-                            :disabled="isFetching"
-                            :class="{ 'opacity-25': isFetching }"
-                            class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        <div
+                            class="mt-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
                         >
-                            Guardar
-                        </button>
+                            <button
+                                type="button"
+                                :disabled="isFetching"
+                                @click="submitOpNuDatModal(false)"
+                                :class="{ 'opacity-25': isFetching }"
+                                class="w-full md:w-auto rounded-md border border-red-600 bg-transparent px-6 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                            >
+                                Rechazar
+                            </button>
+
+                            <div
+                                class="flex flex-col gap-4 md:flex-row md:gap-5"
+                            >
+                                <SecondaryButton
+                                    @click="closeOpNuDatModal"
+                                    class="w-full md:w-auto justify-center"
+                                >
+                                    Cancelar
+                                </SecondaryButton>
+                                <button
+                                    type="submit"
+                                    :disabled="isFetching"
+                                    :class="{ 'opacity-25': isFetching }"
+                                    class="w-full rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 md:w-auto"
+                                >
+                                    Guardar
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -1525,6 +1503,7 @@ import Dropdown from "@/Components/Dropdown.vue";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import { setAxiosErrors, toFormData } from "@/utils/utils";
+import qs from "qs";
 
 const props = defineProps({
     expense: Object,
@@ -1563,7 +1542,6 @@ const form = useForm({
 const create_additional = ref(false);
 const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
-const showValidateModal = ref(false);
 const sites = ref([]);
 const projects = ref([]);
 const selectedMacro = ref("");
@@ -1837,6 +1815,7 @@ const actionForm = ref({
 const opNuDateForm = useForm({
     ec_expense_date: "",
     ec_op_number: "",
+    ec_amount: ""
 });
 
 const validateForm = useForm({
@@ -1865,34 +1844,10 @@ const closeOpNuDatModal = () => {
     opNuDateForm.reset();
 };
 
-const openMassiveValidate = () => {
-    if (actionForm.value.ids.length === 0) {
-        notifyWarning("No hay registros selccionados");
-        return;
-    }
-    const invalidExpense = actionForm.value.ids.find((id) => {
-        const expense = expenses.value.find((exp) => exp.id === id);
-        return expense && expense.is_accepted !== null;
-    });
-
-    if (invalidExpense) {
-        notifyWarning("Hay registros ya aceptados o rechazados");
-        return;
-    }
-
-    showValidateModal.value = true;
-};
-
-const closeMassiveValidate = () => {
-    isFetching.value = false;
-    showValidateModal.value = false;
-    validateForm.reset();
-};
-
-const submitOpNuDatModal = async () => {
+const submitOpNuDatModal = async (mode) => {
     isFetching.value = true;
     const res = await axios
-        .post(route("huawei.projects.general.expenses.massiveupdate"), {
+        .post(route("huawei.projects.general.expenses.massiveupdate", {mode: mode}), {
             ...opNuDateForm.data(),
             ...actionForm.value,
         })
@@ -1914,34 +1869,6 @@ const submitOpNuDatModal = async () => {
     const updatedArray = Array.from(originalMap.values());
     expenses.value = updatedArray;
     closeOpNuDatModal();
-    notify("Registros Seleccionados Actualizados");
-};
-
-const massiveValidate = async () => {
-    isFetching.value = true;
-    const res = await axios
-        .post(route("huawei.projects.general.expenses.massivevalidate"), {
-            ...validateForm.data(),
-            ...actionForm.value,
-        })
-        .catch((e) => {
-            isFetching.value = false;
-            if (e.response?.data?.errors) {
-                setAxiosErrors(e.response.data.errors, validateForm);
-            } else {
-                notifyError("Server Error");
-            }
-        });
-
-    const originalMap = new Map(expenses.value.map((item) => [item.id, item]));
-    res.data.forEach((update) => {
-        if (originalMap.has(update.id)) {
-            originalMap.set(update.id, update);
-        }
-    });
-    const updatedArray = Array.from(originalMap.values());
-    expenses.value = updatedArray;
-    closeMassiveValidate();
     notify("Registros Seleccionados Actualizados");
 };
 
@@ -2017,7 +1944,9 @@ const closeExportArchivesModal = () => {
 function exportArchives() {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
     const url =
-        route("zip.additional.descargar", { project_id: props.project_id.id }) +
+        route("huawei.projects.monthlyexpenses.downloadimages", {
+            mode: props.mode,
+        }) +
         "?" +
         qs.stringify(
             { ...filterForm.value, uniqueParam },

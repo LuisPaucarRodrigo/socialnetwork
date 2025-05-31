@@ -317,12 +317,13 @@
             </div>
         </div>
 
-        <div v-else class="flex w-full mt-5 gap-2">
+        <div v-else class="flex flex-col lg:flex-row w-full mt-5 gap-2">
+            <!-- Tabla -->
             <div
                 class="overflow-x-auto"
                 :class="{
                     'w-full': !fileUrl,
-                    'w-[50%]': fileUrl,
+                    'lg:w-1/2 w-full': fileUrl,
                 }"
             >
                 <div class="max-h-[77vh] overflow-y-auto border rounded-md">
@@ -435,13 +436,34 @@
                     </table>
                 </div>
             </div>
-            <div v-if="fileUrl" class="w-[50%] h-[940px]">
-                <iframe
-                    :src="fileUrl"
-                    class="w-full h-full border rounded"
-                    frameborder="0"
-                ></iframe>
-            </div>
+
+            <!-- Visor de documento -->
+
+
+            <div
+    v-if="fileUrl"
+    class="lg:w-1/2 w-full h-[940px] flex flex-col pr-3"
+>
+    <div class="relative flex-1 w-full border rounded overflow-hidden">
+        <!-- Botón fijo en la parte superior centrado, aparece solo al pasar el mouse por encima -->
+        <button
+            type="button"
+            @click="fileUrl = null"
+            class="absolute z-30 top-0 left-1/2 transform -translate-x-1/2 mt-1 px-6 py-1 bg-gray-200 rounded-md shadow text-sm font-medium opacity-0 hover:opacity-100 transition-opacity duration-300"
+            title="Cerrar visor"
+        >
+            ▲
+        </button>
+
+        <!-- Visor PDF -->
+        <iframe
+            :src="fileUrl"
+            class="w-full h-full rounded"
+            frameborder="0"
+        ></iframe>
+    </div>
+</div>
+
         </div>
 
         <Modal :show="create_document || update_document">
@@ -1117,38 +1139,12 @@ function openPreviewDocumentModal(documentId) {
 }
 
 async function massiveZip() {
-  const ids = dataToRender.value.map((document) => document.id);
-  const url = route("documents.filter_document.massive_zip");
+    const ids = dataToRender.value.map((document) => document.id);
+    const queryString = ids.map((id) => `ids[]=${id}`).join("&");
+    const url = `${route(
+        "documents.filter_document.massive_zip"
+    )}?${queryString}`;
 
-  try {
-    const response = await axios.post(url, { ids }, { responseType: "blob" });
-
-    // Crear blob y URL
-    const blob = new Blob([response.data], { type: 'application/zip' });
-    const downloadUrl = window.URL.createObjectURL(blob);
-
-    // Extraer el nombre del archivo desde headers (si viene)
-    const disposition = response.headers['content-disposition'];
-    let fileName = "download.zip";
-    if (disposition && disposition.indexOf('filename=') !== -1) {
-      const matches = disposition.match(/filename="?(.+)"?/);
-      if (matches.length === 2) fileName = matches[1];
-    }
-
-    // Crear elemento <a> y forzar descarga
-    const link = document.createElement('a');
-    link.href = downloadUrl;
-    link.setAttribute('download', fileName);
-    document.body.appendChild(link);
-    link.click();
-
-    // Limpiar
-    link.remove();
-    window.URL.revokeObjectURL(downloadUrl);
-
-  } catch (error) {
-    console.error(error);
-  }
+    window.open(url, "_blank");
 }
-
 </script>
