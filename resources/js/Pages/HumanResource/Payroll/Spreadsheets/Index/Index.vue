@@ -7,7 +7,7 @@
         </template>
         <Toaster richColors />
         <div class="min-w-full min-h-full overflow-hidden">
-            <TableHeader v-model:spreadsheets="spreadsheets" v-model:totals="totals" :payrolls="payrolls"
+            <TableHeader v-model:spreadsheets="spreadsheets" v-model:totals="totals" :payrolls="payrolls" 
                 :openPayrollApprove="openPayrollApprove" />
             <SpreadsheetsTable :spreadsheets="spreadsheets" :totals="totals" :payrolls="payrolls"
                 :userPermissions="userPermissions" :openPaymentSalaryModal="openPaymentSalaryModal"

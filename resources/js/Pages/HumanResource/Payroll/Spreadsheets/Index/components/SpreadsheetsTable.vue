@@ -33,7 +33,7 @@
                 <TableTitle>SCTR P</TableTitle>
                 <TableTitle>SCTR S</TableTitle>
                 <TableTitle>APORTE TOTAL</TableTitle>
-
+                <TableTitle></TableTitle>
             </tr>
         </template>
         <template #tbody>
@@ -54,7 +54,7 @@
                         </p>
                         <button @click="openDiscountModal(spreadsheet.employee_id, spreadsheet.discount)">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="w-4 h-4 text-amber-400">
+                                stroke="currentColor" class="w-5 h-5 text-amber-400">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                             </svg>
@@ -124,6 +124,16 @@
                 <TableRow>S/ {{ spreadsheet.discount_sctr ? spreadsheet.sctr_s.toFixed(2) : 0.00 }}
                 </TableRow>
                 <TableRow>S/ {{ spreadsheet.total_contribution.toFixed(2) }}</TableRow>
+                <TableRow>
+                    <Link
+                        :href="route('spreadsheets.details.index', { payroll_details_id: spreadsheet.id, employee_id: spreadsheet.employee_id })">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-5 h-5 text-amber-400">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                    </svg>
+                    </Link>
+                </TableRow>
             </tr>
             <tr class="sticky bottom-0 z-5">
                 <TableRow :colspan="4">Totales:</TableRow>
@@ -149,6 +159,7 @@
                 <TableRow>S/ {{ totals.sum_sctr_p.toFixed(2) }}</TableRow>
                 <TableRow>S/ {{ totals.sum_sctr_s.toFixed(2) }}</TableRow>
                 <TableRow>S/ {{ totals.sum_total_contribution.toFixed(2) }}</TableRow>
+                <TableRow></TableRow>
             </tr>
         </template>
     </TableStructure>
@@ -159,6 +170,7 @@ import TableRow from '@/Components/TableRow.vue';
 import { EyeIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import { formattedDate } from '@/utils/utils';
+import { Link } from '@inertiajs/vue3';
 
 const { spreadsheets, totals, payrolls, userPermissions, openPaymentTravelExpenseModal, openPaymentSalaryModal, openDiscountModal } = defineProps({
     spreadsheets: Object,
