@@ -30,12 +30,12 @@
                 <tr v-for="item in dataToRender" :key="item.id">
                     <TableRow>{{ item.doc_type }}</TableRow>
                     <TableRow>{{ item.doc_number }}</TableRow>
-                    <TableRow
-                        >{{ item.external_employee?.lastname }}
-                        {{ item.external_employee?.name }}</TableRow
+                    <TableRow>{{ item.lastname }} {{ item.name }}</TableRow>
+                    <TableRow>S/. {{ item.amount.toFixed(2) }}</TableRow
                     >
-                    <TableRow>{{ item.amount }}</TableRow>
-                    <TableRow>{{ item.ret_tax }}</TableRow>
+                    <TableRow>
+                        {{ item.ret_tax.toFixed(2) }}
+                    </TableRow>
                     <TableRow>
                         <div class="flex space-x-3 justify-center">
                             <button type="button" @click="openPEDModal(item)">
@@ -70,26 +70,46 @@
                                 </InputLabel>
                                 <div class="mt-2">
                                     <select
-                                        v-model="form.external_employee_id"
+                                        v-model="external_employee"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     >
                                         <option disabled value="">
                                             Selecciona
                                         </option>
+                                        <option>Otro</option>
                                         <option
-                                            :value="op.id"
+                                            :value="op"
                                             v-for="op in external_employees"
                                         >
                                             {{ op.name }} {{ op.lastname }}
                                         </option>
                                     </select>
-                                    <InputError
-                                        :message="
-                                            form.errors.external_employee_id
-                                        "
-                                    />
+
+                                    <div class="grid grid-cols-2 gap-4 mt-4">
+                                        <div>
+                                            <input
+                                                v-model="form.name"
+                                                placeholder="nombres"
+                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            />
+                                            <InputError
+                                                :message="form.errors.name"
+                                            />
+                                        </div>
+                                        <div>
+                                            <input
+                                                v-model="form.lastname"
+                                                placeholder="apellidos"
+                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            />
+                                            <InputError
+                                                :message="form.errors.lastname"
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+
                             <div>
                                 <InputLabel
                                     class="font-medium leading-6 text-gray-900"
@@ -113,6 +133,7 @@
                                     />
                                 </div>
                             </div>
+
                             <div>
                                 <InputLabel
                                     class="font-medium leading-6 text-gray-900"
@@ -192,7 +213,7 @@ import TableRow from "@/Components/TableRow.vue";
 import TableStructure from "@/Layouts/TableStructure.vue";
 import { Toaster } from "vue-sonner";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import { formattedDate, setAxiosErrors, toFormData } from "@/utils/utils";
 import InputLabel from "@/Components/InputLabel.vue";
@@ -213,13 +234,14 @@ const showPEDModal = ref(false);
 const initState = {
     id: "",
     payroll_id: payroll_id,
-    external_employee_id: "",
+    name: "",
+    lastname: "",
     doc_type: "",
     doc_number: "",
     amount: "",
     ret_tax: 0,
-}
-const form = useForm({...initState});
+};
+const form = useForm({ ...initState });
 
 const openPEDModal = (item = null) => {
     showPEDModal.value = true;
@@ -230,6 +252,7 @@ const openPEDModal = (item = null) => {
 };
 
 const closePEDModal = () => {
+    external_employee.value = "";
     showPEDModal.value = false;
     form.clearErrors();
     form.defaults({ ...initState });
@@ -255,7 +278,7 @@ const submitPED = () => {
             notify("Registro Guardado");
         })
         .catch((e) => {
-            console.log(e)
+            console.log(e);
             if (e.response?.data?.errors) {
                 setAxiosErrors(e.response.data.errors, form);
             } else {
@@ -270,7 +293,11 @@ const submitPED = () => {
 const deletePED = (id) => {
     isFetching.value = true;
     axios
-        .delete(route("payroll.store.payroll.external.destroy", { payroll_detail_id: id }))
+        .delete(
+            route("payroll.store.payroll.external.destroy", {
+                payroll_detail_id: id,
+            })
+        )
         .then((res) => {
             const index = dataToRender.value.findIndex((item) => item.id == id);
             dataToRender.value.splice(index, 1);
@@ -283,4 +310,16 @@ const deletePED = (id) => {
             isFetching.value = false;
         });
 };
+
+const external_employee = ref("");
+
+watch(external_employee, (newval) => {
+    if (newval === "Otro") {
+        form.name = "";
+        form.lastname = "";
+    } else {
+        form.name = newval.name;
+        form.lastname = newval.lastname;
+    }
+});
 </script>

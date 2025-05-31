@@ -3,9 +3,10 @@
         <template #thead>
             <tr
                 class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                <TableTitle></TableTitle>
                 <TableTitle>DNI</TableTitle>
                 <th
-                    class="sticky left-0 z-10 bg-amber-200 px-7 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600 top-0 z-5">
+                    class="sticky left-0 z-10 bg-amber-200 px-7 py-3 text-xs font-semibold uppercase tracking-wider text-gray-600 top-0 z-5 text-center">
                     Nombre
                 </th>
                 <TableTitle>REG. PEN</TableTitle>
@@ -49,7 +50,8 @@
             </tr>
         </template>
         <template #tbody>
-            <tr v-for="spreadsheet in spreadsheets" :key="spreadsheet.id" class="text-gray-700">
+            <tr v-for="(spreadsheet, i) in spreadsheets" :key="spreadsheet.id" class="text-gray-700">
+                <TableRow>{{ i+1 }}</TableRow>
                 <TableRow>{{ spreadsheet.employee.dni }}</TableRow>
                 <TableRow :style="'sticky left-0 bg-amber-200 whitespace-nowrap'">
                     {{ spreadsheet.employee.name }} {{
@@ -57,14 +59,16 @@
                 </TableRow>
                 <TableRow>{{ spreadsheet.pension.type }}</TableRow>
                 <TableRow>{{ formattedDate(spreadsheet.hire_date) }}</TableRow>
-                <TableRow :style="'tabular-nums flex justify-end'">S/ {{ spreadsheet.basic_salary.toFixed(2) }}</TableRow>
+                <TableRow :style="'text-right'">
+                    S/ {{ spreadsheet.basic_salary.toFixed(2) }}
+                </TableRow>
 
-                <TableRow>S/ {{ spreadsheet.new_totals.income_accrued_total.toFixed(2) }}</TableRow>
-                <TableRow>S/ {{ spreadsheet.new_totals.income_paid_total.toFixed(2) }}</TableRow>
-                <TableRow>S/ {{ spreadsheet.new_totals.discount_total.toFixed(2) }}</TableRow>
-                <TableRow>S/ {{ spreadsheet.new_totals.employee_tac_total.toFixed(2) }}</TableRow>
-                <TableRow :style="'bg-green-200'">S/ {{ spreadsheet.new_totals.net_pay.toFixed(2) }}</TableRow>
-                <TableRow>S/ {{ spreadsheet.new_totals.employer_tac_total.toFixed(2) }}</TableRow>
+                <TableRow :style="'text-right'">S/ {{ spreadsheet.new_totals.income_accrued_total.toFixed(2) }}</TableRow>
+                <TableRow :style="'text-right'">S/ {{ spreadsheet.new_totals.income_paid_total.toFixed(2) }}</TableRow>
+                <TableRow :style="'text-right'">S/ {{ spreadsheet.new_totals.discount_total.toFixed(2) }}</TableRow>
+                <TableRow :style="'text-right'">S/ {{ spreadsheet.new_totals.employee_tac_total.toFixed(2) }}</TableRow>
+                <TableRow :style="'bg-green-200 text-right'">S/ {{ spreadsheet.new_totals.net_pay.toFixed(2) }}</TableRow>
+                <TableRow :style="'text-right'">S/ {{ spreadsheet.new_totals.employer_tac_total.toFixed(2) }}</TableRow>
 
                 
                 <!-- <TableRow>S/ {{ spreadsheet.payment_until_today.toFixed(2) }}</TableRow>
@@ -158,13 +162,13 @@
             </tr>
             <tr class="sticky bottom-0 z-5">
                 <TableRow :colspan="4">Totales:</TableRow>
-                <TableRow>S/ {{ totals.sum_salary.toFixed(2) }}</TableRow>
-                <TableRow>S/ {{ totals.income_accrued_total.toFixed(2) }}</TableRow>
-                <TableRow>S/ {{ totals.income_paid_total.toFixed(2) }}</TableRow>
-                <TableRow>S/ {{ totals.discount_total.toFixed(2) }}</TableRow>
-                <TableRow>S/ {{ totals.employee_tac_total.toFixed(2) }}</TableRow>
-                <TableRow>S/ {{ totals.net_pay.toFixed(2) }}</TableRow>
-                <TableRow>S/ {{ totals.employer_tac_total.toFixed(2) }}</TableRow>
+                <TableRow :style="'text-right'">S/ {{ totals.sum_salary.toFixed(2) }}</TableRow>
+                <TableRow :style="'text-right'">S/ {{ totals.income_accrued_total.toFixed(2) }}</TableRow>
+                <TableRow :style="'text-right'">S/ {{ totals.income_paid_total.toFixed(2) }}</TableRow>
+                <TableRow :style="'text-right'">S/ {{ totals.discount_total.toFixed(2) }}</TableRow>
+                <TableRow :style="'text-right'">S/ {{ totals.employee_tac_total.toFixed(2) }}</TableRow>
+                <TableRow :style="'text-right'">S/ {{ totals.net_pay.toFixed(2) }}</TableRow>
+                <TableRow :style="'text-right'">S/ {{ totals.employer_tac_total.toFixed(2) }}</TableRow>
                 <!-- <TableRow>S/ {{ totals.sum_payment_until_today.toFixed(2) }}</TableRow>
                 <TableRow>S/ {{ totals.sum_discount.toFixed(2) }}</TableRow>
                 <TableRow>S/ {{ totals.sum_truncated_vacations.toFixed(2) }}</TableRow>

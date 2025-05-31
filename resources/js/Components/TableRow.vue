@@ -1,6 +1,6 @@
 <template>
-    <td class="border-b border-gray-200 px-5 py-2 text-sm" :class="[style]" :colspan="colspan">
-        <p class="text-gray-900 text-center" :class="[width]">
+    <td class="border-b border-gray-200 px-5 py-2 text-sm text-center" :class="[style]" :colspan="colspan">
+        <p class="inline-block text-gray-900 text-center" :class="[width]">
             <slot />
         </p>
     </td>
