@@ -165,19 +165,19 @@ class HuaweiMonthlyController extends Controller
         $expensesQuery = HuaweiMonthlyExpense::query();
         $allExpenses = $expensesQuery->get();
         $expensesQuery = $expensesQuery->where(function ($query) use ($searchTerm) {
-                $query->whereRaw('LOWER(expense_type) LIKE ?', ["%{$searchTerm}%"])
-                    ->orWhereRaw('LOWER(zone) LIKE ?', ["%{$searchTerm}%"])
-                    ->orWhereRaw('LOWER(employee) LIKE ?', ["%{$searchTerm}%"])
-                    ->orWhereRaw('LOWER(cdp_type) LIKE ?', ["%{$searchTerm}%"])
-                    ->orWhereRaw('LOWER(doc_number) LIKE ?', ["%{$searchTerm}%"])
-                    ->orWhereRaw('LOWER(op_number) LIKE ?', ["%{$searchTerm}%"])
-                    ->orWhereRaw('LOWER(ruc) LIKE ?', ["%{$searchTerm}%"])
-                    ->orWhereRaw('LOWER(description) LIKE ?', ["%{$searchTerm}%"])
-                    ->orWhereRaw('LOWER(ec_op_number) LIKE ?', ["%{$searchTerm}%"])
-                    ->orWhereHas('huawei_project', function ($query) use ($searchTerm) {
-                        $query->whereRaw('LOWER(assigned_diu) LIKE ?', ["%{$searchTerm}%"]);
-                    });
-            });
+            $query->whereRaw('LOWER(expense_type) LIKE ?', ["%{$searchTerm}%"])
+                ->orWhereRaw('LOWER(zone) LIKE ?', ["%{$searchTerm}%"])
+                ->orWhereRaw('LOWER(employee) LIKE ?', ["%{$searchTerm}%"])
+                ->orWhereRaw('LOWER(cdp_type) LIKE ?', ["%{$searchTerm}%"])
+                ->orWhereRaw('LOWER(doc_number) LIKE ?', ["%{$searchTerm}%"])
+                ->orWhereRaw('LOWER(op_number) LIKE ?', ["%{$searchTerm}%"])
+                ->orWhereRaw('LOWER(ruc) LIKE ?', ["%{$searchTerm}%"])
+                ->orWhereRaw('LOWER(description) LIKE ?', ["%{$searchTerm}%"])
+                ->orWhereRaw('LOWER(ec_op_number) LIKE ?', ["%{$searchTerm}%"])
+                ->orWhereHas('huawei_project', function ($query) use ($searchTerm) {
+                    $query->whereRaw('LOWER(assigned_diu) LIKE ?', ["%{$searchTerm}%"]);
+                });
+        });
 
         // Ejecutar la consulta y obtener los resultados
         $expenses = $expensesQuery->orderBy('expense_date', 'desc')
@@ -505,23 +505,47 @@ class HuaweiMonthlyController extends Controller
         return response()->download($templatePath, 'Estructura de Datos - Gastos Mensuales Huawei.xlsx');
     }
 
-    public function massiveUpdate(Request $request)
+    public function massiveUpdate($mode, Request $request)
     {
+        $mode = filter_var($mode, FILTER_VALIDATE_BOOLEAN);
         $data = $request->validate([
             'ids' => 'required|array|min:1',
             'ids.*' => 'integer',
-            'ec_expense_date' => 'required|date',
-            'ec_op_number' => 'required|min:6',
+            'ec_expense_date' => [
+                $mode ? 'required' : 'nullable',
+                'date'
+            ],
+            'ec_op_number' => [
+                $mode ? 'required' : 'nullable',
+                'min:6'
+            ],
+            'ec_amount' => [
+                $mode ? 'required' : 'nullable'
+            ]
         ]);
 
-        foreach ($data['ids'] as $id) {
-            $monthlyExpense = HuaweiMonthlyExpense::find($id);
+        if ($mode) {
+            foreach ($data['ids'] as $id) {
+                $monthlyExpense = HuaweiMonthlyExpense::find($id);
 
-            if ($monthlyExpense) {
-                $monthlyExpense->update([
-                    'ec_expense_date' => $data['ec_expense_date'],
-                    'ec_op_number' => $data['ec_op_number'],
-                ]);
+                if ($monthlyExpense) {
+                    $monthlyExpense->update([
+                        'ec_expense_date' => $data['ec_expense_date'],
+                        'ec_op_number' => $data['ec_op_number'],
+                        'ec_amount' => $data['ec_amount'],
+                        'is_accepted' => 1
+                    ]);
+                }
+            }
+        } else {
+            foreach ($data['ids'] as $id) {
+                $monthlyExpense = HuaweiMonthlyExpense::find($id);
+
+                if ($monthlyExpense) {
+                    $monthlyExpense->update([
+                        'is_accepted' => 0
+                    ]);
+                }
             }
         }
 
@@ -529,34 +553,6 @@ class HuaweiMonthlyController extends Controller
 
         return response()->json($updatedCosts, 200);
     }
-
-    public function massiveValidate(Request $request)
-    {
-        $data = $request->validate([
-            'ids' => 'required|array|min:1',
-            'ids.*' => 'integer',
-            'state' => 'required'
-        ]);
-
-        DB::beginTransaction();
-
-        foreach ($data['ids'] as $item) {
-            $expense = HuaweiMonthlyExpense::find($item);
-            if ($expense->is_accepted !== null) {
-                DB::rollBack();
-                abort(403, 'Acción no permitida');
-            }
-            $expense->update([
-                'is_accepted' => $data['state']
-            ]);
-        }
-        DB::commit();
-        $updatedCosts = HuaweiMonthlyExpense::whereIn('id', $data['ids'])
-            ->with('huawei_project.huawei_site')->get();
-
-        return response()->json($updatedCosts, 200);
-    }
-
 
     public function fetchSites($macro)
     {
@@ -603,7 +599,7 @@ class HuaweiMonthlyController extends Controller
         return response()->json($projects, 200);
     }
 
-    public function downloadImages(Request $request, $mode= null)
+    public function downloadImages(Request $request, $mode = null)
     {
         try {
             $query = HuaweiMonthlyExpense::where('is_accepted', 1);
@@ -633,7 +629,4 @@ class HuaweiMonthlyController extends Controller
             return response()->json(['error' => 'No se pudo crear el archivo ZIP.'], 500);
         }
     }
-
-
-
 }
