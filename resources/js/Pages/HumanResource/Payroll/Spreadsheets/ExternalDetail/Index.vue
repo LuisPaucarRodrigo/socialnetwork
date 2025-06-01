@@ -21,9 +21,9 @@
             <template #thead>
                 <TableTitle>Tipo Doc</TableTitle>
                 <TableTitle>Número Doc</TableTitle>
-                <TableTitle>Apellidos y Nombres</TableTitle>
-                <TableTitle>Monto</TableTitle>
-                <TableTitle>Ret Imp 4ta cat</TableTitle>
+                <TableTitle >Apellidos y Nombres</TableTitle>
+                <TableTitle :style="'text-right bg-gray-100'">Monto</TableTitle>
+                <TableTitle :style="'text-right bg-gray-100'">Ret Imp 4ta cat</TableTitle>
                 <TableTitle></TableTitle>
             </template>
             <template #tbody>
@@ -31,10 +31,10 @@
                     <TableRow>{{ item.doc_type }}</TableRow>
                     <TableRow>{{ item.doc_number }}</TableRow>
                     <TableRow>{{ item.lastname }} {{ item.name }}</TableRow>
-                    <TableRow>S/. {{ item.amount.toFixed(2) }}</TableRow
+                    <TableRow :style="'tabular-nums text-right'">S/. {{ item.amount.toFixed(2) }}</TableRow
                     >
-                    <TableRow>
-                        {{ item.ret_tax.toFixed(2) }}
+                    <TableRow :style="'tabular-nums text-right'">
+                        S/. {{ item.ret_tax.toFixed(2) }}
                     </TableRow>
                     <TableRow>
                         <div class="flex space-x-3 justify-center">
