@@ -62,6 +62,7 @@
                 </tr>
             </template>
      </TableStructure>
+
 </template>
 <script setup>
 import TableTitle from '@/Components/TableTitle.vue';
@@ -70,22 +71,27 @@ import { EyeIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import { formattedDate } from '@/utils/utils';
 import { Link } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, inject, watch } from 'vue';
+import Modal from '@/Components/Modal.vue';
 
-const { spreadsheets, totals, payrolls, userPermissions, openPaymentTravelExpenseModal, openPaymentSalaryModal, openDiscountModal } = defineProps({
+const { spreadsheets, totals, payrolls, userPermissions, openPaymentTravelExpenseModal, openPaymentSalaryModal, openDiscountModal, actionForm } = defineProps({
     spreadsheets: Object,
     totals: Object,
     payrolls: Object,
     userPermissions: Array,
     openPaymentTravelExpenseModal: Function,
     openPaymentSalaryModal: Function,
-    openDiscountModal: Function
+    openDiscountModal: Function,
+    actionForm: Object,
 })
 
 
-const actionForm = ref({ ids: [], });
 const handleCheckAll = (e) => {
-    if (e.target.checked) { actionForm.value.ids = spreadsheets.map((item) => item.id); }
-    else { actionForm.value.ids = []; }
+    if (e.target.checked) { actionForm.ids = spreadsheets.map((item) => item.id); }
+    else { actionForm.ids = []; }
 };
+
+
+const showPayModal = ref(false)
+const showDetails = ref(false)
 </script>

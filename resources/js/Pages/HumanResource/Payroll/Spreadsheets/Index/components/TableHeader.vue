@@ -10,6 +10,14 @@
                             d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" fill="#228b22" />
                     </svg>
                 </button>
+                <button @click="openPaySpreadsheet()"
+                    class="rounded-md px-1 py-2 text-center text-sm text-white hover:bg-blue-400">
+                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" fill="#1729e4" />
+                    </svg>
+                </button>
 
                 <a :href="route('spreadsheets.payroll.export', { payroll_id: payrolls.id })"
                     class="rounded-md px-1 py-2 text-center text-sm text-white hover:bg-green-400">
@@ -64,9 +72,10 @@ import { notifyError } from '@/Components/Notification';
 import TextInput from '@/Components/TextInput.vue';
 import { Link } from '@inertiajs/vue3';
 
-const { payrolls, openPayrollApprove } = defineProps({
+const { payrolls, openPayrollApprove, openPaySpreadsheet } = defineProps({
     payrolls: Object,
-    openPayrollApprove: Function
+    openPayrollApprove: Function,
+    openPaySpreadsheet: Function,
 })
 
 const spreadsheets = defineModel('spreadsheets')

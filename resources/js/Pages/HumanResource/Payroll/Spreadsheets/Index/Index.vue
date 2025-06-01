@@ -8,10 +8,19 @@
         <Toaster richColors />
         <div class="min-w-full min-h-full overflow-hidden">
             <TableHeader v-model:spreadsheets="spreadsheets" v-model:totals="totals" :payrolls="payrolls" 
-                :openPayrollApprove="openPayrollApprove" />
+                :openPayrollApprove="openPayrollApprove" 
+                :openPaySpreadsheet="openPaySpreadsheet" 
+            />
             <SpreadsheetsTable :spreadsheets="spreadsheets" :totals="totals" :payrolls="payrolls"
                 :userPermissions="userPermissions" :openPaymentSalaryModal="openPaymentSalaryModal"
-                :openPaymentTravelExpenseModal="openPaymentTravelExpenseModal" :openDiscountModal="openDiscountModal" />
+                :openPaymentTravelExpenseModal="openPaymentTravelExpenseModal" :openDiscountModal="openDiscountModal"
+                :actionForm="actionForm"    
+            />
+            <SpreadsheetPayModal
+                ref="paySpreadsheet"
+                :data="spreadsheet"
+                :actionForm="actionForm"
+            />
         </div>
         <TravelESalaryForm ref="travelESalaryForm" :spreadsheets="spreadsheets" />
         <EmployeeDiscountForm ref="employeeDiscountForm" :spreadsheets="spreadsheets" />
@@ -22,12 +31,13 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, provide, watch } from 'vue';
 import TableHeader from './components/TableHeader.vue';
 import SpreadsheetsTable from './components/SpreadsheetsTable.vue';
 import TravelESalaryForm from './components/TravelESalaryForm.vue';
 import EmployeeDiscountForm from './components/EmployeeDiscountForm.vue';
 import ApprovePayroll from './components/ApprovePayroll.vue';
+import SpreadsheetPayModal from './components/SpreadsheetPayModal.vue';
 import { Toaster } from 'vue-sonner';
 
 
@@ -39,6 +49,7 @@ const { spreadsheet, payroll, total, userPermissions } = defineProps({
 })
 
 
+const actionForm = ref({ ids: [], });
 const spreadsheets = ref(spreadsheet)
 const payrolls = ref(payroll)
 const totals = ref(total)
@@ -46,6 +57,7 @@ const totals = ref(total)
 const travelESalaryForm = ref(null)
 const employeeDiscountForm = ref(null)
 const approvePayroll = ref(null)
+const paySpreadsheet = ref(null)
 
 
 function openPaymentSalaryModal(payroll_detail) {
@@ -62,6 +74,12 @@ function openDiscountModal(employee_id, discount) {
 
 function openPayrollApprove() {
     approvePayroll.value.openPayrollApprove()
+}
+
+
+//paying functions
+function openPaySpreadsheet(){
+    paySpreadsheet.value.openPayModal()
 }
 
 </script>
