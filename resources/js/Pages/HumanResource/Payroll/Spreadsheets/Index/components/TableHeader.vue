@@ -11,12 +11,8 @@
                     </svg>
                 </button>
                 <button @click="openPaySpreadsheet()"
-                    class="rounded-md px-1 py-2 text-center text-sm text-white hover:bg-blue-400">
-                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                        stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" fill="#1729e4" />
-                    </svg>
+                    class="rounded-md px-1 py-2 text-blue-600 text-center text-sm hover:bg-blue-200">
+                       <DolarIcon class="h-6 w-6"/>
                 </button>
 
                 <a :href="route('spreadsheets.payroll.export', { payroll_id: payrolls.id })"
@@ -71,6 +67,7 @@ import Dropdown from '@/Components/Dropdown.vue';
 import { notifyError } from '@/Components/Notification';
 import TextInput from '@/Components/TextInput.vue';
 import { Link } from '@inertiajs/vue3';
+import { DolarIcon } from '@/Components/icons';
 
 const { payrolls, openPayrollApprove, openPaySpreadsheet } = defineProps({
     payrolls: Object,

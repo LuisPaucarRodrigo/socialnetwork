@@ -91,7 +91,4 @@ const handleCheckAll = (e) => {
     else { actionForm.ids = []; }
 };
 
-
-const showPayModal = ref(false)
-const showDetails = ref(false)
 </script>

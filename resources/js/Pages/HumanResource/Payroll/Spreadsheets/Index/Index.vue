@@ -19,6 +19,7 @@
             <SpreadsheetPayModal
                 ref="paySpreadsheet"
                 :data="spreadsheet"
+                :payroll="payroll"
                 :actionForm="actionForm"
             />
         </div>
