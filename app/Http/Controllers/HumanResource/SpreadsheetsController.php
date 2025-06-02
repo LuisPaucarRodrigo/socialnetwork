@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\HumanResource;
 
+use App\Constants\PayrollConstants;
+use App\Constants\ProjectConstants;
 use App\Exports\Payroll\PayrollExport;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\HumanResource\Payroll\StoreMasivePayrollDetailExpensesRequest;
 use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailMonetaryDiscountRequest;
 use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailMonetaryIncomeRequest;
 use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailTaxAndContributionRequest;
@@ -13,6 +16,7 @@ use App\Http\Requests\HumanResource\StorePayrollRequest;
 use App\Models\Contract;
 use App\Models\Employee;
 use App\Models\ExternalEmployee;
+use App\Models\GeneralExpense;
 use App\Models\IncomeParam;
 use App\Models\DiscountParam;
 use App\Models\Payroll;
@@ -79,7 +83,7 @@ class SpreadsheetsController extends Controller
             //Crear detalles por empleado
             foreach ($employees as $employee) {
                 $payrollDetail = $this->payrollServices->createPayrollDetailForEmployee($employee, $payroll, $listPension);
-                $this->payrollServices->createPayrollDetailExpenses($payrollDetail);
+                // $this->payrollServices->createPayrollDetailExpenses($payrollDetail);
             }
             DB::commit();
             return response()->json($payroll, 200);
@@ -289,4 +293,53 @@ class SpreadsheetsController extends Controller
         $rg->delete();
         return response()->json();
     }
+
+
+    //paying spreadsheets
+    public function store_pay_spreedsheets(StoreMasivePayrollDetailExpensesRequest $request) {
+        $data = $request->validated();
+        foreach($data['payroll_detail_expenses'] as $i=>$item){
+            $as = self::findAccountStatement($item);
+            $item['account_statement_id'] = $as?->id;
+            $item['type'] = ProjectConstants::EXP_TYPE_PAYROLL;
+            $ge = GeneralExpense::create($item);
+            $item['general_expense_id'] = $ge->id;
+            PayrollDetailExpense::create($item);
+        }
+        return response()->json();
+    }
+
+    public function show_payroll_detail_expense_constants() {
+        return response()->json([
+            'expenseTypes' => PayrollConstants::payrollExpenseTypes(),
+            'docTypes' => PayrollConstants::payrollDocTypes(),
+        ]);
+    }
+
+
+
+
+
+
+
+
+
+
+    protected static function findAccountStatement($item)
+    {
+        if (isset($item['operation_number']) && isset($item['operation_date'])) {
+            $on = substr($item['operation_number'], -6);
+            return AccountStatement::where('operation_date', $item['operation_date'])
+                ->where('operation_number', $on)->first();
+        }
+        return null;
+    }
+
+
+
+
+
+
+
+
 }

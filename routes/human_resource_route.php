@@ -257,3 +257,8 @@ Route::post('/management_employees/payroll_store_pdtac', [SpreadsheetsController
 Route::get('/management_employees/payroll_external_detail_index/{payroll_id}', [SpreadsheetsController::class, 'index_payroll_external_detail'])->name('payroll.index.payroll.external.detail');
 Route::post('/management_employees/payroll_external_detail_store', [SpreadsheetsController::class, 'store_payroll_external_detail'])->name('payroll.store.payroll.external.detail');
 Route::delete('/management_employees/payroll_external_detail_delete/{payroll_detail_id}', [SpreadsheetsController::class, 'destroy_payroll_external_detail'])->name('payroll.store.payroll.external.destroy');
+
+
+
+Route::post('/management_employees/payroll_detail_expenses_multiple_store', [SpreadsheetsController::class, 'store_pay_spreedsheets'])->name('payroll.detail.expenses.multiple.store');
+Route::get('/management_employees/payroll_detail_expense_constants_index', [SpreadsheetsController::class, 'show_payroll_detail_expense_constants'])->name('payroll.detail.expense.constants.show');
