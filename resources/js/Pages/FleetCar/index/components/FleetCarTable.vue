@@ -5,7 +5,7 @@
                 <th class="bg-gray-100">
                     <div class="w-2"></div>
                 </th>
-                <TableTitle v-if="hasPermission('CarManager')" :style="'bg-gray-100 whitespace-nowrap'">
+                <TableTitle v-if="hasPermission('CarManager') || role_id === 1" :style="'bg-gray-100 whitespace-nowrap'">
                     <TableHeaderCicsaFilter label="Linea de Negocio" labelClass="text-gray-600" :options="cost_line"
                         v-model="formSearch.cost_line" />
                 </TableTitle>
@@ -25,7 +25,7 @@
                     <th>
                         <div class="w-2"></div>
                     </th>
-                    <TableRow v-if="hasPermission('CarManager')">
+                    <TableRow v-if="hasPermission('CarManager') || role_id === 1">
                         {{ car.costline?.name }}
                     </TableRow>
                     <TableRow>{{ car.plate }}</TableRow>
@@ -55,7 +55,7 @@
                                         fill="#044d14" />
                                 </svg>
                             </button>
-                            <button v-if="hasPermission('CarManager')" type="button" @click="openEditFormCar(car)">
+                            <button v-if="hasPermission('CarManager') || role_id === 1" type="button" @click="openEditFormCar(car)">
                                 <PencilSquareIcon class="w-6 h-6 text-yellow-400" />
                             </button>
 
@@ -75,7 +75,7 @@
                                 </svg>
                             </a>
 
-                            <button v-if="hasPermission('CarManager')" type="button"
+                            <button v-if="hasPermission('CarManager') || role_id === 1" type="button"
                                 @click="openModalDeleteCars(car.id)" class="text-blue-900">
                                 <TrashIcon class="w-6 h-6 text-red-500" />
                             </button>
@@ -162,7 +162,7 @@
                                 <div class="flex justify-center items-center gap-2">
                                     <button v-if="
                                         changelog.is_accepted ===
-                                        null && hasPermission('CarManager')
+                                        null && hasPermission('CarManager') || role_id === 1
                                     " @click="
                                         () =>
                                             validateRegister(
@@ -178,7 +178,7 @@
                                     </button>
                                     <button v-if="
                                         changelog.is_accepted ===
-                                        null && hasPermission('CarManager')
+                                        null && hasPermission('CarManager') || role_id === 1
                                     " @click="
                                         () =>
                                             validateRegister(
@@ -193,7 +193,7 @@
                                                 d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                         </svg>
                                     </button>
-                                    <button type="button" v-if="hasPermission('CarManager')" @click="
+                                    <button type="button" v-if="hasPermission('CarManager') || role_id === 1" @click="
                                         openEditFormChangeLog(
                                             changelog,
                                             car
@@ -201,7 +201,7 @@
                                         ">
                                         <PencilSquareIcon class="w-5 h-5 text-yellow-400" />
                                     </button>
-                                    <button type="button" v-if="hasPermission('CarManager')" @click="
+                                    <button type="button" v-if="hasPermission('CarManager') || role_id === 1" @click="
                                         openModalDeleteChangelog(
                                             changelog.id
                                         )
@@ -276,13 +276,14 @@ import FormDocument from './FormDocument.vue';
 import { notify } from '@/Components/Notification';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 
-const { userPermissions, formSearch, cars, cost_line, openEditFormCar
+const { userPermissions, formSearch, cars, cost_line, openEditFormCar, role_id
 } = defineProps({
     userPermissions: Array,
     formSearch: Object,
     cars: Object,
     cost_line: Object,
-    openEditFormCar: Function
+    openEditFormCar: Function,
+    role_id: Function,
 })
 
 const carId = ref(null);

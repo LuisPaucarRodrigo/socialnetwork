@@ -6,7 +6,7 @@
             </h2>
             <form @submit.prevent="submit">
                 <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
-                    <div v-if="!form.id && hasPermission('CarManager')" class="mt-2">
+                    <div v-if="!form.id && (hasPermission('CarManager') || role_id === 1)" class="mt-2">
                         <InputLabel for="user_id">Proveedores de UM
                         </InputLabel>
                         <div class="mt-2">
@@ -117,7 +117,8 @@ const { cars, users, costLine, userPermissions } = defineProps({
     cars: Object,
     users: Object,
     costLine: Object,
-    userPermissions: Array
+    userPermissions: Array,
+    role_id: Number,
 })
 
 const showModalCar = ref(false);

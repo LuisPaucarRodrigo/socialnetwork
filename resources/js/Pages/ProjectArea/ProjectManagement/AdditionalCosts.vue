@@ -423,7 +423,7 @@
                                     </button>
                                 </div>
                             </div>
-                        </td>
+                        </td> 
                     </tr>
                     <tr class="sticky bottom-0 z-10 text-gray-700">
                         <td class="font-bold border-b border-gray-200 bg-white"></td>
@@ -909,7 +909,7 @@
                 </form>
             </div>
         </Modal>
-
+        <!-- ////////////////////////////////////////////// -->
         <Modal :show="showOpNuDatModal" @close="closeOpNuDatModal">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900 mb-2">

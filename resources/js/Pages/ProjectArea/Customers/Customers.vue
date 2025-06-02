@@ -6,7 +6,7 @@
             Clientes
         </template>
         <div class="mt-6 flex items-center justify-between gap-x-6">
-            <button v-if="hasPermission('ProjectManager')" @click="add_customer" type="button"
+            <button @click="add_customer" type="button"
                 class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                 + Agregar
             </button>
@@ -27,7 +27,7 @@
                     <TableTitle>Razón Social</TableTitle>
                     <TableTitle>Categoría</TableTitle>
                     <TableTitle>Dirección</TableTitle>
-                    <TableTitle v-if="hasPermission('ProjectManager')"></TableTitle>
+                    <TableTitle></TableTitle>
                 </tr>
             </template>
             <template #tbody>

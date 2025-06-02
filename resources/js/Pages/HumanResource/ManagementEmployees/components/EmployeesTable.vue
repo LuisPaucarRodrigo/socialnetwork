@@ -15,10 +15,9 @@
                 <TableTitle>Telefono</TableTitle>
                 <TableTitle>Fecha de Ingreso</TableTitle>
                 <TableTitle  v-permission-or="[
-                    'management_employees_show',
-                    'management_employees_edit',
-                    'management_employees_reentry',
-                    'management_employees',
+                    'see_employee',
+                    'edit_employee',
+                    'fired_reentry_employee',
                 ]"></TableTitle>
             </tr>
         </template>
@@ -35,27 +34,24 @@
                 <TableRow>{{ formattedDate(employee.contract.hire_date) }}</TableRow>
                 <td
                 v-permission-or="[
-                    'management_employees_show',
-                    'management_employees_edit',
-                    'management_employees_reentry',
-                    'management_employees',
-                    'management_employees_fired',
+                    'see_employee',
+                    'edit_employee',
+                    'fired_reentry_employee',
                 ]"
                 class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
                     <div v-if="employee.contract.fired_date == null" class="flex space-x-3 justify-center">
                         <Link 
-                            v-permission="'management_employees_show'"
-                            :href="route('management.employees.show', { id: employee.id })">
+                            v-permission="'see_employee'"
+                            :href="route('see_employee', { id: employee.id })">
                             <EyeIcon class="w-6 h-6 text-green-600" />
                         </Link>
                         <Link 
-                            v-permission="'management_employees_edit'"
-                            :href="route('management.employees.edit', { id: employee.id })">
+                            v-permission="'edit_employee'"
+                            :href="route('edit_employee', { id: employee.id })">
                             <PencilSquareIcon class="w-6 h-6 text-yellow-400" />
                         </Link>
                         <button  v-permission-and="[
-                            'management_employees_reentry',
-                            'management_employees'
+                            'fired_reentry_employee',
                         ]"
                         type="button" @click="confirmFired(employee.id)">
                             <ArrowDownTrayIcon class="w-6 h-6"/>
@@ -63,8 +59,7 @@
                     </div>
                     <button
                         v-permission-and="[
-                            'management_employees_reentry',
-                            'management_employees'
+                            'fired_reentry_employee',
                         ]"
                         v-if="employee.contract.fired_date" type="button" @click="employee_fired_date(employee.id)">
                         <ArrowUpTrayIcon class="w-6 h-6"/>

@@ -29,13 +29,12 @@ Route::middleware(['auth', 'checkPlatformWeb'])->group(function () {
     include_once 'huawei_route.php';
     include_once 'cicsa_route.php';
     include_once 'fleet_car_route.php';
-    // include_once 'share_point.php';
+    include_once 'share_point.php';
+    require 'documentgestion_route.php';
 });
 
 
-Route::middleware(['auth', 'permission:DocumentGestion', 'checkPlatformWeb'])->group(function () {
-    include_once 'documentgestion_route.php';
-});
+
 
 // Route::get('/huaweiproject/{project}', [FileDataController::class, 'render'])->name('huawei.show');
 // Route::post('/huawei_prices', [HuaweiController::class, 'store'])->name('huawei.post');

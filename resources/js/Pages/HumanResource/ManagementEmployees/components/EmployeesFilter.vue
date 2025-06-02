@@ -1,14 +1,14 @@
 <template>
     <div class="my-3 sm:flex sm:gap-4 sm:justify-between">
         <div class="flex items-center justify-between gap-x-3 w-full">
-            <div v-permission="'management_employees_create'" class="hidden sm:flex">
+            <div v-permission="'add_employee'" class="hidden sm:flex">
                 <Link :href="route('management.employees.create')"
                     class="bg-indigo-600 hover:bg-indigo-500 rounded-md px-4 py-2 text-center text-sm text-white">
                 + Agregar
                 </Link>
             </div>
 
-            <div v-permission="'management_employees_create'" class="sm:hidden">
+            <div v-permission="'add_employee'" class="sm:hidden">
                 <dropdown align='left'>
                     <template #trigger>
                         <button @click="dropdownOpen = !dropdownOpen"

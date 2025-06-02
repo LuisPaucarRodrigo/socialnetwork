@@ -380,28 +380,34 @@ class HuaweiMonthlyController extends Controller
 
     public function storeExpense(HuaweiMonthlyExpenseRequest $request)
     {
-        $data = $request->validated();
+        try{
+            $data = $request->validated();
 
-        if ($data['huawei_project_id']) {
-            $data['zone'] = HuaweiProject::find($data['huawei_project_id'])->huawei_site->name;
-        } else {
-            $data['zone'] = "Sin zona";
+            if ($data['huawei_project_id']) {
+                $data['zone'] = HuaweiProject::find($data['huawei_project_id'])->huawei_site->name;
+            } else {
+                $data['zone'] = "Sin zona";
+            }
+            $expense = HuaweiMonthlyExpense::create($data);
+
+            $expenseDirectory = 'documents/huawei/monthly_expenses/';
+
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $filename = "expense_{$expense->id}_" . time() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path($expenseDirectory), $filename);
+                $expense->update(['image' => $filename]);
+            }
+
+            if ($expense->huawei_project_id) {
+                $expense->load('huawei_project.huawei_site');
+            }
+            return response()->json($expense, 200);
         }
-        $expense = HuaweiMonthlyExpense::create($data);
-
-        $expenseDirectory = 'documents/huawei/monthly_expenses/';
-
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $filename = "expense_{$expense->id}_" . time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path($expenseDirectory), $filename);
-            $expense->update(['image' => $filename]);
+        
+        catch (\Exception $e) {
+            return response()->json(['error'=>$e]);
         }
-
-        if ($expense->huawei_project_id) {
-            $expense->load('huawei_project.huawei_site');
-        }
-        return response()->json($expense, 200);
     }
 
     public function updateExpense(HuaweiMonthlyExpense $expense, HuaweiMonthlyExpenseRequest $request)

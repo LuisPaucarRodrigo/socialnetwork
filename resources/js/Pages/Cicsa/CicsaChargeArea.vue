@@ -61,11 +61,12 @@
                                 <TableTitle :style="'bg-gray-200'">Estado</TableTitle>
                                 <TableTitle :style="'bg-gray-200'">Monto con IGVC</TableTitle>
                                 <TableTitle :style="'bg-gray-200'">Fecha de Abono de Cuenta Corriente</TableTitle>
-                                <TableTitle :style="'bg-gray-200'">Numero de Transacción de Cuenta Corriente
+                                <TableTitle :style="'bg-gray-200'">
+                                    Numero de operación de Cuenta Corriente
                                 </TableTitle>
                                 <TableTitle :style="'bg-gray-200'">Monto de Cuenta Corriente</TableTitle>
                                 <TableTitle :style="'bg-gray-200'">Fecha de Abono de la detraccion</TableTitle>
-                                <TableTitle :style="'bg-gray-200'">Numero de Transacción de la detraccion</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Numero de Operación de la Cuenta Detraccion</TableTitle>
                                 <TableTitle :style="'bg-gray-200'">Monto de la detraccion</TableTitle>
                                 <TableTitle :style="'bg-gray-200'">Doc Detraccion</TableTitle>
                                 <TableTitle :style="'bg-gray-200'">Encargado</TableTitle>
@@ -220,7 +221,7 @@
                             </div>
 
                             <div class="sm:col-span-1">
-                                <InputLabel for="transaction_number_current">Número de Transacción de cuenta corriente
+                                <InputLabel for="transaction_number_current">Número de Detracción de cuenta corriente
                                 </InputLabel>
                                 <div class="mt-2">
                                     <TextInput type="text" v-model="form.transaction_number_current" autocomplete="off"

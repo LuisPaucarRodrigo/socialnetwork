@@ -52,12 +52,14 @@
                                 {{ imageCode.code.code }} / {{ imageCode.code.description }}
                             </h1>
                         </div>
-                        <template v-if="hasPermission('ProjectManager')">
+                        <template 
+                          
+                        >
                             <div class="sm:col-span-2 space-x-3 text-right" v-if="!imageCode.status">
                                 <PrimaryButton @click="approveImages(imageCode.id)" type="button">
                                     Aprobar Imagenes
                                 </PrimaryButton>
-                                <PrimaryButton @click="verifyApproveModal(preprojectImage.id, imageCode.id)"
+                                <PrimaryButton  @click="verifyApproveModal(preprojectImage.id, imageCode.id)"
                                     type="button">
                                     Aprobar Codigo
                                 </PrimaryButton>

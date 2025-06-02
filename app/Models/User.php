@@ -105,7 +105,6 @@ class User extends Authenticatable
             return $role->permissions()->pluck('name');
         }
 
-        // No se encontraron permisos, retornar una colección vacía o null
         return collect(); // o return null;
     }
 

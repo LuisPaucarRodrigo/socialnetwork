@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RolRequest\CreateRolRequest;
+use App\Models\Module;
 use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Http\Request;
@@ -14,8 +15,9 @@ class ManagementRolsController extends Controller
     public function rols_index()
     {
         return Inertia::render('Rols/Rol', [
-            'rols' => Role::where('id', '!=', 1)->with('permissions')->paginate(),
-            'permissions' => Permission::all()
+            'rols' => Role::where('id', '!=', 1)->with('functionalities')->paginate(),
+            'permissions' => [],
+            'modules' => Module::with('submodules.functionalities')->where('type', 'module')->get() 
         ]);
     }
 
@@ -26,7 +28,7 @@ class ManagementRolsController extends Controller
             'name' => $validateData['name'],
             'description' => $validateData['description'],
         ]);
-        $role->permissions()->attach($validateData['permission']);
+        $role->functionalities()->attach($validateData['functionalities']);
     }
 
     public function update(CreateRolRequest $request, $rol_id)
@@ -37,7 +39,7 @@ class ManagementRolsController extends Controller
             'name' => $validateData['name'],
             'description' => $validateData['description'],
         ]);
-        $role->permissions()->sync($validateData['permission']);
+        $role->functionalities()->sync($validateData['functionalities']);
     }
 
     public function delete($id)
@@ -48,7 +50,7 @@ class ManagementRolsController extends Controller
 
     public function details($id)
     {
-        $role = Role::where('id', '!=', 1)->with('permissions')->find($id);
+        $role = Role::where('id', '!=', 1)->with('functionalities')->find($id);
         return response()->json($role, 200);
         // return Inertia::render('Rols/RolDetails', ['rols' => $role]);
     }

@@ -1,6 +1,6 @@
 <template>
     <Head title="Proyectos Pint" />
-    <AuthenticatedLayout :redirectRoute="'projectmanagement.index'">
+    <AuthenticatedLayout :redirectRoute="'monthproject.index'">
         <template #header> Proyectos Administrativos Mensuales </template>
         <Toaster richColors />
         <div class="min-w-full rounded-lg shadow">
