@@ -281,7 +281,7 @@
                                             class="text-red-600"
                                             @click="deleteAssignation(index)"
                                         >
-                                            <TrashIcon class="w-6 h-6" />
+                                            <DeleteIcon class="w-6 h-6" />
                                         </button>
                                     </div>
                                     <div class="flex flex-space gap-2">
@@ -615,7 +615,7 @@
                                                                         "
                                                                         class="text-red-600 hover:underline mr-2"
                                                                     >
-                                                                        <TrashIcon
+                                                                        <DeleteIcon
                                                                             class="h-5 w-5"
                                                                         />
                                                                     </button>
@@ -793,7 +793,7 @@
                                                                 "
                                                                 class="text-red-600 hover:underline mr-2"
                                                             >
-                                                                <TrashIcon
+                                                                <DeleteIcon
                                                                     class="h-5 w-5"
                                                                 />
                                                             </button>
