@@ -28,6 +28,10 @@
                     class="bg-indigo-600 hover:bg-indigo-500 rounded-md px-4 py-2 text-center text-sm text-white">
                     PS 4ta categoría
                 </Link>
+                <Link :href="route('payroll.detail.expense.index', {payroll_id: payrolls.id})"
+                    class="bg-gray-600 hover:bg-gray-500 rounded-md px-4 py-2 text-center text-sm text-white">
+                    Pagos
+                </Link>
             </div>
             <div class="sm:hidden">
                 <dropdown align='left'>

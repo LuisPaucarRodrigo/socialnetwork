@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignId('general_expense_id')
                 ->constrained('general_expenses')
                 ->cascadeOnDelete();
+            $table->string('photo')->nullable();
             $table->timestamps();
         });
     }

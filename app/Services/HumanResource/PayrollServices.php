@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 
 class PayrollServices
 {
-    public function payrollBase(): Builder
+    public function payrollBase()
     {
         $payroll = Payroll::orderBy('month', 'desc');
         return $payroll;

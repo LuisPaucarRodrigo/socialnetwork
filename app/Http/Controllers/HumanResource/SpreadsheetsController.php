@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\HumanResource;
 
 use App\Constants\PayrollConstants;
+use App\Constants\PintConstants;
 use App\Constants\ProjectConstants;
 use App\Exports\Payroll\PayrollExport;
 use App\Http\Controllers\Controller;
@@ -29,6 +30,7 @@ use App\Models\PayrollDetailWorkSchedule;
 use App\Models\PayrollExternalDetail;
 use App\Models\Pension;
 use App\Models\TaxAndContributionParam;
+use App\Services\HumanResource\PayrollDetailExpensesServices;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -41,11 +43,13 @@ use App\Services\HumanResource\PayrollServices;
 class SpreadsheetsController extends Controller
 {
     protected $payrollServices;
+    protected $payrollDetailExpensesServices;
 
-    public function __construct(PayrollServices $payrollServices)
-    {
+    public function __construct(PayrollServices $payrollServices, PayrollDetailExpensesServices $payrollDetailExpensesServices) {
         $this->payrollServices = $payrollServices;
+        $this->payrollDetailExpensesServices = $payrollDetailExpensesServices;
     }
+
 
     public function index()
     {
@@ -314,6 +318,33 @@ class SpreadsheetsController extends Controller
             'expenseTypes' => PayrollConstants::payrollExpenseTypes(),
             'docTypes' => PayrollConstants::payrollDocTypes(),
         ]);
+    }
+
+
+    public function index_payroll_detail_expense($payroll_id){
+        $data = PayrollDetailExpense::with('general_expense')->whereHas('payroll_detail',
+             function($query) use ($payroll_id) {
+                $query->where('payroll_id', $payroll_id);
+            }
+        )->paginate(20);
+        $data->getCollection()->each->append('real_state');
+        return Inertia::render('HumanResource/Payroll/Spreadsheets/Expense/Index', [
+            'expenses' => $data,
+            'expenseTypes' => PayrollConstants::payrollExpenseTypes(),
+            'docTypes' => PayrollConstants::payrollDocTypes(),
+            'stateTypes' => PintConstants::scStatesTypes(),
+            'payroll' => Payroll::findOrFail($payroll_id),
+        ]);
+    }
+
+    public function search_payroll_detail_expenses(Request $request, $payroll_id)
+    {
+        $query = PayrollDetailExpense::with('general_expense')
+            ->whereHas('payroll_detail', function($q) use ($payroll_id) {
+                $q->where('payroll_id', $payroll_id);
+            });
+        $result = $this->payrollDetailExpensesServices->filter($request, $query);
+        return response()->json($result, 200);
     }
 
 
