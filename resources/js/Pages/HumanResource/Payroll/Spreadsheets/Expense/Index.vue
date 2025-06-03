@@ -11,9 +11,7 @@
         <div class="inline-block min-w-full mb-4">
             <div class="flex gap-4 justify-between">
                 <div class="hidden sm:flex  space-x-3">
-                    <PrimaryButton @click="openCreatePayModal" type="button" class="whitespace-nowrap">
-                        + Agregar
-                    </PrimaryButton>
+ 
                     <PrimaryButton data-tooltip-target="update_data_tooltip" type="button" @click="() => {
                         filterForm = { ...initialFilterFormState }
                     }">
@@ -77,9 +75,15 @@
                                 <!-- Alineación a la derecha -->
 
                                 <div class="">
-                                    <button @click="openCreatePayModal"
+                                    <button type="button"
                                         class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                        Agregar
+                                        Todos los registros
+                                    </button>
+                                </div>
+                                <div class="">
+                                    <button type="button"
+                                        class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                        Actualizar operación
                                     </button>
                                 </div>
                             </div>
@@ -267,7 +271,7 @@
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <div class="flex items-center justify-center gap-3 w-full">
                                 <div class="flex gap-3 mr-3">
-                                    <button 
+                                    <button @click="openPayModal(item)"
                                         type="button"
                                         class="text-amber-600 hover:underline">
                                         <PencilSquareIcon class="h-5 w-5 ml-1" />
@@ -288,6 +292,165 @@
             <pagination :links="expenses.links" />
         </div>
 
+
+        <Modal :show="editPay">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900">
+                    Editar
+                </h2>
+                <form @submit.prevent="submitEdit">
+                    <div class="space-y-12">
+                        <div class="border-b grid sm:grid-cols-2 gap-6 border-gray-900/10 pb-12">
+                            <div>
+                                <InputLabel for="employee_name" class="font-medium leading-6 text-gray-900">Colaborador
+                                </InputLabel>
+                                <p>{{ form.employee_name }}</p>
+                            </div>
+                            <div>
+                                <InputLabel for="zone" class="font-medium leading-6 text-gray-900">Zona</InputLabel>
+                                <p>{{ form.general_expense.zone }}</p>
+                            </div>
+                            <div>
+                                <InputLabel for="expense_type" class="font-medium leading-6 text-gray-900">Tipo de Gasto
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <select v-model="form.general_expense.expense_type" id="expense_type"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option disabled value="">
+                                            Seleccionar Gasto
+                                        </option>
+                                        <option v-for="op in expenseTypes">{{ op }}</option>
+                                    </select>
+                                    <InputError :message="form.errors['general_expense.expense_type']" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="type_doc" class="font-medium leading-6 text-gray-900">Tipo de Documento
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <select v-model="form.general_expense.type_doc" id="type_doc"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                        <option disabled value="">
+                                            Seleccionar Documento
+                                        </option>
+                                        <option v-for="op in docTypes">{{ op }}</option>
+                                    </select>
+                                    <InputError :message="form.errors['general_expense.type_doc']" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="doc_number" class="font-medium leading-6 text-gray-900">Numero de
+                                    Documento
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="text" v-model="form.general_expense.doc_number" id="doc_number"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors['general_expense.doc_number']" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="doc_date" class="font-medium leading-6 text-gray-900">Fecha de
+                                    Documento
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="date" v-model="form.general_expense.doc_date" id="doc_date"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors['general_expense.doc_date']" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="operation_number" class="font-medium leading-6 text-gray-900">Numero de
+                                    Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="text" v-model="form.general_expense.operation_number" id="operation_number"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors['general_expense.operation_number']" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <InputLabel for="operation_date" class="font-medium leading-6 text-gray-900">Fecha de
+                                    Operación
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <input type="date" v-model="form.general_expense.operation_date" id="operation_date"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors['general_expense.operation_date']" />
+                                </div>
+                            </div>
+
+                           
+
+                            <div>
+                                <InputLabel for="amount" class="font-medium leading-6 text-gray-900">Monto</InputLabel>
+                                <div class="mt-2">
+                                    <input type="number" step="0.0001" v-model="form.general_expense.amount" id="amount"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors['general_expense.amount']" />
+                                </div>
+                            </div>
+
+
+                            
+
+                            <div class="sm:col-span-2">
+                                <InputLabel class="font-medium leading-6 text-gray-900">
+                                    Foto de Factura
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <InputFile type="file" v-model="form.photo" accept=".jpeg, .jpg, .png, .pdf"
+                                        class="block w-full h-24 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.photo" />
+                                    <div v-if="
+                                        form.photo_name &&
+                                        form.photo_status == 'stable'
+                                    " class="text-sm leading-6 text-indigo-700 flex space-x-2 items-center mt-3">
+                                        <span> Archivo Actual: </span>
+                                        <a :href="'#'" target="_blank" class="hover:underline">
+                                            {{ form.photo_name }}
+                                        </a>
+                                        <button type="button" @click="() => {
+                                            form.photo_status =
+                                                'delete';
+                                        }
+                                            ">
+                                            <TrashIcon class="text-red-500 h-4 w-4" />
+                                        </button>
+                                    </div>
+                                    <div v-if="form.photo_status === 'delete'"
+                                        class="text-amber-700 mt-3 text-sm flex space-x-2">
+                                        <span>
+                                            El documento esta por ser borrado,
+                                        </span>
+                                        <button @click="() => {
+                                            form.photo_status =
+                                                'stable';
+                                        }
+                                            " type="button" class="font-black">
+                                            ANULAR
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex items-center justify-end gap-x-6">
+                            <SecondaryButton @click="closePayModal">
+                                Cancelar
+                            </SecondaryButton>
+                            <button type="submit" :disabled="isFetching" :class="{ 'opacity-25': isFetching }"
+                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                Actualizar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </Modal>
 
     </AuthenticatedLayout>
 
@@ -353,13 +516,8 @@ const initialFilterFormState = {
     docNoDate: false,
 }
 
-
 const filterForm = ref({ ...initialFilterFormState });
 const filterMode = ref(false);
-
-function openCreatePayModal() {
-    
-}
 
 const actionForm = ref({ids:[]})
 const handleCheckAll = (e) => {
@@ -397,7 +555,61 @@ async function search_advance() {
     notifyWarning(`Se encontraron ${res.data.length} registro(s)`)
 }
 
+const initialForm = {
+    id: '',
+    payroll_detail_id: '',
+    general_expense_id: '',
+    employee_name: '',
+    photo_status: "stable",
+    photo:'',
+    photo_name: '',
+    general_expense:{
+        id:'',
+        zone : '',
+        expense_type : '',
+        location : '',
+        operation_number : '',
+        operation_date : '',
+        doc_date : '',
+        doc_number : '',
+        type_doc : '',
+        amount : '',
+    }
+}
 
+const form = useForm(JSON.parse(JSON.stringify(initialForm)))
+const editPay = ref(false)
+const isFetching = ref(false)
 
+function openPayModal(item) {
+    const updateState = JSON.parse(JSON.stringify({...item, photo:'', photo_name: item.photo}))
+    form.defaults(updateState)
+    form.reset()
+    editPay.value = true
+}
+function closePayModal() {
+    const initialState = JSON.parse(JSON.stringify(initialForm))
+    form.defaults(initialState)
+    form.reset()
+    form.clearErrors()
+    isFetching.value = false
+    editPay.value = false
+}
+
+async function submitEdit(){
+    try{
+        isFetching.value = true
+        const formToSend = toFormData(form.data())
+        const res = await axios.post(route('payroll.detail.expenses.store'), formToSend)
+        const index = dataToRender.value.findIndex(item=>form.id == item.id)
+        dataToRender.value[index] = res.data
+        closePayModal()
+        notify('Registro Guardado')
+     }catch (e) {
+        isFetching.value = false
+        if (e.response?.data?.errors) setAxiosErrors(e.response.data.errors, form)
+        notifyError('Server Error')
+    }
+}
 
 </script>

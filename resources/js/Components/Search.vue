@@ -26,7 +26,6 @@ const search = defineModel('search')
 const searchQuery = ref('');
 
 function applySearch() {
-    console.log('hello')
     search.value = searchQuery.value
     if(searchFunction){
         searchFunction()

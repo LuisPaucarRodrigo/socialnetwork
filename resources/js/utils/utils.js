@@ -37,15 +37,25 @@ export function setAxiosErrors(errors, form) {
   form.setError(formErrors)
 }
 
-export function toFormData(form) {
-  const formData = new FormData();
-  for (const [key, value] of Object.entries(form)) {
-    formData.append(
-      key, 
-      (value === null || value === undefined) 
-        ? '' 
-        : value
-    );
+export function toFormData(obj, form = null, namespace = '') {
+  const formData = form || new FormData();
+  for (const [key, value] of Object.entries(obj)) {
+    const formKey = namespace ? `${namespace}[${key}]` : key;
+    if (
+      value instanceof Date ||
+      typeof value === 'string' ||
+      typeof value === 'number' ||
+      typeof value === 'boolean' ||
+      value instanceof File
+    ) {
+      formData.append(formKey, value);
+    } else if (value === null || value === undefined) {
+      formData.append(formKey, '');
+    } else if (typeof value === 'object' && !(value instanceof File)) {
+      // Recurse into nested object
+      toFormData(value, formData, formKey);
+    }
   }
+
   return formData;
 }

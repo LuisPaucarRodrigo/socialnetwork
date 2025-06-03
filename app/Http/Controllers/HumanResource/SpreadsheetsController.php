@@ -8,6 +8,7 @@ use App\Constants\ProjectConstants;
 use App\Exports\Payroll\PayrollExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\HumanResource\Payroll\StoreMasivePayrollDetailExpensesRequest;
+use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailExpenseRequest;
 use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailMonetaryDiscountRequest;
 use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailMonetaryIncomeRequest;
 use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailTaxAndContributionRequest;
@@ -337,6 +338,39 @@ class SpreadsheetsController extends Controller
         ]);
     }
 
+    public function store_payroll_detail_expense(StorePayrollDetailExpenseRequest $request) {
+        $data = $request->validated();
+        DB::beginTransaction();
+        try {
+            $as = self::findAccountStatement($data);
+            $data['account_statement_id'] = $as?->id;
+            $rg = PayrollDetailExpense::find($data['id']);
+            if ($request->hasFile('photo')) {
+                $filename = $rg?->photo;
+                if ($filename) { $this->file_delete($filename, 'documents/payrollexpenses/');}
+                $data['photo'] = $this->file_store($request->file('photo'), 'documents/payrollexpenses/');
+            } 
+            if ($data['photo_status'] === 'stable') {
+                $filename = $rg?->photo;
+                if ($filename) {unset($data["photo"]);}
+            }
+            if ($data['photo_status'] === 'delete') {
+                $filename = $rg?->photo;
+                if ($filename) {$this->file_delete($filename, 'documents/payrollexpenses/');}
+            }
+            $ge = GeneralExpense::updateOrCreate(['id'=>$data['general_expense']['id']], $data['general_expense']);
+            $data['general_expense_id'] = $ge->id;
+            $rg = PayrollDetailExpense::updateOrCreate(['id'=>$data['id']],$data);
+            $rg->load('general_expense');
+            $rg->append('real_state');
+            DB::commit();
+            return response()->json($rg, 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
+    }
+
     public function search_payroll_detail_expenses(Request $request, $payroll_id)
     {
         $query = PayrollDetailExpense::with('general_expense')
@@ -365,6 +399,23 @@ class SpreadsheetsController extends Controller
         }
         return null;
     }
+
+    public function file_store($file, $path)
+    {
+        $name = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path($path), $name);
+        return $name;
+    }
+
+    public function file_delete($filename, $path)
+    {
+        $file_path = $path . $filename;
+        $path = public_path($file_path);
+        if (file_exists($path))
+            unlink($path);
+    }
+
+
 
 
 
