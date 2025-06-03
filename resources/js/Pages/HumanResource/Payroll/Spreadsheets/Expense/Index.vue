@@ -5,7 +5,7 @@
         params: { payroll_id: payroll.id },
     }">
         <template #header>
-            Gastos Variables del Proyecto
+            Pagos de {{ payroll.month }}
         </template>
         <Toaster richColors />
         <div class="inline-block min-w-full mb-4">
@@ -276,7 +276,9 @@
                                         class="text-amber-600 hover:underline">
                                         <PencilSquareIcon class="h-5 w-5 ml-1" />
                                     </button>
-                                    <button type="button" class="text-red-600 hover:underline">
+                                    <button 
+                                        @click="confirmDeleteAdditional(item.id)"
+                                        type="button" class="text-red-600 hover:underline">
                                         <TrashIcon class="h-5 w-5" />
                                     </button>
                                 </div>
@@ -452,6 +454,9 @@
             </div>
         </Modal>
 
+        <ConfirmDeleteModal :confirmingDeletion="showConfirmDeleteModal" itemType="Pago de nómina"
+            :deleteFunction="deletePay" @closeModal="closeConfirmDeleteModal" :processing="isFetching" />
+
     </AuthenticatedLayout>
 
 </template>
@@ -611,5 +616,43 @@ async function submitEdit(){
         notifyError('Server Error')
     }
 }
+
+
+const stateCreateAtSort = ref(false)
+function sortValue() {
+    if (stateCreateAtSort.value) {
+        dataToRender.value.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    } else {
+        dataToRender.value.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    }
+    stateCreateAtSort.value = !stateCreateAtSort.value;
+}
+
+
+//Delete
+const showConfirmDeleteModal = ref(false);
+const idToDelete = ref(null);
+const confirmDeleteAdditional = (id) => {
+    idToDelete.value = id;
+    showConfirmDeleteModal.value = true;
+};
+const closeConfirmDeleteModal = () => {
+    showConfirmDeleteModal.value = false;
+};
+const deletePay = async () => {
+    try {
+        isFetching.value = true;
+        const id = idToDelete.value;
+        const res = await axios.delete(route("payroll.detail.expense.destroy", {payroll_detail_expense_id: id,}));
+        isFetching.value = false;
+        let index = dataToRender.value.findIndex((item) => item.id == id);
+        dataToRender.value.splice(index, 1);
+        closeConfirmDeleteModal();
+        notify("Registro Eliminado");
+    } catch (e) {
+        isFetching.value = false;
+        notifyError('Server Error')
+    }
+};
 
 </script>

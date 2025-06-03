@@ -370,6 +370,20 @@ class SpreadsheetsController extends Controller
             return $e->getMessage();
         }
     }
+    public function destroy_payroll_detail_expense($payroll_detail_expense_id)
+    {
+        DB::beginTransaction();
+        try {
+            $rg = PayrollDetailExpense::findOrFail($payroll_detail_expense_id);
+            $rg->photo && $this->file_delete($rg->photo, 'documents/payrollexpenses/');
+            $rg->delete();
+            DB::commit();
+            return response()->json();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['msg'=>'Server Error'], 500);
+        }
+    }
 
     public function search_payroll_detail_expenses(Request $request, $payroll_id)
     {

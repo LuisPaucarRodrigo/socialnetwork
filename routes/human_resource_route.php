@@ -266,4 +266,5 @@ Route::get('/management_employees/payroll_detail_expense_constants_index', [Spre
 
 Route::get('/management_employees/payroll_detail_expense_index/{payroll_id}', [SpreadsheetsController::class, 'index_payroll_detail_expense'])->name('payroll.detail.expense.index');
 Route::post('/management_employees/payroll_detail_expense_search/{payroll_id}', [SpreadsheetsController::class, 'search_payroll_detail_expenses'])->name('payroll.detail.expense.search');
-Route::post('/management_employees/payroll_detail_expenses_store', [SpreadsheetsController::class, 'store_payroll_detail_expense'])->name('payroll.detail.expenses.store');
+Route::post('/management_employees/payroll_detail_expense_store', [SpreadsheetsController::class, 'store_payroll_detail_expense'])->name('payroll.detail.expenses.store');
+Route::delete('/management_employees/payroll_detail_expense_destroy/{payroll_detail_expense_id}', [SpreadsheetsController::class, 'destroy_payroll_detail_expense'])->name('payroll.detail.expense.destroy');
