@@ -20,22 +20,21 @@
                 <div class="mb-4">
                     <p class="text-sm text-gray-700 font-medium">Monto Total:</p>
                     <p class="text-lg text-gray-900">{{ expense.currency === 'dolar' ? '$' : 'S/.' }} {{
-            (expense.total_amount).toFixed(2) }}</p>
+                        (expense.total_amount).toFixed(2) }}</p>
                 </div>
                 <div v-if="quotes" class="mb-4">
                     <p class="text-sm text-gray-700 font-medium">Fecha Límite de Aprobación:</p>
                     <p v-if="expense.quote_deadline" class="text-lg text-gray-900">{{
-            formattedDate(expense.quote_deadline) }}
+                        formattedDate(expense.quote_deadline) }}
                     </p>
                     <button v-else @click="add_quote_deadline"
                         class="text-md text-green-600 hover:underline flex items-center">+ Agregar</button>
                 </div>
                 <div class="mb-4">
                     <p class="text-sm text-gray-700 font-medium">Cotización/PDF:</p>
-                    <button @click="openPreviewDocumentModal(expense.id)"
-                        class="text-lg text-green-600 hover:underline flex items-center">
+                    <button @click="openPreviewDocumentModal(expense.id)">
                         Previsualizar
-                        <EyeIcon class="h-6 w-6 ml-1" />
+                        <ShowIcon />
                     </button>
                 </div>
                 <div class="mb-4">
@@ -67,7 +66,7 @@
                     </p>
                 </div>
                 <div class="mb-4">
-                    <p class="text-sm text-gray-700 font-medium">IGV: ({{ expense.igv_percentage*100 }}%)</p>
+                    <p class="text-sm text-gray-700 font-medium">IGV: ({{ expense.igv_percentage * 100 }}%)</p>
                     <p class="text-lg text-gray-900">{{ expense.igv ? 'Si' : 'No' }}</p>
                 </div>
             </div>
@@ -155,25 +154,26 @@
                                 </td>
                                 <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-nowrap text-center">
-                                        {{ expense.currency === 'dolar' ? '$' : 'S/.' }} 
-                                        {{ (item.pivot?.unitary_amount * (1 / (1+props.expense.igv_percentage))).toFixed(2) }}
+                                        {{ expense.currency === 'dolar' ? '$' : 'S/.' }}
+                                        {{ (item.pivot?.unitary_amount * (1 /
+                                            (1 + props.expense.igv_percentage))).toFixed(2) }}
                                     </p>
                                 </td>
                                 <td v-if="expense.igv"
                                     class=" w-32 border-b border-gray-200 px-5 py-5 text-sm text-center">
                                     <p class="text-gray-900 whitespace-nowrap">
-                                        {{ expense.currency === 'dolar' ? '$' : 'S/.' }} 
-                                        {{ (item.pivot?.unitary_amount 
-                                            * (expense.igv ? 1 / (1+props.expense.igv_percentage) 
-                                                           : (1+props.expense.igv_percentage))
+                                        {{ expense.currency === 'dolar' ? '$' : 'S/.' }}
+                                        {{ (item.pivot?.unitary_amount
+                                            * (expense.igv ? 1 / (1 + props.expense.igv_percentage)
+                                                : (1 + props.expense.igv_percentage))
                                             * item.pivot?.quantity).toFixed(2) }}
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-nowrap text-right">
-                                        {{ expense.currency === 'dolar' ? '$' : 'S/.' }} 
-                                        {{ ((item.pivot?.unitary_amount * item.pivot?.quantity).toFixed(2) 
-                                            / (expense.igv ? 1 : (1+props.expense.igv_percentage))
+                                        {{ expense.currency === 'dolar' ? '$' : 'S/.' }}
+                                        {{ ((item.pivot?.unitary_amount * item.pivot?.quantity).toFixed(2)
+                                            / (expense.igv ? 1 : (1 + props.expense.igv_percentage))
                                         ).toFixed(2) }}
                                     </p>
                                 </td>
@@ -268,7 +268,6 @@
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { EyeIcon } from '@heroicons/vue/24/outline';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { formattedDate } from '@/utils/utils';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
@@ -277,6 +276,7 @@ import { ref } from 'vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Modal from '@/Components/Modal.vue';
+import ShowIcon from '@/Components/Icons/ShowIcon.vue';
 
 const props = defineProps({
     expense: Object,
@@ -304,11 +304,11 @@ function getTotals(products, hasIGV) {
     let igv = 0;
     let total = 0;
     products.forEach(item => {
-        subTotal += item.pivot.quantity * item.pivot.unitary_amount / (hasIGV ? 1 : (1+props.expense.igv_percentage))
+        subTotal += item.pivot.quantity * item.pivot.unitary_amount / (hasIGV ? 1 : (1 + props.expense.igv_percentage))
     });
     if (hasIGV) {
         total = subTotal.toFixed(2)
-        subTotal = (total / (1+props.expense.igv_percentage)).toFixed(2)
+        subTotal = (total / (1 + props.expense.igv_percentage)).toFixed(2)
         igv = (total - subTotal).toFixed(2)
     } else {
         subTotal = subTotal.toFixed(2)

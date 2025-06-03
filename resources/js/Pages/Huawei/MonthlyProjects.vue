@@ -6,7 +6,8 @@
             Proyectos Mensuales de Huawei
         </template>
         <div class="min-w-full rounded-lg shadow">
-            <div class="flex flex-col gap-4 justify-center sm:flex-row sm:justify-between rounded-lg items-center text-center sm:text-left">
+            <div
+                class="flex flex-col gap-4 justify-center sm:flex-row sm:justify-between rounded-lg items-center text-center sm:text-left">
                 <div class="flex flex-col sm:flex-row gap-4 w-full justify-between items-center">
                     <div class="flex gap-4 items-center justify-center sm:justify-start">
                         <button @click="createOrEditModal" type="button"
@@ -16,12 +17,16 @@
                     </div>
                     <div class="flex items-center justify-center sm:justify-end w-full sm:w-auto mt-4 sm:mt-0">
                         <form @submit.prevent="search" class="flex items-center w-full sm:w-auto">
-                            <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm" class="mr-2" />
+                            <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm"
+                                class="mr-2" />
                             <button type="submit" :class="{ 'opacity-25': searchForm.processing }"
                                 class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
-                                        stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                <svg width="30px" height="21px" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
+                                        stroke="white" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
                                 </svg>
                             </button>
                         </form>
@@ -38,9 +43,8 @@
                             {{ item.date }}
                         </h2>
                         <div class="inline-flex justify-end items-start gap-x-2">
-                            <button @click.prevent="editProject(item)"
-                                class="flex items-start">
-                                <PencilSquareIcon class="h-5 w-5 text-yellow-400" />
+                            <button @click.prevent="editProject(item)">
+                                <EditIcon />
                             </button>
                         </div>
                     </div>
@@ -51,18 +55,18 @@
                     </div>
 
                     <div class="text-gray-500 text-sm mt-1">
-                            <div class="grid grid-cols-1 gap-y-1">
-                                <Link
-                                    :href="route('huawei.monthlyexpenses.expenses', { project: item.id })"
-                                    class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
-                                    Gastos
-                                </Link>
-                            </div>
+                        <div class="grid grid-cols-1 gap-y-1">
+                            <Link :href="route('huawei.monthlyexpenses.expenses', { project: item.id })"
+                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                            Gastos
+                            </Link>
                         </div>
+                    </div>
                 </div>
             </div>
             <br>
-            <div v-if="!props.search" class="flex flex-col items-center border-t px-5 py-5 xs:flex-row xs:justify-between">
+            <div v-if="!props.search"
+                class="flex flex-col items-center border-t px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="props.projects.links" />
             </div>
         </div>
@@ -107,8 +111,7 @@
                 </form>
             </div>
         </Modal>
-        <SuccessOperationModal :confirming="showSuccessModal" :title="'Éxito'"
-        :message="successMessage" />
+        <SuccessOperationModal :confirming="showSuccessModal" :title="'Éxito'" :message="successMessage" />
     </AuthenticatedLayout>
 </template>
 
@@ -116,20 +119,20 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue'
 import { Head, router, Link, useForm } from '@inertiajs/vue3';
-import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
+import EditIcon from '@/Components/Icons/EditIcon.vue';
 
 const props = defineProps({
     projects: Object,
     auth: Object,
-    userPermissions:Array,
+    userPermissions: Array,
     search: String,
 })
 
@@ -146,10 +149,10 @@ const searchForm = useForm({
 })
 
 const search = () => {
-    if (searchForm.searchTerm == ''){
+    if (searchForm.searchTerm == '') {
         router.visit(route('huawei.monthlyprojects'))
-    }else{
-        router.visit(route('huawei.monthlyprojects.search', { request: searchForm.searchTerm}));
+    } else {
+        router.visit(route('huawei.monthlyprojects.search', { request: searchForm.searchTerm }));
     }
 }
 
@@ -159,7 +162,7 @@ const initialState = {
     description: '',
 }
 
-const form = useForm({...initialState});
+const form = useForm({ ...initialState });
 
 const editProject = (project) => {
     Object.assign(form, project);
@@ -175,7 +178,7 @@ const createOrEditModal = () => {
 };
 
 const submit = (update) => {
-    if (!update){
+    if (!update) {
         const url = route('huawei.monthlyprojects.store');
         form.post(url, {
             onSuccess: () => {
@@ -188,8 +191,8 @@ const submit = (update) => {
                 }, 2000);
             }
         })
-    }else{
-        const url = route('huawei.monthlyprojects.update', {project: form.id});
+    } else {
+        const url = route('huawei.monthlyprojects.update', { project: form.id });
         form.put(url, {
             onSuccess: () => {
                 createOrEditModal();

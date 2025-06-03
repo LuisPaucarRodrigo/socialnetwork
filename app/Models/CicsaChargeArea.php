@@ -83,7 +83,7 @@ class CicsaChargeArea extends Model
 
     public function getStateAttribute()
     {
-        if ($this->state_detraction === 0 && $this->checking_account_amount !== null) {
+        if ($this->state_detraction === 0 && $this->transaction_number_current !== null) {
             return 'Pagado';
         }
 
@@ -91,7 +91,7 @@ class CicsaChargeArea extends Model
             return 'A tiempo';
         }
 
-        if ($this->checking_account_amount !== null && $this->amount_bank !== null) {
+        if ($this->transaction_number_current !== null && $this->transaction_number_bank !== null) {
             return 'Pagado';
         }
 

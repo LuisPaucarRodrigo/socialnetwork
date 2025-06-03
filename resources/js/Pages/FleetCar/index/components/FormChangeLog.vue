@@ -57,7 +57,7 @@
                                 car_changelog: formChangelog.id,
                             }) + uniqueParam
                                 ">
-                                <EyeIcon class="w-5 h-5 text-green-600" />
+                                <ShowIcon/>
                             </a>
                         </div>
                     </div>
@@ -105,15 +105,11 @@
 
                     <div class="col-span-1 md:col-span-2">
                         <InputLabel class="mb-1" for="new_item">Agregar Item</InputLabel>
-                        <div class="flex items-center">
+                        <div class="flex justify-between gap-3">
                             <input type="text" v-model="newItem"
                                 class="block w-full py-1.5 rounded-md sm:text-sm form-input focus:border-indigo-600" />
-                            <button type="button" @click="addItem" class="ml-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                </svg>
+                            <button type="button" @click="addItem">
+                                <PlusCircleIcon />
                             </button>
                         </div>
                         <InputError :message="formChangelog.errors.items" />
@@ -146,14 +142,10 @@
                                         {{ item }}
                                     </td>
                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-right">
-                                        <button @click.prevent="() => {
-                                            formChangelog.items.splice(
-                                                index,
-                                                1
-                                            );
-                                        }
-                                        ">
-                                            <TrashIcon class="h-5 w-5 text-red-600" />
+                                        <button type="button" @click="() => {
+                                            formChangelog.items.splice(index, 1);
+                                        }">
+                                            <DeleteIcon />
                                         </button>
                                     </td>
                                 </tr>
@@ -174,6 +166,9 @@
     </Modal>
 </template>
 <script setup>
+import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
+import PlusCircleIcon from '@/Components/Icons/PlusCircleIcon.vue';
+import ShowIcon from '@/Components/Icons/ShowIcon.vue';
 import InputError from '@/Components/InputError.vue';
 import InputFile from '@/Components/InputFile.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -182,7 +177,6 @@ import { notify, notifyError } from '@/Components/Notification';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { setAxiosErrors } from '@/utils/utils';
-import { EyeIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 

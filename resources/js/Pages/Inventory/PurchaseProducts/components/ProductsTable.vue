@@ -29,8 +29,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="item in products.data || products" :key="item.id"
-                    class="text-gray-700 border-b">
+                <tr v-for="item in products.data || products" :key="item.id" class="text-gray-700 border-b">
                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                         <p class="text-gray-900 whitespace-no-wrap">{{ item.name }}</p>
                     </td>
@@ -53,9 +52,8 @@
                     <td v-if="hasPermission('InventoryManager')"
                         class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                         <div class="inline-flex justify-end gap-x-0">
-                            <button v-if="auth.user.role_id == 1" @click="openEditProductModal(item)"
-                                class="text-yellow-600 hover:underline mr-3">
-                                <PencilIcon class="h-4 w-4" />
+                            <button v-if="auth.user.role_id == 1" @click="openEditProductModal(item)">
+                                <EditIcon />
                             </button>
                             <button v-if="auth.user.role_id == 1" @click="confirmDeleteProduct(item.id)"
                                 class="text-red-600 hover:underline">
@@ -71,21 +69,20 @@
             </tbody>
         </table>
     </div>
-    <div v-if="products.data"
-        class="flex flex-col items-center border-t px-5 py-5 xs:flex-row xs:justify-between">
+    <div v-if="products.data" class="flex flex-col items-center border-t px-5 py-5 xs:flex-row xs:justify-between">
         <pagination :links="products.links" />
     </div>
 </template>
 <script setup>
+import EditIcon from '@/Components/Icons/EditIcon.vue';
 import Pagination from '@/Components/Pagination.vue'
-import { PencilIcon } from '@heroicons/vue/24/outline';
 
-const { products, userPermissions, auth,openEditProductModal,confirmDeleteProduct } = defineProps({
+const { products, userPermissions, auth, openEditProductModal, confirmDeleteProduct } = defineProps({
     products: Object,
     userPermissions: Object,
     auth: Object,
     openEditProductModal: Function,
-    confirmDeleteProduct:Function
+    confirmDeleteProduct: Function
 });
 
 function hasPermission(permission) {

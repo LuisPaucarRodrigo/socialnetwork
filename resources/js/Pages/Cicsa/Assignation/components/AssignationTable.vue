@@ -27,7 +27,7 @@
                 <TableRow>{{ item.user_name }}</TableRow>
                 <TableRow>
                     <button @click="updateAssignation(item)">
-                        <PencilSquareIcon class="w-5 h-5 text-amber-400" />
+                        <EditIcon/>
                     </button>
                 </TableRow>
             </tr>
@@ -44,9 +44,8 @@ import TableRow from '@/Components/TableRow.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import Pagination from '@/Components/Pagination.vue';
-
 import { formattedDate } from '@/utils/utils.js';
-import { PencilSquareIcon } from '@heroicons/vue/24/outline';
+import EditIcon from '@/Components/Icons/EditIcon.vue';
 
 const { assignations, updateAssignation } = defineProps({
     assignations: Object,

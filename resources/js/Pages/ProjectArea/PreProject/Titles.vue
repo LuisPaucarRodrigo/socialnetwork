@@ -31,10 +31,10 @@
                     <TableRow v-if="hasPermission('ProjectManager')">
                         <div class="flex justify-center space-x-3">
                             <button type="button" @click="openEditTitleModal(title)">
-                                <PencilIcon class="h-5 w-5 text-yellow-600" />
+                                <EditIcon />
                             </button>
                             <button type="button" @click="confirmDeleteTitle(title.id)">
-                                <TrashIcon class="h-5 w-5 text-red-600" />
+                                <DeleteIcon />
                             </button>
                         </div>
                     </TableRow>
@@ -135,7 +135,6 @@ import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
-import { TrashIcon, PencilIcon, DocumentArrowUpIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
@@ -143,6 +142,8 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
+import EditIcon from '@/Components/Icons/EditIcon.vue';
+import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
 
 const create_title = ref(false);
 const showModal = ref(false);

@@ -39,18 +39,17 @@
                             <p class="text-gray-900 whitespace-no-wrap">{{ title.name }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <p class="text-gray-900">{{ title.huawei_codes.map((item) => item.code).join(', ') }}</p>
+                            <p class="text-gray-900">{{title.huawei_codes.map((item) => item.code).join(', ')}}</p>
                         </td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <div class="flex justify-center space-x-3">
                                 <button type="button" @click="openEditTitleModal(title)"
                                     class="text-yellow-600 whitespace-no-wrap">
-                                    <PencilIcon class="h-5 w-5 ml-1" />
+                                    <EditIcon />
                                 </button>
                                 <button type="button" @click="confirmDeleteTitle(title.id)"
                                     class="text-red-600 whitespace-no-wrap">
-                                    <TrashIcon class="h-5 w-5 ml-1" />
+                                    <DeleteIcon />
                                 </button>
                             </div>
                         </td>
@@ -126,11 +125,12 @@ import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
-import { TrashIcon, PencilIcon, DocumentArrowUpIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
+import EditIcon from '@/Components/Icons/EditIcon.vue';
 
 const create_title = ref(false);
 const showModal = ref(false);

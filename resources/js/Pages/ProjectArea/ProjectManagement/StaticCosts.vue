@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Costos Fijos" />
     <AuthenticatedLayout :redirectRoute="{
         route: 'projectmanagement.purchases_request.index',
@@ -18,11 +19,11 @@
                     " @click="openCreateAdditionalModal" type="button" class="whitespace-nowrap">
                         + Agregar
                     </PrimaryButton>
-                    <PrimaryButton data-tooltip-target="update_data_tooltip" type="button"  @click="() => {
-                        filterForm = {...initialFilterFormState}
+                    <PrimaryButton data-tooltip-target="update_data_tooltip" type="button" @click="() => {
+                        filterForm = { ...initialFilterFormState }
                     }
-                        ">
-                        <ServerIcon class="w-5 h-5 text-white" />
+                    ">
+                        <ServerIcon />
                     </PrimaryButton>
                     <div id="update_data_tooltip" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
@@ -70,11 +71,7 @@
                                 <button data-tooltip-target="action_button_tooltip"
                                     @click="dropdownOpen = !dropdownOpen"
                                     class="relative block overflow-hidden rounded-md text-white hover:bg-indigo-400 text-center text-sm bg-indigo-500 p-2">
-                                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4 6H20M4 12H20M4 18H20" stroke="#ffffff" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
+                                    <Menuicon color="text-white" />
                                 </button>
                                 <div id="action_button_tooltip" role="tooltip"
                                     class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700 whitespace-nowrap">
@@ -108,7 +105,8 @@
                         </dropdown>
                     </div>
                 </div>
-                <Search v-model:search="filterForm.search" fields="Ruc , Numero de Documento, Numero de Operacion, Descripcion, Monto Total"/>
+                <Search v-model:search="filterForm.search"
+                    fields="Ruc , Numero de Documento, Numero de Operacion, Descripcion, Monto Total" />
             </div>
         </div>
         <div class="overflow-x-auto h-[72vh] z-10">
@@ -198,7 +196,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in dataToRender" :key="item.id" class="text-gray-700 bg-white hover:bg-gray-200 hover:opacity-80">
+                    <tr v-for="item in dataToRender" :key="item.id"
+                        class="text-gray-700 bg-white hover:bg-gray-200 hover:opacity-80">
                         <td :class="[
                             'sticky left-0 z-10 border-b border-gray-200 ',
                             {
@@ -206,7 +205,7 @@
                                 'bg-green-500': item.real_state == 'Aceptado - Validado',
                                 'bg-amber-500': item.real_state == 'Aceptado',
                                 'bg-red-500': item.real_state == 'Rechazado',
-                                
+
                             },
                         ]"></td>
                         <td
@@ -216,10 +215,12 @@
                                     type="checkbox" />
                             </label>
                         </td>
-                        <td class="sm:sticky sm:left-14 sm:z-10 border-b w-32 border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
+                        <td
+                            class="sm:sticky sm:left-14 sm:z-10 border-b w-32 border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
                             {{ item.zone }}
                         </td>
-                        <td class="sm:sticky sm:left-48 sm:z-10 border-b border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
+                        <td
+                            class="sm:sticky sm:left-48 sm:z-10 border-b border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
                             <p class="w-48 break-words">
                                 {{ item.expense_type }}
                             </p>
@@ -233,7 +234,7 @@
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <p class="line-clamp-2 hover:line-clamp-none">
                                 {{ item?.provider?.company_name }}
-                                </p>
+                            </p>
                         </td>
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             {{ item.operation_number }}
@@ -247,17 +248,15 @@
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             {{ formattedDate(item.doc_date) }}
                         </td>
-                        <td
-                            class="border-b border-gray-200 px-2 py-2 text-center text-[13px] whitespace-nowrap">
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px] whitespace-nowrap">
                             S/. {{ item.amount.toFixed(2) }}
                         </td>
-                        <td
-                            class="border-b border-gray-200 px-2 py-2 text-center text-[13px] whitespace-nowrap">
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px] whitespace-nowrap">
                             S/. {{ item.real_amount.toFixed(2) }}
                         </td>
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <button v-if="item.photo" @click="handlerPreview(item.id)">
-                                <EyeIcon class="w-4 h-4 text-teal-600" />
+                                <ShowIcon />
                             </button>
                             <span v-else>-</span>
                         </td>
@@ -267,7 +266,7 @@
                             </p>
                         </td>
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
-                            <div :class = "[
+                            <div :class="[
                                 'text-center',
                                 {
                                     'text-indigo-500': item.real_state === 'Pendiente',
@@ -275,21 +274,19 @@
                                     'text-amber-500': item.real_state == 'Aceptado',
                                     'text-red-500': item.real_state == 'Rechazado',
                                 },
-                            ]"
-                            >
+                            ]">
                                 {{ item.real_state }}
                             </div>
                         </td>
-                        
-                        <td v-if="project_id.status === null" 
+
+                        <td v-if="project_id.status === null"
                             class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <div class="flex items-center">
-                                <button @click="openEditAdditionalModal(item)"
-                                    class="text-amber-600 hover:underline mr-2">
-                                    <PencilSquareIcon class="h-4 w-4 ml-1" />
+                                <button @click="openEditAdditionalModal(item)">
+                                    <EditIcon />
                                 </button>
-                                <button @click="confirmDeleteAdditional(item.id)" class="text-red-600 hover:underline">
-                                    <TrashIcon class="h-4 w-4" />
+                                <button @click="confirmDeleteAdditional(item.id)">
+                                    <DeleteIcon />
                                 </button>
                             </div>
                         </td>
@@ -321,7 +318,8 @@
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
-                        <td v-if="project_id.status === null" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <td v-if="project_id.status === null"
+                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <div class="flex items-center"></div>
                         </td>
                     </tr>
@@ -694,8 +692,8 @@
                                             form.photo_status =
                                                 'delete';
                                         }
-                                            ">
-                                            <TrashIcon class="text-red-500 h-4 w-4" />
+                                        ">
+                                            <DeleteIcon />
                                         </button>
                                     </div>
                                     <div v-if="form.photo_status === 'delete'"
@@ -707,7 +705,7 @@
                                             form.photo_status =
                                                 'stable';
                                         }
-                                            " type="button" class="font-black">
+                                        " type="button" class="font-black">
                                             ANULAR
                                         </button>
                                     </div>
@@ -821,13 +819,10 @@
 
         <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Gasto Fijo"
             :deleteFunction="deleteAdditional" @closeModal="closeModalDoc" />
-        <ConfirmateModal 
-            tittle="Descarga de archivos"
-            text="La descarga de archivos será en base a los filtros que están activos, si no hay filtros activos se descargarán de todos los registros. PARA AMBOS CASOS SOLO ES PARA REGISTROS ACEPTADOS" 
-            :showConfirm="showExportArchivesModal" 
-            :actionFunction="exportArchives"
-            @closeModal="closeExportArchivesModal"
-        />
+        <ConfirmateModal tittle="Descarga de archivos"
+            text="La descarga de archivos será en base a los filtros que están activos, si no hay filtros activos se descargarán de todos los registros. PARA AMBOS CASOS SOLO ES PARA REGISTROS ACEPTADOS"
+            :showConfirm="showExportArchivesModal" :actionFunction="exportArchives"
+            @closeModal="closeExportArchivesModal" />
     </AuthenticatedLayout>
 </template>
 
@@ -840,17 +835,14 @@ import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import Modal from "@/Components/Modal.vue";
 import { ref, watch } from "vue";
-import { Head, useForm, router } from "@inertiajs/vue3";
-import { TrashIcon, PencilSquareIcon, ServerIcon } from "@heroicons/vue/24/outline";
+import { Head, useForm } from "@inertiajs/vue3";
 import { formattedDate } from "@/utils/utils";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputFile from "@/Components/InputFile.vue";
 import Pagination from "@/Components/Pagination.vue";
-import { EyeIcon } from "@heroicons/vue/24/outline";
 import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import axios from "axios";
-import TextInput from "@/Components/TextInput.vue";
 import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
@@ -858,6 +850,11 @@ import { Toaster } from "vue-sonner";
 import Dropdown from "@/Components/Dropdown.vue";
 import Search from "@/Components/Search.vue";
 import qs from 'qs';
+import Menuicon from "@/Components/Icons/Menuicon.vue";
+import EditIcon from "@/Components/Icons/EditIcon.vue";
+import DeleteIcon from "@/Components/Icons/DeleteIcon.vue";
+import ShowIcon from "@/Components/Icons/ShowIcon.vue";
+import ServerIcon from "@/Components/Icons/ServerIcon.vue";
 
 
 const props = defineProps({
@@ -874,7 +871,7 @@ const props = defineProps({
     additional_projects: Array,
 });
 
-const { expenseTypes, docTypes, zones ,stateTypes } = props
+const { expenseTypes, docTypes, zones, stateTypes } = props
 expenseTypes.sort()
 docTypes.sort()
 zones.sort()
@@ -1042,13 +1039,13 @@ function handlerPreview(id) {
 }
 
 const showExportArchivesModal = ref(false)
-const openExportArchivesModal = () => {showExportArchivesModal.value = true}
-const closeExportArchivesModal = () => {showExportArchivesModal.value = false}
+const openExportArchivesModal = () => { showExportArchivesModal.value = true }
+const closeExportArchivesModal = () => { showExportArchivesModal.value = false }
 
 function exportArchives() {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
     const url = route("zip.static.descargar", { project_id: props.project_id.id }) +
-            '?' + qs.stringify({...filterForm.value, uniqueParam}, { arrayFormat: 'brackets' });
+        '?' + qs.stringify({ ...filterForm.value, uniqueParam }, { arrayFormat: 'brackets' });
     window.location.href = url;
     closeExportArchivesModal()
 }
@@ -1145,7 +1142,7 @@ const handleCheckAll = (e) => {
 
 watch(
     () => filterForm.value,
-    () => { actionForm.value = { ids: [] };},
+    () => { actionForm.value = { ids: [] }; },
     { deep: true }
 );
 

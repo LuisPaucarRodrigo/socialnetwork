@@ -1,19 +1,24 @@
 <template>
 
     <Head title="Imagenes para Reporte" />
-    <AuthenticatedLayout :redirectRoute="{route: 'huawei.projects', params: {status: backStatus, prefix: 'Claro'}}">
+    <AuthenticatedLayout :redirectRoute="{ route: 'huawei.projects', params: { status: backStatus, prefix: 'Claro' } }">
         <template #header>
             Imagenes para Reporte
         </template>
         <div class="min-w-full overflow-hidden rounded-lg">
             <div class="mt-6 flex items-center justify-between gap-x-3">
                 <div class="mt-2 sm:flex sm:items-center space-x-4">
-                <button v-if="props.huawei_project.status" @click="openAddStage" type="button" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
-                    Agregar Etapa
-                </button>
-                <button v-if="props.selectedStage && props.huawei_project.status" @click.prevent="updateStage" type="button" class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
-                    {{ props.stages.find(item => item.id === props.selectedStage).status === 0 ? 'Habilitar': 'Deshabilitar' }}
-                </button>
+                    <button v-if="props.huawei_project.status" @click="openAddStage" type="button"
+                        class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
+                        Agregar Etapa
+                    </button>
+                    <button v-if="props.selectedStage && props.huawei_project.status" @click.prevent="updateStage"
+                        type="button"
+                        class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap">
+                        {{props.stages.find(item => item.id === props.selectedStage).status === 0 ? 'Habilitar' :
+                            'Deshabilitar'
+                        }}
+                    </button>
                 </div>
                 <div class="mt-2">
                     <select v-model="selectedStage" required id="code" @change="filterStage($event.target.value)"
@@ -30,7 +35,8 @@
                     <h1 class="text-md font-bold text-gray-700 line-clamp-1 m-5">
                         {{ imageCode.huawei_code.code }} / {{ imageCode.huawei_code.description }}
                     </h1>
-                    <PrimaryButton class="mr-5" v-if="!imageCode.status && props.huawei_project.status" @click="verifyApproveModal(imageCode.id)" type="button">
+                    <PrimaryButton class="mr-5" v-if="!imageCode.status && props.huawei_project.status"
+                        @click="verifyApproveModal(imageCode.id)" type="button">
                         Aprobar
                     </PrimaryButton>
                     <span v-if="imageCode.status" class="text-green-600 mr-5">Aprobado</span>
@@ -59,17 +65,14 @@
                                     <XCircleIcon class="h-4 w-4 ml-1" />
                                 </button>
                             </div>
-                            <button @click="openPreviewImagenModal(image.id)"
-                                class="flex items-center text-green-600 hover:underline">
-                                <EyeIcon class="h-4 w-4 ml-1" />
+                            <button @click="openPreviewImagenModal(image.id)">
+                                <ShowIcon />
                             </button>
-                            <button @click="downloadImagen(image.id)"
-                                class="flex items-center text-blue-600 hover:underline">
-                                <ArrowDownIcon class="h-4 w-4 ml-1" />
+                            <button @click="downloadImagen(image.id)">
+                                <DownloadIcon />
                             </button>
-                            <button v-if="props.huawei_project.status" @click="confirmDeleteImagen(image.id)"
-                                class="flex items-center text-red-600 hover:underline">
-                                <TrashIcon class="h-4 w-4" />
+                            <button v-if="props.huawei_project.status" @click="confirmDeleteImagen(image.id)">
+                                <DeleteIcon />
                             </button>
                         </div>
                     </div>
@@ -130,15 +133,16 @@
                                 <select v-model="formStage.title" required id="description"
                                     class="block mt-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option disabled value="">Seleccione título</option>
-                                    <option v-for="item in props.titles" :key="item.id" :value="item.id"> {{ item.name }}
+                                    <option v-for="item in props.titles" :key="item.id" :value="item.id"> {{ item.name
+                                        }}
                                     </option>
                                 </select>
                                 <span v-if="formStage.title" class="text-md text-gray-600">
                                     {{
-                                    props.titles
-                                        .filter(item => item.id === formStage.title)
-                                        .flatMap(item => item.huawei_codes.map(code => code.code))
-                                        .join(', ')
+                                        props.titles
+                                            .filter(item => item.id === formStage.title)
+                                            .flatMap(item => item.huawei_codes.map(code => code.code))
+                                            .join(', ')
                                     }}
                                 </span>
                             </div>
@@ -169,8 +173,8 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import { ref } from 'vue';
-import { Head, router, useForm, Link } from '@inertiajs/vue3';
-import { TrashIcon, ArrowDownIcon, EyeIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/vue/24/outline';
+import { Head, router, useForm,  } from '@inertiajs/vue3';
+import { CheckCircleIcon, XCircleIcon } from '@heroicons/vue/24/outline';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
@@ -179,6 +183,9 @@ import Modal from '@/Components/Modal.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import ConfirmateModal from '@/Components/ConfirmateModal.vue';
+import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
+import ShowIcon from '@/Components/Icons/ShowIcon.vue';
+import DownloadIcon from '@/Components/Icons/DownloadIcon.vue';
 
 const props = defineProps({
     stages: Array,
@@ -263,12 +270,12 @@ const deleteImage = () => {
 };
 
 function downloadImagen(imageId) {
-    const routeToShow = route('huawei.projects.stages.downloadimage', {image: imageId});
+    const routeToShow = route('huawei.projects.stages.downloadimage', { image: imageId });
     window.open(routeToShow, '_blank');
 };
 
 function openPreviewImagenModal(imageId) {
-    const routeToShow = route('huawei.projects.stages.viewimage', {image: imageId});
+    const routeToShow = route('huawei.projects.stages.viewimage', { image: imageId });
     window.open(routeToShow, '_blank');
 }
 
@@ -318,7 +325,7 @@ function filterStage($e) {
     if ($e === '') {
         router.visit(route('huawei.projects.stages', { huawei_project: props.huawei_project.id }))
     } else {
-        router.visit(route('huawei.projects.stages.filter', {huawei_project: props.huawei_project.id, stage: $e}));
+        router.visit(route('huawei.projects.stages.filter', { huawei_project: props.huawei_project.id, stage: $e }));
     }
 }
 
@@ -342,7 +349,7 @@ function verifyApproveModal(preproject_code_id) {
 }
 
 const updateStage = () => {
-    router.put(route('huawei.projects.stages.updatestage', {stage: props.selectedStage}), null, {
+    router.put(route('huawei.projects.stages.updatestage', { stage: props.selectedStage }), null, {
         onSuccess: () => {
             titleSuccessImage.value = "Etapa Actualizada"
             messageSuccessImage.value = "La etapa se actualizó correctamente"

@@ -28,7 +28,7 @@
                 <TableRow>
                     <button @click="openPreview(order.id)">
                         Previsualizar
-                        <EyeIcon class="h-5 w-5 text-green-600" />
+                        <ShowIcon />
                     </button>
                 </TableRow>
             </tr>
@@ -45,7 +45,7 @@ import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
 import Pagination from '@/Components/Pagination.vue';
-import { EyeIcon } from '@heroicons/vue/24/outline';
+import ShowIcon from '@/Components/Icons/ShowIcon.vue';
 
 const { orders } = defineProps({
     orders: Object

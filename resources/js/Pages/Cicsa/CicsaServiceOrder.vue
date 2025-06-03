@@ -45,8 +45,8 @@
                                     <button v-if="item.cicsa_service_order.length > 0" type="button"
                                         @click="toggleDetails(item?.cicsa_service_order)"
                                         class="text-blue-900 whitespace-no-wrap">
-                                        <ChevronDownIcon v-if="service_order_row !== item.id" class="w-6 h-6" />
-                                        <ChevronUpIcon v-else class="w-6 h-6" />
+                                        <DownArrowIcon v-if="service_order_row !== item.id"/>
+                                        <UpArrowIcon v-else/>
                                     </button>
                                 </div>
                             </TableRow>
@@ -74,7 +74,7 @@
                                 <TableRow>
                                     <button v-if="materialDetail?.document" type="button"
                                         @click="openPDF(materialDetail?.id, 'OS')">
-                                        <EyeIcon class="w-5 h-5 text-green-600" />
+                                        <ShowIcon />
                                     </button>
                                 </TableRow>
                                 <TableRow>{{ materialDetail?.estimate_sheet }}</TableRow>
@@ -84,13 +84,13 @@
                                 <TableRow>
                                     <button v-if="materialDetail?.document_invoice" type="button"
                                         @click="openPDF(materialDetail?.id, 'invoice')">
-                                        <EyeIcon class="w-5 h-5 text-green-600" />
+                                        <ShowIcon />
                                     </button>
                                 </TableRow>
                                 <TableRow>{{ materialDetail?.user_name }}</TableRow>
                                 <TableRow>
                                     <button class="text-blue-900" @click="openEditModal(materialDetail)">
-                                        <PencilSquareIcon class="w-5 h-5 text-amber-400" />
+                                        <EditIcon/>
                                     </button>
                                 </TableRow>
                             </tr>
@@ -232,20 +232,22 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Head, useForm, router } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
-import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate, setAxiosErrors, toFormData } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import InputFile from '@/Components/InputFile.vue';
-import { ChevronDownIcon, ChevronUpIcon, EyeIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import { Toaster } from 'vue-sonner';
 import { notify, notifyError } from '@/Components/Notification';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
+import ShowIcon from '@/Components/Icons/ShowIcon.vue';
+import EditIcon from '@/Components/Icons/EditIcon.vue';
+import DownArrowIcon from '@/Components/Icons/DownArrowIcon.vue';
+import UpArrowIcon from '@/Components/Icons/UpArrowIcon.vue';
 
 const { service_order, auth, searchCondition, type } = defineProps({
     service_order: Object,

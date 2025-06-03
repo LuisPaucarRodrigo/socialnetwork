@@ -1,24 +1,24 @@
 <template>
+
     <Head title="Costos Administrativos" />
     <AuthenticatedLayout :redirectRoute="'monthproject.index'">
         <template #header>
             Gastos Administativos del Proyecto {{ month_project_id.name.toUpperCase() }}
         </template>
         <br />
-        <Toaster richColors /> 
+        <Toaster richColors />
         <div class="inline-block min-w-full mb-4">
             <div class="flex gap-4 items-center justify-between">
                 <div class="flex space-x-3">
-                    <PrimaryButton 
-                     @click="openCreateAdditionalModal" type="button" class="whitespace-nowrap">
+                    <PrimaryButton @click="openCreateAdditionalModal" type="button" class="whitespace-nowrap">
                         + Agregar
-                    </PrimaryButton> 
+                    </PrimaryButton>
                     <PrimaryButton data-tooltip-target="update_data_tooltip" type="button" @click="() => {
                         filterMode = true;
                         search_advance(initialFilterFormState);
                     }
-                        ">
-                        <ServerIcon class="w-5 h-5 text-white" />
+                    ">
+                        <ServerIcon />
                     </PrimaryButton>
                     <div id="update_data_tooltip" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
@@ -39,7 +39,7 @@
                         Exportar Excel
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
-                     <button type="button"
+                    <button type="button"
                         class="rounded-md bg-blue-600 px-4 py-2 text-center text-sm text-white hover:bg-blue-500 h-full"
                         @click="openExportPhoto" data-tooltip-target="export-photo-tooltip">
                         <svg fill="#ffffff" width="20px" height="20px" viewBox="0 0 24 24"
@@ -58,7 +58,7 @@
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                         Facturas, Boletas y Vouchers de Pago
                         <div class="tooltip-arrow" data-popper-arrow></div>
-                    </div> 
+                    </div>
 
                     <div>
                         <dropdown align="left">
@@ -66,11 +66,7 @@
                                 <button data-tooltip-target="action_button_tooltip"
                                     @click="dropdownOpen = !dropdownOpen"
                                     class="relative block overflow-hidden rounded-md text-white hover:bg-indigo-400 text-center text-sm bg-indigo-500 p-2">
-                                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4 6H20M4 12H20M4 18H20" stroke="#ffffff" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
+                                    <Menuicon color="text-white" />
                                 </button>
                                 <div id="action_button_tooltip" role="tooltip"
                                     class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700 whitespace-nowrap">
@@ -94,9 +90,10 @@
                                 </div>
                             </template>
                         </dropdown>
-                    </div> 
+                    </div>
                 </div>
-                 <Search v-model:search="filterForm.search" fields="Ruc , Numero de Documento, Numero de Operacion, Descripcion, Monto Total"/> 
+                <Search v-model:search="filterForm.search"
+                    fields="Ruc , Numero de Documento, Numero de Operacion, Descripcion, Monto Total" />
             </div>
         </div>
 
@@ -180,14 +177,15 @@
                             <TableHeaderFilter labelClass="text-[11px]" label="Estado" :options="stateTypes"
                                 v-model="filterForm.selectedStateTypes" width="w-48" />
                         </th>
-                        <th 
+                        <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Acciones
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(item,i) in dataToRender" :key="item.id" class="text-gray-700 bg-white hover:bg-gray-200 hover:opacity-80">
+                    <tr v-for="(item, i) in dataToRender" :key="item.id"
+                        class="text-gray-700 bg-white hover:bg-gray-200 hover:opacity-80">
                         <td :class="[
                             'sticky left-0 z-10 border-b border-gray-200 ',
                             {
@@ -195,7 +193,7 @@
                                 'bg-green-500': item.real_state == 'Aceptado - Validado',
                                 'bg-amber-500': item.real_state == 'Aceptado',
                                 'bg-red-500': item.real_state == 'Rechazado',
-                                
+
                             },
                         ]"></td>
                         <td
@@ -205,10 +203,12 @@
                                     type="checkbox" />
                             </label>
                         </td>
-                        <td class="sm:sticky sm:left-14 sm:z-10 border-b w-32 border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
+                        <td
+                            class="sm:sticky sm:left-14 sm:z-10 border-b w-32 border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
                             {{ item.zone }}
                         </td>
-                        <td class="sm:sticky sm:left-48 sm:z-10 border-b border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
+                        <td
+                            class="sm:sticky sm:left-48 sm:z-10 border-b border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
                             <p class="w-48 break-words">
                                 {{ item.expense_type }}
                             </p>
@@ -222,7 +222,7 @@
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <p class="line-clamp-2 hover:line-clamp-none">
                                 {{ item?.provider?.company_name }}
-                                </p>
+                            </p>
                         </td>
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             {{ item.operation_number }}
@@ -236,17 +236,15 @@
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             {{ formattedDate(item.doc_date) }}
                         </td>
-                        <td
-                            class="border-b border-gray-200 px-2 py-2 text-center text-[13px] whitespace-nowrap">
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px] whitespace-nowrap">
                             S/. {{ item.amount.toFixed(2) }}
                         </td>
-                        <td
-                            class="border-b border-gray-200 px-2 py-2 text-center text-[13px] whitespace-nowrap">
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px] whitespace-nowrap">
                             S/. {{ item.real_amount.toFixed(2) }}
                         </td>
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <button v-if="item.photo" @click="handlerPreview(item.id)">
-                                <EyeIcon class="w-4 h-4 text-teal-600" />
+                                <ShowIcon />
                             </button>
                             <span v-else>-</span>
                         </td>
@@ -256,7 +254,7 @@
                             </p>
                         </td>
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
-                            <div :class = "[
+                            <div :class="[
                                 'text-center',
                                 {
                                     'text-indigo-500': item.real_state === 'Pendiente',
@@ -264,21 +262,18 @@
                                     'text-amber-500': item.real_state == 'Aceptado',
                                     'text-red-500': item.real_state == 'Rechazado',
                                 },
-                            ]"
-                            >
+                            ]">
                                 {{ item.real_state }}
                             </div>
                         </td>
-                        
-                        <td 
-                         class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
+
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <div class="flex items-center">
-                                <button @click="openEditAdditionalModal(item)"
-                                    class="text-amber-600 hover:underline mr-2">
-                                    <PencilSquareIcon class="h-4 w-4 ml-1" />
+                                <button @click="openEditAdditionalModal(item)">
+                                    <EditIcon />
                                 </button>
-                                <button @click="confirmDeleteAdditional(item.id)" class="text-red-600 hover:underline">
-                                    <TrashIcon class="h-4 w-4" />
+                                <button @click="confirmDeleteAdditional(item.id)">
+                                    <DeleteIcon />
                                 </button>
                             </div>
                         </td>
@@ -316,7 +311,7 @@
                     </tr>
                 </tbody>
             </table>
-        </div>  
+        </div>
         <div v-if="!filterMode"
             class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
             <pagination :links="additional_costs.links" />
@@ -683,8 +678,8 @@
                                             form.photo_status =
                                                 'delete';
                                         }
-                                            ">
-                                            <TrashIcon class="text-red-500 h-4 w-4" />
+                                        ">
+                                            <DeleteIcon />
                                         </button>
                                     </div>
                                     <div v-if="form.photo_status === 'delete'"
@@ -696,7 +691,7 @@
                                             form.photo_status =
                                                 'stable';
                                         }
-                                            " type="button" class="font-black">
+                                        " type="button" class="font-black">
                                             ANULAR
                                         </button>
                                     </div>
@@ -774,23 +769,25 @@ import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import Modal from "@/Components/Modal.vue";
 import { ref, watch } from "vue";
-import { Head, useForm, router } from "@inertiajs/vue3";
-import { TrashIcon, PencilSquareIcon, ServerIcon } from "@heroicons/vue/24/outline";
+import { Head, useForm } from "@inertiajs/vue3";
 import { formattedDate } from "@/utils/utils";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputFile from "@/Components/InputFile.vue";
 import Pagination from "@/Components/Pagination.vue";
-import { EyeIcon } from "@heroicons/vue/24/outline";
 import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import axios from "axios";
-import TextInput from "@/Components/TextInput.vue";
 import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 
 import Dropdown from "@/Components/Dropdown.vue";
 import Search from "@/Components/Search.vue";
+import Menuicon from "@/Components/Icons/Menuicon.vue";
+import EditIcon from "@/Components/Icons/EditIcon.vue";
+import DeleteIcon from "@/Components/Icons/DeleteIcon.vue";
+import ShowIcon from "@/Components/Icons/ShowIcon.vue";
+import ServerIcon from "@/Components/Icons/ServerIcon.vue";
 
 const props = defineProps({
     additional_costs: Object,
@@ -807,7 +804,7 @@ const props = defineProps({
 
 console.log(props.month_project_id.id)
 
-const { expenseTypes, docTypes, zones ,stateTypes } = props
+const { expenseTypes, docTypes, zones, stateTypes } = props
 expenseTypes.sort()
 docTypes.sort()
 zones.sort()

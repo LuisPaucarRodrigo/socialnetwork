@@ -53,13 +53,13 @@
                         <TableRow>
                             <button v-if="item?.total_materials?.length > 0"
                                 @click="openMaterialsModal(item.total_materials)">
-                                <EyeIcon class="w-5 h-5 text-green-600" />
+                                <ShowIcon />
                             </button>
                         </TableRow>
                         <TableRow>
                             <button v-if="item?.cicsa_installation?.cicsa_installation_materials?.length > 0"
                                 @click="openInstMaterialsModal(item.cicsa_installation.cicsa_installation_materials)">
-                                <EyeIcon class="w-5 h-5 text-green-600" />
+                                <ShowIcon />
                             </button>
                         </TableRow>
                         <TableRow>{{ formattedDate(item.cicsa_installation?.shipping_report_date) }}</TableRow>
@@ -81,7 +81,7 @@
                                     item?.cicsa_installation
                                         ?.cicsa_installation_materials
                                 )">
-                                    <PencilSquareIcon class="w-5 h-5 text-amber-400" />
+                                    <EditIcon />
                                 </button>
                                 <a :href="route('cicsa.export.materials.summary', { ca_id: item.id })" class="w-5">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -543,10 +543,6 @@ item, i
                 </div>
             </div>
         </Modal>
-        <!-- <SuccessOperationModal :confirming="confirmAssignation" :title="'Nueva Instalación PINT y PEXT creada'"
-            :message="'La Asignacion fue creada con éxito'" /> -->
-        <!-- <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Instalación PINT y PEXT Actualizada'"
-            :message="'La Asignacion fue actualizada'" /> -->
     </AuthenticatedLayout>
 </template>
 
@@ -560,10 +556,8 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import { Head, useForm } from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SelectCicsaComponent from "@/Components/SelectCicsaComponent.vue";
-// import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
 import { formattedDate } from "@/utils/utils.js";
 import TextInput from "@/Components/TextInput.vue";
-import { EyeIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { setAxiosErrors } from "@/utils/utils";
 import { ref, watch } from "vue";
 import { notify, notifyError } from "@/Components/Notification";
@@ -571,6 +565,8 @@ import { Toaster } from "vue-sonner";
 import TableStructure from "@/Layouts/TableStructure.vue";
 import TableTitle from "@/Components/TableTitle.vue";
 import TableRow from "@/Components/TableRow.vue";
+import ShowIcon from "@/Components/Icons/ShowIcon.vue";
+import EditIcon from "@/Components/Icons/EditIcon.vue";
 
 
 const { installation, auth, searchCondition, type } = defineProps({

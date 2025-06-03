@@ -87,11 +87,11 @@
                             <button
                                 v-if="spreadsheet.payroll_detail_expense[1].operation_number && spreadsheet.payroll_detail_expense[1].operation_date"
                                 @click="openPaymentTravelExpenseModal(spreadsheet.payroll_detail_expense[1])">
-                                <EyeIcon class="w-5 h-5 text-teal-500" />
+                                <ShowIcon />
                             </button>
                             <button v-else
                                 @click="openPaymentTravelExpenseModal(spreadsheet.payroll_detail_expense[1])">
-                                <PencilSquareIcon class="w-5 h-5 text-amber-500" />
+                                <EditIcon />
                             </button>
                         </template>
                     </div>
@@ -105,11 +105,10 @@
                             <button
                                 v-if="!payrolls.state && permissions('HumanResourceManager') && spreadsheet.payroll_detail_expense[0].operation_number && spreadsheet.payroll_detail_expense[0].operation_date"
                                 @click="openPaymentSalaryModal(spreadsheet.payroll_detail_expense[0])">
-                                <EyeIcon class="w-5 h-5 text-teal-500" />
-
+                                <ShowIcon />
                             </button>
                             <button v-else @click="openPaymentSalaryModal(spreadsheet.payroll_detail_expense[0])">
-                                <PencilSquareIcon class="w-5 h-5 text-amber-500" />
+                                <EditIcon />
                             </button>
                         </template>
 
@@ -156,9 +155,10 @@
 <script setup>
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import { EyeIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import { formattedDate } from '@/utils/utils';
+import ShowIcon from '@/Components/Icons/ShowIcon.vue';
+import EditIcon from '@/Components/Icons/EditIcon.vue';
 
 const { spreadsheets, totals, payrolls, userPermissions, openPaymentTravelExpenseModal, openPaymentSalaryModal, openDiscountModal } = defineProps({
     spreadsheets: Object,

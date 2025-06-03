@@ -41,7 +41,7 @@
                 <TableRow v-permission="'ee_sctr'">{{ employee.sctr }}</TableRow>
                 <TableRow v-permission="'ee_curriculum'">
                     <button v-if="employee.curriculum_vitae" @click="handlerPreview(employee.id)">
-                        <EyeIcon class="w-4 h-4 text-teal-600" />
+                        <ShowIcon />
                     </button>
                     <span v-else>-</span>
                 </TableRow>
@@ -49,12 +49,11 @@
                     <div class="flex space-x-3 justify-center">
                         <button v-if="hasPermission('HumanResourceManager')" type="button"
                             @click="openExternal(employee)">
-                            <PencilSquareIcon class="w-5 h-5 text-yellow-400" />
-
+                            <EditIcon/>
                         </button>
                         <button v-if="hasPermission('HumanResourceManager')" type="button"
                             @click="confirmUserDeletion(employee.id)">
-                            <TrashIcon class="w-5 h-5 text-red-500" />
+                            <DeleteIcon/>
                         </button>
                     </div>
                 </TableRow>
@@ -72,7 +71,9 @@ import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
 import Pagination from '@/Components/Pagination.vue';
-import { EyeIcon, TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
+import ShowIcon from '@/Components/Icons/ShowIcon.vue';
+import EditIcon from '@/Components/Icons/EditIcon.vue';
+import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
 
 const { employees, userPermissions, formSearch, cost_line, openExternal, confirmUserDeletion } = defineProps({
     employees: Object,

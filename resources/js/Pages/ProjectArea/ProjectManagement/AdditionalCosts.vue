@@ -24,7 +24,7 @@
                         filterForm = { ...initialFilterFormState }
                     }
                     ">
-                        <ServerIcon class="w-5 h-5 text-white" />
+                        <ServerIcon />
                     </PrimaryButton>
                     <div id="update_data_tooltip" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
@@ -92,11 +92,7 @@
                                 <button data-tooltip-target="action_button_tooltip"
                                     @click="dropdownOpen = !dropdownOpen"
                                     class="relative block overflow-hidden rounded-md text-white hover:bg-indigo-400 text-center text-sm bg-indigo-500 p-2">
-                                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4 6H20M4 12H20M4 18H20" stroke="#ffffff" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
+                                    <Menuicon color="text-white" />
                                 </button>
                                 <div id="action_button_tooltip" role="tooltip"
                                     class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700 whitespace-nowrap">
@@ -381,7 +377,7 @@
                         </td>
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <button v-if="item.photo" @click="handlerPreview(item.id)">
-                                <EyeIcon class="w-4 h-4 text-teal-600" />
+                                <ShowIcon />
                             </button>
                             <span v-else>-</span>
                         </td>
@@ -412,18 +408,15 @@
                                 {{ item.real_state }}
                             </div>
                         </td>
-                        <td v-if="project_id.status === null" 
+                        <td v-if="project_id.status === null"
                             class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <div class="flex items-center justify-center gap-3 w-full">
                                 <div class="flex gap-3 mr-3">
-                                    <button @click="openEditAdditionalModal(item)"
-                                        class="text-amber-600 hover:underline">
-                                        <PencilSquareIcon class="h-5 w-5 ml-1" />
+                                    <button @click="openEditAdditionalModal(item)">
+                                        <EditIcon />
                                     </button>
-                                    <button @click="
-                                        confirmDeleteAdditional(item.id)
-                                        " class="text-red-600 hover:underline">
-                                        <TrashIcon class="h-5 w-5" />
+                                    <button @click="confirmDeleteAdditional(item.id)">
+                                        <DeleteIcon />
                                     </button>
                                 </div>
                             </div>
@@ -456,8 +449,7 @@
                         </td>
                         <td colspan="3" class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
 
-                        <td 
-                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                             <div class="flex items-center"></div>
                         </td>
                     </tr>
@@ -848,7 +840,7 @@
                                                 'delete';
                                         }
                                         ">
-                                            <TrashIcon class="text-red-500 h-4 w-4" />
+                                            <DeleteIcon />
                                         </button>
                                     </div>
                                     <div v-if="form.photo_status === 'delete'"
@@ -1110,13 +1102,10 @@
             text="La siguiente acción ya no se podrá revertir, ¿Desea continuar?" :actionFunction="swapCosts"
             @closeModal="closeSwapCostsModal" />
 
-        <ConfirmateModal 
-            tittle="Descarga de archivos"
-            text="La descarga de archivos será en base a los filtros que están activos, si no hay filtros activos se descargarán de todos los registros. PARA AMBOS CASOS SOLO ES PARA REGISTROS ACEPTADOS" 
-            :showConfirm="showExportArchivesModal" 
-            :actionFunction="exportArchives"
-            @closeModal="closeExportArchivesModal"
-        />
+        <ConfirmateModal tittle="Descarga de archivos"
+            text="La descarga de archivos será en base a los filtros que están activos, si no hay filtros activos se descargarán de todos los registros. PARA AMBOS CASOS SOLO ES PARA REGISTROS ACEPTADOS"
+            :showConfirm="showExportArchivesModal" :actionFunction="exportArchives"
+            @closeModal="closeExportArchivesModal" />
 
     </AuthenticatedLayout>
 </template>
@@ -1133,9 +1122,6 @@ import Modal from "@/Components/Modal.vue";
 import { reactive, ref, watch } from "vue";
 import { Head, useForm, router } from "@inertiajs/vue3";
 import {
-    TrashIcon,
-    PencilSquareIcon,
-    ServerIcon,
     ArrowsUpDownIcon,
     CheckCircleIcon,
     XCircleIcon
@@ -1144,7 +1130,6 @@ import { formattedDate } from "@/utils/utils";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputFile from "@/Components/InputFile.vue";
 import Pagination from "@/Components/Pagination.vue";
-import { EyeIcon } from "@heroicons/vue/24/outline";
 import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
 import axios from "axios";
 import Dropdown from "@/Components/Dropdown.vue";
@@ -1154,6 +1139,11 @@ import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import Search from "@/Components/Search.vue";
 import qs from 'qs';
+import Menuicon from "@/Components/Icons/Menuicon.vue";
+import EditIcon from "@/Components/Icons/EditIcon.vue";
+import DeleteIcon from "@/Components/Icons/DeleteIcon.vue";
+import ShowIcon from "@/Components/Icons/ShowIcon.vue";
+import ServerIcon from "@/Components/Icons/ServerIcon.vue";
 
 const props = defineProps({
     additional_costs: Object,
@@ -1452,13 +1442,13 @@ function openExportExcel() {
 }
 
 const showExportArchivesModal = ref(false)
-const openExportArchivesModal = () => {showExportArchivesModal.value = true}
-const closeExportArchivesModal = () => {showExportArchivesModal.value = false}
+const openExportArchivesModal = () => { showExportArchivesModal.value = true }
+const closeExportArchivesModal = () => { showExportArchivesModal.value = false }
 
 function exportArchives() {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
     const url = route("zip.additional.descargar", { project_id: props.project_id.id }) +
-            '?' + qs.stringify({...filterForm.value, uniqueParam}, { arrayFormat: 'brackets' });
+        '?' + qs.stringify({ ...filterForm.value, uniqueParam }, { arrayFormat: 'brackets' });
     window.location.href = url;
     closeExportArchivesModal()
 }

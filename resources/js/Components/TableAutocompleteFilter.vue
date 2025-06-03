@@ -1,19 +1,15 @@
 <template>
     <div :class="['relative flex justify-between items-center', widthClass]" ref="popup">
-        <p :class="{labelClass, 'text-purple-700 border border-purple-700 px-1' : isActive}">{{ label }}</p>
+        <p :class="{ labelClass, 'text-purple-700 border border-purple-700 px-1': isActive }">{{ label }}</p>
         <button @click="togglePopup">
-            <BarsArrowDownIcon class="h-5 w-5" />
+            <SortDateIcon />
         </button>
-        <div v-if="showPopup" :class="['absolute z-40 top-8 right-0 mt-0 bg-white border border-gray-300 shadow-lg rounded-sm', widthClass]">
+        <div v-if="showPopup"
+            :class="['absolute z-40 top-8 right-0 mt-0 bg-white border border-gray-300 shadow-lg rounded-sm', widthClass]">
             <div class="p-4">
                 <!-- Campo de búsqueda -->
-                <input
-                    type="text"
-                    v-model="searchQuery"
-                    @input="filterOptions"
-                    class="text-sm border border-gray-300 rounded px-1 py-1 w-full mb-4"
-                    placeholder="Buscar opción"
-                />
+                <input type="text" v-model="searchQuery" @input="filterOptions"
+                    class="text-sm border border-gray-300 rounded px-1 py-1 w-full mb-4" placeholder="Buscar opción" />
 
                 <!-- Opciones -->
                 <label class="border-b-2 border-gray-100 px-2 py-2 flex space-x-1 items-center">
@@ -22,7 +18,8 @@
 
                 <!-- Lista de opciones con filtro -->
                 <div class="max-h-48 overflow-y-auto">
-                    <label v-for="option in filteredOptions" :key="option" class="border-b-2 border-gray-100 px-2 py-2 flex space-x-1 items-center">
+                    <label v-for="option in filteredOptions" :key="option"
+                        class="border-b-2 border-gray-100 px-2 py-2 flex space-x-1 items-center">
                         <input type="checkbox" :value="option" v-model="selectedOptions" class="mr-2" />
                         <p class="text-left">{{ option }}</p>
                     </label>
@@ -38,7 +35,7 @@
 
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
-import { BarsArrowDownIcon } from '@heroicons/vue/24/outline';
+import SortDateIcon from './Icons/SortDateIcon.vue';
 
 const props = defineProps({
     label: {
@@ -67,7 +64,7 @@ const props = defineProps({
     }
 });
 
-if (props.empty){
+if (props.empty) {
     props.options.push('(vacio)')
 }
 
@@ -80,7 +77,7 @@ const filteredOptions = ref([...props.options]);
 const popup = ref(null);
 const isActive = ref(false);
 
-watch(selectAll, (newVal)=>{
+watch(selectAll, (newVal) => {
     if (newVal === true) isActive.value = false
     else isActive.value = true
 })
