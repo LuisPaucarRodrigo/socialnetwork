@@ -307,8 +307,7 @@ class DocumentSpreedSheetController extends Controller
                     unlink($path);
                 }
                 $document->move(public_path('documents/documents/'), $data['title']);
-                $docItem->updated_at = now();
-                $docItem->save();
+                $docItem->update($data);
             } else {
                 $document->move(public_path('documents/documents/'), $data['title']);
                 $docItem = Document::create($data);

@@ -522,6 +522,7 @@ const openEditDocumentModal = (document) => {
     form.employee_id = editingDocument.value.employee_id;
     form.e_employee_id = document.e_employee_id;
     form.has_exp_date = editingDocument.value.exp_date ? 1 : 0;
+    form.exp_date = editingDocument.value.exp_date;
     form.employeeType = editingDocument.value.employee_id ? 1 : 0;
     update_document.value = true;
 };
