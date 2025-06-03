@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <Head title="Gestion de Apartados" />
     <AuthenticatedLayout :redirectRoute="'member.cicsa'">
       <template #header>
@@ -29,10 +30,11 @@
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="text-sm font-medium text-gray-900">{{ section.name }}</div>
                 </td>
-                <td v-if="auth.user.role_id === 1 && hasPermission('ProjectManager')" class="px-6 py-4 whitespace-nowrap text-left">
+                <td v-if="auth.user.role_id === 1 && hasPermission('ProjectManager')"
+                  class="px-6 py-4 whitespace-nowrap text-left">
                   <div class="flex items-center space-x-2">
-                    <button @click="confirmDeleteSection(section.id)" class="text-red-600 hover:underline">
-                      <TrashIcon class="h-4 w-4" />
+                    <button @click="confirmDeleteSection(section.id)">
+                      <DeleteIcon />
                     </button>
                   </div>
                 </td>
@@ -70,12 +72,12 @@
         </div>
       </Modal>
       <ConfirmCreateModal :confirmingcreation="showModal" itemType="Sección de Cicsa" />
-      <ConfirmDeleteModal :confirmingDeletion="create_section" itemType="Sección de Cicsa" :deleteFunction="deleteSection"
-        @closeModal="closeModalSection" />
+      <ConfirmDeleteModal :confirmingDeletion="create_section" itemType="Sección de Cicsa"
+        :deleteFunction="deleteSection" @closeModal="closeModalSection" />
     </AuthenticatedLayout>
   </div>
 </template>
-    
+
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
@@ -85,9 +87,9 @@ import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
-import { TrashIcon  } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
+import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
 
 const showModal = ref(false);
 
@@ -154,4 +156,3 @@ const deleteSection = async () => {
 };
 
 </script>
-    

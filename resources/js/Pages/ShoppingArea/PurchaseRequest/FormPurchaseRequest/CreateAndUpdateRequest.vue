@@ -103,7 +103,7 @@
                                         <TableRow
                                             v-if="auth.user.role_id === 1 || !purchase || purchase.purchase_quotes === null">
                                             <button @click=" deleteProduct(index, item.pivot?.id)" type="button">
-                                                <TrashIcon class=" text-red-500 h-5 w-5 " />
+                                                <DeleteIcon />
                                             </button>
                                         </TableRow>
                                     </tr>
@@ -135,13 +135,13 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputError from '@/Components/InputError.vue'
 import { Head, useForm, router } from '@inertiajs/vue3';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
-import { TrashIcon } from '@heroicons/vue/24/outline';
 import { ref, watch } from 'vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
 import AddProducts from './components/AddProducts.vue';
 import { notify } from '@/Components/Notification';
+import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
 
 const showModal = ref(false);
 // const type_product = ref('')

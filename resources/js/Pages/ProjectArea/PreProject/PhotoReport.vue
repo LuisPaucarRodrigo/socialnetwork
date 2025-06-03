@@ -35,11 +35,11 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4 mt-5">
       <div v-if="photoreport?.excel_report" class="bg-white p-4 rounded-md shadow md:col-span-2">
         <h2 class="text-sm font-semibold text-green-600 line-clamp-1 mb-2">{{ getDocumentName(photoreport?.excel_report)
-          }}</h2>
+        }}</h2>
         <div class="flex space-x-3 item-center">
           <a :href="route('preprojects.photoreport.download', { report_name: photoreport.excel_report })"
-            target="_blank" class="flex items-center text-blue-600 hover:underline">
-            <ArrowDownIcon class="h-4 w-4 ml-1" />
+            target="_blank">
+            <DownloadIcon />
           </a>
         </div>
       </div>
@@ -47,13 +47,11 @@
         <h2 class="text-sm font-semibold text-red-600 line-clamp-1 mb-2">{{ getDocumentName(photoreport?.pdf_report) }}
         </h2>
         <div class="flex space-x-3 item-center">
-          <button @click="openPreviewDocumentModal(photoreport.id)"
-            class="flex items-center text-green-600 hover:underline">
-            <EyeIcon class="h-4 w-4 ml-1" />
+          <button @click="openPreviewDocumentModal(photoreport.id)">
+            <ShowIcon />
           </button>
-          <button @click="downloadPRPdf(photoreport.id)" target="_blank"
-            class="flex items-center text-blue-600 hover:underline">
-            <ArrowDownIcon class="h-4 w-4 ml-1" />
+          <button @click="downloadPRPdf(photoreport.id)" target="_blank">
+            <DownloadIcon />
           </button>
         </div>
       </div>
@@ -65,18 +63,18 @@
           Subir Documentos
         </h2>
         <form @submit.prevent="submit(
-    e,
-    photoreport?.id
-      ? route('preprojects.photoreport.update', {
-        photoreport: photoreport.id
-      })
-      : route('preprojects.photoreport.store'))">
+          e,
+          photoreport?.id
+            ? route('preprojects.photoreport.update', {
+              photoreport: photoreport.id
+            })
+            : route('preprojects.photoreport.store'))">
           <div class="space-y-12">
             <div class="border-b border-gray-900/10 pb-6">
               <div>
                 <InputLabel for="excel_report" class="font-medium leading-6 text-gray-900">Formato EXCEL</InputLabel>
                 <InputLabel v-if="photoreport" class="font-medium leading-6 text-indigo-700 mt-2">Documento actual: {{
-    getDocumentName(photoreport?.excel_report) }}</InputLabel>
+                  getDocumentName(photoreport?.excel_report) }}</InputLabel>
                 <div class="mt-2">
                   <InputFile type="file" v-model="form.excel_report" id="excel_report" accept=".xls, .xlsx"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
@@ -86,7 +84,7 @@
               <div class="mt-4">
                 <InputLabel for="pdf_report" class="font-medium leading-6 text-gray-900">Formato PDF</InputLabel>
                 <InputLabel v-if="photoreport" class="font-medium leading-6 text-indigo-700 mt-2">Documento actual: {{
-    getDocumentName(photoreport?.pdf_report) }}</InputLabel>
+                  getDocumentName(photoreport?.pdf_report) }}</InputLabel>
                 <div class="mt-2">
                   <InputFile type="file" v-model="form.pdf_report" id="pdf_report" accept=".pdf"
                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
@@ -121,8 +119,9 @@ import InputFile from '@/Components/InputFile.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
-import { ArrowDownIcon, EyeIcon } from '@heroicons/vue/24/outline';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
+import ShowIcon from '@/Components/Icons/ShowIcon.vue';
+import DownloadIcon from '@/Components/Icons/DownloadIcon.vue';
 
 const { documents, preproject, photoreport, auth, userPermissions } = defineProps({
   photoreport: Object,
@@ -142,12 +141,12 @@ const initial_state = {
 }
 
 let backUrl = (preproject?.status === undefined || preproject?.status === null)
-    ? { route: 'preprojects.index', params: { type: preproject.cost_line_id } }
-    : preproject.status == true
-        ? { route: 'preprojects.index', params: { type: preproject.cost_line_id, preprojects_status: 1 } }
-        : { route: 'preprojects.index', params: { type: preproject.cost_line_id,preprojects_status: 0 } }
+  ? { route: 'preprojects.index', params: { type: preproject.cost_line_id } }
+  : preproject.status == true
+    ? { route: 'preprojects.index', params: { type: preproject.cost_line_id, preprojects_status: 1 } }
+    : { route: 'preprojects.index', params: { type: preproject.cost_line_id, preprojects_status: 0 } }
 
-    
+
 
 const form = useForm({
   ...initial_state

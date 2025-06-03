@@ -24,9 +24,8 @@
                     <p class="text-sm text-gray-600">
                         <span class="font-medium">Ver Documento de Cotización:</span>
                     </p>
-                    <button @click="openPreviewDocumentQuote(cotization.purchase_quote_id)"
-                        class="text-green-600 hover:underline ml-2">
-                        <EyeIcon class="h-4 w-4" />
+                    <button @click="openPreviewDocumentQuote(cotization.purchase_quote_id)">
+                        <ShowIcon />
                     </button>
                 </div>
 
@@ -38,10 +37,10 @@
     </Modal>
 </template>
 <script setup>
+import ShowIcon from '@/Components/Icons/ShowIcon.vue';
 import Modal from '@/Components/Modal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { formattedDate } from '@/utils/utils';
-import { EyeIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
 
 const showCotization = ref(false);

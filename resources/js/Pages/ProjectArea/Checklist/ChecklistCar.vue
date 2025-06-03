@@ -25,13 +25,13 @@
                     <TableRow>{{ item.additionalEmployees }}</TableRow>
                     <TableRow>{{ item.reason }}</TableRow>
                     <TableRow>
-                        <button type="button">
-                            <EyeIcon @click="openChecklistModal(item)" class="text-indigo-600 w-5" />
+                        <button type="button" @click="openChecklistModal(item)">
+                            <ShowIcon />
                         </button>
                     </TableRow>
                     <TableRow>
                         <button type="button" @click="openPhotosModal(item.id)">
-                            <EyeIcon class="text-teal-500 w-5" />
+                            <ShowIcon />
                         </button>
                     </TableRow>
                     <TableRow width="w-[500px]">
@@ -40,9 +40,8 @@
                         </p>
                     </TableRow>
                     <TableRow>
-                        <button @click.prevent="confirmDeleteAdditional(item.id)"
-                            class="text-red-600 hover:underline mr-2">
-                            <TrashIcon class="h-5 w-5" />
+                        <button type="button" @click.prevent="confirmDeleteAdditional(item.id)">
+                            <DeleteIcon />
                         </button>
                     </TableRow>
                 </tr>
@@ -211,15 +210,13 @@ import { ref } from "vue";
 import Modal from "@/Components/Modal.vue";
 import { Head, router } from "@inertiajs/vue3";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import DangerButton from "@/Components/DangerButton.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { formattedDate } from "@/utils/utils";
-import { EyeIcon } from "@heroicons/vue/24/outline";
-import { TrashIcon } from "@heroicons/vue/24/outline";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 import TableStructure from "@/Layouts/TableStructure.vue";
 import TableTitle from "@/Components/TableTitle.vue";
 import TableRow from "@/Components/TableRow.vue";
+import DeleteIcon from "@/Components/Icons/DeleteIcon.vue";
+import ShowIcon from "@/Components/Icons/ShowIcon.vue";
 
 const { checklists } = defineProps({
     checklists: Object,

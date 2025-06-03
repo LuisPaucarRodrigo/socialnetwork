@@ -1,8 +1,9 @@
 <template>
     <div :class="['relative flex justify-center items-center gap-x-3', widthClass]" ref="popup">
-        <p :class="{labelClass, 'text-purple-700 border border-purple-700 px-1': isActive}" v-html="reverse ? reverseWordsWithBreaks(label) : label" ></p>
+        <p :class="{ labelClass, 'text-purple-700 border border-purple-700 px-1': isActive }"
+            v-html="reverse ? reverseWordsWithBreaks(label) : label"></p>
         <button @click="togglePopup">
-            <BarsArrowDownIcon class="h-5 w-5" />
+            <SortDateIcon />
         </button>
         <div v-if="showPopup"
             :class="['absolute z-40 top-8 right-0 mt-0 bg-white border border-gray-300 shadow-lg rounded-sm', widthClass]">
@@ -11,8 +12,9 @@
                     <input type="checkbox" v-model="selectAll" @change="toggleAll" class="mr-2" /> Todos
                 </label>
                 <div class='max-h-48 overflow-y-auto'>
-                    <label v-for="option in options" :key="option" class="border-b-2 border-gray-100 px-2 py-2 flex space-x-1 items-center">
-                        <input type="checkbox" :value="option" v-model="selectedOptions" class="mr-2" /> 
+                    <label v-for="option in options" :key="option"
+                        class="border-b-2 border-gray-100 px-2 py-2 flex space-x-1 items-center">
+                        <input type="checkbox" :value="option" v-model="selectedOptions" class="mr-2" />
                         <p class="text-left">
                             {{ option }}
                         </p>
@@ -25,7 +27,7 @@
 
 <script setup>
 import { ref, watch, computed, onMounted, onUnmounted } from 'vue';
-import { BarsArrowDownIcon } from '@heroicons/vue/24/outline';
+import SortDateIcon from './Icons/SortDateIcon.vue';
 
 const props = defineProps({
     label: {
@@ -71,9 +73,9 @@ const togglePopup = () => {
 };
 
 const closePopup = (event) => {
-  if (popup.value && !popup.value.contains(event.target)) {
-    showPopup.value = false;
-  }
+    if (popup.value && !popup.value.contains(event.target)) {
+        showPopup.value = false;
+    }
 };
 
 const toggleAll = () => {
@@ -95,12 +97,12 @@ watch(selectedOptions, (newSelectedOptions) => {
 });
 
 //checkactive
-watch(selectAll, (newVal)=>{
+watch(selectAll, (newVal) => {
     if (newVal === true) isActive.value = false
     else isActive.value = true
 })
 
-watch(()=>props.modelValue, (newVal) => {
+watch(() => props.modelValue, (newVal) => {
     //si viene del hijo el newVal es lo mismo que el newSelectedOptions
     selectedOptions.value = props.modelValue
 });

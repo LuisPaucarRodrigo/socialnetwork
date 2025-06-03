@@ -47,7 +47,7 @@ Route::delete('/inventory/special_dispatch_output_delete/{project_entry_output_i
 Route::middleware('permission:' . implode('|', RolesConstants::INVENTORY_MODULE))->group(function () {
     //Purchase Products
     Route::post('/inventory/purchase_products/products/post', [PurchaseProductsController::class, 'store'])->name('inventory.purchaseproducts.store');
-    Route::put('/inventory/purchase_products/products/{purchase_product}/update', [PurchaseProductsController::class, 'update'])->name('inventory.purchaseproducts.update');
+    Route::post('/inventory/purchase_products/products/{purchase_product}/update', [PurchaseProductsController::class, 'update'])->name('inventory.purchaseproducts.update');
 
     //Special Warehouses
     Route::get('/inventory/{warehouse_id}/special_products/create/{special_inventory_id?}', [SpecialWarehouseController::class, 'special_products_create'])->name('inventory.special_products.create');
@@ -83,7 +83,7 @@ Route::middleware('permission:' . implode('|', RolesConstants::INVENTORY_MODULE)
 Route::middleware('permission:' . implode('|', RolesConstants::INVENTORY_MODULE))->group(function () {
     //Purchase Products
     Route::get('/inventory/purchase_products/products', [PurchaseProductsController::class, 'index'])->name('inventory.purchaseproducts');
-    Route::get('/inventory/purchase_products/products/search/{request}', [PurchaseProductsController::class, 'search'])->name('inventory.purchaseproducts.search');
+    Route::post('/inventory/purchase_products/products/search/{request}', [PurchaseProductsController::class, 'search'])->name('inventory.purchaseproducts.search');
 
     //warehouses
     Route::get('/inventory/warehouses', [WarehousesController::class, 'showWarehouses'])->name('warehouses.warehouses');

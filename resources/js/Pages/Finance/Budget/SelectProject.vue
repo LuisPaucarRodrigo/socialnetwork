@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Selección del Proyecto" />
     <AuthenticatedLayout :redirectRoute="'selectproject.index'">
         <template #header> Selección del Proyecto </template>
@@ -6,27 +7,18 @@
         <div class="flex flex-col gap-6">
             <div class="grid sm:grid-cols-5">
                 <div class="col-span-full flex flex-col space-y-5">
-                    <select
-                        v-model="selectedProjectId"
-                        class="block w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring focus:border-blue-300"
-                    >
+                    <select v-model="selectedProjectId"
+                        class="block w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring focus:border-blue-300">
                         <option value="" selected disabled>
                             Seleccione un proyecto
                         </option>
-                        <option
-                            v-for="project in projects"
-                            :key="project.id"
-                            :value="project.id"
-                        >
+                        <option v-for="project in projects" :key="project.id" :value="project.id">
                             {{ project.name }} - {{ project.code }}
                         </option>
                     </select>
                     <div class="flex justify-end">
-                        <button
-                            @click="goToBudget"
-                            type="button"
-                            class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500"
-                        >
+                        <button @click="goToBudget" type="button"
+                            class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                             Seleccionar
                         </button>
                     </div>
@@ -35,57 +27,43 @@
 
             <div class="flex flex-col gap-6">
                 <div class="flex gap-4 items-center">
-                    <h3 class="text-3xl font-medium text-gray-700">
+                    <h3>
                         Líneas de Negocio
                     </h3>
                     <button type="button" @click="openCostLineModal">
-                        <PlusCircleIcon
-                            class="w-10 h-10 text-indigo-700 hover:text-indigo-500"
-                        />
+                        <PlusCircleIcon />
                     </button>
                 </div>
-                <div
-                    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3"
-                >
-                    <div v-for="item, i in dataToRender"
-                        :key="i"
-                        class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center"
-                    >
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div v-for="item, i in dataToRender" :key="i"
+                        class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
                         <div class="grid grid-cols-2">
                             <h2 class="font-semibold tex-2xl mb-3 mr-3">
                                 {{ item.name }}
                             </h2>
-                            <div
-                                class="inline-flex justify-end items-start gap-x-2"
-                            >
-                                <button type="button" @click="openCostLineModal(item)" class="flex items-start">
-                                    <PencilIcon class="h-5 w-5 text-teal-600" />
+                            <div class="flex justify-end items-start gap-x-2">
+                                <button type="button" @click="openCostLineModal(item)">
+                                    <EditIcon />
                                 </button>
-                                <button type="button" @click="openCostLineDestroyModal(item)" class="flex items-start">
-                                    <TrashIcon class="h-5 w-5 text-red-600" />
+                                <button type="button" @click="openCostLineDestroyModal(item)">
+                                    <DeleteIcon />
                                 </button>
                             </div>
                         </div>
-                        
+
                         <div :class="`text-gray-500 text-sm`">
                             <div class="grid grid-cols-1 gap-y-1">
-                                <Link
-                                    :href="route('finance.cost_centers.index', {cl_id:item.id})"
-                                    class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600"
-                                >
-                                    Centros de Costos
+                                <Link :href="route('finance.cost_centers.index', { cl_id: item.id })"
+                                    class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                                Centros de Costos
                                 </Link>
-                                <Link
-                                    :href="route('finance.cost_line.employees', {cl_id:item.id})"
-                                    class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600"
-                                >
-                                    Colaboradores
+                                <Link :href="route('finance.cost_line.employees', { cl_id: item.id })"
+                                    class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                                Colaboradores
                                 </Link>
-                                <Link
-                                    :href="'#'"
-                                    class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600"
-                                >
-                                    Activos
+                                <Link :href="'#'"
+                                    class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                                Activos
                                 </Link>
                             </div>
                         </div>
@@ -129,13 +107,8 @@
             </div>
         </Modal>
 
-        <ConfirmDeleteModal 
-            :confirmingDeletion="confirmCostLineDestroy" 
-            itemType="Línea de Gasto"
-            :deleteFunction="deleteCostLine" 
-            @closeModal="closeCostLineDestroyModal" 
-            :processing="isFetching"
-        />
+        <ConfirmDeleteModal :confirmingDeletion="confirmCostLineDestroy" itemType="Línea de Gasto"
+            :deleteFunction="deleteCostLine" @closeModal="closeCostLineDestroyModal" :processing="isFetching" />
 
 
 
@@ -144,7 +117,6 @@
 </template>
 
 <script setup>
-import { PlusCircleIcon, PencilIcon,TrashIcon} from "@heroicons/vue/24/outline";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { notify, notifyError } from "@/Components/Notification";
@@ -156,6 +128,9 @@ import { setAxiosErrors } from "@/utils/utils";
 import Modal from "@/Components/Modal.vue";
 import { Toaster } from "vue-sonner";
 import { ref } from "vue";
+import PlusCircleIcon from "@/Components/Icons/PlusCircleIcon.vue";
+import DeleteIcon from "@/Components/Icons/DeleteIcon.vue";
+import EditIcon from "@/Components/Icons/EditIcon.vue";
 
 const { projects, costLines } = defineProps({
     projects: Object,
@@ -181,34 +156,34 @@ const dataToRender = ref(costLines)
 //Create and Update
 const isFetching = ref(false)
 const showCostLineModal = ref(false)
-const openCostLineModal = (item=null) => {
+const openCostLineModal = (item = null) => {
     showCostLineModal.value = true
-    if (item){form.defaults({...item}); form.reset()}
+    if (item) { form.defaults({ ...item }); form.reset() }
 }
 const closeCostLineModal = () => {
     showCostLineModal.value = false;
     form.clearErrors()
-    form.defaults({...initState})
+    form.defaults({ ...initState })
     form.reset()
 }
-const initState = {name:'', id:''}
-const form = useForm({...initState})
+const initState = { name: '', id: '' }
+const form = useForm({ ...initState })
 const submitCostLineModal = () => {
     isFetching.value = true
-    axios.post(route("finance.cost_line.store", {cl_id: form.id,}),form.data())
-        .then((res)=>{
+    axios.post(route("finance.cost_line.store", { cl_id: form.id, }), form.data())
+        .then((res) => {
             if (form.id) {
                 const index = dataToRender.value.findIndex((item) => item.id == form.id);
                 dataToRender.value[index] = res.data
-            } else {dataToRender.value.push(res.data);}
+            } else { dataToRender.value.push(res.data); }
             closeCostLineModal();
             notify("Linea de Negocio Guardada");
         })
-        .catch(e=>{
-            if (e.response?.data?.errors) {setAxiosErrors(e.response.data.errors, form);} 
-            else {notifyError("Server Error");}
+        .catch(e => {
+            if (e.response?.data?.errors) { setAxiosErrors(e.response.data.errors, form); }
+            else { notifyError("Server Error"); }
         })
-        .finally(()=>{
+        .finally(() => {
             isFetching.value = false;
         });
 }
@@ -226,18 +201,18 @@ const closeCostLineDestroyModal = () => {
 }
 const deleteCostLine = () => {
     isFetching.value = true
-    axios.delete(route("finance.cost_line.destroy", {cl_id: costLineToDelete.value.id}))
-        .then((res)=>{
+    axios.delete(route("finance.cost_line.destroy", { cl_id: costLineToDelete.value.id }))
+        .then((res) => {
             const index = dataToRender.value.findIndex((item) => item.id == costLineToDelete.value.id);
             dataToRender.value.splice(index, 1);
             closeCostLineDestroyModal();
             notify("Linea de Negocio Eliminada");
         })
-        .catch(e=>{
-            if (e.response?.data?.errors) {setAxiosErrors(e.response.data.errors, form);} 
-            else {notifyError("Server Error");}
+        .catch(e => {
+            if (e.response?.data?.errors) { setAxiosErrors(e.response.data.errors, form); }
+            else { notifyError("Server Error"); }
         })
-        .finally(()=>{
+        .finally(() => {
             isFetching.value = false;
         });
 }

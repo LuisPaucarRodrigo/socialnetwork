@@ -73,7 +73,7 @@
                             <div class="flex justify-center space-x-3">
                                 <button type="button" @click="deleteEmployee(item)"
                                     class="text-red-600 whitespace-no-wrap">
-                                    <TrashIcon class="h-5 w-5 ml-1" />
+                                    <DeleteIcon/>
                                 </button>
                             </div>
                         </td>
@@ -125,8 +125,6 @@
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
-import { TrashIcon, PencilIcon } from '@heroicons/vue/24/outline';
 import { notify, notifyError } from '@/Components/Notification';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -136,6 +134,7 @@ import { setAxiosErrors } from '@/utils/utils';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import { Toaster } from 'vue-sonner';
+import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
 
 const { currentEmployees, employees, cost_line } = defineProps({
     currentEmployees: Array,

@@ -80,8 +80,8 @@ class ProjectManagementController extends Controller
             return Inertia::render('ProjectArea/ProjectManagement/ProjectHistorial', [
                 'projects' => Project::join('preprojects', 'projects.preproject_id', '=', 'preprojects.id')
                     ->select('projects.*', 'preprojects.date as preproject_date')
-                    ->orderBy('preprojects.date', 'desc')->where('projects.status', true)->where('projects.cost_line_id',1)->paginate(),
-                
+                    ->orderBy('preprojects.date', 'desc')->where('projects.status', true)->where('projects.cost_line_id', 1)->paginate(),
+
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
@@ -134,12 +134,13 @@ class ProjectManagementController extends Controller
 
     public function project_store(CreateProjectRequest $request)
     {
-
         $data = $request->validated();
         if ($request->id) {
+            // dd($data);
             $project = Project::find($request->id);
             $preproject = Preproject::find($project?->preproject_id);
-            $preproject->update(['cpe'=>$data['cpe']]);
+            // dd($preproject);
+            $preproject->update(['cpe' => $data['cpe']]);
             $project->update($data);
         } else {
             $project = Project::create($data);
@@ -669,6 +670,4 @@ class ProjectManagementController extends Controller
             return abort(403, 'Carpeta ya existente');
         }
     }
-
-    
 }

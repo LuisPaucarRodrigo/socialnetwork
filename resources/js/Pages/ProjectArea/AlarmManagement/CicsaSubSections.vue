@@ -88,14 +88,14 @@
           </thead>
           <tbody>
             <tr v-for="subSection in filteredSubSections" :key="subSection.id" class="text-gray-700" :class="[
-    'text-gray-700',
-    {
-      'border-l-8': true,
-      'border-green-500': Date.parse(subSection.end_date) > Date.now() + (7 * 24 * 60 * 60 * 1000), // Si la fecha de finalización es 'Disponible', pinta el borde de verde
-      'border-red-500': Date.parse(subSection.end_date) <= Date.now() + (3 * 24 * 60 * 60 * 1000), // Si la fecha vence en 3 días o menos, pinta el borde de rojo
-      'border-yellow-500': Date.parse(subSection.end_date) > Date.now() + (3 * 24 * 60 * 60 * 1000) && Date.parse(subSection.end_date) <= Date.now() + (7 * 24 * 60 * 60 * 1000) // Si la fecha está entre 3 y 7 días desde hoy, pinta el borde de amarillo
-    }
-  ]">
+              'text-gray-700',
+              {
+                'border-l-8': true,
+                'border-green-500': Date.parse(subSection.end_date) > Date.now() + (7 * 24 * 60 * 60 * 1000), // Si la fecha de finalización es 'Disponible', pinta el borde de verde
+                'border-red-500': Date.parse(subSection.end_date) <= Date.now() + (3 * 24 * 60 * 60 * 1000), // Si la fecha vence en 3 días o menos, pinta el borde de rojo
+                'border-yellow-500': Date.parse(subSection.end_date) > Date.now() + (3 * 24 * 60 * 60 * 1000) && Date.parse(subSection.end_date) <= Date.now() + (7 * 24 * 60 * 60 * 1000) // Si la fecha está entre 3 y 7 días desde hoy, pinta el borde de amarillo
+              }
+            ]">
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ subSection.name }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ subSection.description }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ formattedDate(subSection.start_date) }}
@@ -105,17 +105,14 @@
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">{{ subSection.cicsa_section.name }}</td>
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                 <div class="flex items-center">
-                  <Link :href="route('member.cicsa.show', { subSection: subSection.id })"
-                    class="text-green-600 hover:underline mr-2">
-                  <EyeIcon class="h-4 w-4 ml-1" />
+                  <Link :href="route('member.cicsa.show', { subSection: subSection.id })">
+                  <ShowIcon />
                   </Link>
-                  <button v-if="auth.user.role_id === 1" @click="openEditSubSectionModal(subSection)"
-                    class="text-orange-200 hover:underline mr-2">
-                    <PencilIcon class="h-4 w-4 ml-1" />
+                  <button v-if="auth.user.role_id === 1" @click="openEditSubSectionModal(subSection)">
+                    <EditIcon />
                   </button>
-                  <button v-if="auth.user.role_id === 1" @click="confirmDeleteSubSection(subSection.id)"
-                    class="text-red-600 hover:underline">
-                    <TrashIcon class="h-4 w-4" />
+                  <button v-if="auth.user.role_id === 1" @click="confirmDeleteSubSection(subSection.id)">
+                    <DeleteIcon />
                   </button>
                 </div>
               </td>
@@ -294,13 +291,15 @@ import Modal from '@/Components/Modal.vue';
 import { ref, computed } from 'vue';
 import { formattedDate } from '@/utils/utils';
 import { Head, useForm, router, Link } from '@inertiajs/vue3';
-import { TrashIcon, PencilIcon, EyeIcon } from '@heroicons/vue/24/outline';
+import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
+import EditIcon from '@/Components/Icons/EditIcon.vue';
+import ShowIcon from '@/Components/Icons/ShowIcon.vue';
 
 const props = defineProps({
   sections: Object,
   subSections: Object,
   auth: Object,
-  userPermissions:Array
+  userPermissions: Array
 });
 
 const hasPermission = (permission) => {

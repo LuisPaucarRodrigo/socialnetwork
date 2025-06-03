@@ -54,9 +54,8 @@
                             N° {{ item.code }}
                         </h2>
                         <div v-if="auth.user.role_id === 1" class="inline-flex justify-end items-start gap-x-2">
-                            <Link :href="route('projectmanagement.update', { project_id: item.id })"
-                                class="flex items-start">
-                            <PencilIcon class="h-4 w-4 text-teal-600" />
+                            <Link :href="route('projectmanagement.update', { project_id: item.id })">
+                            <EditIcon />
                             </Link>
                             <!-- <button class="flex items-start" @click="confirmProjectDeletion(item.id)">
                                 <TrashIcon class="h-4 w-4 text-red-500" />
@@ -121,14 +120,12 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
 import Pagination from '@/Components/Pagination.vue'
-import Dropdown from '@/Components/Dropdown.vue';
 import axios from 'axios';
 import { ref } from 'vue';
 import { Head, router, Link } from '@inertiajs/vue3';
-import { PencilIcon } from '@heroicons/vue/24/outline';
 import TextInput from '@/Components/TextInput.vue';
+import EditIcon from '@/Components/Icons/EditIcon.vue';
 
 const props = defineProps({
     projects: Object,

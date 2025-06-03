@@ -11,6 +11,7 @@ Route::delete('/cicsa_assignation_destroy/destroy/{ca_id}', [CicsaController::cl
 
 
 Route::any('/cicsa_assignation/{type}/index/{searchCondition?}', [CicsaController::class, 'indexAssignation'])->name('assignation.index');
+Route::post('/cicsa_assignation_update/{cicsa_assignation_id}', [CicsaController::class, 'updateAssignation'])->name('assignation.update');
 Route::get('/cicsa_assignation_export/export/{type}', [CicsaController::class, 'exportAssignation'])->name('assignation.export');
 
 

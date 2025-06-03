@@ -84,9 +84,8 @@
                                             <p class=" text-sm col-span-7 line-clamp-2">
                                                 {{ item.name }}: {{ item.phone }} </p>
                                             <!-- @click="delete_already_employee(member.pivot.id, index)" -->
-                                            <button type="button" class="col-span-1 flex justify-end"
-                                                @click="deleteContactItem(i)">
-                                                <TrashIcon class=" text-red-500 h-4 w-4" />
+                                            <button type="button" @click="deleteContactItem(i)">
+                                                <DeleteIcon />
                                             </button>
                                         </div>
                                     </div>
@@ -157,9 +156,8 @@
                                             <p class=" text-sm col-span-7 line-clamp-2 whitespace-nowrap">
                                                 {{ item?.name }} {{ item?.lastname }} - {{ item.charge }}
                                             </p>
-                                            <button type="button" class="col-span-1 flex justify-end"
-                                                @click="deleteEmployee(i)">
-                                                <TrashIcon class=" text-red-500 h-4 w-4" />
+                                            <button type="button" @click="deleteEmployee(i)">
+                                                <DeleteIcon />
                                             </button>
                                         </div>
                                     </div>
@@ -238,12 +236,12 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import { computed, ref, watch } from 'vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
-import { TrashIcon } from '@heroicons/vue/24/outline';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import axios from 'axios';
 import { setAxiosErrors } from '@/utils/utils';
 import { notify, notifyError } from '@/Components/Notification';
 import { Toaster } from 'vue-sonner';
+import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
 
 const showModal = ref(false)
 const showModalUpdate = ref(false)
@@ -266,10 +264,10 @@ const handleProductCPE = async (cpe) => {
 }
 
 const minDate = computed(() => {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, "0"); // Mes en formato "MM"
-  return `${year}-${month}-01`; // YYYY-MM-01
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0"); // Mes en formato "MM"
+    return `${year}-${month}-01`; // YYYY-MM-01
 });
 
 const templates = [

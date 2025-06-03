@@ -161,13 +161,11 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
 import Pagination from '@/Components/Pagination.vue'
 import Dropdown from '@/Components/Dropdown.vue';
 import axios from 'axios';
 import { ref } from 'vue';
 import { Head, router, Link } from '@inertiajs/vue3';
-import { QueueListIcon, TrashIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
     projects: Object,

@@ -58,13 +58,11 @@
                                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
                                 </button>
-                                <button type="button" @click="openEditCodeModal(code)"
-                                    class="text-yellow-600 whitespace-no-wrap">
-                                    <PencilIcon class="h-5 w-5 ml-1" />
+                                <button type="button" @click="openEditCodeModal(code)">
+                                    <EditIcon />
                                 </button>
-                                <button type="button" @click="confirmDeleteCode(code.id)"
-                                    class="text-red-600 whitespace-no-wrap">
-                                    <TrashIcon class="h-5 w-5 ml-1" />
+                                <button type="button" @click="confirmDeleteCode(code.id)">
+                                    <DeleteIcon />
                                 </button>
                             </div>
                         </td>
@@ -141,7 +139,7 @@
                             </div>
                             <button type="button" @click="removeimage(index)"
                                 class="font-medium text-red-600 hover:text-red-500">
-                                <TrashIcon class="h-5 w-5 ml-1" />
+                                <DeleteIcon />
                             </button>
                         </div>
                     </div>
@@ -191,9 +189,8 @@
                                                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                         </svg>
                                     </button>
-                                    <button type="button" @click="delete_image(item.id)"
-                                        class="text-blue-900 whitespace-no-wrap">
-                                        <TrashIcon class="h-5 w-5 ml-1 text-red-500" />
+                                    <button type="button" @click="delete_image(item.id)">
+                                        <DeleteIcon />
                                     </button>
                                 </td>
                             </tr>
@@ -223,11 +220,12 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputFile from '@/Components/InputFile.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
-import { TrashIcon, PencilIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import EditIcon from '@/Components/Icons/EditIcon.vue';
+import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
 
 const create_code = ref(false);
 const showModal = ref(false);

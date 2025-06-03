@@ -13,11 +13,7 @@
                 class="flex flex-col sm:flex-row gap-4 sm:gap-0 justify-between"
             >
                 <div class="flex sm:items-center space-x-3">
-                    <PrimaryButton
-                        @click="openFormModal"
-                        type="button"
-                        class="whitespace-nowrap"
-                    >
+                    <PrimaryButton @click="openFormModal" type="button" class="whitespace-nowrap">
                         + Agregar
                     </PrimaryButton>
                     <!-- <div>
@@ -27,7 +23,7 @@
                             handleSearch(null, true);
                         }
                             " class="p-2 bg-gray-100 ring-1 ring-slate-400 rounded-md text-slate-900 hover:bg-white">
-                            <ServerIcon class="h-5 w-5 font-bold" />
+                            <ServerIcon />
                         </button>
                         <div id="all_register_tooltip" role="tooltip"
                             class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
@@ -36,15 +32,9 @@
                         </div>
                     </div> -->
                     <div>
-                        <button
-                            data-tooltip-target="import_register_tooltip"
-                            type="button"
-                            @click="openImportModal"
-                            class="p-2 bg-yellow-300 rounded-md text-slate-900 hover:bg-yellow-200"
-                        >
-                            <CloudArrowUpIcon
-                                class="text-white h-5 w-5 font-bold"
-                            />
+                        <button data-tooltip-target="import_register_tooltip" type="button" @click="openImportModal"
+                            class="p-2 bg-yellow-300 rounded-md text-slate-900 hover:bg-yellow-200">
+                            <UploadIcon color="" />
                         </button>
                         <div
                             id="import_register_tooltip"
@@ -103,23 +93,8 @@
                                 <button
                                     data-tooltip-target="action_button_tooltip"
                                     @click="dropdownOpen = !dropdownOpen"
-                                    class="relative block overflow-hidden rounded-md text-white hover:bg-indigo-400 text-center text-sm bg-indigo-500 p-2"
-                                >
-                                    <svg
-                                        width="20px"
-                                        height="20px"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            d="M4 6H20M4 12H20M4 18H20"
-                                            stroke="#ffffff"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        />
-                                    </svg>
+                                    class="relative block overflow-hidden rounded-md text-white hover:bg-indigo-400 text-center text-sm bg-indigo-500 p-2">
+                                    <Menuicon color="text-white" />
                                 </button>
                                 <div
                                     id="action_button_tooltip"
@@ -153,6 +128,18 @@
                                 </div>
                             </template>
                         </dropdown>
+                    </div>
+
+                    <div>
+                        <button data-tooltip-target="ds_dowload_tooltip" type="button" @click="downloadDataStructure"
+                            class="p-2 bg-slate-800 rounded-md text-white-900 hover:bg-slate-700">
+                            <DownloadIcon color="text-white" />
+                        </button>
+                        <div id="ds_dowload_tooltip" role="tooltip"
+                            class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                            Estructura de Datos
+                            <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div>
                     </div>
                 </div>
 
@@ -359,7 +346,7 @@
                             >
                                 <p>Cargo</p>
                                 <button @click="sortValue">
-                                    <ArrowsUpDownIcon class="h-5 w-5" />
+                                    <SortIcon />
                                 </button>
                             </div>
                         </th>
@@ -487,21 +474,14 @@
                                 class="border-b border-gray-200 px-2 py-1 text-right text-[13px]"
                             >
                                 <div class="flex items-center justify-end">
-                                    <button
-                                        type="button"
-                                        @click="openFormModal(item)"
-                                        class="rounded-full text-amber-600 hover:bg-amber-300 mr-2"
-                                    >
-                                        <PencilSquareIcon
-                                            class="h-4 w-4 ml-1"
-                                        />
+                                    <button type="button" @click="openFormModal(item)"
+                                        class="rounded-full text-amber-600 hover:bg-amber-300 mr-2">
+                                        <EditIcon />
                                     </button>
-                                    <button
-                                        type="button"
-                                        @click="openDeleteModal(item.id)"
-                                        class="rounded-full text-red-600 hover:bg-red-300"
-                                    >
-                                        <TrashIcon class="h-4 w-4" />
+                                    <button type="button" @click="openDeleteModal(item.id)"
+                                        class="rounded-full text-red-600 hover:bg-red-300">
+                                        <DeleteIcon />
+
                                     </button>
                                 </div>
                             </td>
@@ -915,16 +895,10 @@
                                     >Archivo Excel
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <InputFile
-                                        type="file"
-                                        v-model="importForm.excel_file"
-                                        id="excel_file"
+                                    <InputFile type="file" v-model="importForm.excel_file" id="excel_file"
                                         accept=".xlsx, .csv"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError
-                                        :message="importForm.errors.excel_file"
-                                    />
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="importForm.errors.excel_file" />
                                 </div>
                             </div>
                         </div>
@@ -983,15 +957,12 @@ import { formattedDate, setAxiosErrors } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import { ref, watch } from "vue";
-import {
-    ServerIcon,
-    CloudArrowUpIcon,
-    TrashIcon,
-    PencilSquareIcon,
-    ArrowsUpDownIcon,
-} from "@heroicons/vue/24/outline";
-import { CloudArrowDownIcon } from "@/Components/icons";
-import qs from 'qs';
+import Menuicon from "@/Components/Icons/Menuicon.vue";
+import DeleteIcon from "@/Components/Icons/DeleteIcon.vue";
+import EditIcon from "@/Components/Icons/EditIcon.vue";
+import UploadIcon from "@/Components/Icons/UploadIcon.vue";
+import DownloadIcon from "@/Components/Icons/DownloadIcon.vue";
+import SortIcon from "@/Components/Icons/SortIcon.vue";
 
 const {
     accountStatements,

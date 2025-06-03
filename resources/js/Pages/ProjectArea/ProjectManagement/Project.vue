@@ -163,7 +163,7 @@ import Dropdown from '@/Components/Dropdown.vue';
 import axios from 'axios';
 import { ref } from 'vue';
 import { Head, router, Link } from '@inertiajs/vue3';
-import { QueueListIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { QueueListIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
     projects: Object,

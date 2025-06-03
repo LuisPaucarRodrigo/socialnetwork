@@ -26,7 +26,7 @@
                         fieldName: 'ownership_card',
                     }) + '?' + uniqueParam
                         ">
-                        <EyeIcon class="w-5 h-5 text-green-600" />
+                        <ShowIcon />
                     </a>
                 </TableRow>
                 <TableRow>
@@ -35,7 +35,7 @@
                         fieldName: 'technical_review',
                     }) + '?' + uniqueParam
                         ">
-                        <EyeIcon class="w-5 h-5 text-green-600" />
+                        <ShowIcon />
                     </a>
                 </TableRow>
                 <TableRow>{{ change.technical_review_date }}</TableRow>
@@ -45,7 +45,7 @@
                         fieldName: 'soat',
                     }) + '?' + uniqueParam
                         ">
-                        <EyeIcon class="w-5 h-5 text-green-600" />
+                        <ShowIcon />
                     </a>
                 </TableRow>
                 <TableRow>{{ change.soat_date }}</TableRow>
@@ -57,10 +57,10 @@
                 <TableRow>
                     <div class="flex gap-x-2 justify-center">
                         <button @click="validate(change.id)">
-                            <CheckCircleIcon class="w-5 h-5 text-green-500" />
+                            <AcceptIcon />
                         </button>
                         <button @click="rejected(change.id)">
-                            <XCircleIcon class="w-5 h-5 text-red-500" />
+                            <RejectIcon />
                         </button>
                     </div>
                 </TableRow>
@@ -70,11 +70,13 @@
 </template>
 <script setup>
 import TableStructure from '@/Layouts/TableStructure.vue';
-import { CheckCircleIcon, EyeIcon, XCircleIcon } from '@heroicons/vue/24/outline';
 import TableRow from '@/Components/TableRow.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import { notify } from '@/Components/Notification';
 import { ref } from 'vue';
+import ShowIcon from '@/Components/Icons/ShowIcon.vue';
+import AcceptIcon from '@/Components/Icons/AcceptIcon.vue';
+import RejectIcon from '@/Components/Icons/RejectIcon.vue';
 const { change } = defineProps({
     change: Object
 })

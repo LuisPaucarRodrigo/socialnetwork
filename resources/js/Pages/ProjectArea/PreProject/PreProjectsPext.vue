@@ -47,17 +47,16 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 <div v-for="(item, i) in preprojects.data" :key="item.id"
                     class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
-                    <div class="grid grid-cols-2">
-                        <h2 class="text-sm font-semibold sm:col-span-1">
+                    <div class="flex justify-between gap-x-2">
+                        <h2 class="text-sm font-semibold">
                             N° {{ i }} {{ item.code }}
                         </h2>
-                        <div v-if="auth.user.role_id === 1" class="inline-flex justify-end gap-x-2 m:col-span-1">
-                            <Link :href="route('preprojects.create', { type, preproject_id: item.id })"
-                                class="text-green-600 hover:underline mb-4 flex items-start">
-                            <PencilIcon class="h-4 w-4" />
+                        <div v-if="auth.user.role_id === 1" class="flex items-center gap-x-2">
+                            <Link :href="route('preprojects.create', { type, preproject_id: item.id })">
+                            <EditIcon />
                             </Link>
-                            <button class="flex items-start" @click="confirmProjectDeletion(item.id, i)">
-                                <TrashIcon class="h-4 w-4 text-red-500" />
+                            <button @click="confirmProjectDeletion(item.id, i)">
+                                <DeleteIcon />
                             </button>
                         </div>
                     </div>
@@ -153,7 +152,7 @@
                         </InputLabel>
                         <div class="mt-2">
                             <p v-for="user in assignUserForm.user_id_array" :key="user" class="text-sm">
-                                - {{ users.find(item => item.id == user).name }}
+                                - {{users.find(item => item.id == user).name}}
                             </p>
                         </div>
                     </div>
@@ -182,12 +181,13 @@ import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Pagination from '@/Components/Pagination.vue'
 import { Head, router, Link, useForm } from '@inertiajs/vue3';
-import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputError from '@/Components/InputError.vue';
+import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
+import EditIcon from '@/Components/Icons/EditIcon.vue';
 
 const props = defineProps({
     preprojects: Object,

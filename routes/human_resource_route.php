@@ -7,7 +7,6 @@ use App\Http\Controllers\HumanResource\DocumentController;
 use App\Http\Controllers\HumanResource\FormationDevelopment;
 use App\Http\Controllers\HumanResource\GrupalDocumentController;
 use App\Http\Controllers\HumanResource\ManagementEmployees;
-use App\Http\Controllers\HumanResource\ScheduleController;
 use App\Http\Controllers\HumanResource\SpreadsheetsController;
 use App\Http\Controllers\HumanResource\VacationController;
 use Illuminate\Support\Facades\Route;
@@ -85,7 +84,7 @@ Route::middleware('permission:' . implode('|', RolesConstants::HR_MODULE))->grou
     Route::post('/management_employees/storeorupdate/{external_id?}', [ManagementEmployees::class, 'storeorupdate'])
         ->middleware('permission:' . HumanResourcesPermissions::MANAGEMENT_EXTERNAL_STOREORUPDATE->value)
         ->name('management.external.storeorupdate');
-    Route::delete('/management_employees/external/delete/{id}', [ManagementEmployees::class, 'external_delete'])->name('employees.external.delete');
+    Route::delete('/management_employees/external/delete/{external_id}', [ManagementEmployees::class, 'external_delete'])->name('employees.external.delete');
 
     Route::get('/management_employees/external/preview/{external_preview_id}/curriculum_vitae', [ManagementEmployees::class, 'preview_curriculum_vitae'])->name('employees.external.preview.curriculum_vitae');
 
@@ -100,13 +99,6 @@ Route::middleware('permission:' . implode('|', RolesConstants::HR_MODULE))->grou
 
     Route::any('/management_employees/issuance_documentation/index', [ControlEmployees::class, 'issuance_documentation_index'])->name('controlEmployees.issuance.documentation.index');
     Route::post('/management_employees/issuance_documentation/storeOrUpdate/{fixed_documentation_id?}', [ControlEmployees::class, 'issuance_documentation_storeOrUpdate'])->name('controlEmployees.issuance.documentation.storeOrUpdate');
-
-    //Schedule
-    Route::get('/management_employees/schedule/index', [ScheduleController::class, 'index'])->name('management.employees.schedule.index');
-    Route::post('/management_employees/schedule/post', [ScheduleController::class, 'upload'])->name('management.employees.schedule.post');
-    Route::get('/management_employees/schedule/preview/{schedule}', [ScheduleController::class, 'preview'])->name('management.employees.schedule.preview');
-    Route::get('/management_employees/schedule/latest', [ScheduleController::class, 'latest'])->name('management.employees.schedule.latest');
-    Route::get('/management_employees/schedule/download/{schedule}', [ScheduleController::class, 'download'])->name('management.employees.schedule.download');
 
     //Nomina
     Route::post('/management_employees/payroll/store', [SpreadsheetsController::class, 'store_payroll'])->name('payroll.store');

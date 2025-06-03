@@ -14,7 +14,7 @@
         <br />
         <div class="inline-block min-w-full mb-4">
             <div class="flex gap-4 justify-end">
-                <Search v-model:search="filterForm.search" fields="Por definir"/>
+                <Search v-model:search="filterForm.search" fields="Por definir" />
             </div>
         </div>
 
@@ -122,7 +122,7 @@
                         </td>
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                             <button v-if="item.photo" @click="handlerPreview(item.id)">
-                                <EyeIcon class="w-4 h-4 text-teal-600" />
+                                <ShowIcon />
                             </button>
                             <span v-else>-</span>
                         </td>
@@ -147,14 +147,11 @@
 
 
                                 <div class="flex gap-3 mr-3">
-                                    <button @click="openEditAdditionalModal(item)"
-                                        class="text-amber-600 hover:underline">
-                                        <PencilSquareIcon class="h-5 w-5 ml-1" />
+                                    <button @click="openEditAdditionalModal(item)">
+                                        <EditIcon />
                                     </button>
-                                    <button @click="
-                                        confirmDeleteAdditional(item.id)
-                                        " class="text-red-600 hover:underline">
-                                        <TrashIcon class="h-5 w-5" />
+                                    <button @click="confirmDeleteAdditional(item.id)">
+                                        <DeleteIcon />
                                     </button>
                                 </div>
                             </div>
@@ -579,7 +576,7 @@
                                                     'delete';
                                             }
                                         ">
-                                            <TrashIcon class="text-red-500 h-4 w-4" />
+                                            <DeleteIcon />
                                         </button>
                                     </div>
                                     <div v-if="form.photo_status === 'delete'"
@@ -712,16 +709,17 @@ import InputLabel from "@/Components/InputLabel.vue";
 import Modal from "@/Components/Modal.vue";
 import { ref, watch } from "vue";
 import { Head, useForm, router } from "@inertiajs/vue3";
-import { TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { formattedDate } from "@/utils/utils";
 import InputFile from "@/Components/InputFile.vue";
-import { EyeIcon } from "@heroicons/vue/24/outline";
 import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
 import axios from "axios";
 import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notify, notifyError } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import Search from "@/Components/Search.vue";
+import EditIcon from "@/Components/Icons/EditIcon.vue";
+import DeleteIcon from "@/Components/Icons/DeleteIcon.vue";
+import ShowIcon from "@/Components/Icons/ShowIcon.vue";
 
 
 const props = defineProps({

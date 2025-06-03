@@ -44,8 +44,8 @@
                                 <div class="flex space-x-3 justify-center">
                                     <button v-if="item.cicsa_purchase_order_validation.length > 0" type="button"
                                         @click="toggleDetails(item?.cicsa_purchase_order_validation)">
-                                        <ChevronDownIcon v-if="validation_purchase_order_row !== item.id" class="w-6 h-6"/>
-                                        <ChevronUpIcon v-else class="w-6 h-6" />
+                                        <DownArrowIcon v-if="validation_purchase_order_row !== item.id" />
+                                        <UpArrowIcon v-else />
                                     </button>
                                 </div>
                             </TableRow>
@@ -81,7 +81,7 @@
                                 <TableRow>{{ materialDetail?.user_name }}</TableRow>
                                 <TableRow>
                                     <button class="text-blue-900" @click="openUpdateModal(materialDetail)">
-                                        <PencilSquareIcon class="w-5 h-5 text-amber-400" />
+                                        <EditIcon/>
                                     </button>
                                 </TableRow>
                             </tr>
@@ -231,9 +231,6 @@
                 </form>
             </div>
         </Modal>
-
-        <!-- <SuccessOperationModal :confirming="confirmUpdateAssignation" :title="'Validación Actualizada'"
-            :message="'La Validación fue actualizada'" /> -->
     </AuthenticatedLayout>
 </template>
 
@@ -244,11 +241,10 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Head, router, useForm } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
-import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate, setAxiosErrors } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import { Toaster } from 'vue-sonner';
@@ -256,7 +252,9 @@ import { notify, notifyError } from '@/Components/Notification';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import { ChevronDownIcon, ChevronUpIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
+import DownArrowIcon from '@/Components/Icons/DownArrowIcon.vue';
+import UpArrowIcon from '@/Components/Icons/UpArrowIcon.vue';
+import EditIcon from '@/Components/Icons/EditIcon.vue';
 
 const { purchase_validation, auth, searchCondition, type } = defineProps({
     purchase_validation: Object,

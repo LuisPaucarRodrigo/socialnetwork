@@ -68,18 +68,14 @@
                 </template>
             </div>
         </div>
-
-        <br />
-        <br />
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { EyeIcon } from "@heroicons/vue/24/outline";
 import { Head } from "@inertiajs/vue3";
 import { formattedDate } from "@/utils/utils";
-import { principalData, personalData, getProp } from "./constants";
+import { personalData, getProp } from "./constants";
 
 console.log(sections);
 

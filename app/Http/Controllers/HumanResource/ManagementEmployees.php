@@ -155,7 +155,7 @@ class ManagementEmployees extends Controller
     {
         $employees = $this->employeesServices->getExternalEmployees();
         $costLines = $this->employeesServices->getCostLine();
-        return Inertia::render('HumanResource/ManagementEmployees/EmployeesExternal', [
+        return Inertia::render('HumanResource/ManagementEmployees/ExternalEmployees/EmployeesExternal', [
             'employee' => $employees,
             'costLines' => $costLines
         ]);
@@ -163,7 +163,7 @@ class ManagementEmployees extends Controller
 
     public function external_search(Request $request)
     {
-        $employees = $this->employeesServices->searchExternal($request->cost_line);
+        $employees = $this->employeesServices->searchExternal($request);
         return response()->json($employees, 200);
     }
 
@@ -171,10 +171,17 @@ class ManagementEmployees extends Controller
     {
         $validateData = $request->validated();
         try {
-            $this->employeesServices->storeOrUpdateExternalEmployees($validateData, $request, $external_id);
+            $e_external = $this->employeesServices->storeOrUpdateExternalEmployees($validateData, $request, $external_id);
+            return response()->json($e_external, 200);
         } catch (Exception $e) {
             return redirect()->back()->withErrors(['message' => $e->getMessage()]);
         }
+    }
+
+    public function external_delete($external_id)
+    {
+        ExternalEmployee::destroy($external_id);
+        return response()->json([], 200);
     }
 
     public function preview_curriculum_vitae(ExternalEmployee $external_preview_id)

@@ -20,13 +20,13 @@
                 <TableRow>{{ item.additionalEmployees }}</TableRow>
                 <TableRow>{{ item.reason }}</TableRow>
                 <TableRow>
-                    <button type="button">
-                        <EyeIcon @click="openChecklist(item)" class="text-green-500 w-5" />
+                    <button type="button" @click="openChecklist(item)">
+                        <ShowIcon />
                     </button>
                 </TableRow>
                 <TableRow>
-                    <button type="button">
-                        <PhotoIcon @click="openImages(item.id)" class="text-indigo-600 w-5" />
+                    <button type="button" @click="openImages(item.id)">
+                        <ImagesIcon />
                     </button>
                 </TableRow>
                 <TableRow width="w-[500px]">{{ item.observation }}</TableRow>
@@ -39,11 +39,12 @@
 </template>
 <script setup>
 import { formattedDate } from "@/utils/utils";
-import { PhotoIcon, EyeIcon } from "@heroicons/vue/24/outline";
 import Pagination from "@/Components/Pagination.vue";
 import TableStructure from "@/Layouts/TableStructure.vue";
 import TableTitle from "@/Components/TableTitle.vue";
 import TableRow from "@/Components/TableRow.vue";
+import ShowIcon from "@/Components/Icons/ShowIcon.vue";
+import ImagesIcon from "@/Components/Icons/ImagesIcon.vue";
 
 const { checklist, openImages, openChecklist } = defineProps({
     checklist: Object,

@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <Head title="Gestion de Secciones" />
     <AuthenticatedLayout redirectRoute="document.rrhh.status">
       <template #header>
@@ -12,12 +13,9 @@
           <option value="">Todos</option>
           <option v-for="item, i in costLines" :key="i">{{ item.name }}</option>
         </select>
-        <PrimaryButton
-          v-permission="'document_grupal_documents_index'"
-          type="button"
-          @click="()=>router.visit(route('document.grupal_documents.index'))"
-        >
-          Documentos Grupales 
+        <PrimaryButton v-permission="'document_grupal_documents_index'" type="button"
+          @click="() => router.visit(route('document.grupal_documents.index'))">
+          Documentos Grupales
         </PrimaryButton>
       </div>
       <br>
@@ -115,13 +113,14 @@
                   </div>
                 </td>
                 <td class="px-2 py-2 text-center">
-                  <a :href="route('employee.document.rrhh.status', { emp_id: emp.id, type:'employees' })"
+                  <a :href="route('employee.document.rrhh.status', { emp_id: emp.id, type: 'employees' })"
                     class="text-green-700 hover:underline hover:text-green-500 cursor-pointer">
                     Ver detalles
                   </a>
                 </td>
                 <!-- principalData -->
-                <td v-for="da, i in principalData" :key="i" :class="['px-2 py-2', { [da.propClass] : da.title == 'Personal' }]">
+                <td v-for="da, i in principalData" :key="i"
+                  :class="['px-2 py-2', { [da.propClass]: da.title == 'Personal' }]">
                   <div>
                     {{ getProp({ obj: emp, path: da.propName, sep: ', ' }) }}
                   </div>
@@ -184,10 +183,7 @@
                         }}
                       </p>
                       <div class="w-1/4 justify-end flex gap-3">
-                        <button 
-                          v-permission="'document_rrhh_status_store'" 
-                          type="button" 
-                          @click="openDocModal(
+                        <button v-permission="'document_rrhh_status_store'" type="button" @click="openDocModal(
                           {
                             emp_name: emp.name + ' ' + emp.lastname,
                             doc_name: sub.name,
@@ -202,8 +198,9 @@
                             document: null
                           }
                         )">
-                          <InformationCircleIcon class="h-6 w-6 text-blue-700 hover:text-blue-400"
-                            style="stroke-width: 2;" />
+                          <InformationIcon />
+                          <!-- <InformationCircleIcon class="h-6 w-6 text-blue-700 hover:text-blue-400"
+                            style="stroke-width: 2;" /> -->
                         </button>
 
                       </div>
@@ -221,16 +218,14 @@
                   </div>
                 </td>
                 <td class="px-2 py-2 text-center">
-                  <a :href="route('employee.document.rrhh.status', { emp_id: emp.id, type:'external' })" 
+                  <a :href="route('employee.document.rrhh.status', { emp_id: emp.id, type: 'external' })"
                     class="text-green-700 hover:underline hover:text-green-500 cursor-pointer">
                     Ver detalles
                   </a>
                 </td>
                 <!-- principalData -->
                 <td v-for="da, i in principalData" :key="i"
-                  :class="['px-2 py-2 ', { 'bg-indigo-100 sticky left-0 z-10': da.title === 'Personal'}]"
-                  
-                  >
+                  :class="['px-2 py-2 ', { 'bg-indigo-100 sticky left-0 z-10': da.title === 'Personal' }]">
                   <div class="">
                     {{ getProp({ obj: emp, path: da.propName, sep: ', ' }) }}
                   </div>
@@ -293,10 +288,7 @@
                         }}
                       </p>
                       <div class="w-1/4 justify-end flex gap-3">
-                        <button 
-                          v-permission="'document_rrhh_status_store'" 
-                          type="button" 
-                          @click="openDocModal(
+                        <button v-permission="'document_rrhh_status_store'" type="button" @click="openDocModal(
                           {
                             emp_name: emp.name + ' ' + emp.lastname,
                             doc_name: sub.name,
@@ -311,8 +303,10 @@
                             document: null
                           }
                         )">
-                          <InformationCircleIcon class="h-6 w-6 text-blue-700 hover:text-blue-400"
-                            style="stroke-width: 2;" />
+                          <InformationIcon />
+
+                          <!-- <InformationCircleIcon class="h-6 w-6 text-blue-700 hover:text-blue-400"
+                            style="stroke-width: 2;" /> -->
                         </button>
 
                       </div>
@@ -351,54 +345,31 @@
                 </div>
                 <template v-if="docForm.state === 'Completado'">
                   <div class="sm:col-span-2">
-                      <InputLabel for="documentFile"
-                          >Documento <span class="text-red-600 text-normal">*</span> </InputLabel
-                      >
-                      <div class="mt-2">
-                          <InputFile
-                              type="file"
-                              v-model="docForm.document"
-                              id="documentFile"
-                              class="w-full ring-1 ring-gray-300"
-                              accept=".pdf, .png, .jpeg, .jpg"
-                          />
-                          <InputError :message="docForm.errors.document" />
-                      </div>
+                    <InputLabel for="documentFile">Documento <span class="text-red-600 text-normal">*</span>
+                    </InputLabel>
+                    <div class="mt-2">
+                      <InputFile type="file" v-model="docForm.document" id="documentFile"
+                        class="w-full ring-1 ring-gray-300" accept=".pdf, .png, .jpeg, .jpg" />
+                      <InputError :message="docForm.errors.document" />
+                    </div>
                   </div>
                   <div class="sm:col-span-2">
                     <div class=" flex items-center gap-4 text-normal">
                       <InputLabel>¿Tiene Fecha de Vencimiento?</InputLabel>
-                      <label
-                          class="flex gap-2 items-center text-xs"
-                          for="hasExpDateYes"
-                      >
-                          Si
-                          <input
-                              id="hasExpDateYes"
-                              type="radio"
-                              :value="1"
-                              v-model="docForm.has_exp_date"
-                              class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                          />
+                      <label class="flex gap-2 items-center text-xs" for="hasExpDateYes">
+                        Si
+                        <input id="hasExpDateYes" type="radio" :value="1" v-model="docForm.has_exp_date"
+                          class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
                       </label>
-                      <label
-                          class="flex gap-2 items-center text-xs"
-                          for="hasExpDateNo"
-                      >
-                          No
-                          <input
-                              id="hasExpDateNo"
-                              type="radio"
-                              :value="0"
-                              v-model="docForm.has_exp_date"
-                              class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                          />
+                      <label class="flex gap-2 items-center text-xs" for="hasExpDateNo">
+                        No
+                        <input id="hasExpDateNo" type="radio" :value="0" v-model="docForm.has_exp_date"
+                          class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
                       </label>
                       <span class="text-red-600 text-normal">*</span>
-                  </div>
-                    <div  v-if="docForm.has_exp_date" class="mt-2 ">
-                      <TextInput type="date" v-model="docForm.exp_date"
-                         autocomplete="off" />
+                    </div>
+                    <div v-if="docForm.has_exp_date" class="mt-2 ">
+                      <TextInput type="date" v-model="docForm.exp_date" autocomplete="off" />
                       <InputError :message="docForm.errors.exp_date" />
                     </div>
                   </div>
@@ -482,6 +453,7 @@ import { Toaster } from 'vue-sonner';
 import { notify, notifyError } from '@/Components/Notification';
 import FilterProcess from '@/Components/FilterProcess.vue';
 import { toFormData } from '@/utils/utils';
+import InformationIcon from '@/Components/Icons/InformationIcon.vue';
 
 const { employees, e_employees, sections, costLines } = defineProps({
   employees: Object,
@@ -530,7 +502,7 @@ async function submit() {
     }
     if (docForm.e_employee_id) {
       let index = e_employeesData.value.findIndex(item => item.id == docForm.e_employee_id)
-      let emp =  JSON.parse(JSON.stringify(e_employeesData.value[index])) 
+      let emp = JSON.parse(JSON.stringify(e_employeesData.value[index]))
       e_employeesData.value[index].document_registers = {
         ...emp.document_registers,
         ...res.data,
@@ -659,12 +631,12 @@ async function filterExpenseLine(search) {
 }
 
 
-watch(()=>docForm.has_exp_date, ()=>{
-  if(!docForm.has_exp_date) docForm.exp_date = ''
+watch(() => docForm.has_exp_date, () => {
+  if (!docForm.has_exp_date) docForm.exp_date = ''
 })
 
-watch(()=>docForm.state, ()=>{
-  if(docForm.state !== 'Completado') {
+watch(() => docForm.state, () => {
+  if (docForm.state !== 'Completado') {
     docForm.document = null
     docForm.exp_date = ''
   }

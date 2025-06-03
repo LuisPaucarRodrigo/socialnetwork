@@ -143,7 +143,6 @@ import Modal from '@/Components/Modal.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import BarChart from '@/Layouts/BarChart.vue';
 import { InformationCircleIcon } from "@heroicons/vue/24/outline";
-
 import { Chart, registerables } from 'chart.js/auto';
 import { onMounted, ref } from 'vue';
 
