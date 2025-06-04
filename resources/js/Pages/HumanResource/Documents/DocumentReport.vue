@@ -467,8 +467,6 @@ const props = defineProps({
     search: [String, null],
 });
 
-console.log(props.documents);
-
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
 };

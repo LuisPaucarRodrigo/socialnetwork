@@ -3,7 +3,7 @@
     <AuthenticatedLayout
         :redirectRoute="{
             route: 'huawei.inventory.show',
-            params: { warehouse: '1', equipment: 1 },
+            params: { warehouse: 'Claro', equipment: 1 },
         }"
     >
         <template #header> Equipos </template>
@@ -87,8 +87,9 @@
                         class="block min-w-[150px] rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     >
                         <option disabled>Seleccione Almacén</option>
-                        <option value="Claro">Claro</option>
-                        <option value="Entel">Entel</option>
+                        <option v-for="(op, index) in props.operators" :key="index" :value="op">
+                            {{ op }}
+                        </option>
                     </select>
                 </div>
 
@@ -605,6 +606,7 @@ const props = defineProps({
     search: String,
     warehouse: String,
     data: Object,
+    operators: Array,
 });
 
 const refundModal = ref(false);
@@ -616,9 +618,6 @@ const isFetching = ref(false);
 const showOpNuDatModal = ref(false);
 const noDU = ref(false);
 
-console.log(dataToRender.value)
-console.log(props.search);
-console.log(filterMode.value)
 const refundForm = useForm({
     huawei_entry_detail_id: "",
     quantity: "",

@@ -21,7 +21,7 @@
     </MyTransition>
     <MyTransition :transitiondemonstration="showHuawei">
         <div class="relative">
-            <Link class="w-full" :href="route('huawei.inventory.show', { warehouse: 1 })">Inventario
+            <Link class="w-full" :href="route('huawei.inventory.show', { warehouse: 'Claro' })">Inventario
             Huawei
             </Link>
             <button @click="showPendingOrders = !showPendingOrders">

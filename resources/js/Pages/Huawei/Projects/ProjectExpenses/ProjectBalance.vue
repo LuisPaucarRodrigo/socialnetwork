@@ -79,11 +79,11 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr class="text-gray-700">
+                  <!-- <tr class="text-gray-700">
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Ingresos Proyectados</td>
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
           huawei_project.total_earnings.toFixed(2) }}</td>
-                  </tr>
+                  </tr> -->
                   <tr class="text-gray-700">
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm">Ingresos Reales</td>
                     <td class="border-b border-gray-200 bg-white px-3 py-3 text-sm whitespace-nowrap text-right">S/. {{
