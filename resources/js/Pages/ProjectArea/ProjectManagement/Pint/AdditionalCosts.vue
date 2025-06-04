@@ -103,8 +103,6 @@
 
                             <template #content class="origin-left">
                                 <div>
-                                    <!-- Alineación a la derecha -->
-
                                     <div class="">
                                         <button @click="openOpNuDaModal"
                                             class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
@@ -138,68 +136,46 @@
                         <template #trigger>
                             <button @click="dropdownOpen = !dropdownOpen"
                                 class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100">
-                                <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4 6H20M4 12H20M4 18H20" stroke="#000000" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
+                                <Menuicon />
                             </button>
                         </template>
 
                         <template #content class="origin-left">
                             <div>
                                 <!-- Alineación a la derecha -->
-
+                                <button @click="openCreateAdditionalModal"
+                                    class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                    Agregar
+                                </button>
                                 <div class="">
-                                    <button @click="openCreateAdditionalModal"
-                                        class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                        Agregar
-                                    </button>
-                                </div>
-                                <div class="">
-                                    <button @click="
-                                        router.visit(
-                                            route(
-                                                'projectmanagement.additionalCosts',
-                                                {
-                                                    project_id:
-                                                        project_id.id,
-                                                }
-                                            )
-                                        )
-                                        "
+                                    <!-- <DropdownLink :href="route(
+                                        'projectmanagement.additionalCosts',
+                                        { project_id: project_id.id }
+                                    )">
+                                        Actualizar
+                                    </DropdownLink> -->
+                                    <button @click="() => {
+                                        filterForm = { ...initialFilterFormState }
+                                    }
+                                    "
                                         class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                         Actualizar
                                     </button>
                                 </div>
-                                <div class="">
-                                    <a :href="route(
-                                        'additionalcost.excel.export',
-                                        {
-                                            project_id: project_id.id,
-                                        }
-                                    )
-                                        "
-                                        class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                        Exportar
-                                    </a>
-                                </div>
-                                <div class="">
-                                    <button @click="openImportModal()"
-                                        class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                        Importar
-                                    </button>
-                                </div>
-                                <div class="">
-                                    <a :href="route(
-                                        'projectmanagement.additionalCosts.rejected',
-                                        { project_id: project_id.id }
-                                    )
-                                        "
-                                        class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                        Exportar
-                                    </a>
-                                </div>
+                                <button @click="openExportExcel()"
+                                    class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                    Exportar Excel
+                                </button>
+                                <button @click="openExportArchivesModal()"
+                                    class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                    Descarga de Archivos
+                                </button>
+                                <DropdownLink :href="route(
+                                    'projectmanagement.additionalCosts.rejected',
+                                    { project_id: project_id.id }
+                                )">
+                                    Rechazados
+                                </DropdownLink>
                             </div>
                         </template>
                     </dropdown>
@@ -1144,6 +1120,7 @@ import EditIcon from "@/Components/Icons/EditIcon.vue";
 import DeleteIcon from "@/Components/Icons/DeleteIcon.vue";
 import ShowIcon from "@/Components/Icons/ShowIcon.vue";
 import ServerIcon from "@/Components/Icons/ServerIcon.vue";
+import DropdownLink from "@/Components/DropdownLink.vue";
 
 const props = defineProps({
     additional_costs: Object,
@@ -1169,6 +1146,7 @@ stateTypes.sort()
 
 const dataToRender = ref(props.additional_costs.data);
 const filterMode = ref(false);
+const subDropdownOpen = ref(false)
 
 const hasPermission = (permission) => {
     return props.userPermissions.includes(permission);
@@ -1394,7 +1372,7 @@ async function search_advance(data) {
 //     filterMode.value = true;
 //     search_advance(filterForm.value);
 // }
-
+const uniqueParam = `timestamp=${new Date().getTime()}`;
 //import modal
 const showImportModal = ref(false);
 const confirmImport = ref(false);
@@ -1431,7 +1409,7 @@ function submitImport() {
 }
 
 function openExportExcel() {
-    const uniqueParam = `timestamp=${new Date().getTime()}`;
+
     const url =
         route("additionalcost.excel.export", {
             project_id: props.project_id.id,

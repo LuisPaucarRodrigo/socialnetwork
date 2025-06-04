@@ -59,7 +59,7 @@ class AdditionalCostsController extends Controller
 
 
         $providers = Provider::all();
-        return Inertia::render('ProjectArea/ProjectManagement/AdditionalCosts', [
+        return Inertia::render('ProjectArea/ProjectManagement/Pint/AdditionalCosts', [
             'additional_costs' => $additional_costs,
             'project_id' => $project_id,
             'providers' => $providers,
@@ -83,7 +83,7 @@ class AdditionalCostsController extends Controller
             return $item;
         });
         $providers = Provider::all();
-        return Inertia::render('ProjectArea/ProjectManagement/AdditionalCostsRejected', [
+        return Inertia::render('ProjectArea/ProjectManagement/Pint/AdditionalCostsRejected', [
             'additional_costs' => $additional_costs,
             'project_id' => $project_id,
             'providers' => $providers,
@@ -310,15 +310,16 @@ class AdditionalCostsController extends Controller
         return response()->json(true, 200);
     }
 
-    public function getRegularProjects () {
+    public function getRegularProjects()
+    {
         $data = Project::where('cost_line_id', 1)
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->where('cost_center_id', 1)
                     ->orWhere('cost_center_id', 2);
             })
             ->get();
         return response()->json($data);
-    }   
+    }
 
     public function swapCostsToRegularProject(Request $request)
     {
@@ -328,7 +329,7 @@ class AdditionalCostsController extends Controller
         ]);
         foreach ($data['ids'] as $id) {
             $ac = AdditionalCost::find($id);
-            $ac->update(['project_id'=> $data['project_id']]);
+            $ac->update(['project_id' => $data['project_id']]);
         }
         return response()->json(true, 200);
     }
@@ -405,7 +406,7 @@ class AdditionalCostsController extends Controller
         $ac = AdditionalCost::with('project', 'provider')
             ->find($ac_id);
         $ac->update($data);
-        
+
         //Automatic swap
         // if ($ac->is_accepted) {
         //     $project = Project::with('preproject.quote')->find($ac->project_id);

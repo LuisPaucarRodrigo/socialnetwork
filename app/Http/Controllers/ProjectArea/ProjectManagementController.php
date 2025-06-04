@@ -44,29 +44,23 @@ class ProjectManagementController extends Controller
                 'is_liquidable',
             ]);
 
-            return Inertia::render('ProjectArea/ProjectManagement/Project', [
+            return Inertia::render('ProjectArea/ProjectManagement/Pint/Project', [
                 'projects' => $projectsData,
             ]);
         } elseif ($request->isMethod('post')) {
             $searchQuery = $request->input('searchQuery');
-            $searchTerms = explode(' ', $searchQuery);
-
-            $projects = Project::where(function ($query) use ($searchTerms) {
-                foreach ($searchTerms as $term) {
-                    $query->where('projects.description', 'like', "%$term%");
-                }
+            $projects = Project::where(function ($query) use ($searchQuery) {
+                $query->where('projects.description', 'like', "%$searchQuery%")
+                    ->orWhereHas('preproject', function ($q) use ($searchQuery) {
+                        $q->where('description', 'like', "%{$searchQuery}%");
+                    });
             })
-                ->orWhereHas('preproject', function ($query) use ($searchTerms) {
-                    foreach ($searchTerms as $term) {
-                        $query->where('description', 'like', "%$term%");
-                    }
-                })
                 ->join('preprojects', 'projects.preproject_id', '=', 'preprojects.id')
                 ->select('projects.*', 'preprojects.date as preproject_date')
                 ->whereNull('projects.status')
                 ->where('projects.cost_line_id', 1)
                 ->orderBy('preprojects.date', 'desc')
-                ->paginate(12);
+                ->get();
 
             return response()->json([
                 'projects' => $projects
@@ -77,7 +71,7 @@ class ProjectManagementController extends Controller
     public function historial(Request $request)
     {
         if ($request->isMethod('get')) {
-            return Inertia::render('ProjectArea/ProjectManagement/ProjectHistorial', [
+            return Inertia::render('ProjectArea/ProjectManagement/Pint/ProjectHistorial', [
                 'projects' => Project::join('preprojects', 'projects.preproject_id', '=', 'preprojects.id')
                     ->select('projects.*', 'preprojects.date as preproject_date')
                     ->orderBy('preprojects.date', 'desc')->where('projects.status', true)->where('projects.cost_line_id', 1)->paginate(),
@@ -251,7 +245,7 @@ class ProjectManagementController extends Controller
     public function project_purchases_request_index($project_id)
     {
         $purchases = Purchasing_request::with('project')->where('project_id', $project_id)->paginate();
-        return Inertia::render('ProjectArea/ProjectManagement/PurchaseRequest', [
+        return Inertia::render('ProjectArea/ProjectManagement/Pint/PurchaseRequest', [
             'purchases' => $purchases,
             'project_id' => $project_id,
             'project' => Project::find($project_id),
@@ -352,7 +346,7 @@ class ProjectManagementController extends Controller
             'total_employee_costs',
         ]);
 
-        return Inertia::render('ProjectArea/ProjectManagement/ProjectExpenses', [
+        return Inertia::render('ProjectArea/ProjectManagement/Pint/ProjectExpenses', [
             'current_budget' => $current_budget,
             'project' => $project_id,
             'acExpensesAmounts' => $acExpensesAmounts,
