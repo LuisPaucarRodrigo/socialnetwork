@@ -60,6 +60,17 @@
                         </Link>
                     </TableRow>
                 </tr>
+                <tr>
+                    <TableRow :colspan="6">Totales:</TableRow>
+                    <TableRow :style="'text-right'">S/ {{ totals.sum_salary.toFixed(2) }}</TableRow>
+                    <TableRow :style="'text-right'">S/ {{ totals.income_accrued_total.toFixed(2) }}</TableRow>
+                    <TableRow :style="'text-right'">S/ {{ totals.income_paid_total.toFixed(2) }}</TableRow>
+                    <TableRow :style="'text-right'">S/ {{ totals.discount_total.toFixed(2) }}</TableRow>
+                    <TableRow :style="'text-right'">S/ {{ totals.employee_tac_total.toFixed(2) }}</TableRow>
+                    <TableRow :style="'text-right'">S/ {{ totals.net_pay.toFixed(2) }}</TableRow>
+                    <TableRow :style="'text-right'">S/ {{ totals.employer_tac_total.toFixed(2) }}</TableRow>
+                    <TableRow></TableRow>
+                </tr>
             </template>
      </TableStructure>
 
