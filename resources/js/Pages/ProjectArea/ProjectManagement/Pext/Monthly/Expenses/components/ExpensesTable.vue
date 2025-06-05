@@ -159,7 +159,7 @@
                     </td>
                     <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                         <button v-if="item.photo" @click="handlerPreview(item.id)">
-                            <EyeIcon class="w-4 h-4 text-teal-600" />
+                            <ShowIcon />
                         </button>
                         <span v-else>-</span>
                     </td>
@@ -184,44 +184,24 @@
                     <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                         <div class="flex items-center gap-3 w-full">
                             <div v-if="item.is_accepted === null" class="flex gap-3 justify-center w-1/2">
-                                <button @click="() =>
-                                    validateRegister(item.id, true)
-                                " class="flex items-center rounded-xl text-blue-500 hover:bg-green-200">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-green-500">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                    </svg>
+                                <button @click="() => validateRegister(item.id, true)" type="button">
+                                    <AcceptIcon />
                                 </button>
-                                <button @click="() =>
-                                    validateRegister(item.id, false)
-                                " type="button"
-                                    class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-red-500">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                    </svg>
+                                <button @click="() => validateRegister(item.id, false)" type="button">
+                                    <RejectIcon />
                                 </button>
                             </div>
                             <div v-else class="w-1/2"></div>
 
                             <div v-if="hasPermission('ProjectManager')" class="flex gap-3 mr-3">
-                                <button v-if="!filterForm.rejected" data-tooltip-target="tooltip-up-ac" @click="() => validateRegister(item.id, true)
-                                " class="flex items-center rounded-xl text-blue-700 hover:bg-green-200">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15m0-3-3-3m0 0-3 3m3-3V15" />
-                                    </svg>
+                                <button v-if="!filterForm.rejected" @click="() => validateRegister(item.id, true)">
+                                    <AcceptIcon />
                                 </button>
-                                <button @click="openEditAdditionalModal(item)" class="text-amber-600 hover:underline">
-                                    <PencilSquareIcon class="h-5 w-5 ml-1" />
+                                <button @click="openEditAdditionalModal(item)">
+                                    <EditIcon />
                                 </button>
-                                <button @click="
-                                    confirmDeleteAdditional(item.id)
-                                    " class="text-red-600 hover:underline">
-                                    <TrashIcon class="h-5 w-5" />
+                                <button @click="confirmDeleteAdditional(item.id)">
+                                    <DeleteIcon />
                                 </button>
                             </div>
                         </div>
@@ -267,13 +247,12 @@
 <script setup>
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import Pagination from "@/Components/Pagination.vue";
-import { EyeIcon } from "@heroicons/vue/24/outline";
 import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
-import { TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { formattedDate } from "@/utils/utils";
 import { ref } from "vue";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 import { notify, notifyError } from "@/Components/Notification";
+import { DeleteIcon, EditIcon, AcceptIcon, RejectIcon, ShowIcon } from "@/Components/Icons/Index";
 
 const { expenses, userPermissions, actionForm, filterForm, zones, docTypes, expenseTypes, stateTypes, openEditAdditionalModal } = defineProps({
     expenses: Object,

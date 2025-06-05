@@ -6,7 +6,7 @@
             Clientes
         </template>
         <div class="mt-6 flex items-center justify-between gap-x-6">
-            <button v-if="hasPermission('ProjectManager')" @click="add_customer" type="button"
+            <button @click="add_customer" type="button"
                 class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                 + Agregar
             </button>
@@ -27,7 +27,7 @@
                     <TableTitle>Razón Social</TableTitle>
                     <TableTitle>Categoría</TableTitle>
                     <TableTitle>Dirección</TableTitle>
-                    <TableTitle v-if="hasPermission('ProjectManager')"></TableTitle>
+                    <TableTitle></TableTitle>
                 </tr>
             </template>
             <template #tbody>
@@ -39,14 +39,14 @@
                     <TableRow>
                         <div class="flex justify-center space-x-3">
                             <button type="button" @click="openEditCustomerModal(customer)">
-                                <PencilIcon class="h-5 w-5 text-yellow-600" />
+                                <EditIcon />
                             </button>
                             <button type="button" @click="add_contact(customer.id)">
                                 <DocumentArrowUpIcon class="h-5 w-5 text-blue-600" />
                             </button>
                             <button v-if="customer.category !== 'Especial'" type="button"
                                 @click="confirmDeleteCustomer(customer.id)">
-                                <TrashIcon class="h-5 w-5 text-red-600" />
+                                <DeleteIcon />
                             </button>
                         </div>
                     </TableRow>
@@ -164,7 +164,7 @@ import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
-import { TrashIcon, PencilIcon, DocumentArrowUpIcon } from '@heroicons/vue/24/outline';
+import { DocumentArrowUpIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
@@ -173,6 +173,7 @@ import TextInput from '@/Components/TextInput.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
+import { DeleteIcon, EditIcon } from "@/Components/Icons/Index";
 
 const create_customer = ref(false);
 const showModal = ref(false);

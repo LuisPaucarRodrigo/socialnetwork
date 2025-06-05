@@ -1,18 +1,20 @@
 <template>
+
     <Head title="Agregar Solicitud" />
-    <AuthenticatedLayout 
-        :redirectRoute="{
-            route: 'preprojects.request.index', 
-            params: { id: purchase ? purchase.preproject.id : preproject.id } 
+    <AuthenticatedLayout :redirectRoute="{
+        route: 'preprojects.request.index',
+        params: { id: purchase ? purchase.preproject.id : preproject.id }
     }">
         <template #header>
-            {{ purchase ? purchase.code : (preproject ? 'Nueva solicitud de compra para:':'Nueva solicitud de compra') }}
+            {{ purchase ? purchase.code : (preproject ? 'Nueva solicitud de compra para:' : 'Nueva solicitud de compra')
+            }}
         </template>
         <p class="mb-5 text-xl" v-if="preproject">{{ preproject.code }}</p>
         <form @submit.prevent="submit">
             <div class="space-y-12">
                 <div class="border-b border-gray-900/10 pb-12 shadow-sm p-4 ring-1 ring-gray-200 rounded-lg">
-                    <h2 class="text-base font-semibold leading-7 text-gray-900 mb-6 border-b border-gray-300">Informacion
+                    <h2 class="text-base font-semibold leading-7 text-gray-900 mb-6 border-b border-gray-300">
+                        Informacion
                         básica</h2>
                     <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 ">
                         <div class="sm:col-span-3">
@@ -53,8 +55,8 @@
                                 <h2 class="text-base font-bold leading-6 text-gray-900 ">
                                     Añadir productos
                                 </h2>
-                                <button v-if="auth.user.role_id === 1 || purchase.purchase_quotes === null" type="button"
-                                    @click="showProductModal = !showProductModal">
+                                <button v-if="auth.user.role_id === 1 || purchase.purchase_quotes === null"
+                                    type="button" @click="showProductModal = !showProductModal">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="indigo" class="w-6 h-6">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -126,8 +128,8 @@
                                                     class="border-b border-gray-200 px-5 py-5 text-sm">
                                                     <div @click=" deleteProduct(index, item.pivot?.id)"
                                                         class="flex justify-center">
-                                                        <button type="button" class="col-span-1 flex justify-end">
-                                                            <TrashIcon class=" text-red-500 h-4 w-4 " />
+                                                        <button type="button">
+                                                            <DeleteIcon />
                                                         </button>
                                                     </div>
                                                 </td>
@@ -160,10 +162,12 @@
                             Tipo de Producto
                         </InputLabel>
                         <div class="mt-2">
-                            <select required id="type_product" v-model="type_product" @change="handleTypeProduct($event.target.value)"
+                            <select required id="type_product" v-model="type_product"
+                                @change="handleTypeProduct($event.target.value)"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                 <option disabled value="">Seleccione tipo</option>
-                                <option v-for="item in typeProduct" :key="item.id" :value="item.name"> {{ item.name }} </option>
+                                <option v-for="item in typeProduct" :key="item.id" :value="item.name"> {{ item.name }}
+                                </option>
                             </select>
                         </div>
                     </div>
@@ -222,7 +226,8 @@
             message="Se añadió un nuevo producto a la solicitud" />
         <SuccessOperationModal :confirming="showModal3" title="Producto eliminado"
             message="Se quitó el producto de la solicitud" />
-        <ErrorOperationModal :showError="showErroModal" title="Error" message="El producto ya fue añadido o es inválido" />
+        <ErrorOperationModal :showError="showErroModal" title="Error"
+            message="El producto ya fue añadido o es inválido" />
     </AuthenticatedLayout>
 </template>
 
@@ -238,8 +243,8 @@ import { Head, useForm, router } from '@inertiajs/vue3';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
-import { TrashIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
+import { DeleteIcon } from "@/Components/Icons/Index";
 
 const showModal = ref(false);
 const showModal2 = ref(false);
@@ -278,8 +283,8 @@ const form = useForm(purchase ? JSON.parse(JSON.stringify(purchase)) : { ...init
 const submit = () => {
     if (purchase) {
         form.put(route('preprojects.request.update', purchase.id), {
-            onSuccess:()=>{
-                router.visit(route('preprojects.request.index', { id: purchase.preproject.id })) 
+            onSuccess: () => {
+                router.visit(route('preprojects.request.index', { id: purchase.preproject.id }))
             }
         })
     } else {

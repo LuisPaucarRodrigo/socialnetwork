@@ -135,7 +135,9 @@ class ManagementEmployeesServices
         }
 
         $employees = Employee::select('id', 'name', 'lastname', 'birthdate')
-            ->whereHas('contract', function($query){ $query->where('state', 'Active'); })
+            ->whereHas('contract', function ($query) {
+                $query->where('state', 'Active');
+            })
             ->get();
 
         $data = $employees->filter(function ($employee) use ($dates) {
@@ -247,9 +249,16 @@ class ManagementEmployeesServices
         return $employees;
     }
 
-    public function searchExternal($cost_line)
+    public function searchExternal($request)
     {
+        $searchQuery = $request->searchQuery;
+        $cost_line = $request->cost_line;
         $employees = ExternalEmployee::with('cost_line')
+            ->where(function ($query) use ($searchQuery) {
+                $query->where('name', 'like', '%' . $searchQuery . '%')
+                    ->orWhere('lastname', 'like', '%' . $searchQuery . '%')
+                    ->orWhere('dni', 'like', '%' . $searchQuery . '%');
+            })
             ->whereHas('cost_line', function ($item) use ($cost_line) {
                 $item->whereIn('name', $cost_line);
             })
@@ -258,14 +267,17 @@ class ManagementEmployeesServices
         return $employees;
     }
 
-    public function storeOrUpdateExternalEmployees($validateData, $request, $external_id)
+    public function storeOrUpdateExternalEmployees($validateData, $request, $external_id): Object
     {
         $validateData['cropped_image'] = $this->storeArchives($request->file('cropped_image'), 'image/profile/');
         $validateData['curriculum_vitae'] = $this->storeArchives($request->file('curriculum_vitae'), 'documents/curriculum_vitae/');
-        ExternalEmployee::updateOrCreate(
+        $e_external = ExternalEmployee::updateOrCreate(
             ['id' => $external_id],
             $validateData
         );
+        $e_external->load('cost_line');
+        $e_external->cropped_image = url($e_external->cropped_image ? '/image/profile/' . $e_external->cropped_image : '/image/projectimage/DefaultUser.png');
+        return $e_external;
     }
 
     public function preview($fileName): BinaryFileResponse

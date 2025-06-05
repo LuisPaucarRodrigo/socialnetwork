@@ -47,15 +47,15 @@
                 <tbody>
                     <tr v-for="item, i in dataToRender" :key="i" class="text-gray-700">
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ i+1 }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ i + 1 }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
                             <p class="text-gray-900 whitespace-no-wrap">{{ item.type }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
                             <p class="text-gray-900 whitespace-no-wrap">
-                                <button @click="downloadDocument(item.id)" class="flex items-center text-blue-600 hover:underline">
-                                    <ArrowDownIcon class="h-4 w-4 ml-1" />
+                                <button @click="downloadDocument(item.id)">
+                                    <DownloadIcon />
                                 </button>
                             </p>
                         </td>
@@ -69,8 +69,7 @@
                                 {{ item.observation }}
                             </p>
                         </td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
+                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
                             <div class="flex justify-center space-x-3">
                                 <!-- <button @click="">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -84,11 +83,11 @@
                                 </button> -->
                                 <button type="button" @click="openCostCenterModal(item)"
                                     class="text-yellow-600 whitespace-no-wrap">
-                                    <PencilIcon class="h-5 w-5 ml-1" />
+                                    <EditIcon />
                                 </button>
                                 <button type="button" @click="openCostCenterDestroyModal(item)"
                                     class="text-red-600 whitespace-no-wrap">
-                                    <TrashIcon class="h-5 w-5 ml-1" />
+                                    <DeleteIcon />
                                 </button>
                             </div>
                         </td>
@@ -96,8 +95,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between"
-        >
+        <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
             <pagination :links="grupal_documents.links" />
         </div>
 
@@ -170,26 +168,14 @@
                 </form>
             </div>
         </Modal>
-
-
-
-
-        <ConfirmDeleteModal 
-            :confirmingDeletion="confirmCostCenterDestroy" 
-            itemType="Documento"
-            :deleteFunction="deleteCostCenter" 
-            @closeModal="closeCostCenterDestroyModal" 
-            :processing="isFetching"
-        />
-
-
+        <ConfirmDeleteModal :confirmingDeletion="confirmCostCenterDestroy" itemType="Documento"
+            :deleteFunction="deleteCostCenter" @closeModal="closeCostCenterDestroyModal" :processing="isFetching" />
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
-import { TrashIcon, PencilIcon, UserGroupIcon, ArrowDownIcon } from '@heroicons/vue/24/outline';
 import { notify, notifyError } from '@/Components/Notification';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -197,13 +183,11 @@ import InputError from '@/Components/InputError.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { formattedDate, setAxiosErrors, toFormData } from '@/utils/utils';
 import Modal from '@/Components/Modal.vue';
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import Pagination from "@/Components/Pagination.vue";
 import InputFile from '@/Components/InputFile.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { Toaster } from 'vue-sonner';
-
-
+import { DeleteIcon, EditIcon, DownloadIcon } from '@/Components/Icons/Index';
 
 const { grupal_documents, types } = defineProps({
     grupal_documents: Object,
@@ -215,14 +199,14 @@ const dataToRender = ref(grupal_documents.data)
 //Create and Update
 const isFetching = ref(false)
 const showCostCenterModal = ref(false)
-const openCostCenterModal = (item=null) => {
+const openCostCenterModal = (item = null) => {
     showCostCenterModal.value = true
-    if (item){form.defaults({...item}); form.reset()}
+    if (item) { form.defaults({ ...item }); form.reset() }
 }
 const closeCostCenterModal = () => {
     showCostCenterModal.value = false;
     form.clearErrors()
-    form.defaults({...initState})
+    form.defaults({ ...initState })
     form.reset()
 }
 const initState = {
@@ -231,27 +215,27 @@ const initState = {
     date: '',
     observation: '',
 }
-const form = useForm({...initState})
+const form = useForm({ ...initState })
 const submitCostCenterModal = () => {
     isFetching.value = true
     const formToSend = toFormData(form.data());
-    let url = form.id 
-        ? route("document.grupal_documents.update", {gd_id: form.id,}) 
-        : route("document.grupal_documents.store") 
-    axios.post(url,formToSend)
-        .then((res)=>{
+    let url = form.id
+        ? route("document.grupal_documents.update", { gd_id: form.id, })
+        : route("document.grupal_documents.store")
+    axios.post(url, formToSend)
+        .then((res) => {
             if (form.id) {
                 const index = dataToRender.value.findIndex((item) => item.id == form.id);
                 dataToRender.value[index] = res.data
-            } else {dataToRender.value.push(res.data);}
+            } else { dataToRender.value.push(res.data); }
             closeCostCenterModal();
             notify("Documento Guardado");
         })
-        .catch(e=>{
-            if (e.response?.data?.errors) {setAxiosErrors(e.response.data.errors, form);} 
-            else {notifyError("Server Error");}
+        .catch(e => {
+            if (e.response?.data?.errors) { setAxiosErrors(e.response.data.errors, form); }
+            else { notifyError("Server Error"); }
         })
-        .finally(()=>{
+        .finally(() => {
             isFetching.value = false;
         });
 }
@@ -270,18 +254,18 @@ const closeCostCenterDestroyModal = () => {
 }
 const deleteCostCenter = () => {
     isFetching.value = true
-    axios.delete(route("document.grupal_documents.destroy", {gd_id: CostCenterToDelete.value.id}))
-        .then((res)=>{
+    axios.delete(route("document.grupal_documents.destroy", { gd_id: CostCenterToDelete.value.id }))
+        .then((res) => {
             const index = dataToRender.value.findIndex((item) => item.id == CostCenterToDelete.value.id);
             dataToRender.value.splice(index, 1);
             closeCostCenterDestroyModal();
             notify("Documento Grupal Eliminado");
         })
-        .catch(e=>{
-            if (e.response?.data?.errors) {setAxiosErrors(e.response.data.errors, form);} 
-            else {notifyError("Server Error");}
+        .catch(e => {
+            if (e.response?.data?.errors) { setAxiosErrors(e.response.data.errors, form); }
+            else { notifyError("Server Error"); }
         })
-        .finally(()=>{
+        .finally(() => {
             isFetching.value = false;
         });
 }

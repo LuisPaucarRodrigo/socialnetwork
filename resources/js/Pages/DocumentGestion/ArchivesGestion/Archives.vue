@@ -54,7 +54,8 @@
               Versión
             </th>
             <th
-              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600 " colspan="2">
+              class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600 "
+              colspan="2">
               Comentarios
             </th>
             <th
@@ -256,13 +257,11 @@
 
               <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                 <div class="flex justify-center items-center space-x-3">
-                  <button @click="downloadDocument(archive.id)"
-                    class="flex items-center text-blue-600 hover:underline">
-                    <ArrowDownIcon class="h-4 w-4 ml-1" />
+                  <button @click="downloadDocument(archive.id)">
+                    <DownloadIcon />
                   </button>
-                  <button @click="confirmDeleteDocument(archive.id)"
-                    class="flex items-center text-red-600 hover:underline">
-                    <TrashIcon class="h-4 w-4" />
+                  <button @click="confirmDeleteDocument(archive.id)">
+                    <DeleteIcon />
                   </button>
                 </div>
               </td>
@@ -304,7 +303,8 @@
 
                 </th>
                 <th
-                  class="border-b-2 border-gray-200 bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400" colspan="2">
+                  class="border-b-2 border-gray-200 bg-white px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-400"
+                  colspan="2">
                   Usuario
                 </th>
                 <th
@@ -341,22 +341,22 @@
 
                 </td>
                 <td :class="[
-                      'text-gray-700',
-                      {
-                        'border-l-8': true,
-                        'border-yellow-500': archive_user.state === 'Pendiente' && Date.parse(archive_user.due_date) > Date.now() + (3 * 24 * 60 * 60 * 1000) && Date.parse(archive_user.due_date) <= Date.now() + (7 * 24 * 60 * 60 * 1000),
-                        'border-red-500': archive_user.state === 'Pendiente' && Date.parse(archive_user.due_date) <= Date.now() + (3 * 24 * 60 * 60 * 1000),
-                        'border-green-500': archive_user.state === 'Aprobado',
-                        'border-blue-500': archive_user.state === 'Observado',
-                        'border-orange-500': archive_user.state === 'Desestimado',
-                      }
-                    ]" class="  bg-white  text-sm text-center">
+                  'text-gray-700',
+                  {
+                    'border-l-8': true,
+                    'border-yellow-500': archive_user.state === 'Pendiente' && Date.parse(archive_user.due_date) > Date.now() + (3 * 24 * 60 * 60 * 1000) && Date.parse(archive_user.due_date) <= Date.now() + (7 * 24 * 60 * 60 * 1000),
+                    'border-red-500': archive_user.state === 'Pendiente' && Date.parse(archive_user.due_date) <= Date.now() + (3 * 24 * 60 * 60 * 1000),
+                    'border-green-500': archive_user.state === 'Aprobado',
+                    'border-blue-500': archive_user.state === 'Observado',
+                    'border-orange-500': archive_user.state === 'Desestimado',
+                  }
+                ]" class="  bg-white  text-sm text-center">
                 </td>
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
 
-                    <p class="text-gray-900">
-                      {{ archive_user.user.name }}
-                    </p>
+                  <p class="text-gray-900">
+                    {{ archive_user.user.name }}
+                  </p>
 
                 </td>
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
@@ -501,8 +501,8 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import { Head, useForm, router, Link } from '@inertiajs/vue3';
-import { TrashIcon, ArrowDownIcon, BarsArrowUpIcon } from '@heroicons/vue/24/outline';
 import { formattedDate } from '@/utils/utils';
+import { DeleteIcon, DownloadIcon } from '@/Components/Icons/Index';
 
 const props = defineProps({
   archives: Object,
@@ -631,8 +631,8 @@ const deleteDocument = () => {
 };
 
 function downloadDocument(documentId) {
-    const backendDocumentUrl = route('archives.download', { folder: props.folder.id, archive: documentId });
-    window.open(backendDocumentUrl);
+  const backendDocumentUrl = route('archives.download', { folder: props.folder.id, archive: documentId });
+  window.open(backendDocumentUrl);
 }
 
 

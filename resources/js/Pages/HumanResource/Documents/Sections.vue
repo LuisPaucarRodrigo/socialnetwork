@@ -1,78 +1,46 @@
 <template>
     <div>
+
         <Head title="Gestion de Secciones" />
         <AuthenticatedLayout :redirectRoute="'documents.index'">
             <Toaster richColors />
 
             <template #header> Gestión de Secciones </template>
-            <div
-                class="inline-block min-w-full overflow-hidden rounded-lg shadow"
-            >
+            <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
                 <PrimaryButton @click="openCreateSectionModal">
                     Crear Nueva Sección
                 </PrimaryButton>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
-                    <div
-                        v-for="section in dataToRender"
-                        :key="section.id"
-                        class="bg-white p-4 rounded-sm shadow-sm border border-gray-300"
-                        @dragover.prevent
-                        @drop="handleDrop(section.id)"
-                    >
+                    <div v-for="section in dataToRender" :key="section.id"
+                        class="bg-white p-4 rounded-sm shadow-sm border border-gray-300" @dragover.prevent
+                        @drop="handleDrop(section.id)">
                         <!-- Encabezado: Título y botones -->
-                        <div
-                            class="flex flex-row items-start justify-between mb-2 gap-2"
-                        >
-                            <h2
-                                class="text-sm font-semibold text-gray-800 flex-1 break-words" :class="section.is_visible && 'text-indigo-700'"
-                            >
+                        <div class="flex flex-row items-start justify-between mb-2 gap-2">
+                            <h2 class="text-sm font-semibold text-gray-800 flex-1 break-words"
+                                :class="section.is_visible && 'text-indigo-700'">
                                 {{ section.name }}
                             </h2>
                             <div class="flex flex-wrap items-center gap-2">
-                                <button
-                                    type="button"
-                                    @click="
-                                        openCreateSubdivisionModal(section.id)
-                                    "
-                                    class="ml-2"
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke-width="1.5"
-                                        stroke="currentColor"
-                                        class="w-6 h-6 text-blue-600"
-                                    >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                                        />
+                                <button type="button" @click="
+                                    openCreateSubdivisionModal(section.id)
+                                    " class="ml-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-blue-600">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                     </svg>
                                 </button>
-                                <a
-                                    :href="
-                                        route('documents.zipSection', {
-                                            sectionId: section.id,
-                                        })
-                                    "
-                                    class="text-blue-600 hover:underline"
-                                >
-                                    <ArrowDownIcon class="h-5 w-5" />
+                                <a :href="route('documents.zipSection', {
+                                    sectionId: section.id,
+                                })
+                                    ">
+                                    <DownloadIcon />
                                 </a>
-                                <button
-                                    @click="openUpdateSectionModal(section)"
-                                    class="text-orange-400 hover:underline"
-                                >
-                                    <PencilSquareIcon class="h-5 w-5" />
+                                <button @click="openUpdateSectionModal(section)">
+                                    <EditIcon />
                                 </button>
-                                <button
-                                    v-if="section.id > 10"
-                                    @click="confirmDeleteSection(section.id)"
-                                    class="text-red-600 hover:underline"
-                                >
-                                    <TrashIcon class="h-5 w-5" />
+                                <button v-if="section.id > 10" @click="confirmDeleteSection(section.id)">
+                                    <DeleteIcon />
                                 </button>
                             </div>
                         </div>
@@ -83,61 +51,42 @@
                         <!-- Subdivisiones -->
                         <!-- Subdivisiones -->
                         <div class="space-y-2">
-                            <div
-                                v-for="subdivision in section.subdivisions"
-                                :key="subdivision.id"
+                            <div v-for="subdivision in section.subdivisions" :key="subdivision.id"
                                 class="flex items-start justify-between hover:bg-gray-100 hover:border hover:border-black hover:rounded border-transparent transition"
-                                draggable="true"
-                                @dragstart="
+                                draggable="true" @dragstart="
                                     handleDragStart(subdivision, section.id)
-                                "
-                            >
+                                    ">
                                 <!-- Nombre (65%) -->
-                                <p
-                                    class="text-sm text-gray-700 w-2/3 break-words"
-                                >
-                                    <span class="font-medium"  :class="subdivision.is_visible && 'text-indigo-700'">{{
+                                <p class="text-sm text-gray-700 w-2/3 break-words">
+                                    <span class="font-medium" :class="subdivision.is_visible && 'text-indigo-700'">{{
                                         subdivision.name
                                     }}</span>
                                 </p>
 
                                 <!-- Botones (35%) -->
-                                <div
-                                    class="flex items-center justify-end space-x-2 w-1/3"
-                                >
-                                    <a
-                                        :href="
-                                            route('documents.zipSubdivision', {
-                                                section: subdivision.section_id,
-                                                subdivisionId: subdivision.id,
-                                            })
-                                        "
-                                        class="text-blue-600 hover:underline"
-                                    >
-                                        <ArrowDownIcon class="h-5 w-5" />
+                                <div class="flex items-center justify-end space-x-2 w-1/3">
+                                    <a :href="route('documents.zipSubdivision', {
+                                        section: subdivision.section_id,
+                                        subdivisionId: subdivision.id,
+                                    })
+                                        ">
+                                        <DownloadIcon />
                                     </a>
-                                    <button
-                                        @click="
-                                            openUpdateSubdivisionModal(
-                                                section.id,
-                                                subdivision
-                                            )
-                                        "
-                                        class="text-orange-400 hover:underline"
-                                    >
-                                        <PencilSquareIcon class="h-5 w-5" />
+                                    <button @click="
+                                        openUpdateSubdivisionModal(
+                                            section.id,
+                                            subdivision
+                                        )
+                                        ">
+                                        <EditIcon />
                                     </button>
-                                    <button
-                                        v-if="subdivision.id > 154"
-                                        @click="
-                                            confirmDeleteSubdivision(
-                                                section.id,
-                                                subdivision.id
-                                            )
-                                        "
-                                        class="text-red-600 hover:underline"
-                                    >
-                                        <TrashIcon class="h-5 w-5" />
+                                    <button v-if="subdivision.id > 154" @click="
+                                        confirmDeleteSubdivision(
+                                            section.id,
+                                            subdivision.id
+                                        )
+                                        ">
+                                        <DeleteIcon />
                                     </button>
                                 </div>
                             </div>
@@ -154,33 +103,23 @@
                                 : "Actualizar Sección"
                         }}
                     </h2>
-                    <form
-                        @submit.prevent="
-                            isCreateSectionModalOpen
-                                ? submit(false)
-                                : submit(true)
-                        "
-                    >
+                    <form @submit.prevent="
+                        isCreateSectionModalOpen
+                            ? submit(false)
+                            : submit(true)
+                        ">
                         <div class="space-y-12">
                             <div class="border-b border-gray-900/10 pb-12 space-y-4">
                                 <div>
-                                    <InputLabel for="name"
-                                        >{{
-                                            isCreateSectionModalOpen
-                                                ? "Agregar nueva sección:"
-                                                : "Actualizar Secciòn:"
-                                        }}
+                                    <InputLabel for="name">{{
+                                        isCreateSectionModalOpen
+                                            ? "Agregar nueva sección:"
+                                            : "Actualizar Secciòn:"
+                                    }}
                                     </InputLabel>
                                     <div class="mt-2">
-                                        <TextInput
-                                            type="text"
-                                            v-model="form.name"
-                                            id="name"
-                                            autocomplete="off"
-                                        />
-                                        <InputError
-                                            :message="form.errors.name"
-                                        />
+                                        <TextInput type="text" v-model="form.name" id="name" autocomplete="off" />
+                                        <InputError :message="form.errors.name" />
                                     </div>
                                 </div>
                                 <div>
@@ -188,28 +127,21 @@
                                         <p class="text-sm text-gray-900 ">
                                             ¿Mostrar en el estatus RRHH?
                                         </p>
-                                        <input class="text-gray-700 focus:ring-gray-700" v-model="form.is_visible" :id="`isVisible`"
-                                            type="checkbox" />
+                                        <input class="text-gray-700 focus:ring-gray-700" v-model="form.is_visible"
+                                            :id="`isVisible`" type="checkbox" />
                                     </label>
                                 </div>
-                                <div
-                                    class="mt-6 flex items-center justify-end gap-x-6"
-                                >
-                                    <SecondaryButton
-                                        @click="
-                                            isCreateSectionModalOpen
-                                                ? closeCreateSectionModal()
-                                                : closeUpdateSectionModal()
-                                        "
-                                    >
+                                <div class="mt-6 flex items-center justify-end gap-x-6">
+                                    <SecondaryButton @click="
+                                        isCreateSectionModalOpen
+                                            ? closeCreateSectionModal()
+                                            : closeUpdateSectionModal()
+                                        ">
                                         Cancelar
                                     </SecondaryButton>
-                                    <PrimaryButton
-                                        type="submit"
-                                        :class="{
-                                            'opacity-25': form.processing,
-                                        }"
-                                    >
+                                    <PrimaryButton type="submit" :class="{
+                                        'opacity-25': form.processing,
+                                    }">
                                         {{
                                             isCreateSectionModalOpen
                                                 ? "Guardar"
@@ -223,11 +155,8 @@
                 </div>
             </Modal>
 
-            <Modal
-                :show="
-                    isCreateSubdivisionModalOpen || isUpdateSubdivisionModalOpen
-                "
-            >
+            <Modal :show="isCreateSubdivisionModalOpen || isUpdateSubdivisionModalOpen
+                ">
                 <div class="p-6">
                     <h2 class="text-base font-medium leading-7 text-gray-900">
                         {{
@@ -236,13 +165,11 @@
                                 : "Actualizar Subdivisión"
                         }}
                     </h2>
-                    <form
-                        @submit.prevent="
-                            isCreateSubdivisionModalOpen
-                                ? submitSub(false)
-                                : submitSub(true)
-                        "
-                    >
+                    <form @submit.prevent="
+                        isCreateSubdivisionModalOpen
+                            ? submitSub(false)
+                            : submitSub(true)
+                        ">
                         <div class="space-y-12">
                             <div class="border-b border-gray-900/10 pb-12 space-y-4">
                                 <div>
@@ -252,15 +179,8 @@
                                             : "Actualizar Subdivisión"
                                     }}</InputLabel>
                                     <div class="mt-2">
-                                        <TextInput
-                                            type="text"
-                                            v-model="formSub.name"
-                                            id="name"
-                                            autocomplete="off"
-                                        />
-                                        <InputError
-                                            :message="formSub.errors.name"
-                                        />
+                                        <TextInput type="text" v-model="formSub.name" id="name" autocomplete="off" />
+                                        <InputError :message="formSub.errors.name" />
                                     </div>
                                 </div>
                                 <div>
@@ -268,33 +188,25 @@
                                         <p class="text-sm text-gray-900 ">
                                             ¿Mostrar en el estatus RRHH?
                                         </p>
-                                        <input class="text-gray-700 focus:ring-gray-700" v-model="formSub.is_visible" :id="`isVisible`"
-                                            type="checkbox" />
+                                        <input class="text-gray-700 focus:ring-gray-700" v-model="formSub.is_visible"
+                                            :id="`isVisible`" type="checkbox" />
                                     </label>
                                 </div>
-                                <div
-                                    class="mt-6 flex items-center justify-end gap-x-6"
-                                >
-                                    <SecondaryButton
-                                        @click="
-                                            isCreateSubdivisionModalOpen
-                                                ? closeCreateSubdivisionModal()
-                                                : closeUpdateSubdivisionModal()
-                                        "
-                                    >
+                                <div class="mt-6 flex items-center justify-end gap-x-6">
+                                    <SecondaryButton @click="
+                                        isCreateSubdivisionModalOpen
+                                            ? closeCreateSubdivisionModal()
+                                            : closeUpdateSubdivisionModal()
+                                        ">
                                         Cancelar
                                     </SecondaryButton>
-                                    <PrimaryButton
-                                        type="submit"
-                                        :class="{
-                                            'opacity-25': form.processing,
-                                        }"
-                                        >{{
-                                            isCreateSubdivisionModalOpen
-                                                ? "Guardar"
-                                                : "Actualizar"
-                                        }}</PrimaryButton
-                                    >
+                                    <PrimaryButton type="submit" :class="{
+                                        'opacity-25': form.processing,
+                                    }">{{
+                                        isCreateSubdivisionModalOpen
+                                            ? "Guardar"
+                                            : "Actualizar"
+                                    }}</PrimaryButton>
                                 </div>
                             </div>
                         </div>
@@ -302,26 +214,12 @@
                 </div>
             </Modal>
 
-            <ConfirmCreateModal
-                :confirmingcreation="showModal"
-                itemType="Sección de documentos"
-            />
-            <ConfirmUpdateModal
-                :confirmingupdate="showModalEdit"
-                itemType="Sección de documentos"
-            />
-            <ConfirmDeleteModal
-                :confirmingDeletion="create_section"
-                itemType="Sección"
-                :deleteFunction="deleteSection"
-                @closeModal="closeModalSection"
-            />
-            <ConfirmDeleteModal
-                :confirmingDeletion="create_subdivision"
-                itemType="Subdivisión"
-                :deleteFunction="deleteSubdivision"
-                @closeModal="closeModalSubdivision"
-            />
+            <ConfirmCreateModal :confirmingcreation="showModal" itemType="Sección de documentos" />
+            <ConfirmUpdateModal :confirmingupdate="showModalEdit" itemType="Sección de documentos" />
+            <ConfirmDeleteModal :confirmingDeletion="create_section" itemType="Sección" :deleteFunction="deleteSection"
+                @closeModal="closeModalSection" />
+            <ConfirmDeleteModal :confirmingDeletion="create_subdivision" itemType="Subdivisión"
+                :deleteFunction="deleteSubdivision" @closeModal="closeModalSubdivision" />
         </AuthenticatedLayout>
     </div>
 </template>
@@ -335,18 +233,14 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
-import { Head, useForm, router, Link } from "@inertiajs/vue3";
-import {
-    TrashIcon,
-    PencilSquareIcon,
-    ArrowDownIcon,
-} from "@heroicons/vue/24/outline";
+import { Head, useForm } from "@inertiajs/vue3";
 import { ref } from "vue";
 import Modal from "@/Components/Modal.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import { setAxiosErrors, toFormData } from "@/utils/utils";
-import { notify, notifyError, notifyWarning } from "@/Components/Notification";
+import { setAxiosErrors } from "@/utils/utils";
+import { notify, notifyError } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
+import { EditIcon, DeleteIcon, DownloadIcon } from "@/Components/Icons/Index";
 
 const showModal = ref(false);
 const showModalEdit = ref(false);
@@ -505,9 +399,9 @@ const submitSub = async (update) => {
     const url = !update
         ? route("documents.storeSubdivision", { section: sectionId.value })
         : route("documents.updateSubdivision", {
-              section: sectionId.value,
-              subdivision: formSub.id,
-          });
+            section: sectionId.value,
+            subdivision: formSub.id,
+        });
     const formData = formSub.data()
 
     try {
@@ -520,8 +414,8 @@ const submitSub = async (update) => {
         );
 
         if (section) {
-            const index = section.subdivisions.findIndex((sd)=>sd.id === newSub.id)
-            if(index === -1) section.subdivisions.push(newSub)
+            const index = section.subdivisions.findIndex((sd) => sd.id === newSub.id)
+            if (index === -1) section.subdivisions.push(newSub)
             else section.subdivisions[index] = newSub
         } else {
             console.warn("Sección no encontrada para la subdivisión");
@@ -568,7 +462,7 @@ const deleteSubdivision = async () => {
                 (s) => s.id === sectionId.value
             );
             if (section) {
-                const index = section.subdivisions.findIndex((sd)=>sd.id === subdivisionToDelete.id)
+                const index = section.subdivisions.findIndex((sd) => sd.id === subdivisionToDelete.id)
                 section.subdivisions.splice(index, 1);
             }
             closeModalSubdivision();

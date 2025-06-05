@@ -7,7 +7,7 @@
             Títulos
         </template>
         <div class="mt-6 flex items-center justify-start gap-x-3">
-            <PrimaryButton v-if="hasPermission('ProjectManager')" @click="add_title" type="button">
+            <PrimaryButton @click="add_title" type="button">
                 + Agregar
             </PrimaryButton>
             <PrimaryButton @click="management_codes" type="button">
@@ -20,7 +20,7 @@
                     <TableTitle>Título</TableTitle>
                     <TableTitle>Tipo</TableTitle>
                     <TableTitle>Códigos</TableTitle>
-                    <TableTitle v-if="hasPermission('ProjectManager')"></TableTitle>
+                    <TableTitle></TableTitle>
                 </tr>
             </template>
             <template #tbody>
@@ -28,13 +28,13 @@
                     <TableRow>{{ title.title }}</TableRow>
                     <TableRow>{{ title.type }}</TableRow>
                     <TableRow>{{title.codes.map((item) => item.code).join(', ')}}</TableRow>
-                    <TableRow v-if="hasPermission('ProjectManager')">
+                    <TableRow>
                         <div class="flex justify-center space-x-3">
                             <button type="button" @click="openEditTitleModal(title)">
-                                <PencilIcon class="h-5 w-5 text-yellow-600" />
+                                <EditIcon />
                             </button>
                             <button type="button" @click="confirmDeleteTitle(title.id)">
-                                <TrashIcon class="h-5 w-5 text-red-600" />
+                                <DeleteIcon />
                             </button>
                         </div>
                     </TableRow>
@@ -135,7 +135,6 @@ import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
-import { TrashIcon, PencilIcon, DocumentArrowUpIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
@@ -143,6 +142,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
+import { DeleteIcon, EditIcon } from "@/Components/Icons/Index";
 
 const create_title = ref(false);
 const showModal = ref(false);
@@ -158,10 +158,6 @@ const props = defineProps({
     userPermissions: Array,
     stages: Object,
 })
-
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission)
-}
 
 const add_title = () => {
     create_title.value = true;

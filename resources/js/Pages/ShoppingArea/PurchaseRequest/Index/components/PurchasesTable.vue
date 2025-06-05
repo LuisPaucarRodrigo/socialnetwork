@@ -50,15 +50,15 @@
                 <TableRow>
                     <div class="flex space-x-3 justify-left">
                         <Link :href="route('purchasingrequest.details', { id: purchase.id })">
-                        <EyeIcon class="w-5 h-5 text-green-400" />
+                        <ShowIcon />
                         </Link>
                         <div v-if="auth.user.role_id == 1">
                             <Link v-if="purchase.project == null && purchase.state != 'Aceptado'"
                                 :href="route('purchasesrequest.edit', { id: purchase.id })">
-                            <PencilSquareIcon class="w-5 h-5 text-yellow-400" />
+                            <EditIcon color="text-yellow-400" />
                             </Link>
                             <span v-else>
-                                <PencilSquareIcon class="w-5 h-5 text-gray-400" />
+                                <EditIcon color="text-gray-400" />
                             </span>
                         </div>
                         <div>
@@ -82,10 +82,10 @@
                         <div v-if="auth.user.role_id == 1">
                             <button v-if="purchase.state != 'Aceptado'" type="button"
                                 @click="confirmPurchasesDeletion(purchase.id)">
-                                <TrashIcon class="w-5 h-5 text-red-500" />
+                                <DeleteIcon />
                             </button>
                             <span v-else>
-                                <TrashIcon class="w-5 h-5 text-gray-500" />
+                                <DeleteIcon />
                             </span>
                         </div>
                     </div>
@@ -100,13 +100,14 @@
     </div>
 </template>
 <script setup>
+import { DeleteIcon, EditIcon, ShowIcon } from '@/Components/Icons/Index';
 import { notifyError } from '@/Components/Notification';
 import Pagination from '@/Components/Pagination.vue';
 import TableRow from '@/Components/TableRow.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import { formattedDate } from '@/utils/utils';
-import { ArrowDownTrayIcon, EyeIcon, PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { ArrowDownTrayIcon } from '@heroicons/vue/24/outline';
 import { Link, router } from '@inertiajs/vue3';
 
 const { purchases, auth, userPermissions, confirmPurchasesDeletion } = defineProps({

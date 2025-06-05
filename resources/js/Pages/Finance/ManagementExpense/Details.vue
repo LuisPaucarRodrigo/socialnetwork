@@ -3,7 +3,7 @@
     <Head title="Gestion de Gastos Cuadrilla" />
     <AuthenticatedLayout :redirectRoute="'managementexpense.index'">
         <template #header>
-            {{ expense.code }}  
+            {{ expense.code }}
         </template>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-10">
@@ -23,7 +23,7 @@
                 <div class="mb-4">
                     <p class="text-sm text-gray-700 font-medium">Monto Total:</p>
                     <p class="text-lg text-gray-900">{{ expense.currency === 'dolar' ? '$' : 'S/.' }} {{
-        (expense.total_amount).toFixed(2) }}</p>
+                        (expense.total_amount).toFixed(2) }}</p>
                 </div>
                 <div class="mb-4">
                     <p class="text-sm text-gray-700 font-medium">Fecha Límite de Aprobación:</p>
@@ -31,10 +31,9 @@
                 </div>
                 <div class="mb-4">
                     <p class="text-sm text-gray-700 font-medium">Cotización/PDF:</p>
-                    <button @click="openPreviewDocumentModal(expense.id)"
-                        class="text-lg text-green-600 hover:underline flex items-center">
+                    <button @click="openPreviewDocumentModal(expense.id)">
                         Previsualizar
-                        <EyeIcon class="h-6 w-6 ml-1" />
+                        <ShowIcon />
                     </button>
                 </div>
                 <div class="mb-4">
@@ -67,12 +66,13 @@
                 </div>
                 <div class="mb-4">
                     <p class="text-sm text-gray-700 font-medium">Fecha límite de compra:</p>
-                    <p class="text-lg text-gray-900">{{ expense.purchasing_requests.due_date ? formattedDate(expense.purchasing_requests.due_date) : 'No hay fecha definida' }}</p>
+                    <p class="text-lg text-gray-900">{{ expense.purchasing_requests.due_date ?
+                        formattedDate(expense.purchasing_requests.due_date) : 'No hay fecha definida' }}</p>
                 </div>
                 <div class="mb-4">
-                    <p class="text-sm text-gray-700 font-medium">IGV: ({{ expense.igv_percentage*100 }}%)</p>
+                    <p class="text-sm text-gray-700 font-medium">IGV: ({{ expense.igv_percentage * 100 }}%)</p>
                     <p class="text-lg text-gray-900 whitespace-nowrap">
-                        {{ expense.igv ? 'Si' : 'No' }} 
+                        {{ expense.igv ? 'Si' : 'No' }}
                     </p>
                 </div>
             </div>
@@ -114,7 +114,7 @@
                                     class="text-center border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-xs font-semibold uppercase tracking-wider text-gray-600">
                                     P.U.
                                 </th>
-                                
+
                                 <th v-if="expense.igv"
                                     class="w-32 border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                                     Sin IGV
@@ -126,7 +126,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                           
+
                             <tr v-for="(item, index) in (expense.products)" :key="index"
                                 class="text-gray-700 hover:bg-gray-200 bg-white">
                                 <td class="border-b border-gray-200 px-5 py-5 text-sm">
@@ -157,22 +157,26 @@
                                 <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-nowrap text-center">
                                         {{ expense.currency === 'dolar' ? '$' : 'S/.' }} {{
-                                            (item.pivot?.unitary_amount * (1/(1+props.expense.igv_percentage))).toFixed(2) }}
+                                            (item.pivot?.unitary_amount * (1 / (1 +
+                                                props.expense.igv_percentage))).toFixed(2)
+                                        }}
                                     </p>
                                 </td>
                                 <td v-if="expense.igv"
                                     class=" w-32 border-b border-gray-200 px-5 py-5 text-sm text-center">
                                     <p class="text-gray-900 whitespace-nowrap">
                                         {{ expense.currency === 'dolar' ? '$' : 'S/.' }} {{
-                                           (item.pivot?.unitary_amount * (expense.igv ? 1/(1+props.expense.igv_percentage) :(1+props.expense.igv_percentage)) 
-                                           * item.pivot?.quantity).toFixed(2) }}
+                                            (item.pivot?.unitary_amount * (expense.igv ? 1 / (1 +
+                                                props.expense.igv_percentage)
+                                                : (1 + props.expense.igv_percentage))
+                                                * item.pivot?.quantity).toFixed(2) }}
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-nowrap text-right">
                                         {{ expense.currency === 'dolar' ? '$' : 'S/.' }} {{
-                                            ((item.pivot?.unitary_amount * item.pivot?.quantity).toFixed(2) / 
-                                            (expense.igv ? 1 :(1+props.expense.igv_percentage))).toFixed(2) }}
+                                            ((item.pivot?.unitary_amount * item.pivot?.quantity).toFixed(2) /
+                                                (expense.igv ? 1 : (1 + props.expense.igv_percentage))).toFixed(2) }}
                                     </p>
                                 </td>
                             </tr>
@@ -241,9 +245,9 @@
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { EyeIcon } from '@heroicons/vue/24/outline';
 import { Head } from '@inertiajs/vue3';
 import { formattedDate } from '@/utils/utils';
+import { ShowIcon } from '@/Components/Icons/Index';
 
 const props = defineProps({
     expense: Object
@@ -260,11 +264,11 @@ function getTotals(products, hasIGV) {
     let igv = 0;
     let total = 0;
     products.forEach(item => {
-        subTotal += item.pivot.quantity * item.pivot.unitary_amount/(hasIGV?1:(1+props.expense.igv_percentage)) 
+        subTotal += item.pivot.quantity * item.pivot.unitary_amount / (hasIGV ? 1 : (1 + props.expense.igv_percentage))
     });
     if (hasIGV) {
         total = subTotal.toFixed(2)
-        subTotal = (total/(1+props.expense.igv_percentage)).toFixed(2)
+        subTotal = (total / (1 + props.expense.igv_percentage)).toFixed(2)
         igv = (total - subTotal).toFixed(2)
     } else {
         subTotal = subTotal.toFixed(2)

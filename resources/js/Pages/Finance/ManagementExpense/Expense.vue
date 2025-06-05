@@ -70,14 +70,14 @@
                     </thead>
                     <tbody>
                         <tr v-for="expense in expenses.data" :key="expense.id" class="text-gray-700" :class="[
-        'text-gray-700',
-        {
-            'border-l-8': true,
-            'border-green-500': expense.state != 0 && expense.state != null,
-            'border-yellow-500': Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) >= 4 && Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) <= 7 && expense.state != 1,
-            'border-red-500': Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) <= 3 && expense.state != 1,
-        }
-    ]">
+                            'text-gray-700',
+                            {
+                                'border-l-8': true,
+                                'border-green-500': expense.state != 0 && expense.state != null,
+                                'border-yellow-500': Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) >= 4 && Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) <= 7 && expense.state != 1,
+                                'border-red-500': Math.ceil((new Date(expense.quote_deadline) - new Date()) / (1000 * 3600 * 24)) <= 3 && expense.state != 1,
+                            }
+                        ]">
 
                             <template v-if="expense.purchasing_request_id != null">
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -104,34 +104,31 @@
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
                                     <p class="text-gray-900 whitespace-no-wrap">{{ expense.currency === 'dolar' ? '$' :
-        'S/.' }} {{ (expense.total_amount).toFixed(2) }}</p>
+                                        'S/.' }} {{ (expense.total_amount).toFixed(2) }}</p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(expense.quote_deadline)
-                                        }}
+                                    }}
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-no-wrap">{{
-        formattedDate(expense.purchasing_requests.due_date)
-    }}
+                                        formattedDate(expense.purchasing_requests.due_date)
+                                        }}
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                    <button @click="openPreviewDocumentModal(expense.id)"
-                                        class="flex justify-center items-center text-green-600 hover:underline">
+                                    <button @click="openPreviewDocumentModal(expense.id)">
                                         Previsualizar
-                                        <EyeIcon class="h-4 w-4 ml-1" />
+                                        <ShowIcon />
                                     </button>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                    <Link :href="route('managementexpense.details', { purchase_quote: expense.id })"
-                                        class="flex items-center text-blue-500 hover:underline">
-                                    <EyeIcon class="h-4 w-4 ml-1" />
+                                    <Link :href="route('managementexpense.details', { purchase_quote: expense.id })">
+                                    <ShowIcon />
                                     </Link>
                                 </td>
-                                <td
-                                    class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                                <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <div v-if="expense.purchasing_requests.state == 'En progreso' && expense.state == null"
                                         class="flex space-x-3 justify-center">
                                         <Link :href="route('managementexpense.payment', { id: expense.id })"
@@ -172,10 +169,10 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
-import { EyeIcon } from '@heroicons/vue/24/outline';
 import { Head, router, Link } from '@inertiajs/vue3';
 import { formattedDate } from '@/utils/utils';
 import { ref } from 'vue';
+import ShowIcon from '@/Components/Icons/ShowIcon.vue';
 
 const props = defineProps({
     expenses: Object,

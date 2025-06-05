@@ -47,7 +47,7 @@
                         <TableRow>{{ item.cicsa_feasibility?.user_name }}</TableRow>
                         <TableRow>
                             <button @click="openEditFeasibilityModal(item.id, item.cicsa_feasibility)">
-                                <PencilSquareIcon class="w-5 h-5 text-amber-400" />
+                                <EditIcon />
                             </button>
                         </TableRow>
                     </tr>
@@ -117,11 +117,7 @@
                                     Añadir Materiales
                                 </h2>
                                 <button @click="modalFeasibility" type="button">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="indigo" class="w-6 h-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M9 3.75H6.912a2.25 2.25 0 0 0-2.15 1.588L2.35 13.177a2.25 2.25 0 0 0-.1.661V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18v-4.162c0-.224-.034-.447-.1-.661L19.24 5.338a2.25 2.25 0 0 0-2.15-1.588H15M2.25 13.5h3.86a2.25 2.25 0 0 1 2.012 1.244l.256.512a2.25 2.25 0 0 0 2.013 1.244h3.218a2.25 2.25 0 0 0 2.013-1.244l.256-.512a2.25 2.25 0 0 1 2.013-1.244h3.859M12 3v8.25m0 0-3-3m3 3 3-3" />
-                                    </svg>
+                                    <PlusCircleIcon />
                                 </button>
                             </div>
                             <br>
@@ -176,12 +172,7 @@
                                         <td class="border-b border-gray-200 bg-white px-5 py-3 text-[13px]">
                                             <button v-if="!item.id" type="button" @click="delete_material(item.name)"
                                                 class="text-blue-900 whitespace-no-wrap">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                    stroke-width="1.5" stroke="currentColor"
-                                                    class="w-4 h-4 text-red-500">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                                </svg>
+                                                <DeleteIcon size="w-4 h-4" />
                                             </button>
                                         </td>
                                     </tr>
@@ -269,11 +260,10 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Head, useForm, router } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
-// import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import axios from 'axios';
@@ -283,7 +273,7 @@ import { Toaster } from 'vue-sonner';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableRow from '@/Components/TableRow.vue';
 import TableTitle from '@/Components/TableTitle.vue';
-import { PencilSquareIcon } from '@heroicons/vue/24/outline';
+import { DeleteIcon, PlusCircleIcon, EditIcon } from '@/Components/Icons/Index';
 
 const { feasibility, auth, searchCondition, type } = defineProps({
     feasibility: Object,
@@ -386,7 +376,7 @@ function addFeasibility() {
 function delete_material(materialName) {
     const index = form.cicsa_feasibility_materials.findIndex(material => material.name === materialName);
     if (index !== -1) {
-        form.cicsa_feasibility_materials.splice(index, 1);
+        form.cicsa_feasibility_materials.splice(index, 1)
     } else {
         console.error(`No se encontró ningún material con el nombre '${materialName}'.`);
     }

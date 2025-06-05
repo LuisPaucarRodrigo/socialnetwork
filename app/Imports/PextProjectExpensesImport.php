@@ -45,7 +45,7 @@ class PextProjectExpensesImport implements ToCollection, WithStartRow
         $normalizedValue = trim($value);
         $allowed = PextConstants::getZone();
         if (!in_array($normalizedValue, $allowed)) {
-            throw new \Exception("Fila {$rowIndex}: 'Zona' está vacío o es invalido");
+            throw new \Exception("Fila {$rowIndex}: 'Zona' está vacío o es invalido ({$normalizedValue})");
         }
         return $normalizedValue;
     }
@@ -55,7 +55,7 @@ class PextProjectExpensesImport implements ToCollection, WithStartRow
         $normalizedValue = trim($value);
         $allowed = PextConstants::getDocumentsType();
         if (!in_array($normalizedValue, $allowed)) {
-            throw new \Exception("Fila {$rowIndex}: Tipo de Documento está vacío o es invalido");
+            throw new \Exception("Fila {$rowIndex}: Tipo de Documento está vacío o es invalido ({$normalizedValue})");
         }
         return $normalizedValue;
     }

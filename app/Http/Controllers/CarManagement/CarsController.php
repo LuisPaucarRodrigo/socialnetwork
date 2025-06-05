@@ -19,6 +19,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class CarsController extends Controller
@@ -546,17 +547,19 @@ class CarsController extends Controller
     {
         $user = Auth::user();
         $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
-
+        Log::info('-------------------');
+        Log::info($userHasCarManagerPermission);
+        Log::info('-------------------');
         $checkList = !$userHasCarManagerPermission
             ? Car::where('user_id', $user->id)
             : Car::query();
-
+            
+        Log::info($checkList->get());
         $checkList = $checkList->with(['checklist' => function ($query) {
             $query->orderBy('created_at', 'desc');
-        }])->whereDoesntHave('checklist')
-            ->orWhereHas('checklist')
+        }])
             ->get();
-
+        Log::info($checkList);
         $checkList = $checkList->filter(function ($car) {
             $lastChecklist = $car->checklist->first();
             return !$lastChecklist || $lastChecklist->created_at < Carbon::now()->subDays(7);

@@ -11,13 +11,11 @@
         <div class="min-w-full p-3 rounded-lg shadow">
             <div class="mt-6 flex items-center justify-between gap-x-6">
                 <div class="flex space-x-2">
-                    <Link v-if="preprojects_status === null && hasPermission('ProjectManager')"
-                        :href="route('preprojects.create', { type: type })"
+                    <Link v-if="preprojects_status === null" :href="route('preprojects.create', { type: type })"
                         class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-500 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                     + Agregar
                     </Link>
-                    <Link v-if="preprojects_status === null && hasPermission('ProjectManager')"
-                        :href="route('project.auto.pext', { type })"
+                    <Link v-if="preprojects_status === null" :href="route('project.auto.pext', { type })"
                         class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs  uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-500 focus:border-indigo-600 focus:outline-none focus:ring-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="white" class="h-5 w-5 hover:text-gray-700">
@@ -47,17 +45,16 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 <div v-for="(item, i) in preprojects.data" :key="item.id"
                     class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
-                    <div class="grid grid-cols-2">
-                        <h2 class="text-sm font-semibold sm:col-span-1">
+                    <div class="flex justify-between gap-x-2">
+                        <h2 class="text-sm font-semibold">
                             N° {{ i }} {{ item.code }}
                         </h2>
-                        <div v-if="auth.user.role_id === 1" class="inline-flex justify-end gap-x-2 m:col-span-1">
-                            <Link :href="route('preprojects.create', { type, preproject_id: item.id })"
-                                class="text-green-600 hover:underline mb-4 flex items-start">
-                            <PencilIcon class="h-4 w-4" />
+                        <div v-if="auth.user.role_id === 1" class="flex items-center gap-x-2">
+                            <Link :href="route('preprojects.create', { type, preproject_id: item.id })">
+                            <EditIcon />
                             </Link>
-                            <button class="flex items-start" @click="confirmProjectDeletion(item.id, i)">
-                                <TrashIcon class="h-4 w-4 text-red-500" />
+                            <button @click="confirmProjectDeletion(item.id, i)">
+                                <DeleteIcon />
                             </button>
                         </div>
                     </div>
@@ -111,8 +108,7 @@
                             </Link>
                             <span v-else class="text-gray-400">Cotizaciones de Compras</span>
                         </div>
-                        <div
-                            v-if="item.has_photo_report && (item.status === null || item.status == true) && hasPermission('ProjectManager')">
+                        <div v-if="item.has_photo_report && (item.status === null || item.status == true)">
                             <Link v-if="item.customer_id == 1"
                                 :href="route('preprojects.quote', { preproject_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
@@ -153,7 +149,7 @@
                         </InputLabel>
                         <div class="mt-2">
                             <p v-for="user in assignUserForm.user_id_array" :key="user" class="text-sm">
-                                - {{ users.find(item => item.id == user).name }}
+                                - {{users.find(item => item.id == user).name}}
                             </p>
                         </div>
                     </div>
@@ -182,12 +178,12 @@ import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Pagination from '@/Components/Pagination.vue'
 import { Head, router, Link, useForm } from '@inertiajs/vue3';
-import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputError from '@/Components/InputError.vue';
+import { DeleteIcon, EditIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
     preprojects: Object,
@@ -276,7 +272,7 @@ const search = async ($search) => {
     }
     try {
         const response = await axios.post(
-            route('preprojects.index', {
+            route('preprojects.index.post', {
                 type: props.type,
                 preprojects_status: JSON.parse(props.preprojects_status)
             }), { searchQuery: $search });

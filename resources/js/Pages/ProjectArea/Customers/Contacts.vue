@@ -30,10 +30,10 @@
           <TableRow>
             <div class="flex justify-center space-x-3">
               <button @click="openEditContactModal(contact)">
-                <PencilIcon class=" h-5 w-5 text-red-600" />
+                <EditIcon />
               </button>
               <button @click="confirmDeleteContact(contact.id)">
-                <TrashIcon class="h-5 w-5 text-red-600" />
+                <DeleteIcon />
               </button>
             </div>
           </TableRow>
@@ -109,10 +109,10 @@ import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
-import { TrashIcon, PencilIcon } from '@heroicons/vue/24/outline';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
+import { DeleteIcon, EditIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
   contacts: Object,

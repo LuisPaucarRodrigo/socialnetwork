@@ -1,15 +1,15 @@
 <template>
     <Head title="Gestion de Empleados" />
     <AuthenticatedLayout :redirectRoute="'fleet.cars.index'">
-        <Toaster richColors />
         <template #header> Vehiculos </template>
+        <Toaster richColors />
         <div class="w-full">
             <TableHeader :form="formSearch" :openCreateFormCar="openCreateFormCar"
-                :userPermission="userPermissions" />
+                :userPermission="userPermissions" :role_id="auth.user.role_id" />
             <FleetCarTable :cars="cars" :userPermissions="userPermissions" v-model:formSearch="formSearch"
-                :cost_line="cost_line" :openEditFormCar="openEditFormCar" />
+                :cost_line="cost_line" :openEditFormCar="openEditFormCar" :role_id="auth.user.role_id" />
         </div>
-        <FormCar :cars="cars" :users="users" :costLine="costLine" :userPermissions="userPermissions" ref="formCar" />
+        <FormCar :cars="cars" :users="users" :costLine="costLine" :userPermissions="userPermissions" ref="formCar" :role_id="auth.user.role_id"/>
     </AuthenticatedLayout>
 </template>
 
@@ -28,7 +28,10 @@ const props = defineProps({
     userPermissions: Array,
     costLine: Object,
     users: Object,
+    auth: Object,
 });
+
+console.log(props.auth)
 
 const cars = ref(props.car);
 const formCar = ref(null)

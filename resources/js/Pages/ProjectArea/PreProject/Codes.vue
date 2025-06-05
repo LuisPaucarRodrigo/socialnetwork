@@ -7,7 +7,7 @@
             Códigos
         </template>
         <div class="mt-6 flex items-center justify-between gap-x-6">
-            <button v-if="hasPermission('ProjectManager')" @click="add_code" type="button"
+            <button @click="add_code" type="button"
                 class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                 + Agregar
             </button>
@@ -26,7 +26,7 @@
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             Descripción
                         </th>
-                        <th v-if="hasPermission('ProjectManager')"
+                        <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                         </th>
                     </tr>
@@ -39,8 +39,7 @@
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
                             <p class="text-gray-900 whitespace-no-wrap">{{ code.description }}</p>
                         </td>
-                        <td v-if="hasPermission('ProjectManager')"
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
+                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
                             <div class="flex justify-center space-x-3">
                                 <button @click="modalStoreImage(code.id)">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -58,13 +57,11 @@
                                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
                                 </button>
-                                <button type="button" @click="openEditCodeModal(code)"
-                                    class="text-yellow-600 whitespace-no-wrap">
-                                    <PencilIcon class="h-5 w-5 ml-1" />
+                                <button type="button" @click="openEditCodeModal(code)">
+                                    <EditIcon />
                                 </button>
-                                <button type="button" @click="confirmDeleteCode(code.id)"
-                                    class="text-red-600 whitespace-no-wrap">
-                                    <TrashIcon class="h-5 w-5 ml-1" />
+                                <button type="button" @click="confirmDeleteCode(code.id)">
+                                    <DeleteIcon />
                                 </button>
                             </div>
                         </td>
@@ -141,7 +138,7 @@
                             </div>
                             <button type="button" @click="removeimage(index)"
                                 class="font-medium text-red-600 hover:text-red-500">
-                                <TrashIcon class="h-5 w-5 ml-1" />
+                                <DeleteIcon />
                             </button>
                         </div>
                     </div>
@@ -191,9 +188,8 @@
                                                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                         </svg>
                                     </button>
-                                    <button type="button" @click="delete_image(item.id)"
-                                        class="text-blue-900 whitespace-no-wrap">
-                                        <TrashIcon class="h-5 w-5 ml-1 text-red-500" />
+                                    <button type="button" @click="delete_image(item.id)">
+                                        <DeleteIcon />
                                     </button>
                                 </td>
                             </tr>
@@ -223,11 +219,11 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputFile from '@/Components/InputFile.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
-import { TrashIcon, PencilIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { EditIcon, DeleteIcon } from '@/Components/Icons/Index';
 
 const create_code = ref(false);
 const showModal = ref(false);
@@ -246,10 +242,6 @@ const props = defineProps({
 })
 
 const codes = ref(props.code)
-
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission)
-}
 
 const add_code = () => {
     create_code.value = true;

@@ -32,10 +32,10 @@
                 <TableRow v-if="auth.user.role_id == 1">
                     <div class="flex space-x-3 justify-center">
                         <button type="button" @click="add_information(item)">
-                            <PencilSquareIcon class="w-6 h-6 text-yellow-400" />
+                            <EditIcon />
                         </button>
                         <button type="button" @click="confirmProviderDeletion(item)">
-                            <TrashIcon class="w-6 h-6 text-red-400" />
+                            <DeleteIcon />
                         </button>
                     </div>
                 </TableRow>
@@ -53,11 +53,11 @@
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import Pagination from '@/Components/Pagination.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import { ref } from 'vue';
 import { notify, notifyError } from '@/Components/Notification';
+import { DeleteIcon, EditIcon } from "@/Components/Icons/Index";
 
 const { auth, add_information } = defineProps({
     auth: Object,

@@ -13,7 +13,7 @@
             <RolTable :rols="rols" :editModalRol="editModalRol" :confirmRolsDeletion="confirmRolsDeletion" :showModal="showModal"/>
         </div>
         <ShowRol ref="showRol"/>
-        <FormRol ref="formRol" :permissions="permissions"/>
+        <FormRol ref="formRol" :permissions="permissions" :modules="modules"/>
         <ConfirmDeleteModal :confirmingDeletion="confirmingRolDeletion" itemType="rol" :deleteFunction="deleteRol"
             @closeModal="closeModalRol" />
     </AuthenticatedLayout>
@@ -36,7 +36,8 @@ const rolToDelete = ref(null);
 
 const props = defineProps({
     rols: Object,
-    permissions: Object
+    permissions: Object,
+    modules: Object
 });
 
 const confirmRolsDeletion = (rolId) => {

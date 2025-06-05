@@ -152,17 +152,16 @@ const createOrEditModal = () => {
         form.reset()
     }
     showModal.value = !showModal.value
-
 };
 
 function editProject(pext) {
-    form.defaults({ ...pext, cost_center_id: pext.project.cost_center.id })
+    form.defaults({ ...pext, cost_center_id: pext.project.cost })
     form.reset()
-    createOrEditModal()
+    showModal.value = !showModal.value
 }
 
 async function submit() {
-    let url = route('projectmanagement.pext.additional.store', { 'cicsa_assignation_id': form.id ?? null })
+    let url = route('projectmanagement.pext.additional.store', { cicsa_assignation_id: form.id ?? null })
     try {
         const response = await axios.post(url, { ...form.data() })
         const action = form.id ? 'update' : 'create'

@@ -2,6 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Functionality;
+use App\Models\FunctionalityPermission;
+use App\Models\Permission;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,13 +35,23 @@ class PermissionMiddleware
 
         $user = auth()->user();
         if($user->role->id === 1) return $next($request);
-        $permissionsArray = explode('|', $permissions);
+        $functionalities = $user->role->functionalities()->get()->pluck('id');
+        $permission = Permission::where('name', $permissions)->first();
 
-        foreach ($permissionsArray as $permission) {
-            if ($user->hasPermission($permission)) {
-                return $next($request);
-            }
+        $hasOne = FunctionalityPermission::whereIn('functionality_id', $functionalities)
+            ->where('permission_id', $permission->id)->first();
+        if ($hasOne) {
+            return $next($request);
         }
+
+        //PAST
+        // $permissionsArray = explode('|', $permissions);
+        // foreach ($permissionsArray as $permission) {
+            
+        //     if ($user->hasPermission($permission)) {
+        //         return $next($request);
+        //     }
+        // }
 
         // Redirecciones basadas en permisos específicos
         $redirectRoutes = [

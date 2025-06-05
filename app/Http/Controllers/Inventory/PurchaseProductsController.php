@@ -16,9 +16,10 @@ class PurchaseProductsController extends Controller
     {
         $products = Purchase_product::with('resource_type')
             ->where('state', true)
+            ->orderBy('created_at', 'desc')
             ->paginate(10);
         return Inertia::render('Inventory/PurchaseProducts/Products', [
-            'products' => $products,
+            'product' => $products,
             'type_product' => TypeProduct::all(),
             'resource_type' => ResourceType::all()
         ]);
@@ -44,6 +45,7 @@ class PurchaseProductsController extends Controller
         // Combinar los resultados de ambos filtros y crear una instancia de LengthAwarePaginator
         $combinedProducts = $productsByName->merge($productsByCode)->unique();
 
+        return response()->json($combinedProducts, 200);
         // $perPage = 10;
         // $currentPage = LengthAwarePaginator::resolveCurrentPage();
         // $currentPageProducts = $combinedProducts->slice(($currentPage - 1) * $perPage, $perPage);
@@ -55,26 +57,26 @@ class PurchaseProductsController extends Controller
         //     ['path' => url()->current(), 'query' => []]
         // );
 
-        return Inertia::render('Inventory/PurchaseProducts/Products', [
-            'products' => $combinedProducts,
-            'search' => $request
-        ]);
+        // return Inertia::render('Inventory/PurchaseProducts/Products', [
+        //     'products' => $combinedProducts,
+        //     'search' => $request
+        // ]);
     }
 
 
     public function store(Request $request)
     {
-        if($request->type_product){
+        if ($request->type_product) {
             $validateData =  $request->validate([
-                'name' => ['required','string',Rule::unique('purchase_products')],
+                'name' => ['required', 'string', Rule::unique('purchase_products')],
                 'unit' => 'required',
                 'type' => 'required|string|in:Producto,Servicio,Activo',
                 'type_product' => 'required|string',
                 'description' => 'nullable|string'
             ]);
-        }else{
+        } else {
             $validateData =  $request->validate([
-                'name' => ['required','string',Rule::unique('purchase_products')],
+                'name' => ['required', 'string', Rule::unique('purchase_products')],
                 'unit' => 'required',
                 'type' => 'required|string|in:Producto,Servicio,Activo',
                 'resource_type_id' => 'required',
@@ -82,31 +84,32 @@ class PurchaseProductsController extends Controller
             ]);
         }
 
-        Purchase_product::create($validateData);
+        $product = Purchase_product::create($validateData);
+        return response()->json($product, 200);
     }
 
     public function update(Request $request, Purchase_product $purchase_product)
     {
-        if($request->type_product){
+        if ($request->type_product) {
             $validateData =  $request->validate([
-                'name' => ['required','string',Rule::unique('purchase_products')->ignore($purchase_product)],
+                'name' => ['required', 'string', Rule::unique('purchase_products')->ignore($purchase_product)],
                 'unit' => 'required',
                 'type' => 'required|string|in:Producto,Servicio,Activo',
                 'type_product' => 'required|string',
                 'description' => 'nullable|string'
             ]);
-        }else{
+        } else {
             $validateData =  $request->validate([
-                'name' => ['required','string',Rule::unique('purchase_products')->ignore($purchase_product)],
+                'name' => ['required', 'string', Rule::unique('purchase_products')->ignore($purchase_product)],
                 'unit' => 'required',
                 'type' => 'required|string|in:Producto,Servicio,Activo',
                 'resource_type_id' => 'required',
                 'description' => 'nullable|string'
             ]);
         }
-        
 
         $purchase_product->update($validateData);
+        return response()->json($purchase_product, 200);
     }
 
     public function disable(Purchase_product $purchase_product)
@@ -125,7 +128,7 @@ class PurchaseProductsController extends Controller
             'timelife' => 'nullable|numeric'
         ]);
         $new = TypeProduct::create($data);
-        return response()->json(['new'=> $new],200);
+        return response()->json($new, 200);
     }
 
     public function resourceType(Request $request)
@@ -136,6 +139,6 @@ class PurchaseProductsController extends Controller
             'timelife' => 'required|numeric'
         ]);
         $new = ResourceType::create($data);
-        return response()->json(['new'=> $new],200);
+        return response()->json($new, 200);
     }
 }

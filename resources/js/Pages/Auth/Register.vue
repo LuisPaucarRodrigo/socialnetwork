@@ -221,7 +221,7 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(route('register'), {
+    form.post(route('register.post'), {
         onSuccess: () => {
             showModal.value = true;
             setTimeout(() => {

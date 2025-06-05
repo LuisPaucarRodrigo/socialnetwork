@@ -71,9 +71,8 @@
                                             <p class=" text-sm col-span-7 line-clamp-2">
                                                 {{ item.name }}: {{ item.phone }} </p>
                                             <!-- @click="delete_already_employee(member.pivot.id, index)" -->
-                                            <button type="button" class="col-span-1 flex justify-end"
-                                                @click="deleteContactItem(i)">
-                                                <TrashIcon class=" text-red-500 h-4 w-4" />
+                                            <button type="button" @click="deleteContactItem(i)">
+                                                <DeleteIcon />
                                             </button>
                                         </div>
                                     </div>
@@ -144,9 +143,8 @@
                                             <p class=" text-sm col-span-7 line-clamp-2 whitespace-nowrap">
                                                 {{ item?.name }} {{ item?.lastname }} - {{ item.charge }}
                                             </p>
-                                            <button type="button" class="col-span-1 flex justify-end"
-                                                @click="deleteEmployee(i)">
-                                                <TrashIcon class=" text-red-500 h-4 w-4" />
+                                            <button type="button" @click="deleteEmployee(i)">
+                                                <DeleteIcon />
                                             </button>
                                         </div>
                                     </div>
@@ -235,15 +233,11 @@ import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
-import Modal from '@/Components/Modal.vue';
 import { ref, watch } from 'vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
-import { TrashIcon } from '@heroicons/vue/24/outline';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import axios from 'axios';
-import Employees from '@/Pages/HumanResource/ManagementEmployees/Employees.vue';
+import { DeleteIcon } from "@/Components/Icons/Index";
 
 const showModal = ref(false)
 const showModalUpdate = ref(false)

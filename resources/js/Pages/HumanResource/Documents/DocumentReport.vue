@@ -1,48 +1,31 @@
 <template>
+
     <Head title="Gestion de Documentos" />
     <AuthenticatedLayout :redirectRoute="'documents.index'">
         <template #header> Documentos </template>
         <div class="flex gap-4 justify-between rounded-lg">
             <div class="flex flex-col sm:flex-row gap-4 justify-between w-full">
                 <div class="flex gap-4 items-center">
-                    <PrimaryButton
-                        v-permission-and="['documents_create']"
-                        @click="openCreateDocumentModal"
+                    <PrimaryButton v-permission-and="['documents_create']" @click="openCreateDocumentModal"
                         type="button"
-                        class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500"
-                    >
+                        class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                         + Agregar Documento
                     </PrimaryButton>
-                    <PrimaryButton
-                        v-if="hasPermission('HumanResourceManager')"
-                        @click="management_section"
+                    <PrimaryButton v-if="hasPermission('HumanResourceManager')" @click="management_section"
                         type="button"
-                        class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500"
-                    >
+                        class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                         Gestionar Secciones
                     </PrimaryButton>
 
                     <div class="sm:hidden">
                         <dropdown align="left">
                             <template #trigger>
-                                <button
-                                    @click="dropdownOpen = !dropdownOpen"
-                                    class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100"
-                                >
-                                    <svg
-                                        width="25px"
-                                        height="25px"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            d="M4 6H20M4 12H20M4 18H20"
-                                            stroke="#000000"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        />
+                                <button @click="dropdownOpen = !dropdownOpen"
+                                    class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100">
+                                    <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 6H20M4 12H20M4 18H20" stroke="#000000" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" />
                                     </svg>
                                 </button>
                             </template>
@@ -52,22 +35,16 @@
                                     <!-- Alineación a la derecha -->
                                     <div class="dropdown">
                                         <div class="dropdown-menu">
-                                            <button
-                                                @click="openCreateDocumentModal"
-                                                type="button"
-                                                class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                                            >
+                                            <button @click="openCreateDocumentModal" type="button"
+                                                class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                                 + Agregar Documento
                                             </button>
                                         </div>
                                     </div>
                                     <div class="dropdown">
                                         <div class="dropdown-menu">
-                                            <button
-                                                @click="management_section"
-                                                type="button"
-                                                class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                                            >
+                                            <button @click="management_section" type="button"
+                                                class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                                 Gestionar Secciones
                                             </button>
                                         </div>
@@ -87,103 +64,72 @@
                         <thead>
                             <tr>
                                 <th
-                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
+                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Nombre
                                 </th>
                                 <th
-                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
+                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Sección
                                 </th>
                                 <th
-                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
+                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Subdivisión
                                 </th>
                                 <th
-                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
+                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Empleado
                                 </th>
                                 <th
-                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
+                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Acciones
                                 </th>
                             </tr>
                         </thead>
 
                         <tbody class="bg-white divide-y divide-gray-200">
-                            <tr
-                                v-for="document in dataToRender"
-                                :key="document.id"
-                            >
-                                <td
-                                    class="px-6 max-w-[230px] py-4 text-sm font-medium text-gray-900"
-                                >
+                            <tr v-for="document in dataToRender" :key="document.id">
+                                <td class="px-6 max-w-[230px] py-4 text-sm font-medium text-gray-900">
                                     {{ getDocumentName(document.title) }}
                                 </td>
-                                <td
-                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
-                                >
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                     {{ document.subdivision?.section?.name }}
                                 </td>
-                                <td
-                                    class="px-6 max-w-[100px] py-4 text-sm text-gray-700"
-                                >
+                                <td class="px-6 max-w-[100px] py-4 text-sm text-gray-700">
                                     {{ document.subdivision?.name }}
                                 </td>
-                                <td
-                                    class="px-6 py-4 max-w-[150px] text-sm text-gray-700"
-                                >
+                                <td class="px-6 py-4 max-w-[150px] text-sm text-gray-700">
                                     {{ document.emp_name }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center space-x-3">
-                                        <button
-                                            v-if="
-                                                document.title &&
-                                                /\.(pdf|png|jpe?g)$/.test(
-                                                    document.title
-                                                )
-                                            "
-                                            @click="
-                                                openPreviewDocumentModal(
-                                                    document.id
-                                                )
-                                            "
-                                            class="text-green-600 hover:underline"
-                                        >
-                                            <EyeIcon class="h-5 w-5" />
+                                        <button v-if="
+                                            document.title &&
+                                            /\.(pdf|png|jpe?g)$/.test(
+                                                document.title
+                                            )
+                                        " @click="
+                                            openPreviewDocumentModal(
+                                                document.id
+                                            )
+                                            ">
+                                            <ShowIcon />
                                         </button>
-                                        <button
-                                            @click="
-                                                downloadDocument(document.id)
-                                            "
-                                            class="text-blue-600 hover:underline"
-                                        >
-                                            <ArrowDownIcon class="h-5 w-5" />
+                                        <button @click="
+                                            downloadDocument(document.id)
+                                            ">
+                                            <DownloadIcon />
                                         </button>
-                                        <button
-                                            v-permission="'documents_update'"
-                                            @click="
-                                                openEditDocumentModal(document)
-                                            "
-                                            class="text-orange-400 hover:underline"
-                                        >
-                                            <PencilIcon class="h-5 w-5" />
+                                        <button v-permission="'documents_update'" @click="
+                                            openEditDocumentModal(document)
+                                            ">
+                                            <EditIcon />
                                         </button>
-                                        <button
-                                            v-permission="'document_delete'"
-                                            @click="
-                                                confirmDeleteDocument(
-                                                    document.id
-                                                )
-                                            "
-                                            class="text-red-600 hover:underline"
-                                        >
-                                            <TrashIcon class="h-5 w-5" />
+                                        <button v-permission="'document_delete'" @click="
+                                            confirmDeleteDocument(
+                                                document.id
+                                            )
+                                            ">
+                                            <DeleteIcon />
                                         </button>
                                     </div>
                                 </td>
@@ -203,68 +149,41 @@
                             : "Actualizar Documento"
                     }}
                 </h2>
-                <form
-                    @submit.prevent="create_document ? submit() : submitEdit()"
-                >
+                <form @submit.prevent="create_document ? submit() : submitEdit()">
                     <div class="border-b border-gray-900/10 pb-12">
                         <div class="mt-2">
-                            <InputLabel for="documentFile"
-                                >Documento</InputLabel
-                            >
+                            <InputLabel for="documentFile">Documento</InputLabel>
                             <div class="mt-2">
-                                <InputFile
-                                    type="file"
-                                    v-model="form.document"
-                                    id="documentFile"
-                                />
+                                <InputFile type="file" v-model="form.document" id="documentFile" />
                                 <InputError :message="form.errors.document" />
                             </div>
                         </div>
                         <div class="mt-2">
-                            <InputLabel for="documentSection"
-                                >Sección:</InputLabel
-                            >
-                            <select
-                                v-model="form.section_id"
-                                id="documentSection"
-                                class="border rounded-md px-3 py-2 mb-3 w-full"
-                            >
+                            <InputLabel for="documentSection">Sección:</InputLabel>
+                            <select v-model="form.section_id" id="documentSection"
+                                class="border rounded-md px-3 py-2 mb-3 w-full">
                                 <option value="">Seleccionar Seccion</option>
-                                <option
-                                    v-for="section in sections"
-                                    :key="section.id"
-                                    :value="section.id"
-                                >
+                                <option v-for="section in sections" :key="section.id" :value="section.id">
                                     {{ section.name }}
                                 </option>
                             </select>
                             <InputError :message="form.errors.subdivision_id" />
                         </div>
                         <div v-if="form.section_id">
-                            <InputLabel for="documentSubdivision"
-                                >Subdivisión:</InputLabel
-                            >
+                            <InputLabel for="documentSubdivision">Subdivisión:</InputLabel>
 
                             <template v-if="filteredSubdivisions.length > 0">
-                                <select
-                                    v-model="form.subdivision_id"
-                                    id="documentSubdivision"
-                                    class="border rounded-md px-3 py-2 mb-3 w-full"
-                                >
+                                <select v-model="form.subdivision_id" id="documentSubdivision"
+                                    class="border rounded-md px-3 py-2 mb-3 w-full">
                                     <option value="">
                                         Seleccionar Subdivisión
                                     </option>
-                                    <option
-                                        v-for="subdivision in filteredSubdivisions"
-                                        :key="subdivision.id"
-                                        :value="subdivision.id"
-                                    >
+                                    <option v-for="subdivision in filteredSubdivisions" :key="subdivision.id"
+                                        :value="subdivision.id">
                                         {{ subdivision.name }}
                                     </option>
                                 </select>
-                                <InputError
-                                    :message="form.errors.subdivision_id"
-                                />
+                                <InputError :message="form.errors.subdivision_id" />
                             </template>
 
                             <template class="mt-2" v-else>
@@ -275,31 +194,15 @@
                         </div>
 
                         <div v-if="create_document" class="mt-4 flex gap-6">
-                            <label
-                                class="flex gap-3 items-center"
-                                for="empTypePlanilla"
-                            >
+                            <label class="flex gap-3 items-center" for="empTypePlanilla">
                                 Planilla
-                                <input
-                                    id="empTypePlanilla"
-                                    type="radio"
-                                    :value="1"
-                                    v-model="form.employeeType"
-                                    class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                                />
+                                <input id="empTypePlanilla" type="radio" :value="1" v-model="form.employeeType"
+                                    class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
                             </label>
-                            <label
-                                class="flex gap-3 items-center"
-                                for="empTypeTerceros"
-                            >
+                            <label class="flex gap-3 items-center" for="empTypeTerceros">
                                 Terceros
-                                <input
-                                    id="empTypeTerceros"
-                                    type="radio"
-                                    :value="0"
-                                    v-model="form.employeeType"
-                                    class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                                />
+                                <input id="empTypeTerceros" type="radio" :value="0" v-model="form.employeeType"
+                                    class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
                             </label>
                         </div>
                         <div v-else>
@@ -308,38 +211,24 @@
                             </InputLabel>
                         </div>
                         <div v-if="form.employeeType" class="mt-2">
-                            <select
-                                v-model="form.employee_id"
-                                id="docEmp"
-                                class="border rounded-md px-3 py-2 mb-3 w-full"
-                            >
+                            <select v-model="form.employee_id" id="docEmp"
+                                class="border rounded-md px-3 py-2 mb-3 w-full">
                                 <option value="" disabled>
                                     Seleccionar Empleado
                                 </option>
-                                <option
-                                    v-for="item in employees"
-                                    :key="item.id"
-                                    :value="item.id"
-                                >
+                                <option v-for="item in employees" :key="item.id" :value="item.id">
                                     {{ item.name }} {{ item.lastname }}
                                 </option>
                             </select>
                             <InputError :message="form.errors.employee_id" />
                         </div>
                         <div v-else class="mt-2">
-                            <select
-                                v-model="form.e_employee_id"
-                                id="docEmp"
-                                class="border rounded-md px-3 py-2 mb-3 w-full"
-                            >
+                            <select v-model="form.e_employee_id" id="docEmp"
+                                class="border rounded-md px-3 py-2 mb-3 w-full">
                                 <option value="" disabled>
                                     Seleccionar Empleado
                                 </option>
-                                <option
-                                    v-for="item in e_employees"
-                                    :key="item.id"
-                                    :value="item.id"
-                                >
+                                <option v-for="item in e_employees" :key="item.id" :value="item.id">
                                     {{ item.name }} {{ item.lastname }}
                                 </option>
                             </select>
@@ -348,60 +237,34 @@
 
                         <div class="mt-4 flex gap-4">
                             ¿Tiene Fecha de Vencimiento?
-                            <label
-                                class="flex gap-2 items-center"
-                                for="hasExpDateYes"
-                            >
+                            <label class="flex gap-2 items-center" for="hasExpDateYes">
                                 Si
-                                <input
-                                    id="hasExpDateYes"
-                                    type="radio"
-                                    :value="1"
-                                    v-model="form.has_exp_date"
-                                    class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                                />
+                                <input id="hasExpDateYes" type="radio" :value="1" v-model="form.has_exp_date"
+                                    class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
                             </label>
-                            <label
-                                class="flex gap-2 items-center"
-                                for="hasExpDateNo"
-                            >
+                            <label class="flex gap-2 items-center" for="hasExpDateNo">
                                 No
-                                <input
-                                    id="hasExpDateNo"
-                                    type="radio"
-                                    :value="0"
-                                    v-model="form.has_exp_date"
-                                    class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                                />
+                                <input id="hasExpDateNo" type="radio" :value="0" v-model="form.has_exp_date"
+                                    class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
                             </label>
                         </div>
                         <InputError :message="form.errors.has_exp_date" />
                         <div v-if="form.has_exp_date" class="mt-2">
-                            <TextInput
-                                id="phone"
-                                type="date"
-                                maxlength="9"
+                            <TextInput id="phone" type="date" maxlength="9"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                v-model="form.exp_date"
-                                autocomplete="off"
-                            />
+                                v-model="form.exp_date" autocomplete="off" />
                             <InputError :message="form.errors.exp_date" />
                         </div>
 
                         <div class="mt-6 flex items-center justify-end gap-x-6">
-                            <SecondaryButton
-                                @click="
-                                    create_document
-                                        ? closeModal()
-                                        : closeEditModal()
-                                "
-                            >
+                            <SecondaryButton @click="
+                                create_document
+                                    ? closeModal()
+                                    : closeEditModal()
+                                ">
                                 Cancelar
                             </SecondaryButton>
-                            <PrimaryButton
-                                type="submit"
-                                :class="{ 'opacity-25': form.processing }"
-                            >
+                            <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
                                 Guardar
                             </PrimaryButton>
                         </div>
@@ -410,20 +273,10 @@
             </div>
         </Modal>
 
-        <ConfirmDeleteModal
-            :confirmingDeletion="confirmingDocDeletion"
-            itemType="documento"
-            :deleteFunction="deleteDocument"
-            @closeModal="closeModalDoc"
-        />
-        <ConfirmCreateModal
-            :confirmingcreation="showModal"
-            itemType="documento"
-        />
-        <ConfirmUpdateModal
-            :confirmingupdate="showEditModal"
-            itemType="documento"
-        />
+        <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="documento"
+            :deleteFunction="deleteDocument" @closeModal="closeModalDoc" />
+        <ConfirmCreateModal :confirmingcreation="showModal" itemType="documento" />
+        <ConfirmUpdateModal :confirmingupdate="showEditModal" itemType="documento" />
     </AuthenticatedLayout>
 </template>
 
@@ -441,19 +294,9 @@ import TextInput from "@/Components/TextInput.vue";
 import Modal from "@/Components/Modal.vue";
 import { ref, computed, watch } from "vue";
 import { Head, useForm, router } from "@inertiajs/vue3";
-import {
-    TrashIcon,
-    ArrowDownIcon,
-    EyeIcon,
-    PencilIcon,
-    ChevronDownIcon,
-    ChevronRightIcon,
-} from "@heroicons/vue/24/outline";
 import Dropdown from "@/Components/Dropdown.vue";
-import Pagination from "@/Components/Pagination.vue";
-import Employees from "../ManagementEmployees/Employees.vue";
-import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notifyError } from "@/Components/Notification";
+import { EditIcon, DeleteIcon, ShowIcon, DownloadIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
     sections: Object,

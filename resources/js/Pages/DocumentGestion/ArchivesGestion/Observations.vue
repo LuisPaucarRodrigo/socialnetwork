@@ -122,18 +122,14 @@
   <script setup>
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
   import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
-  import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
   import SecondaryButton from '@/Components/SecondaryButton.vue';
   import InputError from '@/Components/InputError.vue';
   import InputLabel from '@/Components/InputLabel.vue';
-  import InputFile from '@/Components/InputFile.vue';
   import Pagination from '@/Components/Pagination.vue';
   import PrimaryButton from '@/Components/PrimaryButton.vue';
-  import TextInput from '@/Components/TextInput.vue';
   import Modal from '@/Components/Modal.vue';
-  import { ref, computed, watch } from 'vue';
+  import { ref } from 'vue';
   import { Head, useForm, router } from '@inertiajs/vue3';
-  import { TrashIcon, ArrowDownIcon } from '@heroicons/vue/24/outline';
   import { formattedDate } from '@/utils/utils.js';
 
   const props = defineProps({

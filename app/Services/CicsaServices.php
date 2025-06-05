@@ -77,11 +77,8 @@ class CicsaServices
         }
         if (!empty($request->search)) {
             $search = $request->search;
-            $searchTerms = [$search];
-            $projectsCicsa = $projectsCicsa->where(function ($query) use ($searchTerms) {
-                foreach ($searchTerms as $term) {
-                    $this->searchBase($query, $term);
-                }
+            $projectsCicsa->where(function ($query) use ($search) {
+                $this->searchBase($query, $search);
             });
         }
         if (count($request->cost_center) < 7) {
@@ -165,6 +162,15 @@ class CicsaServices
         });
 
         return $assignation;
+    }
+
+    public function updateAssignation($validateData,$cicsa_assignation_id): Object
+    {
+        $cicsaAssignation = CicsaAssignation::updateOrCreate(
+            ['id' => $cicsa_assignation_id],
+            $validateData
+        );
+        return $cicsaAssignation;
     }
 
     public function baseFeasibilities($type): Builder

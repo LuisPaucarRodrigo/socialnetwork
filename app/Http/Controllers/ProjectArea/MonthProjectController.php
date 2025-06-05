@@ -11,7 +11,7 @@ class MonthProjectController extends Controller
 {
     public function index()
     {
-        return Inertia::render('ProjectArea/ProjectManagement/MonthProject', [
+        return Inertia::render('ProjectArea/ProjectManagement/Administrative/MonthProject', [
             'month_projects' => MonthProject::orderBy('created_at', 'desc')->paginate(12)
         ]);
     }
