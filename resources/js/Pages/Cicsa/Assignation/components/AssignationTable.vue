@@ -27,7 +27,7 @@
                 <TableRow>{{ item.user_name }}</TableRow>
                 <TableRow>
                     <button @click="updateAssignation(item)">
-                        <EditIcon/>
+                        <EditIcon />
                     </button>
                 </TableRow>
             </tr>
@@ -45,7 +45,7 @@ import TableTitle from '@/Components/TableTitle.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { formattedDate } from '@/utils/utils.js';
-import EditIcon from '@/Components/Icons/EditIcon.vue';
+import { EditIcon } from '@/Components/Icons/Index';
 
 const { assignations, updateAssignation } = defineProps({
     assignations: Object,

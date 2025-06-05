@@ -101,9 +101,7 @@ import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
-import EditIcon from '@/Components/Icons/EditIcon.vue';
-import DownloadIcon from '@/Components/Icons/DownloadIcon.vue';
+import { DeleteIcon, EditIcon, DownloadIcon } from '@/Components/Icons/Index';
 
 const showModal = ref(false);
 const showModalEdit = ref(false);

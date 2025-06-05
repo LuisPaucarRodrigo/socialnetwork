@@ -89,7 +89,7 @@ import InputError from '@/Components/InputError.vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
-import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
+import { DeleteIcon } from "@/Components/Icons/Index";
 
 const showModal = ref(false);
 

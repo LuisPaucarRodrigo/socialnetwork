@@ -128,7 +128,7 @@ import { UserPlusIcon } from '@heroicons/vue/24/outline';
 import { formattedDate } from '@/utils/utils'
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
+import { DeleteIcon } from '@/Components/Icons/Index';
 
 const props = defineProps({
     projects: Object,

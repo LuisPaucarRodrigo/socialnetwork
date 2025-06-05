@@ -296,10 +296,7 @@ import { ref, computed, watch } from "vue";
 import { Head, useForm, router } from "@inertiajs/vue3";
 import Dropdown from "@/Components/Dropdown.vue";
 import { notifyError } from "@/Components/Notification";
-import EditIcon from "@/Components/Icons/EditIcon.vue";
-import DeleteIcon from "@/Components/Icons/DeleteIcon.vue";
-import ShowIcon from "@/Components/Icons/ShowIcon.vue";
-import DownloadIcon from "@/Components/Icons/DownloadIcon.vue";
+import { EditIcon, DeleteIcon, ShowIcon, DownloadIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
     sections: Object,

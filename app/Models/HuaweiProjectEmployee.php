@@ -12,19 +12,13 @@ class HuaweiProjectEmployee extends Model
     protected $table = 'huawei_project_employees';
 
     protected $fillable = [
-        'employee_id',
-        'huawei_project_id',
-        'role',
-        'cost'
+        'huawei_project_schedule_id',
+        'employee',
     ];
 
-    public function employee ()
+    //relations
+    public function huawei_project_schedule()
     {
-        return $this->belongsTo(Employee::class, 'employee_id');
-    }
-
-    public function huawei_project ()
-    {
-        return $this->belongsTo(HuaweiProject::class, 'huawei_project_id');
+        return $this->belongsTo(HuaweiProjectSchedule::class, 'huawei_project_schedule_id');
     }
 }

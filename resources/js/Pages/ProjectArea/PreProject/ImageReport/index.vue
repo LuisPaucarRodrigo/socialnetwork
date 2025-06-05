@@ -52,7 +52,7 @@
                                 {{ imageCode.code.code }} / {{ imageCode.code.description }}
                             </h1>
                         </div>
-                        <template v-if="hasPermission('ProjectManager')">
+                        <template>
                             <div class="sm:col-span-2 space-x-3 text-right" v-if="!imageCode.status">
                                 <PrimaryButton @click="approveImages(imageCode.id)" type="button">
                                     Aprobar Imagenes
@@ -221,11 +221,7 @@ import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { notifyError } from '@/Components/Notification';
 import { setAxiosErrors } from '@/utils/utils';
-import ShowIcon from '@/Components/Icons/ShowIcon.vue';
-import AcceptIcon from '@/Components/Icons/AcceptIcon.vue';
-import RejectIcon from '@/Components/Icons/RejectIcon.vue';
-import DownloadIcon from '@/Components/Icons/DownloadIcon.vue';
-import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
+import { ShowIcon, AcceptIcon, RejectIcon, DownloadIcon, DeleteIcon } from '@/Components/Icons/Index';
 
 const showApproveCode = ref(false);
 const title_code_id = ref(null);

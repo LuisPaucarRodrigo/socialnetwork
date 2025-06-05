@@ -32,12 +32,9 @@ class HuaweiProject extends Model
         'equipments_in_project',
         'materials_liquidated',
         'equipments_liquidated',
-        'total_earnings',
         'total_real_earnings',
         'total_real_earnings_without_deposit',
         'total_project_cost',
-        'total_employee_costs',
-        'total_essalud_employee_cost',
     ];
 
     public function huawei_site ()
@@ -201,26 +198,9 @@ class HuaweiProject extends Model
         return $this->huawei_project_real_earnings->whereNull('deposit_date')->sum('amount');
     }
 
-    public function getTotalEarningsAttribute ()
-    {
-        return $this->huawei_project_earnings->sum('amount');
-    }
-
     public function getTotalProjectCostAttribute ()
     {
         return $this->additional_cost_total + $this->static_cost_total + $this->materials_in_project + $this->materials_liquidated;
     }
 
-
-    public function getTotalEmployeeCostsAttribute()
-    {
-        return $this->huawei_project_employees->sum('cost');
-    }
-
-    public function getTotalEssaludEmployeeCostAttribute()
-    {
-        return $this->huawei_project_employees->sum(function ($employee) {
-            return $employee->cost * 0.09;
-        });
-    }
 }

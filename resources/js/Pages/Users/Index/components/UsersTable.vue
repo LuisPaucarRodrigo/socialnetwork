@@ -12,10 +12,9 @@
                 <TableTitle>DNI</TableTitle>
                 <TableTitle>Telefono</TableTitle>
                 <TableTitle v-permission-or="[
-                    'link_employee',
-                    'users_details',
-                    'user_edit',
-                    'user_delete',
+                    'see_user',
+                    'edit_user',
+                    'delete_user',
                 ]"></TableTitle>
             </tr>
         </template>
@@ -28,15 +27,14 @@
                 <TableRow>{{ user.dni }}</TableRow>
                 <TableRow>{{ user.phone }}</TableRow>
                 <TableRow v-permission-or="[
-                    'link_employee',
-                    'users_details',
-                    'user_edit',
-                    'user_delete',
+                    'see_user',
+                    'edit_user',
+                    'delete_user',
                 ]">
                     <div class="flex space-x-3 justify-center">
-                        <button v-permission="'link_employee'" v-if="(user.platform === 'Web/Movil' || user.platform === 'Movil')
+                        <button v-if="(user.platform === 'Web/Movil' || user.platform === 'Movil')
                             && !user.employee" @click="linkEmployee(user.id)">
-                            <LinkIcon/>
+                            <LinkIcon />
                         </button>
                         <Link v-permission="'users_details'" class="text-blue-900 whitespace-no-wrap"
                             :href="route('users.details', { id: user.id })">
@@ -67,10 +65,7 @@ import TableHeaderFilter from '@/Components/TableHeaderFilter.vue';
 import { Link } from '@inertiajs/vue3';
 import Pagination from '@/Components/Pagination.vue';
 import { notify, notifyError } from '@/Components/Notification';
-import ShowIcon from '@/Components/Icons/ShowIcon.vue';
-import EditIcon from '@/Components/Icons/EditIcon.vue';
-import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
-import LinkIcon from '@/Components/Icons/LinkIcon.vue';
+import { ShowIcon, EditIcon, DeleteIcon, LinkIcon } from '@/Components/Icons/Index';
 
 const { users, formSearch, platforms } = defineProps({
     users: Object,

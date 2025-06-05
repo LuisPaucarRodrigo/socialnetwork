@@ -12,11 +12,8 @@
 
         <nav class="mt-10" x-data="{ isMultiLevelMenuOpen: false }">
             <template v-for="module in navModules" :key="module.name">
-                <!-- <component p
-                    v-if="modulePermission(module.name, userModules)"
-                    :is="module.component"
-                /> -->
                 <component
+                    v-if="modulePermission(module.name, userModules)"
                     :is="module.component"
                 />
             </template>
@@ -79,13 +76,17 @@ export default {
                 { name: 'BILLING_MODULE', component: 'BillingNavigation' },
                 { name: 'HUAWEI_MODULE', component: 'HuaweiNavigation' },
                 { name: 'CAR_MODULE', component: 'FleetNavigation' },
-                { name: 'SHARE_POINT_MODULE', component: 'SharePointNavigation' }
+                { name: 'SHAREPOINT_MODULE', component: 'SharePointNavigation' }
             ],
         };
     },
 
     methods: {
         modulePermission: modulePermission
+    },
+    mounted() {
+        // Código que quieres que se ejecute cuando se monte el componente
+        console.log('El componente fue montado');
     },
 }
 </script>

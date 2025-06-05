@@ -81,7 +81,7 @@
                                 <TableRow>{{ materialDetail?.user_name }}</TableRow>
                                 <TableRow>
                                     <button class="text-blue-900" @click="openUpdateModal(materialDetail)">
-                                        <EditIcon/>
+                                        <EditIcon />
                                     </button>
                                 </TableRow>
                             </tr>
@@ -252,9 +252,7 @@ import { notify, notifyError } from '@/Components/Notification';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import DownArrowIcon from '@/Components/Icons/DownArrowIcon.vue';
-import UpArrowIcon from '@/Components/Icons/UpArrowIcon.vue';
-import EditIcon from '@/Components/Icons/EditIcon.vue';
+import { DownArrowIcon, UpArrowIcon, EditIcon } from '@/Components/Icons/Index';
 
 const { purchase_validation, auth, searchCondition, type } = defineProps({
     purchase_validation: Object,

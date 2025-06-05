@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Proyectos Pint" />
-    <AuthenticatedLayout :redirectRoute="'projectmanagement.index'">
+    <AuthenticatedLayout :redirectRoute="'monthproject.index'">
         <template #header> Proyectos Administrativos Mensuales </template>
         <Toaster richColors />
         <div class="min-w-full">
@@ -124,8 +124,7 @@ import { QueueListIcon } from "@heroicons/vue/24/outline";
 import Modal from "@/Components/Modal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import { setAxiosErrors } from "@/utils/utils";
-import DeleteIcon from "@/Components/Icons/DeleteIcon.vue";
-import Menuicon from "@/Components/Icons/Menuicon.vue";
+import { DeleteIcon, Menuicon } from "@/Components/Icons/Index";
 import Dropdown from '@/Components/Dropdown.vue';
 
 const { month_projects } = defineProps({

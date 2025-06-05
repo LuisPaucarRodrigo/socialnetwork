@@ -57,7 +57,7 @@
                                 car_changelog: formChangelog.id,
                             }) + uniqueParam
                                 ">
-                                <ShowIcon/>
+                                <ShowIcon />
                             </a>
                         </div>
                     </div>
@@ -166,9 +166,7 @@
     </Modal>
 </template>
 <script setup>
-import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
-import PlusCircleIcon from '@/Components/Icons/PlusCircleIcon.vue';
-import ShowIcon from '@/Components/Icons/ShowIcon.vue';
+import { DeleteIcon, PlusCircleIcon, ShowIcon } from '@/Components/Icons/Index';
 import InputError from '@/Components/InputError.vue';
 import InputFile from '@/Components/InputFile.vue';
 import InputLabel from '@/Components/InputLabel.vue';

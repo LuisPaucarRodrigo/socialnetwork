@@ -679,10 +679,7 @@ import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import ChartsAdditionalExpenses from "./ChartsAdditionalExpenses.vue";
 import Search from "@/Components/Search.vue";
-import DeleteIcon from "@/Components/Icons/DeleteIcon.vue";
-import EditIcon from "@/Components/Icons/EditIcon.vue";
-import ShowIcon from "@/Components/Icons/ShowIcon.vue";
-import ServerIcon from "@/Components/Icons/ServerIcon.vue";
+import { EditIcon, DeleteIcon, ShowIcon, ServerIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
     expense: Object,

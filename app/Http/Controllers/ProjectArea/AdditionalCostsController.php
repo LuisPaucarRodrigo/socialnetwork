@@ -40,7 +40,12 @@ class AdditionalCostsController extends Controller
         $docTypes = PintConstants::acDocTypes();
         $zones = PintConstants::acZones();
         $stateTypes = PintConstants::acStatesPenAccep();
-        $additionalProjects = Project::where('cost_line_id', 1)->where('cost_center_id', 3)->select('id', 'description')->where('is_accepted', true)->orderBy('description')->get();
+        $additionalProjects = Project::where('cost_line_id', 1)
+            ->where('cost_center_id', 3)
+            ->select('id', 'description')
+            ->where('is_accepted', true)
+            ->orderBy('description')
+            ->get();
 
         $additional_costs = AdditionalCost::where('project_id', $project_id->id)
             ->where(function ($query) {

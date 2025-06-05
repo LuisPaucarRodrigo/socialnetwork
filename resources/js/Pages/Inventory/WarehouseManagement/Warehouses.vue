@@ -124,7 +124,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import ShowIcon from '@/Components/Icons/ShowIcon.vue';
+import { ShowIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
   warehouses: Object,

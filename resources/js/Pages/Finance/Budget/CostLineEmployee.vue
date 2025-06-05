@@ -51,7 +51,7 @@
                 <tbody>
                     <tr v-for="item, i in dataToRender" :key="i" class="text-gray-700 hover:opacity-70">
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
-                            <p class="text-gray-900 whitespace-no-wrap">{{ i+1 }}</p>
+                            <p class="text-gray-900 whitespace-no-wrap">{{ i + 1 }}</p>
                         </td>
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
                             <p class="text-gray-900 whitespace-no-wrap">{{ item.dni }}</p>
@@ -68,12 +68,11 @@
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
                             <p class="text-gray-900 whitespace-no-wrap">{{ item.email_company }}</p>
                         </td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
+                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-xs">
                             <div class="flex justify-center space-x-3">
                                 <button type="button" @click="deleteEmployee(item)"
                                     class="text-red-600 whitespace-no-wrap">
-                                    <DeleteIcon/>
+                                    <DeleteIcon />
                                 </button>
                             </div>
                         </td>
@@ -96,12 +95,12 @@
                                 </InputLabel>
                                 <div class="mt-2">
                                     <select v-model="form.employee_id" id="employee_id"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" >
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                         <option value="" disabled>Seleccione un colaborador</option>
-                                        <option v-for="item,i in selectEmployees" :key="i" :value="item.id">
+                                        <option v-for="item, i in selectEmployees" :key="i" :value="item.id">
                                             {{ item.name }} {{ item.lastname }}
                                         </option>
-                                        </select>
+                                    </select>
                                     <InputError :message="form.errors.employee_id" />
                                 </div>
                             </div>
@@ -134,7 +133,7 @@ import { setAxiosErrors } from '@/utils/utils';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import { Toaster } from 'vue-sonner';
-import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
+import { DeleteIcon } from '@/Components/Icons/Index';
 
 const { currentEmployees, employees, cost_line } = defineProps({
     currentEmployees: Array,
@@ -149,35 +148,35 @@ console.log(employees)
 //Create and Update
 const isFetching = ref(false)
 const showCostCenterModal = ref(false)
-const openCostCenterModal = (item=null) => {
+const openCostCenterModal = (item = null) => {
     showCostCenterModal.value = true
-    if (item){form.defaults({...item}); form.reset()}
+    if (item) { form.defaults({ ...item }); form.reset() }
 }
 const closeCostCenterModal = () => {
     showCostCenterModal.value = false;
     closeNextActions()
 }
-const closeNextActions = () =>{
+const closeNextActions = () => {
     form.clearErrors()
-    form.defaults({...initState})
+    form.defaults({ ...initState })
     form.reset()
 }
-const initState = {employee_id: '', cost_line_id: cost_line.id}
-const form = useForm({...initState})
+const initState = { employee_id: '', cost_line_id: cost_line.id }
+const form = useForm({ ...initState })
 const submitCostCenterModal = () => {
     isFetching.value = true
-    axios.post(route("finance.cost_line.employee.store"),form.data())
-        .then((res)=>{
-           dataToRender.value.push(res.data)
+    axios.post(route("finance.cost_line.employee.store"), form.data())
+        .then((res) => {
+            dataToRender.value.push(res.data)
             closeNextActions();
             notify("Colaborador añadido a la Línea de Gasto");
             reloadSelectEmployee()
         })
-        .catch(e=>{
-            if (e.response?.data?.errors) {setAxiosErrors(e.response.data.errors, form);} 
-            else {notifyError("Server Error");}
+        .catch(e => {
+            if (e.response?.data?.errors) { setAxiosErrors(e.response.data.errors, form); }
+            else { notifyError("Server Error"); }
         })
-        .finally(()=>{
+        .finally(() => {
             isFetching.value = false;
         });
 }
@@ -187,17 +186,17 @@ const submitCostCenterModal = () => {
 //Delete
 const deleteEmployee = (item) => {
     isFetching.value = true
-    axios.delete(route("finance.cost_line.employee.destroy", {emp_id: item.id}))
-        .then((res)=>{
+    axios.delete(route("finance.cost_line.employee.destroy", { emp_id: item.id }))
+        .then((res) => {
             const index = dataToRender.value.findIndex((item) => item.id == item.id);
             dataToRender.value.splice(index, 1);
             notify("Colaborador Desasignado de la Línea de Gasto");
             reloadSelectEmployee()
         })
-        .catch(e=>{
+        .catch(e => {
             notifyError("Server Error");
         })
-        .finally(()=>{
+        .finally(() => {
             isFetching.value = false;
         });
 }
@@ -205,7 +204,7 @@ const deleteEmployee = (item) => {
 //reload select
 const reloadSelectEmployee = () => {
     axios.get(route("finance.cost_line.employee.search"))
-        .then(res=>{
+        .then(res => {
             selectEmployees.value = res.data
         })
 }

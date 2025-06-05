@@ -106,7 +106,7 @@ class PreProjectController extends Controller
             'type' => $type,
             'cost_line' => CostLine::with(['cost_center' => function ($query) {
                 $query->where('name', 'not like', '%Mantto%');
-            }])->find(2)
+            }])->find($type)
         ]);
     }
 
@@ -1033,7 +1033,7 @@ class PreProjectController extends Controller
             'user_id_array' => 'required'
         ]);
         $preproject = Preproject::find($request->preproject_id);
-        $preproject->users()->sync($request->user_id_array, ['timestamps' => true]);
+        $preproject->users()->sync($request->user_id_array, true);
     }
 
     //codes
@@ -1172,7 +1172,7 @@ class PreProjectController extends Controller
         $title = Title::find($title_id);
         $title->update($data);
 
-        $title->codes()->sync($data['code_id_array'], ['timestamps' => true]);
+        $title->codes()->sync($data['code_id_array'], true);
     }
 
     public function deleteTitle(Title $title)

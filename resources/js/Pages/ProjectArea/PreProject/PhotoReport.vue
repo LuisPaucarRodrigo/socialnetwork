@@ -6,7 +6,7 @@
       Informe Fotográfico
     </template>
     <div v-if="!photoreport || auth.user.role_id === 1" class="inline-block min-w-full border-b-2 border-gray-200">
-      <div v-if="preproject.status === null && !preproject.has_quote && hasPermission('ProjectManager')"
+      <div v-if="preproject.status === null && !preproject.has_quote"
         class="flex gap-4 mb-2">
         <button @click="openCreateDocumentModal" type="button"
           class="rounded-md bg-indigo-500 px-4 py-2 text-center text-sm text-white hover:bg-indigo-300">
@@ -120,8 +120,7 @@ import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
-import ShowIcon from '@/Components/Icons/ShowIcon.vue';
-import DownloadIcon from '@/Components/Icons/DownloadIcon.vue';
+import { DownloadIcon, ShowIcon } from "@/Components/Icons/Index";
 
 const { documents, preproject, photoreport, auth, userPermissions } = defineProps({
   photoreport: Object,

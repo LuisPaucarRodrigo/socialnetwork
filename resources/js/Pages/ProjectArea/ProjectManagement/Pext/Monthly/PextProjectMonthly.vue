@@ -7,8 +7,8 @@
         </template>
         <Toaster richColors />
         <div class="min-w-full">
-            <TableHeader :projects="projects" :userPermissions="userPermissions" :createOrEditModal="createOrEditModal"
-                :search="search" />
+            <TableHeader v-model:projects="projects" :userPermissions="userPermissions"
+                :createOrEditModal="createOrEditModal" />
             <br>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 <ProjectCard v-for="item in projects.data || projects" :key="item.id" :item="item"
@@ -25,7 +25,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue'
-import axios from 'axios';
 import { ref } from 'vue';
 import { Head } from '@inertiajs/vue3';
 import { Toaster } from 'vue-sonner';
@@ -39,18 +38,11 @@ const { project, userPermissions, auth } = defineProps({
     auth: Object,
 })
 
-const projects = ref(project);
+const projects = ref({ ...project });
 const formProject = ref(null)
 
 function createOrEditModal() {
     formProject.value.createOrEditModal()
 }
-const search = async (search) => {
-    try {
-        const response = await axios.post(route('projectmanagement.pext.index'), { searchQuery: search });
-        projects.value = response.data;
-    } catch (error) {
-        console.error('Error searching:', error);
-    }
-};
+
 </script>

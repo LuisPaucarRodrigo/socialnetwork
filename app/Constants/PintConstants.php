@@ -71,8 +71,6 @@ class PintConstants
     public const CHALA = "Chala";
     public const MOQUEGUA = "Moquegua";
     public const TACNA = "Tacna";
-    public const MDD1 = "MDD1";
-    public const MDD2 = "MDD2";
     public const MDD1_PM = "MDD1-PM";
     public const MDD2_MAZ = "MDD2-MAZ";
     public const SANDIA = "Sandia";

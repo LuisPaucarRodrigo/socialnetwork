@@ -166,7 +166,7 @@ import InputError from '@/Components/InputError.vue';
 import { formattedDate } from '@/utils/utils.js';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import ShowIcon from '@/Components/Icons/ShowIcon.vue';
+import { ShowIcon } from '@/Components/Icons/Index';
 
 const { employees, userPermissions } = defineProps({
     employees: Object,

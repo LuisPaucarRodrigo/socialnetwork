@@ -60,7 +60,7 @@
                                 <p class="text-sm text-gray-700 w-2/3 break-words">
                                     <span class="font-medium" :class="subdivision.is_visible && 'text-indigo-700'">{{
                                         subdivision.name
-                                        }}</span>
+                                    }}</span>
                                 </p>
 
                                 <!-- Botones (35%) -->
@@ -233,16 +233,14 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
-import { Head, useForm  } from "@inertiajs/vue3";
+import { Head, useForm } from "@inertiajs/vue3";
 import { ref } from "vue";
 import Modal from "@/Components/Modal.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { setAxiosErrors } from "@/utils/utils";
 import { notify, notifyError } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
-import EditIcon from "@/Components/Icons/EditIcon.vue";
-import DeleteIcon from "@/Components/Icons/DeleteIcon.vue";
-import DownloadIcon from "@/Components/Icons/DownloadIcon.vue";
+import { EditIcon, DeleteIcon, DownloadIcon } from "@/Components/Icons/Index";
 
 const showModal = ref(false);
 const showModalEdit = ref(false);

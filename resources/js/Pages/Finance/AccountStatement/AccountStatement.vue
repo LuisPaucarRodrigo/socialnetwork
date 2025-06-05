@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Estado de Cuenta" />
     <AuthenticatedLayout :redirectRoute="{
         route: 'finance.account_statement',
@@ -30,7 +31,7 @@
                     <div>
                         <button data-tooltip-target="import_register_tooltip" type="button" @click="openImportModal"
                             class="p-2 bg-yellow-300 rounded-md text-slate-900 hover:bg-yellow-200">
-                            <UploadIcon color="" />
+                            <UploadIcon />
                         </button>
                         <div id="import_register_tooltip" role="tooltip"
                             class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
@@ -38,26 +39,29 @@
                             <div class="tooltip-arrow" data-popper-arrow></div>
                         </div>
                     </div>
-                    <!-- <div>
-                        <button
-                            data-tooltip-target="export_register_tooltip"
-                            type="button"
-                            @click=""
-                            class="p-2 bg-green-500 rounded-md text-slate-900 hover:bg-green-400"
-                        >
-                            <CloudArrowDownIcon
-                                class="text-white h-5 w-5 font-bold"
-                            />
+
+                    <div>
+                        <button data-tooltip-target="ds_dowload_tooltip" type="button" @click="downloadDataStructure"
+                            class="p-2 bg-slate-800 rounded-md text-white-900 hover:bg-slate-700">
+                            <DownloadIcon color="text-white" />
                         </button>
-                        <div
-                            id="export_register_tooltip"
-                            role="tooltip"
-                            class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
-                        >
-                            Exportar Excel
+                        <div id="ds_dowload_tooltip" role="tooltip"
+                            class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                            Exportar Estructura de Datos
                             <div class="tooltip-arrow" data-popper-arrow></div>
                         </div>
-                    </div> -->
+                    </div>
+                    <div>
+                        <button data-tooltip-target="export_register_tooltip" type="button" @click="handleExportExcel()"
+                            class="p-2 bg-green-500 rounded-md text-slate-900 hover:bg-green-400">
+                            <DownloadIcon color="text-white" />
+                        </button>
+                        <div id="export_register_tooltip" role="tooltip"
+                            class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                            Exportar Excel (datos mostrados)
+                            <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div>
+                    </div>
 
                     <div>
                         <dropdown align="left">
@@ -65,7 +69,7 @@
                                 <button data-tooltip-target="action_button_tooltip"
                                     @click="dropdownOpen = !dropdownOpen"
                                     class="relative block overflow-hidden rounded-md text-white hover:bg-indigo-400 text-center text-sm bg-indigo-500 p-2">
-                                    <Menuicon color="text-white" />
+                                    <MenuIcon color="text-white" />
                                 </button>
                                 <div id="action_button_tooltip" role="tooltip"
                                     class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700 whitespace-nowrap">
@@ -92,18 +96,6 @@
                             </template>
                         </dropdown>
                     </div>
-
-                    <div>
-                        <button data-tooltip-target="ds_dowload_tooltip" type="button" @click="downloadDataStructure"
-                            class="p-2 bg-slate-800 rounded-md text-white-900 hover:bg-slate-700">
-                            <DownloadIcon color="text-white" />
-                        </button>
-                        <div id="ds_dowload_tooltip" role="tooltip"
-                            class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                            Estructura de Datos
-                            <div class="tooltip-arrow" data-popper-arrow></div>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="flex flex-col sm:flex-row gap-4 items-center w-full sm:w-auto">
@@ -118,17 +110,7 @@
                             S/. {{ dataToRender.totalITFM.toFixed(2) }}
                         </div>
                     </div>
-                    <input type="month" @input="
-                        (e) => {
-                            isFetchingAll = true;
-                            yearInput = '';
-                            filterForm = {
-                                ...initialFilterFormState,
-                                month: e.target.value,
-                            };
-                            handleSearch(e.target.value);
-                        }
-                    " v-model="filterForm.month"
+                    <input type="month" v-model="monthInput"
                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                     <select v-model="yearInput"
                         class="block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
@@ -693,13 +675,8 @@ import { formattedDate, setAxiosErrors } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import { ref, watch } from "vue";
-import Menuicon from "@/Components/Icons/Menuicon.vue";
-import DeleteIcon from "@/Components/Icons/DeleteIcon.vue";
-import EditIcon from "@/Components/Icons/EditIcon.vue";
-import UploadIcon from "@/Components/Icons/UploadIcon.vue";
-import DownloadIcon from "@/Components/Icons/DownloadIcon.vue";
-import SortIcon from "@/Components/Icons/SortIcon.vue";
-
+import { DeleteIcon, EditIcon, UploadIcon, DownloadIcon, SortIcon, MenuIcon } from '@/Components/Icons/Index';
+import qs from 'qs';
 const {
     accountStatements,
     previousBalance,
@@ -724,13 +701,18 @@ const {
 
 const now = new Date();
 const defaultMonth = now.toISOString().slice(0, 7);
-const hasPermission = (per) => {
-    return userPermissions.includes(per);
-};
+const monthInput = ref(defaultMonth);
+
 const initStateCostsFounded = {
     geData: [],
 };
-const stateOptions = ["Abono", "Validado", "Excedido", "Por validar", "No validado"];
+const stateOptions = [
+    "Abono",
+    "Validado",
+    "Excedido",
+    "Por validar",
+    "No validado",
+];
 const dataToRender = ref({
     accountStatements,
     previousBalance,
@@ -742,7 +724,6 @@ const dataToRender = ref({
 });
 const costsFounded = ref(initStateCostsFounded);
 const initialFilterFormState = {
-    month: defaultMonth,
     search: "",
     stateOptions: stateOptions,
     opStartDate: "",
@@ -804,9 +785,9 @@ async function submit() {
     const res = await axios
         .post(route("finance.account_statement.store", { as_id: form.id }), {
             ...form.data(),
-            month: filterForm.value.month,
+            month: monthInput.value,
             endMonth: null,
-            all: filterForm.value.month ? false : true,
+            all: monthInput.value ? false : true,
         })
         .catch((e) => {
             isFetching.value = false;
@@ -860,13 +841,15 @@ function handleSearchClient() {
                         : false) ||
                     (item.payment
                         ? item.payment.toString().toLowerCase().includes(search)
-                        : false) ||
-                    (item.operation_date
-                        ? formattedDate(item.operation_date).includes(search)
-                        : false) ||
-                    (item.balance
-                        ? item.balance.toString().toLowerCase().includes(search)
-                        : false));
+                        : false)
+                    //     ||
+                    // (item.operation_date
+                    //     ? formattedDate(item.operation_date).includes(search)
+                    //     : false) ||
+                    // (item.balance
+                    //     ? item.balance.toString().toLowerCase().includes(search)
+                    //     : false)
+                );
         }
         if (filterForm.value.stateOptions) {
             let stateOptions = filterForm.value.stateOptions;
@@ -927,9 +910,9 @@ const deleteAccountStatement = async () => {
                 as_id: asToDeleteId.value,
             }),
             {
-                month: filterForm.value.month,
+                month: monthInput.value,
                 endMonth: null,
-                all: filterForm.value.month ? false : true,
+                all: monthInput.value ? false : true,
             }
         )
         .catch((e) => {
@@ -959,7 +942,7 @@ async function submitImport() {
         formData.append("excel_file", importForm.excel_file);
         await axios.post(route("finance.account_statement.import"), formData);
         closeImportModal();
-        handleSearch(filterForm.value.month);
+        handleSearch(monthInput.value);
         notify("Datos Importados");
     } catch (e) {
         if (e.response?.data?.errors) {
@@ -1025,8 +1008,8 @@ const deleteMasiveAS = async () => {
     const res = await axios
         .post(route("finance.account_statement.masivedelete"), {
             ...actionForm.value,
-            month: filterForm.value.month,
-            all: filterForm.value.month ? false : true,
+            month: monthInput.value,
+            all: monthInput.value ? false : true,
         })
         .catch((e) => {
             isFetching.value = false;
@@ -1112,9 +1095,39 @@ const yearInput = ref("");
 watch(yearInput, () => {
     if (yearInput.value) {
         isFetchingAll.value = true;
-        filterForm.value.month = "";
+        filterForm.value = { ...initialFilterFormState };
+        monthInput.value = "";
         handleSearch(`${yearInput.value}-01`, `${yearInput.value}-12`, false);
     }
 });
 
+//month change
+watch(monthInput, () => {
+    if (monthInput.value) {
+        isFetchingAll.value = true;
+        filterForm.value = { ...initialFilterFormState };
+        yearInput.value = "";
+        handleSearch(monthInput.value);
+    }
+});
+
+//Export
+function handleExportExcel() {
+    const exportFilter = { ...filterForm.value, monthInput: monthInput.value, yearInput: yearInput.value }
+
+    const uniqueParam = `timestamp=${new Date().getTime()}`;
+    const url = route("finance.account_statement.excel.export") +
+        "?" + qs.stringify({ ...exportFilter, uniqueParam }, { arrayFormat: 'brackets' });
+    window.location.href = url;
+}
+
+
+function getFirstDay(monthString) {
+    return `${monthString}-01`;
+}
+function getLastDay(monthString) {
+    const [year, month] = monthString.split('-').map(Number);
+    const lastDay = new Date(year, month, 0).toISOString().split('T')[0];
+    return lastDay
+}
 </script>

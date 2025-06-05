@@ -1852,15 +1852,11 @@ import { formattedDate } from "@/utils/utils";
 import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
 import FilterProcess from "@/Components/FilterProcess.vue";
 import TableHeaderCicsaFilter from "@/Components/TableHeaderCicsaFilter.vue";
-import { ArrowPathIcon } from "@heroicons/vue/24/outline";
-import TextInput from "@/Components/TextInput.vue";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import { notifyError } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import Search from "@/Components/Search.vue";
-import ShowIcon from "@/Components/Icons/ShowIcon.vue";
-import RechargeIcon from "@/Components/Icons/RechargeIcon.vue";
-import UploadIcon from "@/Components/Icons/UploadIcon.vue";
+import { ShowIcon, RechargeIcon, UploadIcon } from "@/Components/Icons/Index";
 
 const { auth, projects, center_list, type } = defineProps({
     auth: Object,

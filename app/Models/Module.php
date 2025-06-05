@@ -11,6 +11,7 @@ class Module extends Model
 
     protected $fillable = [
         "name",
+        "display_name",
         "parent_id",
         "type",
     ];
@@ -18,5 +19,9 @@ class Module extends Model
     public function submodules()
     {
         return $this->hasMany(Module::class, 'parent_id');
+    }
+
+    public function functionalities() {
+        return $this->hasMany(Functionality::class, 'module_id');
     }
 }

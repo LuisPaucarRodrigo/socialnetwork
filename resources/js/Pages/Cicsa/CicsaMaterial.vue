@@ -43,20 +43,20 @@
                                 <button v-if="item?.cicsa_feasibility?.cicsa_feasibility_materials?.length > 0"
                                     type="button"
                                     @click="openMaterialsModal(item?.cicsa_feasibility?.cicsa_feasibility_materials)">
-                                    <ShowIcon/>
+                                    <ShowIcon />
                                 </button>
                             </TableRow>
                             <TableRow>
                                 <div class="flex space-x-3 justify-center">
                                     <button
                                         @click="openCreateSotModal(item.id, item?.cicsa_feasibility?.cicsa_feasibility_materials, item.project_name, item.cpe)">
-                                        <PlusCircleIcon/>
+                                        <PlusCircleIcon />
                                     </button>
                                     <button v-if="item.cicsa_materials.length > 0" type="button"
                                         @click="toggleDetails(item?.cicsa_materials)"
                                         class="text-blue-900 whitespace-no-wrap">
-                                        <DownArrowIcon v-if="materialRow !== item.id"/>
-                                        <UpArrowIcon v-else/>
+                                        <DownArrowIcon v-if="materialRow !== item.id" />
+                                        <UpArrowIcon v-else />
                                     </button>
                                 </div>
                             </TableRow>
@@ -78,19 +78,18 @@
                                 <TableRow>
                                     <button v-if="materialDetail?.cicsa_material_items?.length > 0" type="button"
                                         @click="openMaterialsModal(materialDetail?.cicsa_material_items)">
-                                        <ShowIcon/>
+                                        <ShowIcon />
                                     </button>
                                 </TableRow>
                                 <TableRow>
                                     <button class="text-blue-900"
                                         @click="openEditSotModal(materialDetail, item.cicsa_feasibility?.cicsa_feasibility_materials, item.project_name, item.cpe)">
-                                        <EditIcon/>
+                                        <EditIcon />
                                     </button>
                                 </TableRow>
                                 <TableRow>
-                                    <button class="text-blue-900"
-                                        @click="deleteMaterial(materialDetail.id, item)">
-                                        <DeleteIcon/>
+                                    <button class="text-blue-900" @click="deleteMaterial(materialDetail.id, item)">
+                                        <DeleteIcon />
                                     </button>
                                 </TableRow>
                             </tr>
@@ -433,12 +432,7 @@ import { notify, notifyError } from '@/Components/Notification';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import ShowIcon from '@/Components/Icons/ShowIcon.vue';
-import DownArrowIcon from '@/Components/Icons/DownArrowIcon.vue';
-import UpArrowIcon from '@/Components/Icons/UpArrowIcon.vue';
-import PlusCircleIcon from '@/Components/Icons/PlusCircleIcon.vue';
-import EditIcon from '@/Components/Icons/EditIcon.vue';
-import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
+import { ShowIcon, DownArrowIcon, UpArrowIcon, PlusCircleIcon, EditIcon, DeleteIcon } from '@/Components/Icons/Index';
 
 const { material, auth, searchCondition, type } = defineProps({
     material: Object,
@@ -691,11 +685,11 @@ if (searchCondition) {
 }
 
 async function deleteMaterial(id, item) {
-    const res = await axios.delete(route('material.delete', {c_m_id:id}))
+    const res = await axios.delete(route('material.delete', { c_m_id: id }))
     if (res.status === 200) {
         notify('Material eliminado')
         item.cicsa_materials = item.cicsa_materials.filter((material) => material.id != id)
-        if(item.cicsa_materials.length == 0 ) {materialRow.value = 0}
+        if (item.cicsa_materials.length == 0) { materialRow.value = 0 }
     } else {
         notifyError('SERVER ERROR')
     }

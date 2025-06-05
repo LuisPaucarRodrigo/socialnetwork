@@ -5,7 +5,8 @@
                 <th class="bg-gray-100">
                     <div class="w-2"></div>
                 </th>
-                <TableTitle v-if="hasPermission('CarManager')" :style="'bg-gray-100 whitespace-nowrap'">
+                <TableTitle v-if="hasPermission('CarManager') || role_id === 1"
+                    :style="'bg-gray-100 whitespace-nowrap'">
                     <TableHeaderCicsaFilter label="Linea de Negocio" labelClass="text-gray-600" :options="cost_line"
                         v-model="formSearch.cost_line" />
                 </TableTitle>
@@ -25,7 +26,7 @@
                     <th>
                         <div class="w-2"></div>
                     </th>
-                    <TableRow v-if="hasPermission('CarManager')">
+                    <TableRow v-if="hasPermission('CarManager') || role_id === 1">
                         {{ car.costline?.name }}
                     </TableRow>
                     <TableRow>{{ car.plate }}</TableRow>
@@ -54,7 +55,8 @@
                                         fill="#044d14" />
                                 </svg>
                             </button>
-                            <button v-if="hasPermission('CarManager')" type="button" @click="openEditFormCar(car)">
+                            <button v-if="hasPermission('CarManager') || role_id === 1" type="button"
+                                @click="openEditFormCar(car)">
                                 <EditIcon />
                             </button>
 
@@ -63,7 +65,7 @@
                                 <ListIcon />
                             </a>
 
-                            <button v-if="hasPermission('CarManager')" type="button"
+                            <button v-if="hasPermission('CarManager') || role_id === 1" type="button"
                                 @click="openModalDeleteCars(car.id)" class="text-blue-900">
                                 <DeleteIcon />
                             </button>
@@ -206,23 +208,16 @@ import FormChangeLog from './FormChangeLog.vue';
 import FormDocument from './FormDocument.vue';
 import { notify } from '@/Components/Notification';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
-import ShowIcon from '@/Components/Icons/ShowIcon.vue';
-import EditIcon from '@/Components/Icons/EditIcon.vue';
-import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
-import DownArrowIcon from '@/Components/Icons/DownArrowIcon.vue';
-import UpArrowIcon from '@/Components/Icons/UpArrowIcon.vue';
-import ListIcon from '@/Components/Icons/ListIcon.vue';
-import DocumentsIcon from '@/Components/Icons/DocumentsIcon.vue';
-import AcceptIcon from '@/Components/Icons/AcceptIcon.vue';
-import RejectIcon from '@/Components/Icons/RejectIcon.vue';
+import { ShowIcon, EditIcon, DeleteIcon, DownArrowIcon, UpArrowIcon, ListIcon, DocumentsIcon, AcceptIcon, RejectIcon } from '@/Components/Icons/Index';
 
-const { userPermissions, formSearch, cars, cost_line, openEditFormCar
+const { userPermissions, formSearch, cars, cost_line, openEditFormCar, role_id
 } = defineProps({
     userPermissions: Array,
     formSearch: Object,
     cars: Object,
     cost_line: Object,
-    openEditFormCar: Function
+    openEditFormCar: Function,
+    role_id: Function,
 })
 
 const carId = ref(null);

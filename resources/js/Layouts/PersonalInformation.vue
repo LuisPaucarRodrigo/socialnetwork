@@ -11,8 +11,9 @@
             <div class="sm:w-1/2 lg:pr-4 sm:mb-0">
                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Nombre Completo</dt>
-                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.name }} {{
-                        details.lastname }}</dd>
+                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                        {{ details.name }} {{ details.lastname }}
+                    </dd>
                 </div>
                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Genero</dt>
@@ -31,7 +32,6 @@
             </div>
         </div>
         <div class="sm:flex lg:justify-between lg:gap-8">
-
             <div class="sm:w-1/2 lg:pr-4 sm:mb-0">
                 <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Fecha de Nacimiento</dt>
@@ -42,7 +42,6 @@
                     <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{ details.email }}</dd>
                 </div>
             </div>
-
             <div class="sm:w-1/2 sm:pl-4">
                 <div v-if="details.email_company" class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
                     <dt class="text-sm font-medium leading-6 text-gray-900">Email de Empresa</dt>

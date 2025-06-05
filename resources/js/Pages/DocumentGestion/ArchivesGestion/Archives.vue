@@ -502,8 +502,7 @@ import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import { Head, useForm, router, Link } from '@inertiajs/vue3';
 import { formattedDate } from '@/utils/utils';
-import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
-import DownloadIcon from '@/Components/Icons/DownloadIcon.vue';
+import { DeleteIcon, DownloadIcon } from '@/Components/Icons/Index';
 
 const props = defineProps({
   archives: Object,

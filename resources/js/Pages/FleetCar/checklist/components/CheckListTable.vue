@@ -43,8 +43,7 @@ import Pagination from "@/Components/Pagination.vue";
 import TableStructure from "@/Layouts/TableStructure.vue";
 import TableTitle from "@/Components/TableTitle.vue";
 import TableRow from "@/Components/TableRow.vue";
-import ShowIcon from "@/Components/Icons/ShowIcon.vue";
-import ImagesIcon from "@/Components/Icons/ImagesIcon.vue";
+import { ShowIcon, ImagesIcon } from "@/Components/Icons/Index";
 
 const { checklist, openImages, openChecklist } = defineProps({
     checklist: Object,

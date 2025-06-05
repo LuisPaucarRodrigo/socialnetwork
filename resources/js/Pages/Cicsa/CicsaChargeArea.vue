@@ -61,11 +61,13 @@
                                 <TableTitle :style="'bg-gray-200'">Estado</TableTitle>
                                 <TableTitle :style="'bg-gray-200'">Monto con IGVC</TableTitle>
                                 <TableTitle :style="'bg-gray-200'">Fecha de Abono de Cuenta Corriente</TableTitle>
-                                <TableTitle :style="'bg-gray-200'">Numero de Transacción de Cuenta Corriente
+                                <TableTitle :style="'bg-gray-200'">
+                                    Numero de operación de Cuenta Corriente
                                 </TableTitle>
                                 <TableTitle :style="'bg-gray-200'">Monto de Cuenta Corriente</TableTitle>
                                 <TableTitle :style="'bg-gray-200'">Fecha de Abono de la detraccion</TableTitle>
-                                <TableTitle :style="'bg-gray-200'">Numero de Transacción de la detraccion</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Numero de Operación de la Cuenta Detraccion
+                                </TableTitle>
                                 <TableTitle :style="'bg-gray-200'">Monto de la detraccion</TableTitle>
                                 <TableTitle :style="'bg-gray-200'">Doc Detraccion</TableTitle>
                                 <TableTitle :style="'bg-gray-200'">Encargado</TableTitle>
@@ -341,9 +343,7 @@ import InputFile from '@/Components/InputFile.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import ShowIcon from '@/Components/Icons/ShowIcon.vue';
-import EditIcon from '@/Components/Icons/EditIcon.vue';
-
+import { ShowIcon, EditIcon } from '@/Components/Icons/Index';
 
 const { charge_area, auth, searchCondition, type } = defineProps({
     charge_area: Object,

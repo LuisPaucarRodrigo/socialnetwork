@@ -101,7 +101,7 @@
               <!-- <td v-if="props.huawei_project.status" class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                 <div class="flex justify-center items-center">
                     <button @click="openEditAdditionalModal(item)" class="text-orange-400 hover:underline mr-2">
-                        <EditIcon />
+                        <PencilSquareIcon class="h-5 w-5 ml-1" />
                     </button>
                     <button @click="confirmDeleteAdditional(item.id)" class="text-red-600 hover:underline">
                         <TrashIcon class="h-5 w-5" />
@@ -265,6 +265,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
+import { TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import TextInput from '@/Components/TextInput.vue';
 import Pagination from '@/Components/Pagination.vue';
 import Dropdown from '@/Components/Dropdown.vue';

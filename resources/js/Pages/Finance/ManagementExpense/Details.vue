@@ -157,7 +157,8 @@
                                 <td class="border-b border-gray-200 px-5 py-5 text-sm">
                                     <p class="text-gray-900 whitespace-nowrap text-center">
                                         {{ expense.currency === 'dolar' ? '$' : 'S/.' }} {{
-                                            (item.pivot?.unitary_amount * (1 / (1 + props.expense.igv_percentage))).toFixed(2)
+                                            (item.pivot?.unitary_amount * (1 / (1 +
+                                                props.expense.igv_percentage))).toFixed(2)
                                         }}
                                     </p>
                                 </td>
@@ -165,7 +166,8 @@
                                     class=" w-32 border-b border-gray-200 px-5 py-5 text-sm text-center">
                                     <p class="text-gray-900 whitespace-nowrap">
                                         {{ expense.currency === 'dolar' ? '$' : 'S/.' }} {{
-                                            (item.pivot?.unitary_amount * (expense.igv ? 1 / (1 + props.expense.igv_percentage)
+                                            (item.pivot?.unitary_amount * (expense.igv ? 1 / (1 +
+                                                props.expense.igv_percentage)
                                                 : (1 + props.expense.igv_percentage))
                                                 * item.pivot?.quantity).toFixed(2) }}
                                     </p>
@@ -245,7 +247,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { formattedDate } from '@/utils/utils';
-import ShowIcon from '@/Components/Icons/ShowIcon.vue';
+import { ShowIcon } from '@/Components/Icons/Index';
 
 const props = defineProps({
     expense: Object

@@ -131,7 +131,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
-import ShowIcon from '@/Components/Icons/ShowIcon.vue';
+import { ShowIcon } from '@/Components/Icons/Index';
 
 const props = defineProps({
     quotes: Object,

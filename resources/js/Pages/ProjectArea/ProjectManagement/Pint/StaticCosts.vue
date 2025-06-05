@@ -847,11 +847,7 @@ import { Toaster } from "vue-sonner";
 import Dropdown from "@/Components/Dropdown.vue";
 import Search from "@/Components/Search.vue";
 import qs from 'qs';
-import Menuicon from "@/Components/Icons/Menuicon.vue";
-import EditIcon from "@/Components/Icons/EditIcon.vue";
-import DeleteIcon from "@/Components/Icons/DeleteIcon.vue";
-import ShowIcon from "@/Components/Icons/ShowIcon.vue";
-import ServerIcon from "@/Components/Icons/ServerIcon.vue";
+import { Menuicon, EditIcon, DeleteIcon, ShowIcon, ServerIcon } from "@/Components/Icons/Index";
 
 
 const props = defineProps({

@@ -244,7 +244,7 @@ import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { ref } from 'vue';
-import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
+import { DeleteIcon } from "@/Components/Icons/Index";
 
 const showModal = ref(false);
 const showModal2 = ref(false);

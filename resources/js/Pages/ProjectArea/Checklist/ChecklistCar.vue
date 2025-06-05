@@ -215,8 +215,8 @@ import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 import TableStructure from "@/Layouts/TableStructure.vue";
 import TableTitle from "@/Components/TableTitle.vue";
 import TableRow from "@/Components/TableRow.vue";
-import DeleteIcon from "@/Components/Icons/DeleteIcon.vue";
-import ShowIcon from "@/Components/Icons/ShowIcon.vue";
+import { DeleteIcon, ShowIcon } from "@/Components/Icons/Index";
+
 
 const { checklists } = defineProps({
     checklists: Object,

@@ -7,6 +7,7 @@ use App\Exports\HuaweiMonthlyExport;
 use App\Exports\HuaweiProjectEarningsExport;
 use App\Exports\HuaweiProjectRealEarningsExport;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Huawei\HuaweiProjectRequest;
 use App\Models\CostCenter;
 use App\Models\HuaweiMonthlyExpense;
 use App\Models\HuaweiProject;
@@ -29,9 +30,24 @@ use App\Models\HuaweiProjectRealEarning;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use function Laravel\Prompts\select;
 
 class HuaweiProjectController extends Controller
 {
+
+    private static array $data;
+
+    public function __construct()
+    {
+        self::$data = [
+            'employees' => HuaweiConstants::getEmployees(),
+            'static_expense_types' => HuaweiConstants::getStaticExpenseTypes(),
+            'variable_expense_types' => HuaweiConstants::getVariableExpenseTypes(),
+            'cdp_types' => HuaweiConstants::getCDPTypes(),
+            'macro_projects' => HuaweiConstants::getMacroProjects(),
+            'operators' => HuaweiConstants::getOperators(),
+        ];
+    }
     public function show($status, $prefix)
     {
         $state = null;
@@ -80,10 +96,12 @@ class HuaweiProjectController extends Controller
                         ]));
         });
 
-        return Inertia::render('Huawei/Projects', [
+        return Inertia::render('Huawei/Projects/Projects', [
             'projects' => $projects,
             'prefix' => $prefix,
-            'status' => $status
+            'status' => $status,
+            'operators' => self::$data['operators'],
+
         ]);
     }
 
@@ -106,9 +124,7 @@ class HuaweiProjectController extends Controller
 
         $searchTerm = strtolower($request);
         $projects = HuaweiProject::select('id', 'assigned_diu', 'description', 'zone', 'prefix', 'assignation_date', 'macro_project', 'huawei_site_id', 'status')->where('status', $state)->where('prefix', $prefix)->where(function ($query) use ($searchTerm) {
-            $query->whereRaw('LOWER(name) like ?', ['%' . $searchTerm . '%'])
-                ->orWhereRaw('LOWER(description) like ?', ['%' . $searchTerm . '%'])
-                ->orWhereRaw('LOWER(ot) LIKE ?', ["%{$searchTerm}%"])
+            $query->WhereRaw('LOWER(description) like ?', ['%' . $searchTerm . '%'])
                 ->orWhereRaw('LOWER(zone) LIKE ?', ["%{$searchTerm}%"])
                 ->orWhereRaw('LOWER(assigned_diu) LIKE ?', ["%{$searchTerm}%"])
                 ->orWhereRaw('LOWER(macro_project) LIKE ?', ["%{$searchTerm}%"])
@@ -140,22 +156,24 @@ class HuaweiProjectController extends Controller
                             'huawei_project',
                         ]));
         });
-
-        return Inertia::render('Huawei/Projects', [
+        return Inertia::render('Huawei/Projects/Projects', [
             'projects' => $projects,
             'search' => $request,
             'prefix' => $prefix,
-            'status' => $status
+            'status' => $status,
+            'operators' => self::$data['operators'],
         ]);
     }
 
     public function create()
     {
         $employees = HuaweiConstants::getEmployees();
-        return Inertia::render('Huawei/ProjectForm', [
+        return Inertia::render('Huawei/Projects/ProjectForm', [
             'employees' => $employees,
             'cost_centers' => CostCenter::where('cost_line_id', 3)->get(),
             'price_guides' => HuaweiPriceGuide::all(),
+            'operators' => self::$data['operators'],
+            'macro_projects' => self::$data['macro_projects'],
         ]);
     }
 
@@ -254,7 +272,7 @@ class HuaweiProjectController extends Controller
                 'huawei_site',
                 'cost_center',
                 'huawei_project_assignations.huawei_project_earnings',
-                'huawei_project_schedules',
+                'huawei_project_schedules.huawei_project_employees',
             ])->first()
             ->makeHidden([
                 'additional_cost_total',
@@ -275,10 +293,14 @@ class HuaweiProjectController extends Controller
         if (!$huawei_project->status) {
             abort(403, 'Acción no permitida');
         }
+        $employees = HuaweiConstants::getEmployees();
 
-        return Inertia::render('Huawei/ProjectForm', [
+        return Inertia::render('Huawei/Projects/ProjectForm', [
             'huawei_project' => $huawei_project,
             'huawei_sites' => HuaweiSite::orderBy('name')->get(),
+            'employees' => $employees,
+            'cost_centers' => CostCenter::where('cost_line_id', 3)->get(),
+            'price_guides' => HuaweiPriceGuide::all(),
         ]);
     }
 
@@ -327,7 +349,7 @@ class HuaweiProjectController extends Controller
 
     public function projectBalance(HuaweiProject $huawei_project)
     {
-        return Inertia::render('Huawei/ProjectBalance', [
+        return Inertia::render('Huawei/Projects/ProjectExpenses/ProjectBalance', [
             'huawei_project' => $huawei_project
         ]);
     }
@@ -342,34 +364,9 @@ class HuaweiProjectController extends Controller
         return response()->json($sites);
     }
 
-    public function store(Request $request)
+    public function store(HuaweiProjectRequest $request)
     {
-        $request->validate([
-            'assigned_diu' => 'required|unique:huawei_projects,assigned_diu',
-            'cost_center_id' => 'required',
-            'macro_project' => 'required',
-            'prefix' => 'required',
-            'huawei_site_id' => 'required',
-            'zone' => 'required',
-            'assignation_date' => 'required|date',
-            'description' => 'nullable',
-
-            'assignations' => 'required|array|min:1',
-            'assignations.*.assignation_date' => 'required|date',
-            'assignations.*.description' => 'required|string',
-            'assignations.*.po' => 'required|string',
-            'assignations.*.index' => 'nullable|string',
-
-            'assignations.*.base_lines' => 'required|array|min:1',
-
-            'schedule' => 'required|array|min:1',
-            'schedule.*.employee' => 'required|string',
-            'schedule.*.start_date' => 'required|date',
-            'schedule.*.end_date' => 'required|date|after_or_equal:schedule.*.start_date',
-            'schedule.*.days' => 'required|numeric',
-            'schedule.*.activity' => 'required|string',
-        ]);
-
+        $request->validated();
         DB::beginTransaction();
 
         try {
@@ -418,18 +415,24 @@ class HuaweiProjectController extends Controller
             }
 
             foreach ($request->schedule as $activity) {
-                HuaweiProjectSchedule::create([
+                $schedule = HuaweiProjectSchedule::create([
                     'activity' => $activity['activity'],
                     'days' => $activity['days'],
                     'start_date' => $activity['start_date'],
                     'end_date' => $activity['end_date'],
-                    'employee' => $activity['employee'],
                     'huawei_project_id' => $project->id
                 ]);
+                foreach ($activity['employees'] as $employee) {
+                    HuaweiProjectEmployee::create([
+                        'huawei_project_schedule_id' => $schedule->id,
+                        'employee' => $employee
+                    ]);
+                }
             }
 
         } catch (\Throwable $th) {
             DB::rollBack();
+            Log::info($th);
             abort(403, 'Error al crear el proyecto');
         }
 
@@ -438,18 +441,145 @@ class HuaweiProjectController extends Controller
         return redirect()->back();
     }
 
-    public function update(HuaweiProject $huawei_project, Request $request)
+    public function update(HuaweiProject $huawei_project, HuaweiProjectRequest $request)
     {
         if (!$huawei_project->status) {
             abort(403, 'Acción no permitida');
         }
 
-        $data = $request->validate([
-            'description' => 'nullable',
-        ]);
+        $data = $request->validated();
+        Log::info($data);
 
-        $huawei_project->update($data);
+        DB::beginTransaction();
 
+        try {
+            $huawei_project->update([
+                'description' => $data['description'],
+            ]);
+
+            foreach ($data['assignations'] as $assignation) {
+                if (isset($assignation['id']) && $assignation['id']) {
+                    $huawei_project_assignation = HuaweiProjectAssignation::find($assignation['id']);
+                    $huawei_project_assignation->update([
+                        'po' => $assignation['po'],
+                        'assignation_date' => $assignation['assignation_date'],
+                        'description' => $assignation['description'],
+                    ]);
+                    foreach ($assignation['base_lines'] as $line) {
+                        if (isset($line['id']) && $line['id']) {
+                            $huawei_project_earning = HuaweiProjectEarning::find($line['id']);
+                            $huawei_project_earning->update([
+                                'quantity' => $line['quantity'],
+                            ]);
+                        } else {
+                            $code = HuaweiPriceGuide::where('code', $line['code'])->first();
+                            if ($code) {
+                                if ($code->goal !== $line['goal'] || $code->evidence !== $line['evidence']) {
+                                    $code->update([
+                                        'goal' => $line['goal'] ?? $code->goal,
+                                        'evidence' => $line['evidence'] ?? $code->evidence,
+                                    ]);
+                                }
+                            }
+                            $new_line = HuaweiProjectEarning::create([
+                                'code' => $line['code'],
+                                'description' => $line['description'],
+                                'unit' => $line['unit'],
+                                'unit_price' => $line['unit_price'],
+                                'quantity' => $line['quantity'],
+                                'evidence' => $line['evidence'],
+                                'goal' => $line['goal'],
+                                'observation' => $line['observation'],
+                                'huawei_pa_id' => $huawei_project_assignation->id
+                            ]);
+                        }
+                    }
+                } else {
+                    $new_assignation = HuaweiProjectAssignation::create([
+                        'po' => $assignation['po'],
+                        'assignation_date' => $assignation['assignation_date'],
+                        'description' => $assignation['description'],
+                        'huawei_project_id' => $huawei_project->id,
+                    ]);
+
+                    foreach ($assignation['base_lines'] as $line) {
+                        $code = HuaweiPriceGuide::where('code', $line['code'])->first();
+                        if ($code) {
+                            if ($code->goal !== $line['goal'] || $code->evidence !== $line['evidence']) {
+                                $code->update([
+                                    'goal' => $line['goal'] ?? $code->goal,
+                                    'evidence' => $line['evidence'] ?? $code->evidence,
+                                ]);
+                            }
+                        }
+                        HuaweiProjectEarning::create([
+                            'code' => $line['code'],
+                            'description' => $line['description'],
+                            'unit' => $line['unit'],
+                            'unit_price' => $line['unit_price'],
+                            'quantity' => $line['quantity'],
+                            'evidence' => $line['evidence'],
+                            'goal' => $line['goal'],
+                            'observation' => $line['observation'],
+                            'huawei_pa_id' => $new_assignation->id
+                        ]);
+                    }
+                }
+            }
+
+            $scheduleIdsFromRequest = collect($data['schedule'])
+                ->pluck('id')
+                ->filter()
+                ->all();
+
+            $currentSchedules = $huawei_project->huawei_project_schedules;
+            $currentSchedules->each(function ($schedule) use ($scheduleIdsFromRequest) {
+                if (!in_array($schedule->id, $scheduleIdsFromRequest)) {
+                    $schedule->huawei_project_employees()->delete();
+                    $schedule->delete();
+                }
+            });
+
+            foreach ($data['schedule'] as $schedule) {
+                if ($schedule['id']) {
+                    $huawei_project_schedule = HuaweiProjectSchedule::find($schedule['id']);
+                    $huawei_project_schedule->update([
+                        'activity' => $schedule['activity'],
+                        'days' => $schedule['days'],
+                        'start_date' => $schedule['start_date'],
+                        'end_date' => $schedule['end_date'],
+                    ]);
+                    $huawei_project_schedule->huawei_project_employees()->delete();
+                    foreach ($schedule['employees'] as $employee) {
+                        HuaweiProjectEmployee::create([
+                            'huawei_project_schedule_id' => $huawei_project_schedule->id,
+                            'employee' => (is_array($employee) && isset($employee['employee'])) ? $employee['employee'] : $employee
+                        ]);
+                    }
+                } else {
+                    $new_schedule = HuaweiProjectSchedule::create([
+                        'activity' => $schedule['activity'],
+                        'days' => $schedule['days'],
+                        'start_date' => $schedule['start_date'],
+                        'end_date' => $schedule['end_date'],
+                        'huawei_project_id' => $huawei_project->id
+                    ]);
+                    foreach ($schedule['employees'] as $employee) {
+                        HuaweiProjectEmployee::create([
+                            'huawei_project_schedule_id' => $new_schedule->id,
+                            'employee' => $employee
+                        ]);
+                    }
+                }
+            }
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            Log::info($data);
+            Log::info($th);
+            abort(403, 'Error al actualizar el proyecto');
+        }
+        DB::commit();
         return redirect()->back();
     }
 
@@ -526,7 +656,7 @@ class HuaweiProjectController extends Controller
 
     public function getSites()
     {
-        return Inertia::render('Huawei/Sites', [
+        return Inertia::render('Huawei/Sites/Sites', [
             'sites' => HuaweiSite::select('id', 'name', 'address', 'prefix', 'code', 'latitude', 'longitude')->orderBy('name')->paginate(10)
         ]);
     }
@@ -542,7 +672,7 @@ class HuaweiProjectController extends Controller
             ->orWhereRaw('LOWER(prefix) LIKE?', ["%{$searchTerm}%"])
             ->orWhereRaw('LOWER(code) LIKE?', ["%{$searchTerm}%"]);
 
-        return Inertia::render('Huawei/Sites', [
+        return Inertia::render('Huawei/Sites/Sites', [
             'sites' => $query->select('id', 'name', 'address', 'prefix', 'code', 'latitude', 'longitude')->orderBy('name')->get(),
             'search' => $request
         ]);
@@ -663,7 +793,7 @@ class HuaweiProjectController extends Controller
             ];
         })->values()->toArray();
 
-        return Inertia::render('Huawei/CostSummary', [
+        return Inertia::render('Huawei/Projects/ProjectExpenses/CostSummary', [
             'expenses' => $prevExpense,
             'acExpensesAmounts' => $acExpensesAmounts,
             'scExpensesAmounts' => $scExpensesAmounts,
@@ -703,17 +833,7 @@ class HuaweiProjectController extends Controller
     }
 
     //additional costs
-    private static array $data;
 
-    public function __construct()
-    {
-        self::$data = [
-            'employees' => HuaweiConstants::getEmployees(),
-            'static_expense_types' => HuaweiConstants::getStaticExpenseTypes(),
-            'variable_expense_types' => HuaweiConstants::getVariableExpenseTypes(),
-            'cdp_types' => HuaweiConstants::getCDPTypes(),
-        ];
-    }
     public function getAdditionalCosts(HuaweiProject $huawei_project, $mode = null)
     {
         $expenses = HuaweiMonthlyExpense::query()
@@ -723,7 +843,7 @@ class HuaweiProjectController extends Controller
             ->get()
             ->filter(fn($expense) => $mode ? $expense->type === 'Fijo' : $expense->type === 'Variable');
 
-        return Inertia::render('Huawei/AdditionalCosts', [
+        return Inertia::render('Huawei/Projects/ProjectExpenses/AdditionalCosts', [
             'expense' => $expenses->values(),
             'project' => $huawei_project,
             'data' => self::$data,
@@ -820,7 +940,7 @@ class HuaweiProjectController extends Controller
             ->get()
             ->filter(fn($expense) => $mode ? $expense->type === 'Fijo' : $expense->type === 'Variable');
 
-        return Inertia::render('Huawei/AdditionalCosts', [
+        return Inertia::render('Huawei/Projects/ProjectExpenses/AdditionalCosts', [
             'expense' => $expenses->values(),
             'project' => $huawei_project,
             'data' => self::$data,
@@ -902,7 +1022,7 @@ class HuaweiProjectController extends Controller
                 })
                 ->values()->toArray();
 
-            return Inertia::render('Huawei/Resources', [
+            return Inertia::render('Huawei/Projects/Resources/Resources', [
                 'resources' => $resources,
                 'equipment' => $equipment,
                 'equipments' => $filteredEquipments,
@@ -935,7 +1055,7 @@ class HuaweiProjectController extends Controller
                 ->values()
                 ->toArray();
 
-            return Inertia::render('Huawei/Resources', [
+            return Inertia::render('Huawei/Projects/Resources/Resources', [
                 'resources' => $resources,
                 'equipment' => $equipment,
                 'materials' => $materials,
@@ -1042,7 +1162,7 @@ class HuaweiProjectController extends Controller
                 })
                 ->values()->toArray();
 
-            return Inertia::render('Huawei/Resources', [
+            return Inertia::render('Huawei/Projects/Resources/Resources', [
                 'resources' => $resources,
                 'equipment' => $equipment,
                 'equipments' => $filteredEquipments,
@@ -1078,7 +1198,7 @@ class HuaweiProjectController extends Controller
                 ->values()
                 ->toArray();
 
-            return Inertia::render('Huawei/Resources', [
+            return Inertia::render('Huawei/Projects/Resources/Resources', [
                 'resources' => $resources,
                 'equipment' => $equipment,
                 'materials' => $materials,
@@ -1224,7 +1344,7 @@ class HuaweiProjectController extends Controller
             $resource->huawei_entry_detail->huawei_material->name = $this->sanitizeText2($resource->huawei_entry_detail->huawei_material->name);
         }
 
-        return Inertia::render('Huawei/Liquidations', [
+        return Inertia::render('Huawei/Projects/Liquidations/Liquidations', [
             'equipments' => $equipments,
             'materials' => $materials,
             'huawei_project' => $huawei_project,
@@ -1403,7 +1523,7 @@ class HuaweiProjectController extends Controller
             }
         }
 
-        return Inertia::render('Huawei/LiquidationsHistory', [
+        return Inertia::render('Huawei/Projects/Liquidations/LiquidationsHistory', [
             'liquidations' => $liquidations,
             'huawei_project' => $huawei_project,
             'equipment' => $equipment,

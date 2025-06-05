@@ -74,9 +74,7 @@ import TableRow from '@/Components/TableRow.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import { notify } from '@/Components/Notification';
 import { ref } from 'vue';
-import ShowIcon from '@/Components/Icons/ShowIcon.vue';
-import AcceptIcon from '@/Components/Icons/AcceptIcon.vue';
-import RejectIcon from '@/Components/Icons/RejectIcon.vue';
+import { AcceptIcon, RejectIcon, ShowIcon } from '@/Components/Icons/Index';
 const { change } = defineProps({
     change: Object
 })

@@ -100,9 +100,7 @@
     </div>
 </template>
 <script setup>
-import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
-import EditIcon from '@/Components/Icons/EditIcon.vue';
-import ShowIcon from '@/Components/Icons/ShowIcon.vue';
+import { DeleteIcon, EditIcon, ShowIcon } from '@/Components/Icons/Index';
 import { notifyError } from '@/Components/Notification';
 import Pagination from '@/Components/Pagination.vue';
 import TableRow from '@/Components/TableRow.vue';

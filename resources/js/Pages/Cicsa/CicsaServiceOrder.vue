@@ -45,8 +45,8 @@
                                     <button v-if="item.cicsa_service_order.length > 0" type="button"
                                         @click="toggleDetails(item?.cicsa_service_order)"
                                         class="text-blue-900 whitespace-no-wrap">
-                                        <DownArrowIcon v-if="service_order_row !== item.id"/>
-                                        <UpArrowIcon v-else/>
+                                        <DownArrowIcon v-if="service_order_row !== item.id" />
+                                        <UpArrowIcon v-else />
                                     </button>
                                 </div>
                             </TableRow>
@@ -90,7 +90,7 @@
                                 <TableRow>{{ materialDetail?.user_name }}</TableRow>
                                 <TableRow>
                                     <button class="text-blue-900" @click="openEditModal(materialDetail)">
-                                        <EditIcon/>
+                                        <EditIcon />
                                     </button>
                                 </TableRow>
                             </tr>
@@ -244,10 +244,7 @@ import { notify, notifyError } from '@/Components/Notification';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import ShowIcon from '@/Components/Icons/ShowIcon.vue';
-import EditIcon from '@/Components/Icons/EditIcon.vue';
-import DownArrowIcon from '@/Components/Icons/DownArrowIcon.vue';
-import UpArrowIcon from '@/Components/Icons/UpArrowIcon.vue';
+import { ShowIcon, EditIcon, DownArrowIcon, UpArrowIcon } from '@/Components/Icons/Index';
 
 const { service_order, auth, searchCondition, type } = defineProps({
     service_order: Object,

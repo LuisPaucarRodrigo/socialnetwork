@@ -49,11 +49,11 @@
                     <div class="flex space-x-3 justify-center">
                         <button v-if="hasPermission('HumanResourceManager')" type="button"
                             @click="openExternal(employee)">
-                            <EditIcon/>
+                            <EditIcon />
                         </button>
                         <button v-if="hasPermission('HumanResourceManager')" type="button"
                             @click="confirmUserDeletion(employee.id)">
-                            <DeleteIcon/>
+                            <DeleteIcon />
                         </button>
                     </div>
                 </TableRow>
@@ -71,9 +71,7 @@ import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
 import Pagination from '@/Components/Pagination.vue';
-import ShowIcon from '@/Components/Icons/ShowIcon.vue';
-import EditIcon from '@/Components/Icons/EditIcon.vue';
-import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
+import { ShowIcon, EditIcon, DeleteIcon } from "@/Components/Icons/Index";
 
 const { employees, userPermissions, formSearch, cost_line, openExternal, confirmUserDeletion } = defineProps({
     employees: Object,

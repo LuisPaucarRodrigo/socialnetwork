@@ -57,11 +57,7 @@
                             </button>
                             <button v-if="auth.user.role_id == 1" @click="confirmDeleteProduct(item.id)"
                                 class="text-red-600 hover:underline">
-                                <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="12" cy="12" r="9" stroke="red" stroke-width="2" />
-                                    <path d="M18 18L6 6" stroke="red" stroke-width="2" />
-                                </svg>
+                                <DisableIcon />
                             </button>
                         </div>
                     </td>
@@ -74,7 +70,7 @@
     </div>
 </template>
 <script setup>
-import EditIcon from '@/Components/Icons/EditIcon.vue';
+import { DisableIcon, EditIcon } from "@/Components/Icons/Index";
 import Pagination from '@/Components/Pagination.vue'
 
 const { products, userPermissions, auth, openEditProductModal, confirmDeleteProduct } = defineProps({

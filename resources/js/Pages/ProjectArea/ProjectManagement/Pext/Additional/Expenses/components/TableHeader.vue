@@ -141,8 +141,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Search from '@/Components/Search.vue';
 import { Link } from '@inertiajs/vue3';
 import Dropdown from "@/Components/Dropdown.vue";
-import Menuicon from '@/Components/Icons/Menuicon.vue';
-import ServerIcon from '@/Components/Icons/ServerIcon.vue';
+import { Menuicon, ServerIcon } from '@/Components/Icons/Index';
 
 const { project_id, fixedOrAdditional, type, userPermissions, openSwapAPModal, openModalImport, initialFilterFormState } = defineProps({
     project_id: String,

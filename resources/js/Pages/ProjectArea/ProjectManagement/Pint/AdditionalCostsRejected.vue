@@ -717,9 +717,7 @@ import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notify, notifyError } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import Search from "@/Components/Search.vue";
-import EditIcon from "@/Components/Icons/EditIcon.vue";
-import DeleteIcon from "@/Components/Icons/DeleteIcon.vue";
-import ShowIcon from "@/Components/Icons/ShowIcon.vue";
+import { DeleteIcon, DeleteIcon, ShowIcon } from "@/Components/Icons/Index";
 
 
 const props = defineProps({

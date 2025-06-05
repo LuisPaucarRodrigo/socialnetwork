@@ -45,13 +45,13 @@
                             <TableRow>
                                 <div class="flex space-x-3 justify-center">
                                     <button @click="openCreateModal(item)">
-                                        <PlusCircleIcon/>
+                                        <PlusCircleIcon />
                                     </button>
                                     <button v-if="item.cicsa_purchase_order.length > 0" type="button"
                                         @click="toggleDetails(item?.cicsa_purchase_order)"
                                         class="text-blue-900 whitespace-no-wrap">
-                                        <DownArrow v-if="purcahse_order_row !== item.id"/>
-                                        <UpArrow v-else/>
+                                        <DownArrow v-if="purcahse_order_row !== item.id" />
+                                        <UpArrow v-else />
                                     </button>
                                 </div>
                             </TableRow>
@@ -83,7 +83,7 @@
                                 <TableRow>
                                     <button v-if="materialDetail?.document" type="button"
                                         @click="openPDF(materialDetail?.id)">
-                                        <ShowIcon/>
+                                        <ShowIcon />
                                     </button>
                                 </TableRow>
                                 <TableRow>{{ materialDetail?.observation }}</TableRow>
@@ -92,7 +92,7 @@
                                 <TableRow>
                                     <button class="text-blue-900"
                                         @click="openEditModal(materialDetail, item.project_name, item.cpe)">
-                                        <EditIcon/>
+                                        <EditIcon />
                                     </button>
                                 </TableRow>
                             </tr>
@@ -227,11 +227,7 @@ import { Toaster } from 'vue-sonner';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import DownArrow from '@/Components/Icons/DownArrowIcon.vue';
-import UpArrow from '@/Components/Icons/UpArrowIcon.vue';
-import PlusCircleIcon from '@/Components/Icons/PlusCircleIcon.vue';
-import ShowIcon from '@/Components/Icons/ShowIcon.vue';
-import EditIcon from '@/Components/Icons/EditIcon.vue';
+import { DownArrow, UpArrow, PlusCircleIcon, ShowIcon, EditIcon } from '@/Components/Icons/Index';
 
 const { purchaseOrder, auth, searchCondition, type } = defineProps({
     purchaseOrder: Object,

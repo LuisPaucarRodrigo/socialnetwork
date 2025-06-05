@@ -752,7 +752,6 @@ class ApiController extends Controller
     public function getExpensesHistory()
     {
         $user = Auth::user();
-
         $expenses = HuaweiMonthlyExpense::where('user_id', $user->id)
             ->get()
             ->makeHidden(['huawei_project', 'general_expense']);

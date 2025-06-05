@@ -204,7 +204,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import { formattedDate } from '@/utils/utils';
-import ShowIcon from '@/Components/Icons/ShowIcon.vue';
+import { ShowIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
     purchase_orders: {

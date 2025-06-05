@@ -101,7 +101,7 @@ import { formattedDate } from '@/utils/utils'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import ShowIcon from '@/Components/Icons/ShowIcon.vue';
+import { ShowIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
   loads: Object,

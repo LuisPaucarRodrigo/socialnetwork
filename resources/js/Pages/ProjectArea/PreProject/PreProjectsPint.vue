@@ -11,13 +11,11 @@
         <div class="min-w-full p-3 rounded-lg shadow">
             <div class="mt-6 flex items-center justify-between gap-x-6">
                 <div class="flex space-x-2">
-                    <Link v-if="preprojects_status === null && hasPermission('ProjectManager')"
-                        :href="route('preprojects.create', { type: type })"
+                    <Link v-if="preprojects_status === null" :href="route('preprojects.create', { type: type })"
                         class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-500 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                     + Agregar
                     </Link>
-                    <Link v-if="preprojects_status === null && hasPermission('ProjectManager')"
-                        :href="route('project.auto.pint', { type })"
+                    <Link v-if="preprojects_status === null" :href="route('project.auto.pint', { type })"
                         class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs  uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-500 focus:border-indigo-600 focus:outline-none focus:ring-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="white" class="h-5 w-5 hover:text-gray-700">
@@ -65,7 +63,7 @@
                     </h3>
                     <p class="text-sm font-semibold text-gray-700 mb-2">{{ item.description }}</p>
                     <div class="grid grid-cols-1 gap-y-1 text-sm">
-                        <div v-if="hasPermission('ProjectManager')">
+                        <div>
                             <button @click="assignUser(item.id, item.users)"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                                 Asignar Usuarios
@@ -110,8 +108,7 @@
                             </Link>
                             <span v-else class="text-gray-400">Cotizaciones de Compras</span>
                         </div>
-                        <div
-                            v-if="item.has_photo_report && (item.status === null || item.status == true) && hasPermission('ProjectManager')">
+                        <div v-if="item.has_photo_report && (item.status === null || item.status == true)">
                             <Link v-if="item.customer_id == 1"
                                 :href="route('preprojects.quote', { preproject_id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
@@ -186,8 +183,7 @@ import Modal from '@/Components/Modal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputError from '@/Components/InputError.vue';
-import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
-import EditIcon from '@/Components/Icons/EditIcon.vue';
+import { DeleteIcon, EditIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
     preprojects: Object,
@@ -197,10 +193,6 @@ const props = defineProps({
     userPermissions: Array,
     type: String
 })
-
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
 
 const assignUserModal = ref(false);
 const successAssign = ref(false);

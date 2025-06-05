@@ -97,7 +97,7 @@
             </Link>
         </div>
 
-        <div v-if="hasPermission('HumanResourceManager')" class="sm:hidden">
+        <div class="sm:hidden">
             <dropdown align="left">
                 <template #trigger>
                     <button @click="dropdownOpen = !dropdownOpen"
@@ -109,8 +109,7 @@
                 <template #content class="origin-left">
                     <div class="dropdown">
                         <div class="dropdown-menu">
-                            <button v-if="hasPermission('ProjectManager') && filterForm.rejected"
-                                @click="openCreateAdditionalModal"
+                            <button v-if="filterForm.rejected" @click="openCreateAdditionalModal"
                                 class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                 Agregar
                             </button>
@@ -144,8 +143,7 @@ import Search from "@/Components/Search.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { Link } from "@inertiajs/vue3";
 import { notifyWarning } from "@/Components/Notification";
-import Menuicon from "@/Components/Icons/Menuicon.vue";
-import ServerIcon from "@/Components/Icons/ServerIcon.vue";
+import { Menuicon, ServerIcon } from "@/Components/Icons/Index";
 
 const { userPermissions, project_id, fixedOrAdditional, status, actionForm, initialFilterFormState, openCreateAdditionalModal, openModalImport } = defineProps({
     userPermissions: Array,

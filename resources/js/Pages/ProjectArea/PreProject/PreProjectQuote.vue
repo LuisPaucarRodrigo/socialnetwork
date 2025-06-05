@@ -808,8 +808,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import axios from 'axios';
-import DeleteIcon from '@/Components/Icons/DeleteIcon.vue';
-import ShowIcon from '@/Components/Icons/ShowIcon.vue';
+import { DeleteIcon, ShowIcon } from "@/Components/Icons/Index";
 
 const showModal = ref(false)
 const showErroModal = ref(false)
