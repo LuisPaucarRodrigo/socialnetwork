@@ -23,7 +23,7 @@
                     <TableTitle>Aporte de trabajador</TableTitle>
                     <TableTitle>Neto a pagar</TableTitle>
                     <TableTitle>Aporte empleador</TableTitle>
-                    <TableTitle>sss</TableTitle>
+                    <TableTitle></TableTitle>
                 </tr>
         </template>
 
