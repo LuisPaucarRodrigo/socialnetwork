@@ -15,6 +15,7 @@ use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailTaxAndContribution
 use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailWorkScheduleRequest;
 use App\Http\Requests\HumanResource\Payroll\StorePayrollExternalDetailRequest;
 use App\Http\Requests\HumanResource\StorePayrollRequest;
+use App\Http\Requests\UpdateMasiveOpNuDateRequest;
 use App\Models\Contract;
 use App\Models\Employee;
 use App\Models\ExternalEmployee;
@@ -40,6 +41,7 @@ use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\AccountStatement;
 use App\Services\HumanResource\PayrollServices;
+use Illuminate\Support\Arr;
 
 class SpreadsheetsController extends Controller
 {
@@ -384,6 +386,27 @@ class SpreadsheetsController extends Controller
             return response()->json(['msg'=>'Server Error'], 500);
         }
     }
+
+    public function masive_update_payroll_detail_expense(UpdateMasiveOpNuDateRequest $request)
+    {
+        DB::beginTransaction();
+        try {
+            $data = $request->validated();
+            $as =  self::findAccountStatement($data);
+            $data['account_statement_id'] = $as?->id;
+            $ids = Arr::pull($data, 'ids');
+            $costs = PayrollDetailExpense::whereIn('id',$ids)->get();
+            foreach ($costs as $cost) { $cost->general_expense->update($data);}
+            $updatedCosts = PayrollDetailExpense::whereIn('id', $ids)
+                ->with(['general_expense'])->get()->each->append('real_state');
+            DB::commit();
+            return response()->json($updatedCosts, 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['msg'=>'Server Error'], 500);
+        }
+    }
+
 
     public function search_payroll_detail_expenses(Request $request, $payroll_id)
     {
