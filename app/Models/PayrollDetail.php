@@ -30,26 +30,24 @@ class PayrollDetail extends Model
 
     protected $appends = [
         'employee_name',
-
-        'total_income',
-        'total_pension_base',
-
-        'truncated_vacations',
-        'snp',
-        'snp_onp',
-        'commission',
-        'commission_on_ra',
-        'seg',
-        'insurance_premium',
-        'mandatory_contribution',
-        'mandatory_contribution_amount',
-        'total_discount',
-        'payment_until_today',
-        'net_pay',
-        'healths',
-        'sctr_p',
-        'sctr_s',
-        'total_contribution',
+        // 'total_income',
+        // 'total_pension_base',
+        // 'truncated_vacations',
+        // 'snp',
+        // 'snp_onp',
+        // 'commission',
+        // 'commission_on_ra',
+        // 'seg',
+        // 'insurance_premium',
+        // 'mandatory_contribution',
+        // 'mandatory_contribution_amount',
+        // 'total_discount',
+        // 'payment_until_today',
+        // 'net_pay',
+        // 'healths',
+        // 'sctr_p',
+        // 'sctr_s',
+        // 'total_contribution',
         // 'new_totals',
     ];
 
@@ -248,7 +246,7 @@ class PayrollDetail extends Model
         $employer_tac_total = $this->payroll_detail_tax_and_contributions()
             ->whereHas('tax_and_contribution_param', function($query){$query->where('type', 'employer');})
             ->sum('amount');
-        $net_pay=0;
+        $net_pay=$income_paid_total-$discount_total-$employee_tac_total;
         return compact(
             'income_accrued_total',
             'income_paid_total',
