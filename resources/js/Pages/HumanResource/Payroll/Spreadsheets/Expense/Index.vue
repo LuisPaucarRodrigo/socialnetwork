@@ -230,7 +230,6 @@
                         </td>
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             {{
-                                item.general_expense?.operation_date &&
                                 formattedDate(item.general_expense.operation_date)
                             }}
                         </td>

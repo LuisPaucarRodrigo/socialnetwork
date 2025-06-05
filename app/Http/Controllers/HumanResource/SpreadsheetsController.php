@@ -344,8 +344,8 @@ class SpreadsheetsController extends Controller
         $data = $request->validated();
         DB::beginTransaction();
         try {
-            $as = self::findAccountStatement($data);
-            $data['account_statement_id'] = $as?->id;
+            $as = self::findAccountStatement($data['general_expense']);
+            $data['general_expense']['account_statement_id'] = $as?->id;
             $rg = PayrollDetailExpense::find($data['id']);
             if ($request->hasFile('photo')) {
                 $filename = $rg?->photo;
