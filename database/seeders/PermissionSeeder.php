@@ -15,6 +15,7 @@ use App\Support\RouteDefinitions\ShoppingAreaRoutes;
 use App\Support\RouteDefinitions\UserAdminRoutes;
 
 use App\Models\Permission;
+use App\Support\RouteDefinitions\HuaweiRoutes;
 use App\Support\RouteDefinitions\SharePointRoutes;
 
 class PermissionSeeder extends Seeder
@@ -57,6 +58,11 @@ class PermissionSeeder extends Seeder
         $routes = array_map(function ($route) {
             return ['name' => $route['name']];
         }, InventoryRoutes::all());
+
+        Permission::insert($routes);
+        $routes = array_map(function ($route) {
+            return ['name' => $route['name']];
+        }, HuaweiRoutes::all());
 
         Permission::insert($routes);
         $routes = array_map(function ($route) {
