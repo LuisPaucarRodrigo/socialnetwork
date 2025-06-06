@@ -1215,6 +1215,45 @@ class FuncionalityPermissionSeeder extends Seeder
             ],
         ];
 
+        $huaweiProjectsSubmodule = [
+            [
+                'display_name' => 'Ver proyectos (incluye buscar)',
+                'key_name' => 'huawei_projects_view',
+                'module' => 'project_submodule',
+                'permissions' => ['huawei.projects', 'huawei.projects.search']
+            ],
+            [
+                'display_name' => 'Agregar proyecto',
+                'key_name' => 'huawei_projects_add',
+                'module' => 'project_submodule',
+                'permissions' => ['huawei.projects', 'huawei.projects.search', 'huawei.projects.create', 'huawei.projects.store', 'huawei.projects.import.baselines', 'huawei.projects.baselines.template']
+            ],
+            [
+                'display_name' => 'Ver proyecto',
+                'key_name' => 'huawei_projects_see_project',
+                'module' => 'project_submodule',
+                'permissions' => ['huawei.projects', 'huawei.projects.search', 'huawei.projects.toupdate', 'huawei.projects.balance']
+            ],
+            [
+                'display_name' => 'Editar proyecto',
+                'key_name' => 'huawei_projects_edit',
+                'module' => 'project_submodule',
+                'permissions' => ['huawei.projects', 'huawei.projects.search', 'huawei.projects.toupdate', 'huawei.projects.update', 'huawei.projects.import.baselines', 'huawei.projects.baselines.template']
+            ],
+            [
+                'display_name' => 'Administrar proyectos',
+                'key_name' => 'huawei_projects_admin',
+                'module' => 'project_submodule',
+                'permissions' => ['huawei.projects.liquidateproject', 'huawei.projects.cancelproject', 'huawei.projects.stopped.resume']
+            ]
+            //provisional
+            // [
+            //     'display_name' => 'Eliminar proyecto',
+            //     'key_name' => 'huawei_projects_delete',
+            //     'module' => 'project_submodule',
+            //     'permissions' => []
+            // ],
+        ];
 
 
         $Submodules = [
@@ -1254,7 +1293,10 @@ class FuncionalityPermissionSeeder extends Seeder
             $cmobileunitSubModule,
             
             //Sharepoint
-            $sharedoc_submodule
+            $sharedoc_submodule,
+
+            //HUAWEI
+            $huaweiProjectsSubmodule,
         ];
 
         foreach ($Submodules as $sm) {

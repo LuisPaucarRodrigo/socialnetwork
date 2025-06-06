@@ -97,7 +97,10 @@ class ModuleSeeder extends Seeder
                 'name' => 'HUAWEI_MODULE',
                 'display_name' => 'Huawei',
                 'submodules' => [
-
+                    'huawei_inventory_submodule' => 'Inventario Huawei',
+                    'huawei_projects_submodule' => 'Proyectos Huawei',
+                    'huawei_sites_submodule' => 'Sites Huawei',
+                    'huawei_expenses_submodule' => 'Gastos Huawei',
                 ]
             ],
             [
