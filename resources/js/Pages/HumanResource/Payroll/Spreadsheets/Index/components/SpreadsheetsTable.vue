@@ -10,11 +10,15 @@
                             {{ actionForm.ids.length ?? "" }}
                         </label>
                     </th>
-                    <th class="sticky left-16 border-b-2 border-gray-200 bg-amber-200 text-gray-600 text-center text-xs whitespace-nowrap tabular-nums font-semibold tracking-wider uppercase px-5 py-3">
+                    <th class="sticky z-10 left-16 border-b-2 border-gray-200 bg-amber-200 text-gray-600 text-center text-xs whitespace-nowrap tabular-nums font-semibold tracking-wider uppercase px-5 py-3">
                         Nombre
                     </th>
                     <TableTitle>DNI</TableTitle>
-                    <TableTitle>REG. PEN</TableTitle>
+                    <TableTitle> 
+                        <TableHeaderFilter 
+                            label="Reg. Pen." :options="pensionTypes"
+                            v-model="filterForm.selectedPensionTypes" width="w-44" />
+                    </TableTitle>
                     <TableTitle>Fecha Ingreso</TableTitle>
                     <TableTitle>Sueldo</TableTitle>
                     <TableTitle>Ingresos devengados</TableTitle>
@@ -36,7 +40,7 @@
                                 type="checkbox" />
                         </label>
                     </td>
-                    <TableRow :style="'sticky left-16 bg-amber-200 whitespace-nowrap'">
+                    <TableRow :style="'sticky z-10 left-16 bg-amber-200 whitespace-nowrap'">
                         {{ item.employee.name }} {{ item.employee.lastname }}
                     </TableRow>
                     <TableRow>{{ item.employee.dni }}</TableRow>
@@ -80,20 +84,35 @@ import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
 import { EyeIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import TableStructure from '@/Layouts/TableStructure.vue';
+import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
 import { formattedDate } from '@/utils/utils';
 import { Link } from '@inertiajs/vue3';
 import { ref, inject, watch } from 'vue';
+import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import Modal from '@/Components/Modal.vue';
 
-const { spreadsheets, totals, payrolls, userPermissions, openPaymentTravelExpenseModal, openPaymentSalaryModal, openDiscountModal, actionForm } = defineProps({
+const { 
+    spreadsheets, 
+    totals, 
+    pensionTypes, 
+    payrolls, 
+    userPermissions, 
+    openPaymentTravelExpenseModal, 
+    openPaymentSalaryModal, 
+    openDiscountModal, 
+    actionForm ,
+    filterForm,
+} = defineProps({
     spreadsheets: Object,
     totals: Object,
+    pensionTypes: Array,
     payrolls: Object,
     userPermissions: Array,
     openPaymentTravelExpenseModal: Function,
     openPaymentSalaryModal: Function,
     openDiscountModal: Function,
     actionForm: Object,
+    filterForm: Object,
 })
 
 
@@ -101,5 +120,29 @@ const handleCheckAll = (e) => {
     if (e.target.checked) { actionForm.ids = spreadsheets.map((item) => item.id); }
     else { actionForm.ids = []; }
 };
+
+
+const emit = defineEmits(['update:spreadsheets', 'update:totals']);
+async function search_advance() {
+    try {
+        let res = await axios.post(route("spreadsheets.index", {payroll_id: payrolls.id,}),
+            filterForm
+        );
+        emit('update:spreadsheets', res.data.spreadsheet);
+        emit('update:totals', res.data.total);
+        // spreadsheets = res.data;
+        notifyWarning(`Se encontraron ${res.data.spreadsheet.length} registro(s)`);
+    } catch (error) {
+        console.error("Error en la solicitud:", error);
+    }
+}
+
+watch(()=>filterForm.selectedPensionTypes, ()=>{
+    search_advance()
+}, {deep:true})
+
+
+
+defineExpose({ search_advance });
 
 </script>

@@ -61,7 +61,14 @@
                 </dropdown>
             </div>
             <div>
-                <TextInput type="text" placeholder="Buscar..." @input="search($event.target.value)" />
+                <!-- <TextInput type="text" placeholder="Buscar..." @input="search($event.target.value)" /> -->
+                <TextInput data-tooltip-target="search_fields" type="text" placeholder="Buscar..." v-model="filterForm.search"
+                        @keyup.enter="searchSpreadSheetsTable()" />
+                    <div id="search_fields" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                            Nombre
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
             </div>
         </div>
     </div>
@@ -73,23 +80,16 @@ import TextInput from '@/Components/TextInput.vue';
 import { Link } from '@inertiajs/vue3';
 import { DolarIcon } from '@/Components/icons';
 
-const { payrolls, openPayrollApprove, openPaySpreadsheet } = defineProps({
+const { payrolls, filterForm, openPayrollApprove, openPaySpreadsheet, searchSpreadSheetsTable } = defineProps({
     payrolls: Object,
+    filterForm: Object,
     openPayrollApprove: Function,
     openPaySpreadsheet: Function,
+    searchSpreadSheetsTable: Function,
 })
 
 const spreadsheets = defineModel('spreadsheets')
 const totals = defineModel('totals')
 
-async function search(employee) {
-    let url = route('spreadsheets.index', { payroll_id: payrolls.id })
-    try {
-        let response = await axios.post(url, { searchQuery: employee })
-        spreadsheets.value = response.data.spreadsheet
-        totals.value = response.data.total
-    } catch (error) {
-        notifyError(error)
-    }
-}
+
 </script>

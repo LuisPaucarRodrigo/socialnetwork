@@ -107,16 +107,16 @@ class SpreadsheetsController extends Controller
             $payroll = Payroll::find($payroll_id);
             $spreadsheet = $this->payrollServices->getPayrollDetails($payroll_id)->get()->each->append('new_totals');
             $total = $this->payrollServices->calculateTotal($spreadsheet);
-
+            $pensionTypes = PayrollConstants::payrollPensionTypes();
             return Inertia::render('HumanResource/Payroll/Spreadsheets/Index/Index', [
                 'spreadsheet' => $spreadsheet,
                 'payroll' => $payroll,
                 'total' => $total,
+                'pensionTypes'=> $pensionTypes
             ]);
         } elseif ($request->isMethod('post')) {
             // Buscar detalles con filtro de búsqueda
-            $searchQuery = $request->searchQuery;
-            $spreadsheet = $this->payrollServices->getPayrollDetails($payroll_id, $searchQuery)->get()->each->append('new_totals');
+            $spreadsheet = $this->payrollServices->getPayrollDetails($payroll_id, $request)->get()->each->append('new_totals');
             $total = $this->payrollServices->calculateTotal($spreadsheet);
 
             return response()->json(
@@ -128,6 +128,11 @@ class SpreadsheetsController extends Controller
             );
         }
     }
+
+    public function payroll_detail_search_advance(){
+
+    }
+
 
     public function index_payroll_detail($payroll_details_id, $employee_id)
     {

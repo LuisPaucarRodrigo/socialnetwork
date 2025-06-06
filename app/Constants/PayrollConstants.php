@@ -16,8 +16,8 @@ class PayrollConstants
     // expenses payroll types
     public const SCTR_PENSIONARIO = 'SCTR pensionario';
     public const SCTR_SALUD = 'SCTR salud';
-    public const AFP = 'AFP';
-    public const ONP = 'ONP';
+    public const AFP_EXPENSE = 'AFP';
+    public const ONP_EXPENSE = 'ONP';
     public const SALARIO_BASICO = 'Salario básico';
 
 
@@ -30,14 +30,26 @@ class PayrollConstants
     public const VOUCHER_DE_PAGO = "Voucher de Pago";
     public const SIN_COMPROBANTE = "Sin Comprobante";
 
+
+    //pension types
+    public const HABITAT = 'Habitat';
+    public const INTEGRA = 'Integra';
+    public const PRIMA = 'Prima';
+    public const PROFUTURO = 'Profuturo';
+    public const HABITADMX = 'HabitadMX';
+    public const INTEGRAMX = 'IntegraMX';
+    public const PRIMAMX = 'PrimaMX';
+    public const PROFUTUROMX = 'ProfuturoMX';
+    public const ONP = 'ONP';
+
     
     public static function payrollExpenseTypes(): array
     {
         return [
             self::SCTR_PENSIONARIO,
             self::SCTR_SALUD,
-            self::AFP,
-            self::ONP,
+            self::AFP_EXPENSE,
+            self::ONP_EXPENSE,
             self::SALARIO_BASICO,
         ];
     }
@@ -56,10 +68,25 @@ class PayrollConstants
         ];
     }
 
+    public static function payrollPensionTypes(): array {
+        return [
+            self::HABITAT,
+            self::INTEGRA,
+            self::PRIMA,
+            self::PROFUTURO,
+            self::HABITADMX,
+            self::INTEGRAMX,
+            self::PRIMAMX,
+            self::PROFUTUROMX,
+            self::ONP,
+        ];
+    }
+
     
 
     public static function countPayrollExpenseTypes() : int {return count(self::payrollExpenseTypes());}
     public static function countPayrollDocTypes() : int {return count(self::payrollDocTypes());}
+    public static function countPayrollPensionTypes() : int {return count(self::payrollPensionTypes());}
 
 
 }

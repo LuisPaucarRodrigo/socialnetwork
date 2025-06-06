@@ -7,14 +7,27 @@
         </template>
         <Toaster richColors />
         <div class="min-w-full min-h-full overflow-hidden">
-            <TableHeader v-model:spreadsheets="spreadsheets" v-model:totals="totals" :payrolls="payrolls" 
+            <TableHeader 
+                v-model:spreadsheets="spreadsheets" 
+                v-model:totals="totals" 
+                :payrolls="payrolls"
+                :filterForm="filterForm" 
                 :openPayrollApprove="openPayrollApprove" 
                 :openPaySpreadsheet="openPaySpreadsheet" 
+                :searchSpreadSheetsTable="searchSpreadSheetsTable" 
             />
-            <SpreadsheetsTable :spreadsheets="spreadsheets" :totals="totals" :payrolls="payrolls"
+            <SpreadsheetsTable 
+                ref="spreadsheetstable"
+                :spreadsheets="spreadsheets" 
+                :totals="totals" 
+                :payrolls="payrolls"
+                :pensionTypes="pensionTypes"
+                :filterForm="filterForm"
                 :userPermissions="userPermissions" :openPaymentSalaryModal="openPaymentSalaryModal"
                 :openPaymentTravelExpenseModal="openPaymentTravelExpenseModal" :openDiscountModal="openDiscountModal"
-                :actionForm="actionForm"    
+                :actionForm="actionForm"
+                @update:spreadsheets="spreadsheets = $event"   
+                @update:totals="totals = $event"   
             />
             <SpreadsheetPayModal
                 ref="paySpreadsheet"
@@ -42,15 +55,22 @@ import SpreadsheetPayModal from './components/SpreadsheetPayModal.vue';
 import { Toaster } from 'vue-sonner';
 
 
-const { spreadsheet, payroll, total, userPermissions } = defineProps({
+const { spreadsheet, payroll, total, pensionTypes, userPermissions } = defineProps({
     spreadsheet: Object,
     payroll: Object,
     total: Object,
+    pensionTypes: Array,
     userPermissions: Array
 })
 
 
 const actionForm = ref({ ids: [], });
+const initialFilterFormState = {
+    selectedPensionTypes: pensionTypes,
+    search: ''
+}
+const filterForm = ref({...initialFilterFormState})
+
 const spreadsheets = ref(spreadsheet)
 const payrolls = ref(payroll)
 const totals = ref(total)
@@ -59,6 +79,7 @@ const travelESalaryForm = ref(null)
 const employeeDiscountForm = ref(null)
 const approvePayroll = ref(null)
 const paySpreadsheet = ref(null)
+const spreadsheetstable = ref(null)
 
 
 function openPaymentSalaryModal(payroll_detail) {
@@ -82,5 +103,11 @@ function openPayrollApprove() {
 function openPaySpreadsheet(){
     paySpreadsheet.value.openPayModal()
 }
+
+
+function searchSpreadSheetsTable() {
+    spreadsheetstable.value.search_advance()
+}
+
 
 </script>

@@ -2,11 +2,13 @@
 
 namespace App\Services\HumanResource;
 
+use Illuminate\Http\Request;
 use App\Models\Employee;
 use App\Models\Payroll;
 use App\Models\PayrollDetail;
 use App\Models\PayrollDetailExpense;
 use App\Models\Pension;
+use App\Constants\PayrollConstants;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 
@@ -129,17 +131,26 @@ class PayrollServices
         ];
     }
 
-    public function getPayrollDetails($payroll_id, $searchQuery = null)
+    public function getPayrollDetails($payroll_id, Request $request=null)
     {
         $query = PayrollDetail::with('payroll', 'payroll_detail_expense', 'employee', 'pension')
             ->where('payroll_id', $payroll_id);
+        if(!$request)return $query;
 
-        if ($searchQuery) {
+        if ($request->search) {
+            $searchQuery = $request->search;
             $query->whereHas('employee', function ($query) use ($searchQuery) {
                 $query->where('name', 'like', "%$searchQuery%")
                     ->orWhere('lastname', 'like', "%$searchQuery%");
             });
         }
+        if (count($request->selectedPensionTypes) < PayrollConstants::payrollPensionTypes()) {
+            $selectedPensionTypes = $request->selectedPensionTypes;
+            $query->whereHas('pension', function($sq) use ($selectedPensionTypes){
+                $sq->whereIn('type', $selectedPensionTypes);
+            });
+        }
+
 
         return $query;
     }
