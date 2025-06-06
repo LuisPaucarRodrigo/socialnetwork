@@ -108,8 +108,4 @@ const props = defineProps({
   userPermissions: Array,
 });
 
-const hasPermission = (permission) => {
-  return props.userPermissions.includes(permission);
-}
-
 </script>

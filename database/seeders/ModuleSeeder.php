@@ -38,7 +38,8 @@ class ModuleSeeder extends Seeder
                 'name' => 'INVENTORY_MODULE',
                 'display_name' => 'Inventario',
                 'submodules' => [
-
+                    'iproduct_submodule' => 'Productos',
+                    'iwarehouse_submodule' => 'Almacenes',
                 ]
             ],
             [
@@ -87,17 +88,13 @@ class ModuleSeeder extends Seeder
                 ]
             ],
             [
-                'name' => 'DOCUMENT_MODULE',
-                'display_name' => 'Usuarios y Roles',
-                'submodules' => [
-
-                ]
-            ],
-            [
                 'name' => 'HUAWEI_MODULE',
                 'display_name' => 'Huawei',
                 'submodules' => [
-
+                    'huawei_inventory_submodule' => 'Inventario Huawei',
+                    'huawei_projects_submodule' => 'Proyectos Huawei',
+                    'huawei_sites_submodule' => 'Sites Huawei',
+                    'huawei_expenses_submodule' => 'Gastos Huawei',
                 ]
             ],
             [
@@ -115,6 +112,7 @@ class ModuleSeeder extends Seeder
                     'sharedoc_submodule' => 'Documentación'
                 ]
             ],
+
         ];
 
         foreach ($MODULES as $mod) {

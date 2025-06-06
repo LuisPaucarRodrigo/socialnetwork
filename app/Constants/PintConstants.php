@@ -74,6 +74,9 @@ class PintConstants
     public const MDD1_PM = "MDD1-PM";
     public const MDD2_MAZ = "MDD2-MAZ";
     public const SANDIA = "Sandia";
+    public const MOQUEGUA_PEXT = "Moquegua-PEXT";
+    public const SANDIA_PEXT = "Sandia-PEXT";
+    public const MDD2_MAZ_PEXT = "MDD2-MAZ-PEXT";
     public const OFICINA = "Oficina";
 
 
@@ -140,6 +143,9 @@ class PintConstants
             self::MDD1_PM,
             self::MDD2_MAZ,
             self::SANDIA,
+            self::MOQUEGUA_PEXT,
+            self::SANDIA_PEXT,
+            self::MDD2_MAZ_PEXT,
             self::OFICINA,
         ];
     }
@@ -200,6 +206,9 @@ class PintConstants
             self::MDD1_PM,
             self::MDD2_MAZ,
             self::SANDIA,
+            self::MOQUEGUA_PEXT,
+            self::SANDIA_PEXT,
+            self::MDD2_MAZ_PEXT,
             self::OFICINA,
         ];
     }
@@ -320,7 +329,10 @@ class PintConstants
             self::TACNA,
             self::MDD1_PM,
             self::MDD2_MAZ,
-            self::SANDIA
+            self::SANDIA,
+            self::MOQUEGUA_PEXT,
+            self::SANDIA_PEXT,
+            self::MDD2_MAZ_PEXT,
         ];
     }
 

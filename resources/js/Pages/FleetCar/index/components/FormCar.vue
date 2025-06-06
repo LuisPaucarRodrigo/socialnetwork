@@ -6,7 +6,7 @@
             </h2>
             <form @submit.prevent="submit">
                 <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
-                    <div v-if="!form.id && (hasPermission('CarManager') || role_id === 1)" class="mt-2">
+                    <div v-permission="'mobile_actions_manager'" v-if="!form.id" class="mt-2">
                         <InputLabel for="user_id">Proveedores de UM
                         </InputLabel>
                         <div class="mt-2">
@@ -113,12 +113,10 @@ import { useForm } from "@inertiajs/vue3";
 
 defineExpose({ openModalCreate, openModalEdit })
 
-const { cars, users, costLine, userPermissions } = defineProps({
+const { cars, users, costLine } = defineProps({
     cars: Object,
     users: Object,
     costLine: Object,
-    userPermissions: Array,
-    role_id: Number,
 })
 
 const showModalCar = ref(false);
@@ -193,7 +191,5 @@ function updateCar(data, action) {
     }
 }
 
-const hasPermission = (permission) => {
-    return userPermissions.includes(permission);
-};
+
 </script>

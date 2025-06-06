@@ -611,9 +611,6 @@ const form = useForm({
     instalation_date: "",
 });
 
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-};
 
 const openLiquidateModal = (item, equipment) => {
     liquidate_resource_id.value = item;

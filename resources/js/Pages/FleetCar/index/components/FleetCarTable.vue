@@ -5,8 +5,7 @@
                 <th class="bg-gray-100">
                     <div class="w-2"></div>
                 </th>
-                <TableTitle v-if="hasPermission('CarManager') || role_id === 1"
-                    :style="'bg-gray-100 whitespace-nowrap'">
+                <TableTitle v-permission="'mobile_actions_manager'" :style="'bg-gray-100 whitespace-nowrap'">
                     <TableHeaderCicsaFilter label="Linea de Negocio" labelClass="text-gray-600" :options="cost_line"
                         v-model="formSearch.cost_line" />
                 </TableTitle>
@@ -17,7 +16,10 @@
                 <TableTitle>Tipo</TableTitle>
                 <TableTitle>Foto</TableTitle>
                 <TableTitle>Dueño</TableTitle>
-                <TableTitle :colspan="2">Acciones</TableTitle>
+                <TableTitle :colspan="2" v-permission-or="[
+                    'mobile_actions_manager',
+                    'mobile_actions',
+                ]">Acciones</TableTitle>
             </tr>
         </template>
         <template #tbody>
@@ -26,7 +28,7 @@
                     <th>
                         <div class="w-2"></div>
                     </th>
-                    <TableRow v-if="hasPermission('CarManager') || role_id === 1">
+                    <TableRow v-permission="'mobile_actions_manager'">
                         {{ car.costline?.name }}
                     </TableRow>
                     <TableRow>{{ car.plate }}</TableRow>
@@ -41,13 +43,16 @@
                         </a>
                     </TableRow>
                     <TableRow>{{ car.user.name }}</TableRow>
-                    <TableRow :colspan="2">
+                    <TableRow :colspan="2" v-permission-or="[
+                        'mobile_actions_manager',
+                        'mobile_actions',
+                    ]">
                         <div class="flex space-x-3 justify-center">
-                            <button v-if="hasPermission('Car')" @click="openformDocument(car)">
+                            <button v-permission="'mobile_actions'" @click="openformDocument(car)">
                                 <DocumentsIcon
                                     :color="car.car_document?.approvel_car_document.length > 0 ? 'text-red-400' : 'text-blue-400'" />
                             </button>
-                            <button v-if="hasPermission('Car')" @click="openFormChangeLog(null, car)" type="button">
+                            <button v-permission="'mobile_actions'" @click="openFormChangeLog(null, car)" type="button">
                                 <svg viewBox="0 0 1024 1024" class="w-6 h-6 icon" version="1.1"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path
@@ -55,17 +60,16 @@
                                         fill="#044d14" />
                                 </svg>
                             </button>
-                            <button v-if="hasPermission('CarManager') || role_id === 1" type="button"
-                                @click="openEditFormCar(car)">
+                            <button v-permission="'mobile_actions_manager'" type="button" @click="openEditFormCar(car)">
                                 <EditIcon />
                             </button>
 
-                            <a v-if="hasPermission('Car') && car.checklist"
+                            <a v-permission="'mobile_actions'" v-if="car.checklist"
                                 :href="route('fleet.cars.show_checklist', { car: car.id })">
                                 <ListIcon />
                             </a>
 
-                            <button v-if="hasPermission('CarManager') || role_id === 1" type="button"
+                            <button v-permission="'mobile_actions_manager'" type="button"
                                 @click="openModalDeleteCars(car.id)" class="text-blue-900">
                                 <DeleteIcon />
                             </button>
@@ -132,19 +136,21 @@
                             </TableRow>
                             <TableRow>
                                 <div class="flex justify-center items-center gap-2">
-                                    <button v-if="changelog.is_accepted === null && hasPermission('CarManager')"
+                                    <button v-permission="'mobile_actions_manager'"
+                                        v-if="changelog.is_accepted === null"
                                         @click="() => validateRegister(changelog.id, 1)">
                                         <AcceptIcon />
                                     </button>
-                                    <button v-if="changelog.is_accepted === null && hasPermission('CarManager')"
+                                    <button v-permission="'mobile_actions_manager'"
+                                        v-if="changelog.is_accepted === null"
                                         @click="() => validateRegister(changelog.id, 0)" type="button">
                                         <RejectIcon />
                                     </button>
-                                    <button type="button" v-if="hasPermission('CarManager')" @click="
+                                    <button type="button" v-permission="'mobile_actions_manager'" @click="
                                         openEditFormChangeLog(changelog, car)">
                                         <EditIcon />
                                     </button>
-                                    <button type="button" v-if="hasPermission('CarManager')" @click="
+                                    <button type="button" v-permission="'mobile_actions_manager'" @click="
                                         openModalDeleteChangelog(changelog.id)">
                                         <DeleteIcon />
                                     </button>
@@ -210,9 +216,8 @@ import { notify } from '@/Components/Notification';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import { ShowIcon, EditIcon, DeleteIcon, DownArrowIcon, UpArrowIcon, ListIcon, DocumentsIcon, AcceptIcon, RejectIcon } from '@/Components/Icons/Index';
 
-const { userPermissions, formSearch, cars, cost_line, openEditFormCar, role_id
+const { formSearch, cars, cost_line, openEditFormCar, role_id
 } = defineProps({
-    userPermissions: Array,
     formSearch: Object,
     cars: Object,
     cost_line: Object,
@@ -290,11 +295,6 @@ function openModalDeleteCars(id) {
 function openModalDeleteChangelog(id) {
     changelogToDelete.value = id ?? null;
     showModalDeleteChangelog.value = !showModalDeleteChangelog.value;
-}
-
-
-function hasPermission(permission) {
-    return userPermissions.includes(permission)
 }
 
 async function deleteChangelog() {

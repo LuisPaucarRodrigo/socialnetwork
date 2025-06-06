@@ -176,9 +176,7 @@
 
   const selectedWarehouse = ref(props.warehouse);
 
-  const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-  }
+ 
 
   const searchForm = useForm({
     searchTerm: props.search ? props.search : '',

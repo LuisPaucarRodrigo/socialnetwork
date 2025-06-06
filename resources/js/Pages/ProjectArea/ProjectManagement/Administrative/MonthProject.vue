@@ -17,7 +17,7 @@
                         <template #trigger>
                             <button @click="dropdownOpen = !dropdownOpen"
                                 class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100">
-                                <Menuicon />
+                                <MenuIcon />
                             </button>
                         </template>
 
@@ -124,7 +124,7 @@ import { QueueListIcon } from "@heroicons/vue/24/outline";
 import Modal from "@/Components/Modal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import { setAxiosErrors } from "@/utils/utils";
-import { DeleteIcon, Menuicon } from "@/Components/Icons/Index";
+import { DeleteIcon, MenuIcon } from "@/Components/Icons/Index";
 import Dropdown from '@/Components/Dropdown.vue';
 
 const { month_projects } = defineProps({

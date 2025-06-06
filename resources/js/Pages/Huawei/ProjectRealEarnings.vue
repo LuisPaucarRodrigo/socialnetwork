@@ -332,10 +332,6 @@ const props = defineProps({
 
 const backStatus = props.huawei_project.status == 1 ? '1' : (props.huawei_project.status == null ? '2' : '3');
 
-const hasPermission = (permission) => {
-  return props.userPermissions.includes(permission);
-};
-
 const form = useForm({
   id: '',
   invoice_number: '',

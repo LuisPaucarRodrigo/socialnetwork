@@ -602,10 +602,6 @@ const projectId = ref(null);
 const cancelModal = ref(false);
 const resumeModal = ref(false);
 
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-};
-
 const searchForm = useForm({
     searchTerm: props.search ?? "",
 });

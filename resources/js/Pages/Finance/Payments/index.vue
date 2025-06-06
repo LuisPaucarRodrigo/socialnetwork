@@ -291,10 +291,6 @@ const props = defineProps({
     userPermissions: Array
 })
 
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
-
 const showModalSuccess = ref(false);
 const showModalPay = ref(false);
 const payment_id = ref('');

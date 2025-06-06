@@ -102,7 +102,7 @@
                 <template #trigger>
                     <button @click="dropdownOpen = !dropdownOpen"
                         class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100">
-                        <Menuicon />
+                        <MenuIcon />
                     </button>
                 </template>
 
@@ -143,7 +143,7 @@ import Search from "@/Components/Search.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { Link } from "@inertiajs/vue3";
 import { notifyWarning } from "@/Components/Notification";
-import { Menuicon, ServerIcon } from "@/Components/Icons/Index";
+import { MenuIcon, ServerIcon } from "@/Components/Icons/Index";
 
 const { userPermissions, project_id, fixedOrAdditional, status, actionForm, initialFilterFormState, openCreateAdditionalModal, openModalImport } = defineProps({
     userPermissions: Array,

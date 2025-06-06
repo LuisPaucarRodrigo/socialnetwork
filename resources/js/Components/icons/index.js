@@ -3,6 +3,7 @@ export { default as AcceptIcon } from './AcceptIcon.vue';
 export { default as DeleteIcon } from './DeleteIcon.vue';
 export { default as DisableIcon } from './DisableIcon.vue';
 export { default as DocumentsIcon } from './DocumentsIcon.vue';
+export { default as DocumentIcon } from './DocumentIcon.vue';
 export { default as DownArrowIcon } from './DownArrowIcon.vue';
 export { default as DownloadIcon } from './DownloadIcon.vue';
 export { default as EditIcon } from './EditIcon.vue';

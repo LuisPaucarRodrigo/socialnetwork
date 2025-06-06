@@ -525,11 +525,6 @@ const toggleDetails = (archive) => {
   }
 }
 
-
-const hasPermission = (permission) => {
-  return props.userPermissions.includes(permission);
-}
-
 const form = useForm({
   archive: null,
   comment: '',

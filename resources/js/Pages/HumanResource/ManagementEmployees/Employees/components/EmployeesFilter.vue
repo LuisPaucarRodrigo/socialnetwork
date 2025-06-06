@@ -51,13 +51,8 @@ import Search from '@/Components/Search.vue';
 import { Link } from '@inertiajs/vue3';
 import Dropdown from "@/Components/Dropdown.vue";
 
-const { userPermission, form } = defineProps({
-    userPermission: Array,
+const { form } = defineProps({
     form: Object
 })
-
-const hasPermission = (permission) => {
-    return userPermission.includes(permission);
-}
 
 </script>

@@ -173,10 +173,6 @@ const { employees, userPermissions } = defineProps({
     userPermissions: Array
 })
 
-const hasPermission = (permission) => {
-    return userPermissions.includes(permission);
-}
-
 const showNotCompletedModal = ref(false)
 const apNotCompleted = ref(null)
 const form = useForm({

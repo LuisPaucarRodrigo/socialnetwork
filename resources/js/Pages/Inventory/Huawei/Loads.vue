@@ -114,10 +114,6 @@ const formUpload = useForm({
   zone: ''
 });
 
-const hasPermission = (permission) => {
-  return props.userPermissions.includes(permission);
-}
-
 const openImportModal = () => {
   importExcelModal.value = true;
 }

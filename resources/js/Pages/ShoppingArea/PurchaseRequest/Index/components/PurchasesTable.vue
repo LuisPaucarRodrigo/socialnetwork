@@ -52,7 +52,7 @@
                         <Link :href="route('purchasingrequest.details', { id: purchase.id })">
                         <ShowIcon />
                         </Link>
-                        <div v-if="auth.user.role_id == 1">
+                        <div v-permisssion="'purchases_request_actions_manager'">
                             <Link v-if="purchase.project == null && purchase.state != 'Aceptado'"
                                 :href="route('purchasesrequest.edit', { id: purchase.id })">
                             <EditIcon color="text-yellow-400" />
@@ -61,25 +61,15 @@
                                 <EditIcon color="text-gray-400" />
                             </span>
                         </div>
-                        <div>
-                            <button
-                                v-if="!purchase.preproject?.has_quote && hasPermission('PurchasingManager') && (purchase.state == 'Pendiente' || purchase.state == 'En progreso')"
-                                type="button" @click="confirmPurchase(purchase)">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                                </svg>
-                            </button>
-                            <span v-if="purchase.preproject?.has_quote && hasPermission('PurchasingManager')">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-gray-400">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                                </svg>
-                            </span>
-                        </div>
-                        <div v-if="auth.user.role_id == 1">
+                        <button v-permisssion="'purchases_request_actions'"
+                            v-if="!purchase.preproject?.has_quote && (purchase.state == 'Pendiente' || purchase.state == 'En progreso')"
+                            type="button" @click="confirmPurchase(purchase)">
+                            <DocumentIcon />
+                        </button>
+                        <span v-permisssion="'purchases_request_actions'" v-if="purchase.preproject?.has_quote">
+                            <DocumentIcon color="text-gray-400"/>
+                        </span>
+                        <div v-permisssion="'purchases_request_actions_manager'">
                             <button v-if="purchase.state != 'Aceptado'" type="button"
                                 @click="confirmPurchasesDeletion(purchase.id)">
                                 <DeleteIcon />
@@ -100,7 +90,7 @@
     </div>
 </template>
 <script setup>
-import { DeleteIcon, EditIcon, ShowIcon } from '@/Components/Icons/Index';
+import { DeleteIcon, DocumentIcon, EditIcon, ShowIcon } from '@/Components/Icons/Index';
 import { notifyError } from '@/Components/Notification';
 import Pagination from '@/Components/Pagination.vue';
 import TableRow from '@/Components/TableRow.vue';
@@ -110,10 +100,8 @@ import { formattedDate } from '@/utils/utils';
 import { ArrowDownTrayIcon } from '@heroicons/vue/24/outline';
 import { Link, router } from '@inertiajs/vue3';
 
-const { purchases, auth, userPermissions, confirmPurchasesDeletion } = defineProps({
+const { purchases, confirmPurchasesDeletion } = defineProps({
     purchases: Object,
-    auth: Object,
-    userPermissions: Array,
     confirmPurchasesDeletion: Function
 })
 
@@ -123,9 +111,5 @@ function confirmPurchase(purchase) {
 
 function errorPurchase() {
     notifyError("Debe ingresar la fecha de solicitud en proyectos")
-}
-
-const hasPermission = (permission) => {
-    return userPermissions.includes(permission);
 }
 </script>

@@ -1,15 +1,15 @@
 <template>
+
     <Head title="Gestion de Empleados" />
     <AuthenticatedLayout :redirectRoute="'fleet.cars.index'">
         <template #header> Vehiculos </template>
         <Toaster richColors />
         <div class="w-full">
-            <TableHeader :form="formSearch" :openCreateFormCar="openCreateFormCar"
-                :userPermission="userPermissions" :role_id="auth.user.role_id" />
-            <FleetCarTable :cars="cars" :userPermissions="userPermissions" v-model:formSearch="formSearch"
-                :cost_line="cost_line" :openEditFormCar="openEditFormCar" :role_id="auth.user.role_id" />
+            <TableHeader :form="formSearch" :openCreateFormCar="openCreateFormCar" :role_id="auth.user.role_id" />
+            <FleetCarTable :cars="cars" v-model:formSearch="formSearch" :cost_line="cost_line"
+                :openEditFormCar="openEditFormCar" :role_id="auth.user.role_id" />
         </div>
-        <FormCar :cars="cars" :users="users" :costLine="costLine" :userPermissions="userPermissions" ref="formCar" :role_id="auth.user.role_id"/>
+        <FormCar :cars="cars" :users="users" :costLine="costLine" ref="formCar" />
     </AuthenticatedLayout>
 </template>
 
@@ -19,7 +19,7 @@ import { Head } from "@inertiajs/vue3";
 import { ref, watch } from "vue";
 import { notifyError } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
-import TableHeader   from "./components/TableHeader.vue";
+import TableHeader from "./components/TableHeader.vue";
 import FleetCarTable from "./components/FleetCarTable.vue";
 import FormCar from "./components/FormCar.vue";
 

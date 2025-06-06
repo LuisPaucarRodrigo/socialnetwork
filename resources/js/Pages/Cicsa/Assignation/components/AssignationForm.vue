@@ -80,12 +80,7 @@
                                 <select id="zone" v-model="form.zone" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option value="">Seleccionar Zona</option>
-                                    <option>Arequipa</option>
-                                    <option>Moquegua</option>
-                                    <option>Tacna</option>
-                                    <option>Cuzco</option>
-                                    <option>Puno</option>
-                                    <option>MDD</option>
+                                    <option v-for="zone in zones" :key="zone" :value="zone">{{ zone }}</option>
                                 </select>
                                 <InputError :message="form.errors.zone" />
                             </div>
@@ -96,12 +91,7 @@
                                 <select id="zone2" v-model="form.zone2" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option value="">Seleccionar Zona</option>
-                                    <option>Arequipa</option>
-                                    <option>Moquegua</option>
-                                    <option>Tacna</option>
-                                    <option>Cuzco</option>
-                                    <option>Puno</option>
-                                    <option>MDD</option>
+                                    <option v-for="zone in zones" :key="zone" :value="zone">{{ zone }}</option>
                                 </select>
                                 <InputError :message="form.errors.zone2" />
                             </div>
@@ -112,12 +102,7 @@
                                 <select id="zone2" v-model="form.zone3" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option value="">Seleccionar Zona</option>
-                                    <option>Arequipa</option>
-                                    <option>Moquegua</option>
-                                    <option>Tacna</option>
-                                    <option>Cuzco</option>
-                                    <option>Puno</option>
-                                    <option>MDD</option>
+                                    <option v-for="zone in zones" :key="zone" :value="zone">{{ zone }}</option>
                                 </select>
                                 <InputError :message="form.errors.zone3" />
                             </div>
@@ -146,6 +131,8 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import { notify } from '@/Components/Notification';
+import { useAxiosErrorHandler } from '@/utils/axiosError';
+import { zones } from '../constants';
 
 const { assignations } = defineProps({
     assignations: Object
@@ -195,6 +182,7 @@ async function submit() {
         updateFrontEnd(response.data, 'update', form.id)
     } catch (error) {
         console.error(error)
+        useAxiosErrorHandler(error, form);
     }
 }
 
