@@ -23,7 +23,7 @@ use App\Models\HuaweiMaterial;
 use App\Models\HuaweiProjectEarning;
 use App\Models\HuaweiProjectLiquidation;
 use App\Models\HuaweiProjectResource;
-use Log;
+use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Models\HuaweiPriceGuide;
 use App\Models\HuaweiProjectRealEarning;

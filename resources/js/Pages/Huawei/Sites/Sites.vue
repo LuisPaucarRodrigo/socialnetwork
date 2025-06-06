@@ -11,6 +11,7 @@
                         class="flex flex-col sm:flex-row gap-4 justify-between w-auto"
                     >
                         <button
+                            v-permission="'huawei_sites_add'"
                             @click="openCreateModal"
                             class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 whitespace-nowrap"
                         >
@@ -171,12 +172,14 @@
                                         class="flex justify-center gap-2 items-center"
                                     >
                                         <button
+                                            v-permission="'huawei_sites_edit'"
                                             @click="openUpdateSite(site)"
                                             class="text-orange-400 hover:underline"
                                         >
                                             <PencilSquareIcon class="h-5 w-5" />
                                         </button>
                                         <button
+                                            v-permission="'huawei_sites_delete'"
                                             @click="
                                                 confirmingDeleteSite(site.id)
                                             "

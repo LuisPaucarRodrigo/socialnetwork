@@ -1,6 +1,6 @@
 <template>
     <Head title="Proyectos" />
-    <AuthenticatedLayout :redirectRoute="'huawei.projects'">
+    <AuthenticatedLayout :redirectRoute="{route: 'huawei.projects', params: {status: 1, prefix: 'Claro'}}">
         <template #header>
             Proyectos{{
                 props.status == "2"
@@ -25,6 +25,7 @@
                             v-if="props.status == '1'"
                             :href="route('huawei.projects.create')"
                             type="button"
+                            v-permission="'huawei_projects_add'"
                             class="hidden sm:block items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white whitespace-nowrap"
                         >
                             + Agregar
@@ -100,6 +101,7 @@
                                         <div class="dropdown-menu">
                                             <div v-if="props.status == '1'">
                                                 <Link
+                                                    v-permission="'huawei_projects_add'"
                                                     :href="
                                                         route(
                                                             'huawei.projects.create'
@@ -231,6 +233,7 @@
                 class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3"
             >
                 <div
+                    v-permission="'huawei_expenses_view'"
                     class="bg-blue-200 p-3 rounded-md shadow-sm border border-gray-300 items-center"
                 >
                     <div class="grid grid-cols-2">
@@ -300,6 +303,7 @@
                 </div>
 
                 <div
+                    v-permission="'huawei_projects_view'"
                     v-for="item in props.projects"
                     :key="item.id"
                     class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center"
@@ -315,6 +319,7 @@
                             <button
                                 @click="openLiquidateModal(item.id)"
                                 v-if="item.status"
+                                v-permission="'huawei_projects_admin'"
                                 :class="`h-6 px-1 rounded-md bg-indigo-700 text-white text-sm  ${
                                     item.state
                                         ? item.pre_report
@@ -334,6 +339,7 @@
                             </button>
                             <Link
                                 v-if="item.status"
+                                v-permission-or="['huawei_projects_see_project', 'huawei_projects_edit']"
                                 :href="
                                     route('huawei.projects.toupdate', {
                                         huawei_project: item.id,
@@ -341,9 +347,10 @@
                                 "
                                 class="flex items-start"
                             >
-                                <PencilIcon class="h-5 w-5 text-teal-600" />
+                                <EditIcon/>
                             </Link>
                             <button
+                                v-permission="'huawei_projects_admin'"
                                 @click.prevent="openResumeModal(item.id)"
                                 v-if="item.status == null"
                                 class="flex items-start"
@@ -351,6 +358,7 @@
                                 <PlayIcon class="h-5 w-5 text-green-600" />
                             </button>
                             <button
+                                v-permission="'huawei_projects_admin'"
                                 @click.prevent="openCancelModal(item.id)"
                                 v-if="item.status"
                                 class="flex items-start"
@@ -413,6 +421,7 @@
                     <div class="text-gray-500 text-sm mt-1">
                         <div class="grid grid-cols-1 gap-y-1">
                             <Link
+                                v-permission="'huawei_expenses_view'"
                                 :href="
                                     route(
                                         'huawei.projects.additionalcosts.summary',
@@ -584,6 +593,7 @@ import Modal from "@/Components/Modal.vue";
 import { ref } from "vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import { EditIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
     projects: Object,

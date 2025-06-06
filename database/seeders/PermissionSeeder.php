@@ -80,10 +80,5 @@ class PermissionSeeder extends Seeder
         }, SharePointRoutes::all());
 
         Permission::insert($routes);
-
-        $routes = array_map(function ($route) {
-            return ['name' => $route['name']];
-        }, HuaweiRoutes::all());
-        Permission::insert($routes);
     }
 }

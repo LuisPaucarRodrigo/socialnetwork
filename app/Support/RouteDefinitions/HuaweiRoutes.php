@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Support\RouteDefinitions;
 
+use App\Http\Controllers\Huawei\HuaweiMonthlyController;
 use App\Http\Controllers\Huawei\HuaweiProjectController;
 
 class HuaweiRoutes
@@ -8,6 +10,7 @@ class HuaweiRoutes
     public static function all(): array
     {
         return [
+            //main_projects
             [
                 'uri' => 'huawei/projects/show/{status}/{prefix}/get',
                 'method' => 'get',
@@ -92,8 +95,229 @@ class HuaweiRoutes
                 'permission' => true,
                 'name' => 'huawei.projects.balance',
             ],
+
+            //sites
+            [
+                'uri' => 'huawei/sites/get',
+                'method' => 'get',
+                'action' => [HuaweiProjectController::class, 'getSites'],
+                'permission' => true,
+                'name' => 'huawei.sites',
+            ],
+            [
+                'uri' => 'huawei/sites/store',
+                'method' => 'post',
+                'action' => [HuaweiProjectController::class, 'storeSite'],
+                'permission' => true,
+                'name' => 'huawei.sites.post',
+            ],
+            [
+                'uri' => 'huawei/sites/update/{site}',
+                'method' => 'put',
+                'action' => [HuaweiProjectController::class, 'updateSite'],
+                'permission' => true,
+                'name' => 'huawei.sites.put',
+            ],
+            [
+                'uri' => 'huawei/sites/delete/{site}',
+                'method' => 'delete',
+                'action' => [HuaweiProjectController::class, 'destroySite'],
+                'permission' => true,
+                'name' => 'huawei.sites.delete',
+            ],
+            [
+                'uri' => 'huawei/sites/verify/{update?}',
+                'method' => 'post',
+                'action' => [HuaweiProjectController::class, 'verifySiteName'],
+                'permission' => true,
+                'name' => 'huawei.sites.verify',
+            ],
+            [
+                'uri' => 'huawei/sites/search/{request}',
+                'method' => 'get',
+                'action' => [HuaweiProjectController::class, 'searchSites'],
+                'permission' => true,
+                'name' => 'huawei.sites.search',
+            ],
+
+            //project_expenses
+            [
+                'uri' => 'huawei/projects/{huawei_project}/additional_costs/get/{mode?}',
+                'method' => 'get',
+                'action' => [HuaweiProjectController::class, 'getAdditionalCosts'],
+                'permission' => true,
+                'name' => 'huawei.projects.additionalcosts',
+            ],
+            [
+                'uri' => 'huawei/projects/{expense}/huawei_projects/show_image',
+                'method' => 'get',
+                'action' => [HuaweiProjectController::class, 'showImage'],
+                'permission' => true,
+                'name' => 'huawei.projects.additionalcosts.showimage',
+            ],
+            [
+                'uri' => 'huawei/projects/{huawei_project}/additional_costs/search/{request}/{mode?}',
+                'method' => 'get',
+                'action' => [HuaweiProjectController::class, 'searchAdditionalCosts'],
+                'permission' => true,
+                'name' => 'huawei.projects.additionalcosts.search',
+            ],
+            [
+                'uri' => 'huawei/projects/{huawei_project}/addtitional_costs/summary',
+                'method' => 'get',
+                'action' => [HuaweiProjectController::class, 'getCostSummary'],
+                'permission' => true,
+                'name' => 'huawei.projects.additionalcosts.summary',
+            ],
+            [
+                'uri' => 'huawei/projects/{huawei_project_id}/additional_cost/advanced_search/{mode?}',
+                'method' => 'post',
+                'action' => [HuaweiProjectController::class, 'search_costs'],
+                'permission' => true,
+                'name' => 'huawei.projects.additionalcosts.advancedsearch',
+            ],
+            [
+                'uri' => 'huawei/projects/{huawei_project_id}/additional_costs/export/{mode?}',
+                'method' => 'get',
+                'action' => [HuaweiProjectController::class, 'exportAdditionalCosts'],
+                'permission' => true,
+                'name' => 'huawei.projects.additionalcosts.export',
+            ],
+
+            //general_expenses
+            [
+                'uri' => 'huawei/projects/monthly_expenses/general_balance/get',
+                'method' => 'get',
+                'action' => [HuaweiMonthlyController::class, 'getGeneralBalance'],
+                'permission' => true,
+                'name' => 'huawei.projects.generalbalance',
+            ],
+            [
+                'uri' => 'huawei/projects/monthly_expenses/general_balance/expenses_by_zone/{expenseType}',
+                'method' => 'get',
+                'action' => [HuaweiMonthlyController::class, 'getExpensesByZone'],
+                'permission' => true,
+                'name' => 'huawei.projects.generalbalance.expensesbyzone',
+            ],
+            [
+                'uri' => 'huawei/projects/general_expenses/get/{mode?}',
+                'method' => 'get',
+                'action' => [HuaweiMonthlyController::class, 'getExpenses'],
+                'permission' => true,
+                'name' => 'huawei.projects.general.expenses',
+            ],
+            [
+                'uri' => 'huawei/projects/general_expenses/{request}/search/{mode?}',
+                'method' => 'get',
+                'action' => [HuaweiMonthlyController::class, 'searchExpenses'],
+                'permission' => true,
+                'name' => 'huawei.projects.general.expenses.search',
+            ],
+            [
+                'uri' => 'huawei/projects/general_expenses/search_advance/search/{mode?}',
+                'method' => 'post',
+                'action' => [HuaweiMonthlyController::class, 'searchAdvance'],
+                'permission' => true,
+                'name' => 'huawei.projects.general.expenses.searchadvance',
+            ],
+            [
+                'uri' => 'huawei/projects/general_expenses/store/post',
+                'method' => 'post',
+                'action' => [HuaweiMonthlyController::class, 'storeExpense'],
+                'permission' => true,
+                'name' => 'huawei.projects.general.expenses.store',
+            ],
+            [
+                'uri' => 'huawei/projects/general_expenses/{expense}/update',
+                'method' => 'post',
+                'action' => [HuaweiMonthlyController::class, 'updateExpense'],
+                'permission' => true,
+                'name' => 'huawei.projects.general.expenses.update',
+            ],
+            [
+                'uri' => 'huawei/projects/general_expenses/{expense}/delete',
+                'method' => 'delete',
+                'action' => [HuaweiMonthlyController::class, 'deleteExpense'],
+                'permission' => true,
+                'name' => 'huawei.projects.general.expenses.delete',
+            ],
+            [
+                'uri' => 'huawei/projects/general_expenses/{expense}/validate',
+                'method' => 'put',
+                'action' => [HuaweiMonthlyController::class, 'validateExpense'],
+                'permission' => true,
+                'name' => 'huawei.projects.general.expenses.validate',
+            ],
+            [
+                'uri' => 'huawei/projects/general_expenses/{expense}/show_image',
+                'method' => 'get',
+                'action' => [HuaweiMonthlyController::class, 'showImage'],
+                'permission' => true,
+                'name' => 'huawei.projects.general.expenses.showimage',
+            ],
+            [
+                'uri' => 'huawei/projects/general_expenses/export/excel/{mode?}',
+                'method' => 'get',
+                'action' => [HuaweiMonthlyController::class, 'exportMonthlyExpenses'],
+                'permission' => true,
+                'name' => 'huawei.projects.general.expenses.export',
+            ],
+            [
+                'uri' => 'huawei/projects/general_expenses/massive_update/{mode}/post',
+                'method' => 'post',
+                'action' => [HuaweiMonthlyController::class, 'massiveUpdate'],
+                'permission' => true,
+                'name' => 'huawei.projects.general.expenses.massiveupdate',
+            ],
+            [
+                'uri' => 'huawei/projects/general_expenses/{macro}/fetch_sites/get',
+                'method' => 'get',
+                'action' => [HuaweiMonthlyController::class, 'fetchSites'],
+                'permission' => true,
+                'name' => 'huawei.projects.general.expenses.fetchsites',
+            ],
+            [
+                'uri' => 'huawei/projects/general_expenses/{macro}/{site_id}/fetch_projects/get',
+                'method' => 'get',
+                'action' => [HuaweiMonthlyController::class, 'fetchProjects'],
+                'permission' => true,
+                'name' => 'huawei.projects.general.expenses.fetchprojects',
+            ],
+            [
+                'uri' => 'huawei/monthly_projects/general_expenses/import_costs/post',
+                'method' => 'post',
+                'action' => [HuaweiMonthlyController::class, 'importCosts'],
+                'permission' => true,
+                'name' => 'huawei.projects.general.expenses.import',
+            ],
+            [
+                'uri' => 'huawei/projects/general_expenses/donwload_template/get',
+                'method' => 'get',
+                'action' => [HuaweiMonthlyController::class, 'downloadTemplate'],
+                'permission' => true,
+                'name' => 'huawei.projects.general.expenses.donwloadtemplate',
+            ],
+            [
+                'uri' => 'huawei/projects/general_expenses/download_zip/{project_id}/{mode?}',
+                'method' => 'get',
+                'action' => [HuaweiMonthlyController::class, 'downloadImages'],
+                'permission' => true,
+                'name' => 'huawei.projects.general.expenses.downloadzip',
+            ],
+            [
+                'uri' => 'huawei/projects/create/fetch_sites/post',
+                'method' => 'post',
+                'action' => [HuaweiProjectController::class, 'fetchSites'],
+                'permission' => false,
+                'name' => 'huawei.projects.create.fetchsites',
+            ],
+            [
+                'uri' => 'huawei/projects/monthly_expenses/download_images/post/{mode?}',
+                'method' => 'get',
+                'action' => [HuaweiMonthlyController::class, 'downloadImages'],
+                'permission' => true,
+                'name' => 'huawei.projects.monthlyexpenses.downloadimages',
+            ],
         ];
-
-
     }
 }

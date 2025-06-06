@@ -1600,6 +1600,68 @@ class FuncionalityPermissionSeeder extends Seeder
             // ],
         ];
 
+        $huaweiSitesSubmodule = [
+            [
+                'display_name' => 'Ver Sites (incluye buscar)',
+                'key_name' => 'huawei_sites_view',
+                'module' => 'huawei_sites_submodule',
+                'permissions' => ['huawei.sites', 'huawei.sites.search']
+            ],
+            [
+                'display_name' => 'Agregar Sites',
+                'key_name' => 'huawei_sites_add',
+                'module' => 'huawei_sites_submodule',
+                'permissions' => ['huawei.sites', 'huawei.sites.search', 'huawei.sites.post', 'huawei.sites.verify']
+            ],
+            [
+                'display_name' => 'Actualizar Sites',
+                'key_name' => 'huawei_sites_edit',
+                'module' => 'huawei_sites_submodule',
+                'permissions' => ['huawei.sites', 'huawei.sites.search', 'huawei.sites.put', 'huawei.sites.verify']
+            ],
+            [
+                'display_name' => 'Eliminar Sites',
+                'key_name' => 'huawei_sites_delete',
+                'module' => 'huawei_sites_submodule',
+                'permissions' => ['huawei.sites', 'huawei.sites.search', 'huawei.sites.delete']
+            ],
+        ];
+
+        $huaweiExpensesSubmodule = [
+            [
+                'display_name' => 'Ver Gastos (incluye buscador, filtro, exportación y visualización de imágenes)',
+                'key_name' => 'huawei_expenses_view',
+                'module' => 'huawei_expenses_submodule',
+                'permissions' => ['huawei.projects.additionalcosts', 'huawei.projects.additionalcosts.showimage', 'huawei.projects.additionalcosts.search', 'huawei.projects.additionalcosts.summary', 'huawei.projects.additionalcosts.advancedsearch', 'huawei.projects.additionalcosts.export',
+                                  'huawei.projects.generalbalance', 'huawei.projects.generalbalance.expensesbyzone', 'huawei.projects.general.expenses', 'huawei.projects.general.expenses.search', 'huawei.projects.general.expenses.searchadvance', 'huawei.projects.general.expenses.showimage',
+                                  'huawei.projects.general.expenses.export', 'huawei.projects.general.expenses.downloadzip', 'huawei.projects.monthlyexpenses.downloadimages', 'huawei.projects', 'huawei.projects.search'
+                                ]
+            ],
+            [
+                'display_name' => 'Agregar Gastos (incluye importar)',
+                'key_name' => 'huawei_expenses_add',
+                'module' => 'huawei_expenses_submodule',
+                'permissions' => ['huawei.projects.general.expenses.store', 'huawei.projects.general.expenses.fetchsites', 'huawei.projects.general.expenses.fetchprojects', 'huawei.projects.general.expenses.import', 'huawei.projects.general.expenses.donwloadtemplate']
+            ],
+            [
+                'display_name' => 'Editar Gastos',
+                'key_name' => 'huawei_expenses_edit',
+                'module' => 'huawei_expenses_submodule',
+                'permissions' => ['huawei.projects.general.expenses.update', 'huawei.projects.general.expenses.fetchsites', 'huawei.projects.general.expenses.fetchprojects']
+            ],
+            [
+                'display_name' => 'Administrar Gastos',
+                'key_name' => 'huawei_expenses_admin',
+                'module' => 'huawei_expenses_submodule',
+                'permissions' => ['huawei.projects.general.expenses.validate', 'huawei.projects.general.expenses.massiveupdate']
+            ],
+            [
+                'display_name' => 'Eliminar Gastos',
+                'key_name' => 'huawei_expenses_delete',
+                'module' => 'huawei_expenses_submodule',
+                'permissions' => ['huawei.projects.general.expenses.delete']
+            ],
+        ];
 
         $Submodules = [
             $UsersSubModule,
@@ -1654,7 +1716,10 @@ class FuncionalityPermissionSeeder extends Seeder
             //Sharepoint
             $sharedoc_submodule,
 
-            $huaweiProjectsSubmodule
+            //Huawei
+            $huaweiProjectsSubmodule,
+            $huaweiSitesSubmodule,
+            $huaweiExpensesSubmodule,
         ];
 
         foreach ($Submodules as $sm) {

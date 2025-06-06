@@ -11,6 +11,7 @@
                 <!-- Botones Agregar y Exportar visibles en pantallas medianas y grandes -->
                 <div class="hidden sm:flex sm:items-center space-x-3">
                     <PrimaryButton
+                        v-permission="'huawei_expenses_add'"
                         @click="openCreateAdditionalModal"
                         type="button"
                         class="whitespace-nowrap"
@@ -18,6 +19,7 @@
                         + Agregar
                     </PrimaryButton>
                     <button
+                        v-permission="'huawei_expenses_add'"
                         data-tooltip-target="import_tooltip"
                         type="button"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500"
@@ -186,6 +188,7 @@
                                 <div>
                                     <div class="">
                                         <button
+                                            v-permission="'huawei_expenses_admin'"
                                             @click="openNuUpdateModal"
                                             class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                                         >
@@ -227,6 +230,7 @@
                             <div class="dropdown">
                                 <div class="dropdown-menu">
                                     <button
+                                        v-permission="'huawei_expenses_add'"
                                         @click="openCreateAdditionalModal"
                                         class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition ease-in-out"
                                     >
@@ -235,6 +239,7 @@
                                 </div>
                                 <div class="dropdown-menu">
                                     <button
+                                        v-permission="'huawei_expenses_add'"
                                         @click="openImportExcel"
                                         class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition ease-in-out"
                                     >
@@ -251,18 +256,11 @@
                                 </div>
                                 <div class="dropdown-menu">
                                     <button
+                                        v-permission="'huawei_expenses_admin'"
                                         @click="openNuUpdateModal"
                                         class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition ease-in-out"
                                     >
                                         Actualizar Operación
-                                    </button>
-                                </div>
-                                <div class="dropdown-menu">
-                                    <button
-                                        @click="openMassiveValidate"
-                                        class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition ease-in-out"
-                                    >
-                                        Actualizar Estado
                                     </button>
                                 </div>
                             </div>
@@ -318,7 +316,7 @@
                         >
                             <div class="w-2"></div>
                         </th>
-                        <th
+                        <th v-permission="'huawei_expenses_admin'"
                             class="sticky left-2 z-10 border-b-2 border-r border-gray-200 bg-gray-100 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 w-12"
                         >
                             <label
@@ -506,7 +504,7 @@
                                 },
                             ]"
                         ></td>
-                        <td
+                        <td v-permission="'huawei_expenses_admin'"
                             class="sticky left-2 z-10 border-b border-r border-gray-200 bg-amber-100 text-center text-[13px] whitespace-nowrap tabular-nums"
                         >
                             <label
@@ -635,6 +633,7 @@
                                 class="flex items-center gap-3 w-full justify-center"
                             >
                                 <div
+                                    v-permission="'huawei_expenses_admin'"
                                     v-if="item.is_accepted == null"
                                     class="flex gap-3 justify-center w-1/2"
                                 >
@@ -687,6 +686,7 @@
 
                                 <div class="flex gap-3 justify-center w-1/2">
                                     <button
+                                        v-permission="'huawei_expenses_edit'"
                                         @click="openEditAdditionalModal(item)"
                                         class="text-amber-600 hover:underline"
                                     >
@@ -695,6 +695,7 @@
                                         />
                                     </button>
                                     <button
+                                        v-permission="'huawei_expenses_delete'"
                                         @click="
                                             confirmDeleteAdditional(item.id)
                                         "
@@ -717,7 +718,11 @@
                         </td>
                         <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
-                            colspan="10"
+                            colspan="9"
+                        ></td>
+                        <td
+                            class="border-b border-gray-200 bg-white px-5 py-5 text-sm"
+                            v-permission="'huawei_expenses_admin'"
                         ></td>
                         <td
                             class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap"
