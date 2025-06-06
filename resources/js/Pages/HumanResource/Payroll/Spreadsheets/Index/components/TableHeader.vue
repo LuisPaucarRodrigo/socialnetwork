@@ -32,6 +32,10 @@
                     class="bg-gray-600 hover:bg-gray-500 rounded-md px-4 py-2 text-center text-sm text-white">
                     Pagos
                 </Link>
+                <a :href="route('payroll.detail.export', {payroll_id: payrolls.id})"
+                    class="bg-green-600 hover:bg-green-500 rounded-md px-4 py-2 text-center text-sm text-white">
+                    Excel
+                </a>
             </div>
             <div class="sm:hidden">
                 <dropdown align='left'>

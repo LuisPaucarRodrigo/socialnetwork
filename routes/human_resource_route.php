@@ -269,3 +269,4 @@ Route::post('/management_employees/payroll_detail_expense_search/{payroll_id}', 
 Route::post('/management_employees/payroll_detail_expense_store', [SpreadsheetsController::class, 'store_payroll_detail_expense'])->name('payroll.detail.expenses.store');
 Route::delete('/management_employees/payroll_detail_expense_destroy/{payroll_detail_expense_id}', [SpreadsheetsController::class, 'destroy_payroll_detail_expense'])->name('payroll.detail.expense.destroy');
 Route::post('/management_employees/payroll_detail_expense_masive_opnuda_update', [SpreadsheetsController::class, 'masive_update_payroll_detail_expense'])->name('payroll.detail.expenses.massive.update.opnuda');
+Route::get('/management_employees/payroll_detail_export/{payroll_id}', [SpreadsheetsController::class, 'export_excel_payroll_detail'])->name('payroll.detail.export');

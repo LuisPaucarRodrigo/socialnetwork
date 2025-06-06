@@ -104,7 +104,6 @@ function openPaySpreadsheet(){
     paySpreadsheet.value.openPayModal()
 }
 
-
 function searchSpreadSheetsTable() {
     spreadsheetstable.value.search_advance()
 }

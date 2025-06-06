@@ -5,6 +5,7 @@ namespace App\Http\Controllers\HumanResource;
 use App\Constants\PayrollConstants;
 use App\Constants\PintConstants;
 use App\Constants\ProjectConstants;
+use App\Exports\Payroll\PayrollDetailsExport;
 use App\Exports\Payroll\PayrollExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\HumanResource\Payroll\StoreMasivePayrollDetailExpensesRequest;
@@ -129,8 +130,13 @@ class SpreadsheetsController extends Controller
         }
     }
 
-    public function payroll_detail_search_advance(){
-
+   
+    public function export_excel_payroll_detail($payroll_id){
+        $payroll = Payroll::find($payroll_id);
+        $spreadsheet = $this->payrollServices->getPayrollDetails($payroll_id)->get()->each->append('new_totals');
+        $total = $this->payrollServices->calculateTotal($spreadsheet);
+        $data = compact('payroll', 'spreadsheet', 'total');
+        return Excel::download(new PayrollDetailsExport($data), 'Datos de Ingresos, Tributos  y Aportes.xlsx');
     }
 
 
@@ -422,7 +428,6 @@ class SpreadsheetsController extends Controller
         $result = $this->payrollDetailExpensesServices->filter($request, $query);
         return response()->json($result, 200);
     }
-
 
 
 
