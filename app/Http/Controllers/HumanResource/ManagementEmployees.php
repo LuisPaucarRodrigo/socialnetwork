@@ -33,7 +33,7 @@ class ManagementEmployees extends Controller
     {
         $employees = $this->employeesServices->getEmployees();
         $cost_line = $this->employeesServices->getCostLine();
-        return Inertia::render('HumanResource/ManagementEmployees/Employees', [
+        return Inertia::render('HumanResource/ManagementEmployees/Employees/Employees', [
             'employee' => $employees,
             'costLine' => $cost_line
         ]);

@@ -38,21 +38,21 @@
                     'fired_reentry_employee',
                 ]" class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
                     <div v-if="employee.contract.fired_date == null" class="flex space-x-3 justify-center">
-                        <Link v-permission="'see_employee'" :href="route('see_employee', { id: employee.id })">
+                        <Link v-permission="'see_employee'" :href="route('management.employees.show', { id: employee.id })">
                         <ShowIcon />
                         </Link>
-                        <Link v-permission="'edit_employee'" :href="route('edit_employee', { id: employee.id })">
+                        <Link v-permission="'edit_employee'" :href="route('management.employees.edit', { id: employee.id })">
                         <EditIcon />
                         </Link>
                         <button v-permission-and="[
                             'fired_reentry_employee',
-                        ]" type="button" @click="confirmFired(employee.id)">
+                        ]" type="button" @click="openFiredModal(employee.id)">
                             <UnsubscribeIcon />
                         </button>
                     </div>
                     <button v-permission-and="[
                         'fired_reentry_employee',
-                    ]" v-if="employee.contract.fired_date" type="button" @click="employee_fired_date(employee.id)">
+                    ]" v-if="employee.contract.fired_date" type="button" @click="openReentryModal(employee.id)">
                         <SuscribeIcon />
                     </button>
                 </td>
@@ -74,12 +74,11 @@ import { Link } from '@inertiajs/vue3';
 import { UnsubscribeIcon, SuscribeIcon, EditIcon, ShowIcon } from '@/Components/Icons/Index';
 import TableStructure from '@/Layouts/TableStructure.vue';
 
-const { form, employees, costLine, userPermission, confirmFired, employee_fired_date } = defineProps({
+const { form, employees, costLine, openFiredModal, openReentryModal } = defineProps({
     form: Object,
     employees: Object,
     costLine: Array,
-    userPermission: Array,
-    confirmFired: Function,
-    employee_fired_date: Function
+    openFiredModal: Function,
+    openReentryModal: Function
 })
 </script>

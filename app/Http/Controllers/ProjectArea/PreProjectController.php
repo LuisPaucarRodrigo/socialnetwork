@@ -1040,7 +1040,7 @@ class PreProjectController extends Controller
 
     public function showCodes()
     {
-        return Inertia::render('ProjectArea/PreProject/Codes', [
+        return Inertia::render('ProjectArea/PreProject/PRO/Codes/Index', [
             'code' => Code::paginate(20)
         ]);
     }
@@ -1141,7 +1141,7 @@ class PreProjectController extends Controller
 
     public function showTitles()
     {
-        return Inertia::render('ProjectArea/PreProject/Titles', [
+        return Inertia::render('ProjectArea/PreProject/PRO/Titles/Index', [
             'titles' => Title::with('codes')->paginate(10),
             'codes' => Code::all(),
             'stages' => ReportStage::select('id', 'name')->get(),

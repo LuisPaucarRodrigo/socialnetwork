@@ -88,7 +88,7 @@
                                 <button data-tooltip-target="action_button_tooltip"
                                     @click="dropdownOpen = !dropdownOpen"
                                     class="relative block overflow-hidden rounded-md text-white hover:bg-indigo-400 text-center text-sm bg-indigo-500 p-2">
-                                    <Menuicon color="text-white" />
+                                    <MenuIcon color="text-white" />
                                 </button>
                                 <div id="action_button_tooltip" role="tooltip"
                                     class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700 whitespace-nowrap">
@@ -132,7 +132,7 @@
                         <template #trigger>
                             <button @click="dropdownOpen = !dropdownOpen"
                                 class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100">
-                                <Menuicon />
+                                <MenuIcon />
                             </button>
                         </template>
 
@@ -1112,7 +1112,7 @@ import TableDateFilter from "@/Components/TableDateFilter.vue";
 import Search from "@/Components/Search.vue";
 import { ExcelIcon } from "@/Components/Icons/Index";
 import qs from 'qs';
-import { Menuicon, EditIcon, DeleteIcon, ShowIcon, ServerIcon } from "@/Components/Icons/Index";
+import { MenuIcon, EditIcon, DeleteIcon, ShowIcon, ServerIcon } from "@/Components/Icons/Index";
 import DropdownLink from "@/Components/DropdownLink.vue";
 
 const props = defineProps({

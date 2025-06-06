@@ -38,7 +38,8 @@ class ModuleSeeder extends Seeder
                 'name' => 'INVENTORY_MODULE',
                 'display_name' => 'Inventario',
                 'submodules' => [
-
+                    'iproduct_submodule' => 'Productos',
+                    'iwarehouse_submodule' => 'Almacenes',
                 ]
             ],
             [
@@ -87,13 +88,6 @@ class ModuleSeeder extends Seeder
                 ]
             ],
             [
-                'name' => 'DOCUMENT_MODULE',
-                'display_name' => 'Usuarios y Roles',
-                'submodules' => [
-
-                ]
-            ],
-            [
                 'name' => 'HUAWEI_MODULE',
                 'display_name' => 'Huawei',
                 'submodules' => [
@@ -118,6 +112,7 @@ class ModuleSeeder extends Seeder
                     'sharedoc_submodule' => 'Documentación'
                 ]
             ],
+
         ];
 
         foreach ($MODULES as $mod) {

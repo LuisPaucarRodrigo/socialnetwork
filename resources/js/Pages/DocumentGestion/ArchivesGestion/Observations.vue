@@ -141,10 +141,6 @@
     userPermissions: Array,
   });
 
-  const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-  }
-
   const form = useForm({
     state: '',
     observations: '',

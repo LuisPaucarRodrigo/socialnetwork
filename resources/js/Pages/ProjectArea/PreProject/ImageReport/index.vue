@@ -240,11 +240,6 @@ const props = defineProps({
 
 const preprojectImages = ref(props.preprojectImage)
 
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
-
-
 let backUrl = (props.preproject?.status === undefined || props.preproject?.status === null)
     ? { route: 'preprojects.index', params: { type: props.preproject.cost_line_id } }
     : props.preproject.status == true

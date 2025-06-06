@@ -338,10 +338,6 @@
     refundForm.reset();
   }
 
-  const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-  }
-
   const onInput = async (name) => {
     entryDetails.value = null;
     foundItem.value = null;

@@ -60,7 +60,7 @@
                                 <button data-tooltip-target="action_button_tooltip"
                                     @click="dropdownOpen = !dropdownOpen"
                                     class="relative block overflow-hidden rounded-md text-white hover:bg-indigo-400 text-center text-sm bg-indigo-500 p-2">
-                                    <Menuicon color="text-white" />
+                                    <MenuIcon color="text-white" />
                                 </button>
                                 <div id="action_button_tooltip" role="tooltip"
                                     class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700 whitespace-nowrap">
@@ -679,7 +679,7 @@ import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import ChartsAdditionalExpenses from "./ChartsAdditionalExpenses.vue";
 import Search from "@/Components/Search.vue";
-import { EditIcon, DeleteIcon, ShowIcon, ServerIcon } from "@/Components/Icons/Index";
+import { EditIcon, DeleteIcon, ShowIcon, ServerIcon,MenuIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
     expense: Object,

@@ -103,8 +103,6 @@
     project_name: String
   });
 
-  const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-  }
+ 
 
   </script>

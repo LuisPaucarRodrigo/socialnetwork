@@ -19,24 +19,8 @@
             </div>
         </template>
         <div class="min-w-full">
-            <div class="flex justify-between">
-                <div class="flex space-x-4">
-                    <FilterProcess v-if="filterForm.typeStages === 'Todos'" :options="selectableOptions"
-                        v-model="selectedOptions" :width="'w-[230px]'" />
-                    <button @click="router.visit(route('cicsa.index', { type }))" type="button">
-                        <RechargeIcon />
-                    </button>
-                    <button data-tooltip-target="export_cicsa_process" type="button" @click="openExportExcel">
-                        <UploadIcon />
-                    </button>
-                    <div id="export_cicsa_process" role="tooltip"
-                        class="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                        Exportar Excel {{ filterForm.typeStages }}
-                        <div class="tooltip-arrow" data-popper-arrow></div>
-                    </div>
-                </div>
-                <div class="flex space-x-4">
-                    <Search v-model:search="filterForm.search" fields="Nombre,Cliente,Codigo" />
+            <div class="mt-6 sm:flex items-center justify-end gap-x-2">
+                <div>
                     <select v-model="filterForm.typeStages"
                         class="block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
                         <option disabled value="">Seleccionar Etapa</option>
@@ -44,10 +28,60 @@
                             {{ item === "" ? "Todos" : item }}
                         </option>
                     </select>
+                </div>
+                <div>
                     <SelectCicsaComponent currentSelect="Proceso" :type="type" />
-
                 </div>
             </div>
+            <div class="mt-6 flex items-center justify-between gap-x-6">
+                <div class="hidden sm:flex sm:items-center sm:space-x-3">
+                    <div class="flex space-x-4">
+                        <FilterProcess v-if="filterForm.typeStages === 'Todos'" :options="selectableOptions"
+                            v-model="selectedOptions" :width="'w-[230px]'" />
+                        <button @click="router.visit(route('cicsa.index', { type }))" type="button">
+                            <RechargeIcon />
+                        </button>
+                        <button data-tooltip-target="export_cicsa_process" type="button" @click="openExportExcel">
+                            <DownloadIcon />
+                        </button>
+                        <div id="export_cicsa_process" role="tooltip"
+                            class="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                            Exportar Excel {{ filterForm.typeStages }}
+                            <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sm:hidden">
+                    <Dropdown align='left'>
+                        <template #trigger>
+                            <button @click="dropdownOpen = !dropdownOpen"
+                                class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100">
+                                <MenuIcon />
+                            </button>
+                        </template>
+
+                        <template #content class="origin-left">
+                            <div>
+                                <div class="dropdown">
+                                    <div class="dropdown-menu">
+                                        <DropdownLink :href="route('cicsa.index', { type })">
+                                            Recargar
+                                        </DropdownLink>
+                                    </div>
+                                    <div class="dropdown-menu">
+                                        <button @click="openExportExcel()"
+                                            class="dropdown-item block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Exportar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </Dropdown>
+                </div>
+                <Search v-model:search="filterForm.search" fields="Nombre,Cliente,Codigo" />
+            </div>
+
             <br />
             <div class="overflow-x-auto h-[70vh] rounded-lg shadow">
                 <table :class="[
@@ -1852,11 +1886,16 @@ import { formattedDate } from "@/utils/utils";
 import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
 import FilterProcess from "@/Components/FilterProcess.vue";
 import TableHeaderCicsaFilter from "@/Components/TableHeaderCicsaFilter.vue";
+import Dropdown from '@/Components/Dropdown.vue';
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import { notifyError } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import Search from "@/Components/Search.vue";
-import { ShowIcon, RechargeIcon, UploadIcon } from "@/Components/Icons/Index";
+import ShowIcon from "@/Components/Icons/ShowIcon.vue";
+import RechargeIcon from "@/Components/Icons/RechargeIcon.vue";
+import UploadIcon from "@/Components/Icons/UploadIcon.vue";
+import { DownloadIcon, MenuIcon } from "@/Components/Icons/Index";
+import DropdownLink from "@/Components/DropdownLink.vue";
 
 const { auth, projects, center_list, type } = defineProps({
     auth: Object,

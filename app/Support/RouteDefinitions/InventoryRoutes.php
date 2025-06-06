@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Support\RouteDefinitions;
 
 use App\Http\Controllers\Inventory\PurchaseProductsController;
@@ -10,6 +11,22 @@ class InventoryRoutes
     public static function all(): array
     {
         return [
+            // Purchase Products
+            [
+                'uri' => 'inventory/purchase_products/products',
+                'method' => 'get',
+                'action' => [PurchaseProductsController::class, 'index'],
+                'permission' => true,
+                'name' => 'inventory.purchaseproducts',
+            ],
+            [
+                'uri' => 'inventory/purchase_products/products/search/{request}',
+                'method' => 'get',
+                'action' => [PurchaseProductsController::class, 'search'],
+                'permission' => true,
+                'name' => 'inventory.purchaseproducts.search',
+            ],
+
             // Inventory - Purchase Products Disable
             [
                 'uri' => 'inventory/purchase_products/products/{purchase_product}/disable',
@@ -51,21 +68,6 @@ class InventoryRoutes
                 'name' => 'warehouses.resource.store',
             ],
 
-            // Special Warehouses
-            [
-                'uri' => 'inventory/special_products/destroy/{special_inventory_id?}',
-                'method' => 'delete',
-                'action' => [SpecialWarehouseController::class, 'special_products_destroy'],
-                'permission' => true,
-                'name' => 'inventory.special_products.destroy',
-            ],
-            [
-                'uri' => 'inventory/special_dispatch_output_delete/{project_entry_output_id}',
-                'method' => 'delete',
-                'action' => [SpecialWarehouseController::class, 'special_dispatch_output_destroy'],
-                'permission' => true,
-                'name' => 'inventory.special_dispatch_output.destroy',
-            ],
             // Purchase Products
             [
                 'uri' => 'inventory/purchase_products/products/post',
@@ -80,6 +82,22 @@ class InventoryRoutes
                 'action' => [PurchaseProductsController::class, 'update'],
                 'permission' => true,
                 'name' => 'inventory.purchaseproducts.update',
+            ],
+
+            // Special Warehouses
+            [
+                'uri' => 'inventory/special_products/destroy/{special_inventory_id?}',
+                'method' => 'delete',
+                'action' => [SpecialWarehouseController::class, 'special_products_destroy'],
+                'permission' => true,
+                'name' => 'inventory.special_products.destroy',
+            ],
+            [
+                'uri' => 'inventory/special_dispatch_output_delete/{project_entry_output_id}',
+                'method' => 'delete',
+                'action' => [SpecialWarehouseController::class, 'special_dispatch_output_destroy'],
+                'permission' => true,
+                'name' => 'inventory.special_dispatch_output.destroy',
             ],
 
             // Special Warehouses
@@ -173,6 +191,13 @@ class InventoryRoutes
 
             // Services
             [
+                'uri' => 'inventory/warehouses/services',
+                'method' => 'get',
+                'action' => [WarehousesController::class, 'service_index'],
+                'permission' => true,
+                'name' => 'warehouses.service.approve.index',
+            ],
+            [
                 'uri' => 'inventory/warehouses/services/store',
                 'method' => 'post',
                 'action' => [WarehousesController::class, 'service_store'],
@@ -192,21 +217,6 @@ class InventoryRoutes
                 'action' => [WarehousesController::class, 'serialNumberResourcePurchaseOrders'],
                 'permission' => true,
                 'name' => 'warehouses.resource.add.serial_number',
-            ],
-            // Purchase Products
-            [
-                'uri' => 'inventory/purchase_products/products',
-                'method' => 'get',
-                'action' => [PurchaseProductsController::class, 'index'],
-                'permission' => true,
-                'name' => 'inventory.purchaseproducts',
-            ],
-            [
-                'uri' => 'inventory/purchase_products/products/search/{request}',
-                'method' => 'get',
-                'action' => [PurchaseProductsController::class, 'search'],
-                'permission' => true,
-                'name' => 'inventory.purchaseproducts.search',
             ],
 
             // Warehouses
@@ -365,15 +375,7 @@ class InventoryRoutes
                 'name' => 'warehouses.resource.active.index',
             ],
 
-            // Services
-            [
-                'uri' => 'inventory/warehouses/services',
-                'method' => 'get',
-                'action' => [WarehousesController::class, 'service_index'],
-                'permission' => true,
-                'name' => 'warehouses.service.approve.index',
-            ],
-        ];
 
+        ];
     }
 }

@@ -129,10 +129,6 @@ const { documents, preproject, photoreport, auth, userPermissions } = defineProp
   userPermissions: Array
 });
 
-const hasPermission = (permission) => {
-  return userPermissions.includes(permission);
-}
-
 const initial_state = {
   excel_report: null,
   pdf_report: null,

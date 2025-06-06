@@ -1,7 +1,6 @@
 <template>
 
     <Head title="Clientes" />
-
     <AuthenticatedLayout :redirectRoute="'preprojects.titles'">
         <template #header>
             Códigos
@@ -197,7 +196,7 @@
                     </table>
                 </div>
                 <div class="mt-6 flex justify-end gap-x-3">
-                    <SecondaryButton @click="openModal">Cerrar</SecondaryButton>
+                    <SecondaryButton @click="openModal(null)">Cerrar</SecondaryButton>
                 </div>
             </div>
         </Modal>

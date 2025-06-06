@@ -215,10 +215,6 @@ const props = defineProps({
     userPermissions: Array,
 });
 
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-};
-
 const add_code = () => {
     create_code.value = true;
 };

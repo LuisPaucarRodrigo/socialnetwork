@@ -733,9 +733,6 @@ console.log(props.additional_costs)
 const dataToRender = ref(props.additional_costs);
 const filterMode = ref(false);
 
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-};
 
 const form = useForm({
     id: "",

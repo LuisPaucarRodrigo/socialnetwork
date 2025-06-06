@@ -248,7 +248,86 @@ class FuncionalityPermissionSeeder extends Seeder
         ];
 
         // Inventario -> Productos
+        $iproduct_submodule = [
+            [
+                'display_name' => 'Ver tabla de Productos (incluye buscar)',
+                'key_name' => 'see_product_table',
+                'module' => 'iproduct_submodule',
+                'permissions' => [
+                    'inventory.purchaseproducts.disable',
+                    'inventory.purchaseproducts.typeProduct',
+                    'inventory.purchaseproducts.resourceType',
+
+                    'inventory.purchaseproducts',
+                    'inventory.purchaseproducts.search',
+
+                    'inventory.purchaseproducts.store',
+                    'inventory.purchaseproducts.update',
+                ]
+            ],
+        ];
         // Inventario -> Almacenes
+        $iwarehouse_submodule = [
+            [
+                'display_name' => 'Ver tabla de Almacenes',
+                'key_name' => 'see_warehouse_table',
+                'module' => 'iwarehouse_submodule',
+                'permissions' => [
+                    'warehouses.resource.create',
+                    'warehouses.resource.store',
+
+                    'inventory.special_products.destroy',
+                    'inventory.special_dispatch_output.destroy',
+
+                    'inventory.special_products.create',
+                    'inventory.special_products.store',
+                    'inventory.special_refund.accept_decline',
+                    'inventory.special_dispatch.accept_decline',
+
+                    'warehouses.purchaseorders.approve.post',
+                    'warehouses.createNormalProduct',
+                    'warehouses.storeNormalProduct',
+
+                    'retrieval.entry.approbe',
+                    'inventory.special_dispatch_output.store',
+                    'warehouses.dispatches.acceptordecline',
+                    'warehouses.resource.approve',
+
+                    'warehouses.service.approve.index',
+                    'warehouses.service.store',
+                    'warehouses.service.delete',
+                    'warehouses.resource.add.serial_number',
+
+                    'warehouses.warehouses',
+
+                    'inventory.special_products.index',
+                    'inventory.special_dispatch.index',
+                    'inventory.special_dispatch.approved',
+                    'inventory.special_dispatch.rejected',
+                    'inventory.special_refund.index',
+                    'inventory.special_refund.historial',
+
+                    'warehouses.purchaseorders.approve',
+                    'warehouses.conproco.products',
+                    'warehouses.products.entries',
+                    'warehouses.dispatches',
+                    'warehouses.dispatches.approved',
+                    'warehouses.dispatches.rejected',
+
+                    'inventory.retrieval.entry.index',
+                    'inventory.retrieval.product.index',
+                    'inventory.retrieval.product.show',
+                    'inventory.retrievalDispatch.index',
+                    'inventory.retrievalDispatch.approved',
+                    'inventory.retrievalDispatch.rejected',
+
+                    'warehouses.resource',
+                    'warehouses.resource.active.index',
+
+                    'warehouses.service.approve.index',
+                ]
+            ],
+        ];
 
         //Area de Compras -> Proveedores
         $pproviderSubModule = [
@@ -285,6 +364,53 @@ class FuncionalityPermissionSeeder extends Seeder
         ];
 
         //Area de Compras -> Solicitudes
+        $pprequest_submodule = [
+            [
+                'display_name' => 'Ver tabla de solicitudes (incluye buscar)',
+                'key_name' => 'see_purchases_request_table',
+                'module' => 'pprequest_submodule',
+                'permissions' => [
+                    'purchasesrequest.index',
+                    'purchasesrequest.search',
+                    'purchasingrequest.export',
+                    'purchasingrequest.details',
+                    'purchasesrequest.alarm',
+
+                    'purchasesrequest.edit',
+                    'purchasesrequest.update',
+                    'purchasesrequest.destroy'
+                ]
+            ],
+        ];
+
+        $pporder_submodule = [
+            [
+                'display_name' => 'Ver tabla de ordenes (incluye buscar)',
+                'key_name' => 'see_purchases_order_table',
+                'module' => 'pporder_submodule',
+                'permissions' => [
+                    'purchaseorders.index',
+                    'purchaseorders.search',
+                    'purchaseorders.details',
+                    'purchaseorders.export.order',
+                    'purchaseorders.alarms'
+                ]
+            ],
+        ];
+
+        $ppcpurchase_submodule = [
+            [
+                'display_name' => 'Ver tabla de compras completadas (incluye buscar)',
+                'key_name' => 'see_completed_purchases_table',
+                'module' => 'ppcpurchase_submodule',
+                'permissions' => [
+                    'purchaseorders.history',
+                    'purchasesrequest.show',
+                    'purchasesorder.showFacture'
+                ]
+            ],
+        ];
+
         //Area de Compras -> Ordenes
         //Area de Compras -> Compras Completadas
 
@@ -1158,10 +1284,133 @@ class FuncionalityPermissionSeeder extends Seeder
             ]
         ];
 
+        // $pextBillingActionsManagerSubModule = [
+        //     [
+        //         'display_name' => 'Gestión de Asignación',
+        //         'key_name' => 'pext_billing_actions_manager',
+        //         'module' => 'billingpext_submodule',
+        //         'permissions' => [
+        //             'cicsa.index',
+        //             'cicsa.advance.search',
+        //             'assignation.index',
+        //             'assignation.export',
+        //             'cicsa.assignation.destroy',
+        //             'cicsa.export.materials.summary',
+        //         ]
+        //     ]
+        // ];
+
+        // $pextBillingAssignationsSubModule = [
+        //     [
+        //         'display_name' => 'Gestión de Asignación pext',
+        //         'key_name' => 'pext_billing_assignation',
+        //         'module' => 'billingpext_submodule',
+        //         'permissions' => [
+        //             'cicsa.index',
+        //             'cicsa.advance.search',
+        //             'assignation.index',
+        //             'assignation.export',
+        //         ]
+        //     ]
+        // ];
+
+        // $pextBillingFeasibilitySubModule = [
+        //     [
+        //         'display_name' => 'Gestión de Factibilidad pext',
+        //         'key_name' => 'pext_billing_feasibility',
+        //         'module' => 'billingpext_submodule',
+        //         'permissions' => [
+        //             'cicsa.index',
+        //             'cicsa.advance.search',
+        //             'feasibilities.index',
+        //             'feasibilities.storeOrUpdate',
+        //             'feasibilities.export',
+        //         ]
+        //     ]
+        // ];
+
+        // $pextBillingMaterialsSubModule = [
+        //     [
+        //         'display_name' => 'Gestión de Materiales pext',
+        //         'key_name' => 'pext_billing_materials',
+        //         'module' => 'billingpext_submodule',
+        //         'permissions' => [
+        //             'cicsa.index',
+        //             'cicsa.advance.search',
+        //             'material.index',
+        //             'material.store',
+        //             'material.update',
+        //             'material.search.material',
+        //             'material.export',
+        //             'material.import',
+        //             'material.delete',
+        //         ]
+        //     ]
+        // ];
+
+        // $pextBillingInstallationSubModule = [
+        //     [
+        //         'display_name' => 'Gestión de Instalación pext',
+        //         'key_name' => 'pext_billing_installation',
+        //         'module' => 'billingpext_submodule',
+        //         'permissions' => [
+        //             'cicsa.index',
+        //             'cicsa.advance.search',
+        //             'cicsa.installation.index',
+        //             'cicsa.installation.store',
+        //             'cicsa.installation.export',
+        //         ]
+        //     ]
+        // ];
+
+        // $pextBillingPurchaseOrderSubModule = [
+        //     [
+        //         'display_name' => 'Gestión de Ordenes pext',
+        //         'key_name' => 'pext_billing_purchaseOrder',
+        //         'module' => 'billingpext_submodule',
+        //         'permissions' => [
+        //             'cicsa.index',
+        //             'cicsa.advance.search',
+        //             'purchase.order.index',
+        //             'purchaseOrder.storeOrUpdate',
+        //             'purchase.order.showDocument',
+        //             'purchase.order.export',
+        //             'cicsa.purchase_orders.validation',
+        //             'cicsa.purchase_orders.validation.update',
+        //             'cicsa.purchase_orders.validation.export',
+        //             'cicsa.service_orders',
+        //             'cicsa.service_orders.update',
+        //             'cicsa.service_orders.showDocument',
+        //             'cicsa.service_orders.export',
+        //             'cicsa.charge_areas',
+        //             'cicsa.charge_areas.update',
+        //             'cicsa.charge_areas.showDocument',
+        //             'cicsa.charge_areas.export',
+        //         ]
+        //     ]
+        // ];
+
+        // $pextBillingPurchaseOrderSubModule = [
+        //     [
+
+        //     ]
+        // ];
+
+        // $pextBillingPurchaseOrderValidationSubModule = [
+        //     [
+
+        //     ]
+        // ];
+
+        // $pextBillingServiceOrderSubModule = [
+        //     [
+
+        //     ]
+        // ];
 
         $cchanapproSubModule = [
             [
-                'display_name' => 'Manager administrativo de UM',
+                'display_name' => 'Aprobacion de Cambios',
                 'key_name' => 'CarManager',
                 'module' => 'cchanappro_submodule',
                 'permissions' => [
@@ -1172,10 +1421,43 @@ class FuncionalityPermissionSeeder extends Seeder
                 ],
             ],
         ];
-        $cmobileunitSubModule = [
+
+        // $cmobileunitSubModule = [
+        //     [
+        //         'display_name' => 'Gestión de UM',
+        //         'key_name' => 'Car',
+        //         'module' => 'cmobileunit_submodule',
+        //         'permissions' => [
+        //             'fleet.cars.index',
+        //             'fleet.cars.show_checklist.send_images',
+        //             'fleet.cars.show.image',
+        //             'fleet.cars.show_checklist',
+        //             'fleet.cars.show_invoice',
+        //             'fleet.cars.show_checklist.accept_or_decline',
+        //             'fleet.cars.destroy',
+        //             'fleet.cars.destroy_changelog',
+        //             'fleet.cars.update',
+        //             'fleet.cars.store',
+        //             'fleet.cars.show_invoice',
+        //             'fleet.cars.update_changelog',
+        //             'fleet.cars.store_changelog',
+        //             'fleet.cars.show_documents',
+        //             'fleet.cars.update.document',
+        //             'fleet.cars.store_document',
+        //             'fleet.cars.search',
+
+        //             'fleet.cars.alarms',
+        //             'fleet.cars.checklist.alarms',
+        //             'fleet.cars.specific.alarms',
+        //             'fleet.cars.alarms.changelogs',
+        //         ],
+        //     ]
+        // ];
+
+        $cSeeAllMobile = [
             [
-                'display_name' => 'Gestión de UM',
-                'key_name' => 'Car',
+                'display_name' => 'Ver Todos los Vehiculos',
+                'key_name' => 'see_all_mobile',
                 'module' => 'cmobileunit_submodule',
                 'permissions' => [
                     'fleet.cars.index',
@@ -1184,10 +1466,50 @@ class FuncionalityPermissionSeeder extends Seeder
                     'fleet.cars.show_checklist',
                     'fleet.cars.show_invoice',
                     'fleet.cars.show_checklist.accept_or_decline',
-                    'fleet.cars.destroy',
+                    'fleet.cars.search',
+
+                    'fleet.cars.alarms',
+                    'fleet.cars.checklist.alarms',
+                    'fleet.cars.specific.alarms',
+                    'fleet.cars.alarms.changelogs',
+                ]
+            ]
+        ];
+
+        $cSeeMobile = [
+            [
+                'display_name' => 'Ver Vehiculos propios',
+                'key_name' => 'see_mobile',
+                'module' => 'cmobileunit_submodule',
+                'permissions' => [
+                    'fleet.cars.index',
+                    'fleet.cars.show_checklist.send_images',
+                    'fleet.cars.show.image',
+                    'fleet.cars.show_checklist',
+                    'fleet.cars.show_invoice',
+                    'fleet.cars.show_checklist.accept_or_decline',
+                    'fleet.cars.search',
+
+                    'fleet.cars.alarms',
+                    'fleet.cars.checklist.alarms',
+                    'fleet.cars.specific.alarms',
+                    'fleet.cars.alarms.changelogs',
+                ]
+            ]
+        ];
+
+        $cmobileActionsManager = [
+            [
+                'display_name' => 'Acciones de Manager',
+                'key_name' => 'mobile_actions_manager',
+                'module' => 'cmobileunit_submodule',
+                'permissions' => [
+                    'fleet.cars.index',
+                    'fleet.cars.show_checklist.send_images',
+                    'fleet.cars.show.image',
+                    'fleet.cars.show_checklist',
+                    'fleet.cars.show_checklist.accept_or_decline',
                     'fleet.cars.destroy_changelog',
-                    'fleet.cars.update',
-                    'fleet.cars.store',
                     'fleet.cars.show_invoice',
                     'fleet.cars.update_changelog',
                     'fleet.cars.store_changelog',
@@ -1200,7 +1522,30 @@ class FuncionalityPermissionSeeder extends Seeder
                     'fleet.cars.checklist.alarms',
                     'fleet.cars.specific.alarms',
                     'fleet.cars.alarms.changelogs',
-                ],
+                ]
+            ]
+        ];
+
+        $cmobileActions = [
+            [
+                'display_name' => 'Acciones de Propietario',
+                'key_name' => 'mobile_actions',
+                'module' => 'cmobileunit_submodule',
+                'permissions' => [
+                    'fleet.cars.index',
+                    'fleet.cars.show_checklist.send_images',
+                    'fleet.cars.show.image',
+                    'fleet.cars.show_checklist',
+                    'fleet.cars.show_checklist.accept_or_decline',
+                    'fleet.cars.destroy_changelog',
+                    'fleet.cars.show_invoice',
+                    'fleet.cars.update_changelog',
+                    'fleet.cars.store_changelog',
+                    'fleet.cars.show_documents',
+                    'fleet.cars.update.document',
+                    'fleet.cars.store_document',
+                    'fleet.cars.search',
+                ]
             ]
         ];
 
@@ -1267,6 +1612,9 @@ class FuncionalityPermissionSeeder extends Seeder
             $HrhrstateSubModule,
 
             $pproviderSubModule,
+            $pprequest_submodule,
+            $pporder_submodule,
+            $ppcpurchase_submodule,
             //Solicitudes
             //Ordenes
             //Compras Completadas
@@ -1288,15 +1636,25 @@ class FuncionalityPermissionSeeder extends Seeder
 
             $billingpintSubModule,
             $billingpextSubModule,
+            // $pextBillingActionsManagerSubModule,
+            // $pextBillingAssignationsSubModule,
+            // $pextBillingFeasibilitySubModule,
+            // $pextBillingMaterialsSubModule,
+            // $pextBillingInstallationSubModule,
+            // $pextBillingPurchaseOrderSubModule,
 
             $cchanapproSubModule,
-            $cmobileunitSubModule,
+            // $cmobileunitSubModule,
+
+            $cSeeAllMobile,
+            $cSeeMobile,
+            $cmobileActionsManager,
+            $cmobileActions,
 
             //Sharepoint
             $sharedoc_submodule,
 
-            //HUAWEI
-            $huaweiProjectsSubmodule,
+            $huaweiProjectsSubmodule
         ];
 
         foreach ($Submodules as $sm) {

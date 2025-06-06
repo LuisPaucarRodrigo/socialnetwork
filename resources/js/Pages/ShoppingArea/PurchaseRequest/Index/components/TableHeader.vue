@@ -1,6 +1,6 @@
 <template>
     <div class="flex justify-between items-center gap-4">
-        <PrimaryButton v-if="hasPermission('PurchasingManager')" @click="add_request" type="button">
+        <PrimaryButton v-permisssion="'purchases_request_actions'" @click="add_request" type="button">
             + Agregar
         </PrimaryButton>
         <div class="flex items-center">
@@ -12,10 +12,6 @@
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Search from '@/Components/Search.vue';
 import { router, useForm } from '@inertiajs/vue3';
-
-const { userPermissions } = defineProps({
-    userPermissions: Array
-})
 
 const purchases = defineModel('purchases')
 
@@ -35,9 +31,5 @@ async function search () {
     } catch (error) {
         console.error(error)   
     }
-}
-
-function hasPermission(permission){
-    return userPermissions.includes(permission)
 }
 </script>

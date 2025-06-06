@@ -1652,9 +1652,6 @@ const props = defineProps({
     macro_projects: Array,
 });
 
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-};
 
 const initialState = {
     description: props.huawei_project ? props.huawei_project.description : "",
