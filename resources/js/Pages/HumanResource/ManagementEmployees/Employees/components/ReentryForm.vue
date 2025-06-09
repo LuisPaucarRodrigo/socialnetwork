@@ -69,7 +69,7 @@ async function submit() {
         updateFrontEnd(employeeId.value)
     } catch (error) {
         console.log(error)
-        useAxiosErrorHandler(reentryForm)
+        useAxiosErrorHandler(error, reentryForm)
     }
 }
 

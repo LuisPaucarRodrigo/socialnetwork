@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Support\RouteDefinitions;
 
 use App\Http\Controllers\ProjectArea\AdditionalCostsController;
@@ -783,7 +784,7 @@ class ProjectRoutes
                 'name' => 'preprojects.titles.put',
             ],
             [
-                'uri' => '/preprojects/titles/{title}/delete',
+                'uri' => '/preprojects/titles_delete/{title}/delete',
                 'method' => 'delete',
                 'action' => [PreProjectController::class, 'deleteTitle'],
                 'permission' => true,
@@ -1531,7 +1532,7 @@ class ProjectRoutes
                 'permission' => true,
                 'name' => 'member.cicsa.alarm',
             ],
-                // Pint auto
+            // Pint auto
             [
                 'uri' => '/preproject/auto-create/index/{type}',
                 'method' => 'get',
@@ -1561,7 +1562,7 @@ class ProjectRoutes
                 'name' => 'pint_project.products.cpe',
             ],
 
-                // Pext auto
+            // Pext auto
             [
                 'uri' => '/preproject/auto-create/pext/{type}',
                 'method' => 'get',
@@ -1584,7 +1585,7 @@ class ProjectRoutes
                 'name' => 'pext_project.products.cpe',
             ],
 
-                // Costs Export
+            // Costs Export
             [
                 'uri' => '/additionalcost_photo/{additional_cost_id}',
                 'method' => 'get',
@@ -1600,7 +1601,7 @@ class ProjectRoutes
                 'name' => 'additionalcost.excel.export',
             ],
 
-                // Update Additional Cost
+            // Update Additional Cost
             [
                 'uri' => '/projectmanagement/purchases_request/additional_costs/{additional_cost}/update',
                 'method' => 'post',
@@ -1609,7 +1610,7 @@ class ProjectRoutes
                 'name' => 'projectmanagement.updateAdditionalCost',
             ],
 
-                // Delete Additional Cost
+            // Delete Additional Cost
             [
                 'uri' => '/projectmanagement/purchases_request/{project_id}/additional_costs/{additional_cost}/destroy',
                 'method' => 'delete',
@@ -1618,7 +1619,7 @@ class ProjectRoutes
                 'name' => 'projectmanagement.deleteAdditionalCost',
             ],
 
-                // Export Static Costs
+            // Export Static Costs
             [
                 'uri' => '/staticcosts/excel_export/{project_id}',
                 'method' => 'get',
@@ -1627,7 +1628,7 @@ class ProjectRoutes
                 'name' => 'staticcost.excel.export',
             ],
 
-                // Update Static Cost
+            // Update Static Cost
             [
                 'uri' => '/projectmanagement/purchases_request/static_costs/{additional_cost}/update',
                 'method' => 'post',
@@ -1636,7 +1637,7 @@ class ProjectRoutes
                 'name' => 'projectmanagement.updateStaticCost',
             ],
 
-                // Delete Static Cost
+            // Delete Static Cost
             [
                 'uri' => '/projectmanagement/purchases_request/{project_id}/static_costs/{additional_cost}/destroy',
                 'method' => 'delete',
@@ -1659,6 +1660,5 @@ class ProjectRoutes
                 'name' => 'projectmanagement.additionalToAdditional.swapCosts',
             ],
         ];
-
     }
 }

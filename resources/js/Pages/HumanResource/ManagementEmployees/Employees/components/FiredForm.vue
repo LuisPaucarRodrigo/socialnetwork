@@ -84,7 +84,7 @@ async function submit() {
         updateFrontEnd(employeeId.value)
     } catch (error) {
         console.error(error)
-        useAxiosErrorHandler(firedForm)
+        useAxiosErrorHandler(error,firedForm)
     }
 }
 

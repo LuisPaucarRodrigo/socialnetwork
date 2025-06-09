@@ -11,6 +11,14 @@ use App\Http\Controllers\Huawei\HuaweiMonthlyController;
 use App\Http\Controllers\Huawei\HuaweiProjectController;
 use App\Http\Controllers\Huawei\QuickMaterialsController;
 
+foreach (HuaweiRoutes::all() as $route) {
+        $routeInstance = Route::{$route['method']}($route['uri'], $route['action'])
+            ->name($route['name']);
+        if ($route['permission']) {
+            $routeInstance->middleware('permission:' . $route['name']);
+        }
+    }
+    
 Route::middleware('permission:HuaweiManager')->group(function () {
     // Route::get('/huaweiLoads', [HuaweiController::class, 'show'])->name('huawei.loads');
     // Route::post('/huaweiLoads/import', [HuaweiController::class, 'import'])->name('huawei.loads.import');
@@ -19,13 +27,7 @@ Route::middleware('permission:HuaweiManager')->group(function () {
     // Route::put('/huaweiLoads/{loadId}/products/associate/{huawei_product}', [HuaweiController::class, 'associate'])->name('huawei.loads.products.associate');
     // Route::get('/huaweiLoads/{loadId}/exportpdf', [HuaweiController::class, 'exportHuaweiProducts'])->name('huawei.loads.exportpdf');
 
-    foreach (HuaweiRoutes::all() as $route) {
-        $routeInstance = Route::{$route['method']}($route['uri'], $route['action'])
-            ->name($route['name']);
-        if ($route['permission']) {
-            $routeInstance->middleware('permission:' . $route['name']);
-        }
-    }
+    
 
     //Inventory
     Route::get('/huawei/inventory/{warehouse}/get/{equipment?}', [HuaweiManagementController::class, 'show'])->name('huawei.inventory.show');

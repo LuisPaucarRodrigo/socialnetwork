@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Support\RouteDefinitions;
 
 use App\Http\Controllers\Finance\AccountStatementController;
@@ -113,12 +114,21 @@ class FinanceRoutes
                 'name' => 'finance.account_statement.dsdownload',
             ],
             [
+                'uri' => 'previousbalance/{month?}/{all?}',
+                'method' => 'get',
+                'action' => [AccountStatementController::class, 'allfine'],
+                'permission' => false,
+                'name' => 'finance.previous_balance',
+            ],
+            //Sunat
+            [
                 'uri' => 'finance/sunnat_allexpenses',
                 'method' => 'get',
                 'action' => [SunatController::class, 'general_expenses'],
                 'permission' => false,
                 'name' => 'finance.sunata.gexpenses',
             ],
+            //CostLine and CostCenter
             [
                 'uri' => 'cost_lines/store/{cl_id?}',
                 'method' => 'post',
@@ -189,13 +199,7 @@ class FinanceRoutes
                 'permission' => false,
                 'name' => 'finance.cost_center.employee.store',
             ],
-            [
-                'uri' => 'previousbalance/{month?}/{all?}',
-                'method' => 'get',
-                'action' => [AccountStatementController::class, 'allfine'],
-                'permission' => false,
-                'name' => 'finance.previous_balance',
-            ],
+            //Presupuestos
             [
                 'uri' => 'selectProject',
                 'method' => 'get',
@@ -210,6 +214,7 @@ class FinanceRoutes
                 'permission' => false,
                 'name' => 'initialbudget.index',
             ],
+            //Aprobación de compras
             [
                 'uri' => 'finance/expencemanagement/{boolean?}',
                 'method' => 'any',
@@ -231,6 +236,7 @@ class FinanceRoutes
                 'permission' => false,
                 'name' => 'approve_quote.alarm',
             ],
+            //Pagos OC
             [
                 'uri' => 'finance/payment',
                 'method' => 'get',
@@ -252,6 +258,7 @@ class FinanceRoutes
                 'permission' => false,
                 'name' => 'payment.alarm',
             ],
+            //Depósitos
             [
                 'uri' => 'finance/desposits',
                 'method' => 'get',
@@ -275,8 +282,4 @@ class FinanceRoutes
             ],
         ];
     }
-
 }
-
-
-

@@ -45,7 +45,7 @@
                     <TableRow>{{ car.user.name }}</TableRow>
                     <TableRow :colspan="2" v-permission-or="[
                         'mobile_actions_manager',
-                        'mobile_actions',
+                        'mobile_actions'
                     ]">
                         <div class="flex space-x-3 justify-center">
                             <button v-permission="'mobile_actions'" @click="openformDocument(car)">

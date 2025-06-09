@@ -275,7 +275,7 @@ class FuncionalityPermissionSeeder extends Seeder
                 'permissions' => [
                     'warehouses.resource.create',
                     'warehouses.resource.store',
-                    
+
                     'inventory.special_products.destroy',
                     'inventory.special_dispatch_output.destroy',
 
@@ -1165,10 +1165,70 @@ class FuncionalityPermissionSeeder extends Seeder
         //Area Proyectos -> Backlog
 
         //Finanzas -> Presupuestos
-        //Finanzas -> Aprobación de compras
-        //Finanzas -> Depósitos
-        //Finanzas -> Pagos OC
+        $fbudget_submodule = [
+            [
+                'display_name' => 'Presupuestos',
+                'key_name' => 'finance_budgets',
+                'module' => 'fbudget_submodule',
+                'permissions' => [
+                    'selectproject.index',
+                    'initialbudget.index',
 
+                    'finance.cost_line.store',
+                    'finance.cost_line.destroy',
+                    'finance.cost_line.employees',
+                    'finance.cost_line.employee.store',
+                    'finance.cost_line.employee.destroy',
+                    'finance.cost_line.employee.search',
+                    'finance.cost_centers.index',
+                    'finance.cost_center.store',
+                    'finance.cost_center.destroy',
+                    'finance.cost_center.employee.store',
+                ]
+            ]
+        ];
+
+        //Finanzas -> Aprobación de compras
+        $fpapproval_submodule = [
+            [
+                'display_name' => 'Aprobación de compras',
+                'key_name' => 'finance_purchase_approval',
+                'module' => 'fpapproval_submodule',
+                'permissions' => [
+                    'managementexpense.index',
+                    'managementexpense.details',
+                    'approve_quote.alarm',
+                ]
+            ]
+        ];
+
+        //Finanzas -> Depósitos
+        $fdeposists_submodule = [
+            [
+                'display_name' => 'Depósitos',
+                'key_name' => 'finance_deposits',
+                'module' => 'fdeposists_submodule',
+                'permissions' => [
+                    'deposits.index',
+                    'deposits.store',
+                    'deposits.generateSummary'
+                ]
+            ]
+        ];
+
+        //Finanzas -> Pagos OC
+        $fpopayment_submodule = [
+            [
+                'display_name' => 'Pagos OC',
+                'key_name' => 'finance_payments_oc',
+                'module' => 'fpopayment_submodule',
+                'permissions' => [
+                    'payment.index',
+                    'payment.search',
+                    'payment.alarm'
+                ]
+            ]
+        ];
         //Finanzas -> Estado de cuenta
         $faccstatementSubModule = [
             [
@@ -1187,7 +1247,6 @@ class FuncionalityPermissionSeeder extends Seeder
                     'finance.account_statement.dsdownload',
                 ]
             ]
-
         ];
 
         //Facturación -> PINT
@@ -1422,38 +1481,6 @@ class FuncionalityPermissionSeeder extends Seeder
             ],
         ];
 
-        // $cmobileunitSubModule = [
-        //     [
-        //         'display_name' => 'Gestión de UM',
-        //         'key_name' => 'Car',
-        //         'module' => 'cmobileunit_submodule',
-        //         'permissions' => [
-        //             'fleet.cars.index',
-        //             'fleet.cars.show_checklist.send_images',
-        //             'fleet.cars.show.image',
-        //             'fleet.cars.show_checklist',
-        //             'fleet.cars.show_invoice',
-        //             'fleet.cars.show_checklist.accept_or_decline',
-        //             'fleet.cars.destroy',
-        //             'fleet.cars.destroy_changelog',
-        //             'fleet.cars.update',
-        //             'fleet.cars.store',
-        //             'fleet.cars.show_invoice',
-        //             'fleet.cars.update_changelog',
-        //             'fleet.cars.store_changelog',
-        //             'fleet.cars.show_documents',
-        //             'fleet.cars.update.document',
-        //             'fleet.cars.store_document',
-        //             'fleet.cars.search',
-
-        //             'fleet.cars.alarms',
-        //             'fleet.cars.checklist.alarms',
-        //             'fleet.cars.specific.alarms',
-        //             'fleet.cars.alarms.changelogs',
-        //         ],
-        //     ]
-        // ];
-
         $cSeeAllMobile = [
             [
                 'display_name' => 'Ver Todos los Vehiculos',
@@ -1630,9 +1657,14 @@ class FuncionalityPermissionSeeder extends Seeder
             $pchecklistSubModule,
 
             //presupuestos
+            $fbudget_submodule,
             //aprobacion de compras
+            $fpapproval_submodule,
             //depósitos
+            $fdeposists_submodule,
             //pagos OC
+            $fpopayment_submodule,
+            //Estado de cuenta
             $faccstatementSubModule,
 
             $billingpintSubModule,
