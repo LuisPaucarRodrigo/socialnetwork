@@ -5,14 +5,14 @@
 <br>
 <table>
     <tr>
-        <td colspan="5">RUC : 20559246272</td>
+        <td colspan="10">RUC : 20559246272</td>
     </tr>
     <tr>
-        <td colspan="5">Empleador : CORPORACION DE CONTRATISTAS Y PROVEEDORES GENERALES S.R.L. - CONPROCO S.R.L.</td>
+        <td colspan="10">Empleador : CORPORACION DE CONTRATISTAS Y PROVEEDORES GENERALES S.R.L. - CONPROCO S.R.L.</td>
       
     </tr>
     <tr>
-        <td colspan="5">Periodo: {{ $payroll->month }}</td>
+        <td colspan="10">Periodo: {{ $payroll->month }}</td>
     </tr>
 </table>
 

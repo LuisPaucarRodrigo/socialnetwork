@@ -10,14 +10,19 @@ class PayrollDetailsExport implements FromView
 {
     
     protected $data;
+    protected $type;
 
-    public function __construct($data)
+    public function __construct($data, $type)
     {
         $this->data = $data;
+        $this->type = $type;
     }
 
     public function view():View
     {
-        return view('Export/Payroll/PayrollIncomeDataTaxContributions', $this->data);
+        $template = '';
+        if($this->type === 'general') $template = 'PayrollIncomeDiscountTaxContributions';
+        if($this->type === 'detail') $template = 'PayrollDetailsWithParams';
+        return view("Export/Payroll/$template", $this->data);
     }
 }

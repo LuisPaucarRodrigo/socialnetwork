@@ -136,9 +136,58 @@ class SpreadsheetsController extends Controller
         $spreadsheet = $this->payrollServices->getPayrollDetails($payroll_id)->get()->each->append('new_totals');
         $total = $this->payrollServices->calculateTotal($spreadsheet);
         $data = compact('payroll', 'spreadsheet', 'total');
-        return Excel::download(new PayrollDetailsExport($data), 'Datos de Ingresos, Tributos  y Aportes.xlsx');
+        return Excel::download(new PayrollDetailsExport($data, 'general'), 'Nómina - Datos generales.xlsx');
     }
 
+    public function export_detail_excel_payroll_detail(Request $request, $payroll_id)
+    {
+
+        $registers = collect($request->registerSelected);
+        $appends = [];
+        $dataMap = [
+            'Ingresos' => [
+                'variable' => 'incomes',
+                'query' => fn() => IncomeParam::all(),
+                'append' => 'monetary_incomes_by_ids',
+            ],
+            'Descuentos' => [
+                'variable' => 'discounts',
+                'query' => fn() => DiscountParam::all(),
+                'append' => 'monetary_discounts_by_ids',
+            ],
+            'Tributos' => [
+                'variable' => 'tacEmployee',
+                'query' => fn() => TaxAndContributionParam::where('type', 'employee')->get(),
+                'append' => 'tax_contribution_employee_by_ids',
+            ],
+            'Aportes' => [
+                'variable' => 'tacEmployer',
+                'query' => fn() => TaxAndContributionParam::where('type', 'employer')->get(),
+                'append' => 'tax_contribution_employer_by_ids',
+            ],
+        ];
+        $data = [
+            'incomes' => null,
+            'discounts' => null,
+            'tacEmployee' => null,
+            'tacEmployer' => null,
+        ];
+        foreach ($dataMap as $key => $config) {
+            if ($registers->contains($key)) {
+                $data[$config['variable']] = $config['query']();
+                $appends[] = $config['append'];
+            }
+        }
+        $data['payroll'] = Payroll::findOrFail($payroll_id);
+        $data['spreadsheet'] = $this->payrollServices
+            ->getPayrollDetailsAllValues($payroll_id)
+            ->get()
+            ->each
+            ->append($appends);
+    
+        return Excel::download(new PayrollDetailsExport($data, 'detail'), 'Nómina - Datos detallados.xlsx');
+    }
+    
 
     public function index_payroll_detail($payroll_details_id, $employee_id)
     {

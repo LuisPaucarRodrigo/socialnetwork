@@ -257,4 +257,22 @@ class PayrollDetail extends Model
         );
     }
 
+    public function getMonetaryIncomesByIdsAttribute () {
+        return $this->payroll_detail_monetary_income()->get()->keyBy('income_param_id')->toArray();
+    }
+    public function getMonetaryDiscountsByIdsAttribute () {
+        return $this->payroll_detail_monetary_discounts()->get()->keyBy('discount_param_id')->toArray();
+    }
+    public function getTaxContributionEmployeeByIdsAttribute () {
+        return $this->payroll_detail_tax_and_contributions()
+            ->where('type', 'employee')
+            ->get()->keyBy('t_a_c_param_id')->toArray();
+    }
+    public function getTaxContributionEmployerByIdsAttribute () {
+        return $this->payroll_detail_tax_and_contributions()
+            ->where('type', 'employer')
+            ->get()->keyBy('t_a_c_param_id')->toArray();
+    }
+
+
 }

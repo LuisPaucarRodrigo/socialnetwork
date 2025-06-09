@@ -1,5 +1,4 @@
 <template>
-
     <Head title="Nomina" />
     <AuthenticatedLayout :redirectRoute="'payroll.index'">
         <template #header>
@@ -14,6 +13,7 @@
                 :filterForm="filterForm" 
                 :openPayrollApprove="openPayrollApprove" 
                 :openPaySpreadsheet="openPaySpreadsheet" 
+                :openExportSpreadsheet="openExportSpreadsheet" 
                 :searchSpreadSheetsTable="searchSpreadSheetsTable" 
             />
             <SpreadsheetsTable 
@@ -35,6 +35,10 @@
                 :payroll="payroll"
                 :actionForm="actionForm"
             />
+            <SpreadSheetExportDetailModal
+                ref="exportSpreadsheet"
+                :payroll="payroll"
+            />
         </div>
         <TravelESalaryForm ref="travelESalaryForm" :spreadsheets="spreadsheets" />
         <EmployeeDiscountForm ref="employeeDiscountForm" :spreadsheets="spreadsheets" />
@@ -52,6 +56,7 @@ import TravelESalaryForm from './components/TravelESalaryForm.vue';
 import EmployeeDiscountForm from './components/EmployeeDiscountForm.vue';
 import ApprovePayroll from './components/ApprovePayroll.vue';
 import SpreadsheetPayModal from './components/SpreadsheetPayModal.vue';
+import SpreadSheetExportDetailModal from './components/SpreadSheetExportDetailModal.vue';
 import { Toaster } from 'vue-sonner';
 
 
@@ -62,6 +67,7 @@ const { spreadsheet, payroll, total, pensionTypes, userPermissions } = definePro
     pensionTypes: Array,
     userPermissions: Array
 })
+
 
 
 const actionForm = ref({ ids: [], });
@@ -80,6 +86,7 @@ const employeeDiscountForm = ref(null)
 const approvePayroll = ref(null)
 const paySpreadsheet = ref(null)
 const spreadsheetstable = ref(null)
+const exportSpreadsheet = ref(null)
 
 
 function openPaymentSalaryModal(payroll_detail) {
@@ -106,6 +113,9 @@ function openPaySpreadsheet(){
 
 function searchSpreadSheetsTable() {
     spreadsheetstable.value.search_advance()
+}
+function openExportSpreadsheet() {
+    exportSpreadsheet.value.openExportModal()
 }
 
 

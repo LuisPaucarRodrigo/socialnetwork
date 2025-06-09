@@ -130,7 +130,6 @@ async function search_advance() {
         );
         emit('update:spreadsheets', res.data.spreadsheet);
         emit('update:totals', res.data.total);
-        // spreadsheets = res.data;
         notifyWarning(`Se encontraron ${res.data.spreadsheet.length} registro(s)`);
     } catch (error) {
         console.error("Error en la solicitud:", error);

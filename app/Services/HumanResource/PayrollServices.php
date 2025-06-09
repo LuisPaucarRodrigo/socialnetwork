@@ -150,8 +150,16 @@ class PayrollServices
                 $sq->whereIn('type', $selectedPensionTypes);
             });
         }
+        return $query;
+    }
 
-
+    public function getPayrollDetailsAllValues($payroll_id) {
+        $query = PayrollDetail::with(
+            'employee', 
+            'payroll_detail_monetary_income',
+            'payroll_detail_monetary_discounts',
+            'payroll_detail_tax_and_contributions',
+        )->where('payroll_id', $payroll_id);
         return $query;
     }
 }

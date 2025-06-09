@@ -32,10 +32,36 @@
                     class="bg-gray-600 hover:bg-gray-500 rounded-md px-4 py-2 text-center text-sm text-white">
                     Pagos
                 </Link>
-                <a :href="route('payroll.detail.export', {payroll_id: payrolls.id})"
-                    class="bg-green-600 hover:bg-green-500 rounded-md px-4 py-2 text-center text-sm text-white">
-                    Excel
-                </a>
+
+
+                <div>
+                        <dropdown align="left">
+                            <template #trigger>
+                                <button 
+                                    @click="dropdownOpen = !dropdownOpen"
+                                    class="relative block overflow-hidden rounded-md text-white bg-green-600 hover:bg-green-500 text-center text-sm p-2">
+                                    Exportar
+                                </button>
+                            </template>
+
+                            <template #content class="origin-left">
+                                <div>
+                                    <!-- Alineación a la derecha -->
+                                    <div class="">
+                                        <button @click="exportGeneralExcel()"
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Excel general
+                                        </button>
+                                        <button @click="openExportSpreadsheet()"
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Excel detallado
+                                        </button>
+                                     
+                                    </div>
+                                </div>
+                            </template>
+                        </dropdown>
+                    </div>
             </div>
             <div class="sm:hidden">
                 <dropdown align='left'>
@@ -84,16 +110,25 @@ import TextInput from '@/Components/TextInput.vue';
 import { Link } from '@inertiajs/vue3';
 import { DolarIcon } from '@/Components/icons';
 
-const { payrolls, filterForm, openPayrollApprove, openPaySpreadsheet, searchSpreadSheetsTable } = defineProps({
+const { payrolls, filterForm, openPayrollApprove, openPaySpreadsheet, searchSpreadSheetsTable, openExportSpreadsheet } = defineProps({
     payrolls: Object,
     filterForm: Object,
     openPayrollApprove: Function,
     openPaySpreadsheet: Function,
     searchSpreadSheetsTable: Function,
+    openExportSpreadsheet: Function,
 })
 
 const spreadsheets = defineModel('spreadsheets')
 const totals = defineModel('totals')
 
+function exportGeneralExcel() {
+    const uniqueParam = `timestamp=${new Date().getTime()}`;
+    const url =
+        route('payroll.detail.export', {payroll_id: payrolls.id}) +
+        "?" +
+        uniqueParam;
+    window.location.href = url;
+}
 
 </script>
