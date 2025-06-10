@@ -55,7 +55,7 @@
                     <th colspan="2">{{ $tacemp->concept  }}</th>
                 @endforeach
             @endif
-            @if ($tacEmployee && $tacEmployer->isNotEmpty())
+            @if ($tacEmployer && $tacEmployer->isNotEmpty())
                 @foreach ( $tacEmployee as $tacemp )
                     <th colspan="2">{{ $tacemp->concept  }}</th>
                 @endforeach

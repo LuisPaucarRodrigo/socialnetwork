@@ -264,12 +264,16 @@ class PayrollDetail extends Model
     }
     public function getTaxContributionEmployeeByIdsAttribute () {
         return $this->payroll_detail_tax_and_contributions()
-            ->where('type', 'employee')
+            ->whereHas('tax_and_contribution_param', function($query) {
+                $query->where('type', 'employee');
+            })
             ->get()->keyBy('t_a_c_param_id')->toArray();
     }
     public function getTaxContributionEmployerByIdsAttribute () {
         return $this->payroll_detail_tax_and_contributions()
-            ->where('type', 'employer')
+            ->whereHas('tax_and_contribution_param', function($query) {
+                $query->where('type', 'employer');
+            })
             ->get()->keyBy('t_a_c_param_id')->toArray();
     }
 }
