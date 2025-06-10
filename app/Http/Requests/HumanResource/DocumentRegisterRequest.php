@@ -22,17 +22,18 @@ class DocumentRegisterRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'subdivision_id'=> 'required',
-            'document_id'=> 'nullable',
-            'employee_id'=> 'nullable',
-            'e_employee_id'=> 'nullable',
-            'exp_date'=> 'nullable',
-            'state'=> 'required',
-            'observations'=> 'nullable',
+            'subdivision_id' => 'required',
+            'document_id' => 'nullable',
+            'employee_id' => 'required_without:e_employee_id|prohibited_with:e_employee_id',
+            'e_employee_id' => 'required_without:employee_id|prohibited_with:employee_id',
+            'exp_date' => 'nullable',
+            'state' => 'required',
+            'observations' => 'nullable',
         ];
         if ($this->input('state') === 'Completado') {
-            $rules['document'] = 'required';
+            $rules['document'] = 'required|file|mimes:png,pdf,jpeg,jpg';
         }
         return $rules;
     }
+
 }

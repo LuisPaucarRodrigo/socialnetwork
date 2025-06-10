@@ -277,53 +277,47 @@ class DocumentSpreedSheetController extends Controller
 
 
 
-    public function store(DocumentRegisterRequest $request, $dr_id = null)
+    public function create(DocumentRegisterRequest $request)
     {
         $data = $request->validated();
-       
-        if ($data['state'] === 'Completado') { 
-            $docItem = $data['employee_id']
-                ? Document::where('subdivision_id', $data['subdivision_id'])
-                    ->where('employee_id', $data['employee_id'])
-                    ->first()
-                : ($data['e_employee_id']
-                    ? Document::where('subdivision_id', $data['subdivision_id'])
-                        ->where('e_employee_id', $data['e_employee_id'])
-                        ->first()
-                    : null
-                );
+        $state = $data['state'];
+        if ($state === 'Completado') {
             $document = $request->file('document');
-            $employee_name = $request->employee_id ? Employee::where('id', $data['employee_id'])
-                ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
-                ->first() : ExternalEmployee::where('id', $data['e_employee_id'])
-                ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
-                ->first();
-            $data['title'] = Subdivision::find($data['subdivision_id'])->name . ' - ' . $employee_name->full_name . '.' . $document->getClientOriginalExtension();
+            $data['title'] = $this->file_move($data, $document);
+            $docItem = Document::create($data);
+            $data['document_id'] = $docItem->id;
+            $docReg = DocumentRegister::create($data);
+        } else {
+            $docReg = DocumentRegister::create($data);
+        }
+        return response()->json([$docReg->subdivision_id => $docReg]);
+    }
+
+
+    public function update(DocumentRegisterRequest $request, $dr_id)
+    {
+        $data = $request->validated();
+        $docReg = DocumentRegister::with('document')->find($dr_id);
+        $docItem = $docReg->document;
+        $state = $data['state'];
+        if ($state === 'Completado') { 
+            $document = $request->file('document');
+            $data['title'] = $this->file_move($data, $document);
             if($docItem) {
-                $fileName = $docItem->title;
-                $filePath = "documents/documents/$fileName";
-                $path = public_path($filePath);
-                if (file_exists($path) && is_file($path)) {
-                    unlink($path);
-                }
-                $document->move(public_path('documents/documents/'), $data['title']);
+                $this->file_delete($docItem);
                 $docItem->update($data);
             } else {
-                $document->move(public_path('documents/documents/'), $data['title']);
                 $docItem = Document::create($data);
+                $data['document_id'] = $docItem->id;
             }
-            $item = DocumentRegister::where('document_id', $docItem->id)->first();
-        } else {
-            $item = DocumentRegister::find($dr_id);
-            if ($item) {
-                $item->update($data);
-            } else {
-                $item = DocumentRegister::create($data);
-            }
-        }
-        $item->without('document');
-        return response()->json([$item->subdivision_id => $item], 200);
+        } 
+        $docReg->update($data);
+        return response()->json([$docReg->subdivision_id => $docReg]);
     }
+
+
+
+
 
 
     public function destroy($dr_id = null)
@@ -457,5 +451,30 @@ class DocumentSpreedSheetController extends Controller
     //     }
 
     // }
+
+    private function file_move($data, $document) {
+        $name = $this->getFileName($data, $document);
+        $document->move(public_path('documents/documents/'), $name);
+        return $name;
+    }
+
+    private function file_delete($docItem) {
+        $fileName = $docItem->title;
+        $filePath = "documents/documents/$fileName";
+        $path = public_path($filePath);
+        if (file_exists($path) && is_file($path)) {
+            unlink($path);
+        }
+    }
+
+    private function getFileName ($data, $document) {
+        $employee_name = $data['employee_id'] ? Employee::where('id', $data['employee_id'])
+                ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
+                ->first() : ExternalEmployee::where('id', $data['e_employee_id'])
+                ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
+                ->first();
+        $name = Subdivision::find($data['subdivision_id'])->name . ' - ' . $employee_name->full_name . '.' . $document->getClientOriginalExtension();
+        return $name;
+    }
 
 }

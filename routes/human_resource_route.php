@@ -163,9 +163,10 @@ Route::middleware('permission:' . implode('|', RolesConstants::HR_MODULE))->grou
     Route::get('/document_sections/{section}/subdivisions/{subdivisionId}/zipdownload', [DocumentController::class, 'downloadSubdivisionDocumentsZip'])->name('documents.zipSubdivision');
     //Route::delete('/document_sections/{section}/subdivisions/{subdivisionId}/zipdelete', [DocumentController::class, 'deleteZip'])->name('documents.deleteZipSubdivision');
 
-    Route::post('/document_rrhh_status/store/{dr_id?}', [DocumentSpreedSheetController::class, 'store'])
-        ->middleware('permission:' . HumanResourcesPermissions::DOCUMENT_RRHH_STATUS_STORE->value)
-        ->name('document.rrhh.status.store');
+
+
+
+
     Route::delete('/document_rrhh_status/destroy/{dr_id}', [DocumentSpreedSheetController::class, 'destroy'])->name('document.rrhh.status.destroy');
     Route::post('/document_rrhh_status/insurance_exp_date', [DocumentSpreedSheetController::class, 'insurance_exp_date'])->name('document.rrhh.status.in_expdate');
 });
@@ -271,3 +272,17 @@ Route::delete('/management_employees/payroll_detail_expense_destroy/{payroll_det
 Route::post('/management_employees/payroll_detail_expense_masive_opnuda_update', [SpreadsheetsController::class, 'masive_update_payroll_detail_expense'])->name('payroll.detail.expenses.massive.update.opnuda');
 Route::get('/management_employees/payroll_detail_export/{payroll_id}', [SpreadsheetsController::class, 'export_excel_payroll_detail'])->name('payroll.detail.export');
 Route::get('/management_employees/payroll_detail_export_details/{payroll_id}', [SpreadsheetsController::class, 'export_detail_excel_payroll_detail'])->name('payroll.detail.export.details');
+
+
+
+
+
+
+
+
+
+
+// replace document.rrhh.status.store
+Route::post('/document_rrhh_status/create/', [DocumentSpreedSheetController::class, 'create'])
+    ->name('document.rrhh.status.create');
+
