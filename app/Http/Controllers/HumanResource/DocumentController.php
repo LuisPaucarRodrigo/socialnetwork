@@ -281,7 +281,7 @@ class DocumentController extends Controller
         if($docReg?->state === 'Completado') $docReg->delete();
         $this->file_delete($item);
         $item->delete(); 
-        return to_route('documents.index');
+        return redirect()->back();
     }
 
     public function downloadDocument(Document $document)

@@ -709,7 +709,7 @@ import {
     PencilIcon,
 } from "@heroicons/vue/24/outline";
 import { Toaster } from "vue-sonner";
-import { notifyError, notifyWarning } from "@/Components/Notification";
+import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { formattedDate } from "@/utils/utils";
 
 const props = defineProps({
@@ -1109,8 +1109,8 @@ const deleteDocument = () => {
         router.delete(route("documents.destroy", { id: docId }), {
             onSuccess: () => {
                 closeModalDoc();
+                notify('Documento eliminado')
                 setTimeout(() => {
-                    showEditModal.value = false;
                     router.visit(route("documents.index"));
                 }, 2000);
             },
