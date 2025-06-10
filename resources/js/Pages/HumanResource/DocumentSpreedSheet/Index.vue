@@ -333,6 +333,12 @@
           <h2 class="text-base font-medium leading-7 text-gray-900">
             Colaborador: {{ docForm.emp_name }}
           </h2>
+          <div v-if="docForm.id">
+              <h4 class="text-sm font-light text-black-900 bg-amber-500/10 rounded-lg p-3 ">
+                Si elige el estado <span class="text-red-500">"No Corresponde"</span> o la opción <span class="text-red-500">"Eliminar"</span> el archivo relacionado (de existir) se eliminará.
+             </h4>
+          </div>
+          
           <form @submit.prevent="submit">
             <div class="pb-6 pt-3 border-t border-b border-gray-900/10 ">
               <div class=" grid sm:grid-cols-2 gap-6">
@@ -356,6 +362,7 @@
                       >
                       <div class="mt-2">
                           <InputFile
+                          required
                               type="file"
                               v-model="docForm.document"
                               id="documentFile"
@@ -397,7 +404,7 @@
                       <span class="text-red-600 text-normal">*</span>
                   </div>
                     <div  v-if="docForm.has_exp_date" class="mt-2 ">
-                      <TextInput type="date" v-model="docForm.exp_date"
+                      <TextInput required type="date" v-model="docForm.exp_date"
                          autocomplete="off" />
                       <InputError :message="docForm.errors.exp_date" />
                     </div>
@@ -505,8 +512,25 @@ function openDocModal(item) {
   docForm.reset()
 }
 
+const initStateDocForm = {
+  emp_name: "",
+  doc_name: "",
+  id: "",
+  subdivision_id: "",
+  document_id: "",
+  e_employee_id: "",
+  employee_id: "",
+  exp_date: "",
+  state: "",
+  observations: "",
+  has_exp_date: "",
+  document: null
+}
+
+
+
 function closeDocModal() {
-  docForm.defaults({})
+  docForm.defaults({...initStateDocForm})
   docForm.reset()
   isLoading.value = false
   errMsg.value = false
@@ -516,7 +540,9 @@ function closeDocModal() {
 const isLoading = ref(false)
 async function submit() {
   isLoading.value = true
-  let url = route('document.rrhh.status.store', { dr_id: docForm?.id })
+  let url = docForm?.id
+    ? route('document.rrhh.status.update', { dr_id: docForm.id })
+    : route('document.rrhh.status.create')
   try {
     const formToSend = toFormData(docForm.data());
     const res = await axios.post(url, formToSend)
@@ -536,7 +562,6 @@ async function submit() {
         ...res.data,
       }
     }
-
     closeDocModal()
     setTimeout(() => {
       notify('Registro Documentario Guardado')

@@ -301,16 +301,22 @@ class DocumentSpreedSheetController extends Controller
         $docItem = $docReg->document;
         $state = $data['state'];
         if ($state === 'Completado') { 
-            $document = $request->file('document');
-            $data['title'] = $this->file_move($data, $document);
             if($docItem) {
                 $this->file_delete($docItem);
+                $document = $request->file('document');
+                $data['title'] = $this->file_move($data, $document);
                 $docItem->update($data);
             } else {
+                $document = $request->file('document');
+                $data['title'] = $this->file_move($data, $document);
                 $docItem = Document::create($data);
                 $data['document_id'] = $docItem->id;
             }
         } 
+        if ($state === 'No Corresponde' && $docItem) {
+            $this->file_delete($docItem);
+            $docItem->delete();
+        }
         $docReg->update($data);
         return response()->json([$docReg->subdivision_id => $docReg]);
     }
@@ -322,13 +328,14 @@ class DocumentSpreedSheetController extends Controller
 
     public function destroy($dr_id = null)
     {
-        $item = DocumentRegister::find($dr_id);
-        if ($item->document_id) {
-            return response()->json(['msg' => 'El registro del documento ya esta asociado a un archivo en el aplicativo'], 200);
-        } else {
-            $item->delete();
-            return response()->json(['msg' => 'Eliminado'], 200);
+        $item = DocumentRegister::with('document')->find($dr_id);
+        $docItem = $item->document;
+        if ($docItem) {
+            $this->file_delete($docItem);
+            $docItem->delete();
         }
+        $item->delete();
+        return response()->json(['msg' => 'Eliminado'], 200);
     }
 
 

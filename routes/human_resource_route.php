@@ -285,4 +285,6 @@ Route::get('/management_employees/payroll_detail_export_details/{payroll_id}', [
 // replace document.rrhh.status.store
 Route::post('/document_rrhh_status/create/', [DocumentSpreedSheetController::class, 'create'])
     ->name('document.rrhh.status.create');
+Route::post('/document_rrhh_status/update/{dr_id}', [DocumentSpreedSheetController::class, 'update'])
+    ->name('document.rrhh.status.update');
 
