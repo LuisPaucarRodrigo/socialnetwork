@@ -1,11 +1,14 @@
 <template>
     <div v-show="message">
-        <p class="text-sm text-red-600">
+        <p :class="`text-red-600 ${textSize}`">
             {{ message }}
         </p>
     </div>
 </template>
 
 <script setup>
-defineProps(['message']);
+defineProps({
+    message: String,
+    textSize: {type:String, default: "text-sm"}
+});
 </script>

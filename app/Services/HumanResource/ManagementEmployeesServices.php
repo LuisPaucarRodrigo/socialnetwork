@@ -14,6 +14,7 @@ use App\Models\Health;
 use App\Models\PayrollDetail;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 
@@ -77,11 +78,24 @@ class ManagementEmployeesServices
         $employee = Employee::find($id);
         $employee->delete();
     }
-
-    public function firedEmployees($validateData, $id)
+    //Contract
+    public function firedEmployees($validateData, $request, $id)
     {
         $contract = Contract::where('employee_id', $id)->first();
-        $contract->update($validateData);
+        DB::beginTransaction();
+        try {
+            if ($request->hasFile('discharge_document')) {
+                $validateData['discharge_document'] = time() . '._' . $request->file->getClientOriginalName();
+            }
+            $contract->update($validateData);
+            DB::commit();
+            if ($request->hasFile('discharge_document')) {
+                $url = 'documents/discharge_document/';
+                $request->file->move(public_path($url), $validateData['discharge_document']);
+            }
+        } catch (\Throwable $th) {
+            DB::rollBack();
+        }
     }
 
     public function updatePayrollDetail($validateData, $id)

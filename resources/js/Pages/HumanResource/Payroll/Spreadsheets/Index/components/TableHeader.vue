@@ -10,6 +10,10 @@
                             d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" fill="#228b22" />
                     </svg>
                 </button>
+                <button @click="openPaySpreadsheet()"
+                    class="rounded-md px-1 py-2 text-blue-600 text-center text-sm hover:bg-blue-200">
+                       <DolarIcon class="h-6 w-6"/>
+                </button>
 
                 <a :href="route('spreadsheets.payroll.export', { payroll_id: payrolls.id })"
                     class="rounded-md px-1 py-2 text-center text-sm text-white hover:bg-green-400">
@@ -24,6 +28,40 @@
                     class="bg-indigo-600 hover:bg-indigo-500 rounded-md px-4 py-2 text-center text-sm text-white">
                     PS 4ta categoría
                 </Link>
+                <Link :href="route('payroll.detail.expense.index', {payroll_id: payrolls.id})"
+                    class="bg-gray-600 hover:bg-gray-500 rounded-md px-4 py-2 text-center text-sm text-white">
+                    Pagos
+                </Link>
+
+
+                <div>
+                        <dropdown align="left">
+                            <template #trigger>
+                                <button 
+                                    @click="dropdownOpen = !dropdownOpen"
+                                    class="relative block overflow-hidden rounded-md text-white bg-green-600 hover:bg-green-500 text-center text-sm p-2">
+                                    Exportar
+                                </button>
+                            </template>
+
+                            <template #content class="origin-left">
+                                <div>
+                                    <!-- Alineación a la derecha -->
+                                    <div class="">
+                                        <button @click="exportGeneralExcel()"
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Excel general
+                                        </button>
+                                        <button @click="openExportSpreadsheet()"
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                            Excel detallado
+                                        </button>
+                                     
+                                    </div>
+                                </div>
+                            </template>
+                        </dropdown>
+                    </div>
             </div>
             <div class="sm:hidden">
                 <dropdown align='left'>
@@ -53,7 +91,14 @@
                 </dropdown>
             </div>
             <div>
-                <TextInput type="text" placeholder="Buscar..." @input="search($event.target.value)" />
+                <!-- <TextInput type="text" placeholder="Buscar..." @input="search($event.target.value)" /> -->
+                <TextInput data-tooltip-target="search_fields" type="text" placeholder="Buscar..." v-model="filterForm.search"
+                        @keyup.enter="searchSpreadSheetsTable()" />
+                    <div id="search_fields" role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                            Nombre
+                        <div class="tooltip-arrow" data-popper-arrow></div>
+                    </div>
             </div>
         </div>
     </div>
@@ -63,23 +108,27 @@ import Dropdown from '@/Components/Dropdown.vue';
 import { notifyError } from '@/Components/Notification';
 import TextInput from '@/Components/TextInput.vue';
 import { Link } from '@inertiajs/vue3';
+import { DolarIcon } from '@/Components/icons';
 
-const { payrolls, openPayrollApprove } = defineProps({
+const { payrolls, filterForm, openPayrollApprove, openPaySpreadsheet, searchSpreadSheetsTable, openExportSpreadsheet } = defineProps({
     payrolls: Object,
-    openPayrollApprove: Function
+    filterForm: Object,
+    openPayrollApprove: Function,
+    openPaySpreadsheet: Function,
+    searchSpreadSheetsTable: Function,
+    openExportSpreadsheet: Function,
 })
 
 const spreadsheets = defineModel('spreadsheets')
 const totals = defineModel('totals')
 
-async function search(employee) {
-    let url = route('spreadsheets.index', { payroll_id: payrolls.id })
-    try {
-        let response = await axios.post(url, { searchQuery: employee })
-        spreadsheets.value = response.data.spreadsheet
-        totals.value = response.data.total
-    } catch (error) {
-        notifyError(error)
-    }
+function exportGeneralExcel() {
+    const uniqueParam = `timestamp=${new Date().getTime()}`;
+    const url =
+        route('payroll.detail.export', {payroll_id: payrolls.id}) +
+        "?" +
+        uniqueParam;
+    window.location.href = url;
 }
+
 </script>

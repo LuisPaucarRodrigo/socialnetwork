@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\HumanResource;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class FiredContractEmployees extends FormRequest
+class UpdateMasiveOpNuDateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,10 +22,10 @@ class FiredContractEmployees extends FormRequest
     public function rules(): array
     {
         return [
-            'fired_date' => 'required|date',
-            'days_taken' => 'required|numeric',
-            'discharge_document' => 'required',
-            'state' => 'required|string'
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer',
+            'operation_date' => 'required|date',
+            'operation_number' => 'required|digits:6',
         ];
     }
 }

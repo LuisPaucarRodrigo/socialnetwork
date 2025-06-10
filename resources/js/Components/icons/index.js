@@ -30,3 +30,6 @@ export { default as ToolIcon } from './ToolIcon.vue';
 export { default as SecurityIcon } from './SecurityIcon.vue';
 export { default as VehicleIcon } from './VehicleIcon.vue';
 
+export { default as DolarIcon } from './DolarIcon.vue';
+export { default as EyeOutlineIcon } from './EyeOutlineIcon.vue';
+export { default as EyeSlashSolidIcon } from './EyeSlashSolidIcon.vue';

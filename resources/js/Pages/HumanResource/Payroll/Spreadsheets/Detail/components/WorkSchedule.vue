@@ -14,7 +14,15 @@
                         <dd
                             class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
                         >
-                            {{ payroll_detail.mod_days }}
+                            {{  payroll_detail.mod_days -
+                                form.subsidized_days.reduce(
+                                    (a, b) => a + b.quantity,
+                                    0
+                                ) -
+                                form.non_subsidized_days.reduce(
+                                    (a, b) => a + b.quantity,
+                                    0
+                                ) }}
                         </dd>
                     </dl>
                     <dl
@@ -78,15 +86,7 @@
                             class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"
                         >
                             {{
-                                payroll_detail.mod_days +
-                                form.subsidized_days.reduce(
-                                    (a, b) => a + b.quantity,
-                                    0
-                                ) -
-                                form.non_subsidized_days.reduce(
-                                    (a, b) => a + b.quantity,
-                                    0
-                                )
+                                payroll_detail.mod_days 
                             }}
                         </dd>
                     </dl>

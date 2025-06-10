@@ -1,12 +1,12 @@
 <template>
-    <div class="space-y-4">
+    <div class="flex flex-col gap-4">
         <h1>Ingresos:</h1>
   
         <h4 class="text-sm font-light text-green-900 bg-green-500/10 rounded-lg p-3 ">
             Para guardar el registro presionar la tecla enter, el punto púrpura indica que no esta guardado aún.
         </h4>
 
-        <form @submit.prevent="submit" class="block">
+        <div class="mb-10">
             <TableStructure>
                 <template #thead>
                     <TableTitle>Codigo</TableTitle>
@@ -34,14 +34,16 @@
                                         (e) => handleSubmit(e.target, item.id)
                                     "
                                 />
-                                <div class="flex items-center">
-                                    <span
+                                <div class="relative flex items-center">
+                                    <div class="absolute flex items-center">
+                                        <span
                                         v-if="
                                             !savedArray[item.id].accrued_amount
                                         "
-                                        class="absolute inline-flex rounded-full h-2 w-2 bg-fuchsia-500 cursor-pointer"
-                                    >
-                                    </span>
+                                            class="rounded-full h-2 w-2 bg-fuchsia-500 cursor-pointer"
+                                        >
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </TableRow>
@@ -61,19 +63,34 @@
                                         (e) => handleSubmit(e.target, item.id)
                                     "
                                 />
-                                <div class="flex items-center">
-                                    <span
-                                        v-if="!savedArray[item.id].paid_amount"
-                                        class="absolute inline-flex rounded-full h-2 w-2 bg-fuchsia-500 cursor-pointer"
-                                    >
-                                    </span>
+                                <div class="relative flex items-center">
+                                    <div class="absolute flex items-center">
+                                        <span
+                                            v-if="!savedArray[item.id].paid_amount"
+                                            class="rounded-full h-2 w-2 bg-fuchsia-500 cursor-pointer"
+                                        >
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </TableRow>
                     </tr>
+                    <tr>
+                        <TableRow :colspan="2"></TableRow>
+                        <TableRow>
+                            <p class="my-3 text-indigo-800 font-semibold ">
+                                S/. {{ Object.values(monetaryIncomes).reduce((a,b)=>a+Number(b.accrued_amount), 0).toFixed(2) }}
+                            </p>
+                        </TableRow>
+                        <TableRow>
+                            <p class="my-3 text-indigo-800 font-semibold ">
+                                S/. {{ Object.values(monetaryIncomes).reduce((a,b)=>a+Number(b.paid_amount), 0).toFixed(2) }}
+                            </p>
+                        </TableRow>
+                    </tr>
                 </template>
             </TableStructure>
-        </form>
+        </div>
     </div>
 </template>
 <script setup>

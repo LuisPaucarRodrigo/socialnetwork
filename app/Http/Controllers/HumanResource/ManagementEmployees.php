@@ -123,8 +123,9 @@ class ManagementEmployees extends Controller
     public function fired(FiredContractEmployees $request, $id)
     {
         $validateData = $request->validated();
-        $this->employeesServices->firedEmployees($validateData, $id);
+        $this->employeesServices->firedEmployees($validateData, $request, $id);
         $this->employeesServices->updatePayrollDetail($validateData, $id);
+        return response()->json([], 200);
     }
 
     public function details($id)

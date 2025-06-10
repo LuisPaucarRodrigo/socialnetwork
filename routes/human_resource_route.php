@@ -34,6 +34,20 @@ Route::get('/management_employees/payroll_external_detail_index/{payroll_id}', [
 Route::post('/management_employees/payroll_external_detail_store', [SpreadsheetsController::class, 'store_payroll_external_detail'])->name('payroll.store.payroll.external.detail');
 Route::delete('/management_employees/payroll_external_detail_delete/{payroll_detail_id}', [SpreadsheetsController::class, 'destroy_payroll_external_detail'])->name('payroll.store.payroll.external.destroy');
 
+
+
+Route::post('/management_employees/payroll_detail_expenses_multiple_store', [SpreadsheetsController::class, 'store_pay_spreedsheets'])->name('payroll.detail.expenses.multiple.store');
+Route::get('/management_employees/payroll_detail_expense_constants_index', [SpreadsheetsController::class, 'show_payroll_detail_expense_constants'])->name('payroll.detail.expense.constants.show');
+
+
+Route::get('/management_employees/payroll_detail_expense_index/{payroll_id}', [SpreadsheetsController::class, 'index_payroll_detail_expense'])->name('payroll.detail.expense.index');
+Route::post('/management_employees/payroll_detail_expense_search/{payroll_id}', [SpreadsheetsController::class, 'search_payroll_detail_expenses'])->name('payroll.detail.expense.search');
+Route::post('/management_employees/payroll_detail_expense_store', [SpreadsheetsController::class, 'store_payroll_detail_expense'])->name('payroll.detail.expenses.store');
+Route::delete('/management_employees/payroll_detail_expense_destroy/{payroll_detail_expense_id}', [SpreadsheetsController::class, 'destroy_payroll_detail_expense'])->name('payroll.detail.expense.destroy');
+Route::post('/management_employees/payroll_detail_expense_masive_opnuda_update', [SpreadsheetsController::class, 'masive_update_payroll_detail_expense'])->name('payroll.detail.expenses.massive.update.opnuda');
+Route::get('/management_employees/payroll_detail_export/{payroll_id}', [SpreadsheetsController::class, 'export_excel_payroll_detail'])->name('payroll.detail.export');
+Route::get('/management_employees/payroll_detail_export_details/{payroll_id}', [SpreadsheetsController::class, 'export_detail_excel_payroll_detail'])->name('payroll.detail.export.details');
+
 //exteernal empployees
 Route::delete('/management_employees/external/delete/{external_id}', [ManagementEmployees::class, 'external_delete'])->name('employees.external.delete');
 
@@ -41,3 +55,5 @@ Route::delete('/management_employees/external/delete/{external_id}', [Management
 Route::post('/documents/filter_document/post', [DocumentController::class, 'documentReport'])->name('documents.filter_document');
 Route::post('/document_sections/subdivisions/drag_and_drop', [DocumentController::class, 'dragandrop'])->name('documents.drag_and_drop');
 Route::post('/documents/filter_document/massive_zip/post', [DocumentController::class, 'massiveZip'])->name('documents.filter_document.massive_zip');
+
+Route::get('/management_employees/spreadsheets_details/{payroll_details_id}/employee/{employee_id}', [SpreadsheetsController::class, 'index_payroll_detail'])->name('spreadsheets.details.index');
