@@ -352,6 +352,11 @@
                                 <th
                                     class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                 >
+                                    Fecha de Vencimiento
+                                </th>
+                                <th
+                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
                                     Acciones
                                 </th>
                             </tr>
@@ -381,6 +386,11 @@
                                     class="px-6 py-4 max-w-[150px] text-sm text-gray-700"
                                 >
                                     {{ document.emp_name }}
+                                </td>
+                                <td
+                                    class="px-6 py-4 max-w-[150px] text-sm text-gray-700"
+                                >
+                                    {{ formattedDate(document.exp_date) }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center space-x-3">
@@ -700,6 +710,7 @@ import {
 } from "@heroicons/vue/24/outline";
 import { Toaster } from "vue-sonner";
 import { notifyError, notifyWarning } from "@/Components/Notification";
+import { formattedDate } from "@/utils/utils";
 
 const props = defineProps({
     sections: Object,
@@ -777,7 +788,7 @@ const openEditDocumentModal = (document) => {
     form.section_id = editingDocument.value.subdivision.section_id;
     form.subdivision_id = editingDocument.value.subdivision_id;
     form.employee_id = editingDocument.value.employee_id;
-    form.e_employee_id = document.e_employee_id;
+    form.e_employee_id = editingDocument.value.e_employee_id;
     form.has_exp_date = editingDocument.value.exp_date ? 1 : 0;
     form.exp_date = editingDocument.value.exp_date;
     form.employeeType = editingDocument.value.employee_id ? 1 : 0;
@@ -827,6 +838,9 @@ const submitEdit = () => {
         },
     });
 };
+watch(()=>form.has_exp_date, ()=>{
+  if(!form.has_exp_date) form.exp_date = ''
+})
 
 //new_test_filter
 const filterForm = reactive({

@@ -283,7 +283,7 @@ class DocumentSpreedSheetController extends Controller
         $state = $data['state'];
         if ($state === 'Completado') {
             $document = $request->file('document');
-            $data['title'] = $this->file_move($data, $document);
+            $data['title'] = $this->file_store($data, $document);
             $docItem = Document::create($data);
             $data['document_id'] = $docItem->id;
             $docReg = DocumentRegister::create($data);
@@ -304,11 +304,11 @@ class DocumentSpreedSheetController extends Controller
             if($docItem) {
                 $this->file_delete($docItem);
                 $document = $request->file('document');
-                $data['title'] = $this->file_move($data, $document);
+                $data['title'] = $this->file_store($data, $document);
                 $docItem->update($data);
             } else {
                 $document = $request->file('document');
-                $data['title'] = $this->file_move($data, $document);
+                $data['title'] = $this->file_store($data, $document);
                 $docItem = Document::create($data);
                 $data['document_id'] = $docItem->id;
             }
@@ -459,7 +459,7 @@ class DocumentSpreedSheetController extends Controller
 
     // }
 
-    private function file_move($data, $document) {
+    private function file_store($data, $document) {
         $name = $this->getFileName($data, $document);
         $document->move(public_path('documents/documents/'), $name);
         return $name;

@@ -29,10 +29,12 @@ class DocumentCreateRequest extends FormRequest
     {
 
         $rules = [
-            'document' => 'required',
+            'document' => 'required|file|mimes:png,pdf,jpeg,jpg',
             'subdivision_id' => 'required|numeric',
             'employeeType' => 'required',
             'has_exp_date' => ['required'],
+            'employee_id' => 'nullable',
+            'e_employee_id' => 'nullable',
         ];
         
         
@@ -60,30 +62,21 @@ class DocumentCreateRequest extends FormRequest
             }];
         }
 
-
-        $docReg = $this->input('employee_id') ? DocumentRegister::where('subdivision_id', $this->input('subdivision_id'))
-            ->where('employee_id', $this->input('employee_id'))->first() : 
-             ($this->input('e_employee_id') ? DocumentRegister::where('subdivision_id', $this->input('subdivision_id'))
-            ->where('e_employee_id', $this->input('e_employee_id'))->first() : null);
-        
-        if ($docReg?->exp_date){
-            array_push(
-                $rules['has_exp_date'],
-                function($attribute, $value, $fail) use($docReg) {
-                    $expDateInput = Carbon::parse($this->input('exp_date'));
-                    $docRegExpDate = Carbon::parse($docReg?->exp_date);
-                    if ($expDateInput->lessThan($docRegExpDate)) {
-                        $fail('La fecha de vencimiento debe ser igual o mayor a ' . $docRegExpDate->format('d/m/Y'));
-                    }
-                }
-            );
-        }
-
-
-
-        if ($this->input('has_exp_date')){
-            $rules['exp_date'] = 'required';
-        }
+        $rules['exp_date'] = $this->input('has_exp_date') === '1' ? 'required' : 'nullable';
         return $rules;
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $employeeId = $this->input('employee_id');
+            $eEmployeeId = $this->input('e_employee_id');
+            if (empty($employeeId) && empty($eEmployeeId)) {
+                $validator->errors()->add('employee_id', 'Debes completar uno de los dos campos: employee_id o e_employee_id.');
+            }
+            if (!empty($employeeId) && !empty($eEmployeeId)) {
+                $validator->errors()->add('employee_id', 'Solo uno de los campos employee_id o e_employee_id debe estar completo, no ambos.');
+            }
+        });
     }
 }
