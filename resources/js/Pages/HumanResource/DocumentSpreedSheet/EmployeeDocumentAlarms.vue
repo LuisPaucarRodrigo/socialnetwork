@@ -38,7 +38,7 @@
                                 <span
                                     class="text-sm font-semibold text-gray-800 break-words"
                                 >
-                                    {{ section.name }} {{ section.id }}
+                                    {{ section.name }}
                                 </span>
                             </label>
                         </div>
@@ -155,12 +155,10 @@ import { Head } from "@inertiajs/vue3";
 import { formattedDate } from "@/utils/utils";
 import { principalData, personalData, getProp } from "./constants";
 
-console.log(sections);
 
 const { employee, sections } = defineProps({
     employee: Object,
     sections: Array,
 });
 
-console.log(employee);
 </script>
