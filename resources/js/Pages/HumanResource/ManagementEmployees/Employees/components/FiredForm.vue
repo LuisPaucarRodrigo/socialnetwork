@@ -53,7 +53,7 @@ import { useForm } from '@inertiajs/vue3';
 import { notify } from '@/Components/Notification';
 import { useAxiosErrorHandler } from '@/utils/axiosError';
 import InputFile from '@/Components/InputFile.vue';
-import { toFormData } from '@/utils/utils';
+import { toFormData } from 'axios';
 
 const { employees } = defineProps({
     employees: Object
@@ -86,13 +86,14 @@ const closeFiredModal = () => {
     toogleModal()
     firedForm.defaults({ ...initialFiredForm })
     firedForm.reset()
+    firedForm.clearErrors()
 }
 
 async function submit() {
     let url = route('management.employees.fired', { id: employeeId.value })
     try {
         let formData = toFormData(firedForm)
-        await axios.put(url, formData)
+        await axios.post(url, formData)
         updateFrontEnd(employeeId.value)
     } catch (error) {
         console.error(error)

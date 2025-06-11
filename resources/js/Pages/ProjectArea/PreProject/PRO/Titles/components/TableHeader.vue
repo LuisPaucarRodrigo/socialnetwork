@@ -1,9 +1,9 @@
 <template>
     <div class="mt-6 flex items-center justify-start gap-x-3">
-        <PrimaryButton @click="openModal" type="button">
+        <PrimaryButton v-permission="'add_pro_title'" @click="openModal" type="button">
             + Agregar
         </PrimaryButton>
-        <Link :href="route('preprojects.codes')"
+        <Link v-permission="'see_pro_codes_table'" :href="route('preprojects.codes')"
             class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500">
         Codes
         </Link>

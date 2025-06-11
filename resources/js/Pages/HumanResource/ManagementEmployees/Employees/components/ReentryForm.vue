@@ -45,8 +45,12 @@ const { employees } = defineProps({
 const showModalFired = ref(false);
 const employeeId = ref(null)
 
-const reentryForm = useForm({
+const initialReentryForm = {
     reentry_date: '',
+}
+
+const reentryForm = useForm({
+    ...initialReentryForm
 })
 
 function toogleModal() {
@@ -60,6 +64,9 @@ const openReentryModal = ($id) => {
 
 const closeReentryModal = () => {
     toogleModal()
+    reentryForm.defaults({ ...initialReentryForm })
+    reentryForm.reset()
+    reentryForm.clearErrors()
 };
 
 async function submit() {

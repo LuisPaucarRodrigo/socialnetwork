@@ -30,15 +30,14 @@ class DocumentController extends Controller
 
     public function storeSection(Request $request)
     {
-        $request->validate([
+        $validateData = $request->validate([
             'name' => 'required|string',
             'is_visible' => 'required|boolean',
         ]);
 
-        $section = DocumentSection::create([
-            'name' => $request->name,
-        ]);
-        return response()->json(data: $section);
+        $section = DocumentSection::create($validateData);
+        $section->load('subdivisions');
+        return response()->json($section, 200);
     }
 
     public function updateSection(DocumentSection $section, Request $request)
@@ -201,8 +200,8 @@ class DocumentController extends Controller
                 $employee_name = $request->employee_id ? Employee::where('id', $data['employee_id'])
                     ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
                     ->first() : ExternalEmployee::where('id', $data['e_employee_id'])
-                        ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
-                        ->first();
+                    ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
+                    ->first();
                 $data['title'] = Subdivision::find($data['subdivision_id'])->name . ' - ' . $employee_name->full_name . '.' . $document->getClientOriginalExtension();
                 $document->move(public_path('documents/documents/'), $data['title']);
             }
@@ -244,7 +243,6 @@ class DocumentController extends Controller
             return redirect()->back();
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Ocurrió un error: ' . $e->getMessage());
-
         }
     }
 
@@ -263,8 +261,8 @@ class DocumentController extends Controller
             $employee_name = $request->employee_id ? Employee::where('id', $data['employee_id'])
                 ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
                 ->first() : ExternalEmployee::where('id', $data['e_employee_id'])
-                    ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
-                    ->first();
+                ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
+                ->first();
             $data['title'] = Subdivision::find($data['subdivision_id'])->name . ' - ' . $employee_name->full_name . '.' . $document->getClientOriginalExtension();
             $document->move(public_path('documents/documents/'), $data['title']);
         }
@@ -508,7 +506,6 @@ class DocumentController extends Controller
                 ob_end_clean();
                 // Descargar el archivo ZIP y eliminarlo después del envío
                 return response()->download($zipFilePath)->deleteFileAfterSend(true);
-
             } else {
                 // Si no se puede abrir el archivo ZIP para escritura
                 Log::error('No se pudo abrir el archivo ZIP para escritura.');
@@ -594,7 +591,6 @@ class DocumentController extends Controller
                 $zip->close();
                 ob_end_clean();
                 return response()->download($zipFilePath)->deleteFileAfterSend(true);
-
             } else {
                 // Si no se puede abrir el archivo ZIP para escritura
                 Log::error('No se pudo abrir el archivo ZIP para escritura.');
@@ -631,4 +627,3 @@ class DocumentController extends Controller
     //     }
     // }
 }
-

@@ -6,7 +6,7 @@
             Roles
         </template>
         <div class="min-w-full overflow-hidden">
-            <PrimaryButton @click="add_rol" type="button">
+            <PrimaryButton v-permission="'add_role'" @click="add_rol" type="button">
                 + Agregar
             </PrimaryButton>
 

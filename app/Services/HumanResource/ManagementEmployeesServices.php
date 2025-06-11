@@ -85,16 +85,19 @@ class ManagementEmployeesServices
         DB::beginTransaction();
         try {
             if ($request->hasFile('discharge_document')) {
-                $validateData['discharge_document'] = time() . '._' . $request->file->getClientOriginalName();
+                $document = $request->file('discharge_document');
+                $validateData['discharge_document'] = time() . '._' . $document->getClientOriginalName();
             }
             $contract->update($validateData);
             DB::commit();
             if ($request->hasFile('discharge_document')) {
                 $url = 'documents/discharge_document/';
-                $request->file->move(public_path($url), $validateData['discharge_document']);
+                $document->move(public_path($url), $validateData['discharge_document']);
             }
-        } catch (\Throwable $th) {
+            return response()->json([], 200);
+        } catch (\Exception $e) {
             DB::rollBack();
+            return response()->json($e->getMessage(), 500);
         }
     }
 

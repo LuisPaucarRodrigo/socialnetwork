@@ -8,8 +8,8 @@
         <Toaster richColors />
         <div class="min-w-full">
             <TableHeader v-model:employees="employees" :openExternal="openExternal" :formSearch="formSearch" />
-            <ExternalTable :employees="employees" :userPermissions="userPermissions" :formSearch="formSearch"
-                :cost_line="cost_line" :openExternal="openExternal" :confirmUserDeletion="confirmUserDeletion" />
+            <ExternalTable :employees="employees" :formSearch="formSearch" :cost_line="cost_line"
+                :openExternal="openExternal" :confirmUserDeletion="confirmUserDeletion" />
         </div>
         <ExternalForm ref="externalForm" :employees="employees" :costLines="costLines" />
         <ConfirmDeleteModal :confirmingDeletion="confirmingUserDeletion" itemType="empleado" deleteText="Eliminar"
@@ -35,7 +35,6 @@ const employeeToDelete = ref(null);
 
 const props = defineProps({
     employee: Object,
-    userPermissions: Array,
     costLines: Object,
 })
 

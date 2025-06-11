@@ -34,23 +34,22 @@ class ModuleSeeder extends Seeder
                     'hrhrstate_submodule' => 'Estatus RRHH',
                 ]
             ],
-            [
-                'name' => 'INVENTORY_MODULE',
-                'display_name' => 'Inventario',
-                'submodules' => [
-                    'iproduct_submodule' => 'Productos',
-                    'iwarehouse_submodule' => 'Almacenes',
-                ]
-            ],
+            // [
+            //     'name' => 'INVENTORY_MODULE',
+            //     'display_name' => 'Inventario',
+            //     'submodules' => [
+            //         'iproduct_submodule' => 'Productos',
+            //         'iwarehouse_submodule' => 'Almacenes',
+            //     ]
+            // ],
             [
                 'name' => 'PURCHASING_MODULE',
                 'display_name' => 'Área de Compras',
                 'submodules' => [
                     'pprovider_submodule' => 'Proveedores',
-                    'pprequest_submodule' => 'Solicitudes',
-                    'pporder_submodule' => 'Órdenes',
-                    'ppcpurchase_submodule' => 'Compras Completadas',
-
+                    // 'pprequest_submodule' => 'Solicitudes',
+                    // 'pporder_submodule' => 'Órdenes',
+                    // 'ppcpurchase_submodule' => 'Compras Completadas',
                 ]
             ],
             [
@@ -63,8 +62,8 @@ class ModuleSeeder extends Seeder
                     'pprepext_submodule' => 'Anteproyectos Pext',
                     'ppropint_submodule' => 'Proyectos Pint',
                     'ppropext_submodule' => 'Proyectos Pext',
-                    'pchecklist_submodule' => 'G. Administrativos',
-                    'padmexpen_submodule' => 'Checklist',
+                    'padmexpen_submodule' => 'G. Administrativos',
+                    'pchecklist_submodule' => 'Checklist',
                     'pbacklog_submodule' => 'Backlog',
                 ]
             ],
@@ -73,9 +72,9 @@ class ModuleSeeder extends Seeder
                 'display_name' => 'Finanzas',
                 'submodules' => [
                     'fbudget_submodule' => 'Presupuestos',
-                    'fpapproval_submodule' => 'Aprobación de Compras',
-                    'fdeposists_submodule' => 'Depósitos',
-                    'fpopayment_submodule' => 'Pagos OC',
+                    // 'fpapproval_submodule' => 'Aprobación de Compras',
+                    // 'fdeposists_submodule' => 'Depósitos',
+                    // 'fpopayment_submodule' => 'Pagos OC',
                     'faccstatement_submodule' => 'Estado de Cuenta',
                 ]
             ],

@@ -11,8 +11,9 @@
                         class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                         + Agregar Documento
                     </PrimaryButton>
-                    <PrimaryButton v-if="hasPermission('HumanResourceManager')" @click="management_section"
-                        type="button"
+                    <PrimaryButton
+                        v-permission-or="['manage_sections_subdivisions_hr', 'delete_new_sections_hr', 'delete_new_subdivisions_hr']"
+                        @click="management_section" type="button"
                         class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                         Gestionar Secciones
                     </PrimaryButton>
@@ -22,11 +23,7 @@
                             <template #trigger>
                                 <button @click="dropdownOpen = !dropdownOpen"
                                     class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100">
-                                    <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4 6H20M4 12H20M4 18H20" stroke="#000000" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
+                                    <MenuIcon />
                                 </button>
                             </template>
 
@@ -296,7 +293,7 @@ import { ref, computed, watch } from "vue";
 import { Head, useForm, router } from "@inertiajs/vue3";
 import Dropdown from "@/Components/Dropdown.vue";
 import { notifyError } from "@/Components/Notification";
-import { EditIcon, DeleteIcon, ShowIcon, DownloadIcon } from "@/Components/Icons/Index";
+import { EditIcon, DeleteIcon, ShowIcon, DownloadIcon, MenuIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
     sections: Object,

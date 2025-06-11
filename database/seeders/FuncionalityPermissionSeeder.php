@@ -90,37 +90,37 @@ class FuncionalityPermissionSeeder extends Seeder
                 'display_name' => 'Ver tabla empleados activos (incluye buscar)',
                 'key_name' => 'see_active_employees_table',
                 'module' => 'hremployees_submodule',
-                'permissions' => ['management.employees', 'management.employees.search']
+                'permissions' => ['management.employees', 'management.employees.search',]
             ],
             [
                 'display_name' => 'Ver tabla de empleados inactivos (incluye buscar)',
                 'key_name' => 'see_inactive_employees_table',
                 'module' => 'hremployees_submodule',
-                'permissions' => ['management.employees', 'management.employees.search']
+                'permissions' => ['management.employees', 'management.employees.search','management.employees.show.preview.doc_alta']
             ],
             [
                 'display_name' => 'Agregar empleado',
                 'key_name' => 'add_employee',
                 'module' => 'hremployees_submodule',
-                'permissions' => ['management.employees', 'management.employees.create', 'management.employees.store']
+                'permissions' => ['management.employees', 'management.employees.create', 'management.employees.store', 'management.employees.search']
             ],
             [
                 'display_name' => 'Ver empleado',
                 'key_name' => 'see_employee',
                 'module' => 'hremployees_submodule',
-                'permissions' => ['management.employees', 'management.employees.show', 'management.employees.information.details.download']
+                'permissions' => ['management.employees', 'management.employees.show', 'management.employees.information.details.download', 'management.employees.search']
             ],
             [
                 'display_name' => 'Editar empleado',
                 'key_name' => 'edit_employee',
                 'module' => 'hremployees_submodule',
-                'permissions' => ['management.employees', 'management.employees.edit', 'management.employees.update']
+                'permissions' => ['management.employees', 'management.employees.edit', 'management.employees.update', 'management.employees.search']
             ],
             [
                 'display_name' => 'Despido y recontratación de empleado',
                 'key_name' => 'fired_reentry_employee',
                 'module' => 'hremployees_submodule',
-                'permissions' => ['management.employees', 'management.employees.fired', 'management.employees.reentry']
+                'permissions' => ['management.employees', 'management.employees.fired', 'management.employees.reentry', 'management.employees.search','management.employees.show.preview.doc_alta']
             ],
             [
                 'display_name' => 'Alarma cumpleaños empleados',
@@ -136,25 +136,25 @@ class FuncionalityPermissionSeeder extends Seeder
                 'display_name' => 'Ver tabla empleados externos',
                 'key_name' => 'see_external_employee_table',
                 'module' => 'hreemployees_submodule',
-                'permissions' => ['employees.external.index']
+                'permissions' => ['employees.external.index', 'employees.external.search']
             ],
             [
                 'display_name' => 'Agregar y editar empleado externo',
                 'key_name' => 'add_external_employee',
                 'module' => 'hreemployees_submodule',
-                'permissions' => ['employees.external.index', 'management.external.storeorupdate']
+                'permissions' => ['employees.external.index', 'management.external.storeorupdate', 'employees.external.search']
             ],
             [
                 'display_name' => 'Eliminar empleado externo',
                 'key_name' => 'delete_external_employee',
                 'module' => 'hreemployees_submodule',
-                'permissions' => ['employees.external.index', 'employees.external.delete']
+                'permissions' => ['employees.external.index', 'employees.external.delete', 'employees.external.search']
             ],
             [
                 'display_name' => 'Ver y descargar currículum vitae de empleado externo',
                 'key_name' => 'see_external_employee_document',
                 'module' => 'hreemployees_submodule',
-                'permissions' => ['employees.external.index', 'employees.external.preview.curriculum_vitae']
+                'permissions' => ['employees.external.index', 'employees.external.preview.curriculum_vitae', 'employees.external.search']
             ],
         ];
 
@@ -173,24 +173,6 @@ class FuncionalityPermissionSeeder extends Seeder
                 'key_name' => 'add_document_hr',
                 'module' => 'hrresdoc_submodule',
                 'permissions' => ['documents.index', 'documents.create']
-            ],
-            [
-                'display_name' => 'Gestionar secciones y subdivisiones (sin eliminar)',
-                'key_name' => 'manage_sections_subdivisions_hr',
-                'module' => 'hrresdoc_submodule',
-                'permissions' => ['documents.index', 'documents.zipSection', 'documents.updateSection', 'documents.sections', 'documents.storeSection', 'documents.subdivisions', 'documents.zipSubdivision', 'documents.updateSubdivision', 'documents.storeSubdivision']
-            ],
-            [
-                'display_name' => 'Eliminar secciones nuevas',
-                'key_name' => 'delete_new_sections_hr',
-                'module' => 'hrresdoc_submodule',
-                'permissions' => ['documents.index', 'documents.sections', 'documents.destroySection']
-            ],
-            [
-                'display_name' => 'Eliminar subdivisiones nuevas',
-                'key_name' => 'delete_new_subdivisions_hr',
-                'module' => 'hrresdoc_submodule',
-                'permissions' => ['documents.index', 'documents.sections', 'documents.subdivisions', 'documents.destroySubdivision']
             ],
             [
                 'display_name' => 'Editar documento',
@@ -216,7 +198,30 @@ class FuncionalityPermissionSeeder extends Seeder
                 'module' => 'hrresdoc_submodule',
                 'permissions' => ['documents.index', 'documents.destroy']
             ],
-
+            [
+                'display_name' => 'Gestionar secciones y subdivisiones (sin eliminar)',
+                'key_name' => 'manage_sections_subdivisions_hr',
+                'module' => 'hrresdoc_submodule',
+                'permissions' => ['documents.index', 'documents.zipSection', 'documents.updateSection', 'documents.sections', 'documents.storeSection', 'documents.subdivisions', 'documents.zipSubdivision', 'documents.updateSubdivision', 'documents.storeSubdivision']
+            ],
+            [
+                'display_name' => 'Eliminar secciones nuevas',
+                'key_name' => 'delete_new_sections_hr',
+                'module' => 'hrresdoc_submodule',
+                'permissions' => ['documents.index', 'documents.sections', 'documents.destroySection']
+            ],
+            [
+                'display_name' => 'Eliminar subdivisiones nuevas',
+                'key_name' => 'delete_new_subdivisions_hr',
+                'module' => 'hrresdoc_submodule',
+                'permissions' => ['documents.index', 'documents.sections', 'documents.subdivisions', 'documents.destroySubdivision']
+            ],
+            [
+                'display_name' => 'Alarma de documentos',
+                'key_name' => 'doc_alarm_hr',
+                'module' => 'hrresdoc_submodule',
+                'permissions' => ['document.rrhh.status.alarms', 'document.rrhh.nodoc.alarms']
+            ],
         ];
 
         // Recursos Humanos -> Estatus RRHH
@@ -267,67 +272,67 @@ class FuncionalityPermissionSeeder extends Seeder
             ],
         ];
         // Inventario -> Almacenes
-        $iwarehouse_submodule = [
-            [
-                'display_name' => 'Ver tabla de Almacenes',
-                'key_name' => 'see_warehouse_table',
-                'module' => 'iwarehouse_submodule',
-                'permissions' => [
-                    'warehouses.resource.create',
-                    'warehouses.resource.store',
+        // $iwarehouse_submodule = [
+        //     [
+        //         'display_name' => 'Ver tabla de Almacenes',
+        //         'key_name' => 'see_warehouse_table',
+        //         'module' => 'iwarehouse_submodule',
+        //         'permissions' => [
+        //             'warehouses.resource.create',
+        //             'warehouses.resource.store',
 
-                    'inventory.special_products.destroy',
-                    'inventory.special_dispatch_output.destroy',
+        //             'inventory.special_products.destroy',
+        //             'inventory.special_dispatch_output.destroy',
 
-                    'inventory.special_products.create',
-                    'inventory.special_products.store',
-                    'inventory.special_refund.accept_decline',
-                    'inventory.special_dispatch.accept_decline',
+        //             'inventory.special_products.create',
+        //             'inventory.special_products.store',
+        //             'inventory.special_refund.accept_decline',
+        //             'inventory.special_dispatch.accept_decline',
 
-                    'warehouses.purchaseorders.approve.post',
-                    'warehouses.createNormalProduct',
-                    'warehouses.storeNormalProduct',
+        //             'warehouses.purchaseorders.approve.post',
+        //             'warehouses.createNormalProduct',
+        //             'warehouses.storeNormalProduct',
 
-                    'retrieval.entry.approbe',
-                    'inventory.special_dispatch_output.store',
-                    'warehouses.dispatches.acceptordecline',
-                    'warehouses.resource.approve',
+        //             'retrieval.entry.approbe',
+        //             'inventory.special_dispatch_output.store',
+        //             'warehouses.dispatches.acceptordecline',
+        //             'warehouses.resource.approve',
 
-                    'warehouses.service.approve.index',
-                    'warehouses.service.store',
-                    'warehouses.service.delete',
-                    'warehouses.resource.add.serial_number',
+        //             'warehouses.service.approve.index',
+        //             'warehouses.service.store',
+        //             'warehouses.service.delete',
+        //             'warehouses.resource.add.serial_number',
 
-                    'warehouses.warehouses',
+        //             'warehouses.warehouses',
 
-                    'inventory.special_products.index',
-                    'inventory.special_dispatch.index',
-                    'inventory.special_dispatch.approved',
-                    'inventory.special_dispatch.rejected',
-                    'inventory.special_refund.index',
-                    'inventory.special_refund.historial',
+        //             'inventory.special_products.index',
+        //             'inventory.special_dispatch.index',
+        //             'inventory.special_dispatch.approved',
+        //             'inventory.special_dispatch.rejected',
+        //             'inventory.special_refund.index',
+        //             'inventory.special_refund.historial',
 
-                    'warehouses.purchaseorders.approve',
-                    'warehouses.conproco.products',
-                    'warehouses.products.entries',
-                    'warehouses.dispatches',
-                    'warehouses.dispatches.approved',
-                    'warehouses.dispatches.rejected',
+        //             'warehouses.purchaseorders.approve',
+        //             'warehouses.conproco.products',
+        //             'warehouses.products.entries',
+        //             'warehouses.dispatches',
+        //             'warehouses.dispatches.approved',
+        //             'warehouses.dispatches.rejected',
 
-                    'inventory.retrieval.entry.index',
-                    'inventory.retrieval.product.index',
-                    'inventory.retrieval.product.show',
-                    'inventory.retrievalDispatch.index',
-                    'inventory.retrievalDispatch.approved',
-                    'inventory.retrievalDispatch.rejected',
+        //             'inventory.retrieval.entry.index',
+        //             'inventory.retrieval.product.index',
+        //             'inventory.retrieval.product.show',
+        //             'inventory.retrievalDispatch.index',
+        //             'inventory.retrievalDispatch.approved',
+        //             'inventory.retrievalDispatch.rejected',
 
-                    'warehouses.resource',
-                    'warehouses.resource.active.index',
+        //             'warehouses.resource',
+        //             'warehouses.resource.active.index',
 
-                    'warehouses.service.approve.index',
-                ]
-            ],
-        ];
+        //             'warehouses.service.approve.index',
+        //         ]
+        //     ],
+        // ];
 
         //Area de Compras -> Proveedores
         $pproviderSubModule = [
@@ -364,52 +369,52 @@ class FuncionalityPermissionSeeder extends Seeder
         ];
 
         //Area de Compras -> Solicitudes
-        $pprequest_submodule = [
-            [
-                'display_name' => 'Ver tabla de solicitudes (incluye buscar)',
-                'key_name' => 'see_purchases_request_table',
-                'module' => 'pprequest_submodule',
-                'permissions' => [
-                    'purchasesrequest.index',
-                    'purchasesrequest.search',
-                    'purchasingrequest.export',
-                    'purchasingrequest.details',
-                    'purchasesrequest.alarm',
+        // $pprequest_submodule = [
+        //     [
+        //         'display_name' => 'Ver tabla de solicitudes (incluye buscar)',
+        //         'key_name' => 'see_purchases_request_table',
+        //         'module' => 'pprequest_submodule',
+        //         'permissions' => [
+        //             'purchasesrequest.index',
+        //             'purchasesrequest.search',
+        //             'purchasingrequest.export',
+        //             'purchasingrequest.details',
+        //             'purchasesrequest.alarm',
 
-                    'purchasesrequest.edit',
-                    'purchasesrequest.update',
-                    'purchasesrequest.destroy'
-                ]
-            ],
-        ];
+        //             'purchasesrequest.edit',
+        //             'purchasesrequest.update',
+        //             'purchasesrequest.destroy'
+        //         ]
+        //     ],
+        // ];
 
-        $pporder_submodule = [
-            [
-                'display_name' => 'Ver tabla de ordenes (incluye buscar)',
-                'key_name' => 'see_purchases_order_table',
-                'module' => 'pporder_submodule',
-                'permissions' => [
-                    'purchaseorders.index',
-                    'purchaseorders.search',
-                    'purchaseorders.details',
-                    'purchaseorders.export.order',
-                    'purchaseorders.alarms'
-                ]
-            ],
-        ];
+        // $pporder_submodule = [
+        //     [
+        //         'display_name' => 'Ver tabla de ordenes (incluye buscar)',
+        //         'key_name' => 'see_purchases_order_table',
+        //         'module' => 'pporder_submodule',
+        //         'permissions' => [
+        //             'purchaseorders.index',
+        //             'purchaseorders.search',
+        //             'purchaseorders.details',
+        //             'purchaseorders.export.order',
+        //             'purchaseorders.alarms'
+        //         ]
+        //     ],
+        // ];
 
-        $ppcpurchase_submodule = [
-            [
-                'display_name' => 'Ver tabla de compras completadas (incluye buscar)',
-                'key_name' => 'see_completed_purchases_table',
-                'module' => 'ppcpurchase_submodule',
-                'permissions' => [
-                    'purchaseorders.history',
-                    'purchasesrequest.show',
-                    'purchasesorder.showFacture'
-                ]
-            ],
-        ];
+        // $ppcpurchase_submodule = [
+        //     [
+        //         'display_name' => 'Ver tabla de compras completadas (incluye buscar)',
+        //         'key_name' => 'see_completed_purchases_table',
+        //         'module' => 'ppcpurchase_submodule',
+        //         'permissions' => [
+        //             'purchaseorders.history',
+        //             'purchasesrequest.show',
+        //             'purchasesorder.showFacture'
+        //         ]
+        //     ],
+        // ];
 
         //Area de Compras -> Ordenes
         //Area de Compras -> Compras Completadas
@@ -932,6 +937,17 @@ class FuncionalityPermissionSeeder extends Seeder
 
             //servicios
             [
+                'display_name' => 'Servicios',
+                'key_name' => 'pro_pint_services',
+                'module' => 'ppropint_submodule',
+                'permissions' => [
+                    'projectmanagement.index',
+                    'projectmanagement.resources',
+                ]
+            ],
+
+            //Purchase and expenses
+            [
                 'display_name' => 'Compras y gastos de un proyecto',
                 'key_name' => 'pro_pint_one_purchase_expenses',
                 'module' => 'ppropint_submodule',
@@ -980,10 +996,9 @@ class FuncionalityPermissionSeeder extends Seeder
 
 
             //asignar productos
-            // liquidaciones
             [
-                'display_name' => 'Archivos de un proyecto',
-                'key_name' => 'pro_pint_archives',
+                'display_name' => 'Asignar Productos',
+                'key_name' => 'pro_pint_assign_products',
                 'module' => 'ppropint_submodule',
                 'permissions' => [
                     'projectmanagement.index',
@@ -992,6 +1007,28 @@ class FuncionalityPermissionSeeder extends Seeder
                     'project.document.store',
                     'project.folder.delete',
                     'documment.management.folders'
+                ]
+            ],
+
+            //Liquidar productos
+            [
+                'display_name' => 'Liquidar productos',
+                'key_name' => 'pro_pint_liquidate_products',
+                'module' => 'ppropint_submodule',
+                'permissions' => [
+                    'projectmanagement.index',
+                    'projectmanagement.liquidate'
+                ]
+            ],
+
+            // archivos
+            [
+                'display_name' => 'Archivos de un proyecto',
+                'key_name' => 'pro_pint_archives',
+                'module' => 'ppropint_submodule',
+                'permissions' => [
+                    'projectmanagement.index',
+                    'projectmanagement.products'
                 ]
             ],
         ];
@@ -1073,24 +1110,24 @@ class FuncionalityPermissionSeeder extends Seeder
                     'projectscalendar.show',
                 ]
             ],
-            [
-                'display_name' => 'Liquidar proyecto',
-                'key_name' => 'pro_pext_liquidate',
-                'module' => 'ppropext_submodule',
-                'permissions' => [
-                    'projectmanagement.pext.index',
-                    'projectmanagement.liquidation',
-                ]
-            ],
-            [
-                'display_name' => 'Ver detalle de proyecto',
-                'key_name' => 'pro_pext_details',
-                'module' => 'ppropext_submodule',
-                'permissions' => [
-                    'projectmanagement.pext.index',
-                    'projectmanagement.update',
-                ]
-            ],
+            // [
+            //     'display_name' => 'Liquidar proyecto',
+            //     'key_name' => 'pro_pext_liquidate',
+            //     'module' => 'ppropext_submodule',
+            //     'permissions' => [
+            //         'projectmanagement.pext.index',
+            //         'projectmanagement.liquidation',
+            //     ]
+            // ],
+            // [
+            //     'display_name' => 'Ver detalle de proyecto',
+            //     'key_name' => 'pro_pext_details',
+            //     'module' => 'ppropext_submodule',
+            //     'permissions' => [
+            //         'projectmanagement.pext.index',
+            //         'projectmanagement.update',
+            //     ]
+            // ],
             [
                 'display_name' => 'Compras y gastos de un proyecto',
                 'key_name' => 'pro_pext_purchase_expenses',
@@ -1189,46 +1226,46 @@ class FuncionalityPermissionSeeder extends Seeder
         ];
 
         //Finanzas -> Aprobación de compras
-        $fpapproval_submodule = [
-            [
-                'display_name' => 'Aprobación de compras',
-                'key_name' => 'finance_purchase_approval',
-                'module' => 'fpapproval_submodule',
-                'permissions' => [
-                    'managementexpense.index',
-                    'managementexpense.details',
-                    'approve_quote.alarm',
-                ]
-            ]
-        ];
+        // $fpapproval_submodule = [
+        //     [
+        //         'display_name' => 'Aprobación de compras',
+        //         'key_name' => 'finance_purchase_approval',
+        //         'module' => 'fpapproval_submodule',
+        //         'permissions' => [
+        //             'managementexpense.index',
+        //             'managementexpense.details',
+        //             'approve_quote.alarm',
+        //         ]
+        //     ]
+        // ];
 
         //Finanzas -> Depósitos
-        $fdeposists_submodule = [
-            [
-                'display_name' => 'Depósitos',
-                'key_name' => 'finance_deposits',
-                'module' => 'fdeposists_submodule',
-                'permissions' => [
-                    'deposits.index',
-                    'deposits.store',
-                    'deposits.generateSummary'
-                ]
-            ]
-        ];
+        // $fdeposists_submodule = [
+        //     [
+        //         'display_name' => 'Depósitos',
+        //         'key_name' => 'finance_deposits',
+        //         'module' => 'fdeposists_submodule',
+        //         'permissions' => [
+        //             'deposits.index',
+        //             'deposits.store',
+        //             'deposits.generateSummary'
+        //         ]
+        //     ]
+        // ];
 
         //Finanzas -> Pagos OC
-        $fpopayment_submodule = [
-            [
-                'display_name' => 'Pagos OC',
-                'key_name' => 'finance_payments_oc',
-                'module' => 'fpopayment_submodule',
-                'permissions' => [
-                    'payment.index',
-                    'payment.search',
-                    'payment.alarm'
-                ]
-            ]
-        ];
+        // $fpopayment_submodule = [
+        //     [
+        //         'display_name' => 'Pagos OC',
+        //         'key_name' => 'finance_payments_oc',
+        //         'module' => 'fpopayment_submodule',
+        //         'permissions' => [
+        //             'payment.index',
+        //             'payment.search',
+        //             'payment.alarm'
+        //         ]
+        //     ]
+        // ];
         //Finanzas -> Estado de cuenta
         $faccstatementSubModule = [
             [
@@ -1640,9 +1677,9 @@ class FuncionalityPermissionSeeder extends Seeder
             $HrhrstateSubModule,
 
             $pproviderSubModule,
-            $pprequest_submodule,
-            $pporder_submodule,
-            $ppcpurchase_submodule,
+            // $pprequest_submodule,
+            // $pporder_submodule,
+            // $ppcpurchase_submodule,
             //Solicitudes
             //Ordenes
             //Compras Completadas
@@ -1659,11 +1696,11 @@ class FuncionalityPermissionSeeder extends Seeder
             //presupuestos
             $fbudget_submodule,
             //aprobacion de compras
-            $fpapproval_submodule,
+            // $fpapproval_submodule,
             //depósitos
-            $fdeposists_submodule,
+            // $fdeposists_submodule,
             //pagos OC
-            $fpopayment_submodule,
+            // $fpopayment_submodule,
             //Estado de cuenta
             $faccstatementSubModule,
 
@@ -1687,7 +1724,10 @@ class FuncionalityPermissionSeeder extends Seeder
             //Sharepoint
             $sharedoc_submodule,
 
-            $huaweiProjectsSubmodule
+            $huaweiProjectsSubmodule,
+
+            //Productos
+            $iproduct_submodule
         ];
 
         foreach ($Submodules as $sm) {

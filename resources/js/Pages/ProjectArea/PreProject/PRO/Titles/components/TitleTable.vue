@@ -5,7 +5,7 @@
                 <TableTitle>Título</TableTitle>
                 <TableTitle>Tipo</TableTitle>
                 <TableTitle>Códigos</TableTitle>
-                <TableTitle></TableTitle>
+                <TableTitle v-permission-or="['edit_pro_title', 'delete_pro_title']"></TableTitle>
             </tr>
         </template>
         <template #tbody>
@@ -13,12 +13,12 @@
                 <TableRow>{{ title.title }}</TableRow>
                 <TableRow>{{ title.type }}</TableRow>
                 <TableRow>{{title.codes.map((item) => item.code).join(', ')}}</TableRow>
-                <TableRow>
+                <TableRow v-permission-or="['edit_pro_title', 'delete_pro_title']">
                     <div class="flex justify-center space-x-3">
-                        <button type="button" @click="openModal(title)">
+                        <button v-permission="'edit_pro_title'" type="button" @click="openModal(title)">
                             <EditIcon />
                         </button>
-                        <button type="button" @click="confirmDeleteTitle(title.id)">
+                        <button v-permission="'delete_pro_title'" type="button" @click="confirmDeleteTitle(title.id)">
                             <DeleteIcon />
                         </button>
                     </div>

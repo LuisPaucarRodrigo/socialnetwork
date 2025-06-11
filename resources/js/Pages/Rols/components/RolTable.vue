@@ -4,23 +4,30 @@
             <tr>
                 <TableTitle>Nombre</TableTitle>
                 <TableTitle>Descripcion</TableTitle>
-                <TableTitle></TableTitle>
+                <TableTitle v-permission-or="[
+                    'see_role',
+                    'edit_role',
+                    'delete_role',
+                ]">Acciones</TableTitle>
             </tr>
         </template>
         <template #tbody>
             <tr v-for="rol in rols.data" :key="rol.id">
                 <TableRow>{{ rol.name }}</TableRow>
                 <TableRow>{{ rol.description }}</TableRow>
-                <TableRow>
+                <TableRow v-permission-or="[
+                    'see_role',
+                    'edit_role',
+                    'delete_role',
+                ]">
                     <div class="flex space-x-3 justify-center">
-                        <button type="button" @click="showModal(rol.id)" class="text-blue-900 whitespace-no-wrap">
+                        <button v-permission="'see_role'" type="button" @click="showModal(rol.id)">
                             <ShowIcon />
                         </button>
-                        <button type="button" @click="editModalRol(rol)" class="text-blue-900 whitespace-no-wrap">
+                        <button v-permission="'edit_role'" type="button" @click="editModalRol(rol)">
                             <EditIcon />
                         </button>
-                        <button type="button" @click="confirmRolsDeletion(rol.id)"
-                            class="text-blue-900 whitespace-no-wrap">
+                        <button v-permission="'delete_role'" type="button" @click="confirmRolsDeletion(rol.id)">
                             <DeleteIcon />
                         </button>
                     </div>

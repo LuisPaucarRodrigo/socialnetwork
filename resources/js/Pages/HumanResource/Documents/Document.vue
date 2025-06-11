@@ -8,34 +8,29 @@
         <div class="flex gap-4 justify-between rounded-lg">
             <div class="flex flex-col sm:flex-row gap-4 justify-between w-full">
                 <div class="flex gap-4 items-center px-2">
-                    <PrimaryButton v-permission-and="['documents_create']" @click="openCreateDocumentModal"
-                        type="button"
+                    <PrimaryButton v-permission="'add_document_hr'" @click="openCreateDocumentModal" type="button"
                         class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                         + Agregar Documento
                     </PrimaryButton>
-                    <PrimaryButton v-if="hasPermission('HumanResourceManager')" @click="management_section"
+                    <PrimaryButton v-permission-or="['manage_sections_subdivisions_hr', 'delete_new_sections_hr', 'delete_new_subdivisions_hr']" @click="management_section"
                         type="button"
                         class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                         Gestionar Secciones
                     </PrimaryButton>
 
-                    <div class="sm:hidden">
+                    <div class="sm:hidden" v-permission-or="['add_document_hr', 'manage_sections_subdivisions_hr']">
                         <dropdown align="left">
                             <template #trigger>
                                 <button @click="dropdownOpen = !dropdownOpen"
                                     class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100">
-                                    <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4 6H20M4 12H20M4 18H20" stroke="#000000" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
+                                    <MenuIcon />
                                 </button>
                             </template>
 
                             <template #content class="origin-left">
                                 <div>
                                     <!-- Alineación a la derecha -->
-                                    <div class="dropdown">
+                                    <div v-permission="'add_document_hr'" class="dropdown">
                                         <div class="dropdown-menu">
                                             <button @click="openCreateDocumentModal" type="button"
                                                 class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
@@ -43,7 +38,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="dropdown">
+                                    <div v-permission-or="['manage_sections_subdivisions_hr', 'delete_new_sections_hr', 'delete_new_subdivisions_hr']" class="dropdown">
                                         <div class="dropdown-menu">
                                             <button @click="management_section" type="button"
                                                 class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
@@ -219,7 +214,7 @@
                                     class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Empleado
                                 </th>
-                                <th
+                                <th v-permission-or="['see_document_hr', 'download_document_hr', 'edit_document_hr', 'delete_document_hr']"
                                     class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Acciones
                                 </th>
@@ -240,9 +235,10 @@
                                 <td class="px-6 py-4 max-w-[150px] text-sm text-gray-700">
                                     {{ document.emp_name }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td v-permission-or="['see_document_hr', 'download_document_hr', 'edit_document_hr', 'delete_document_hr']"
+                                    class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center space-x-3">
-                                        <button v-if="
+                                        <button v-permission="'see_document_hr'" v-if="
                                             document.title &&
                                             /\.(pdf|png|jpe?g)$/.test(
                                                 document.title
@@ -254,17 +250,17 @@
                                             ">
                                             <ShowIcon />
                                         </button>
-                                        <button @click="
+                                        <button v-permission="'download_document_hr'" @click="
                                             downloadDocument(document.id)
                                             ">
                                             <DownloadIcon />
                                         </button>
-                                        <button v-permission="'documents_update'" @click="
+                                        <button v-permission="'edit_document_hr'" @click="
                                             openEditDocumentModal(document)
                                             ">
                                             <EditIcon />
                                         </button>
-                                        <button v-permission="'document_delete'" @click="
+                                        <button v-permission="'delete_document_hr'" @click="
                                             confirmDeleteDocument(
                                                 document.id
                                             )
@@ -440,14 +436,13 @@ import { Head, useForm, router } from "@inertiajs/vue3";
 import Dropdown from "@/Components/Dropdown.vue";
 import { Toaster } from "vue-sonner";
 import { notifyError } from "@/Components/Notification";
-import { EditIcon, DeleteIcon, ShowIcon, DownloadIcon } from "@/Components/Icons/Index";
+import { EditIcon, DeleteIcon, ShowIcon, DownloadIcon, MenuIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
     sections: Object,
     subdivisions: Object,
     employees: Array,
-    e_employees: Array,
-    userPermissions: Array,
+    e_employees: Array
 });
 
 const mergedEmployeesRaw = computed(() => {
@@ -470,10 +465,6 @@ const mergedEmployees = ref([]);
 watchEffect(() => {
     mergedEmployees.value = mergedEmployeesRaw.value;
 });
-
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-};
 
 const form = useForm({
     id: "",

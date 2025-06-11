@@ -13,7 +13,7 @@
           <option value="">Todos</option>
           <option v-for="item, i in costLines" :key="i">{{ item.name }}</option>
         </select>
-        <PrimaryButton v-permission="'document_grupal_documents_index'" type="button"
+        <PrimaryButton v-permission-or="['manage_grupal_documents_hr', 'delete_grupal_documents_hr']" type="button"
           @click="() => router.visit(route('document.grupal_documents.index'))">
           Documentos Grupales
         </PrimaryButton>
@@ -183,10 +183,7 @@
                         }}
                       </p>
                       <div class="w-1/4 justify-end flex gap-3">
-                        <button 
-                          v-permission="'modify_document_status'" 
-                          type="button" 
-                          @click="openDocModal(
+                        <button v-permission="'modify_document_status'" type="button" @click="openDocModal(
                           {
                             emp_name: emp.name + ' ' + emp.lastname,
                             doc_name: sub.name,
@@ -291,10 +288,7 @@
                         }}
                       </p>
                       <div class="w-1/4 justify-end flex gap-3">
-                        <button 
-                          v-permission="'modify_document_status'" 
-                          type="button" 
-                          @click="openDocModal(
+                        <button v-permission="'modify_document_status'" type="button" @click="openDocModal(
                           {
                             emp_name: emp.name + ' ' + emp.lastname,
                             doc_name: sub.name,

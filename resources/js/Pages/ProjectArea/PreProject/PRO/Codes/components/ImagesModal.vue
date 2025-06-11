@@ -19,12 +19,15 @@
                     <tr v-for="(item, i) in listImageView" :key="i" class="text-gray-700">
                         <TableRow>{{ item.image }}</TableRow>
                         <TableRow>
-                            <button type="button" @click="show_image(item.id)">
-                                <ShowIcon />
-                            </button>
-                            <button type="button" @click="delete_image(item.id)">
-                                <DeleteIcon />
-                            </button>
+                            <div class="flex gap-x-2">
+                                <button v-permission="'see_pro_code_images'" type="button" @click="show_image(item.id)">
+                                    <ShowIcon />
+                                </button>
+                                <button v-permission="'delete_pro_code_images'" type="button"
+                                    @click="delete_image(item.id)">
+                                    <DeleteIcon />
+                                </button>
+                            </div>
                         </TableRow>
                     </tr>
                 </template>

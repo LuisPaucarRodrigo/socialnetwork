@@ -17,10 +17,11 @@
                 <TableTitle>Dirección</TableTitle>
                 <TableTitle>Correo</TableTitle>
                 <TableTitle>Correo Empresarial</TableTitle>
-                <TableTitle v-permission="'ee_salary'">Salario</TableTitle>
-                <TableTitle v-permission="'ee_sctr'">Sctr</TableTitle>
-                <TableTitle v-permission="'ee_curriculum'">Curriculum</TableTitle>
-                <TableTitle v-permission="'ee_actions'"></TableTitle>
+                <TableTitle>Salario</TableTitle>
+                <TableTitle>Sctr</TableTitle>
+                <TableTitle v-permission="'see_external_employee_document'">Curriculum</TableTitle>
+                <TableTitle v-permission-or="['add_external_employee', 'delete_external_employee']">Acciones
+                </TableTitle>
             </tr>
         </template>
         <template #tbody>
@@ -37,21 +38,20 @@
                 <TableRow :width="'w-[250px]'">{{ employee.address }}</TableRow>
                 <TableRow>{{ employee.email }}</TableRow>
                 <TableRow>{{ employee.email_company }}</TableRow>
-                <TableRow v-permission="'ee_salary'">{{ employee.salary }}</TableRow>
-                <TableRow v-permission="'ee_sctr'">{{ employee.sctr }}</TableRow>
-                <TableRow v-permission="'ee_curriculum'">
+                <TableRow>{{ employee.salary }}</TableRow>
+                <TableRow>{{ employee.sctr ? "Si" : "No" }}</TableRow>
+                <TableRow v-permission="'see_external_employee_document'">
                     <button v-if="employee.curriculum_vitae" @click="handlerPreview(employee.id)">
                         <ShowIcon />
                     </button>
                     <span v-else>-</span>
                 </TableRow>
-                <TableRow v-permission="'ee_actions'">
+                <TableRow v-permission-or="['add_external_employee', 'delete_external_employee']">
                     <div class="flex space-x-3 justify-center">
-                        <button v-if="hasPermission('HumanResourceManager')" type="button"
-                            @click="openExternal(employee)">
+                        <button v-permission="'add_external_employee'" type="button" @click="openExternal(employee)">
                             <EditIcon />
                         </button>
-                        <button v-if="hasPermission('HumanResourceManager')" type="button"
+                        <button v-permission="'delete_external_employee'" type="button"
                             @click="confirmUserDeletion(employee.id)">
                             <DeleteIcon />
                         </button>
@@ -73,9 +73,8 @@ import TableRow from '@/Components/TableRow.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { ShowIcon, EditIcon, DeleteIcon } from "@/Components/Icons/Index";
 
-const { employees, userPermissions, formSearch, cost_line, openExternal, confirmUserDeletion } = defineProps({
+const { employees, formSearch, cost_line, openExternal, confirmUserDeletion } = defineProps({
     employees: Object,
-    userPermissions: Array,
     formSearch: Object,
     cost_line: Array,
     openExternal: Function,
@@ -87,9 +86,5 @@ function handlerPreview(id) {
         route("employees.external.preview.curriculum_vitae", { external_preview_id: id }),
         '_blank'
     );
-}
-
-const hasPermission = (permission) => {
-    return userPermissions.includes(permission);
 }
 </script>

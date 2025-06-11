@@ -26,7 +26,7 @@ class HumanResourceRoutes
             ],
             [
                 'uri' => 'management_employees/fired/{id}',
-                'method' => 'put',
+                'method' => 'post',
                 'action' => [ManagementEmployees::class, 'fired'],
                 'permission' => true,
                 'name' => 'management.employees.fired',
@@ -115,6 +115,13 @@ class HumanResourceRoutes
                 'action' => [ManagementEmployees::class, 'update'],
                 'permission' => true,
                 'name' => 'management.employees.update',
+            ],
+            [
+                'uri' => 'management_employees/show_preview/doc_alta/{id}',
+                'method' => 'get',
+                'action' => [ManagementEmployees::class, 'show_preview_doc_alta'],
+                'permission' => true,
+                'name' => 'management.employees.show.preview.doc_alta',
             ],
 
             //Empleados Externos
@@ -371,7 +378,7 @@ class HumanResourceRoutes
             ],
             [
                 'uri' => 'document_sections/{section}/update',
-                'method' => 'put',
+                'method' => 'post',
                 'action' => [DocumentController::class, 'updateSection'],
                 'permission' => true,
                 'name' => 'documents.updateSection',
@@ -407,7 +414,7 @@ class HumanResourceRoutes
             ],
             [
                 'uri' => 'document_sections/{section}/subdivisions/{subdivision}/update',
-                'method' => 'put',
+                'method' => 'post',
                 'action' => [DocumentController::class, 'updateSubdivision'],
                 'permission' => true,
                 'name' => 'documents.updateSubdivision',

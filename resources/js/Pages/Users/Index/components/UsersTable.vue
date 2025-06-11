@@ -32,19 +32,19 @@
                     'delete_user',
                 ]">
                     <div class="flex space-x-3 justify-center">
-                        <button v-if="(user.platform === 'Web/Movil' || user.platform === 'Movil')
+                        <button v-permission="'edit_user'" v-if="(user.platform === 'Web/Movil' || user.platform === 'Movil')
                             && !user.employee" @click="linkEmployee(user.id)">
                             <LinkIcon />
                         </button>
-                        <Link v-permission="'users_details'" class="text-blue-900 whitespace-no-wrap"
+                        <Link v-permission="'see_user'" class="text-blue-900 whitespace-no-wrap"
                             :href="route('users.details', { id: user.id })">
                         <ShowIcon />
                         </Link>
-                        <Link v-permission="'user_edit'" class="text-blue-900 whitespace-no-wrap"
+                        <Link v-permission="'edit_user'" class="text-blue-900 whitespace-no-wrap"
                             :href="route('users.edit', { id: user.id })">
                         <EditIcon />
                         </Link>
-                        <button v-permission="'user_delete'" type="button" @click="confirmUserDeletion(user.id)">
+                        <button v-permission="'delete_user'" type="button" @click="confirmUserDeletion(user.id)">
                             <DeleteIcon />
                         </button>
                     </div>

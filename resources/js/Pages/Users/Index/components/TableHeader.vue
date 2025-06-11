@@ -1,6 +1,6 @@
 <template>
     <div class="flex justify-between">
-        <Link :href="route('register')"
+        <Link v-permission="'add_user'" :href="route('register')"
             class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500">
         + Agregar
         </Link>
