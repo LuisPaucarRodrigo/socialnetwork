@@ -85,21 +85,16 @@ import TableRow from '@/Components/TableRow.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
 import { formattedDate } from '@/utils/utils';
-import { ShowIcon, EditIcon } from "@/Components/Icons/Index";
 import { Link } from '@inertiajs/vue3';
-import { ref, inject, watch } from 'vue';
-import { notify, notifyError, notifyWarning } from "@/Components/Notification";
-import Modal from '@/Components/Modal.vue';
+import { watch } from 'vue';
+import { notifyWarning } from "@/Components/Notification";
 
 const { 
     spreadsheets, 
     totals, 
     pensionTypes, 
     payrolls, 
-    userPermissions, 
     openPaymentTravelExpenseModal, 
-    openPaymentSalaryModal, 
-    openDiscountModal, 
     actionForm ,
     filterForm,
 } = defineProps({
@@ -107,10 +102,7 @@ const {
     totals: Object,
     pensionTypes: Array,
     payrolls: Object,
-    userPermissions: Array,
     openPaymentTravelExpenseModal: Function,
-    openPaymentSalaryModal: Function,
-    openDiscountModal: Function,
     actionForm: Object,
     filterForm: Object,
 })

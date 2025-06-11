@@ -8,6 +8,7 @@ use App\Models\Module;
 use App\Models\Functionality;
 use App\Models\Permission;
 use App\Models\FunctionalityPermission;
+use Illuminate\Support\Facades\Log;
 
 class FuncionalityPermissionSeeder extends Seeder
 {
@@ -96,7 +97,7 @@ class FuncionalityPermissionSeeder extends Seeder
                 'display_name' => 'Ver tabla de empleados inactivos (incluye buscar)',
                 'key_name' => 'see_inactive_employees_table',
                 'module' => 'hremployees_submodule',
-                'permissions' => ['management.employees', 'management.employees.search','management.employees.show.preview.doc_alta']
+                'permissions' => ['management.employees', 'management.employees.search', 'management.employees.show.preview.doc_alta']
             ],
             [
                 'display_name' => 'Agregar empleado',
@@ -120,7 +121,7 @@ class FuncionalityPermissionSeeder extends Seeder
                 'display_name' => 'Despido y recontratación de empleado',
                 'key_name' => 'fired_reentry_employee',
                 'module' => 'hremployees_submodule',
-                'permissions' => ['management.employees', 'management.employees.fired', 'management.employees.reentry', 'management.employees.search','management.employees.show.preview.doc_alta']
+                'permissions' => ['management.employees', 'management.employees.fired', 'management.employees.reentry', 'management.employees.search', 'management.employees.show.preview.doc_alta']
             ],
             [
                 'display_name' => 'Alarma cumpleaños empleados',
@@ -159,7 +160,40 @@ class FuncionalityPermissionSeeder extends Seeder
         ];
 
         // Recursos Humanos -> Nómina
-
+        $hrspreedsheet_submodule = [
+            [
+                'display_name' => 'Gestion de Nomina',
+                'key_name' => 'manage_payroll_spreedsheet',
+                'module' => 'hrspreedsheet_submodule',
+                'permissions' => [
+                    'payroll.index',
+                    'payroll.store',
+                    'payroll.state.update',
+                    'spreadsheets.index',
+                    'index.worker.data',
+                    'payroll.show.payroll.detail.work.schedule',
+                    'payroll.store.payroll.detail.work.schedule',
+                    'payroll.show.payroll.detail.monetary.income',
+                    'payroll.store.payroll.detail.monetary.income',
+                    'payroll.show.payroll.detail.monetary.discount',
+                    'payroll.store.payroll.detail.monetary.discount',
+                    'payroll.show.payroll.detail.tax.contribution',
+                    'payroll.store.payroll.detail.tax.contribution',
+                    'payroll.index.payroll.external.detail',
+                    'payroll.store.payroll.external.detail',
+                    'payroll.store.payroll.external.destroy',
+                    'payroll.detail.expenses.multiple.store',
+                    'payroll.detail.expense.constants.show',
+                    'payroll.detail.expense.index',
+                    'payroll.detail.expense.search',
+                    'payroll.detail.expenses.store',
+                    'payroll.detail.expense.destroy',
+                    'payroll.detail.expenses.massive.update.opnuda',
+                    'payroll.detail.export',
+                    'payroll.detail.export.details',
+                ]
+            ],
+        ];
         // Recursos Humanos -> Documentos
         $HrresdocSubModule = [
             [
@@ -215,13 +249,7 @@ class FuncionalityPermissionSeeder extends Seeder
                 'key_name' => 'delete_new_subdivisions_hr',
                 'module' => 'hrresdoc_submodule',
                 'permissions' => ['documents.index', 'documents.sections', 'documents.subdivisions', 'documents.destroySubdivision']
-            ],
-            [
-                'display_name' => 'Alarma de documentos',
-                'key_name' => 'doc_alarm_hr',
-                'module' => 'hrresdoc_submodule',
-                'permissions' => ['document.rrhh.status.alarms', 'document.rrhh.nodoc.alarms']
-            ],
+            ]
         ];
 
         // Recursos Humanos -> Estatus RRHH
@@ -236,7 +264,7 @@ class FuncionalityPermissionSeeder extends Seeder
                 'display_name' => 'Modificar estados de documentos',
                 'key_name' => 'modify_document_status',
                 'module' => 'hrhrstate_submodule',
-                'permissions' => ['document.rrhh.status', 'document.rrhh.status.store', 'document.rrhh.status.destroy', 'document.rrhh.status.in_expdate']
+                'permissions' => ['document.rrhh.status', 'document.rrhh.status.create', 'document.rrhh.status.update', 'document.rrhh.status.destroy', 'document.rrhh.status.in_expdate']
             ],
             [
                 'display_name' => 'Gestionar documentos grupales (sin eliminar)',
@@ -249,7 +277,19 @@ class FuncionalityPermissionSeeder extends Seeder
                 'key_name' => 'delete_grupal_documents_hr',
                 'module' => 'hrhrstate_submodule',
                 'permissions' => ['document.rrhh.status', 'document.grupal_documents.index', 'document.grupal_documents.destroy']
-            ]
+            ],
+            [
+                'display_name' => 'Ver Detalles del estatus RRHH',
+                'key_name' => 'show_status_rrhh',
+                'module' => 'hrhrstate_submodule',
+                'permissions' => ['document.rrhh.status', 'employee.document.rrhh.status']
+            ],
+            [
+                'display_name' => 'Alarma de rrhh',
+                'key_name' => 'doc_alarm_hr',
+                'module' => 'hrhrstate_submodule',
+                'permissions' => ['document.rrhh.status', 'document.rrhh.status.alarms', 'document.rrhh.nodoc.alarms']
+            ],
         ];
 
         // Inventario -> Productos
@@ -1654,7 +1694,8 @@ class FuncionalityPermissionSeeder extends Seeder
                 'key_name' => 'huawei_projects_admin',
                 'module' => 'huawei_projects_submodule',
                 'permissions' => ['huawei.projects.liquidateproject', 'huawei.projects.cancelproject', 'huawei.projects.stopped.resume']
-            ]
+            ],
+
             //provisional
             // [
             //     'display_name' => 'Eliminar proyecto',
@@ -1673,6 +1714,7 @@ class FuncionalityPermissionSeeder extends Seeder
             $HremployeesSubModule,
             $HreemployeesSubModule,
             //nomina
+            $hrspreedsheet_submodule,
             $HrresdocSubModule,
             $HrhrstateSubModule,
 
@@ -1733,11 +1775,13 @@ class FuncionalityPermissionSeeder extends Seeder
         foreach ($Submodules as $sm) {
             foreach ($sm as $func) {
                 $module = Module::where('name', $func['module'])->first();
+                if ($module) Log::info($func['module']);
                 $functionality = Functionality::create([
                     'key_name' => $func['key_name'],
                     'display_name' => $func['display_name'],
                     'module_id' => $module->id
                 ]);
+
                 foreach ($func['permissions'] as $funcperm) {
                     $permission = Permission::where('name', $funcperm)->first();
                     FunctionalityPermission::create([

@@ -79,7 +79,7 @@ class UserAdminRoutes
             [
                 'uri' => 'register',
                 'method' => 'post',
-                'action' => [RegisteredUserController::class, 'post'],
+                'action' => [RegisteredUserController::class, 'store'],
                 'permission' => true,
                 'name' => 'register.post',
             ],

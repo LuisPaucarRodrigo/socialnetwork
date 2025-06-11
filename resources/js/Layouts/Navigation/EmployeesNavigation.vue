@@ -226,10 +226,6 @@ import { Link, usePage } from '@inertiajs/vue3';
 import { subModulePermission } from '@/utils/roles/roles';
 import { onMounted, ref, onUnmounted } from 'vue';
 
-const { userPermissions } = defineProps({
-    userPermissions: Array
-})
-
 const showingHumanResource = ref(false)
 
 const showingMembers = ref(false)

@@ -34,14 +34,14 @@ class ModuleSeeder extends Seeder
                     'hrhrstate_submodule' => 'Estatus RRHH',
                 ]
             ],
-            // [
-            //     'name' => 'INVENTORY_MODULE',
-            //     'display_name' => 'Inventario',
-            //     'submodules' => [
-            //         'iproduct_submodule' => 'Productos',
-            //         'iwarehouse_submodule' => 'Almacenes',
-            //     ]
-            // ],
+            [
+                'name' => 'INVENTORY_MODULE',
+                'display_name' => 'Inventario',
+                'submodules' => [
+                    'iproduct_submodule' => 'Productos',
+                    // 'iwarehouse_submodule' => 'Almacenes',
+                ]
+            ],
             [
                 'name' => 'PURCHASING_MODULE',
                 'display_name' => 'Área de Compras',
@@ -64,7 +64,7 @@ class ModuleSeeder extends Seeder
                     'ppropext_submodule' => 'Proyectos Pext',
                     'padmexpen_submodule' => 'G. Administrativos',
                     'pchecklist_submodule' => 'Checklist',
-                    'pbacklog_submodule' => 'Backlog',
+                    // 'pbacklog_submodule' => 'Backlog',
                 ]
             ],
             [

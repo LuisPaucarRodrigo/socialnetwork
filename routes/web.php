@@ -1,21 +1,24 @@
 <?php
 
+use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
     if (auth()->check()) {
-        return Inertia::location(route('users.index'));
+        return redirect()->route('home.index');
     } else {
         return Inertia::render('Auth/Login');
     }
 })->name('home');
 
-Route::get('/test_test', [ProfileController::class,'allfine']);
+Route::get('/test_test', [ProfileController::class, 'allfine']);
 
-Route::middleware(['auth', 'checkPlatformWeb'])->group(function () { 
-    
+Route::middleware(['auth', 'checkPlatformWeb'])->group(function () {
+
+    Route::get('/home', [HomeController::class, 'index'])->name('home.index');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

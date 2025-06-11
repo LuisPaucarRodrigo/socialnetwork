@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Support\RouteDefinitions;
 
 use App\Http\Controllers\HumanResource\DocumentSpreedSheetController;
@@ -213,49 +214,7 @@ class HumanResourceRoutes
                 'name' => 'controlEmployees.issuance.documentation.storeOrUpdate',
             ],
 
-            //Nomina
-            [
-                'uri' => 'management_employees/payroll/store',
-                'method' => 'post',
-                'action' => [SpreadsheetsController::class, 'store_payroll'],
-                'permission' => true,
-                'name' => 'payroll.store',
-            ],
-            [
-                'uri' => 'management_employees/payroll/state/{payroll_id}',
-                'method' => 'get',
-                'action' => [SpreadsheetsController::class, 'update_payroll_state'],
-                'permission' => true,
-                'name' => 'payroll.state.update',
-            ],
-            [
-                'uri' => 'management_employees/payroll/salary/{payroll_details_id}/update',
-                'method' => 'put',
-                'action' => [SpreadsheetsController::class, 'update_payroll_salary'],
-                'permission' => true,
-                'name' => 'payroll.payment.salary.store',
-            ],
-            [
-                'uri' => 'management_employees/payroll/travelExpense/{payroll_details_id}/update',
-                'method' => 'put',
-                'action' => [SpreadsheetsController::class, 'update_payroll_travelExpense'],
-                'permission' => true,
-                'name' => 'payroll.payment.travelExpense.store',
-            ],
-            [
-                'uri' => 'management_employees/spreadsheets/payroll/export/{payroll_id}',
-                'method' => 'get',
-                'action' => [SpreadsheetsController::class, 'export'],
-                'permission' => true,
-                'name' => 'spreadsheets.payroll.export',
-            ],
-            [
-                'uri' => 'management_employees/payroll/discount/{payroll_id}',
-                'method' => 'put',
-                'action' => [SpreadsheetsController::class, 'discount_employee'],
-                'permission' => true,
-                'name' => 'payroll.discount',
-            ],
+
 
             //Trainings
 
@@ -494,7 +453,21 @@ class HumanResourceRoutes
                 'name' => 'management.employees.happy.birthday',
             ],
 
-            // Nomina
+            //Nomina
+            [
+                'uri' => 'management_employees/payroll/store',
+                'method' => 'post',
+                'action' => [SpreadsheetsController::class, 'store_payroll'],
+                'permission' => true,
+                'name' => 'payroll.store',
+            ],
+            [
+                'uri' => 'management_employees/payroll/state/{payroll_id}',
+                'method' => 'get',
+                'action' => [SpreadsheetsController::class, 'update_payroll_state'],
+                'permission' => true,
+                'name' => 'payroll.state.update',
+            ],
             [
                 'uri' => 'management_employees/payroll',
                 'method' => 'get',
@@ -509,6 +482,155 @@ class HumanResourceRoutes
                 'permission' => true,
                 'name' => 'spreadsheets.index',
             ],
+
+            [
+                'uri' => 'management_employees/worker_data/{employee_id}',
+                'method' => 'get',
+                'action' => [SpreadsheetsController::class, 'index_worder_data'],
+                'permission' => true,
+                'name' => 'index.worker.data',
+            ],
+            [
+                'uri' => 'management_employees/payroll_show_pdws/{payroll_detail_id}',
+                'method' => 'get',
+                'action' => [SpreadsheetsController::class, 'show_payroll_detail_work_schedule'],
+                'permission' => true,
+                'name' => 'payroll.show.payroll.detail.work.schedule',
+            ],
+            [
+                'uri' => 'management_employees/payroll_store_pdws',
+                'method' => 'post',
+                'action' => [SpreadsheetsController::class, 'store_payroll_detail_work_schedule'],
+                'permission' => true,
+                'name' => 'payroll.store.payroll.detail.work.schedule',
+            ],
+            [
+                'uri' => 'management_employees/payroll_show_pdmi/{payroll_detail_id}',
+                'method' => 'get',
+                'action' => [SpreadsheetsController::class, 'show_payroll_detail_monetary_income'],
+                'permission' => true,
+                'name' => 'payroll.show.payroll.detail.monetary.income',
+            ],
+            [
+                'uri' => 'management_employees/payroll_store_pdmi',
+                'method' => 'post',
+                'action' => [SpreadsheetsController::class, 'store_payroll_monetary_income'],
+                'permission' => true,
+                'name' => 'payroll.store.payroll.detail.monetary.income',
+            ],
+            [
+                'uri' => 'management_employees/payroll_show_pdmd/{payroll_detail_id}',
+                'method' => 'get',
+                'action' => [SpreadsheetsController::class, 'show_payroll_detail_monetary_discount'],
+                'permission' => true,
+                'name' => 'payroll.show.payroll.detail.monetary.discount',
+            ],
+            [
+                'uri' => 'management_employees/payroll_store_pdmd',
+                'method' => 'post',
+                'action' => [SpreadsheetsController::class, 'store_payroll_monetary_discount'],
+                'permission' => true,
+                'name' => 'payroll.store.payroll.detail.monetary.discount',
+            ],
+            [
+                'uri' => 'management_employees/payroll_show_pdtac/{payroll_detail_id}',
+                'method' => 'get',
+                'action' => [SpreadsheetsController::class, 'show_payroll_detail_tax_and_contribution'],
+                'permission' => true,
+                'name' => 'payroll.show.payroll.detail.tax.contribution',
+            ],
+            [
+                'uri' => 'management_employees/payroll_store_pdtac',
+                'method' => 'post',
+                'action' => [SpreadsheetsController::class, 'store_payroll_tax_and_contribution'],
+                'permission' => true,
+                'name' => 'payroll.store.payroll.detail.tax.contribution',
+            ],
+            [
+                'uri' => 'management_employees/payroll_external_detail_index/{payroll_id}',
+                'method' => 'get',
+                'action' => [SpreadsheetsController::class, 'index_payroll_external_detail'],
+                'permission' => true,
+                'name' => 'payroll.index.payroll.external.detail',
+            ],
+            [
+                'uri' => 'management_employees/payroll_external_detail_store',
+                'method' => 'post',
+                'action' => [SpreadsheetsController::class, 'store_payroll_external_detail'],
+                'permission' => true,
+                'name' => 'payroll.store.payroll.external.detail',
+            ],
+            [
+                'uri' => 'management_employees/payroll_external_detail_delete/{payroll_detail_id}',
+                'method' => 'delete',
+                'action' => [SpreadsheetsController::class, 'destroy_payroll_external_detail'],
+                'permission' => true,
+                'name' => 'payroll.store.payroll.external.destroy',
+            ],
+            [
+                'uri' => 'management_employees/payroll_detail_expenses_multiple_store',
+                'method' => 'post',
+                'action' => [SpreadsheetsController::class, 'store_pay_spreedsheets'],
+                'permission' => true,
+                'name' => 'payroll.detail.expenses.multiple.store',
+            ],
+            [
+                'uri' => 'management_employees/payroll_detail_expense_constants_index',
+                'method' => 'get',
+                'action' => [SpreadsheetsController::class, 'show_payroll_detail_expense_constants'],
+                'permission' => true,
+                'name' => 'payroll.detail.expense.constants.show',
+            ],
+            [
+                'uri' => 'management_employees/payroll_detail_expense_index/{payroll_id}',
+                'method' => 'get',
+                'action' => [SpreadsheetsController::class, 'index_payroll_detail_expense'],
+                'permission' => true,
+                'name' => 'payroll.detail.expense.index',
+            ],
+            [
+                'uri' => 'management_employees/payroll_detail_expense_search/{payroll_id}',
+                'method' => 'post',
+                'action' => [SpreadsheetsController::class, 'search_payroll_detail_expenses'],
+                'permission' => true,
+                'name' => 'payroll.detail.expense.search',
+            ],
+            [
+                'uri' => 'management_employees/payroll_detail_expense_store',
+                'method' => 'post',
+                'action' => [SpreadsheetsController::class, 'store_payroll_detail_expense'],
+                'permission' => true,
+                'name' => 'payroll.detail.expenses.store',
+            ],
+            [
+                'uri' => 'management_employees/payroll_detail_expense_destroy/{payroll_detail_expense_id}',
+                'method' => 'delete',
+                'action' => [SpreadsheetsController::class, 'destroy_payroll_detail_expense'],
+                'permission' => true,
+                'name' => 'payroll.detail.expense.destroy',
+            ],
+            [
+                'uri' => 'management_employees/payroll_detail_expense_masive_opnuda_update',
+                'method' => 'post',
+                'action' => [SpreadsheetsController::class, 'masive_update_payroll_detail_expense'],
+                'permission' => true,
+                'name' => 'payroll.detail.expenses.massive.update.opnuda',
+            ],
+            [
+                'uri' => 'management_employees/payroll_detail_export/{payroll_id}',
+                'method' => 'get',
+                'action' => [SpreadsheetsController::class, 'export_excel_payroll_detail'],
+                'permission' => true,
+                'name' => 'payroll.detail.export',
+            ],
+            [
+                'uri' => 'management_employees/payroll_detail_export_details/{payroll_id}',
+                'method' => 'get',
+                'action' => [SpreadsheetsController::class, 'export_detail_excel_payroll_detail'],
+                'permission' => true,
+                'name' => 'payroll.detail.export.details',
+            ],
+
 
             // Formation and Development
             [
@@ -585,7 +707,7 @@ class HumanResourceRoutes
                 'permission' => true,
                 'name' => 'management.vacation.information.documents.show',
             ],
-                // Alarm Permissions and Vacation
+            // Alarm Permissions and Vacation
             [
                 'uri' => 'permissions/alarm',
                 'method' => 'get',
@@ -601,7 +723,7 @@ class HumanResourceRoutes
                 'name' => 'alarm.vacation',
             ],
 
-                // Document
+            // Document
             [
                 'uri' => 'documents/index',
                 'method' => 'get',
@@ -645,13 +767,27 @@ class HumanResourceRoutes
                 'name' => 'documents.search',
             ],
 
-                // Document Spreed Sheet
+            // Document Spreed Sheet
             [
                 'uri' => 'documents_rrhh_status',
                 'method' => 'any',
                 'action' => [DocumentSpreedSheetController::class, 'index'],
                 'permission' => true,
                 'name' => 'document.rrhh.status',
+            ],
+            [
+                'uri' => 'document_rrhh_status/create/',
+                'method' => 'post',
+                'action' => [DocumentSpreedSheetController::class, 'create'],
+                'permission' => true,
+                'name' => 'document.rrhh.status.create',
+            ],
+            [
+                'uri' => 'document_rrhh_status/update/{dr_id}',
+                'method' => 'post',
+                'action' => [DocumentSpreedSheetController::class, 'update'],
+                'permission' => true,
+                'name' => 'document.rrhh.status.update',
             ],
             [
                 'uri' => 'documents_rrhh_status/{emp_id}/{type}',
@@ -675,7 +811,7 @@ class HumanResourceRoutes
                 'name' => 'document.rrhh.nodoc.alarms',
             ],
 
-                // Grupal Documents
+            // Grupal Documents
             [
                 'uri' => 'documents/grupal_document',
                 'method' => 'get',
@@ -712,6 +848,5 @@ class HumanResourceRoutes
                 'name' => 'document.grupal_documents.download',
             ],
         ];
-
     }
 }
