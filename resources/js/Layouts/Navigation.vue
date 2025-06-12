@@ -76,7 +76,7 @@ export default {
                 { name: 'BILLING_MODULE', component: 'BillingNavigation' },
                 { name: 'HUAWEI_MODULE', component: 'HuaweiNavigation' },
                 { name: 'CAR_MODULE', component: 'FleetNavigation' },
-                { name: 'SHARE_POINT_MODULE', component: 'SharePointNavigation' }
+                { name: 'SHAREPOINT_MODULE', component: 'SharePointNavigation' }
             ],
         };
     },
@@ -84,5 +84,9 @@ export default {
     methods: {
         modulePermission: modulePermission
     },
+    // mounted() {
+    //     // Código que quieres que se ejecute cuando se monte el componente
+    //     console.log('El componente fue montado');
+    // },
 }
 </script>

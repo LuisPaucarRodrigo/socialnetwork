@@ -62,19 +62,19 @@
                             </td>
                             <td class="border-b border-gray-200 text-sm">
                                 <div v-for="ap in item.assignated_programs"
-                                    class=" grid grid-cols-3 gap-3 items-center hover:bg-gray-300 py-2 px-5"
-                                    :class="[
-        {
-            'border-l-8': true,
-            'border-yellow-500': ap.urgent_state === 'medium',
-            'border-red-500': ap.urgent_state === 'high',
-        }
-    ]">
+                                    class=" grid grid-cols-3 gap-3 items-center hover:bg-gray-300 py-2 px-5" :class="[
+                                        {
+                                            'border-l-8': true,
+                                            'border-yellow-500': ap.urgent_state === 'medium',
+                                            'border-red-500': ap.urgent_state === 'high',
+                                        }
+                                    ]">
                                     <p class="text-left">{{ ap.formation_program.name }}</p>
                                     <p class="text-center whitespace-nowrap">{{ formattedDate(ap.start_date) }} -
                                         {{ formattedDate(ap.end_date) }}
                                     </p>
-                                    <div v-if="ap.state === null" class="text-center flex gap-3 justify-center items-center ">
+                                    <div v-if="ap.state === null"
+                                        class="text-center flex gap-3 justify-center items-center ">
                                         <button @click="UpdateToCompleted(ap.id)"
                                             class="flex items-center text-blue-500 rounded-xl hover:bg-green-200">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -97,8 +97,7 @@
                                             {{ ap.state ? 'Completo' : 'Incompleto' }}
                                         </p>
                                         <button type="button" @click="openReasonModal(ap.reason)">
-                                            <EyeIcon v-if="ap.state == false"
-                                                class="h-5 text-red-500 hover:text-red-400" />
+                                            <ShowIcon v-if="ap.state == false" />
                                         </button>
                                     </div>
                                 </div>
@@ -158,9 +157,8 @@
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import Pagination from '@/Components/Pagination.vue';   
+import Pagination from '@/Components/Pagination.vue';
 import { Head, useForm } from '@inertiajs/vue3';
-import { EyeIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -168,15 +166,12 @@ import InputError from '@/Components/InputError.vue';
 import { formattedDate } from '@/utils/utils.js';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import { ShowIcon } from '@/Components/Icons/Index';
 
-const { employees,userPermissions } = defineProps({
+const { employees, userPermissions } = defineProps({
     employees: Object,
     userPermissions: Array
 })
-
-const hasPermission = (permission) => {
-    return userPermissions.includes(permission);
-}
 
 const showNotCompletedModal = ref(false)
 const apNotCompleted = ref(null)

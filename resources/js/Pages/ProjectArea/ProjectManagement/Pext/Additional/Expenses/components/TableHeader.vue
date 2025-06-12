@@ -2,7 +2,7 @@
     <div class="flex gap-4 justify-between">
         <div class="hidden sm:flex sm:items-center space-x-3">
             <PrimaryButton data-tooltip-target="update_data_tooltip" type="button" @click="dd">
-                <ServerIcon class="w-5 h-5 text-white" />
+                <ServerIcon />
             </PrimaryButton>
             <div id="update_data_tooltip" role="tooltip"
                 class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
@@ -23,7 +23,7 @@
                 Exportar Excel
                 <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
-            <button v-if="hasPermission('UserManager')" type="button"
+            <button type="button"
                 class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500"
                 @click="openModalImport">
                 Importar Gastos
@@ -83,16 +83,12 @@
             G.Fijos
             </Link>
         </div>
-        <div v-if="hasPermission('HumanResourceManager')" class="sm:hidden">
+        <div class="sm:hidden">
             <dropdown align="left">
                 <template #trigger>
                     <button @click="dropdownOpen = !dropdownOpen"
                         class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100">
-                        <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path d="M4 6H20M4 12H20M4 18H20" stroke="#000000" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" />
-                        </svg>
+                        <MenuIcon />
                     </button>
                 </template>
 
@@ -145,13 +141,12 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Search from '@/Components/Search.vue';
 import { Link } from '@inertiajs/vue3';
 import Dropdown from "@/Components/Dropdown.vue";
-import { ServerIcon } from '@heroicons/vue/24/outline';
+import { MenuIcon, ServerIcon } from '@/Components/Icons';
 
-const { project_id, fixedOrAdditional, type, userPermissions, openSwapAPModal, openModalImport, initialFilterFormState } = defineProps({
+const { project_id, fixedOrAdditional, type, openSwapAPModal, openModalImport, initialFilterFormState } = defineProps({
     project_id: String,
     fixedOrAdditional: Boolean,
     type: String,
-    userPermissions: Array,
     openSwapAPModal: Function,
     openModalImport: Function,
     initialFilterFormState: Object
@@ -176,8 +171,4 @@ function rejectedExpenses() {
 function dd() {
     filterForm.value = { ...initialFilterFormState }
 }
-
-const hasPermission = (permission) => {
-    return userPermissions.includes(permission);
-};
 </script>

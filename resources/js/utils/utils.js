@@ -23,6 +23,16 @@ export function formattedDate(fecha) {
   return fechaFormateada;
 }
 
+export function formattedMonth(fecha) {
+  if (fecha === undefined || fecha === null) {
+    return ''
+  }
+  const [year, month] = fecha.split('-'); // month = '05'
+  const date = new Date(Number(year), Number(month) - 1); // mes empieza en 0
+
+  const nombreMes = date.toLocaleDateString('es-ES', { month: 'long' });
+  return `${year} ${nombreMes}`; // → 2025 mayo
+}
 
 export function realNumeration(perPage, currentPage, index) {
   return perPage * (currentPage - 1) + (index + 1)
@@ -37,15 +47,25 @@ export function setAxiosErrors(errors, form) {
   form.setError(formErrors)
 }
 
-export function toFormData(form) {
-  const formData = new FormData();
-  for (const [key, value] of Object.entries(form)) {
-    formData.append(
-      key, 
-      (value === null || value === undefined) 
-        ? '' 
-        : value
-    );
+export function toFormData(obj, form = null, namespace = '') {
+  const formData = form || new FormData();
+  for (const [key, value] of Object.entries(obj)) {
+    const formKey = namespace ? `${namespace}[${key}]` : key;
+    if (
+      value instanceof Date ||
+      typeof value === 'string' ||
+      typeof value === 'number' ||
+      typeof value === 'boolean' ||
+      value instanceof File
+    ) {
+      formData.append(formKey, value);
+    } else if (value === null || value === undefined) {
+      formData.append(formKey, '');
+    } else if (typeof value === 'object' && !(value instanceof File)) {
+      // Recurse into nested object
+      toFormData(value, formData, formKey);
+    }
   }
+
   return formData;
 }

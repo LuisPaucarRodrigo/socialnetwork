@@ -41,10 +41,9 @@
                             <TableRow>
                                 <div class="flex space-x-3 justify-center">
                                     <button v-if="item.cicsa_charge_area.length > 0" type="button"
-                                        @click="toggleDetails(item?.cicsa_charge_area)"
-                                        class="text-blue-900 whitespace-no-wrap">
-                                        <ChevronDownIcon v-if="charge_area_row !== item.id" class="w-6 h-6" />
-                                        <ChevronUpIcon v-else class="w-6 h-6" />
+                                        @click="toggleDetails(item?.cicsa_charge_area)">
+                                        <DownArrowIcon v-if="charge_area_row !== item.id" />
+                                        <UpArrowIcon v-else />
                                     </button>
                                 </div>
                             </TableRow>
@@ -61,11 +60,13 @@
                                 <TableTitle :style="'bg-gray-200'">Estado</TableTitle>
                                 <TableTitle :style="'bg-gray-200'">Monto con IGVC</TableTitle>
                                 <TableTitle :style="'bg-gray-200'">Fecha de Abono de Cuenta Corriente</TableTitle>
-                                <TableTitle :style="'bg-gray-200'">Numero de Transacción de Cuenta Corriente
+                                <TableTitle :style="'bg-gray-200'">
+                                    Numero de operación de Cuenta Corriente
                                 </TableTitle>
                                 <TableTitle :style="'bg-gray-200'">Monto de Cuenta Corriente</TableTitle>
                                 <TableTitle :style="'bg-gray-200'">Fecha de Abono de la detraccion</TableTitle>
-                                <TableTitle :style="'bg-gray-200'">Numero de Transacción de la detraccion</TableTitle>
+                                <TableTitle :style="'bg-gray-200'">Numero de Operación de la Cuenta Detraccion
+                                </TableTitle>
                                 <TableTitle :style="'bg-gray-200'">Monto de la detraccion</TableTitle>
                                 <TableTitle :style="'bg-gray-200'">Doc Detraccion</TableTitle>
                                 <TableTitle :style="'bg-gray-200'">Encargado</TableTitle>
@@ -123,13 +124,13 @@
                                 <TableRow>
                                     <button v-if="materialDetail?.document" type="button"
                                         @click="openPDF(materialDetail?.id)">
-                                        <EyeIcon class="w-5 h-5 text-green-600" />
+                                        <ShowIcon />
                                     </button>
                                 </TableRow>
                                 <TableRow>{{ materialDetail?.user_name }}</TableRow>
                                 <TableRow>
-                                    <button class="text-blue-900" @click="openEditModal(materialDetail)">
-                                        <PencilSquareIcon class="w-5 h-5 text-amber-400" />
+                                    <button type="button" @click="openEditModal(materialDetail)">
+                                        <EditIcon />
                                     </button>
                                 </TableRow>
                             </tr>
@@ -202,8 +203,8 @@
                             <div v-if="doc_invoice" class="sm:col-span-1">
                                 <InputLabel for="doc_invoice">Doc Factura</InputLabel>
                                 <div class="mt-2">
-                                    <button class="flex justify-center py-1.5" type="button" @click="togglePdfPreview">
-                                        <EyeIcon class="w-5 h-5 text-green-600" />
+                                    <button type="button" @click="togglePdfPreview">
+                                        <ShowIcon />
                                     </button>
                                 </div>
                             </div>
@@ -220,7 +221,7 @@
                             </div>
 
                             <div class="sm:col-span-1">
-                                <InputLabel for="transaction_number_current">Número de Transacción de cuenta corriente
+                                <InputLabel for="transaction_number_current">Número de operación de cuenta corriente
                                 </InputLabel>
                                 <div class="mt-2">
                                     <TextInput type="text" v-model="form.transaction_number_current" autocomplete="off"
@@ -230,7 +231,8 @@
                             </div>
 
                             <div class="sm:col-span-1">
-                                <InputLabel for="checking_account_amount">Monto de cuenta corriente</InputLabel>
+                                <InputLabel for="checking_account_amount">Monto de operación de cuenta corriente
+                                </InputLabel>
                                 <div class="mt-2">
                                     <input type="number" v-model="form.checking_account_amount"
                                         id="checking_account_amount" min="0" :max="form.checking_account_amount"
@@ -260,7 +262,7 @@
                             </div>
 
                             <div v-if="form.state_detraction" class="sm:col-span-1 sm:col-start-1">
-                                <InputLabel for="deposit_date_bank">Fecha de Abono a cuenta de la detraccion
+                                <InputLabel for="deposit_date_bank">Fecha de Abono a cuenta de detracción
                                 </InputLabel>
                                 <div class="mt-2">
                                     <TextInput type="date" v-model="form.deposit_date_bank" autocomplete="off"
@@ -270,7 +272,7 @@
                             </div>
 
                             <div v-if="form.state_detraction" class="sm:col-span-1">
-                                <InputLabel for="transaction_number_bank">Número de Transacción de la detraccion
+                                <InputLabel for="transaction_number_bank">Número de operación de detracción
                                 </InputLabel>
                                 <div class="mt-2">
                                     <TextInput type="text" v-model="form.transaction_number_bank" autocomplete="off"
@@ -280,7 +282,7 @@
                             </div>
 
                             <div v-if="form.state_detraction" class="sm:col-span-1">
-                                <InputLabel for="amount_bank">Monto de la detraccion</InputLabel>
+                                <InputLabel for="amount_bank">Monto de operación de detracción</InputLabel>
                                 <div class="mt-2">
                                     <input type="number" v-model="form.amount_bank" id="amount_bank" autocomplete="off"
                                         min="0" :max="form.amount_bank" step="0.01"
@@ -327,7 +329,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Head, useForm, router } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
@@ -335,12 +337,11 @@ import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import { formattedDate, setAxiosErrors, toFormData } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
-import { ChevronDownIcon, ChevronUpIcon, EyeIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import InputFile from '@/Components/InputFile.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-
+import { ShowIcon, EditIcon, DownArrowIcon, UpArrowIcon } from '@/Components/Icons';
 
 const { charge_area, auth, searchCondition, type } = defineProps({
     charge_area: Object,

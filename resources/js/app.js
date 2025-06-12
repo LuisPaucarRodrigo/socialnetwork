@@ -26,7 +26,6 @@ createInertiaApp({
         // Guardar role_id y permisos globalmente
         window.appAuth = appAuth; // Para mantener compatibilidad con tu middleware
 
-
         const app = createApp({
             render: () => h(App, props),
             mounted() {

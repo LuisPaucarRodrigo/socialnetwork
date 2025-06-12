@@ -106,7 +106,7 @@ class PreProjectController extends Controller
             'type' => $type,
             'cost_line' => CostLine::with(['cost_center' => function ($query) {
                 $query->where('name', 'not like', '%Mantto%');
-            }])->find(2)
+            }])->find($type)
         ]);
     }
 
@@ -1033,15 +1033,15 @@ class PreProjectController extends Controller
             'user_id_array' => 'required'
         ]);
         $preproject = Preproject::find($request->preproject_id);
-        $preproject->users()->sync($request->user_id_array, ['timestamps' => true]);
+        $preproject->users()->sync($request->user_id_array, true);
     }
 
     //codes
 
     public function showCodes()
     {
-        return Inertia::render('ProjectArea/PreProject/Codes', [
-            'code' => Code::paginate(20)
+        return Inertia::render('ProjectArea/PreProject/PRO/Codes/Index', [
+            'code' => Code::orderBy('created_at', 'desc')->paginate(20)
         ]);
     }
 
@@ -1078,7 +1078,8 @@ class PreProjectController extends Controller
 
     public function indexImages($code_id)
     {
-        $imagesCode = CodeImage::where('code_id', $code_id)->get();
+        $imagesCode = CodeImage::where('code_id', $code_id)
+            ->get();
         return response()->json($imagesCode, 200);
     }
 
@@ -1141,8 +1142,10 @@ class PreProjectController extends Controller
 
     public function showTitles()
     {
-        return Inertia::render('ProjectArea/PreProject/Titles', [
-            'titles' => Title::with('codes')->paginate(10),
+        return Inertia::render('ProjectArea/PreProject/PRO/Titles/Index', [
+            'titles' => Title::with('codes')
+                ->orderBy('created_at', 'desc')
+                ->paginate(10),
             'codes' => Code::all(),
             'stages' => ReportStage::select('id', 'name')->get(),
         ]);
@@ -1159,6 +1162,8 @@ class PreProjectController extends Controller
         $title = Title::create($data);
 
         $title->codes()->attach($data['code_id_array']);
+        $title->load('codes');
+        return response()->json($title, 200);
     }
 
     public function putTitle(Request $request, $title_id)
@@ -1172,12 +1177,14 @@ class PreProjectController extends Controller
         $title = Title::find($title_id);
         $title->update($data);
 
-        $title->codes()->sync($data['code_id_array'], ['timestamps' => true]);
+        $title->codes()->sync($data['code_id_array'], true);
+        $title->load('codes');
+        return response()->json($title, 200);
     }
 
     public function deleteTitle(Title $title)
     {
         $title->delete();
-        return redirect()->back();
+        return response()->json([], 200);
     }
 }

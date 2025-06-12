@@ -47,15 +47,14 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ training.description }}</p>
                             </td>
-                            <td 
-                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm ">
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm ">
                                 <div class="flex space-x-3 justify-center">
                                     <Link v-if="hasPermission('HumanResourceManager')"
                                         :href="route('management.employees.formation_development.trainings.create', { id: training.id })">
-                                    <PencilSquareIcon class="h-6 w-6 text-blue-500" />
+                                    <EditIcon />
                                     </Link>
                                     <button v-if="hasPermission('UserManager')" @click="openModalDelete(training)">
-                                        <TrashIcon class="h-6 w-6 text-red-500" />
+                                        <DeleteIcon />
                                     </button>
                                 </div>
                             </td>
@@ -77,10 +76,10 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue'
 import { Head, Link, router } from '@inertiajs/vue3';
-import { TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { ref } from 'vue';
+import { DeleteIcon, EditIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
     trainings: Object,

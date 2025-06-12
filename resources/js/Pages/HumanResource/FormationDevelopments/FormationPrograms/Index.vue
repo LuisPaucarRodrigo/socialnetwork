@@ -1,5 +1,5 @@
-
 <template>
+
     <Head title="Programas de Formación" />
 
     <AuthenticatedLayout :redirectRoute="'management.employees.formation_development'">
@@ -8,11 +8,11 @@
         </template>
         <div class="min-w-full">
             <div v-if="hasPermission('HumanResourceManager')" class="flex items-center">
-                <PrimaryButton @click="add_information" type="button" >
+                <PrimaryButton @click="add_information" type="button">
                     Agregar Informacion
                 </PrimaryButton>
             </div>
-            
+
             <div class="overflow-x-auto">
                 <table class="w-full whitespace-no-wrap rounded-lg shadow">
                     <thead>
@@ -30,7 +30,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Descripción
                             </th>
-                            <th 
+                            <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Acciones
                             </th>
@@ -52,10 +52,11 @@
                                 <div class="flex space-x-3 justify-center">
                                     <Link
                                         :href="route('management.employees.formation_development.view', { id: formationProgram.id })">
-                                    <EyeIcon class="h-6 w-6 text-teal-500" />
+                                    <ShowIcon />
                                     </Link>
-                                    <button v-if="hasPermission('UserManager')" @click="openModalDelete(formationProgram)">
-                                        <TrashIcon class="h-6 w-6 text-red-500" />
+                                    <button v-if="hasPermission('UserManager')"
+                                        @click="openModalDelete(formationProgram)">
+                                        <DeleteIcon />
                                     </button>
                                 </div>
                             </td>
@@ -77,15 +78,15 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { EyeIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { DeleteIcon, ShowIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
     formationPrograms: Object,
     employees: Object,
-    userPermissions:Array
+    userPermissions: Array
 })
 
 const hasPermission = (permission) => {

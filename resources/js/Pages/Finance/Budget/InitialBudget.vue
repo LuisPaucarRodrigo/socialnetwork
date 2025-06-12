@@ -203,10 +203,6 @@ const props = defineProps({
   userPermissions:Array
 });
 
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
-
 const isModalOpen2 = ref(false);
 const approvating = ref(false);
 

@@ -77,15 +77,15 @@
                                     </InputLabel>
                                 </div>
                             </div>
-                            
+
                         </div>
                         <div class="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
                             <div class="sm:col-span-3">
                                 <InputLabel for="cpe">CPE:
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="text" v-model="form.cpe" id="cpe" 
-                                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <input type="text" v-model="form.cpe" id="cpe"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors.cpe" />
                                 </div>
                             </div>
@@ -130,7 +130,7 @@
                                         al proyecto
                                     </InputLabel>
                                     <button @click="showToAddEmployee" type="button">
-                                        <UserPlusIcon class="text-indigo-800 h-6 w-6 hover:text-purple-400" />
+                                        <AddUserIcon />
                                     </button>
                                 </div>
                                 <br />
@@ -157,8 +157,8 @@
                                                     member.pivot.id,
                                                     index
                                                 )
-                                                " class="col-span-1 flex justify-end">
-                                                <TrashIcon class="text-red-500 h-4 w-4" />
+                                                ">
+                                                <DeleteIcon />
                                             </button>
                                             <div class="border-b col-span-8 border-gray-900/10"></div>
                                         </div>
@@ -186,8 +186,8 @@ member, index
                                                     member.pivot.id,
                                                     index
                                                 )
-                                                " class="col-span-1 flex justify-end">
-                                                <TrashIcon class="text-red-500 h-4 w-4" />
+                                                ">
+                                                <DeleteIcon />
                                             </button>
                                             <div class="border-b col-span-8 border-gray-900/10"></div>
                                         </div>
@@ -214,8 +214,8 @@ member, index
                                                     member.pivot.id,
                                                     index
                                                 )
-                                                " class="col-span-1 flex justify-end">
-                                                <TrashIcon class="text-red-500 h-4 w-4" />
+                                                ">
+                                                <DeleteIcon />
                                             </button>
                                             <div class="border-b col-span-8 border-gray-900/10"></div>
                                         </div>
@@ -334,11 +334,11 @@ import InputError from "@/Components/InputError.vue";
 import Modal from "@/Components/Modal.vue";
 import { ref } from "vue";
 import { Head, router, useForm } from "@inertiajs/vue3";
-import { UserPlusIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import ErrorOperationModal from "@/Components/ErrorOperationModal.vue";
-import TextInput from "@/Components/TextInput.vue";
+import DeleteIcon from "@/Components/Icons/DeleteIcon.vue";
+import { AddUserIcon } from "@/Components/Icons";
 
 const showModal = ref(false);
 const showUpdateModal = ref(false);
@@ -376,24 +376,40 @@ const initialState = {
     cpe: ""
 };
 
-const form = useForm(project ? { ...project, cpe:project.preproject.cpe } : { ...initialState });
+const form = useForm(project ? { ...project, cpe: project.preproject.cpe } : { ...initialState });
 
-const submit = () => {
-    form.post(route("projectmanagement.store"), {
-        onSuccess: () => {
-            closeModal();
-            project ? (showUpdateModal.value = true) : (showModal.value = true);
-            setTimeout(() => {
-                project
-                    ? (showUpdateModal.value = false)
-                    : (showModal.value = false);
-                router.visit(route(redirectRoute));
-            }, 2000);
-        },
-        onError: () => {
-            close();
-        },
-    });
+async function submit() {
+    // console.log("form", form)
+    try {
+        await axios.post(route('projectmanagement.store'), form)
+        project ? (showUpdateModal.value = true) : (showModal.value = true);
+        setTimeout(() => {
+            project
+                ? (showUpdateModal.value = false)
+                : (showModal.value = false);
+            router.visit(route(redirectRoute));
+        }, 2000);
+        console.log("todo bien")
+    } catch (error) {
+        close();
+        console.error(error)
+    }
+    // form.post(route("projectmanagement.store"), {
+    //     onSuccess: () => {
+    //         closeModal();
+    //         project ? (showUpdateModal.value = true) : (showModal.value = true);
+    //         setTimeout(() => {
+    //             project
+    //                 ? (showUpdateModal.value = false)
+    //                 : (showModal.value = false);
+    //             router.visit(route(redirectRoute));
+    //         }, 2000);
+    //     },
+    //     onError: (error) => {
+    //         console.log(error)
+    //         close();
+    //     },
+    // });
 };
 
 const showModalMember = ref(false);

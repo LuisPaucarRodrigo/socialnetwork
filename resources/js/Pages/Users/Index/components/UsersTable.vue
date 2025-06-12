@@ -12,10 +12,9 @@
                 <TableTitle>DNI</TableTitle>
                 <TableTitle>Telefono</TableTitle>
                 <TableTitle v-permission-or="[
-                    'link_employee',
-                    'users_details',
-                    'user_edit',
-                    'user_delete',
+                    'see_user',
+                    'edit_user',
+                    'delete_user',
                 ]"></TableTitle>
             </tr>
         </template>
@@ -28,24 +27,25 @@
                 <TableRow>{{ user.dni }}</TableRow>
                 <TableRow>{{ user.phone }}</TableRow>
                 <TableRow v-permission-or="[
-                    'link_employee',
-                    'users_details',
-                    'user_edit',
-                    'user_delete',
+                    'see_user',
+                    'edit_user',
+                    'delete_user',
                 ]">
                     <div class="flex space-x-3 justify-center">
-                        <button v-permission="'link_employee'" v-if="(user.platform === 'Web/Movil' || user.platform === 'Movil')
+                        <button v-permission="'edit_user'" v-if="(user.platform === 'Web/Movil' || user.platform === 'Movil')
                             && !user.employee" @click="linkEmployee(user.id)">
-                            <LinkIcon class="w=6 h-6 text-green-500" />
+                            <LinkIcon />
                         </button>
-                        <Link  v-permission="'users_details'" class="text-blue-900 whitespace-no-wrap" :href="route('users.details', { id: user.id })">
-                        <EyeIcon class="w-6 h-6 text-teal-500" />
+                        <Link v-permission="'see_user'" class="text-blue-900 whitespace-no-wrap"
+                            :href="route('users.details', { id: user.id })">
+                        <ShowIcon />
                         </Link>
-                        <Link  v-permission="'user_edit'" class="text-blue-900 whitespace-no-wrap" :href="route('users.edit', { id: user.id })">
-                        <PencilSquareIcon class="w-5 h-5 text-yellow-400" />
+                        <Link v-permission="'edit_user'" class="text-blue-900 whitespace-no-wrap"
+                            :href="route('users.edit', { id: user.id })">
+                        <EditIcon />
                         </Link>
-                        <button v-permission="'user_delete'" type="button" @click="confirmUserDeletion(user.id)">
-                            <TrashIcon class="w-5 h-5 text-red-500" />
+                        <button v-permission="'delete_user'" type="button" @click="confirmUserDeletion(user.id)">
+                            <DeleteIcon />
                         </button>
                     </div>
                 </TableRow>
@@ -65,7 +65,7 @@ import TableHeaderFilter from '@/Components/TableHeaderFilter.vue';
 import { Link } from '@inertiajs/vue3';
 import Pagination from '@/Components/Pagination.vue';
 import { notify, notifyError } from '@/Components/Notification';
-import { EyeIcon, PencilSquareIcon, TrashIcon, LinkIcon } from '@heroicons/vue/24/outline';
+import { ShowIcon, EditIcon, DeleteIcon, LinkIcon } from '@/Components/Icons/Index';
 
 const { users, formSearch, platforms } = defineProps({
     users: Object,

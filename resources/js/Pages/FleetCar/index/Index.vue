@@ -1,15 +1,15 @@
 <template>
+
     <Head title="Gestion de Empleados" />
     <AuthenticatedLayout :redirectRoute="'fleet.cars.index'">
-        <Toaster richColors />
         <template #header> Vehiculos </template>
+        <Toaster richColors />
         <div class="w-full">
-            <TableHeader :form="formSearch" :openCreateFormCar="openCreateFormCar"
-                :userPermission="userPermissions" />
-            <FleetCarTable :cars="cars" :userPermissions="userPermissions" v-model:formSearch="formSearch"
-                :cost_line="cost_line" :openEditFormCar="openEditFormCar" />
+            <TableHeader :form="formSearch" :openCreateFormCar="openCreateFormCar" :role_id="auth.user.role_id" />
+            <FleetCarTable :cars="cars" v-model:formSearch="formSearch" :cost_line="cost_line"
+                :openEditFormCar="openEditFormCar" :role_id="auth.user.role_id" />
         </div>
-        <FormCar :cars="cars" :users="users" :costLine="costLine" :userPermissions="userPermissions" ref="formCar" />
+        <FormCar :cars="cars" :users="users" :costLine="costLine" ref="formCar" />
     </AuthenticatedLayout>
 </template>
 
@@ -19,7 +19,7 @@ import { Head } from "@inertiajs/vue3";
 import { ref, watch } from "vue";
 import { notifyError } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
-import TableHeader   from "./components/TableHeader.vue";
+import TableHeader from "./components/TableHeader.vue";
 import FleetCarTable from "./components/FleetCarTable.vue";
 import FormCar from "./components/FormCar.vue";
 
@@ -28,7 +28,10 @@ const props = defineProps({
     userPermissions: Array,
     costLine: Object,
     users: Object,
+    auth: Object,
 });
+
+console.log(props.auth)
 
 const cars = ref(props.car);
 const formCar = ref(null)

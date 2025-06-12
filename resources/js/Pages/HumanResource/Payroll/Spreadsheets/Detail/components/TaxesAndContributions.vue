@@ -29,16 +29,29 @@
                                     v-model="taxesContributions[item.id].amount"
                                     @keypress.enter="handleSubmit(taxesContributions[item.id])"
                                 />
-                                <div class="flex items-center">
-                                    <span
-                                        v-if="
-                                            !item.saved
-                                        "
-                                        class="absolute inline-flex rounded-full h-2 w-2 bg-fuchsia-500 cursor-pointer"
-                                    >
-                                    </span>
+                                <div class="relative flex items-center">
+                                    <div class="absolute flex items-center">
+                                        <span
+                                            v-if="
+                                                !item.saved
+                                            "
+                                            class="rounded-full h-2 w-2 bg-fuchsia-500 cursor-pointer"
+                                        >
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
+                        </TableRow>
+                    </tr>
+                    <tr>
+                        <TableRow :colspan="3"></TableRow>
+                        <TableRow>
+                            <p class="my-3 text-indigo-800 font-semibold ">
+                                S/. {{ Object.values(taxesContributions).reduce((a,b)=>(
+                                    b.type === 'employee' ? a+Number(b.amount) : a+0
+                                ), 0).toFixed(2) 
+                                }}
+                            </p>
                         </TableRow>
                     </tr>
                 </template>
@@ -68,16 +81,29 @@
                                     v-model="taxesContributions[item.id].amount"
                                     @keypress.enter="handleSubmit(taxesContributions[item.id])"
                                 />
-                                <div class="flex items-center">
-                                    <span
-                                        v-if="
-                                            !item.saved
-                                        "
-                                        class="absolute inline-flex rounded-full h-2 w-2 bg-fuchsia-500 cursor-pointer"
-                                    >
-                                    </span>
+                                <div class="relative flex items-center">
+                                    <div class="absolute flex items-center">
+                                        <span
+                                            v-if="
+                                                !item.saved
+                                            "
+                                            class="rounded-full h-2 w-2 bg-fuchsia-500 cursor-pointer"
+                                        >
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
+                        </TableRow>
+                    </tr>
+                    <tr>
+                        <TableRow :colspan="3"></TableRow>
+                        <TableRow>
+                            <p class="my-3 text-indigo-800 font-semibold ">
+                                S/. {{ Object.values(taxesContributions).reduce((a,b)=>(
+                                    b.type === 'employer' ? a+Number(b.amount) : a+0
+                                ), 0).toFixed(2) 
+                                }}
+                            </p>
                         </TableRow>
                     </tr>
                 </template>
@@ -114,6 +140,7 @@ async function handleSubmit(item) {
         const tacItem = taxAndContributionParams.value.find(subitem=> subitem.id == item.t_a_c_param_id);
         tacItem.saved = true
         if (!item.id) {
+            res.data.type = item.type
             taxesContributions.value[item.t_a_c_param_id] = res.data;
         }
         notify("Guardado");
@@ -141,9 +168,11 @@ onMounted(async () => {
                     original[item.id] = {
                         id: null,
                         payroll_detail_id: payroll_detail.id,
+                        type: item.type,
                         t_a_c_param_id: item.id,
                         amount: 0,
                     };
+                else original[item.id].type = item.type
             });
             taxesContributions.value = original;
         }

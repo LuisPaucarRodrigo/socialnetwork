@@ -2,17 +2,24 @@
 
 namespace App\Http\Controllers\HumanResource;
 
+use App\Constants\PayrollConstants;
+use App\Constants\PintConstants;
+use App\Constants\ProjectConstants;
+use App\Exports\Payroll\PayrollDetailsExport;
 use App\Exports\Payroll\PayrollExport;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\HumanResource\Payroll\StoreMasivePayrollDetailExpensesRequest;
+use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailExpenseRequest;
 use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailMonetaryDiscountRequest;
 use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailMonetaryIncomeRequest;
 use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailTaxAndContributionRequest;
 use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailWorkScheduleRequest;
 use App\Http\Requests\HumanResource\Payroll\StorePayrollExternalDetailRequest;
 use App\Http\Requests\HumanResource\StorePayrollRequest;
-use App\Models\Contract;
+use App\Http\Requests\UpdateMasiveOpNuDateRequest;
 use App\Models\Employee;
 use App\Models\ExternalEmployee;
+use App\Models\GeneralExpense;
 use App\Models\IncomeParam;
 use App\Models\DiscountParam;
 use App\Models\Payroll;
@@ -25,6 +32,7 @@ use App\Models\PayrollDetailWorkSchedule;
 use App\Models\PayrollExternalDetail;
 use App\Models\Pension;
 use App\Models\TaxAndContributionParam;
+use App\Services\HumanResource\PayrollDetailExpensesServices;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -33,15 +41,18 @@ use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\AccountStatement;
 use App\Services\HumanResource\PayrollServices;
+use Illuminate\Support\Arr;
 
 class SpreadsheetsController extends Controller
 {
     protected $payrollServices;
+    protected $payrollDetailExpensesServices;
 
-    public function __construct(PayrollServices $payrollServices)
-    {
+    public function __construct(PayrollServices $payrollServices, PayrollDetailExpensesServices $payrollDetailExpensesServices) {
         $this->payrollServices = $payrollServices;
+        $this->payrollDetailExpensesServices = $payrollDetailExpensesServices;
     }
+
 
     public function index()
     {
@@ -79,7 +90,7 @@ class SpreadsheetsController extends Controller
             //Crear detalles por empleado
             foreach ($employees as $employee) {
                 $payrollDetail = $this->payrollServices->createPayrollDetailForEmployee($employee, $payroll, $listPension);
-                $this->payrollServices->createPayrollDetailExpenses($payrollDetail);
+                // $this->payrollServices->createPayrollDetailExpenses($payrollDetail);
             }
             DB::commit();
             return response()->json($payroll, 200);
@@ -94,18 +105,18 @@ class SpreadsheetsController extends Controller
         if ($request->isMethod('get')) {
             // Obtener nómina y detalles con el servicio
             $payroll = Payroll::find($payroll_id);
-            $spreadsheet = $this->payrollServices->getPayrollDetails($payroll_id)->get();
+            $spreadsheet = $this->payrollServices->getPayrollDetails($payroll_id)->get()->each->append('new_totals');
             $total = $this->payrollServices->calculateTotal($spreadsheet);
-
+            $pensionTypes = PayrollConstants::payrollPensionTypes();
             return Inertia::render('HumanResource/Payroll/Spreadsheets/Index/Index', [
                 'spreadsheet' => $spreadsheet,
                 'payroll' => $payroll,
                 'total' => $total,
+                'pensionTypes'=> $pensionTypes
             ]);
         } elseif ($request->isMethod('post')) {
             // Buscar detalles con filtro de búsqueda
-            $searchQuery = $request->searchQuery;
-            $spreadsheet = $this->payrollServices->getPayrollDetails($payroll_id, $searchQuery)->get();
+            $spreadsheet = $this->payrollServices->getPayrollDetails($payroll_id, $request)->get()->each->append('new_totals');
             $total = $this->payrollServices->calculateTotal($spreadsheet);
 
             return response()->json(
@@ -118,6 +129,65 @@ class SpreadsheetsController extends Controller
         }
     }
 
+   
+    public function export_excel_payroll_detail($payroll_id){
+        $payroll = Payroll::find($payroll_id);
+        $spreadsheet = $this->payrollServices->getPayrollDetails($payroll_id)->get()->each->append('new_totals');
+        $total = $this->payrollServices->calculateTotal($spreadsheet);
+        $data = compact('payroll', 'spreadsheet', 'total');
+        return Excel::download(new PayrollDetailsExport($data, 'general'), 'Nómina - Datos generales.xlsx');
+    }
+
+    public function export_detail_excel_payroll_detail(Request $request, $payroll_id)
+    {
+
+        $registers = collect($request->registerSelected);
+        $appends = [];
+        $dataMap = [
+            'Ingresos' => [
+                'variable' => 'incomes',
+                'query' => fn() => IncomeParam::all(),
+                'append' => 'monetary_incomes_by_ids',
+            ],
+            'Descuentos' => [
+                'variable' => 'discounts',
+                'query' => fn() => DiscountParam::all(),
+                'append' => 'monetary_discounts_by_ids',
+            ],
+            'Tributos' => [
+                'variable' => 'tacEmployee',
+                'query' => fn() => TaxAndContributionParam::where('type', 'employee')->get(),
+                'append' => 'tax_contribution_employee_by_ids',
+            ],
+            'Aportes' => [
+                'variable' => 'tacEmployer',
+                'query' => fn() => TaxAndContributionParam::where('type', 'employer')->get(),
+                'append' => 'tax_contribution_employer_by_ids',
+            ],
+        ];
+        $data = [
+            'incomes' => null,
+            'discounts' => null,
+            'tacEmployee' => null,
+            'tacEmployer' => null,
+        ];
+        foreach ($dataMap as $key => $config) {
+            if ($registers->contains($key)) {
+                $data[$config['variable']] = $config['query']();
+                $appends[] = $config['append'];
+            }
+        }
+        $data['payroll'] = Payroll::findOrFail($payroll_id);
+        $data['spreadsheet'] = $this->payrollServices
+            ->getPayrollDetailsAllValues($payroll_id)
+            ->get()
+            ->each
+            ->append($appends);
+    
+        return Excel::download(new PayrollDetailsExport($data, 'detail'), 'Nómina - Datos detallados.xlsx');
+    }
+    
+
     public function index_payroll_detail($payroll_details_id, $employee_id)
     {
         return Inertia::render("HumanResource/Payroll/Spreadsheets/Detail/Index", [
@@ -126,66 +196,6 @@ class SpreadsheetsController extends Controller
                 ->setAppends(['mod_days']),
             'employee_id' => $employee_id,
         ]);
-    }
-
-    public function update_payroll_salary(Request $request, $payroll_details_id)
-    {
-        $validateData = $request->validate([
-            'operation_date' => 'required',
-            'operation_number' => 'required',
-        ]);
-        $payrollDetailExpense = PayrollDetailExpense::where('payroll_detail_id', $payroll_details_id)
-            ->where('type', 'Salary')
-            ->first();
-        $data = [
-            'operation_date' => $validateData['operation_date'],
-            'operation_number' => $validateData['operation_number'],
-        ];
-        $payrollDetailExpense->update($data);
-        $payrollExpense = PayrollDetailExpense::where('payroll_detail_id', $payroll_details_id)->get();
-        return response()->json($payrollExpense, 200);
-    }
-
-    public function update_payroll_travelExpense(Request $request, $payroll_details_id)
-    {
-        $validateData = $request->validate([
-            'operation_date' => 'required',
-            'operation_number' => 'required',
-        ]);
-        $payrollDetailExpense = PayrollDetailExpense::where('payroll_detail_id', $payroll_details_id)
-            ->where('type', 'Travel')
-            ->first();
-        $data = [
-            'operation_date' => $validateData['operation_date'],
-            'operation_number' => $validateData['operation_number'],
-        ];
-        $payrollDetailExpense->update($data);
-        $payrollExpense = PayrollDetailExpense::where('payroll_detail_id', $payroll_details_id)->get();
-        return response()->json($payrollExpense, 200);
-    }
-
-    public function export($payroll_id)
-    {
-        return Excel::download(new PayrollExport($payroll_id), 'Planilla ' . date('m-Y') . '.xlsx');
-    }
-
-    public function discount_employee(Request $request, $employee_id)
-    {
-        $validateData = $request->validate([
-            'discount' => 'required|numeric'
-        ]);
-        try {
-            $validateData['discount'] = floatval($validateData['discount']);
-            $payrollDetail = PayrollDetail::where('employee_id', $employee_id)
-                ->first();
-            $payrollDetail->update([
-                'discount' => $validateData['discount']
-            ]);
-            $payrollDetail->load('employee', 'payroll_detail_expense');
-            return response()->json($payrollDetail, 200);
-        } catch (Exception $e) {
-            return response()->json($e->getMessage(), 500);
-        }
     }
 
     public function index_worder_data($employee_id)
@@ -289,4 +299,164 @@ class SpreadsheetsController extends Controller
         $rg->delete();
         return response()->json();
     }
+
+
+    //paying spreadsheets
+    public function store_pay_spreedsheets(StoreMasivePayrollDetailExpensesRequest $request) {
+        $data = $request->validated();
+        foreach($data['payroll_detail_expenses'] as $i=>$item){
+            $as = self::findAccountStatement($item);
+            $item['account_statement_id'] = $as?->id;
+            $item['type'] = ProjectConstants::EXP_TYPE_PAYROLL;
+            $ge = GeneralExpense::create($item);
+            $item['general_expense_id'] = $ge->id;
+            PayrollDetailExpense::create($item);
+        }
+        return response()->json();
+    }
+
+    public function show_payroll_detail_expense_constants() {
+        return response()->json([
+            'expenseTypes' => PayrollConstants::payrollExpenseTypes(),
+            'docTypes' => PayrollConstants::payrollDocTypes(),
+        ]);
+    }
+
+
+    public function index_payroll_detail_expense($payroll_id){
+        $data = PayrollDetailExpense::with('general_expense')->whereHas('payroll_detail',
+             function($query) use ($payroll_id) {
+                $query->where('payroll_id', $payroll_id);
+            }
+        )->paginate(20);
+        $data->getCollection()->each->append('real_state');
+        return Inertia::render('HumanResource/Payroll/Spreadsheets/Expense/Index', [
+            'expenses' => $data,
+            'expenseTypes' => PayrollConstants::payrollExpenseTypes(),
+            'docTypes' => PayrollConstants::payrollDocTypes(),
+            'stateTypes' => PintConstants::scStatesTypes(),
+            'payroll' => Payroll::findOrFail($payroll_id),
+        ]);
+    }
+
+    public function store_payroll_detail_expense(StorePayrollDetailExpenseRequest $request) {
+        $data = $request->validated();
+        DB::beginTransaction();
+        try {
+            $as = self::findAccountStatement($data['general_expense']);
+            $data['general_expense']['account_statement_id'] = $as?->id;
+            $rg = PayrollDetailExpense::find($data['id']);
+            if ($request->hasFile('photo')) {
+                $filename = $rg?->photo;
+                if ($filename) { $this->file_delete($filename, 'documents/payrollexpenses/');}
+                $data['photo'] = $this->file_store($request->file('photo'), 'documents/payrollexpenses/');
+            } 
+            if ($data['photo_status'] === 'stable') {
+                $filename = $rg?->photo;
+                if ($filename) {unset($data["photo"]);}
+            }
+            if ($data['photo_status'] === 'delete') {
+                $filename = $rg?->photo;
+                if ($filename) {$this->file_delete($filename, 'documents/payrollexpenses/');}
+            }
+            $ge = GeneralExpense::updateOrCreate(['id'=>$data['general_expense']['id']], $data['general_expense']);
+            $data['general_expense_id'] = $ge->id;
+            $rg = PayrollDetailExpense::updateOrCreate(['id'=>$data['id']],$data);
+            $rg->load('general_expense');
+            $rg->append('real_state');
+            DB::commit();
+            return response()->json($rg, 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
+        }
+    }
+    public function destroy_payroll_detail_expense($payroll_detail_expense_id)
+    {
+        DB::beginTransaction();
+        try {
+            $rg = PayrollDetailExpense::findOrFail($payroll_detail_expense_id);
+            $rg->photo && $this->file_delete($rg->photo, 'documents/payrollexpenses/');
+            $rg->delete();
+            DB::commit();
+            return response()->json();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['msg'=>'Server Error'], 500);
+        }
+    }
+
+    public function masive_update_payroll_detail_expense(UpdateMasiveOpNuDateRequest $request)
+    {
+        DB::beginTransaction();
+        try {
+            $data = $request->validated();
+            $as =  self::findAccountStatement($data);
+            $data['account_statement_id'] = $as?->id;
+            $ids = Arr::pull($data, 'ids');
+            $costs = PayrollDetailExpense::whereIn('id',$ids)->get();
+            foreach ($costs as $cost) { $cost->general_expense->update($data);}
+            $updatedCosts = PayrollDetailExpense::whereIn('id', $ids)
+                ->with(['general_expense'])->get()->each->append('real_state');
+            DB::commit();
+            return response()->json($updatedCosts, 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json(['msg'=>'Server Error'], 500);
+        }
+    }
+
+
+    public function search_payroll_detail_expenses(Request $request, $payroll_id)
+    {
+        $query = PayrollDetailExpense::with('general_expense')
+            ->whereHas('payroll_detail', function($q) use ($payroll_id) {
+                $q->where('payroll_id', $payroll_id);
+            });
+        $result = $this->payrollDetailExpensesServices->filter($request, $query);
+        return response()->json($result, 200);
+    }
+
+
+
+
+
+
+
+
+
+    protected static function findAccountStatement($item)
+    {
+        if (isset($item['operation_number']) && isset($item['operation_date'])) {
+            $on = substr($item['operation_number'], -6);
+            return AccountStatement::where('operation_date', $item['operation_date'])
+                ->where('operation_number', $on)->first();
+        }
+        return null;
+    }
+
+    public function file_store($file, $path)
+    {
+        $name = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path($path), $name);
+        return $name;
+    }
+
+    public function file_delete($filename, $path)
+    {
+        $file_path = $path . $filename;
+        $path = public_path($file_path);
+        if (file_exists($path))
+            unlink($path);
+    }
+
+
+
+
+
+
+
+
+
+
 }

@@ -24,7 +24,8 @@ class StorePayrollExternalDetailRequest extends FormRequest
         return [
             "id" => "nullable",
             "payroll_id" => "required",
-            "external_employee_id" => "required",
+            "name" => "required",
+            "lastname" => "required",
             "doc_type" => "required",
             "doc_number" => "required",
             "amount" => "required",

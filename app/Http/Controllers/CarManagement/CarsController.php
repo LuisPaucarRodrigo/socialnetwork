@@ -19,6 +19,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class CarsController extends Controller
@@ -29,12 +30,17 @@ class CarsController extends Controller
             $query->with('car_changelog_items');
         }])->orderBy('created_at', 'desc');
 
-        $users = User::whereHas('role.permissions', function ($query) {
-            $query->where('name', 'Car');
+        $users = User::whereHas('role', function ($query) {
+            $query->where('name', 'share and flota');
         })->get();
+        // dd($users);
+        // $users = User::whereHas('role.permissions', function ($query) {
+        //     $query->where('name', 'Car');
+        // })->get();
 
         $user = Auth::user();
-        $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
+        // dd($user->role);
+        $userHasCarManagerPermission = $user->role->functionalities->contains('key_name', 'see_all_mobile');
 
         if (!$userHasCarManagerPermission) {
             $cars->where('user_id', $user->id);
@@ -62,7 +68,9 @@ class CarsController extends Controller
                     ->orWhere('model', 'like', "%$search%")
                     ->orWhere('type', 'like', "%$search%");
             });
-        $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
+        $userHasCarManagerPermission = $user->role->functionalities->contains('key_name', 'see_all_mobile');
+
+        // $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
 
         if (!$userHasCarManagerPermission) {
             $cars->where('user_id', $user->id);
@@ -82,7 +90,9 @@ class CarsController extends Controller
         $user = Auth::user();
         $today = Carbon::now();
         $expirationThreshold = $today->copy()->addDays(7);
-        $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
+        $userHasCarManagerPermission = $user->role->functionalities->contains('key_name', 'see_all_mobile');
+
+        // $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
 
         if ($userHasCarManagerPermission) {
             $cars = Car::with('car_document')->whereHas('car_document', function ($query) use ($expirationThreshold) {
@@ -112,7 +122,9 @@ class CarsController extends Controller
     {
         $user = Auth::user();
 
-        $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
+        $userHasCarManagerPermission = $user->role->functionalities->contains('key_name', 'see_all_mobile');
+
+        // $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
 
         if ($userHasCarManagerPermission) {
             $cars = Car::whereHas('car_changelogs', function ($query) {
@@ -258,7 +270,9 @@ class CarsController extends Controller
         $data = $request->validated();
         $archives = ['ownership_card', 'technical_review', 'soat', 'insurance', 'rental_contract'];
         $user = Auth::user();
-        $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
+        $userHasCarManagerPermission = $user->role->functionalities->contains('key_name', 'see_all_mobile');
+
+        // $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
 
         if ($userHasCarManagerPermission) {
             foreach ($archives as $archive) {
@@ -521,7 +535,9 @@ class CarsController extends Controller
     public function acceptOrDecline(CarChangelog $changelog, $is_accepted)
     {
         $user = Auth::user();
-        $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
+        $userHasCarManagerPermission = $user->role->functionalities->contains('key_name', 'see_all_mobile');
+
+        // $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
 
         if (!$userHasCarManagerPermission) {
             abort(403, 'Acción no permitida');
@@ -545,18 +561,17 @@ class CarsController extends Controller
     public function checkListAlarms()
     {
         $user = Auth::user();
-        $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
+        $userHasCarManagerPermission = $user->role->functionalities->contains('key_name', 'see_all_mobile');
 
+        // $userHasCarManagerPermission = $user->role->permissions->contains('name', 'CarManager');
         $checkList = !$userHasCarManagerPermission
             ? Car::where('user_id', $user->id)
             : Car::query();
 
         $checkList = $checkList->with(['checklist' => function ($query) {
             $query->orderBy('created_at', 'desc');
-        }])->whereDoesntHave('checklist')
-            ->orWhereHas('checklist')
+        }])
             ->get();
-
         $checkList = $checkList->filter(function ($car) {
             $lastChecklist = $car->checklist->first();
             return !$lastChecklist || $lastChecklist->created_at < Carbon::now()->subDays(7);

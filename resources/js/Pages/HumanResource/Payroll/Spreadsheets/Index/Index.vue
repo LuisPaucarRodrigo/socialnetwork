@@ -7,14 +7,17 @@
         </template>
         <Toaster richColors />
         <div class="min-w-full min-h-full overflow-hidden">
-            <TableHeader v-model:spreadsheets="spreadsheets" v-model:totals="totals" :payrolls="payrolls" 
-                :openPayrollApprove="openPayrollApprove" />
-            <SpreadsheetsTable :spreadsheets="spreadsheets" :totals="totals" :payrolls="payrolls"
-                :userPermissions="userPermissions" :openPaymentSalaryModal="openPaymentSalaryModal"
-                :openPaymentTravelExpenseModal="openPaymentTravelExpenseModal" :openDiscountModal="openDiscountModal" />
+            <TableHeader v-model:spreadsheets="spreadsheets" v-model:totals="totals" :payrolls="payrolls"
+                :filterForm="filterForm" :openPayrollApprove="openPayrollApprove"
+                :openPaySpreadsheet="openPaySpreadsheet" :openExportSpreadsheet="openExportSpreadsheet"
+                :searchSpreadSheetsTable="searchSpreadSheetsTable" />
+            <SpreadsheetsTable ref="spreadsheetstable" :spreadsheets="spreadsheets" :totals="totals"
+                :payrolls="payrolls" :pensionTypes="pensionTypes" :filterForm="filterForm"
+                :openPaymentTravelExpenseModal="openPaymentTravelExpenseModal" :actionForm="actionForm"
+                @update:spreadsheets="spreadsheets = $event" @update:totals="totals = $event" />
+            <SpreadsheetPayModal ref="paySpreadsheet" :data="spreadsheet" :payroll="payroll" :actionForm="actionForm" />
+            <SpreadSheetExportDetailModal ref="exportSpreadsheet" :payroll="payroll" />
         </div>
-        <TravelESalaryForm ref="travelESalaryForm" :spreadsheets="spreadsheets" />
-        <EmployeeDiscountForm ref="employeeDiscountForm" :spreadsheets="spreadsheets" />
         <ApprovePayroll v-model:payrolls="payrolls" ref="approvePayroll" />
     </AuthenticatedLayout>
 </template>
@@ -22,46 +25,65 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, provide, watch } from 'vue';
 import TableHeader from './components/TableHeader.vue';
 import SpreadsheetsTable from './components/SpreadsheetsTable.vue';
-import TravelESalaryForm from './components/TravelESalaryForm.vue';
-import EmployeeDiscountForm from './components/EmployeeDiscountForm.vue';
 import ApprovePayroll from './components/ApprovePayroll.vue';
+import SpreadsheetPayModal from './components/SpreadsheetPayModal.vue';
+import SpreadSheetExportDetailModal from './components/SpreadSheetExportDetailModal.vue';
 import { Toaster } from 'vue-sonner';
 
 
-const { spreadsheet, payroll, total, userPermissions } = defineProps({
+const { spreadsheet, payroll, total, pensionTypes, userPermissions } = defineProps({
     spreadsheet: Object,
     payroll: Object,
     total: Object,
+    pensionTypes: Array,
     userPermissions: Array
 })
 
+
+
+const actionForm = ref({ ids: [], });
+const initialFilterFormState = {
+    selectedPensionTypes: pensionTypes,
+    search: ''
+}
+const filterForm = ref({ ...initialFilterFormState })
 
 const spreadsheets = ref(spreadsheet)
 const payrolls = ref(payroll)
 const totals = ref(total)
 
-const travelESalaryForm = ref(null)
-const employeeDiscountForm = ref(null)
 const approvePayroll = ref(null)
+const paySpreadsheet = ref(null)
+const spreadsheetstable = ref(null)
+const exportSpreadsheet = ref(null)
 
 
-function openPaymentSalaryModal(payroll_detail) {
-    travelESalaryForm.value.openPaymentSalaryModal(payroll_detail)
-}
+
 
 function openPaymentTravelExpenseModal(payroll_detail) {
     travelESalaryForm.value.openPaymentTravelExpenseModal(payroll_detail)
 }
 
-function openDiscountModal(employee_id, discount) {
-    employeeDiscountForm.value.openDiscountModal(employee_id, discount)
-}
 
 function openPayrollApprove() {
     approvePayroll.value.openPayrollApprove()
 }
+
+
+//paying functions
+function openPaySpreadsheet() {
+    paySpreadsheet.value.openPayModal()
+}
+
+function searchSpreadSheetsTable() {
+    spreadsheetstable.value.search_advance()
+}
+function openExportSpreadsheet() {
+    exportSpreadsheet.value.openExportModal()
+}
+
 
 </script>

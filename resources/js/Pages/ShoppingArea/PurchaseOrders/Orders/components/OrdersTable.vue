@@ -38,7 +38,7 @@
                 </TableRow>
                 <TableRow>
                     <button @click="openCotization(order)">
-                        <EyeIcon class="h-5 w-5 text-green-600" />
+                        <ShowIcon />
                     </button>
                 </TableRow>
                 <TableRow>
@@ -66,8 +66,8 @@ import Pagination from '@/Components/Pagination.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
-import { EyeIcon } from '@heroicons/vue/24/outline';
 import { formattedDate } from '@/utils/utils';
+import { ShowIcon } from '@/Components/Icons/Index';
 
 const { orders, openCotization, updateState, userPermissions } = defineProps({
     orders: Object,

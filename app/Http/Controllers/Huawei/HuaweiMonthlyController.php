@@ -66,7 +66,7 @@ class HuaweiMonthlyController extends Controller
             })->values();
         });
 
-        return Inertia::render('Huawei/GeneralBalance', [
+        return Inertia::render('Huawei/GeneralExpenses/GeneralBalance', [
             'expenses' => $expenses,
             'acExpensesAmounts' => $grouped->get('Variable', collect())->values(),
             'scExpensesAmounts' => $grouped->get('Fijo', collect())->values(),
@@ -149,7 +149,7 @@ class HuaweiMonthlyController extends Controller
                 ->values(),
         ];
 
-        return Inertia::render('Huawei/MonthlyExpenses', [
+        return Inertia::render('Huawei/GeneralExpenses/MonthlyExpenses', [
             'expense' => $expenses->values(),
             'summary' => $summary,
             'mode' => $mode,
@@ -228,7 +228,7 @@ class HuaweiMonthlyController extends Controller
                 ->values(),
         ];
 
-        return Inertia::render('Huawei/MonthlyExpenses', [
+        return Inertia::render('Huawei/GeneralExpenses/MonthlyExpenses', [
             'expense' => $expenses->values(),
             'search' => $request,
             'data' => self::$data,

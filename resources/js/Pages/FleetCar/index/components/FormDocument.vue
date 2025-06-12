@@ -22,7 +22,7 @@
                                 fieldName: 'ownership_card',
                             }) + '?' + uniqueParam
                                 ">
-                                <EyeIcon class="w-5 h-5 text-green-600" />
+                                <ShowIcon />
                             </a>
                         </div>
                     </div>
@@ -42,7 +42,7 @@
                                 fieldName: 'technical_review',
                             }) + '?' + uniqueParam
                                 ">
-                                <EyeIcon class="w-5 h-5 text-green-600" />
+                                <ShowIcon />
                             </a>
                         </div>
                         <template v-if="date_technical_review">
@@ -72,7 +72,7 @@
                                 fieldName: 'soat',
                             }) + '?' + uniqueParam
                                 ">
-                                <EyeIcon class="w-5 h-5 text-green-600" />
+                                <ShowIcon />
                             </a>
                         </div>
                         <InputLabel for="soat_date">
@@ -97,7 +97,8 @@
                                 fieldName: 'insurance',
                             }) + '?' + uniqueParam
                                 ">
-                                <EyeIcon class="w-5 h-5 text-green-600" />
+                                <ShowIcon />
+                                <ShowIcon />
                             </a>
                         </div>
                         <InputLabel for="insurance_date">
@@ -123,7 +124,7 @@
                                 fieldName: 'rental_contract',
                             }) + '?' + uniqueParam
                                 ">
-                                <EyeIcon class="w-5 h-5 text-green-600" />
+                                <ShowIcon />
                             </a>
                         </div>
                         <InputLabel for="rental_contract_date">
@@ -168,6 +169,7 @@
 </template>
 
 <script setup>
+import { ShowIcon } from '@/Components/Icons/Index';
 import InputError from '@/Components/InputError.vue';
 import InputFile from '@/Components/InputFile.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -177,7 +179,6 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { setAxiosErrors, toFormData } from '@/utils/utils';
-import { EyeIcon } from '@heroicons/vue/24/outline';
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
