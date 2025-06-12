@@ -12,8 +12,9 @@
                         class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                         + Agregar Documento
                     </PrimaryButton>
-                    <PrimaryButton v-permission-or="['manage_sections_subdivisions_hr', 'delete_new_sections_hr', 'delete_new_subdivisions_hr']" @click="management_section"
-                        type="button"
+                    <PrimaryButton
+                        v-permission-or="['manage_sections_subdivisions_hr', 'delete_new_sections_hr', 'delete_new_subdivisions_hr']"
+                        @click="management_section" type="button"
                         class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                         Gestionar Secciones
                     </PrimaryButton>
@@ -38,7 +39,8 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div v-permission-or="['manage_sections_subdivisions_hr', 'delete_new_sections_hr', 'delete_new_subdivisions_hr']" class="dropdown">
+                                    <div v-permission-or="['manage_sections_subdivisions_hr', 'delete_new_sections_hr', 'delete_new_subdivisions_hr']"
+                                        class="dropdown">
                                         <div class="dropdown-menu">
                                             <button @click="management_section" type="button"
                                                 class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
@@ -215,13 +217,11 @@
                                     Empleado
                                 </th>
                                 <th
-                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
+                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Fecha de Vencimiento
                                 </th>
                                 <th v-permission-or="['see_document_hr', 'download_document_hr', 'edit_document_hr', 'delete_document_hr']"
-                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
+                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Acciones
                                 </th>
                             </tr>
@@ -241,12 +241,11 @@
                                 <td class="px-6 py-4 max-w-[150px] text-sm text-gray-700">
                                     {{ document.emp_name }}
                                 </td>
-                                <td 
-                                    class="px-6 py-4 max-w-[150px] text-sm text-gray-700"
-                                >
+                                <td class="px-6 py-4 max-w-[150px] text-sm text-gray-700">
                                     {{ formattedDate(document.exp_date) }}
                                 </td>
-                                <td v-permission-or="['see_document_hr', 'download_document_hr', 'edit_document_hr', 'delete_document_hr']" class="px-6 py-4 whitespace-nowrap">
+                                <td v-permission-or="['see_document_hr', 'download_document_hr', 'edit_document_hr', 'delete_document_hr']"
+                                    class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center space-x-3">
                                         <button v-permission="'see_document_hr'" v-if="
                                             document.title &&
@@ -571,8 +570,8 @@ const submitEdit = () => {
         },
     });
 };
-watch(()=>form.has_exp_date, ()=>{
-  if(!form.has_exp_date) form.exp_date = ''
+watch(() => form.has_exp_date, () => {
+    if (!form.has_exp_date) form.exp_date = ''
 })
 
 //new_test_filter
@@ -898,5 +897,4 @@ async function massiveZip() {
         console.error(error);
     }
 }
-
 </script>

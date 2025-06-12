@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Constants\HuaweiConstants;
 use App\Constants\PextConstants;
 use App\Constants\PintConstants;
+use App\Http\Requests\Huawei\HuaweiMobileRequest;
 use App\Http\Requests\LoginMobileRequest;
 use App\Http\Requests\PextProjectRequest\ApiStoreExpensesRequest;
 use App\Http\Requests\PreprojectRequest\ImageRequest;
@@ -758,19 +759,10 @@ class ApiController extends Controller
         return response()->json($expenses, 200);
     }
 
-    public function storeHuaweiExpense(Request $request)
+    public function storeHuaweiExpense(HuaweiMobileRequest $request)
     {
         $user = Auth::user();
-        $data = $request->validate([
-            'huawei_project_id' => 'nullable',
-            'expense_type' => 'required|string',
-            'cdp_type' => 'required|string',
-            'doc_number' => 'nullable|string',
-            'ruc' => 'nullable|string',
-            'description' => 'required|string',
-            'amount' => 'required|numeric',
-            'image' => 'nullable',
-        ]);
+        $data = $request->validated();
 
         $data['expense_date'] = Carbon::now();
         $data['user_id'] = $user->id;
