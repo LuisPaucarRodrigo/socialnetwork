@@ -1,6 +1,6 @@
 <template>
     <div :class="['relative flex justify-center items-center gap-x-3', widthClass]" ref="popup">
-        <p :class="labelClass" v-html="reverse ? reverseWordsWithBreaks(label) : label" ></p>
+        <p :class="labelClass" v-html="reverse ? reverseWordsWithBreaks(label) : label"></p>
         <template v-if="options">
             <button @click="togglePopup">
                 <SortDateIcon />
@@ -25,7 +25,7 @@
         </template>
         <template v-else>
             <button @click="toggleDate">
-                <CalendarIcon class="h-5 w-5" />
+                <CalendarIcon />
             </button>
             <div v-if="showDate"
                 :class="['absolute z-40 top-8 right-0 mt-0 bg-white border border-gray-300 rounded shadow-lg', widthClass]">
@@ -39,7 +39,7 @@
 
 <script setup>
 import { ref, watch, computed, onMounted, onUnmounted } from 'vue';
-import { CalendarIcon } from '@heroicons/vue/24/outline';
+import { CalendarIcon } from "@/Components/Icons";
 import TextInput from '@/Components/TextInput.vue';
 import SortDateIcon from './Icons/SortDateIcon.vue';
 

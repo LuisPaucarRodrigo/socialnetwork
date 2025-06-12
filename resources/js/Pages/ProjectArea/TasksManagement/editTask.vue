@@ -35,9 +35,8 @@
                     <div class="mb-4 flex items-center">
                         <label for="description" class="block text-sm font-medium text-gray-700 mr-2">Personal
                             Encargado</label>
-                        <button v-if="hasPermission('ProjectManager') && tasks.status !== 'completado'"
-                            @click="showToAddEmployee" type="button">
-                            <UserPlusIcon class="text-indigo-800 h-6 w-6 hover:text-purple-400" />
+                        <button v-if="tasks.status !== 'completado'" @click="showToAddEmployee" type="button">
+                            <AddUserIcon />
                         </button>
                     </div>
 
@@ -124,11 +123,10 @@ import { Head, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import { UserPlusIcon } from '@heroicons/vue/24/outline';
 import { formattedDate } from '@/utils/utils'
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { DeleteIcon } from '@/Components/Icons/Index';
+import { AddUserIcon, DeleteIcon } from '@/Components/Icons';
 
 const props = defineProps({
     projects: Object,

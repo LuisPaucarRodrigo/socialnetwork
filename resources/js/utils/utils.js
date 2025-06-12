@@ -23,6 +23,16 @@ export function formattedDate(fecha) {
   return fechaFormateada;
 }
 
+export function formattedMonth(fecha) {
+  if (fecha === undefined || fecha === null) {
+    return ''
+  }
+  const [year, month] = fecha.split('-'); // month = '05'
+  const date = new Date(Number(year), Number(month) - 1); // mes empieza en 0
+
+  const nombreMes = date.toLocaleDateString('es-ES', { month: 'long' });
+  return `${year} ${nombreMes}`; // → 2025 mayo
+}
 
 export function realNumeration(perPage, currentPage, index) {
   return perPage * (currentPage - 1) + (index + 1)

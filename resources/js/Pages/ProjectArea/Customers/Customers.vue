@@ -47,7 +47,7 @@
                             </button>
                             <button v-permission-or="['manage_client_contacts', 'delete_client_contact']" type="button"
                                 @click="add_contact(customer.id)">
-                                <DocumentArrowUpIcon class="h-5 w-5 text-blue-600" />
+                                <AddUserIcon />
                             </button>
                             <button v-permission="'delete_client'" v-if="customer.category !== 'Especial'" type="button"
                                 @click="confirmDeleteCustomer(customer.id)">
@@ -169,7 +169,6 @@ import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
-import { DocumentArrowUpIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
@@ -178,7 +177,7 @@ import TextInput from '@/Components/TextInput.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import { DeleteIcon, EditIcon } from "@/Components/Icons/Index";
+import { AddUserIcon, DeleteIcon, EditIcon } from "@/Components/Icons";
 
 const create_customer = ref(false);
 const showModal = ref(false);

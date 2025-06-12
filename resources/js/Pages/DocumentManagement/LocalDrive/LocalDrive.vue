@@ -71,7 +71,7 @@
                                     :href="route('local.drive.index', { path: item.path })"
                                     class="inline-block w-full h-full text-left px-5 py-5 text-gray-900 whitespace-nowrap font-bold hover:cursor-pointer hover:text-indigo-600 tracking-widest text-base hover:opacity-70 hover:underline">
                                 <div class="flex space-x-8 items-center w-full mr-8 xl:mr-0">
-                                    <FolderIcon v-if="item.type === 'folder'" class="h-10 w-10" />
+                                    <FolderIcon v-if="item.type === 'folder'" />
                                     <p>
                                         {{ item.name }}
                                     </p>
@@ -81,7 +81,7 @@
                                     :href="route('local.drive.download', { path: item.path })"
                                     class="inline-block w-full h-full text-left px-5 py-5 text-gray-900 whitespace-nowrap font-bold hover:cursor-pointer hover:text-indigo-600 tracking-widest text-base hover:opacity-70 hover:underline">
                                     <div class="flex space-x-8 items-center w-full mr-8 xl:mr-0">
-                                        <DocumentTextIcon class="h-9 w-9" />
+                                        <DocumentIcon />
                                         <p>
                                             {{ item.name }}
                                         </p>
@@ -201,7 +201,7 @@
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900 mb-2">
                     {{ itemToDelete.type === 'folder' ? 'Eliminación de Carpeta' :
-        itemToDelete.type === 'archive' && 'Eliminación de Archivo'
+                        itemToDelete.type === 'archive' && 'Eliminación de Archivo'
                     }}
                 </h2>
                 <InputLabel class="mb-5">
@@ -246,8 +246,7 @@ import { ref } from 'vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import InputFile from '@/Components/InputFile.vue';
-import { FolderIcon } from '@heroicons/vue/24/solid';
-import { DocumentTextIcon } from '@heroicons/vue/24/outline';
+import { DocumentIcon, FolderIcon } from '@/Components/Icons';
 
 
 const { folders_archives, currentPath, previousPath, auth } = defineProps({
@@ -258,7 +257,7 @@ const { folders_archives, currentPath, previousPath, auth } = defineProps({
 })
 
 let backUrl = previousPath ? { route: 'local.drive.index', params: { path: previousPath } }
-    : { route: 'local.drive.index', params: {root: 1} }
+    : { route: 'local.drive.index', params: { root: 1 } }
 
 
 

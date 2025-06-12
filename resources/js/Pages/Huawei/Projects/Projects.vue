@@ -211,15 +211,15 @@
 
                         <div class="inline-flex justify-end items-start gap-x-2">
                             <button @click="openLiquidateModal(item.id)" v-if="item.status" :class="`h-6 px-1 rounded-md bg-indigo-700 text-white text-sm  ${item.state
-                                    ? item.pre_report
-                                        ? ''
-                                        : 'opacity-60'
+                                ? item.pre_report
+                                    ? ''
                                     : 'opacity-60'
+                                : 'opacity-60'
                                 }`" :disabled="item.state
-                                        ? item.pre_report
-                                            ? false
-                                            : true
+                                    ? item.pre_report
+                                        ? false
                                         : true
+                                    : true
                                     ">
                                 Liquidar
                             </button>
@@ -227,15 +227,15 @@
                                 huawei_project: item.id,
                             })
                                 " class="flex items-start">
-                            <PencilIcon class="h-5 w-5 text-teal-600" />
+                            <EditIcon />
                             </Link>
                             <button @click.prevent="openResumeModal(item.id)" v-if="item.status == null"
                                 class="flex items-start">
-                                <PlayIcon class="h-5 w-5 text-green-600" />
+                                <PlayIcon />
                             </button>
                             <button @click.prevent="openCancelModal(item.id)" v-if="item.status"
                                 class="flex items-start">
-                                <PauseIcon class="h-5 w-5 text-red-600" />
+                                <PauseIcon />
                             </button>
                         </div>
                     </div>
@@ -410,15 +410,15 @@
 </template>
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import Pagination from "@/Components/Pagination.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import { Head, router, Link, useForm } from "@inertiajs/vue3";
-import { PencilIcon, PauseIcon, PlayIcon } from "@heroicons/vue/24/outline";
 import TextInput from "@/Components/TextInput.vue";
 import Modal from "@/Components/Modal.vue";
 import { ref } from "vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import { EditIcon } from "@/Components/Icons";
+import { PlayIcon, PauseIcon } from "@/Components/Icons";
 
 const props = defineProps({
     projects: Object,

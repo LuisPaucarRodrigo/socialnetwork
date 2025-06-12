@@ -42,7 +42,7 @@
                         </h2>
                         <div class="flex justify-end items-start gap-2">
                             <button @click="openEditModal(item)" class="flex items-start">
-                                <QueueListIcon class="h-6 w-6 text-teal-700" />
+                                <EditIcon />
                             </button>
                             <button @click="confirmDeleteProject(item.id)">
                                 <DeleteIcon />
@@ -113,18 +113,17 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 import { Toaster } from "vue-sonner";
-import { notify, notifyError, notifyWarning } from "@/Components/Notification";
+import { notify, notifyError } from "@/Components/Notification";
 import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
 import Pagination from "@/Components/Pagination.vue";
 import axios from "axios";
 import { ref } from "vue";
 import { Head, router, Link, useForm } from "@inertiajs/vue3";
-import { QueueListIcon } from "@heroicons/vue/24/outline";
 import Modal from "@/Components/Modal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import { setAxiosErrors } from "@/utils/utils";
-import { DeleteIcon, MenuIcon } from "@/Components/Icons/Index";
+import { DeleteIcon, EditIcon, MenuIcon } from "@/Components/Icons";
 import Dropdown from '@/Components/Dropdown.vue';
 
 const { month_projects } = defineProps({

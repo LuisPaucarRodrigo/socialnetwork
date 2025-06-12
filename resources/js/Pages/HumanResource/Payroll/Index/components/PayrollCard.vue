@@ -1,7 +1,7 @@
 <template>
     <div class="bg-white p-3 rounded-md shadow-sm border border-gray-300 items-center">
         <p class="text-sm mb-3">
-            Mes: {{ item.month }}
+            Mes: {{ formattedMonth(item.month) }}
         </p>
         <p class="text-sm mb-3">
             Monto Total: S/ {{ Number(item.total_amount).toFixed(2) }}
@@ -13,6 +13,7 @@
     </div>
 </template>
 <script setup>
+import { formattedMonth } from '@/utils/utils';
 import { Link } from '@inertiajs/vue3';
 
 const { item } = defineProps({

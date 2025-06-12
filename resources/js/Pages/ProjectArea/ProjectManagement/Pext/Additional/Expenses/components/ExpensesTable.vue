@@ -239,7 +239,7 @@
     </div>
 </template>
 <script setup>
-import { ShowIcon } from '@/Components/Icons/Index';
+import { ShowIcon } from '@/Components/Icons';
 import Pagination from '@/Components/Pagination.vue';
 import TableDateFilter from '@/Components/TableDateFilter.vue';
 import TableHeaderFilter from '@/Components/TableHeaderFilter.vue';

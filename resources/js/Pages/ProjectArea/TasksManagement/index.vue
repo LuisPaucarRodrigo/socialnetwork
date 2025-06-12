@@ -105,7 +105,7 @@
                                                 <button @click="openModalStart(task)"
                                                     v-if="task.start_date && task.end_date" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2
                                                     px-4 rounded">
-                                                    <PlayIcon class="text-white-900 h-4 w-4" style="stroke-width:4;" />
+                                                    <PlayIcon />
                                                 </button>
                                             </div>
 
@@ -121,9 +121,8 @@
                                                     <PlayPauseIcon class="text-white-900 h-4 w-4"
                                                         style="stroke-width:3;" />
                                                 </button> -->
-                                                <button @click="openModalComplete(task)"
-                                                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                                                    <CheckIcon class="text-white-900 h-4 w-4" style="stroke-width:4;" />
+                                                <button @click="openModalComplete(task)">
+                                                    <AcceptIcon />
                                                 </button>
                                             </div>
                                             <p v-else class="text-green-500 font-bold py-2 px-4 rounded">
@@ -288,11 +287,9 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { ref } from 'vue';
-import { Head, router, Link, useForm } from '@inertiajs/vue3';
-import { PlayIcon, PauseIcon, PlayPauseIcon, CheckIcon } from '@heroicons/vue/24/outline';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import Modal from '@/Components/Modal.vue';
-import Pagination from '@/Components/Pagination.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
@@ -300,6 +297,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import { formattedDate } from '@/utils/utils';
+import { PlayIcon, AcceptIcon } from '@/Components/Icons';
 
 const { tasks, project, projects, userPermissions } = defineProps({
     tasks: Object,

@@ -82,7 +82,7 @@
                                     :href="route('project.folder.download', { path: item.path })"
                                     class="inline-block w-full h-full text-left px-5 py-5 text-gray-900 whitespace-nowrap font-bold hover:cursor-pointer hover:text-indigo-600 tracking-widest text-base hover:opacity-70 hover:underline">
                                     <div class="flex space-x-8 items-center w-full mr-8 xl:mr-0">
-                                        <DocumentTextIcon class="h-9 w-9" />
+                                        <DocumentIcon />
                                         <p>
                                             {{ item.name }}
                                         </p>
@@ -90,13 +90,10 @@
                                 </a>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-
                                 <p class="text-gray-700">
                                     {{ item.size }}
                                 </p>
-
                             </td>
-
                             <td class="border-b border-gray-200 bg-white pl-5 py-5 pr-10 text-sm">
                                 <div class="flex space-x-3 justify-end">
                                     <!-- <Link class="text-blue-900 whitespace-no-wrap" :href="'#'">
@@ -202,7 +199,7 @@
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900 mb-2">
                     {{ itemToDelete.type === 'folder' ? 'Eliminación de Carpeta' :
-        itemToDelete.type === 'archive' && 'Eliminación de Archivo'
+                        itemToDelete.type === 'archive' && 'Eliminación de Archivo'
                     }}
                 </h2>
                 <InputLabel class="mb-5">
@@ -247,8 +244,7 @@ import { ref } from 'vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import InputFile from '@/Components/InputFile.vue';
-import { FolderIcon } from '@heroicons/vue/24/solid';
-import { DocumentTextIcon } from '@heroicons/vue/24/outline';
+import { DocumentIcon, FolderIcon } from '@/Components/Icons';
 
 
 const { folders_archives, folder, currentPath, previousPath, auth, areas } = defineProps({

@@ -247,7 +247,7 @@
                                     Fecha de Registro
                                 </p>
                                 <button @click="sortValue">
-                                    <ArrowsUpDownIcon class="h-5 w-5" />
+                                    <SortIcon />
                                 </button>
                             </div>
 
@@ -361,10 +361,10 @@
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <div v-if="item.is_accepted === null" class="flex gap-3 justify-center w-full">
                                 <button @click="() => openAcceptModal(item)">
-                                    <CheckCircleIcon class="w-5 h-5 text-green-500" />
+                                    <AcceptIcon />
                                 </button>
                                 <button @click="() => validateRegister(item.id, false)" type="button">
-                                    <XCircleIcon class="w-5 h-5 text-red-500" />
+                                    <RejectIcon />
                                 </button>
                             </div>
 
@@ -1093,11 +1093,6 @@ import InputLabel from "@/Components/InputLabel.vue";
 import Modal from "@/Components/Modal.vue";
 import { ref, watch } from "vue";
 import { Head, useForm, router } from "@inertiajs/vue3";
-import {
-    ArrowsUpDownIcon,
-    CheckCircleIcon,
-    XCircleIcon
-} from "@heroicons/vue/24/outline";
 import { formattedDate } from "@/utils/utils";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputFile from "@/Components/InputFile.vue";
@@ -1110,9 +1105,8 @@ import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import Search from "@/Components/Search.vue";
-import { ExcelIcon } from "@/Components/Icons/Index";
 import qs from 'qs';
-import { MenuIcon, EditIcon, DeleteIcon, ShowIcon, ServerIcon } from "@/Components/Icons/Index";
+import { MenuIcon, EditIcon, DeleteIcon, ShowIcon, ServerIcon, AcceptIcon, ExcelIcon, RejectIcon, SortIcon } from "@/Components/Icons";
 import DropdownLink from "@/Components/DropdownLink.vue";
 
 const props = defineProps({

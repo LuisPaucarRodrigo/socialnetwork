@@ -23,7 +23,7 @@
                 Exportar Excel
                 <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
-            <button v-if="hasPermission('UserManager')" type="button"
+            <button type="button"
                 class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500"
                 @click="openModalImport">
                 Importar Gastos
@@ -83,7 +83,7 @@
             G.Fijos
             </Link>
         </div>
-        <div v-if="hasPermission('HumanResourceManager')" class="sm:hidden">
+        <div class="sm:hidden">
             <dropdown align="left">
                 <template #trigger>
                     <button @click="dropdownOpen = !dropdownOpen"
@@ -141,13 +141,12 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Search from '@/Components/Search.vue';
 import { Link } from '@inertiajs/vue3';
 import Dropdown from "@/Components/Dropdown.vue";
-import { MenuIcon, ServerIcon } from '@/Components/Icons/Index';
+import { MenuIcon, ServerIcon } from '@/Components/Icons';
 
-const { project_id, fixedOrAdditional, type, userPermissions, openSwapAPModal, openModalImport, initialFilterFormState } = defineProps({
+const { project_id, fixedOrAdditional, type, openSwapAPModal, openModalImport, initialFilterFormState } = defineProps({
     project_id: String,
     fixedOrAdditional: Boolean,
     type: String,
-    userPermissions: Array,
     openSwapAPModal: Function,
     openModalImport: Function,
     initialFilterFormState: Object
@@ -172,8 +171,4 @@ function rejectedExpenses() {
 function dd() {
     filterForm.value = { ...initialFilterFormState }
 }
-
-const hasPermission = (permission) => {
-    return userPermissions.includes(permission);
-};
 </script>

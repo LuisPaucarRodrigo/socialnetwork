@@ -1,5 +1,6 @@
 <template>
-     <Head title="Gestion de Costos Adicionales" />
+
+    <Head title="Gestion de Costos Adicionales" />
     <AuthenticatedLayout :redirectRoute="{
         route: 'spreadsheets.index',
         params: { payroll_id: payroll.id },
@@ -11,11 +12,11 @@
         <div class="inline-block min-w-full mb-4">
             <div class="flex gap-4 justify-between">
                 <div class="hidden sm:flex  space-x-3">
- 
+
                     <PrimaryButton data-tooltip-target="update_data_tooltip" type="button" @click="() => {
                         filterForm = { ...initialFilterFormState }
                     }">
-                        <ServerIcon class="w-5 h-5 text-white" />
+                        <ServerIcon />
                     </PrimaryButton>
                     <div id="update_data_tooltip" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
@@ -91,11 +92,11 @@
                     </dropdown>
                 </div>
                 <div>
-                    <TextInput data-tooltip-target="search_fields" type="text" placeholder="Buscar..." v-model="filterForm.search"
-                        @keyup.enter="search_advance()" />
+                    <TextInput data-tooltip-target="search_fields" type="text" placeholder="Buscar..."
+                        v-model="filterForm.search" @keyup.enter="search_advance()" />
                     <div id="search_fields" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
-                            Numero de Documento, Numero de Operacion, Empleado, Monto Total
+                        Numero de Documento, Numero de Operacion, Empleado, Monto Total
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
                 </div>
@@ -162,7 +163,7 @@
                                     Fecha de Registro
                                 </p>
                                 <button @click="sortValue">
-                                    <ArrowsUpDownIcon class="h-5 w-5" />
+                                    <SortIcon />
                                 </button>
                             </div>
 
@@ -175,7 +176,7 @@
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Archivo
                         </th>
-                        
+
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Estado" :options="stateTypes"
@@ -207,12 +208,10 @@
                                     type="checkbox" />
                             </label>
                         </td>
-                        <td
-                            class="border-b w-32 border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
+                        <td class="border-b w-32 border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
                             {{ item.general_expense.zone }}
                         </td>
-                        <td
-                            class="border-b border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
+                        <td class="border-b border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
                             <p class="w-48 break-words">
                                 {{ item.general_expense.expense_type }}
                             </p>
@@ -249,11 +248,11 @@
                         </td>
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <button v-if="item.photo" @click="handlerPreview(item.id)">
-                                <EyeIcon class="w-4 h-4 text-teal-600" />
+                                <ShowIcon />
                             </button>
                             <span v-else>-</span>
                         </td>
-                        
+
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <div :class="[
                                 'text-center',
@@ -270,21 +269,17 @@
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <div class="flex items-center justify-center gap-3 w-full">
                                 <div class="flex gap-3 mr-3">
-                                    <button @click="openPayModal(item)"
-                                        type="button"
-                                        class="text-amber-600 hover:underline">
-                                        <PencilSquareIcon class="h-5 w-5 ml-1" />
+                                    <button @click="openPayModal(item)" type="button">
+                                        <EditIcon />
                                     </button>
-                                    <button 
-                                        @click="confirmDeleteAdditional(item.id)"
-                                        type="button" class="text-red-600 hover:underline">
-                                        <TrashIcon class="h-5 w-5" />
+                                    <button @click="confirmDeleteAdditional(item.id)" type="button">
+                                        <DeleteIcon />
                                     </button>
                                 </div>
                             </div>
                         </td>
                     </tr>
-                    
+
                 </tbody>
             </table>
         </div>
@@ -368,7 +363,8 @@
                                     Operación
                                 </InputLabel>
                                 <div class="mt-2">
-                                    <input type="text" v-model="form.general_expense.operation_number" id="operation_number"
+                                    <input type="text" v-model="form.general_expense.operation_number"
+                                        id="operation_number"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors['general_expense.operation_number']" />
                                 </div>
@@ -385,7 +381,7 @@
                                 </div>
                             </div>
 
-                           
+
 
                             <div>
                                 <InputLabel for="amount" class="font-medium leading-6 text-gray-900">Monto</InputLabel>
@@ -397,7 +393,7 @@
                             </div>
 
 
-                            
+
 
                             <div class="sm:col-span-2">
                                 <InputLabel class="font-medium leading-6 text-gray-900">
@@ -419,8 +415,8 @@
                                             form.photo_status =
                                                 'delete';
                                         }
-                                            ">
-                                            <TrashIcon class="text-red-500 h-4 w-4" />
+                                        ">
+                                            <DeleteIcon />
                                         </button>
                                     </div>
                                     <div v-if="form.photo_status === 'delete'"
@@ -432,7 +428,7 @@
                                             form.photo_status =
                                                 'stable';
                                         }
-                                            " type="button" class="font-black">
+                                        " type="button" class="font-black">
                                             ANULAR
                                         </button>
                                     </div>
@@ -513,27 +509,16 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import TextInput from "@/Components/TextInput.vue";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
-import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
-import ConfirmateModal from "@/Components/ConfirmateModal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import Modal from "@/Components/Modal.vue";
-import {  ref, watch } from "vue";
-import { Head, useForm, router } from "@inertiajs/vue3";
-import {
-    TrashIcon,
-    PencilSquareIcon,
-    ServerIcon,
-    ArrowsUpDownIcon,
-    CheckCircleIcon,
-    XCircleIcon
-} from "@heroicons/vue/24/outline";
+import { ref, watch } from "vue";
+import { Head, useForm } from "@inertiajs/vue3";
 import { formattedDate } from "@/utils/utils";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputFile from "@/Components/InputFile.vue";
 import Pagination from "@/Components/Pagination.vue";
-import { EyeIcon } from "@heroicons/vue/24/outline";
 import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
 import axios from "axios";
 import Dropdown from "@/Components/Dropdown.vue";
@@ -541,11 +526,9 @@ import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
-import Search from "@/Components/Search.vue";
-import { ExcelIcon } from "@/Components/icons";
-import qs from 'qs';
+import { DeleteIcon, EditIcon, ShowIcon, SortIcon, ServerIcon } from "@/Components/Icons";
 
-const { payroll, expenses,  expenseTypes, docTypes, stateTypes } = defineProps({
+const { payroll, expenses, expenseTypes, docTypes, stateTypes } = defineProps({
     payroll: Object,
     expenses: Object,
     expenseTypes: Array,
@@ -571,7 +554,7 @@ const initialFilterFormState = {
 const filterForm = ref({ ...initialFilterFormState });
 const filterMode = ref(false);
 
-const actionForm = ref({ids:[]})
+const actionForm = ref({ ids: [] })
 const handleCheckAll = (e) => {
     if (e.target.checked) { actionForm.value.ids = dataToRender.value.map((item) => item.id); }
     else { actionForm.value.ids = []; }
@@ -613,19 +596,19 @@ const initialForm = {
     general_expense_id: '',
     employee_name: '',
     photo_status: "stable",
-    photo:'',
+    photo: '',
     photo_name: '',
-    general_expense:{
-        id:'',
-        zone : '',
-        expense_type : '',
-        location : '',
-        operation_number : '',
-        operation_date : '',
-        doc_date : '',
-        doc_number : '',
-        type_doc : '',
-        amount : '',
+    general_expense: {
+        id: '',
+        zone: '',
+        expense_type: '',
+        location: '',
+        operation_number: '',
+        operation_date: '',
+        doc_date: '',
+        doc_number: '',
+        type_doc: '',
+        amount: '',
     }
 }
 
@@ -634,7 +617,7 @@ const editPay = ref(false)
 const isFetching = ref(false)
 
 function openPayModal(item) {
-    const updateState = JSON.parse(JSON.stringify({...item, photo:'', photo_name: item.photo}))
+    const updateState = JSON.parse(JSON.stringify({ ...item, photo: '', photo_name: item.photo }))
     form.defaults(updateState)
     form.reset()
     editPay.value = true
@@ -648,16 +631,16 @@ function closePayModal() {
     editPay.value = false
 }
 
-async function submitEdit(){
-    try{
+async function submitEdit() {
+    try {
         isFetching.value = true
         const formToSend = toFormData(form.data())
         const res = await axios.post(route('payroll.detail.expenses.store'), formToSend)
-        const index = dataToRender.value.findIndex(item=>form.id == item.id)
+        const index = dataToRender.value.findIndex(item => form.id == item.id)
         dataToRender.value[index] = res.data
         closePayModal()
         notify('Registro Guardado')
-     }catch (e) {
+    } catch (e) {
         isFetching.value = false
         if (e.response?.data?.errors) setAxiosErrors(e.response.data.errors, form)
         notifyError('Server Error')
@@ -690,7 +673,7 @@ const deletePay = async () => {
     try {
         isFetching.value = true;
         const id = idToDelete.value;
-        const res = await axios.delete(route("payroll.detail.expense.destroy", {payroll_detail_expense_id: id,}));
+        const res = await axios.delete(route("payroll.detail.expense.destroy", { payroll_detail_expense_id: id, }));
         isFetching.value = false;
         let index = dataToRender.value.findIndex((item) => item.id == id);
         dataToRender.value.splice(index, 1);
@@ -728,7 +711,7 @@ const openOpNuDaModal = () => {
 const submitOpNuDatModal = async () => {
     try {
         isFetching.value = true;
-        const payload = {...opNuDateForm.data(), ...actionForm.value}
+        const payload = { ...opNuDateForm.data(), ...actionForm.value }
         const res = await axios.post(route("payroll.detail.expenses.massive.update.opnuda"), payload)
         const originalMap = new Map(dataToRender.value.map(item => [item.id, item]));
         res.data.forEach(update => {
@@ -738,12 +721,12 @@ const submitOpNuDatModal = async () => {
         dataToRender.value = updatedArray
         closeOpNuDatModal();
         notify("Registros Seleccionados Actualizados");
-    }catch (e) {
+    } catch (e) {
         isFetching.value = false
         if (e.response?.data?.errors) setAxiosErrors(e.response.data.errors, opNuDateForm)
         notifyError('Server Error')
     }
-    
+
 }
 
 </script>

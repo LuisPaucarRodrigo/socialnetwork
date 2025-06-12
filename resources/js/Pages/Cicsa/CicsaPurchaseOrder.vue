@@ -50,8 +50,8 @@
                                     <button v-if="item.cicsa_purchase_order.length > 0" type="button"
                                         @click="toggleDetails(item?.cicsa_purchase_order)"
                                         class="text-blue-900 whitespace-no-wrap">
-                                        <DownArrow v-if="purcahse_order_row !== item.id" />
-                                        <UpArrow v-else />
+                                        <DownArrowIcon v-if="purcahse_order_row !== item.id" />
+                                        <UpArrowIcon v-else />
                                     </button>
                                 </div>
                             </TableRow>
@@ -227,7 +227,7 @@ import { Toaster } from 'vue-sonner';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import { DownArrow, UpArrow, PlusCircleIcon, ShowIcon, EditIcon } from '@/Components/Icons/Index';
+import { DownArrowIcon, UpArrowIcon, PlusCircleIcon, ShowIcon, EditIcon } from '@/Components/Icons/Index';
 
 const { purchaseOrder, auth, searchCondition, type } = defineProps({
     purchaseOrder: Object,

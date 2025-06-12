@@ -130,7 +130,7 @@
                                         al proyecto
                                     </InputLabel>
                                     <button @click="showToAddEmployee" type="button">
-                                        <UserPlusIcon class="text-indigo-800 h-6 w-6 hover:text-purple-400" />
+                                        <AddUserIcon />
                                     </button>
                                 </div>
                                 <br />
@@ -334,11 +334,11 @@ import InputError from "@/Components/InputError.vue";
 import Modal from "@/Components/Modal.vue";
 import { ref } from "vue";
 import { Head, router, useForm } from "@inertiajs/vue3";
-import { UserPlusIcon } from "@heroicons/vue/24/outline";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import ErrorOperationModal from "@/Components/ErrorOperationModal.vue";
 import DeleteIcon from "@/Components/Icons/DeleteIcon.vue";
+import { AddUserIcon } from "@/Components/Icons";
 
 const showModal = ref(false);
 const showUpdateModal = ref(false);

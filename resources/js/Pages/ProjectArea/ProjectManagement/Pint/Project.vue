@@ -87,7 +87,7 @@
                             <Link v-permission="'edit_pro_pint'"
                                 :href="route('projectmanagement.update', { project_id: item.id })"
                                 class="flex items-start">
-                            <QueueListIcon class="h-6 w-6 text-teal-700" />
+                            <EditIcon />
                             </Link>
                         </div>
                     </div>
@@ -175,9 +175,7 @@ import axios from 'axios';
 import { ref } from 'vue';
 import { Head, router, Link, useForm } from '@inertiajs/vue3';
 import Search from '@/Components/Search.vue';
-import { MenuIcon } from '@/Components/Icons/index';
-import { QueueListIcon } from '@heroicons/vue/24/outline';
-
+import { EditIcon, MenuIcon } from '@/Components/Icons/index';
 
 const props = defineProps({
     projects: Object,

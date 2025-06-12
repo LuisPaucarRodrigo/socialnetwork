@@ -16,7 +16,7 @@
                 </button>
                 <Link :href="route('projectmanagement.update', { project_id: item.id, type: 2 })"
                     class="flex items-start">
-                <QueueListIcon class="h-6 w-6 text-teal-700" />
+                <EditIcon />
                 </Link>
             </div>
         </div>
@@ -55,7 +55,7 @@
     </div>
 </template>
 <script setup>
-import { QueueListIcon } from '@heroicons/vue/24/outline';
+import { EditIcon } from '@/Components/Icons';
 import { router, Link } from '@inertiajs/vue3';
 
 const { item, auth } = defineProps({

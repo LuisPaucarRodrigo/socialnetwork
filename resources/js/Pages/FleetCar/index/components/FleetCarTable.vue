@@ -70,11 +70,10 @@
                             </a>
 
                             <button v-permission="'mobile_actions_manager'" type="button"
-                                @click="openModalDeleteCars(car.id)" class="text-blue-900">
+                                @click="openModalDeleteCars(car.id)">
                                 <DeleteIcon />
                             </button>
-                            <button v-if="car.car_changelogs.length > 0" type="button" @click="toogleChangelog(car)"
-                                class="text-blue-900 whitespace-no-wrap">
+                            <button v-if="car.car_changelogs.length > 0" type="button" @click="toogleChangelog(car)">
                                 <DownArrowIcon v-if="carId !== car.id" />
                                 <UpArrowIcon v-else />
                             </button>

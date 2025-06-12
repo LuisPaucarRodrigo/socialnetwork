@@ -4,6 +4,7 @@ export { default as DeleteIcon } from './DeleteIcon.vue';
 export { default as DisableIcon } from './DisableIcon.vue';
 export { default as DocumentsIcon } from './DocumentsIcon.vue';
 export { default as DocumentIcon } from './DocumentIcon.vue';
+export { default as PlusDocumentIcon } from './PlusDocumentIcon.vue';
 export { default as DownArrowIcon } from './DownArrowIcon.vue';
 export { default as DownloadIcon } from './DownloadIcon.vue';
 export { default as EditIcon } from './EditIcon.vue';
@@ -33,3 +34,11 @@ export { default as VehicleIcon } from './VehicleIcon.vue';
 export { default as DolarIcon } from './DolarIcon.vue';
 export { default as EyeOutlineIcon } from './EyeOutlineIcon.vue';
 export { default as EyeSlashSolidIcon } from './EyeSlashSolidIcon.vue';
+
+export { default as CalendarIcon } from './CalendarIcon.vue';
+export { default as FolderIcon } from './FolderIcon.vue';
+export { default as PlayIcon } from './PlayIcon.vue';
+export { default as PauseIcon } from './PauseIcon.vue';
+export { default as AddUserIcon } from './AddUserIcon.vue';
+export { default as RectangleGroupIcon } from './RectangleGroupIcon.vue';
+
