@@ -287,10 +287,19 @@ class DocumentSpreedSheetController extends Controller
     {
         $data = $request->validated();
         $state = $data['state'];
+        $docRegPrev = new DocumentRegister($data);
+        $docItem = $this->getDocument($docRegPrev);
         if ($state === 'Completado') {
-            $document = $request->file('document');
-            $data['title'] = $this->file_store($data, $document);
-            $docItem = Document::create($data);
+            if($docItem) {
+                $this->file_delete($docItem);
+                $document = $request->file('document');
+                $data['title'] = $this->file_store($data, $document);
+                $docItem->update($data);
+            } else {
+                $document = $request->file('document');
+                $data['title'] = $this->file_store($data, $document);
+                $docItem = Document::create($data);
+            }
             $data['document_id'] = $docItem->id;
             $docReg = DocumentRegister::create($data);
         } else {
@@ -303,8 +312,8 @@ class DocumentSpreedSheetController extends Controller
     public function update(DocumentRegisterRequest $request, $dr_id)
     {
         $data = $request->validated();
-        $docReg = DocumentRegister::with('document')->find($dr_id);
-        $docItem = $docReg->document;
+        $docReg = DocumentRegister::find($dr_id);
+        $docItem = $this->getDocument($docReg);
         $state = $data['state'];
         if ($state === 'Completado') {
             if ($docItem) {
@@ -464,6 +473,12 @@ class DocumentSpreedSheetController extends Controller
     //     }
 
     // }
+    private function getDocument($docReg) {
+        return Document::where('subdivision_id', $docReg->subdivision_id)
+            ->where('employee_id', $docReg->employee_id)
+            ->where('e_employee_id', $docReg->e_employee_id)
+            ->first();
+    }
 
     private function file_store($data, $document)
     {
