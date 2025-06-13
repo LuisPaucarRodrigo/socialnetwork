@@ -7,7 +7,7 @@
             Programas de Formación
         </template>
         <div class="min-w-full">
-            <div v-if="hasPermission('HumanResourceManager')" class="flex items-center">
+            <div  class="flex items-center">
                 <PrimaryButton @click="add_information" type="button">
                     Agregar Informacion
                 </PrimaryButton>
@@ -54,7 +54,7 @@
                                         :href="route('management.employees.formation_development.view', { id: formationProgram.id })">
                                     <ShowIcon />
                                     </Link>
-                                    <button v-if="hasPermission('UserManager')"
+                                    <button
                                         @click="openModalDelete(formationProgram)">
                                         <DeleteIcon />
                                     </button>

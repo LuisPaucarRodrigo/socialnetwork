@@ -7,10 +7,7 @@
         </template>
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <div class="flex gap-2 m-1 justify-end items-center">
-                <select   
-                    class="border rounded-md px-4 py-1 w-[150px]"
-                    @change="optionChange"
-                >
+                <select class="border rounded-md px-4 py-1 w-[150px]" @change="optionChange">
                     <option>Por Aprobar</option>
                     <option>Historial</option>
                 </select>
@@ -24,7 +21,7 @@
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 CPE
-                            </th> 
+                            </th>
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Guía de Remisión
@@ -49,7 +46,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Cantidad
                             </th>
-                           
+
                             <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Unidad
@@ -69,22 +66,22 @@
                     </thead>
                     <tbody>
                         <template v-for="item in refunds.data" :key="item.id">
-                        
-                            <tr  class="text-gray-700">
+
+                            <tr class="text-gray-700">
                                 <td class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
                                     <p class="text-gray-900 ">
                                         {{ item.project_entry_liquidation
-                                               .project_entry
-                                               .special_inventory
-                                               .cpe }}
+                                            .project_entry
+                                            .special_inventory
+                                            .cpe }}
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
                                     <p class="text-gray-900 ">
                                         {{ item.project_entry_liquidation
-                                               .project_entry
-                                               .special_inventory
-                                               .referral_guide }}
+                                            .project_entry
+                                            .special_inventory
+                                            .referral_guide }}
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
@@ -95,27 +92,27 @@
                                 <td class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
                                     <p class="text-gray-900 ">
                                         {{ item.project_entry_liquidation
-                                               .project_entry
-                                               .special_inventory
-                                               .sub_warehouse }}
+                                            .project_entry
+                                            .special_inventory
+                                            .sub_warehouse }}
                                     </p>
                                 </td>
-                                
+
                                 <td class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
                                     <p class="text-gray-900 text-center ">
                                         {{ item.project_entry_liquidation
-                                               .project_entry
-                                               .special_inventory
-                                               .zone }}
+                                            .project_entry
+                                            .special_inventory
+                                            .zone }}
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
                                     <p class="text-gray-900 text-center">
                                         {{ item.project_entry_liquidation
-                                               .project_entry
-                                               .special_inventory
-                                               .purchase_product
-                                               .code }}
+                                            .project_entry
+                                            .special_inventory
+                                            .purchase_product
+                                            .code }}
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
@@ -126,49 +123,40 @@
                                 <td class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
                                     <p class="text-gray-900 ">
                                         {{ item.project_entry_liquidation
-                                               .project_entry
-                                               .special_inventory
-                                               .purchase_product
-                                               .unit }}
+                                            .project_entry
+                                            .special_inventory
+                                            .purchase_product
+                                            .unit }}
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
                                     <p class="text-gray-900 ">
                                         {{ item.project_entry_liquidation
-                                               .project_entry
-                                               .special_inventory
-                                               .purchase_product
-                                               .name }}
+                                            .project_entry
+                                            .special_inventory
+                                            .purchase_product
+                                            .name }}
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
                                     <p class="text-gray-900 ">
                                         {{ item.project_entry_liquidation
-                                               .project_entry
-                                               .special_inventory
-                                               .product_serial_number }}
+                                            .project_entry
+                                            .special_inventory
+                                            .product_serial_number }}
                                     </p>
                                 </td>
                                 <td class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
-                                    <div v-if="item.state === null && hasPermission('InventoryManager')"
-                                        class="flex space-x-3 justify-center">
-                                        <button 
-                                            @click="()=>setRefundStatus(item.id, true)"
+                                    <div v-if="item.state === null" class="flex space-x-3 justify-center">
+                                        <button @click="() => setRefundStatus(item.id, true)"
                                             class="flex items-center text-blue-500 hover:underline">
-                                            <svg 
-                                                xmlns="http://www.w3.org/2000/svg" 
-                                                fill="none" 
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5" 
-                                                stroke="currentColor" 
-                                                class="w-6 h-6 text-green-500">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-500">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                             </svg>
                                         </button>
-                                        <button 
-                                            @click="()=>setRefundStatus(item.id, false)"
-                                            type="button"
+                                        <button @click="() => setRefundStatus(item.id, false)" type="button"
                                             class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
@@ -188,7 +176,7 @@
                                 </td>
                             </tr>
                         </template>
-                    </tbody> 
+                    </tbody>
                 </table>
             </div>
             <div class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
@@ -214,15 +202,15 @@ const { warehouse, refunds } = defineProps({
 //Activate Deactivate
 const setRefundStatus = (id, state) => {
     router.post(
-        route('inventory.special_refund.accept_decline', {refund_id:id}),
-        {state},
+        route('inventory.special_refund.accept_decline', { refund_id: id }),
+        { state },
     )
 }
 
 
 const optionChange = (e) => {
-    if (e.target.value === "Historial" ) {
-        router.get(route('inventory.special_refund.historial', {warehouse_id: warehouse.id}))
+    if (e.target.value === "Historial") {
+        router.get(route('inventory.special_refund.historial', { warehouse_id: warehouse.id }))
     }
 }
 

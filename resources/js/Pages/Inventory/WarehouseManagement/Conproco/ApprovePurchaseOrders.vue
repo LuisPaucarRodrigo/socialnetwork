@@ -36,7 +36,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Ver Documento de Cotización
                             </th>
-                            <th v-if="hasPermission('InventoryManager')"
+                            <th 
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
@@ -69,7 +69,7 @@
                                     <ShowIcon />
                                 </button>
                             </td>
-                            <td v-if="hasPermission('InventoryManager')"
+                            <td 
                                 class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <button @click="approve(item.id)"
                                     class="flex items-center text-blue-500 hover:underline">
@@ -239,9 +239,6 @@ const props = defineProps({
     userPermissions: Array
 });
 
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
 
 const approvating = ref(false);
 const showModal = ref(false);

@@ -34,7 +34,7 @@
                     </div>
                 </button>
                 </Link>
-                <Link v-if="hasPermission('HumanResourceManager')" :href="route('management.employees.formation_development.assignation.create')">
+                <Link :href="route('management.employees.formation_development.assignation.create')">
                 <button class="bg-white p-4 rounded-md shadow-md text-left h-full w-full">
                     <div>
                         <h3 class="text-lg font-semibold">Asignación de Programas</h3>

@@ -7,7 +7,7 @@
         Gestión de Apartados
       </template>
       <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
-        <button v-if="hasPermission('ProjectManager')" @click="openCreateSectionModal"
+        <button @click="openCreateSectionModal"
           class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
           Crear Nuevo Apartado
         </button>
@@ -19,7 +19,7 @@
                   class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Nombre
                 </th>
-                <th scope="col" v-if="auth.user.role_id === 1 && hasPermission('ProjectManager')"
+                <th scope="col" v-if="auth.user.role_id === 1 "
                   class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Acciones
                 </th>
@@ -30,7 +30,7 @@
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="text-sm font-medium text-gray-900">{{ section.name }}</div>
                 </td>
-                <td v-if="auth.user.role_id === 1 && hasPermission('ProjectManager')"
+                <td v-if="auth.user.role_id === 1 "
                   class="px-6 py-4 whitespace-nowrap text-left">
                   <div class="flex items-center space-x-2">
                     <button @click="confirmDeleteSection(section.id)">
@@ -95,13 +95,9 @@ const showModal = ref(false);
 
 const props = defineProps({
   sections: Object,
-  auth: Object,
-  userPermissions: Array
+  auth: Object
 });
 
-const hasPermission = (permission) => {
-  return props.userPermissions.includes(permission)
-}
 
 const form = useForm({
   name: '',

@@ -50,8 +50,7 @@
                                 <InputLabel for="type_product">
                                     Tipo de Producto
                                 </InputLabel>
-                                <button v-if="hasPermission('UserManager')" type="button" @click="add_product"
-                                    class="item-center">
+                                <button type="button" @click="add_product" class="item-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -77,8 +76,7 @@
                                 <InputLabel for="resource_type">
                                     Tipo de Activo
                                 </InputLabel>
-                                <button v-if="hasPermission('UserManager')" type="button" @click="add_resource"
-                                    class="item-center">
+                                <button type="button" @click="add_resource" class="item-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-indigo-500">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -299,9 +297,6 @@ function add_resource() {
     showModalAdd.value = true
 }
 
-function hasPermission(permission) {
-    return userPermissions.includes(permission);
-}
 function closeAddModal() {
     showModalAdd.value = false
     formname.reset()

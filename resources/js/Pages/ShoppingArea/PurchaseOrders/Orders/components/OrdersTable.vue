@@ -42,16 +42,13 @@
                     </button>
                 </TableRow>
                 <TableRow>
-                    <select v-if="hasPermission('PurchasingManager')" id="selectState"
+                    <select id="selectState"
                         @change="updateState(order.id, $event.target.value, order.is_payments_completed)">
                         <option selected disabled>{{ order.state }}</option>
                         <option v-for="option in availableOptions(order.state)" :key="option" :value="option">
                             {{ option }}
                         </option>
                     </select>
-                    <p v-else class="text-gray-900 whitespace-no-wrap">
-                        {{ order.state }}
-                    </p>
                 </TableRow>
             </tr>
         </template>
@@ -67,7 +64,7 @@ import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import { formattedDate } from '@/utils/utils';
-import { ShowIcon } from '@/Components/Icons/Index';
+import { ShowIcon } from '@/Components/Icons';
 
 const { orders, openCotization, updateState, userPermissions } = defineProps({
     orders: Object,
@@ -86,7 +83,4 @@ const availableOptions = (state) => {
     }
 };
 
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
 </script>

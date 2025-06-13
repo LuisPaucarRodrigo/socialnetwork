@@ -7,7 +7,7 @@
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
             <div class="flex justify-between items-center gap-4">
-                <div v-if="hasPermission('InventoryManager')" class="flex items-center flex-grow min-w-0">
+                <div class="flex items-center flex-grow min-w-0">
                     <PrimaryButton class="mb-2" @click="add_service">
                         +Agregar
                     </PrimaryButton>
@@ -35,7 +35,7 @@
                                 Descripcion
                             </th>
 
-                            <!-- <th v-if="hasPermission('InventoryManager')"
+                            <!-- <th 
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th> -->
                         </tr>
@@ -54,7 +54,7 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.description }}</p>
                             </td>
-                            <!-- <td v-if="hasPermission('InventoryManager')"
+                            <!-- <td 
                                 class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex justify-center items-center space-x-3">
                                     <button @click="ShowModaldeleteService(item.id)" class="text-red-600 hover:underline">
@@ -150,13 +150,8 @@ const props = defineProps({
     resources: {
         type: Object,
         required: true
-    },
-    userPermissions: Array
+    }
 });
-
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
 
 const confirmingServiceDeletion = ref(false);
 const serviceToDelete = ref(false)

@@ -104,6 +104,15 @@ class ExternalEmployee extends Model
                     }
                 }
             }
+            if ($employee->isDirty('curriculum_vitae')) {
+                $oldImage = $employee->getOriginal('curriculum_vitae');
+                if ($oldImage) {
+                    $filePath = public_path('documents/curriculum_vitae/' . $oldImage);
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    }
+                }
+            }
         });
 
         static::deleting(function ($employee) {

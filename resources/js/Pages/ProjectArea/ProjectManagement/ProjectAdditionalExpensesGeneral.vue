@@ -13,7 +13,7 @@
         <div class="inline-block min-w-full mb-4">
             <div class="flex gap-4 justify-between">
                 <div class="hidden sm:flex sm:items-center space-x-3">
-                    <PrimaryButton v-if="hasPermission('ProjectManager') && filterForm.rejected"
+                    <PrimaryButton v-if="filterForm.rejected"
                         @click="openCreateAdditionalModal" type="button" class="whitespace-nowrap">
                         + Agregar
                     </PrimaryButton>
@@ -98,7 +98,7 @@
                     G.Fijos
                     </Link>
                 </div>
-                <div v-if="hasPermission('HumanResourceManager')" class="sm:hidden">
+                <div  class="sm:hidden">
                     <dropdown align="left">
                         <template #trigger>
                             <button @click="dropdownOpen = !dropdownOpen"
@@ -114,7 +114,7 @@
                         <template #content class="origin-left">
                             <div class="dropdown">
                                 <div class="dropdown-menu">
-                                    <button v-if="hasPermission('ProjectManager') && filterForm.rejected"
+                                    <button v-if="  filterForm.rejected"
                                         @click="openCreateAdditionalModal"
                                         class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                         Agregar
@@ -346,7 +346,7 @@
                                 </div>
                                 <div v-else class="w-1/2"></div>
 
-                                <div v-if="hasPermission('ProjectManager')" class="flex gap-3 mr-3">
+                                <div class="flex gap-3 mr-3">
                                     <button v-if="!filterForm.rejected" data-tooltip-target="tooltip-up-ac" @click="() => validateRegister(item.id, true)
                                     " class="flex items-center rounded-xl text-blue-700 hover:bg-green-200">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -685,7 +685,7 @@ const props = defineProps({
     expense: Object,
     providers: Object,
     auth: Object,
-    userPermissions: Array,
+    
     cost_center: Object,
     fixedOrAdditional: Boolean,
     type: Number,
@@ -703,9 +703,7 @@ const cicsaAssignation = ref(null);
 // const filterMode = ref(false);
 // const subCostCenterZone = ref(null);
 // const subCostCenter = ref(null)
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-};
+
 
 const form = useForm({
     id: "",

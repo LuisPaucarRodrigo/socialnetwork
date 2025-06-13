@@ -1,6 +1,6 @@
 <template>
     <div class="flex justify-between items-center gap-4">
-        <PrimaryButton v-if="hasPermission('InventoryManager')" @click="openCreateProduct" type="button">
+        <PrimaryButton @click="openCreateProduct" type="button">
             + Agregar
         </PrimaryButton>
         <div class="flex items-center">
@@ -34,7 +34,4 @@ async function search() {
     }
 }
 
-function hasPermission(permission) {
-    return userPermissions.includes(permission);
-}
 </script>

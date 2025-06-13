@@ -7,7 +7,7 @@
         </template>
 
         <div class="mt-6  border-t border-gray-100">
-            <div v-if="hasPermission('ProjectManager')" class="relative flex-grow flex mb-8">
+            <div class="relative flex-grow flex mb-8">
                 <textarea id="description" rows="2" v-model="newcomment.comment" placeholder="Agregar Observaciones"
                     @keyup.enter="addComment"
                     class="w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300 resize-none"></textarea>

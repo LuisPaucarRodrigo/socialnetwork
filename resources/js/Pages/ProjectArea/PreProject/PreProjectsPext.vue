@@ -63,7 +63,7 @@
                     </h3>
                     <p class="text-sm font-semibold text-gray-700 mb-2">{{ item.description }}</p>
                     <div class="grid grid-cols-1 gap-y-1 text-sm">
-                        <div v-if="hasPermission('ProjectManager')">
+                        <div>
                             <button @click="assignUser(item.id, item.users)"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                                 Asignar Usuarios

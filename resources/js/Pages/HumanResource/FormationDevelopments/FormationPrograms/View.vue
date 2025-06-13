@@ -41,7 +41,7 @@
                             :key="employee.id"
                             class="flex items-center justify-between m-1 text-sm leading-6 text-gray-700 sm:mt-0 border-b-2 border-gray-200">
                             <p class="flex-shrink-0">{{ `${employee.name} ${employee.lastname}` }}</p>
-                            <button v-if="hasPermission('UserManager')" @click="openModalDelete(employee)">
+                            <button @click="openModalDelete(employee)">
                                 <DeleteIcon />
                             </button>
                         </div>

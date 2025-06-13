@@ -17,8 +17,12 @@ import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
-const { type } = defineProps({
-    type: String
+const { type, searchCondition } = defineProps({
+    type: String,
+    searchCondition: {
+        type: String,
+        required: false
+    },
 })
 
 const assignations = defineModel('assignations')
@@ -36,4 +40,9 @@ async function search() {
         console.error('Error searching:', error);
     }
 };
+
+if (searchCondition) {
+    searchForm.searchTerm = searchCondition
+    search()
+}
 </script>
