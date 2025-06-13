@@ -48,15 +48,15 @@ class HuaweiSitesController extends Controller
             'longitude' => 'nullable',
         ]);
 
-        HuaweiSite::create($data);
+        $site = HuaweiSite::create($data);
 
-        return redirect()->back();
+        return response()->json($site, 200);
     }
 
     public function destroySite(HuaweiSite $site)
     {
         $site->delete();
-        return redirect()->back();
+        return response()->json(true, 200);
     }
 
     public function updateSite(HuaweiSite $site, Request $request)
@@ -71,8 +71,7 @@ class HuaweiSitesController extends Controller
         ]);
 
         $site->update($data);
-
-        return redirect()->back();
+        return response()->json($site->fresh(), 200);
     }
 
     public function verifySiteName(Request $request, $update = null)
