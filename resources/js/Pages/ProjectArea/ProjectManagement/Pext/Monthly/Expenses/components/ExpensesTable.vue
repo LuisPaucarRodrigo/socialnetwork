@@ -193,7 +193,7 @@
                             </div>
                             <div v-else class="w-1/2"></div>
 
-                            <div v-if="hasPermission('ProjectManager')" class="flex gap-3 mr-3">
+                            <div class="flex gap-3 mr-3">
                                 <button v-if="!filterForm.rejected" @click="() => validateRegister(item.id, true)">
                                     <AcceptIcon />
                                 </button>

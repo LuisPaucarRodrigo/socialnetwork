@@ -92,8 +92,8 @@ class HuaweiProjectController extends Controller
                 'total_employee_costs',
                 'total_essalud_employee_cost'
             ])->setRelation('huawei_site', $project->huawei_site->makeHidden([
-                            'huawei_project',
-                        ]));
+                'huawei_project',
+            ]));
         });
 
         return Inertia::render('Huawei/Projects/Projects', [
@@ -153,8 +153,8 @@ class HuaweiProjectController extends Controller
                 'total_employee_costs',
                 'total_essalud_employee_cost'
             ])->setRelation('huawei_site', $project->huawei_site->makeHidden([
-                            'huawei_project',
-                        ]));
+                'huawei_project',
+            ]));
         });
         return Inertia::render('Huawei/Projects/Projects', [
             'projects' => $projects,
@@ -429,7 +429,6 @@ class HuaweiProjectController extends Controller
                     ]);
                 }
             }
-
         } catch (\Throwable $th) {
             DB::rollBack();
             Log::info($th);
@@ -572,7 +571,6 @@ class HuaweiProjectController extends Controller
                     }
                 }
             }
-
         } catch (\Throwable $th) {
             DB::rollBack();
             Log::info($data);
@@ -1073,10 +1071,10 @@ class HuaweiProjectController extends Controller
                 ->whereHas('huawei_equipment_serie', function ($query) use ($id) {
                     $query->where('huawei_equipment_id', $id);
                 })->with([
-                        'huawei_equipment_serie' => function ($query) {
-                            $query->select('id', 'serie_number');
-                        }
-                    ])->get()
+                    'huawei_equipment_serie' => function ($query) {
+                        $query->select('id', 'serie_number');
+                    }
+                ])->get()
                 ->filter(function ($detail) {
                     return $detail->state == 'Disponible';
                 })->map(function ($detail) {
@@ -1241,7 +1239,6 @@ class HuaweiProjectController extends Controller
             }
 
             DB::commit();
-
         } else {
             $entry_detail = HuaweiEntryDetail::find($request->huawei_entry_detail_id);
 
@@ -1508,7 +1505,6 @@ class HuaweiProjectController extends Controller
             foreach ($liquidations as $resource) {
                 $resource->huawei_project_resource->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($resource->huawei_project_resource->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name);
             }
-
         } else {
             $liquidations = HuaweiProjectLiquidation::whereHas('huawei_project_resource.huawei_entry_detail', function ($query) {
                 $query->whereNull('huawei_equipment_serie_id');
@@ -1540,7 +1536,7 @@ class HuaweiProjectController extends Controller
             return $carry + ($item->unit_price * $item->quantity);
         }, 0);
 
-        return Inertia::render('Huawei/ProjectEarnings', [
+        return Inertia::render('Huawei/Earnings/ProjectEarnings', [
             'earnings' => $earnings,
             'total' => $total,
             'huawei_project' => $huawei_project
@@ -1563,7 +1559,7 @@ class HuaweiProjectController extends Controller
             return $carry + ($item->unit_price * $item->quantity);
         }, 0);
 
-        return Inertia::render('Huawei/ProjectEarnings', [
+        return Inertia::render('Huawei/Earnings/ProjectEarnings', [
             'earnings' => $earnings,
             'huawei_project' => $huawei_project,
             'search' => $request,
@@ -1740,7 +1736,7 @@ class HuaweiProjectController extends Controller
             ->whereNotNull('deposit_date')
             ->sum('amount');
 
-        return Inertia::render('Huawei/ProjectRealEarnings', [
+        return Inertia::render('Huawei/Earnings/ProjectRealEarnings', [
             'real_earnings' => $real_earnings,
             'total' => $total,
             'huawei_project' => $huawei_project
@@ -1763,7 +1759,7 @@ class HuaweiProjectController extends Controller
             ->whereNotNull('deposit_date')
             ->sum('amount');
 
-        return Inertia::render('Huawei/ProjectRealEarnings', [
+        return Inertia::render('Huawei/Earnings/ProjectRealEarnings', [
             'real_earnings' => $earnings,
             'huawei_project' => $huawei_project,
             'search' => $request,

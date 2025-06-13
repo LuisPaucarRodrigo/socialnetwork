@@ -29,6 +29,7 @@ class StoreOrUpdateAssignationRequest extends FormRequest
             'cpe' => 'nullable|string',
             'zone' => 'required|string',
             'zone2' => 'nullable|string',
+            'zone3' => 'nullable|string',
             'manager' => 'required|string',
             'user_name' => 'required|string',
             'user_id' => 'required|numeric',

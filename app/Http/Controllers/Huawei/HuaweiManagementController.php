@@ -1331,7 +1331,7 @@ class HuaweiManagementController extends Controller
 
     public function getSpecialRefunds()
     {
-        return Inertia::render('Huawei/SpecialRefunds', [
+        return Inertia::render('Huawei/SpecialRefunds/SpecialRefunds', [
             'refunds' => HuaweiSpecialRefund::orderBy('created_at', 'desc')->paginate(15)
         ]);
     }
@@ -1347,7 +1347,7 @@ class HuaweiManagementController extends Controller
             ->orWhereRaw('CAST(quantity AS CHAR) LIKE ?', ["%{$searchTerm}%"])
             ->get();
 
-        return Inertia::render('Huawei/SpecialRefunds', [
+        return Inertia::render('Huawei/SpecialRefunds/SpecialRefunds', [
             'refunds' => $refunds,
             'search' => $request
         ]);

@@ -328,11 +328,12 @@
             Colaborador: {{ docForm.emp_name }}
           </h2>
           <div v-if="docForm.id">
-              <h4 class="text-sm font-light text-black-900 bg-amber-500/10 rounded-lg p-3 ">
-                Si elige el estado <span class="text-red-500">"No Corresponde"</span> o la opción <span class="text-red-500">"Eliminar"</span> el archivo relacionado (de existir) se eliminará.
-             </h4>
+            <h4 class="text-sm font-light text-black-900 bg-amber-500/10 rounded-lg p-3 ">
+              Si elige el estado <span class="text-red-500">"No Corresponde"</span> o la opción <span
+                class="text-red-500">"Eliminar"</span> el archivo relacionado (de existir) se eliminará.
+            </h4>
           </div>
-          
+
           <form @submit.prevent="submit">
             <div class="pb-6 pt-3 border-t border-b border-gray-900/10 ">
               <div class=" grid sm:grid-cols-2 gap-6">
@@ -351,20 +352,13 @@
                 </div>
                 <template v-if="docForm.state === 'Completado'">
                   <div class="sm:col-span-2">
-                      <InputLabel for="documentFile"
-                          >Documento <span class="text-red-600 text-normal">*</span> </InputLabel
-                      >
-                      <div class="mt-2">
-                          <InputFile
-                          required
-                              type="file"
-                              v-model="docForm.document"
-                              id="documentFile"
-                              class="w-full ring-1 ring-gray-300"
-                              accept=".pdf, .png, .jpeg, .jpg"
-                          />
-                          <InputError :message="docForm.errors.document" />
-                      </div>
+                    <InputLabel for="documentFile">Documento <span class="text-red-600 text-normal">*</span>
+                    </InputLabel>
+                    <div class="mt-2">
+                      <InputFile required type="file" v-model="docForm.document" id="documentFile"
+                        class="w-full ring-1 ring-gray-300" accept=".pdf, .png, .jpeg, .jpg" />
+                      <InputError :message="docForm.errors.document" />
+                    </div>
                   </div>
                   <div class="sm:col-span-2">
                     <div class=" flex items-center gap-4 text-normal">
@@ -380,10 +374,9 @@
                           class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
                       </label>
                       <span class="text-red-600 text-normal">*</span>
-                  </div>
-                    <div  v-if="docForm.has_exp_date" class="mt-2 ">
-                      <TextInput required type="date" v-model="docForm.exp_date"
-                         autocomplete="off" />
+                    </div>
+                    <div v-if="docForm.has_exp_date" class="mt-2 ">
+                      <TextInput required type="date" v-model="docForm.exp_date" autocomplete="off" />
                       <InputError :message="docForm.errors.exp_date" />
                     </div>
                   </div>
@@ -479,14 +472,14 @@ const employeesData = ref([...employees])
 const e_employeesData = ref([...e_employees])
 
 const showDocModal = ref(false)
-const docForm = useForm({})
+
 
 
 //Each cell post transaction
 function openDocModal(item) {
   showDocModal.value = true
-  const cleanItem = JSON.parse(JSON.stringify(item));
-  docForm.defaults(cleanItem);
+  // const cleanItem = JSON.parse(JSON.stringify(item));
+  docForm.defaults(item);
   docForm.reset()
 }
 
@@ -505,13 +498,13 @@ const initStateDocForm = {
   document: null
 }
 
-
+const docForm = useForm({ ...initStateDocForm })
 
 function closeDocModal() {
-  docForm.defaults({...initStateDocForm})
+  docForm.defaults({ ...initStateDocForm })
   docForm.reset()
   isLoading.value = false
-  errMsg.value = false
+  errMsg.value = ''
   showDocModal.value = false
 }
 
@@ -545,6 +538,7 @@ async function submit() {
       notify('Registro Documentario Guardado')
     }, 100)
   } catch (e) {
+    console.error(e)
     closeDocModal()
     setTimeout(() => {
       notifyError('Server Error')
@@ -653,14 +647,12 @@ async function filterExpenseLine(search) {
   let url = route('document.rrhh.status')
   try {
     let response = await axios.post(url, { searchquery: search })
-    console.log(response.data)
     employeesData.value = response.data.employees
     e_employeesData.value = response.data.e_employees
   } catch (error) {
     notifyError(error)
   }
 }
-
 
 watch(() => docForm.has_exp_date, () => {
   if (!docForm.has_exp_date) docForm.exp_date = ''

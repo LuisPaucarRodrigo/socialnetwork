@@ -52,7 +52,7 @@
                                     Calendario
                                 </dropdown-link>
                                 <dropdown-link v-permission="'pro_pint_historial'"
-                                    v-if="hasPermission('ProjectManager')" :href="route('projectmanagement.historial')">
+                                 :href="route('projectmanagement.historial')">
                                     Historial
                                 </dropdown-link>
                                 <dropdown-link v-permission="'pro_pint_additional_management'"
@@ -73,7 +73,7 @@
                         <h2 class="text-sm font-semibold mb-3">
                             N° {{ item.code }}
                         </h2>
-                        <div v-if="auth.user.role_id === 1 || hasPermission('ProjectManager')"
+                        <div v-if="auth.user.role_id === 1"
                             class="inline-flex justify-end items-start gap-x-2">
                             <button @click="() => {
                                 router.post(route('projectmanagement.liquidation'), { project_id: item.id }, {
@@ -105,52 +105,52 @@
                                 :href="route('tasks.index', { id: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Tareas
                             </Link>
-                            <template v-permission="'pro_pint_one_calendar'">
+                            <div v-permission="'pro_pint_one_calendar'">
                                 <Link v-if="item.cost_center_id !== 1 || item.initial_budget > 0"
                                     :href="route('projectscalendar.show', { project: item.id })"
                                     class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Calendario
                                 </Link>
                                 <span v-else class="text-gray-400">Calendario</span>
-                            </template>
-                            <template v-permission="'pro_pint_services'">
+                            </div>
+                            <div v-permission="'pro_pint_services'">
                                 <Link v-if="item.cost_center_id !== 1 || item.initial_budget > 0"
                                     :href="route('projectmanagement.resources', { project_id: item.id })"
                                     class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Servicios
                                 </Link>
                                 <span v-else class="text-gray-400">Servicios</span>
-                            </template>
+                            </div>
 
-                            <template v-permission="'pro_pint_one_purchase_expenses'">
+                            <div v-permission="'pro_pint_one_purchase_expenses'">
                                 <Link v-if="item.cost_center_id !== 1 || item.initial_budget > 0"
                                     :href="route('projectmanagement.purchases_request.index', { project_id: item.id })"
                                     class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y
                                 Gastos</Link>
                                 <span v-else class="text-gray-400">Compras y Gastos</span>
-                            </template>
-                            <template v-permission="'pro_pint_assign_products'">
+                            </div>
+                            <div v-permission="'pro_pint_assign_products'">
                                 <Link v-if="item.cost_center_id !== 1 || item.initial_budget > 0"
                                     :href="route('projectmanagement.products', { project_id: item.id })"
                                     class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                                 Asignar Productos
                                 </Link>
                                 <span v-else class="text-gray-400">Asignar Productos</span>
-                            </template>
-                            <template v-permission="'pro_pint_liquidation'">
+                            </div>
+                            <div v-permission="'pro_pint_liquidation'">
                                 <Link v-if="item.cost_center_id !== 1 || item.initial_budget > 0"
                                     :href="route('projectmanagement.liquidate', { project_id: item.id })"
                                     class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                                 Liquidaciones
                                 </Link>
                                 <span v-else class="text-gray-400">Liquidaciones</span>
-                            </template>
-                            <template v-permission="'pro_pint_archives'">
+                            </div>
+                            <div v-permission="'pro_pint_archives'">
                                 <Link v-if="item.cost_center_id !== 1 || item.initial_budget > 0"
                                     :href="route('project.document.index', { path: `${item.code}_${item.id}`, project_id: item.id })"
                                     class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                                 Archivos
                                 </Link>
                                 <span v-else class="text-gray-400">Archivos</span>
-                            </template>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -179,13 +179,9 @@ import { EditIcon, MenuIcon } from '@/Components/Icons/index';
 
 const props = defineProps({
     projects: Object,
-    auth: Object,
-    userPermissions: Array
+    auth: Object
 })
 
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
 
 const projects = ref({ ...props.projects });
 const confirmingProjectDeletion = ref(false);

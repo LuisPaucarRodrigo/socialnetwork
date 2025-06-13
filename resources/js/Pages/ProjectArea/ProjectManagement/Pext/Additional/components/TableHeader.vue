@@ -2,7 +2,7 @@
     <div class="mt-6 flex items-center justify-between gap-x-6">
         <div class="hidden sm:flex sm:items-center sm:space-x-3">
             <template v-if="!formSearch.statusProject">
-                <PrimaryButton v-if="hasPermission('ProjectManager')" data-tooltip-target="add_monthly_project"
+                <PrimaryButton data-tooltip-target="add_monthly_project"
                     @click="createOrEditModal" type="button" customColor="bg-green-600 hover:bg-green-500">
                     <PlusCircleIcon color="text-white" />
 
@@ -13,12 +13,12 @@
                     <div class="tooltip-arrow" data-popper-arrow></div>
                 </div>
             </template>
-            <Link v-if="hasPermission('ProjectManager')"
+            <Link
                 :href="route('projectmanagement.pext.additional.index_rejected', { type })"
                 class="rounded-md px-4 py-2 text-center text-sm text-white bg-red-600 hover:bg-red-500">
             No Proceden
             </Link>
-            <PrimaryButton v-if="hasPermission('ProjectManager')" @click="completedProjects()" type="button"
+            <PrimaryButton @click="completedProjects()" type="button"
                 customColor="bg-green-600 hover:bg-green-500">
                 {{ !formSearch.statusProject ? "Culminados" : "En Proceso" }}
             </PrimaryButton>
@@ -35,16 +35,16 @@
 
                 <template #content class="origin-left">
                     <div>
-                        <button v-if="hasPermission('ProjectManager') && !formSearch.statusProject"
+                        <button v-if="!formSearch.statusProject"
                             @click="createOrEditModal"
                             class="dropdown-item block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                             Agregar
                         </button>
-                        <dropdown-link v-if="hasPermission('ProjectManager')"
+                        <dropdown-link 
                             :href="route('projectmanagement.pext.additional.index_rejected', { type })">
                             No Proceden
                         </dropdown-link>
-                        <button v-if="hasPermission('ProjectManager')" @click="completedProjects"
+                        <button  @click="completedProjects"
                             class="dropdown-item block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                             {{ !formSearch.statusProject ? "Culminados" : "En Proceso" }}
                         </button>
@@ -78,9 +78,6 @@ const { userPermissions, type, searchCondition, createOrEditModal } = defineProp
 })
 const projects = defineModel('projects')
 
-const hasPermission = (permission) => {
-    return userPermissions.includes(permission);
-}
 
 const formSearch = ref({
     search: '',

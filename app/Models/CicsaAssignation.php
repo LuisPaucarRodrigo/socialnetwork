@@ -20,6 +20,7 @@ class CicsaAssignation extends Model
         'cpe',
         'zone',
         'zone2',
+        'zone3',
         'manager',
         'user_name',
         'user_id',

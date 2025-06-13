@@ -15,8 +15,7 @@
             <div class="flex gap-4 justify-between">
                 <div class="hidden sm:flex  space-x-3">
                     <PrimaryButton v-if="
-                        project_id.status === null &&
-                        hasPermission('ProjectManager')
+                        project_id.status === null
                     " @click="openCreateAdditionalModal" type="button" class="whitespace-nowrap">
                         + Agregar
                     </PrimaryButton>

@@ -24,29 +24,29 @@ class QuickMaterialsController extends Controller
 {
     //quick_materials
 
-    public function getMaterials ()
+    public function getMaterials()
     {
-        return Inertia::render('Huawei/QuickMaterials', [
+        return Inertia::render('Huawei/InternalInventory/QuickMaterials', [
             'quick_materials' => QuickMaterial::orderBy('created_at', 'desc')->paginate(15)
         ]);
     }
 
-    public function searchMaterial ($request)
+    public function searchMaterial($request)
     {
         $searchTerm = strtolower($request);
 
         $query = QuickMaterial::query();
 
         $query->whereRaw('LOWER (description) LIKE ? ', ["%{$searchTerm}%"])
-               ->orWhereRaw('LOWER (unit) LIKE ? ', ["%{$searchTerm}%"]);
+            ->orWhereRaw('LOWER (unit) LIKE ? ', ["%{$searchTerm}%"]);
 
-        return Inertia::render('Huawei/QuickMaterials', [
+        return Inertia::render('Huawei/InternalInventory/QuickMaterials', [
             'quick_materials' => $query->orderBy('created_at', 'desc')->get(),
             'search' => $request
         ]);
     }
 
-    public function storeMaterial (Request $request)
+    public function storeMaterial(Request $request)
     {
         $data = $request->validate([
             'description' => 'required',
@@ -58,7 +58,7 @@ class QuickMaterialsController extends Controller
         return redirect()->back();
     }
 
-    public function updateMaterial (QuickMaterial $material, Request $request)
+    public function updateMaterial(QuickMaterial $material, Request $request)
     {
         $data = $request->validate([
             'description' => 'required',
@@ -70,7 +70,7 @@ class QuickMaterialsController extends Controller
         return redirect()->back();
     }
 
-    public function deleteMaterial (QuickMaterial $material)
+    public function deleteMaterial(QuickMaterial $material)
     {
         $material->delete();
 
@@ -148,14 +148,15 @@ class QuickMaterialsController extends Controller
         });
 
         // Retornamos la vista con los datos transformados
-        return Inertia::render('Huawei/QuickMaterialsDetails', [
+        return Inertia::render('Huawei/InternalInventory/QuickMaterialsDetails', [
             'quickMaterials' => $quickMaterials,
             'material' => $material,
             'sites' => HuaweiSite::select('id', 'name')->get()
         ]);
     }
 
-    public function store($material_id, QuickMaterialsRequest $request) {
+    public function store($material_id, QuickMaterialsRequest $request)
+    {
         $originalData = $request->all();
         if (empty($originalData)) {
             return response()->json(['message' => 'No data provided'], 400);
@@ -163,21 +164,22 @@ class QuickMaterialsController extends Controller
         $data = $request->validated();
         $quick_res = QuickMaterialsEntry::updateOrCreate(['id' => $request->id, 'quick_material_id' => $material_id], $data);
         $quick_res->load('quick_materials_outputs');
-        return response()->json(['quick_res'=> $quick_res], 200);
+        return response()->json(['quick_res' => $quick_res], 200);
     }
 
 
-    public function destroy (QuickMaterialsEntry $quick_material) {
+    public function destroy(QuickMaterialsEntry $quick_material)
+    {
         $quick_material->delete();
-        return response()->json(['message'=>'success'], 200);
+        return response()->json(['message' => 'success'], 200);
     }
 
     //outputs
-    public function storeOutput ($entry_id, QuickMaterialsOutputRequest $request)
+    public function storeOutput($entry_id, QuickMaterialsOutputRequest $request)
     {
         $originalData = $request->all();
 
-        if (empty($originalData)){
+        if (empty($originalData)) {
             return response()->json(['message' => $originalData]);
         }
 
@@ -187,12 +189,13 @@ class QuickMaterialsController extends Controller
         return response()->json(['quick_res_out' => $quick_res_out], 200);
     }
 
-    public function destroyOutput (QuickMaterialsOutput $output) {
+    public function destroyOutput(QuickMaterialsOutput $output)
+    {
         $output->delete();
-        return response()->json(['message'=>'success', $output], 200);
+        return response()->json(['message' => 'success', $output], 200);
     }
 
-    public function fetchProjects ($site_id)
+    public function fetchProjects($site_id)
     {
         $projects = HuaweiProject::select('id', 'name', 'assigned_diu')->where('huawei_site_id', $site_id)->get();
         return response()->json(['projects' => $projects]);
@@ -231,9 +234,9 @@ class QuickMaterialsController extends Controller
 
     //internal_guides
 
-    public function internalGuides ()
+    public function internalGuides()
     {
-        return Inertia::render('Huawei/InternalGuides', [
+        return Inertia::render('Huawei/InternalGuides/InternalGuides', [
             'internal_guides' => HuaweiInternalGuide::orderBy('created_at', 'desc')->paginate(15)
         ]);
     }
@@ -251,7 +254,7 @@ class QuickMaterialsController extends Controller
             $spreadsheet = IOFactory::load($file->getRealPath());
             $data = [];
 
-             $sheet = $spreadsheet->getActiveSheet();
+            $sheet = $spreadsheet->getActiveSheet();
 
             $data = [];
             $characterCount = 0;
@@ -335,29 +338,28 @@ class QuickMaterialsController extends Controller
         return response()->json(['file_error' => 'Debe subir el archivo']);
     }
 
-    public function deleteInternalGuide (HuaweiInternalGuide $id)
+    public function deleteInternalGuide(HuaweiInternalGuide $id)
     {
         $fileName = $id->name;
         $filePath = "documents/huawei/internal_guides/$fileName";
         $path = public_path($filePath);
-        if (file_exists($filePath)){
+        if (file_exists($filePath)) {
             unlink($path);
             $id->delete();
         }
         return redirect()->back();
     }
 
-    public function showInternalGuide (HuaweiInternalGuide $id)
+    public function showInternalGuide(HuaweiInternalGuide $id)
     {
         $fileName = $id->name;
         $filePath = "documents/huawei/internal_guides/$fileName";
         $path = public_path($filePath);
 
-        if (file_exists($path)){
+        if (file_exists($path)) {
             ob_end_clean();
             return response()->file($path);
         }
         abort(403, 'Guía no encontrada');
     }
 }
-

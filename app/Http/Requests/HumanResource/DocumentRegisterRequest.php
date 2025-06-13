@@ -54,5 +54,4 @@ class DocumentRegisterRequest extends FormRequest
             }
         });
     }
-
 }

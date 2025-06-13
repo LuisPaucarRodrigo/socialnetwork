@@ -8,7 +8,7 @@
         </template>
         <Toaster richColors />
         <div class="min-w-full">
-            <TableHeader :type="type" v-model:assignations="assignations" />
+            <TableHeader :type="type" v-model:assignations="assignations" :searchCondition="searchCondition" />
             <br>
             <AssignationTable :assignations="assignations" :updateAssignation="updateAssignation" />
         </div>
@@ -30,20 +30,14 @@ const { assignation, auth, searchCondition, type } = defineProps({
     auth: Object,
     searchCondition: {
         type: String,
-        Required: false
+        required: false
     },
     type: String
 })
-
 
 const assignations = ref({ ...assignation });
 const assignationForm = ref(null)
 function updateAssignation(item) {
     assignationForm.value.updateAssignation(item)
 }
-
-// if (searchCondition) {
-//     search(searchCondition)
-// }
-
 </script>

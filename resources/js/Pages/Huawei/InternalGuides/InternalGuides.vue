@@ -2,7 +2,7 @@
 
     <Head title="Guías Internas" />
 
-    <AuthenticatedLayout :redirectRoute="'huawei.titles'">
+    <AuthenticatedLayout :redirectRoute="'huawei.internalguides'">
         <template #header> Guías de Huawei </template>
         <div class="mt-6 flex items-center justify-between gap-x-6">
             <button @click="add_code" type="button"

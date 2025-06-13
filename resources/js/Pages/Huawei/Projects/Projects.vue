@@ -287,11 +287,6 @@
                                 " class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
                             Gestión de Gastos
                             </Link>
-                            <!-- <Link
-                                :href="route('huawei.projects.stages', { huawei_project: item.id })"
-                                class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
-                                Imágenes
-                            </Link> -->
                             <Link :href="route('huawei.projects.resources', {
                                 huawei_project: item.id,
                             })

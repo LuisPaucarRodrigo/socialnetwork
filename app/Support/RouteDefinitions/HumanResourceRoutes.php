@@ -8,7 +8,6 @@ use App\Http\Controllers\HumanResource\DocumentController;
 use App\Http\Controllers\HumanResource\FormationDevelopment;
 use App\Http\Controllers\HumanResource\GrupalDocumentController;
 use App\Http\Controllers\HumanResource\ManagementEmployees;
-use App\Http\Controllers\HumanResource\ScheduleController;
 use App\Http\Controllers\HumanResource\SpreadsheetsController;
 use App\Http\Controllers\HumanResource\VacationController;
 

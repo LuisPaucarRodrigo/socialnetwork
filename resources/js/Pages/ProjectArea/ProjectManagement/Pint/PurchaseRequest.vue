@@ -8,7 +8,7 @@
 
         <div class="min-h-[300px] min-w-full overflow-hidden rounded-lg shadow">
             <div class="hidden sm:flex gap-2">
-                <PrimaryButton v-if="project.status === null && hasPermission('ProjectManager')"
+                <PrimaryButton v-if="project.status === null "
                     @click="add_purchase_request" type="button">
                     + Agregar
                 </PrimaryButton>
@@ -41,7 +41,7 @@
                         <div>
                             <div class="dropdown">
                                 <div class="dropdown-menu">
-                                    <button v-if="project.status === null && hasPermission('ProjectManager')"
+                                    <button v-if="project.status === null "
                                         @click="add_purchase_request"
                                         class="dropdown-item block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                         + Agregar
@@ -136,7 +136,7 @@
                                         :href="route('projectmanagement.purchases_request.details', { id: purchase.id })">
                                     <ShowIcon />
                                     </Link>
-                                    <template v-if="hasPermission('ProjectManager')">
+                                    <template>
                                         <div>
                                             <Link v-if="purchase.state == 'Pendiente'" class="text-blue-900 "
                                                 :href="route('projectmanagement.purchases_request.edit', { id: purchase.id, project_id: project.id })">
@@ -174,7 +174,7 @@
 
                                 </div>
                                 <div v-else class="flex space-x-3 justify-center">
-                                    <button v-if="hasPermission('ProjectManager')" @click="due_date_show(purchase.id)"
+                                    <button @click="due_date_show(purchase.id)"
                                         type="button"
                                         class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -256,13 +256,9 @@ const purchaseToUpdate = ref(null);
 const props = defineProps({
     purchases: Object,
     project: Object,
-    auth: Object,
-    userPermissions: Array
+    auth: Object
 });
 
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
 
 let backUrl = props.project.status === null
     ? 'projectmanagement.index'

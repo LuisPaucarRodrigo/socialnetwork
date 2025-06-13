@@ -1,7 +1,7 @@
 <template>
     <div class="flex gap-4 justify-between">
         <div class="hidden sm:flex sm:items-center space-x-3">
-            <PrimaryButton v-if="hasPermission('ProjectManager') && filterForm.rejected"
+            <PrimaryButton v-if="filterForm.rejected"
                 @click="openCreateAdditionalModal" type="button" class="whitespace-nowrap">
                 + Agregar
             </PrimaryButton>
@@ -30,7 +30,7 @@
                 <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
 
-            <button v-if="hasPermission('UserManager')" type="button"
+            <button  type="button"
                 class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500"
                 @click="openModalImport">
                 Importar Gastos
@@ -143,10 +143,10 @@ import Search from "@/Components/Search.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { Link } from "@inertiajs/vue3";
 import { notifyWarning } from "@/Components/Notification";
-import { MenuIcon, ServerIcon } from "@/Components/Icons/Index";
+import { MenuIcon, ServerIcon } from "@/Components/Icons";
 
-const { userPermissions, project_id, fixedOrAdditional, status, actionForm, initialFilterFormState, openCreateAdditionalModal, openModalImport } = defineProps({
-    userPermissions: Array,
+const {  project_id, fixedOrAdditional, status, actionForm, initialFilterFormState, openCreateAdditionalModal, openModalImport } = defineProps({
+    
     project_id: String,
     fixedOrAdditional: Boolean,
     status: String,
@@ -159,9 +159,7 @@ const { userPermissions, project_id, fixedOrAdditional, status, actionForm, init
 const showSwapCostsModal = defineModel('showSwapCostsModal')
 const showOpNuDatModal = defineModel('showOpNuDatModal')
 const filterForm = defineModel('filterForm')
-const hasPermission = (permission) => {
-    return userPermissions.includes(permission);
-};
+
 
 function openExportExcel() {
     const uniqueParam = `timestamp=${new Date().getTime()}`;

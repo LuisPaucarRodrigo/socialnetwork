@@ -23,7 +23,7 @@
                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                         Descripción
                     </th>
-                    <th v-if="hasPermission('InventoryManager')"
+                    <th
                         class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                     </th>
                 </tr>
@@ -49,7 +49,7 @@
                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                         <p class="text-gray-900 whitespace-no-wrap">{{ item.description }}</p>
                     </td>
-                    <td v-if="hasPermission('InventoryManager')"
+                    <td
                         class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                         <div class="inline-flex justify-end gap-x-0">
                             <button v-if="auth.user.role_id == 1" @click="openEditProductModal(item)">
@@ -70,18 +70,14 @@
     </div>
 </template>
 <script setup>
-import { DisableIcon, EditIcon } from "@/Components/Icons/Index";
+import { DisableIcon, EditIcon } from "@/Components/Icons";
 import Pagination from '@/Components/Pagination.vue'
 
-const { products, userPermissions, auth, openEditProductModal, confirmDeleteProduct } = defineProps({
+const { products, auth, openEditProductModal, confirmDeleteProduct } = defineProps({
     products: Object,
-    userPermissions: Object,
     auth: Object,
     openEditProductModal: Function,
     confirmDeleteProduct: Function
 });
 
-function hasPermission(permission) {
-    return userPermissions.includes(permission);
-}
 </script>

@@ -286,8 +286,13 @@ class ManagementEmployeesServices
 
     public function storeOrUpdateExternalEmployees($validateData, $request, $external_id): Object
     {
-        $validateData['cropped_image'] = $this->storeArchives($request->file('cropped_image'), 'image/profile/');
-        $validateData['curriculum_vitae'] = $this->storeArchives($request->file('curriculum_vitae'), 'documents/curriculum_vitae/');
+        if ($request->hasFile('cropped_image')) {
+            $validateData['cropped_image'] = $this->storeArchives($request->file('cropped_image'), 'image/profile/');
+        }
+
+        if ($request->hasFile('curriculum_vitae')) {
+            $validateData['curriculum_vitae'] = $this->storeArchives($request->file('curriculum_vitae'), 'documents/curriculum_vitae/');
+        }
         $e_external = ExternalEmployee::updateOrCreate(
             ['id' => $external_id],
             $validateData

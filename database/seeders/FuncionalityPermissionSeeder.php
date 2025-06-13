@@ -1664,12 +1664,73 @@ class FuncionalityPermissionSeeder extends Seeder
             ],
         ];
 
-        $huaweiProjectsSubmodule = [
+        //Huawei
+        $huawei_sites_submodule = [
+            [
+                'display_name' => 'Encargado de Sites Huawei',
+                'key_name' => 'huawei_sites',
+                'module' => 'huawei_sites_submodule',
+                'permissions' => [
+                    'huawei.sites',
+                    'huawei.sites.post',
+                    'huawei.sites.put',
+                    'huawei.sites.delete',
+                    'huawei.sites.verify',
+                    'huawei.sites.search',
+                ]
+            ],
+        ];
+
+        $huawei_projects_submodule = [
             [
                 'display_name' => 'Ver proyectos (incluye buscar)',
                 'key_name' => 'huawei_projects_view',
                 'module' => 'huawei_projects_submodule',
-                'permissions' => ['huawei.projects', 'huawei.projects.search']
+                'permissions' => [
+                    'huawei.projects',
+                    'huawei.projects.search',
+                    'huawei.projects.generalbalance',
+                    'huawei.projects.generalbalance.expensesbyzone',
+                    'huawei.projects.general.expenses',
+                    'huawei.projects.general.expenses.search',
+                    'huawei.projects.general.expenses.searchadvance',
+                    'huawei.projects.general.expenses.store',
+                    'huawei.projects.general.expenses.update',
+                    'huawei.projects.general.expenses.delete',
+                    'huawei.projects.general.expenses.validate',
+                    'huawei.projects.general.expenses.showimage',
+                    'huawei.projects.general.expenses.export',
+                    'huawei.projects.general.expenses.massiveupdate',
+                    'huawei.projects.general.expenses.fetchsites',
+                    'huawei.projects.general.expenses.fetchprojects',
+                    'huawei.projects.general.expenses.import',
+                    'huawei.projects.general.expenses.donwloadtemplate',
+                    'huawei.projects.general.expenses.downloadzip',
+                    'huawei.projects.monthlyexpenses.downloadimages',
+
+                    //Project Costs
+                    'huawei.projects.additionalcosts',
+                    'huawei.projects.additionalcosts.showimage',
+                    'huawei.projects.additionalcosts.search',
+                    'huawei.projects.additionalcosts.summary',
+                    'huawei.projects.additionalcosts.advancedsearch',
+                    'huawei.projects.additionalcosts.export',
+
+                    //Liquidations
+                    'huawei.projects.liquidations',
+                    'huawei.projects.liquidations.history',
+                    'huawei.projects.liquidations.post',
+                    'huawei.projects.liquidations.searchadvance',
+                    'huawei.projects.liquidations.massiveliquidation',
+
+                    //Resources
+                    'huawei.projects.resources',
+                    'huawei.projects.resources.search',
+                    'huawei.projects.resources.store',
+                    'huawei.projects.refund',
+                    'huawei.projects.resources.searchdetails',
+                    'huawei.projects.create.fetchsites'
+                ]
             ],
             [
                 'display_name' => 'Agregar proyecto',
@@ -1704,8 +1765,97 @@ class FuncionalityPermissionSeeder extends Seeder
             //     'permissions' => []
             // ],
         ];
+        $huawei_inventory_submodule = [
+            [
+                'display_name' => 'Encargado de Inventario huawei',
+                'key_name' => 'huawei_inventory',
+                'module' => 'huawei_inventory_submodule',
+                'permissions' => [
+                    'huawei.inventory.show',
+                    'huawei.inventory.pendingorders',
+                    'huawei.inventory.pendingorders.searchadvance',
+                    'huawei.inventory.pendingorders.assignguide',
+                    'huawei.inventory.pendingorders.fetch',
+                    'huawei.inventory.show.search',
+                    'huawei.inventory.create',
+                    'huawei.inventory.store',
+                    'huawei.inventory.store.order',
+                    'huawei.inventory.create.brand',
+                    'huawei.inventory.create.brandmodel',
+                    'huawei.inventory.show.details',
+                    'huawei.inventory.show.details.withoutdiu',
+                    'huawei.inventory.show.details.search',
+                    'huawei.inventory.details.refund',
+                    'huawei.inventory.refunds',
+                    'huawei.inventory.refunds.search',
+                    'huawei.inventory.showguide',
+                    'huawei.inventory.details.assigndiu',
+                    'huawei.inventory.export',
+                    'huawei.inventory.general.equipments',
+                    'huawei.inventory.general.equipments.searchadvance',
+                    'huawei.inventory.general.equipments.massiveupdate',
+                    'huawei.inventory.general.equipments.search',
+                    'huawei.inventory.update.entrydetail',
+                    'huawei.inventory.update.entrydetail.site',
+                    'huawei.inventory.create.verifyserie',
+                    'huawei.inventory.create.getinventory',
+                ]
+            ]
+        ];
 
+        $huawei_inventory_internal_submodule = [
+            [
+                'display_name' => 'Encargado de Inventario Interno',
+                'key_name' => 'Inventario Interno',
+                'module' => 'huawei_internal_inventory_submodule',
+                'permissions' => [
+                    'huawei.quickmaterials',
+                    'huawei.quickmaterials.search',
+                    'huawei.quickmaterials.store',
+                    'huawei.quickmaterials.update',
+                    'huawei.quickmaterials.delete',
+                    'huawei.quickmaterials.verifyname',
 
+                    'huawei.quickmaterials.details',
+                    'huawei.quickmaterials.details.store',
+                    'huawei.quickmaterials.details.delete',
+
+                    'huawei.quickmaterials.details.output.store',
+                    'huawei.quickmaterials.details.output.delete',
+                    'huawei.quickmaterials.details.output.fetchprojects',
+                    'huawei.quickmaterials.details.output.selectproject',
+                ]
+            ],
+        ];
+
+        $huawei_interal_guides_submodule = [
+            [
+                'display_name' => 'Encargado de Guias Internas',
+                'key_name' => 'Guias Internas',
+                'module' => 'huawei_interal_guides_submodule',
+                'permissions' => [
+                    'huawei.internalguides',
+                    'huawei.internalguides.store',
+                    'huawei.internalguides.delete',
+                    'huawei.internalguides.show',
+                ]
+            ],
+        ];
+
+        $huawei_special_returns_submodule = [
+            [
+                'display_name' => 'Encargado de Devoluciones Especiales',
+                'key_name' => 'Devoluciones Especiales',
+                'module' => 'huawei_special_returns_submodule',
+                'permissions' => [
+                    'huawei.specialrefunds',
+                    'huawei.specialrefunds.search',
+                    'huawei.specialrefunds.store',
+                    'huawei.specialrefunds.update',
+                    'huawei.specialrefunds.delete',
+                ]
+            ],
+        ];
 
         $Submodules = [
             $UsersSubModule,
@@ -1766,7 +1916,13 @@ class FuncionalityPermissionSeeder extends Seeder
             //Sharepoint
             $sharedoc_submodule,
 
-            $huaweiProjectsSubmodule,
+            //Huawei
+            $huawei_sites_submodule,
+            $huawei_projects_submodule,
+            $huawei_inventory_submodule,
+            $huawei_inventory_internal_submodule,
+            $huawei_interal_guides_submodule,
+            $huawei_special_returns_submodule,
 
             //Productos
             $iproduct_submodule
@@ -1775,7 +1931,6 @@ class FuncionalityPermissionSeeder extends Seeder
         foreach ($Submodules as $sm) {
             foreach ($sm as $func) {
                 $module = Module::where('name', $func['module'])->first();
-                if ($module) Log::info($func['module']);
                 $functionality = Functionality::create([
                     'key_name' => $func['key_name'],
                     'display_name' => $func['display_name'],

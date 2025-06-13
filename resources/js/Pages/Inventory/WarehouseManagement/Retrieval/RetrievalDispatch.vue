@@ -57,7 +57,7 @@
                             </td>
 
                             <td class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
-                                <div v-if="dispatch.state === null && hasPermission('InventoryManager')" class="flex space-x-3 justify-center">
+                                <div v-if="dispatch.state === null" class="flex space-x-3 justify-center">
                                     <button @click="() => openAcceptModal(dispatch.id)"
                                         class="flex items-center text-blue-500 hover:underline">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -138,13 +138,8 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 
 const props = defineProps({
-    retrievalDispatch: Object,
-    userPermissions:Array
+    retrievalDispatch: Object
 })
-
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
 
 const declineModal = ref(false);
 const acceptModal = ref(false);

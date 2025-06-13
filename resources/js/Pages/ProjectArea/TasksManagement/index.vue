@@ -8,7 +8,7 @@
 
         <div class="grid sm:grid-cols-5">
             <div class="col-span-full flex flex-col space-y-5">
-                <div v-if="hasPermission('ProjectManager')" class="flex justify-start space-x-3">
+                <div class="flex justify-start space-x-3">
                     <button v-if="project.status === null" @click="addTask" type="button"
                         class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                         + Agregar
@@ -100,7 +100,7 @@
                                     class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <div class="flex items-center gap-x-2 justify-end">
                                         <!-- Botones -->
-                                        <template v-if="hasPermission('ProjectManager')">
+                                        <template>
                                             <div v-if="task.status === 'pendiente'">
                                                 <button @click="openModalStart(task)"
                                                     v-if="task.start_date && task.end_date" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2
@@ -140,7 +140,7 @@
                                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                             </svg>
                                             </Link> -->
-                                            <template v-if="hasPermission('ProjectManager')">
+                                            <template>
                                                 <button v-if="task.status === 'pendiente'"
                                                     @click="showModalDate(task.id)">
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none"

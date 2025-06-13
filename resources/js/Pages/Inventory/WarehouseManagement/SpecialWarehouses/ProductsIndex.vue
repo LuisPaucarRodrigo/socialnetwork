@@ -7,7 +7,7 @@
         </template>
         <div class="min-w-full rounded-lg shadow">
             <div class="flex gap-2">
-                <button v-if="hasPermission('InventoryManager')" type="button" @click="() => router.get(
+                <button type="button" @click="() => router.get(
                     route('inventory.special_products.create', {
                         warehouse_id: warehouse.id
                     }))"
@@ -181,13 +181,10 @@ const showError = ref(false)
 const { warehouse, special_products, userPermissions } = defineProps({
     warehouse: Object,
     special_products: Object,
-    auth: Object,
-    userPermissions:Array
+    auth: Object
 });
 
-const hasPermission = (permission) => {
-    return userPermissions.includes(permission);
-}
+
 
 const confirmDelete = ref(false);
 const prod = ref({ name: '' });

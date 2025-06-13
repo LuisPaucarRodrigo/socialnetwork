@@ -22,7 +22,7 @@
                 <TableRow>{{ item.project?.cost_center?.name }}</TableRow>
                 <TableRow>{{ item.project_code }}</TableRow>
                 <TableRow>{{ item.cpe }}</TableRow>
-                <TableRow>{{ item.zone }} {{ item.zone2 }}</TableRow>
+                <TableRow>{{ item.zone || "--" }} {{ item.zone2 }} {{ item.zone3 }}</TableRow>
                 <TableRow>{{ item.manager }}</TableRow>
                 <TableRow>{{ item.user_name }}</TableRow>
                 <TableRow>
@@ -45,10 +45,12 @@ import TableTitle from '@/Components/TableTitle.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { formattedDate } from '@/utils/utils.js';
-import { EditIcon } from '@/Components/Icons/Index';
+import { EditIcon } from '@/Components/Icons';
 
 const { assignations, updateAssignation } = defineProps({
     assignations: Object,
-    updateAssignation: Function
+    updateAssignation: Function,
 })
+
+
 </script>

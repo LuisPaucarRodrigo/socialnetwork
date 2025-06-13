@@ -39,7 +39,7 @@
                 <TableRow>{{ employee.email }}</TableRow>
                 <TableRow>{{ employee.email_company }}</TableRow>
                 <TableRow>{{ employee.salary }}</TableRow>
-                <TableRow>{{ employee.sctr ? "Si" : "No" }}</TableRow>
+                <TableRow>{{ employee.sctr == '1' ? "Si" : "No" }}</TableRow>
                 <TableRow v-permission="'see_external_employee_document'">
                     <button v-if="employee.curriculum_vitae" @click="handlerPreview(employee.id)">
                         <ShowIcon />

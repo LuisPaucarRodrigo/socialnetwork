@@ -740,7 +740,7 @@
                                     item.zone
                                 )
                                     ">
-                                    {{ item.zone || "--" }} {{ item.zone2 }}
+                                    {{ item.zone || "--" }} {{ item.zone2 }} {{ item.zone3 }}
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Asignación')" :class="stateClass(item.customer)"
@@ -765,7 +765,7 @@
                             <td v-if="checkVisibility('Asignación')"
                                 class="bg-white border-b border-r-2 border-gray-200 px-2 py-1 text-[11px] whitespace-nowrap">
                                 <button
-                                    @click="openBlank(route('projectmanagement.pext.additional.index', { searchCondition: item.cpe, type }))">
+                                    @click="openBlank(route('assignation.index', { type: type, searchCondition: item.cpe }))">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
                                         <path stroke-linecap="round" stroke-linejoin="round"

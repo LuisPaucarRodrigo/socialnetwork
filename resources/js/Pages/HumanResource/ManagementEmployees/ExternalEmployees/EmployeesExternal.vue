@@ -69,7 +69,7 @@ const confirmUserDeletion = (employeeId) => {
 
 async function deleteEmployee() {
     let employeeId = employeeToDelete.value;
-    let url = route('employees.external.delete', { external_id: employeeId })
+    let url = route('employees.external.delete', { id: employeeId })
     try {
         await axios.delete(url)
         try {
