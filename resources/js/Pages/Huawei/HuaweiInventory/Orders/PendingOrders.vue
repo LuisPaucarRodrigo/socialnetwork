@@ -1,6 +1,6 @@
 <template>
     <Head title="Huawei" />
-    <AuthenticatedLayout :redirectRoute="{route: 'huawei.inventory.show', params: {warehouse: 1}}">
+    <AuthenticatedLayout :redirectRoute="{route: 'huawei.inventory.show', params: {warehouse: 'Claro'}}">
         <template #header> Pedidos Pendientes </template>
         <Toaster richColors />
 

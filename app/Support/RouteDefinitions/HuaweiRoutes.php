@@ -2,8 +2,12 @@
 
 namespace App\Support\RouteDefinitions;
 
-use App\Http\Controllers\Huawei\HuaweiMonthlyController;
-use App\Http\Controllers\Huawei\HuaweiProjectController;
+use App\Http\Controllers\Huawei\GeneralExpenses\HuaweiMonthlyController;
+use App\Http\Controllers\Huawei\Projects\HuaweiProjectController;
+use App\Http\Controllers\Huawei\Projects\Liquidations\HuaweiLiquidationController;
+use App\Http\Controllers\Huawei\Projects\Resources\HuaweiResourceController;
+use App\Http\Controllers\Huawei\Sites\HuaweiSitesController;
+use App\Http\Controllers\Huawei\Projects\ProjectExpenses\HuaweiProjectExpensesController;
 
 class HuaweiRoutes
 {
@@ -100,89 +104,169 @@ class HuaweiRoutes
             [
                 'uri' => 'huawei/sites/get',
                 'method' => 'get',
-                'action' => [HuaweiProjectController::class, 'getSites'],
+                'action' => [HuaweiSitesController::class, 'getSites'],
                 'permission' => true,
                 'name' => 'huawei.sites',
             ],
             [
                 'uri' => 'huawei/sites/store',
                 'method' => 'post',
-                'action' => [HuaweiProjectController::class, 'storeSite'],
+                'action' => [HuaweiSitesController::class, 'storeSite'],
                 'permission' => true,
                 'name' => 'huawei.sites.post',
             ],
             [
                 'uri' => 'huawei/sites/update/{site}',
                 'method' => 'put',
-                'action' => [HuaweiProjectController::class, 'updateSite'],
+                'action' => [HuaweiSitesController::class, 'updateSite'],
                 'permission' => true,
                 'name' => 'huawei.sites.put',
             ],
             [
                 'uri' => 'huawei/sites/delete/{site}',
                 'method' => 'delete',
-                'action' => [HuaweiProjectController::class, 'destroySite'],
+                'action' => [HuaweiSitesController::class, 'destroySite'],
                 'permission' => true,
                 'name' => 'huawei.sites.delete',
             ],
             [
                 'uri' => 'huawei/sites/verify/{update?}',
                 'method' => 'post',
-                'action' => [HuaweiProjectController::class, 'verifySiteName'],
+                'action' => [HuaweiSitesController::class, 'verifySiteName'],
                 'permission' => true,
                 'name' => 'huawei.sites.verify',
             ],
             [
                 'uri' => 'huawei/sites/search/{request}',
                 'method' => 'get',
-                'action' => [HuaweiProjectController::class, 'searchSites'],
+                'action' => [HuaweiSitesController::class, 'searchSites'],
                 'permission' => true,
                 'name' => 'huawei.sites.search',
             ],
+
+
 
             //project_expenses
             [
                 'uri' => 'huawei/projects/{huawei_project}/additional_costs/get/{mode?}',
                 'method' => 'get',
-                'action' => [HuaweiProjectController::class, 'getAdditionalCosts'],
+                'action' => [HuaweiProjectExpensesController::class, 'getAdditionalCosts'],
                 'permission' => true,
                 'name' => 'huawei.projects.additionalcosts',
             ],
             [
                 'uri' => 'huawei/projects/{expense}/huawei_projects/show_image',
                 'method' => 'get',
-                'action' => [HuaweiProjectController::class, 'showImage'],
+                'action' => [HuaweiProjectExpensesController::class, 'showImage'],
                 'permission' => true,
                 'name' => 'huawei.projects.additionalcosts.showimage',
             ],
             [
                 'uri' => 'huawei/projects/{huawei_project}/additional_costs/search/{request}/{mode?}',
                 'method' => 'get',
-                'action' => [HuaweiProjectController::class, 'searchAdditionalCosts'],
+                'action' => [HuaweiProjectExpensesController::class, 'searchAdditionalCosts'],
                 'permission' => true,
                 'name' => 'huawei.projects.additionalcosts.search',
             ],
             [
                 'uri' => 'huawei/projects/{huawei_project}/addtitional_costs/summary',
                 'method' => 'get',
-                'action' => [HuaweiProjectController::class, 'getCostSummary'],
+                'action' => [HuaweiProjectExpensesController::class, 'getCostSummary'],
                 'permission' => true,
                 'name' => 'huawei.projects.additionalcosts.summary',
             ],
             [
                 'uri' => 'huawei/projects/{huawei_project_id}/additional_cost/advanced_search/{mode?}',
                 'method' => 'post',
-                'action' => [HuaweiProjectController::class, 'search_costs'],
+                'action' => [HuaweiProjectExpensesController::class, 'search_costs'],
                 'permission' => true,
                 'name' => 'huawei.projects.additionalcosts.advancedsearch',
             ],
             [
                 'uri' => 'huawei/projects/{huawei_project_id}/additional_costs/export/{mode?}',
                 'method' => 'get',
-                'action' => [HuaweiProjectController::class, 'exportAdditionalCosts'],
+                'action' => [HuaweiProjectExpensesController::class, 'exportAdditionalCosts'],
                 'permission' => true,
                 'name' => 'huawei.projects.additionalcosts.export',
             ],
+
+            //resources
+            [
+                'uri' => 'huawei/projects/{huawei_project}/resources/get/{equipment?}',
+                'method' => 'get',
+                'action' => [HuaweiResourceController::class, 'getResources'],
+                'permission' => false,
+                'name' => 'huawei.projects.resources',
+            ],
+            [
+                'uri' => 'huawei/projects/{huawei_project}/resources/search/{request}/{equipment?}',
+                'method' => 'get',
+                'action' => [HuaweiResourceController::class, 'searchResources'],
+                'permission' => false,
+                'name' => 'huawei.projects.resources.search',
+            ],
+            [
+                'uri' => 'huawei/projects/{huawei_project}/resources/post/{equipment?}',
+                'method' => 'post',
+                'action' => [HuaweiResourceController::class, 'storeProjectResource'],
+                'permission' => false,
+                'name' => 'huawei.projects.resources.store',
+            ],
+            [
+                'uri' => 'huawei/projects/refund_resource/{huawei_resource}/{equipment?}',
+                'method' => 'put',
+                'action' => [HuaweiResourceController::class, 'refundResource'],
+                'permission' => false,
+                'name' => 'huawei.projects.refund',
+            ],
+            [
+                'uri' => 'huawei/projects/{huawei_project}/resources/search_details/{id}/post/{equipment?}',
+                'method' => 'post',
+                'action' => [HuaweiResourceController::class, 'searchEntryDetails'],
+                'permission' => false,
+                'name' => 'huawei.projects.resources.searchdetails',
+            ],
+
+
+
+            //liquidations
+            [
+                'uri' => 'huawei/projects/{huawei_project}/liquidations/get_resources',
+                'method' => 'get',
+                'action' => [HuaweiLiquidationController::class, 'geResourcesToLiquidate'],
+                'permission' => false,
+                'name' => 'huawei.projects.liquidations',
+            ],
+            [
+                'uri' => 'huawei/projects/{huawei_project}/liquidations/history/{equipment?}',
+                'method' => 'get',
+                'action' => [HuaweiLiquidationController::class, 'liquidationsHistory'],
+                'permission' => false,
+                'name' => 'huawei.projects.liquidations.history',
+            ],
+            [
+                'uri' => 'huawei/projects/{huawei_project}/liquidations/store_liquidation/{equipment?}',
+                'method' => 'post',
+                'action' => [HuaweiLiquidationController::class, 'liquidate'],
+                'permission' => false,
+                'name' => 'huawei.projects.liquidations.post',
+            ],
+            [
+                'uri' => 'huawei/projects/{huawei_project}/liquidations/get_resources/search_advance/post',
+                'method' => 'post',
+                'action' => [HuaweiLiquidationController::class, 'search_advance_liquidate'],
+                'permission' => false,
+                'name' => 'huawei.projects.liquidations.searchadvance',
+            ],
+            [
+                'uri' => 'huawei/projects/liquidations/massive_liquidation/post/liquidations/{equipment?}',
+                'method' => 'post',
+                'action' => [HuaweiLiquidationController::class, 'massiveLiquidation'],
+                'permission' => false,
+                'name' => 'huawei.projects.liquidations.massiveliquidation',
+            ],
+
+
 
             //general_expenses
             [

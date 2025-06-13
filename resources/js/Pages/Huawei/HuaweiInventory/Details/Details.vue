@@ -708,7 +708,7 @@
         }
 
         for (const id of actionForm.value.ids) {
-            const record = props.search || filterMode.value
+            const record = props.search || filterMode.value || props.nodiu
                 ? dataToRender.value.find(item => item.id === id)
                 : dataToRender.value.data.find(item => item.id === id);
 
@@ -719,7 +719,7 @@
         }
 
         const hasInProjectState = actionForm.value.ids.some(id => {
-            const record = props.search || filterMode.value
+            const record = props.search || filterMode.value || props.nodiu
                 ? dataToRender.value.find(item => item.id === id)
                 : dataToRender.value.data.find(item => item.id === id);
             return record?.state === 'En Proyecto';

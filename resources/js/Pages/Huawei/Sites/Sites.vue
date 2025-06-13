@@ -267,9 +267,9 @@
                                                 <option value="" disabled>
                                                     Seleccione un operador
                                                 </option>
-                                                <option>Claro</option>
-                                                <option>Entel</option>
-                                                <option>Telefonica</option>
+                                                <option v-for="(op, index) in props.operators" :key="index" :value="op">
+                                                    {{ op }}
+                                                </option>
                                             </select>
                                             <InputError
                                                 :message="form.errors.prefix"
@@ -432,6 +432,7 @@ const showModalEdit = ref(false);
 const props = defineProps({
     sites: Object,
     search: String,
+    operators: Array
 });
 
 const form = useForm({

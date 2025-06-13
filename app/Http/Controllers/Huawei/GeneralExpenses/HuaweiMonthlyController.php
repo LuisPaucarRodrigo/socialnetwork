@@ -1,25 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Huawei;
+namespace App\Http\Controllers\Huawei\GeneralExpenses;
 
-use App\Constants\HuaweiConstants;
 use App\Exports\HuaweiMonthlyExport;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Huawei\Utils\HuaweiUtils;
 use App\Http\Requests\Huawei\HuaweiMonthlyExpenseRequest;
 use App\Imports\HuaweiExpensesImport;
-use App\Models\Employee;
 use App\Models\HuaweiMonthlyExpense;
-use App\Models\HuaweiMonthlyProject;
 use App\Models\HuaweiProject;
 use App\Services\Huawei\CostService;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
-use Pest\Plugins\Parallel\Handlers\Laravel;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use ZipArchive;
 
 class HuaweiMonthlyController extends Controller
@@ -30,33 +24,22 @@ class HuaweiMonthlyController extends Controller
 
     public function __construct(CostService $costService)
     {
-        self::$data = [
-            'employees' => HuaweiConstants::getEmployees(),
-            'static_expense_types' => HuaweiConstants::getStaticExpenseTypes(),
-            'variable_expense_types' => HuaweiConstants::getVariableExpenseTypes(),
-            'cdp_types' => HuaweiConstants::getCDPTypes(),
-            'macro_projects' => HuaweiConstants::getMacroProjects(),
-        ];
-
+        self::$data = HuaweiUtils::getData();
         $this->costService = $costService;
     }
 
-    //expenses
-
     public function getGeneralBalance()
     {
-        // Solo traemos lo necesario, más liviano
         $expenses = HuaweiMonthlyExpense::with('general_expense')
-            ->select(['id', 'expense_type', 'amount', 'is_accepted', 'created_at']) // solo lo que se usa
+            ->select(['id', 'expense_type', 'amount', 'is_accepted', 'created_at'])
             ->where(function ($query) {
                 $query->where('is_accepted', 1)
                     ->orWhereNull('is_accepted');
             })
             ->latest()
             ->get()
-            ->each->setAppends(['real_state', 'type']); // una sola línea
+            ->each->setAppends(['real_state', 'type']);
 
-        // Agrupamos por tipo (usando accessor) y luego por expense_type
         $grouped = $expenses->groupBy('type')->map(function ($itemsByType) {
             return $itemsByType->groupBy('expense_type')->map(function ($group) {
                 return [
