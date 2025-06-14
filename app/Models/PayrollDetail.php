@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\File;
 
 class PayrollDetail extends Model
 {
@@ -277,6 +276,4 @@ class PayrollDetail extends Model
             })
             ->get()->keyBy('t_a_c_param_id')->toArray();
     }
-
-
 }

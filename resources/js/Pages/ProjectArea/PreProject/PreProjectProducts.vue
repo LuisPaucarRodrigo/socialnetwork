@@ -8,7 +8,7 @@
 
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <div>
-                <button v-if="preproject.status === null && preproject.project === null && hasPermission('ProjectManager')" type="button"
+                <button v-if="preproject.status === null && preproject.project === null" type="button"
                     @click="showToAddProduct"
                     class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 ">
                     + Agregar
@@ -236,9 +236,6 @@ const { assigned_products, warehouses, preproject, userPermissions } = definePro
     userPermissions:Array
 })
 
-const hasPermission = (permission) => {
-    return userPermissions.includes(permission);
-}
 
 let backUrl = (preproject?.status === undefined || preproject?.status === null)
     ? { route: 'preprojects.index', params: { type: preproject.cost_line_id } }

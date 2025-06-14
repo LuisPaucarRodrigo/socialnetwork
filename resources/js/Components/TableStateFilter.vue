@@ -1,52 +1,28 @@
 <template>
-    <div
-        :class="['relative flex justify-between items-center', widthClass]"
-        ref="popup"
-    >
+    <div :class="['relative flex justify-between items-center', widthClass]" ref="popup">
         <p :class="labelClass">{{ label }}</p>
         <button @click="togglePopup" class="cursor-pointer">
-            <BarsArrowDownIcon class="h-5 w-5" />
+            <SortDateIcon />
         </button>
-        <div
-            v-if="showPopup"
-            :class="[
-                'absolute z-40 top-8 right-0 mt-0 bg-white border border-gray-300 shadow-lg p-4 rounded-md',
-                widthClass,
-            ]"
-        >
+        <div v-if="showPopup" :class="[
+            'absolute z-40 top-8 right-0 mt-0 bg-white border border-gray-300 shadow-lg p-4 rounded-md',
+            widthClass,
+        ]">
             <div class="font-normal items-center flex flex-col gap-4">
 
                 <label class="flex justify-between items-center w-full" for="accepted_option">Aceptado
-                    <input
-                        id="accepted_option"
-                        type="radio"
-                        name="status"
-                        v-model="localState"
-                        value="1"
-                        class="text-sm border border-gray-300 rounded-full ring-inset focus:ring-0"
-                    />
+                    <input id="accepted_option" type="radio" name="status" v-model="localState" value="1"
+                        class="text-sm border border-gray-300 rounded-full ring-inset focus:ring-0" />
                 </label>
 
                 <label class="flex justify-between items-center w-full" for="rejected_option"> Rechazado
-                    <input
-                        id="rejected_option"
-                        type="radio"
-                        name="status"
-                        v-model="localState"
-                        value="0"
-                        class="text-sm border border-gray-300 rounded-full ring-inset focus:ring-0"
-                    />
+                    <input id="rejected_option" type="radio" name="status" v-model="localState" value="0"
+                        class="text-sm border border-gray-300 rounded-full ring-inset focus:ring-0" />
                 </label>
 
                 <label class="flex justify-between items-center w-full" for="pending_option"> Pendiente
-                    <input
-                        id="pending_option"
-                        type="radio"
-                        name="status"
-                        v-model="localState"
-                        value="pending"
-                        class="text-sm border border-gray-300 rounded-full ring-inset focus:ring-0"
-                    />
+                    <input id="pending_option" type="radio" name="status" v-model="localState" value="pending"
+                        class="text-sm border border-gray-300 rounded-full ring-inset focus:ring-0" />
                 </label>
 
             </div>
@@ -56,7 +32,7 @@
 
 <script setup>
 import { ref, watch, computed, onMounted, onUnmounted } from "vue";
-import { BarsArrowDownIcon } from "@heroicons/vue/24/outline";
+import SortDateIcon from "./Icons/SortDateIcon.vue";
 
 const props = defineProps({
     label: {

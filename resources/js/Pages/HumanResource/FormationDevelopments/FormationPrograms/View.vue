@@ -41,9 +41,8 @@
                             :key="employee.id"
                             class="flex items-center justify-between m-1 text-sm leading-6 text-gray-700 sm:mt-0 border-b-2 border-gray-200">
                             <p class="flex-shrink-0">{{ `${employee.name} ${employee.lastname}` }}</p>
-                            <button v-if="hasPermission('UserManager')" @click="openModalDelete(employee)"
-                                class="ml-2 flex-shrink-0">
-                                <TrashIcon class="h-5 w-5 text-red-500" />
+                            <button @click="openModalDelete(employee)">
+                                <DeleteIcon />
                             </button>
                         </div>
                     </div>
@@ -93,15 +92,15 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, router } from '@inertiajs/vue3';
-import { TrashIcon } from '@heroicons/vue/24/outline';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
+import { DeleteIcon } from "@/Components/Icons/Index";
 
 const { formation_program, userPermissions } = defineProps({
     formation_program: Object,
-    userPermissions:Array
+    userPermissions: Array
 });
 
 const hasPermission = (permission) => {

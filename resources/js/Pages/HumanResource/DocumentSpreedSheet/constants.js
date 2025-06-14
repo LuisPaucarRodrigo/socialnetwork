@@ -12,10 +12,6 @@ export const personalData = [
     { title: 'Correo Empresa', propName: 'email_company', propClass: 'text-center' },
 ]
 
-
-
-
-
 import { formattedDate } from "@/utils/utils";
 
 export function getProp({ obj, path = null, sep=' ', type = null }) {

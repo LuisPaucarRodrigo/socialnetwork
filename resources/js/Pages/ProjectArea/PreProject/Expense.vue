@@ -43,7 +43,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Detalles
                             </th>
-                            <th v-if="hasPermission('ProjectManager')"
+                            <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 ¿Usar esta cotización?
                             </th>
@@ -71,23 +71,21 @@
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
                                     <p class="text-gray-900 whitespace-no-wrap">{{ quote.currency === 'dolar' ? '$' :
-        'S/.' }} {{ (quote.total_amount).toFixed(2) }}</p>
+                                        'S/.' }} {{ (quote.total_amount).toFixed(2) }}</p>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                    <button @click="openPreviewDocumentModal(quote.id)"
-                                        class="flex justify-center items-center text-green-600 hover:underline">
+                                    <button @click="openPreviewDocumentModal(quote.id)">
                                         Previsualizar
-                                        <EyeIcon class="h-4 w-4 ml-1" />
+                                        <ShowIcon />
                                     </button>
                                 </td>
                                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <Link
-                                        :href="route(purchases ? 'purchase.quote.details.complete' : 'preprojects.purchase.quote.details', { id: quote.id })"
-                                        class="flex items-center text-blue-500 hover:underline">
-                                    <EyeIcon class="h-4 w-4 ml-1" />
+                                        :href="route(purchases ? 'purchase.quote.details.complete' : 'preprojects.purchase.quote.details', { id: quote.id })">
+                                    <ShowIcon />
                                     </Link>
                                 </td>
-                                <td v-if="hasPermission('ProjectManager')"
+                                <td
                                     class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <div v-if="quote.preproject_state === null" class="flex space-x-3 justify-center">
                                         <button @click="() => setQuotePreprojectStatus(quote.id, true)"
@@ -132,8 +130,8 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
-import { EyeIcon } from '@heroicons/vue/24/outline';
 import { Head, Link, router } from '@inertiajs/vue3';
+import { ShowIcon } from '@/Components/Icons/Index';
 
 const props = defineProps({
     quotes: Object,
@@ -141,7 +139,7 @@ const props = defineProps({
         type: Boolean,
         required: false
     },
-    userPermissions:Array
+    userPermissions: Array
 })
 
 const hasPermission = (permission) => {

@@ -31,7 +31,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Cantidad
                             </th>
-                            <th v-if="!entry_boolean && hasPermission('InventoryManager')"
+                            <th v-if="!entry_boolean "
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Acciones
                             </th>
@@ -50,7 +50,7 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ retrieval.quantity }}</p>
                             </td>
-                            <td v-if="!entry_boolean && hasPermission('InventoryManager')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td v-if="!entry_boolean " class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <button type="button" @click="approve_retrieval(retrieval.id)"
                                     class="text-green-500 whitespace-no-wrap">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -82,13 +82,9 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
     retrievalEntry: Object,
-    boolean: Boolean,
-    userPermissions:Array
+    boolean: Boolean
 })
 
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
 
 const entry_boolean = ref(props.boolean);
 const showModalApprove = ref(false);

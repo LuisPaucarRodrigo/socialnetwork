@@ -20,12 +20,9 @@
             </h2>
             <div class="inline-flex justify-end gap-x-0 mb-4">
               <div class="flex space-x-3 justify-center">
-                <button class="text-green-600 hover:underline" @click="informationWarehouse(item)">
-                  <EyeIcon class="h-4 w-4 ml-1" />
+                <button @click="informationWarehouse(item)">
+                  <ShowIcon />
                 </button>
-                <!-- <Link :href="'#'" class="text-green-600 hover:underline">
-                <EyeIcon class="h-4 w-4 ml-1" />
-                </Link> -->
               </div>
             </div>
           </div>
@@ -42,7 +39,7 @@
               <Link :href="route('inventory.special_dispatch.index', { warehouse_id: item.id })"
                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Despachos</Link>
               <Link :href="route('inventory.special_refund.index',
-    { warehouse_id: item.id })" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
+                { warehouse_id: item.id })" class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
               Devoluciones</Link>
             </div>
           </div>
@@ -57,12 +54,9 @@
             </h2>
             <div class="inline-flex justify-end gap-x-0 mb-4">
               <div class="flex space-x-3 justify-center">
-                <button class="text-green-600 hover:underline" @click="informationWarehouse(item)">
-                  <EyeIcon class="h-4 w-4 ml-1" />
+                <button @click="informationWarehouse(item)">
+                  <ShowIcon />
                 </button>
-                <!-- <Link :href="route('warehouses.warehouse', { warehouse: item })" class="text-green-600 hover:underline">
-                <EyeIcon class="h-4 w-4 ml-1" />
-                </Link> -->
               </div>
             </div>
           </div>
@@ -127,10 +121,10 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import { EyeIcon } from '@heroicons/vue/24/outline';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { ShowIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
   warehouses: Object,

@@ -36,14 +36,13 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Ver Documento de Cotización
                             </th>
-                            <th v-if="hasPermission('InventoryManager')"
+                            <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in purchase_orders_resource.data" :key="item.id"
-                            class="text-gray-700 border-b">
+                        <tr v-for="item in purchase_orders_resource.data" :key="item.id" class="text-gray-700 border-b">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.code }}</p>
                             </td>
@@ -54,28 +53,31 @@
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.state }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <p class="text-gray-900 whitespace-no-wrap">{{ item.purchase_quote.currency === 'sol' ? 'S/. ' : '$ ' }} {{ item.purchase_quote.total_amount.toFixed(2) }}</p>
+                                <p class="text-gray-900 whitespace-no-wrap">{{ item.purchase_quote.currency === 'sol' ?
+                                    'S/. ' :
+                                    '$ ' }} {{ item.purchase_quote.total_amount.toFixed(2) }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <button @click="showQuoteDetails(item)" class="text-blue-600 hover:underline">
-                                    <EyeIcon class="h-4 w-4" />
+                                <button @click="showQuoteDetails(item)">
+                                    <ShowIcon />
                                 </button>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <button @click="showQuoteDoc(item)" class="text-green-600 hover:underline">
-                                    <EyeIcon class="h-4 w-4" />
+                                <button @click="showQuoteDoc(item)">
+                                    <ShowIcon />
                                 </button>
                             </td>
-                            
-                            <td v-if="hasPermission('InventoryManager')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+
+                            <td
+                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <button @click="approve(item.id)"
-                                        class="flex items-center text-blue-500 hover:underline">
+                                    class="flex items-center text-blue-500 hover:underline">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-green-500">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                     </svg>
-                                </button>                            
+                                </button>
                             </td>
                         </tr>
                     </tbody>
@@ -87,32 +89,34 @@
         </div>
 
         <Modal :show="approvating">
-        <div class="p-6">
-          <h2 class="text-base font-medium leading-7 text-gray-900">
-            Agregar Observaciones
-          </h2>
-          <form @submit.prevent="submit">
-            <div class="space-y-12">
-              <div class="border-b border-gray-900/10 pb-12">
-                <div>
-                  <InputLabel for="observations" class="font-medium leading-6 text-gray-900">Observaciones:
-                  </InputLabel>
-                  <div class="mt-2">
-                    <TextInput type="text" v-model="form.observations" id="observations"
-                      class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                    <InputError :message="form.errors.observations" />
-                  </div>
-                </div>
-                <div class="mt-6 flex items-center justify-end gap-x-6">
-                  <SecondaryButton @click="closeApprove"> Cancel </SecondaryButton>
-                  <button type="submit" :class="{ 'opacity-25': form.processing }"
-                    class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Aprobar Ingreso</button>
-                </div>
-              </div>
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900">
+                    Agregar Observaciones
+                </h2>
+                <form @submit.prevent="submit">
+                    <div class="space-y-12">
+                        <div class="border-b border-gray-900/10 pb-12">
+                            <div>
+                                <InputLabel for="observations" class="font-medium leading-6 text-gray-900">
+                                    Observaciones:
+                                </InputLabel>
+                                <div class="mt-2">
+                                    <TextInput type="text" v-model="form.observations" id="observations"
+                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                    <InputError :message="form.errors.observations" />
+                                </div>
+                            </div>
+                            <div class="mt-6 flex items-center justify-end gap-x-6">
+                                <SecondaryButton @click="closeApprove"> Cancel </SecondaryButton>
+                                <button type="submit" :class="{ 'opacity-25': form.processing }"
+                                    class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Aprobar
+                                    Ingreso</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
-          </form>
-        </div>
-      </Modal>
+        </Modal>
 
         <Modal :show="showQuoteDetailsModal" @close="showQuoteDetailsModal = false" :maxWidth="'xl'">
             <div class="p-6">
@@ -120,21 +124,30 @@
                     <h2 class="text-base font-medium leading-7">
                         Detalles de la Cotización
                     </h2>
-                    <button @click="closeQuoteDetailsModal" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                    <button @click="closeQuoteDetailsModal"
+                        class="text-gray-500 hover:text-gray-700 focus:outline-none">
                         <!-- Puedes usar un símbolo de cierre, como una X -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
                         </svg>
                         <!-- O simplemente usar la palabra "Cerrar" -->
                         <!-- Cerrar -->
                     </button>
                 </div>
                 <div class="mb-4">
-                    <p class="font-medium text-gray-900">Fecha límite de cotización: <span class="text-gray-600">{{ formattedDate(purchaseQuoteData.quote_deadline) }}</span></p>
-                    <p class="font-medium text-gray-900">Tiempo de entrega: <span class="text-gray-600">{{ purchaseQuoteData.deliverable_time }}</span></p>
-                    <p class="font-medium text-gray-900">Tipo de pago: <span class="text-gray-600">{{ purchaseQuoteData.payment_type }}</span></p>
-                    <p class="font-medium text-gray-900">Moneda: <span class="text-gray-600">{{ purchaseQuoteData.currency }}</span></p>
-                    <p class="font-medium text-gray-900">Número de cuenta: <span class="text-gray-600">{{ purchaseQuoteData.account_number }}</span></p>
+                    <p class="font-medium text-gray-900">Fecha límite de cotización: <span class="text-gray-600">{{
+                        formattedDate(purchaseQuoteData.quote_deadline) }}</span></p>
+                    <p class="font-medium text-gray-900">Tiempo de entrega: <span class="text-gray-600">{{
+                        purchaseQuoteData.deliverable_time }}</span></p>
+                    <p class="font-medium text-gray-900">Tipo de pago: <span class="text-gray-600">{{
+                        purchaseQuoteData.payment_type }}</span></p>
+                    <p class="font-medium text-gray-900">Moneda: <span class="text-gray-600">{{
+                        purchaseQuoteData.currency
+                    }}</span></p>
+                    <p class="font-medium text-gray-900">Número de cuenta: <span class="text-gray-600">{{
+                        purchaseQuoteData.account_number }}</span></p>
                 </div>
                 <p class="font-medium">Activos:</p>
 
@@ -142,33 +155,38 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Activo
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Cantidad
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Precio Unitario
-                            </th>
-                            <!-- Agrega más encabezados según sea necesario -->
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Activo
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Cantidad
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Precio Unitario
+                                </th>
+                                <!-- Agrega más encabezados según sea necesario -->
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             <tr v-for="(product, index) in purchaseQuoteData.products" :key="index">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ product.purchase_product.name }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ product.quantity }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ purchaseQuoteData.currency === 'sol' ? 'S/. ' : '$ ' }}{{ product.unitary_amount.toFixed(2) }}</div>
-                            </td>
-                            <!-- Agrega más celdas según sea necesario -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">{{ product.purchase_product.name }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">{{ product.quantity }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">{{ purchaseQuoteData.currency === 'sol' ? 'S/. '
+                                        : '$ '
+                                    }}{{ product.unitary_amount.toFixed(2) }}</div>
+                                </td>
+                                <!-- Agrega más celdas según sea necesario -->
                             </tr>
                         </tbody>
-                        </table>
+                    </table>
                 </div>
             </div>
         </Modal>
@@ -185,8 +203,8 @@ import TextInput from '@/Components/TextInput.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
-import { EyeIcon } from '@heroicons/vue/24/outline';
 import { formattedDate } from '@/utils/utils';
+import { ShowIcon } from "@/Components/Icons";
 
 const props = defineProps({
     purchase_orders: {
@@ -197,8 +215,7 @@ const props = defineProps({
     purchase_orders_resource: {
         type: Object,
         required: false
-    },
-    userPermissions:Array
+    }
 });
 
 const hasPermission = (permission) => {
@@ -236,13 +253,13 @@ let purchaseQuoteData = {
 const submit = () => {
     form.post(props.purchase_orders ? route('warehouses.purchaseorders.approve.post', { warehouse: props.warehouseId }) : route('warehouses.resource.approve'), {
         onSuccess: () => {
-        closeApprove();
-        form.reset();
-        showModal.value = true
-        setTimeout(() => {
-            showModal.value = false;
-            router.visit(props.purchase_orders ? route('warehouses.purchaseorders.approve', { warehouse: props.warehouseId }) : route('warehouses.resource'))
-        }, 2000);
+            closeApprove();
+            form.reset();
+            showModal.value = true
+            setTimeout(() => {
+                showModal.value = false;
+                router.visit(props.purchase_orders ? route('warehouses.purchaseorders.approve', { warehouse: props.warehouseId }) : route('warehouses.resource'))
+            }, 2000);
         },
         onError: () => {
             closeApprove();
@@ -269,7 +286,7 @@ const showQuoteDetails = (purchase_order) => {
 };
 
 const closeQuoteDetailsModal = () => {
-  showQuoteDetailsModal.value = false;
+    showQuoteDetailsModal.value = false;
 };
 
 </script>

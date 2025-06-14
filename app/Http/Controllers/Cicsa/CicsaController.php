@@ -13,6 +13,7 @@ use App\Exports\CicsaProcess\OCValidationExport;
 use App\Exports\CicsaProcess\PurchaseOrderExport;
 use App\Exports\CicsaProcess\ServiceOrderExport;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Cicsa\StoreOrUpdateAssignationRequest;
 use App\Http\Requests\Cicsa\StoreOrUpdateChargeArea;
 use App\Http\Requests\Cicsa\StoreOrUpdateFeasibilitiesRequest;
 use App\Http\Requests\Cicsa\StoreOrUpdateInstallationRequest;
@@ -106,7 +107,8 @@ class CicsaController extends Controller
                         'cicsa_service_order',
                     );
                 } elseif ($stages === "Cobranza") {
-                    $projectsCicsa->with([
+                    $projectsCicsa->with(
+                        [
                             'cicsa_purchase_order:id,oc_number,cicsa_assignation_id',
                             'cicsa_charge_area'
                         ]
@@ -147,7 +149,7 @@ class CicsaController extends Controller
     {
         if ($request->isMethod('get')) {
             $assignation = $this->cicsaService->baseAssignation($type)->paginate(20);
-            return Inertia::render('Cicsa/CicsaAssignation', [
+            return Inertia::render('Cicsa/Assignation/CicsaAssignation', [
                 'assignation' => $assignation,
                 'searchCondition' => $searchCondition,
                 'type' => $type,
@@ -158,6 +160,13 @@ class CicsaController extends Controller
                 'assignation' => $assignation,
             ]);
         }
+    }
+
+    public function updateAssignation(StoreOrUpdateAssignationRequest $request,$cicsa_assignation_id)
+    {
+        $validateData = $request->validated();
+        $assignation = $this->cicsaService->updateAssignation($validateData,$cicsa_assignation_id);
+        return response()->json($assignation, 200);
     }
 
     public function exportAssignation($type)
@@ -307,7 +316,7 @@ class CicsaController extends Controller
             $material = CicsaMaterial::findOrFail($c_m_id);
             $material->delete();
             $materialItems = CicsaMaterialsItem::where('cicsa_material_id', $c_m_id)->get();
-            foreach($materialItems as $item) {
+            foreach ($materialItems as $item) {
                 $item->delete();
             }
             return response()->json(['msg' => true]);

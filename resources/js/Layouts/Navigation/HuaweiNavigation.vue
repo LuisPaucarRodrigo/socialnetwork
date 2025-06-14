@@ -53,20 +53,9 @@
     <MyTransition :transitiondemonstration="showHuawei">
         <Link class="w-full" :href="route('huawei.internalguides')">Guías Internas</Link>
     </MyTransition>
-
-    <!-- <MyTransition :transitiondemonstration="showHuawei">
-        <Link class="w-full" :href="route('huawei.titles')">Huawei PRO</Link>
-    </MyTransition> -->
-
-    <!-- <MyTransition :transitiondemonstration="showHuawei">
-        <Link class="w-full" :href="route('huawei.monthlyprojects')">Proyectos Mensuales</Link>
-    </MyTransition> -->
     <MyTransition :transitiondemonstration="showHuawei">
         <Link class="w-full" :href="route('huawei.specialrefunds')">Devoluciones Especiales</Link>
     </MyTransition>
-    <!-- <MyTransition :transitiondemonstration="showHuawei">
-        <Link class="w-full" :href="route('huawei.generalbalance')">Balance General</Link>
-    </MyTransition> -->
 </template>
 <script setup>
 import MyTransition from '@/Components/MyTransition.vue';

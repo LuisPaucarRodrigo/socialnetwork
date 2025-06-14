@@ -13,7 +13,7 @@
         <div class="inline-block min-w-full mb-4">
             <div class="flex gap-4 justify-between">
                 <div class="hidden sm:flex sm:items-center space-x-3">
-                    <PrimaryButton v-if="hasPermission('ProjectManager') && filterForm.rejected"
+                    <PrimaryButton v-if="filterForm.rejected"
                         @click="openCreateAdditionalModal" type="button" class="whitespace-nowrap">
                         + Agregar
                     </PrimaryButton>
@@ -21,7 +21,7 @@
                         filterForm = { ...initialFilterFormState }
                     }
                     ">
-                        <ServerIcon class="w-5 h-5 text-white" />
+                        <ServerIcon />
                     </PrimaryButton>
                     <div id="update_data_tooltip" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
@@ -60,11 +60,7 @@
                                 <button data-tooltip-target="action_button_tooltip"
                                     @click="dropdownOpen = !dropdownOpen"
                                     class="relative block overflow-hidden rounded-md text-white hover:bg-indigo-400 text-center text-sm bg-indigo-500 p-2">
-                                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4 6H20M4 12H20M4 18H20" stroke="#ffffff" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
+                                    <MenuIcon color="text-white" />
                                 </button>
                                 <div id="action_button_tooltip" role="tooltip"
                                     class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700 whitespace-nowrap">
@@ -102,7 +98,7 @@
                     G.Fijos
                     </Link>
                 </div>
-                <div v-if="hasPermission('HumanResourceManager')" class="sm:hidden">
+                <div  class="sm:hidden">
                     <dropdown align="left">
                         <template #trigger>
                             <button @click="dropdownOpen = !dropdownOpen"
@@ -118,7 +114,7 @@
                         <template #content class="origin-left">
                             <div class="dropdown">
                                 <div class="dropdown-menu">
-                                    <button v-if="hasPermission('ProjectManager') && filterForm.rejected"
+                                    <button v-if="  filterForm.rejected"
                                         @click="openCreateAdditionalModal"
                                         class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                         Agregar
@@ -303,7 +299,7 @@
                         </td>
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                             <button v-if="item.photo" @click="handlerPreview(item.id)">
-                                <EyeIcon class="w-4 h-4 text-teal-600" />
+                                <ShowIcon />
                             </button>
                             <span v-else>-</span>
                         </td>
@@ -350,7 +346,7 @@
                                 </div>
                                 <div v-else class="w-1/2"></div>
 
-                                <div v-if="hasPermission('ProjectManager')" class="flex gap-3 mr-3">
+                                <div class="flex gap-3 mr-3">
                                     <button v-if="!filterForm.rejected" data-tooltip-target="tooltip-up-ac" @click="() => validateRegister(item.id, true)
                                     " class="flex items-center rounded-xl text-blue-700 hover:bg-green-200">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -359,14 +355,11 @@
                                                 d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15m0-3-3-3m0 0-3 3m3-3V15" />
                                         </svg>
                                     </button>
-                                    <button @click="openEditAdditionalModal(item)"
-                                        class="text-amber-600 hover:underline">
-                                        <PencilSquareIcon class="h-5 w-5 ml-1" />
+                                    <button @click="openEditAdditionalModal(item)">
+                                        <EditIcon />
                                     </button>
-                                    <button @click="
-                                        confirmDeleteAdditional(item.id)
-                                        " class="text-red-600 hover:underline">
-                                        <TrashIcon class="h-5 w-5" />
+                                    <button @click="confirmDeleteAdditional(item.id)">
+                                        <DeleteIcon />
                                     </button>
                                 </div>
                             </div>
@@ -672,13 +665,11 @@ import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import Modal from "@/Components/Modal.vue";
 import { ref, watch } from "vue";
-import { Head, useForm, router, Link } from "@inertiajs/vue3";
-import { TrashIcon, PencilSquareIcon, ServerIcon } from "@heroicons/vue/24/outline";
+import { Head, useForm, Link } from "@inertiajs/vue3";
 import { formattedDate } from "@/utils/utils";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputFile from "@/Components/InputFile.vue";
 import Pagination from "@/Components/Pagination.vue";
-import { EyeIcon } from "@heroicons/vue/24/outline";
 import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
 import axios from "axios";
 import Dropdown from "@/Components/Dropdown.vue";
@@ -688,13 +679,13 @@ import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import ChartsAdditionalExpenses from "./ChartsAdditionalExpenses.vue";
 import Search from "@/Components/Search.vue";
-// import ConfirmateModal from "@/Components/ConfirmateModal.vue";
+import { EditIcon, DeleteIcon, ShowIcon, ServerIcon,MenuIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
     expense: Object,
     providers: Object,
     auth: Object,
-    userPermissions: Array,
+    
     cost_center: Object,
     fixedOrAdditional: Boolean,
     type: Number,
@@ -712,9 +703,7 @@ const cicsaAssignation = ref(null);
 // const filterMode = ref(false);
 // const subCostCenterZone = ref(null);
 // const subCostCenter = ref(null)
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-};
+
 
 const form = useForm({
     id: "",

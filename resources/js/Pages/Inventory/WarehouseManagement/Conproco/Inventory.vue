@@ -7,7 +7,8 @@
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
             <div class="flex justify-between items-center gap-4">
-                <Link v-if="hasPermission('UserManager')" :href="route('warehouses.createNormalProduct', { warehouse: props.warehouseId })" type="button"
+                <Link
+                    :href="route('warehouses.createNormalProduct', { warehouse: props.warehouseId })" type="button"
                     class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                 + Agregar
                 </Link>
@@ -56,9 +57,8 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <div class="flex justify-center items-center space-x-3">
                                     <Link
-                                        :href="route('warehouses.products.entries', { warehouse: warehouseId, inventory: item.id })"
-                                        class="text-green-600 hover:underline">
-                                    <EyeIcon class="h-4 w-4 ml-1" />
+                                        :href="route('warehouses.products.entries', { warehouse: warehouseId, inventory: item.id })">
+                                    <ShowIcon />
                                     </Link>
                                     <button v-if="auth.user.role_id == 1" @click="confirmDeleteProduct(item.id)"
                                         class="text-red-600 hover:underline">
@@ -89,7 +89,7 @@ import Pagination from '@/Components/Pagination.vue'
 import ConfirmDisableModal from '@/Components/ConfirmDisableModal.vue';
 import { ref } from 'vue';
 import { Head, router, Link } from '@inertiajs/vue3';
-import { EyeIcon } from '@heroicons/vue/24/outline';
+import { ShowIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
     products: {
@@ -100,8 +100,7 @@ const props = defineProps({
     warehouseId: {
         type: Number,
         required: false
-    },
-    userPermissions:Array
+    }
 });
 
 const hasPermission = (permission) => {

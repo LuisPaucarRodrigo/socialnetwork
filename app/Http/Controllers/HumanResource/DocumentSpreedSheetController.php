@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\HumanResource;
 
 use App\Http\Controllers\Controller;
-use App\Enums\Permissions\HumanResourcesPermissions;
 use App\Http\Requests\HumanResource\DocumentRegisterRequest;
 use App\Http\Requests\HumanResource\InsuranceExpDateRequest;
 use App\Models\CostLine;
@@ -224,7 +223,6 @@ class DocumentSpreedSheetController extends Controller
                 )
                 ->find($emp_id);
             $employee->setAppends(['sctr_about_to_expire', 'policy_about_to_expire']);
-
         } else if ($type === 'external') {
             $employee = ExternalEmployee::with([
                 'document_registers',
@@ -290,7 +288,7 @@ class DocumentSpreedSheetController extends Controller
         $docRegPrev = new DocumentRegister($data);
         $docItem = $this->getDocument($docRegPrev);
         if ($state === 'Completado') {
-            if($docItem) {
+            if ($docItem) {
                 $this->file_delete($docItem);
                 $document = $request->file('document');
                 $data['title'] = $this->file_store($data, $document);
@@ -473,7 +471,8 @@ class DocumentSpreedSheetController extends Controller
     //     }
 
     // }
-    private function getDocument($docReg) {
+    private function getDocument($docReg)
+    {
         return Document::where('subdivision_id', $docReg->subdivision_id)
             ->where('employee_id', $docReg->employee_id)
             ->where('e_employee_id', $docReg->e_employee_id)
@@ -502,10 +501,9 @@ class DocumentSpreedSheetController extends Controller
         $employee_name = $data['employee_id'] ? Employee::where('id', $data['employee_id'])
             ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
             ->first() : ExternalEmployee::where('id', $data['e_employee_id'])
-                ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
-                ->first();
+            ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
+            ->first();
         $name = Subdivision::find($data['subdivision_id'])->name . ' - ' . $employee_name->full_name . '.' . $document->getClientOriginalExtension();
         return $name;
     }
-
 }

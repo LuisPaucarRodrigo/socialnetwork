@@ -33,7 +33,7 @@ class AdministrativeCostsController extends Controller
         });
         $searchQuery = '';
         $providers = Provider::all();
-        return Inertia::render('ProjectArea/ProjectManagement/AdministrativeCosts', [
+        return Inertia::render('ProjectArea/ProjectManagement/Administrative/AdministrativeCosts', [
             'additional_costs' => $additional_costs,
             'month_project_id' => $month_project_id,
             'providers' => $providers,
@@ -164,7 +164,6 @@ class AdministrativeCostsController extends Controller
                 $this->file_delete($filename, 'documents/administrativecosts/');
             }
             $data['photo'] = $this->file_store($request->file('photo'), 'documents/administrativecosts/');
-
         } else if ($request->photo_status === 'stable') {
             $filename = $additional_cost->photo;
             if ($filename) {
@@ -262,7 +261,6 @@ class AdministrativeCostsController extends Controller
                 $zip->close();
                 ob_end_clean();
                 return response()->download($zipFilePath)->deleteFileAfterSend(true);
-
             } else {
                 Log::error('No se pudo abrir el archivo ZIP para escritura.');
                 return response()->json(['error' => 'No se pudo abrir el archivo ZIP para escritura.'], 500);

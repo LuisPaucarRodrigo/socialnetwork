@@ -17,7 +17,6 @@ use App\Http\Requests\HumanResource\Payroll\StorePayrollDetailWorkScheduleReques
 use App\Http\Requests\HumanResource\Payroll\StorePayrollExternalDetailRequest;
 use App\Http\Requests\HumanResource\StorePayrollRequest;
 use App\Http\Requests\UpdateMasiveOpNuDateRequest;
-use App\Models\Contract;
 use App\Models\Employee;
 use App\Models\ExternalEmployee;
 use App\Models\GeneralExpense;
@@ -197,66 +196,6 @@ class SpreadsheetsController extends Controller
                 ->setAppends(['mod_days']),
             'employee_id' => $employee_id,
         ]);
-    }
-
-    public function update_payroll_salary(Request $request, $payroll_details_id)
-    {
-        $validateData = $request->validate([
-            'operation_date' => 'required',
-            'operation_number' => 'required',
-        ]);
-        $payrollDetailExpense = PayrollDetailExpense::where('payroll_detail_id', $payroll_details_id)
-            ->where('type', 'Salary')
-            ->first();
-        $data = [
-            'operation_date' => $validateData['operation_date'],
-            'operation_number' => $validateData['operation_number'],
-        ];
-        $payrollDetailExpense->update($data);
-        $payrollExpense = PayrollDetailExpense::where('payroll_detail_id', $payroll_details_id)->get();
-        return response()->json($payrollExpense, 200);
-    }
-
-    public function update_payroll_travelExpense(Request $request, $payroll_details_id)
-    {
-        $validateData = $request->validate([
-            'operation_date' => 'required',
-            'operation_number' => 'required',
-        ]);
-        $payrollDetailExpense = PayrollDetailExpense::where('payroll_detail_id', $payroll_details_id)
-            ->where('type', 'Travel')
-            ->first();
-        $data = [
-            'operation_date' => $validateData['operation_date'],
-            'operation_number' => $validateData['operation_number'],
-        ];
-        $payrollDetailExpense->update($data);
-        $payrollExpense = PayrollDetailExpense::where('payroll_detail_id', $payroll_details_id)->get();
-        return response()->json($payrollExpense, 200);
-    }
-
-    public function export($payroll_id)
-    {
-        return Excel::download(new PayrollExport($payroll_id), 'Planilla ' . date('m-Y') . '.xlsx');
-    }
-
-    public function discount_employee(Request $request, $employee_id)
-    {
-        $validateData = $request->validate([
-            'discount' => 'required|numeric'
-        ]);
-        try {
-            $validateData['discount'] = floatval($validateData['discount']);
-            $payrollDetail = PayrollDetail::where('employee_id', $employee_id)
-                ->first();
-            $payrollDetail->update([
-                'discount' => $validateData['discount']
-            ]);
-            $payrollDetail->load('employee', 'payroll_detail_expense');
-            return response()->json($payrollDetail, 200);
-        } catch (Exception $e) {
-            return response()->json($e->getMessage(), 500);
-        }
     }
 
     public function index_worder_data($employee_id)

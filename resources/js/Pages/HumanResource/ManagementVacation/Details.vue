@@ -108,7 +108,6 @@ import { formattedDate } from '@/utils/utils';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 
-
 const props = defineProps({
     details: Object,
     vacation: {

@@ -125,18 +125,18 @@ const changelogAlarms = ref([]);
 
 let intervalId;
 const fetchAllAlarms = () => {
-  return Promise.all([
-    fetchFleetCarCount(),
-    fetchFleetCarCheckListCount(),
-    getChangelogAlarms(),
-  ]);
+    return Promise.all([
+        fetchFleetCarCount(),
+        fetchFleetCarCheckListCount(),
+        getChangelogAlarms(),
+    ]);
 };
 onMounted(() => {
-  fetchAllAlarms();
-  intervalId = setInterval(fetchAllAlarms, 60000);
+    fetchAllAlarms();
+    intervalId = setInterval(fetchAllAlarms, 60000);
 });
 onUnmounted(() => {
-  clearInterval(intervalId);
+    clearInterval(intervalId);
 });
 
 

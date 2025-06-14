@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Constants\RolesConstants;
+use App\Models\Module;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -35,14 +36,20 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request)
     {
         $user = $request->user();
-        $userModules = $user?->role?->modules?->where('type', 'module')->pluck('name')->toArray() ?? [];
-        $userSubmodules = $user?->role?->modules?->where('type', 'submodule')->pluck('name')->toArray() ?? [];
+        if ($user?->role?->id===1) {
+            $userModules = Module::where('type', 'module')->pluck('name');
+            $userSubModules = Module::where('type', 'submodule')->pluck('name');
+        }
+        else  {
+            $userModules = $user?->role?->getCurrentModules()['modules'];
+            $userSubModules = $user?->role?->getCurrentModules()['submodules'];;
+        }
         
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $user,
                 'userModules' => $userModules,
-                'userSubModules' => $userSubmodules,
+                'userSubModules' => $userSubModules,
             ],
             'flash' => function () use ($request) {
                 return [

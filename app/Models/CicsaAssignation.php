@@ -5,8 +5,6 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
-use Psy\CodeCleaner\ReturnTypePass;
 
 class CicsaAssignation extends Model
 {
@@ -22,6 +20,7 @@ class CicsaAssignation extends Model
         'cpe',
         'zone',
         'zone2',
+        'zone3',
         'manager',
         'user_name',
         'user_id',

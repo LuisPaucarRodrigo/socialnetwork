@@ -12,8 +12,8 @@
         <template #tbody>
             <tr v-for="item in datas.value">
                 <TableRow>
-                    <FolderIcon v-if="item.folder" class="h-6 w-6 text-blue-600" />
-                    <DocumentIcon v-if="item.file" class="h-6 w-6 text-red-600" />
+                    <FolderIcon v-if="item.folder" />
+                    <DownloadIcon v-if="item.file" />
                 </TableRow>
                 <TableRow>
                     <button @click="dd(item)" class="hover:text-blue-500">
@@ -28,11 +28,11 @@
     </TableStructure>
 </template>
 <script setup>
+import { FolderIcon, DownloadIcon } from '@/Components/Icons';
 import TableRow from '@/Components/TableRow.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import { formattedDate } from '@/utils/utils';
-import { DocumentIcon, FolderIcon } from '@heroicons/vue/24/outline';
 const { navigationHistory, siteId, driveId, accessToken } = defineProps({
     navigationHistory: Object,
     siteId: String,

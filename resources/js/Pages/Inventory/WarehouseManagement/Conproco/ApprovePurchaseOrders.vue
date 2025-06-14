@@ -36,7 +36,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Ver Documento de Cotización
                             </th>
-                            <th v-if="hasPermission('InventoryManager')"
+                            <th 
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
@@ -60,16 +60,17 @@
                                 </p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <button @click="showQuoteDetails(item)" class="text-blue-600 hover:underline">
-                                    <EyeIcon class="h-4 w-4" />
+                                <button type="button" @click="showQuoteDetails(item)">
+                                    <ShowIcon />
                                 </button>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                                <button @click="showQuoteDoc(item)" class="text-green-600 hover:underline">
-                                    <EyeIcon class="h-4 w-4" />
+                                <button type="button" @click="showQuoteDoc(item)">
+                                    <ShowIcon />
                                 </button>
                             </td>
-                            <td v-if="hasPermission('InventoryManager')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
+                            <td 
+                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <button @click="approve(item.id)"
                                     class="flex items-center text-blue-500 hover:underline">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -222,8 +223,8 @@ import TextInput from '@/Components/TextInput.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
-import { EyeIcon } from '@heroicons/vue/24/outline';
 import { formattedDate } from '@/utils/utils';
+import { ShowIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
     purchase_orders: {
@@ -235,12 +236,9 @@ const props = defineProps({
         type: Object,
         required: false
     },
-    userPermissions:Array
+    userPermissions: Array
 });
 
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
 
 const approvating = ref(false);
 const showModal = ref(false);

@@ -17,10 +17,10 @@ class RolesConstants
     public const USERS_MODULE = [
         'UserManager',
         'User',
-       ...self::user_submodule,
-       ...self::roles_submodule,
+        ...self::user_submodule,
+        ...self::roles_submodule,
     ];
-    
+
     //HR GROUP
     public const hremployees_submodule = [
         'HumanResourceEmployeesManager',
@@ -57,6 +57,7 @@ class RolesConstants
     public const INVENTORY_MODULE = [
         'InventoryManager',
         'Inventory',
+        'iproduct_submodule'
     ];
 
     //PURCHASING
@@ -122,7 +123,7 @@ class RolesConstants
         'ProjectAdmExpensesManager',
         'ProjectAdmExpenses',
     ];
-    
+
     public const PROJECT_MODULE = [
         'ProjectManager',
         'Project',
@@ -226,40 +227,42 @@ class RolesConstants
     ];
 
     public const SUBMODULES = [
-        'user_submodule' => 'user_submodule', 
-        'roles_submodule' => 'roles_submodule', 
-
-        'hremployees_submodule' => 'hremployees_submodule', 
-        'hreemployees_submodule' => 'hreemployees_submodule', 
-        'hrspreedsheet_submodule' => 'hrspreedsheet_submodule', 
-        'hrresdoc_submodule' => 'hrresdoc_submodule', 
-        'hrhrstate_submodule' => 'hrhrstate_submodule', 
-
-        'pprovider_submodule' => 'pprovider_submodule', 
-        'pprequest_submodule' => 'pprequest_submodule', 
-        'pporder_submodule' => 'pporder_submodule', 
-        'ppcpurchase_submodule' => 'ppcpurchase_submodule', 
+        'user_submodule' => 'user_submodule',
+        'roles_submodule' => 'roles_submodule',
         
-        'pclients_submodule' => 'pclients_submodule', 
-        'ppro_submodule' => 'ppro_submodule', 
-        'pprepint_submodule' => 'pprepint_submodule', 
-        'pprepext_submodule' => 'pprepext_submodule', 
-        'ppropint_submodule' => 'ppropint_submodule', 
-        'ppropext_submodule' => 'ppropext_submodule', 
-        'pchecklist_submodule' => 'pchecklist_submodule', 
-        'padmexpen_submodule' => 'padmexpen_submodule', 
-        'pbacklog_submodule' => 'pbacklog_submodule', 
+        'hremployees_submodule' => 'hremployees_submodule',
+        'hreemployees_submodule' => 'hreemployees_submodule',
+        'hrspreedsheet_submodule' => 'hrspreedsheet_submodule',
+        'hrresdoc_submodule' => 'hrresdoc_submodule',
+        'hrhrstate_submodule' => 'hrhrstate_submodule',
 
-        'fbudget_submodule' => 'fbudget_submodule', 
-        'fpapproval_submodule' => 'fpapproval_submodule', 
-        'fdeposists_submodule' => 'fdeposists_submodule', 
-        'fpopayment_submodule' => 'fpopayment_submodule', 
-        'faccstatement_submodule' => 'faccstatement_submodule', 
+        'iproduct_submodule' => 'iproduct_submodule',
+        
+        'pprovider_submodule' => 'pprovider_submodule',
+        'pprequest_submodule' => 'pprequest_submodule',
+        'pporder_submodule' => 'pporder_submodule',
+        'ppcpurchase_submodule' => 'ppcpurchase_submodule',
 
-        'billingpint_submodule' => 'billingpint_submodule', 
-        'billingpext_submodule' => 'billingpext_submodule', 
+        'pclients_submodule' => 'pclients_submodule',
+        'ppro_submodule' => 'ppro_submodule',
+        'pprepint_submodule' => 'pprepint_submodule',
+        'pprepext_submodule' => 'pprepext_submodule',
+        'ppropint_submodule' => 'ppropint_submodule',
+        'ppropext_submodule' => 'ppropext_submodule',
+        'pchecklist_submodule' => 'pchecklist_submodule',
+        'padmexpen_submodule' => 'padmexpen_submodule',
+        'pbacklog_submodule' => 'pbacklog_submodule',
 
-        'cchanappro_submodule' => 'cchanappro_submodule', 
-        'cmobileunit_submodule' => 'cmobileunit_submodule', 
+        'fbudget_submodule' => 'fbudget_submodule',
+        'fpapproval_submodule' => 'fpapproval_submodule',
+        'fdeposists_submodule' => 'fdeposists_submodule',
+        'fpopayment_submodule' => 'fpopayment_submodule',
+        'faccstatement_submodule' => 'faccstatement_submodule',
+
+        'billingpint_submodule' => 'billingpint_submodule',
+        'billingpext_submodule' => 'billingpext_submodule',
+
+        'cchanappro_submodule' => 'cchanappro_submodule',
+        'cmobileunit_submodule' => 'cmobileunit_submodule',
     ];
 }

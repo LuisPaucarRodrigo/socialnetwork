@@ -43,7 +43,7 @@ class StaticCostsController extends Controller
         $additionalProjects = Project::where('cost_line_id', 1)->where('cost_center_id', 3)->select('id', 'description')->where('is_accepted', true)->orderBy('description')->get();
         $searchQuery = '';
         $providers = Provider::all();
-        return Inertia::render('ProjectArea/ProjectManagement/StaticCosts', [
+        return Inertia::render('ProjectArea/ProjectManagement/Pint/StaticCosts', [
             'additional_costs' => $additional_costs,
             'project_id' => $project_id,
             'providers' => $providers,

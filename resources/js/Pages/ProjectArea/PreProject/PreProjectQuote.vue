@@ -235,16 +235,16 @@
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">
                                                             S/.{{ (item.unitary_price *
-        item.quantity *
-        (1 + (item.profit_margin) / 100))
-        .toFixed(2) }}</p>
+                                                                item.quantity *
+                                                                (1 + (item.profit_margin) / 100))
+                                                                .toFixed(2) }}</p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <div v-if="auth.user.role_id === 1 || preproject.quote === null"
                                                             class="flex justify-end">
-                                                            <button type="button" @click="deleteProduct(index, item.id)"
-                                                                class="col-span-1 flex justify-end">
-                                                                <TrashIcon class=" text-red-500 h-4 w-4 " />
+                                                            <button type="button"
+                                                                @click="deleteProduct(index, item.id)">
+                                                                <DeleteIcon />
                                                             </button>
                                                         </div>
                                                     </td>
@@ -334,16 +334,16 @@
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">
                                                             S/.{{ (item.unitary_price *
-        item.quantity *
-        (1 + (item.margin) / 100))
-        .toFixed(2) }}</p>
+                                                                item.quantity *
+                                                                (1 + (item.margin) / 100))
+                                                                .toFixed(2) }}</p>
                                                     </td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
-                            </div>           
+                            </div>
 
 
                             <div class="col-span-1 sm:col-span-6 xl:col-span-4 mt-10">
@@ -418,7 +418,7 @@
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">
                                                             {{ item.resource_entries.length === 0 ? '-' :
-        item.resource_entries.length }}
+                                                                item.resource_entries.length }}
                                                         </p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -438,9 +438,9 @@
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                                         <p class="text-gray-900">
                                                             S/.{{ (item.service_info.rent_price *
-        (item.resource_entries.length === 0 ? 1 :
-            item.resource_entries.length)
-        * item.days * (1 + item.profit_margin / 100)).toFixed(2) }}
+                                                                (item.resource_entries.length === 0 ? 1 :
+                                                                    item.resource_entries.length)
+                                                                * item.days * (1 + item.profit_margin / 100)).toFixed(2) }}
                                                         </p>
                                                     </td>
                                                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -451,16 +451,15 @@
 
                                                             <button v-if="item.resource_entries.length !== 0"
                                                                 type="button"
-                                                                @click="showServiceDetailsModal(item.resource_entries)"
-                                                                class="text-blue-600 hover:underline">
-                                                                <EyeIcon class="h-4 w-4" />
+                                                                @click="showServiceDetailsModal(item.resource_entries)">
+                                                                <ShowIcon />
                                                             </button>
                                                             <button type="button"
                                                                 v-if="auth.user.role_id === 1 || preproject.quote === null"
                                                                 @click=" preproject.quote
-        ? deleteAlreadyItem(item.ids, index)
-        : deleteItem(index)" class="col-span-1 flex justify-end">
-                                                                <TrashIcon class=" text-red-500 h-4 w-4 " />
+                                                                    ? deleteAlreadyItem(item.ids, index)
+                                                                    : deleteItem(index)">
+                                                                <DeleteIcon />
                                                             </button>
                                                         </div>
 
@@ -474,35 +473,38 @@
                                 <InputError :message="form.errors.items" />
                             </div>
                         </div>
-                        
+
                         <div class="mt-7 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
                             <div class="col-span-1 sm:col-span-6 xl:col-span-4 text-end">
                                 <p class="mt-1 text-sm text-gray-600">
-                                    Subtotal de Productos: S/. {{ subTotalProducts(form.products, preproject_products).toFixed(2) }}
+                                    Subtotal de Productos: S/. {{ subTotalProducts(form.products,
+                                        preproject_products).toFixed(2) }}
                                 </p>
                                 <p class="mt-1 text-sm text-gray-600">
                                     Subtotal de Servicios: S/. {{ subTotalServices(form.items).toFixed(2) }}
                                 </p>
                                 <p class="mt-1 text-sm text-gray-600">
-                                    Subtotal General: S/. {{ (subTotalProducts(form.products, preproject_products) + subTotalServices(form.items)).toFixed(2) }}
+                                    Subtotal General: S/. {{ (subTotalProducts(form.products, preproject_products) +
+                                        subTotalServices(form.items)).toFixed(2) }}
                                 </p>
                                 <p class="mt-1 text-sm text-gray-600">
-                                    IGV: S/. {{ ((subTotalProducts(form.products, preproject_products) + subTotalServices(form.items))*0.18).toFixed(2) }}
+                                    IGV: S/. {{ ((subTotalProducts(form.products, preproject_products) +
+                                        subTotalServices(form.items)) * 0.18).toFixed(2) }}
                                 </p>
                                 <p class="mt-1 text-sm text-gray-600">
-                                    Total: S/. {{ ((subTotalProducts(form.products, preproject_products) + subTotalServices(form.items))*1.18).toFixed(2) }}
+                                    Total: S/. {{ ((subTotalProducts(form.products, preproject_products) +
+                                        subTotalServices(form.items)) * 1.18).toFixed(2) }}
                                 </p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                
+
 
                 <div class="mt-3 flex flex-col sm:flex-row items-center justify-end gap-4">
 
-                    <button v-if="preproject.quote && !preproject.quote.state" 
-                        type="button"
+                    <button v-if="preproject.quote && !preproject.quote.state" type="button"
                         @click="openPQCanceledModal"
                         class="w-full text-center sm:w-auto rounded-md bg-red-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
                         Anular
@@ -660,9 +662,7 @@
                             <InputLabel for="profit_margin" class="font-medium leading-6 text-gray-900">Margen (%)
                             </InputLabel>
                             <div class="mt-2">
-                                <input required type="number" v-model="itemToAdd.profit_margin" 
-                                    min="0" 
-                                    step="0.01"
+                                <input required type="number" v-model="itemToAdd.profit_margin" min="0" step="0.01"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                             </div>
                         </div>
@@ -730,7 +730,7 @@
             </Modal>
 
 
-            <Modal :show="showPQRejectedModal" @close="closePQRejecteModal" >
+            <Modal :show="showPQRejectedModal" @close="closePQRejecteModal">
                 <div class="p-6">
                     <h2 class="text-lg font-medium text-gray-900">
                         ¿Estás seguro de rechazar la cotización actual?
@@ -748,13 +748,14 @@
                 </div>
             </Modal>
 
-            <Modal :show="showPQCanceledModal" @close="closePQCanceledModal" >
+            <Modal :show="showPQCanceledModal" @close="closePQCanceledModal">
                 <div class="p-6">
                     <h2 class="text-lg font-medium text-gray-900">
                         ¿Estás seguro de anular el Anteproyecto?
                     </h2>
                     <p class="mt-1 text-sm text-gray-600">
-                        Se eliminará toda la informacion relacionada cotización, y el proyecto pasará a la sección de anulados.
+                        Se eliminará toda la informacion relacionada cotización, y el proyecto pasará a la sección de
+                        anulados.
                     </p>
                     <div class="mt-6 flex justify-end">
                         <SecondaryButton @click="closePQCanceledModal"> Cancelar </SecondaryButton>
@@ -803,12 +804,11 @@ import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import { ref } from 'vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
-import { TrashIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
-import { EyeIcon } from '@heroicons/vue/24/outline';
 import axios from 'axios';
+import { DeleteIcon, ShowIcon } from "@/Components/Icons/Index";
 
 const showModal = ref(false)
 const showErroModal = ref(false)
@@ -827,9 +827,9 @@ let backUrl = (preproject?.status === undefined || preproject?.status === null)
     ? { route: 'preprojects.index', params: { type: preproject.cost_line_id } }
     : preproject.status == true
         ? { route: 'preprojects.index', params: { type: preproject.cost_line_id, preprojects_status: 1 } }
-        : { route: 'preprojects.index', params: { type: preproject.cost_line_id,preprojects_status: 0 } }
+        : { route: 'preprojects.index', params: { type: preproject.cost_line_id, preprojects_status: 0 } }
 
-    
+
 
 const modalVariables = ref({
     title: `Cotización ${preproject.quote !== null ? 'actualizada' : 'creada'}`,
@@ -906,15 +906,15 @@ const form = useForm(
 
 
 const subTotalProducts = (array1, array2) => {
-    let sum1 = array1.reduce((total, product) => total + product.unitary_price * product.quantity * (product.profit_margin ? (1+product.profit_margin/100) : 1), 0)
-    let sum2 = array2.reduce((a,b)=> a+b.entry.unitary_price * b.quantity * (1+(b.margin/100)),0)
+    let sum1 = array1.reduce((total, product) => total + product.unitary_price * product.quantity * (product.profit_margin ? (1 + product.profit_margin / 100) : 1), 0)
+    let sum2 = array2.reduce((a, b) => a + b.entry.unitary_price * b.quantity * (1 + (b.margin / 100)), 0)
     return sum1 + sum2;
 }
 
 const subTotalServices = (array1) => {
 
-    let sum1 = array1.reduce((a, b) => a + b.service_info.rent_price * b.days * (b.resource_entries.length ? b.resource_entries.length : 1) * (1+(b.profit_margin/100)), 0)
-    return sum1; 
+    let sum1 = array1.reduce((a, b) => a + b.service_info.rent_price * b.days * (b.resource_entries.length ? b.resource_entries.length : 1) * (1 + (b.profit_margin / 100)), 0)
+    return sum1;
 }
 
 const submit = () => {
@@ -928,12 +928,12 @@ const submit = () => {
             showModal.value = true
             setTimeout(() => {
                 showModal.value = false;
-                if (preproject.status == null ){
+                if (preproject.status == null) {
                     router.visit(route('preprojects.index'))
                 } else {
                     preproject.status == true
-                        ? router.visit(route('preprojects.index', {preprojects_status: 1}))
-                        : router.visit(route('preprojects.index', {preprojects_status: 0}))
+                        ? router.visit(route('preprojects.index', { preprojects_status: 1 }))
+                        : router.visit(route('preprojects.index', { preprojects_status: 0 }))
                 }
             }, 2000);
         },
@@ -1180,18 +1180,18 @@ const openPQCanceledModal = () => {
 }
 
 const rejedtPreprojectQuote = () => {
-    router.post(route('preproject_quote.rejected'), { preproject_id:  preproject?.id}, {
+    router.post(route('preproject_quote.rejected'), { preproject_id: preproject?.id }, {
         onSuccess: () => {
             router.visit(route('preprojects.index'))
-        }, onError: (e)=>console.log(e)
-    } )
+        }, onError: (e) => console.log(e)
+    })
 }
 
 const cancelPreproject = () => {
-    router.post(route('preproject_quote.canceled'), { preproject_id:  preproject?.id }, {
+    router.post(route('preproject_quote.canceled'), { preproject_id: preproject?.id }, {
         onSuccess: () => {
             router.visit(route('preprojects.index'))
-        }, onError: (e)=>console.log(e)
+        }, onError: (e) => console.log(e)
     })
 }
 

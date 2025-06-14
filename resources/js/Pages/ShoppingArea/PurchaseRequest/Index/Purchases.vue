@@ -7,9 +7,8 @@
         </template>
         <Toaster richColors />
         <div class="min-w-full overflow-hidden">
-            <TableHeader :userPermissions="userPermissions" v-model:purchases="purchases" />
-            <PurchasesTable :purchases="purchases" :auth="auth" :userPermissions="userPermissions"
-                :confirmPurchasesDeletion="confirmPurchasesDeletion" />
+            <TableHeader v-model:purchases="purchases" />
+            <PurchasesTable :purchases="purchases" :confirmPurchasesDeletion="confirmPurchasesDeletion" />
         </div>
         <DeletionConfirmation ref="deletionConfirmation" />
     </AuthenticatedLayout>
@@ -25,9 +24,7 @@ import { Toaster } from 'vue-sonner';
 
 
 const props = defineProps({
-    purchase: Object,
-    auth: Object,
-    userPermissions: Array
+    purchase: Object
 });
 
 const purchases = ref(props.purchase)

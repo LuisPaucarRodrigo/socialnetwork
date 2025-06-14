@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Constants\HuaweiConstants;
 use App\Constants\PextConstants;
 use App\Constants\PintConstants;
+use App\Http\Requests\Huawei\HuaweiMobileRequest;
 use App\Http\Requests\LoginMobileRequest;
 use App\Http\Requests\PextProjectRequest\ApiStoreExpensesRequest;
 use App\Http\Requests\PreprojectRequest\ImageRequest;
@@ -752,34 +753,16 @@ class ApiController extends Controller
     public function getExpensesHistory()
     {
         $user = Auth::user();
-        $employee = Employee::select('id', 'user_id')
-            ->where('user_id', $user->id)
-            ->first();
-
-        if (!$employee) {
-            return response()->json(['error' => 'Employee not found'], 404);
-        }
-
-        $expenses = HuaweiMonthlyExpense::where('employee_id', $employee->id)
+        $expenses = HuaweiMonthlyExpense::where('user_id', $user->id)
             ->get()
             ->makeHidden(['huawei_project', 'general_expense']);
-
         return response()->json($expenses, 200);
     }
 
-    public function storeHuaweiExpense(Request $request)
+    public function storeHuaweiExpense(HuaweiMobileRequest $request)
     {
         $user = Auth::user();
-        $data = $request->validate([
-            'huawei_project_id' => 'nullable',
-            'expense_type' => 'required|string',
-            'cdp_type' => 'required|string',
-            'doc_number' => 'required|string',
-            'ruc' => 'required|string',
-            'description' => 'required|string',
-            'amount' => 'required|numeric',
-            'image' => 'nullable',
-        ]);
+        $data = $request->validated();
 
         $data['expense_date'] = Carbon::now();
         $data['user_id'] = $user->id;

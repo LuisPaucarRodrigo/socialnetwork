@@ -52,7 +52,7 @@
                                 {{ imageCode.code.code }} / {{ imageCode.code.description }}
                             </h1>
                         </div>
-                        <template v-if="hasPermission('ProjectManager')">
+                        <template>
                             <div class="sm:col-span-2 space-x-3 text-right" v-if="!imageCode.status">
                                 <PrimaryButton @click="approveImages(imageCode.id)" type="button">
                                     Aprobar Imagenes
@@ -69,8 +69,7 @@
                         class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 mt-5">
                         <div v-for="image in imageCode.imagecodepreprojet" :key="image.id"
                             class="bg-white p-4 rounded-md shadow sm:col-span-1 md:col-span-2">
-                            <h2 
-                                class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
+                            <h2 class="text-sm font-semibold text-gray-700 line-clamp-1 mb-2">
                                 {{ image.description }}
                             </h2>
                             <!-- <div :id="`info-tooltip-${image.id}`" role="tooltip"
@@ -87,27 +86,22 @@
                                 <span v-if="image.state != null"
                                     :class="image.state == '1' ? 'text-green-600' : 'text-red-600'">
                                     {{ image.state == '1' ? 'Aprobado' : 'Rechazado' }}</span>
-                                <div v-else class="flex space-x-3">
-                                    <button @click="approveImageModal(preprojectImage.id, imageCode.id, image.id)"
-                                        class="flex items-center text-green-600 hover:underline">
-                                        <CheckCircleIcon class="h-4 w-4 ml-1" />
+                                <div v-else class="flex gap-x-2">
+                                    <button @click="approveImageModal(preprojectImage.id, imageCode.id, image.id)">
+                                        <AcceptIcon />
                                     </button>
-                                    <button @click="rejectModal(preprojectImage.id, imageCode.id, image.id)"
-                                        class="flex items-center text-red-600 hover:underline">
-                                        <XCircleIcon class="h-4 w-4 ml-1" />
+                                    <button @click="rejectModal(preprojectImage.id, imageCode.id, image.id)">
+                                        <RejectIcon />
                                     </button>
                                 </div>
-                                <button @click="openPreviewImagenModal(image.id)"
-                                    class="flex items-center text-green-600 hover:underline">
-                                    <EyeIcon class="h-4 w-4 ml-1" />
+                                <button @click="openPreviewImagenModal(image.id)">
+                                    <ShowIcon />
                                 </button>
-                                <button @click="downloadImagen(image.id)"
-                                    class="flex items-center text-blue-600 hover:underline">
-                                    <ArrowDownIcon class="h-4 w-4 ml-1" />
+                                <button @click="downloadImagen(image.id)">
+                                    <DownloadIcon />
                                 </button>
-                                <button @click="confirmDeleteImagen(image.id)"
-                                    class="flex items-center text-red-600 hover:underline">
-                                    <TrashIcon class="h-4 w-4" />
+                                <button @click="confirmDeleteImagen(image.id)">
+                                    <DeleteIcon />
                                 </button>
                             </div>
                         </div>
@@ -218,7 +212,6 @@ import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import ConfirmateModal from '@/Components/ConfirmateModal.vue';
 import { ref } from 'vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
-import { TrashIcon, ArrowDownIcon, EyeIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/vue/24/outline';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
@@ -226,8 +219,9 @@ import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { notifyError, notifyWarning } from '@/Components/Notification';
+import { notifyError } from '@/Components/Notification';
 import { setAxiosErrors } from '@/utils/utils';
+import { ShowIcon, AcceptIcon, RejectIcon, DownloadIcon, DeleteIcon } from '@/Components/Icons/Index';
 
 const showApproveCode = ref(false);
 const title_code_id = ref(null);
@@ -246,16 +240,11 @@ const props = defineProps({
 
 const preprojectImages = ref(props.preprojectImage)
 
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
-
-
 let backUrl = (props.preproject?.status === undefined || props.preproject?.status === null)
     ? { route: 'preprojects.index', params: { type: props.preproject.cost_line_id } }
     : props.preproject.status == true
         ? { route: 'preprojects.index', params: { type: props.preproject.cost_line_id, preprojects_status: 1 } }
-        : { route: 'preprojects.index', params: { type: props.preproject.cost_line_id,preprojects_status: 0 } }
+        : { route: 'preprojects.index', params: { type: props.preproject.cost_line_id, preprojects_status: 0 } }
 
 const confirmingImageDeletion = ref(false);
 const approve_reject_Image = ref(false);

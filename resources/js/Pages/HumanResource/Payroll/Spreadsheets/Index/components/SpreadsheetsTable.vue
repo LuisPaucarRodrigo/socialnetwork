@@ -82,24 +82,19 @@
 <script setup>
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import { EyeIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
 import { formattedDate } from '@/utils/utils';
 import { Link } from '@inertiajs/vue3';
-import { ref, inject, watch } from 'vue';
-import { notify, notifyError, notifyWarning } from "@/Components/Notification";
-import Modal from '@/Components/Modal.vue';
+import { watch } from 'vue';
+import { notifyWarning } from "@/Components/Notification";
 
 const { 
     spreadsheets, 
     totals, 
     pensionTypes, 
     payrolls, 
-    userPermissions, 
     openPaymentTravelExpenseModal, 
-    openPaymentSalaryModal, 
-    openDiscountModal, 
     actionForm ,
     filterForm,
 } = defineProps({
@@ -107,10 +102,7 @@ const {
     totals: Object,
     pensionTypes: Array,
     payrolls: Object,
-    userPermissions: Array,
     openPaymentTravelExpenseModal: Function,
-    openPaymentSalaryModal: Function,
-    openDiscountModal: Function,
     actionForm: Object,
     filterForm: Object,
 })

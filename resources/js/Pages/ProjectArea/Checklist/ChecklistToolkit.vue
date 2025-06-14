@@ -26,15 +26,15 @@
                     <TableRow>{{ item.additionalEmployees }}</TableRow>
                     <TableRow>{{ item.reason }}</TableRow>
                     <TableRow>
-                        <button type="button">
-                            <EyeIcon @click="openChecklistModal(item)" class="text-indigo-600 w-5" />
+                        <button type="button" @click="openChecklistModal(item)">
+                            <ShowIcon />
                         </button>
                     </TableRow>
                     <TableRow>
                         <a v-if="item.goodTools" :href="route('checklist.toolkit.photo', {
                             id: item.id, photoProp: 'goodTools'
                         })">
-                            <EyeIcon class="text-teal-500 w-5 h-5" />
+                            <ShowIcon />
                         </a>
                         <p v-else>
                             -
@@ -44,7 +44,7 @@
                         <a v-if="item.badTools" :href="route('checklist.toolkit.photo', {
                             id: item.id, photoProp: 'badTools'
                         })">
-                            <EyeIcon class="text-teal-500 w-5 h-5" />
+                            <ShowIcon />
                         </a>
                         <p v-else>
                             -
@@ -55,7 +55,7 @@
                     </TableRow>
                     <TableRow>
                         <button @click.prevent="confirmDeleteAdditional(item.id)">
-                            <TrashIcon class="h-5 w-5 text-red-600" />
+                            <DeleteIcon />
                         </button>
                     </TableRow>
                 </tr>
@@ -177,14 +177,12 @@ import { ref } from "vue";
 import Modal from "@/Components/Modal.vue";
 import { Head, router } from "@inertiajs/vue3";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import DangerButton from "@/Components/DangerButton.vue";
-import { TrashIcon } from "@heroicons/vue/24/outline";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 import { formattedDate } from "@/utils/utils";
-import { EyeIcon } from "@heroicons/vue/24/outline";
 import TableStructure from "@/Layouts/TableStructure.vue";
 import TableRow from "@/Components/TableRow.vue";
 import TableTitle from "@/Components/TableTitle.vue";
+import { ShowIcon, DeleteIcon } from '@/Components/Icons/Index';
 
 const { checklists } = defineProps({
     checklists: Object,

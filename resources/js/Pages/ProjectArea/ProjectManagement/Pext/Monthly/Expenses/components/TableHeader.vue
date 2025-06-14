@@ -1,15 +1,14 @@
 <template>
     <div class="flex gap-4 justify-between">
         <div class="hidden sm:flex sm:items-center space-x-3">
-            <PrimaryButton v-if="hasPermission('ProjectManager') && filterForm.rejected"
+            <PrimaryButton v-if="filterForm.rejected"
                 @click="openCreateAdditionalModal" type="button" class="whitespace-nowrap">
                 + Agregar
             </PrimaryButton>
             <PrimaryButton data-tooltip-target="update_data_tooltip" type="button" @click="() => {
                 filterForm = { ...initialFilterFormState }
-            }
-            ">
-                <ServerIcon class="w-5 h-5 text-white" />
+            }">
+                <ServerIcon />
             </PrimaryButton>
             <div id="update_data_tooltip" role="tooltip"
                 class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
@@ -31,7 +30,7 @@
                 <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
 
-            <button v-if="hasPermission('UserManager')" type="button"
+            <button  type="button"
                 class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500"
                 @click="openModalImport">
                 Importar Gastos
@@ -98,24 +97,19 @@
             </Link>
         </div>
 
-        <div v-if="hasPermission('HumanResourceManager')" class="sm:hidden">
+        <div class="sm:hidden">
             <dropdown align="left">
                 <template #trigger>
                     <button @click="dropdownOpen = !dropdownOpen"
                         class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100">
-                        <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path d="M4 6H20M4 12H20M4 18H20" stroke="#000000" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" />
-                        </svg>
+                        <MenuIcon />
                     </button>
                 </template>
 
                 <template #content class="origin-left">
                     <div class="dropdown">
                         <div class="dropdown-menu">
-                            <button v-if="hasPermission('ProjectManager') && filterForm.rejected"
-                                @click="openCreateAdditionalModal"
+                            <button v-if="filterForm.rejected" @click="openCreateAdditionalModal"
                                 class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                 Agregar
                             </button>
@@ -148,11 +142,11 @@ import Dropdown from "@/Components/Dropdown.vue";
 import Search from "@/Components/Search.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { Link } from "@inertiajs/vue3";
-import { ServerIcon } from "@heroicons/vue/24/outline";
 import { notifyWarning } from "@/Components/Notification";
+import { MenuIcon, ServerIcon } from "@/Components/Icons";
 
-const { userPermissions, project_id, fixedOrAdditional, status, actionForm, initialFilterFormState, openCreateAdditionalModal, openModalImport } = defineProps({
-    userPermissions: Array,
+const {  project_id, fixedOrAdditional, status, actionForm, initialFilterFormState, openCreateAdditionalModal, openModalImport } = defineProps({
+    
     project_id: String,
     fixedOrAdditional: Boolean,
     status: String,
@@ -165,9 +159,7 @@ const { userPermissions, project_id, fixedOrAdditional, status, actionForm, init
 const showSwapCostsModal = defineModel('showSwapCostsModal')
 const showOpNuDatModal = defineModel('showOpNuDatModal')
 const filterForm = defineModel('filterForm')
-const hasPermission = (permission) => {
-    return userPermissions.includes(permission);
-};
+
 
 function openExportExcel() {
     const uniqueParam = `timestamp=${new Date().getTime()}`;

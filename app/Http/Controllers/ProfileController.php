@@ -2,28 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Permissions\DocumentsPermissions;
-use App\Enums\Permissions\HumanResourcesPermissions;
-use App\Enums\Permissions\InventoryPermissions;
-use App\Enums\Permissions\ProjectPermissions;
-use App\Enums\Permissions\PurchasingPermissions;
-use App\Enums\Permissions\UserRolePermissions;
 use App\Http\Requests\ProfileUpdateRequest;
-use App\Models\Document;
-use App\Models\DocumentRegister;
-use App\Models\Permission;
-use App\Models\Project;
-use App\Models\CicsaAssignation;
 use App\Models\Subdivision;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\File;
-use Exception;
 use Inertia\Inertia;
 use Inertia\Response;
 

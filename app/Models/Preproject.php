@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class Preproject extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'customer_id',
         'subcustomer_id',
@@ -38,7 +40,7 @@ class Preproject extends Model
     {
         return $this->belongsTo(CostCenter::class, 'cost_center_id');
     }
-    
+
     public function project()
     {
         return $this->hasOne(Project::class);
@@ -171,9 +173,20 @@ class Preproject extends Model
     protected static function booted()
     {
         static::updating(function ($item) {
-            $pr = Project::where('preproject_id', $item?->id)->first();
-            $ca = CicsaAssignation::where('project_id', $pr->id)->first();
-            if ($ca) $ca->update(['cpe' => $item['cpe']]);
+            try {
+                $pr = Project::where('preproject_id', $item?->id)->first();
+                if (!$pr) return;
+
+                $ca = CicsaAssignation::where('project_id', 148)->first();
+                $ca->update(['cpe' => '3333']);
+            } catch (\Exception $e) {
+                Log::info("Error in Preproject::updating: " . $e->getMessage());
+            }
+            // $pr = Project::where('preproject_id', $item?->id)->first();
+            // $ca = CicsaAssignation::where('project_id', $pr->id)->first();
+            // Log::info('cicsa: ' . $ca . 'cpe' . $item['cpe']);
+
+            // if ($ca) $ca->update(['cpe' => '333']);
         });
     }
 }

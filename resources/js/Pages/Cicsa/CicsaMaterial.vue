@@ -43,20 +43,20 @@
                                 <button v-if="item?.cicsa_feasibility?.cicsa_feasibility_materials?.length > 0"
                                     type="button"
                                     @click="openMaterialsModal(item?.cicsa_feasibility?.cicsa_feasibility_materials)">
-                                    <EyeIcon class="w-5 h-5 text-green-600" />
+                                    <ShowIcon />
                                 </button>
                             </TableRow>
                             <TableRow>
                                 <div class="flex space-x-3 justify-center">
                                     <button
                                         @click="openCreateSotModal(item.id, item?.cicsa_feasibility?.cicsa_feasibility_materials, item.project_name, item.cpe)">
-                                        <PlusCircleIcon class="w-5 h-5 text-green-600" />
+                                        <PlusCircleIcon />
                                     </button>
                                     <button v-if="item.cicsa_materials.length > 0" type="button"
                                         @click="toggleDetails(item?.cicsa_materials)"
                                         class="text-blue-900 whitespace-no-wrap">
-                                        <ChevronDownIcon v-if="materialRow !== item.id" class="w-6 h-6"/>
-                                        <ChevronUpIcon v-else class="w-6 h-6" />
+                                        <DownArrowIcon v-if="materialRow !== item.id" />
+                                        <UpArrowIcon v-else />
                                     </button>
                                 </div>
                             </TableRow>
@@ -78,19 +78,18 @@
                                 <TableRow>
                                     <button v-if="materialDetail?.cicsa_material_items?.length > 0" type="button"
                                         @click="openMaterialsModal(materialDetail?.cicsa_material_items)">
-                                        <EyeIcon class="w-5 h-5 text-green-600" />
+                                        <ShowIcon />
                                     </button>
                                 </TableRow>
                                 <TableRow>
                                     <button class="text-blue-900"
                                         @click="openEditSotModal(materialDetail, item.cicsa_feasibility?.cicsa_feasibility_materials, item.project_name, item.cpe)">
-                                        <PencilSquareIcon class="w-5 h-5 text-amber-400" />
+                                        <EditIcon />
                                     </button>
                                 </TableRow>
                                 <TableRow>
-                                    <button class="text-blue-900"
-                                        @click="deleteMaterial(materialDetail.id, item)">
-                                        <TrashIcon class="w-5 h-5 text-red-400" />
+                                    <button class="text-blue-900" @click="deleteMaterial(materialDetail.id, item)">
+                                        <DeleteIcon />
                                     </button>
                                 </TableRow>
                             </tr>
@@ -422,18 +421,18 @@ import InputError from '@/Components/InputError.vue';
 import InputFile from '@/Components/InputFile.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Head, useForm, router } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import { formattedDate, setAxiosErrors } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
-import { EyeIcon, PlusCircleIcon, ChevronDownIcon, ChevronUpIcon, PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import { Toaster } from 'vue-sonner';
 import { notify, notifyError } from '@/Components/Notification';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
+import { ShowIcon, DownArrowIcon, UpArrowIcon, PlusCircleIcon, EditIcon, DeleteIcon } from '@/Components/Icons/Index';
 
 const { material, auth, searchCondition, type } = defineProps({
     material: Object,
@@ -686,11 +685,11 @@ if (searchCondition) {
 }
 
 async function deleteMaterial(id, item) {
-    const res = await axios.delete(route('material.delete', {c_m_id:id}))
+    const res = await axios.delete(route('material.delete', { c_m_id: id }))
     if (res.status === 200) {
         notify('Material eliminado')
         item.cicsa_materials = item.cicsa_materials.filter((material) => material.id != id)
-        if(item.cicsa_materials.length == 0 ) {materialRow.value = 0}
+        if (item.cicsa_materials.length == 0) { materialRow.value = 0 }
     } else {
         notifyError('SERVER ERROR')
     }

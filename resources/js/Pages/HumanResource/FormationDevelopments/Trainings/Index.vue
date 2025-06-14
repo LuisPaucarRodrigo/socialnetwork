@@ -7,7 +7,7 @@
             Capacitaciones
         </template>
         <div class="min-w-full">
-            <div v-if="hasPermission('HumanResourceManager')" class="flex items-center">
+            <div class="flex items-center">
                 <PrimaryButton @click="add_information" type="button">
                     Agregar Informacion
                 </PrimaryButton>
@@ -30,7 +30,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Descripción
                             </th>
-                            <th v-if="hasPermission('HumanResourceManager')"
+                            <th 
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                                 Acciones
                             </th>
@@ -47,15 +47,14 @@
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ training.description }}</p>
                             </td>
-                            <td 
-                                class="border-b border-gray-200 bg-white px-5 py-5 text-sm ">
+                            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm ">
                                 <div class="flex space-x-3 justify-center">
-                                    <Link v-if="hasPermission('HumanResourceManager')"
+                                    <Link 
                                         :href="route('management.employees.formation_development.trainings.create', { id: training.id })">
-                                    <PencilSquareIcon class="h-6 w-6 text-blue-500" />
+                                    <EditIcon />
                                     </Link>
-                                    <button v-if="hasPermission('UserManager')" @click="openModalDelete(training)">
-                                        <TrashIcon class="h-6 w-6 text-red-500" />
+                                    <button  @click="openModalDelete(training)">
+                                        <DeleteIcon />
                                     </button>
                                 </div>
                             </td>
@@ -77,10 +76,10 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue'
 import { Head, Link, router } from '@inertiajs/vue3';
-import { TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { ref } from 'vue';
+import { DeleteIcon, EditIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
     trainings: Object,

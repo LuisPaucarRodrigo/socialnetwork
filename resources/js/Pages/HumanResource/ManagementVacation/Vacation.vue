@@ -9,7 +9,7 @@
 
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <div class="flex items-center justify-between gap-4 mb-4">
-                <PrimaryButton v-if="hasPermission('HumanResourceManager')" type="button" @click="add_information">
+                <PrimaryButton type="button" @click="add_information">
                     + Agregar
                 </PrimaryButton>
                 <div class="flex items-center gap-x-3">
@@ -67,15 +67,15 @@
                     <tbody>
                         <tr v-for="item in (props.search === '' ? vacations.data : vacations)" :key="item.id"
                             class="text-gray-700" :class="['text-gray-700', {
-        'border-l-8': boolean == true,
-        'border-green-500': item.status === 'Finalizado',
-        'border-red-900': item.status === 'Ausente',
-        'border-red-500': (Date.parse(item.end_date) <= Date.now() + (3 * 24 * 60 * 60 * 1000) && item.review_date != null && item.status === 'Aceptado') ||
-            (Date.parse(item.end_permissions) <= Date.now() + (1 * 60 * 60 * 1000) && item.review_date != null && item.status == 'Aceptado'),
-        'border-yellow-500': (Date.parse(item.end_date) >= Date.now() + (3 * 24 * 60 * 60 * 1000) && item.review_date != null && item.status === 'Aceptado') &&
-            (Date.parse(item.end_date) <= Date.now() + (7 * 24 * 60 * 60 * 1000) && item.review_date != null && item.status == 'Aceptado') ||
-            (Date.parse(item.end_permissions) <= Date.now() + (3 * 60 * 60 * 1000) && item.review_date != null && item.status == 'Aceptado'),
-    }]">
+                                'border-l-8': boolean == true,
+                                'border-green-500': item.status === 'Finalizado',
+                                'border-red-900': item.status === 'Ausente',
+                                'border-red-500': (Date.parse(item.end_date) <= Date.now() + (3 * 24 * 60 * 60 * 1000) && item.review_date != null && item.status === 'Aceptado') ||
+                                    (Date.parse(item.end_permissions) <= Date.now() + (1 * 60 * 60 * 1000) && item.review_date != null && item.status == 'Aceptado'),
+                                'border-yellow-500': (Date.parse(item.end_date) >= Date.now() + (3 * 24 * 60 * 60 * 1000) && item.review_date != null && item.status === 'Aceptado') &&
+                                    (Date.parse(item.end_date) <= Date.now() + (7 * 24 * 60 * 60 * 1000) && item.review_date != null && item.status == 'Aceptado') ||
+                                    (Date.parse(item.end_permissions) <= Date.now() + (3 * 60 * 60 * 1000) && item.review_date != null && item.status == 'Aceptado'),
+                            }]">
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">
                                     {{ item.employee.name + " " + item.employee.lastname }}
@@ -86,13 +86,13 @@
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(item.start_date ?
-        item.start_date :
-        item.start_permissions) }}</p>
+                                    item.start_date :
+                                    item.start_permissions) }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ formattedDate(item.end_date ?
-        item.end_date :
-        item.end_permissions) }}</p>
+                                    item.end_date :
+                                    item.end_permissions) }}</p>
                             </td>
                             <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                 <p class="text-gray-900 whitespace-no-wrap">{{ item.status }}</p>
@@ -106,17 +106,10 @@
                                 <div class="flex space-x-3 justify-center">
                                     <Link class="text-blue-900 whitespace-no-wrap"
                                         :href="route('management.vacation.information.details', { id: item.id })">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-teal-500">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    </svg>
+                                    <ShowIcon />
                                     </Link>
                                     <template v-if="boolean == false">
-                                        <Link
-                                            v-if="item.status === 'Pendiente' && hasPermission('HumanResourceManager')"
+                                        <Link v-if="item.status === 'Pendiente'"
                                             class="text-blue-900 whitespace-no-wrap"
                                             :href="route('management.vacation.information.edit', { id: item.id })">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -125,16 +118,14 @@
                                                 d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                         </svg>
                                         </Link>
-                                        <span
-                                            v-if="item.status !== 'Pendiente' && hasPermission('HumanResourceManager')"
-                                            class="text-gray-200">
+                                        <span v-if="item.status !== 'Pendiente'" class="text-gray-200">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-400">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                             </svg>
                                         </span>
-                                        <Link v-if="item.status === 'Pendiente' && hasPermission('UserManager')"
+                                        <Link v-if="item.status === 'Pendiente'"
                                             :href="route('management.vacation.information.review', { id: item.id })"
                                             class="text-blue-900 whitespace-no-wrap">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -143,9 +134,7 @@
                                                 d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                                         </svg>
                                         </Link>
-                                        <span
-                                            v-if="item.status !== 'Pendiente' && hasPermission('HumanResourceManager')"
-                                            class="text-gray-200">
+                                        <span v-if="item.status !== 'Pendiente'" class="text-gray-200">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-400">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -154,9 +143,7 @@
                                         </span>
                                     </template>
                                     <template v-else>
-                                        <Link
-                                            v-if="hasPermission('UserManager')"
-                                            class="text-blue-900 whitespace-no-wrap"
+                                        <Link class="text-blue-900 whitespace-no-wrap"
                                             :href="route('management.vacation.information.edit', { id: item.id })">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-amber-400">
@@ -164,8 +151,7 @@
                                                 d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                         </svg>
                                         </Link>
-                                        <button
-                                            v-if="item.status === 'Aceptado' && hasPermission('UserManager')"
+                                        <button v-if="item.status === 'Aceptado'"
                                             @click="sendStatus(item.id, 'Finalizado')" type="button"
                                             class="flex items-center text-blue-500 hover:underline">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -174,16 +160,15 @@
                                                     d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                             </svg>
                                         </button>
-                                        <span v-if="item.status !== 'Aceptado' && hasPermission('UserManager')" class="text-gray-200">
+                                        <span v-if="item.status !== 'Aceptado'" class="text-gray-200">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-400">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                             </svg>
                                         </span>
-                                        <button
-                                            v-if="item.status === 'Aceptado' && hasPermission('UserManager')"
-                                            @click="sendModal(item.id, 'Ausente')" type="button"
+                                        <button v-if="item.status === 'Aceptado'" @click="sendModal(item.id, 'Ausente')"
+                                            type="button"
                                             class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
@@ -191,7 +176,7 @@
                                                     d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                             </svg>
                                         </button>
-                                        <span v-if="item.status !== 'Aceptado' && hasPermission('UserManager')" class="text-gray-200">
+                                        <span v-if="item.status !== 'Aceptado'" class="text-gray-200">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-400">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -199,8 +184,8 @@
                                             </svg>
                                         </span>
                                     </template>
-                                    <button v-if="hasPermission('UserManager')" type="button"
-                                        @click="confirmDeletion(item.id)" class="text-blue-900 whitespace-no-wrap">
+                                    <button type="button" @click="confirmDeletion(item.id)"
+                                        class="text-blue-900 whitespace-no-wrap">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-500">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -267,10 +252,10 @@ import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { ShowIcon } from '@/Components/Icons/Index';
 
 const props = defineProps({
     vacations: Object,
-    userPermissions: Array,
     search: String,
     boolean: Boolean
 })
@@ -280,10 +265,6 @@ const form = useForm({
     status: '',
     coment: ''
 })
-
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
 
 const confirmingDeletion = ref(false);
 const itemDelete = ref(null);

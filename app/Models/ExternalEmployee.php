@@ -39,12 +39,6 @@ class ExternalEmployee extends Model
         return 'external';
     }
 
-
-    public function document_registers()
-    {
-        return $this->hasMany(DocumentRegister::class, 'e_employee_id');
-    }
-
     public function getSctrAboutToExpireAttribute()
     {
         if ($this->sctr && $this->sctr_exp_date) {
@@ -91,5 +85,49 @@ class ExternalEmployee extends Model
     public function cost_line()
     {
         return $this->belongsTo(CostLine::class, 'cost_line_id');
+    }
+
+    public function document_registers()
+    {
+        return $this->hasMany(DocumentRegister::class, 'e_employee_id');
+    }
+
+    protected static function booted()
+    {
+        static::updating(function ($employee) {
+            if ($employee->isDirty('cropped_image')) {
+                $oldImage = $employee->getOriginal('cropped_image');
+                if ($oldImage) {
+                    $filePath = public_path('image/profile/' . $oldImage);
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    }
+                }
+            }
+            if ($employee->isDirty('curriculum_vitae')) {
+                $oldImage = $employee->getOriginal('curriculum_vitae');
+                if ($oldImage) {
+                    $filePath = public_path('documents/curriculum_vitae/' . $oldImage);
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    }
+                }
+            }
+        });
+
+        static::deleting(function ($employee) {
+            if ($employee->cropped_image) {
+                $profile = public_path('image/profile/' . $employee->cropped_image);
+                if (file_exists($profile)) {
+                    unlink($profile);
+                }
+            }
+            if ($employee->curriculum_vitae) {
+                $employee = public_path('documents/curriculum_vitae/' . $employee->curriculum_vitae);
+                if (file_exists($employee)) {
+                    unlink($employee);
+                }
+            }
+        });
     }
 }

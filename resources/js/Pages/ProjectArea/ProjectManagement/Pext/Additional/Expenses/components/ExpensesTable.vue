@@ -154,7 +154,7 @@
                     </td>
                     <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                         <button v-if="item.photo" @click="handlerPreview(item.id)">
-                            <EyeIcon class="w-4 h-4 text-teal-600" />
+                            <ShowIcon />
                         </button>
                         <span v-else>-</span>
                     </td>
@@ -239,12 +239,12 @@
     </div>
 </template>
 <script setup>
+import { ShowIcon } from '@/Components/Icons';
 import Pagination from '@/Components/Pagination.vue';
 import TableDateFilter from '@/Components/TableDateFilter.vue';
 import TableHeaderFilter from '@/Components/TableHeaderFilter.vue';
 import ChartsAdditionalExpenses from '@/Pages/ProjectArea/ProjectManagement/ChartsAdditionalExpenses.vue';
 import { formattedDate } from '@/utils/utils';
-import { EyeIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
 
 const { expenses, filterForm, actionForm, expenseTypes, documentsType, stateTypes } = defineProps({

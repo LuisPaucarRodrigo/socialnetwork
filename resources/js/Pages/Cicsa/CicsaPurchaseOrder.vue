@@ -45,13 +45,13 @@
                             <TableRow>
                                 <div class="flex space-x-3 justify-center">
                                     <button @click="openCreateModal(item)">
-                                        <PlusCircleIcon class="w-5 h-5 text-green-600" />
+                                        <PlusCircleIcon />
                                     </button>
                                     <button v-if="item.cicsa_purchase_order.length > 0" type="button"
                                         @click="toggleDetails(item?.cicsa_purchase_order)"
                                         class="text-blue-900 whitespace-no-wrap">
-                                        <ChevronDownIcon v-if="purcahse_order_row !== item.id" class="w-6 h-6"/>
-                                        <ChevronUpIcon v-else class="w-6 h-6" />
+                                        <DownArrowIcon v-if="purcahse_order_row !== item.id" />
+                                        <UpArrowIcon v-else />
                                     </button>
                                 </div>
                             </TableRow>
@@ -83,7 +83,7 @@
                                 <TableRow>
                                     <button v-if="materialDetail?.document" type="button"
                                         @click="openPDF(materialDetail?.id)">
-                                        <EyeIcon class="w-5 h-5 text-green-600" />
+                                        <ShowIcon />
                                     </button>
                                 </TableRow>
                                 <TableRow>{{ materialDetail?.observation }}</TableRow>
@@ -92,7 +92,7 @@
                                 <TableRow>
                                     <button class="text-blue-900"
                                         @click="openEditModal(materialDetail, item.project_name, item.cpe)">
-                                        <PencilSquareIcon class="w-5 h-5 text-amber-400" />
+                                        <EditIcon />
                                     </button>
                                 </TableRow>
                             </tr>
@@ -214,21 +214,20 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Head, useForm, router } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
-import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { formattedDate, setAxiosErrors, toFormData } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
 import axios from 'axios';
 import InputFile from '@/Components/InputFile.vue';
-import { ChevronDownIcon, ChevronUpIcon, EyeIcon, PencilSquareIcon, PlusCircleIcon } from '@heroicons/vue/24/outline';
 import { notify, notifyError } from '@/Components/Notification';
 import { Toaster } from 'vue-sonner';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
+import { DownArrowIcon, UpArrowIcon, PlusCircleIcon, ShowIcon, EditIcon } from '@/Components/Icons/Index';
 
 const { purchaseOrder, auth, searchCondition, type } = defineProps({
     purchaseOrder: Object,

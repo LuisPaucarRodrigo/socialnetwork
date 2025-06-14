@@ -136,9 +136,8 @@
                                         class="border-b col-span-8 border-gray-900/10 grid grid-cols-8 items-center my-2">
                                         <p class=" text-sm col-span-7 line-clamp-2">
                                             {{ item.name }}: {{ item.phone }} </p>
-                                        <button type="button" class="col-span-1 flex justify-end"
-                                            @click="deleteContactItem(item.id)">
-                                            <TrashIcon class=" text-red-500 h-4 w-4" />
+                                        <button type="button" @click="deleteContactItem(item.id)">
+                                            <DeleteIcon />
                                         </button>
                                     </div>
                                 </div>
@@ -313,11 +312,11 @@ import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import { ref, watch } from 'vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
-import { TrashIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import { DeleteIcon } from '@/Components/Icons/Index';
 
 const showModal = ref(false)
 const showModalUpdate = ref(false)

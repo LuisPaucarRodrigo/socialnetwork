@@ -22,8 +22,8 @@
                     <TableRow>{{ item.user_name }}</TableRow>
                     <TableRow>{{ item.personal_2 }}</TableRow>
                     <TableRow>
-                        <button type="button">
-                            <EyeIcon @click="openChecklistModal(item)" class="text-indigo-600 w-5" />
+                        <button type="button" @click="openChecklistModal(item)">
+                            <ShowIcon />
                         </button>
                     </TableRow>
                     <TableRow>{{ item.observations }}</TableRow>
@@ -31,7 +31,7 @@
                         <button @click.prevent="
                             confirmDeleteAdditional(item.id)
                             ">
-                            <TrashIcon class="h-5 w-5 text-red-600" />
+                            <DeleteIcon />
                         </button>
                     </TableRow>
                 </tr>
@@ -94,12 +94,11 @@ import Modal from "@/Components/Modal.vue";
 import { Head, router } from "@inertiajs/vue3";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import { formattedDate } from "@/utils/utils";
-import { EyeIcon } from "@heroicons/vue/24/outline";
-import { TrashIcon } from "@heroicons/vue/24/outline";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 import TableStructure from "@/Layouts/TableStructure.vue";
 import TableTitle from "@/Components/TableTitle.vue";
 import TableRow from "@/Components/TableRow.vue";
+import { DeleteIcon, ShowIcon } from "@/Components/Icons/Index";
 
 const { checklists } = defineProps({
     checklists: Object,

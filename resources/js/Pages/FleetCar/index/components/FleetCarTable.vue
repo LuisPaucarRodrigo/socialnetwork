@@ -5,7 +5,7 @@
                 <th class="bg-gray-100">
                     <div class="w-2"></div>
                 </th>
-                <TableTitle v-if="hasPermission('CarManager')" :style="'bg-gray-100 whitespace-nowrap'">
+                <TableTitle v-permission="'mobile_actions_manager'" :style="'bg-gray-100 whitespace-nowrap'">
                     <TableHeaderCicsaFilter label="Linea de Negocio" labelClass="text-gray-600" :options="cost_line"
                         v-model="formSearch.cost_line" />
                 </TableTitle>
@@ -16,7 +16,10 @@
                 <TableTitle>Tipo</TableTitle>
                 <TableTitle>Foto</TableTitle>
                 <TableTitle>Dueño</TableTitle>
-                <TableTitle :colspan="2">Acciones</TableTitle>
+                <TableTitle :colspan="2" v-permission-or="[
+                    'mobile_actions_manager',
+                    'mobile_actions',
+                ]">Acciones</TableTitle>
             </tr>
         </template>
         <template #tbody>
@@ -25,7 +28,7 @@
                     <th>
                         <div class="w-2"></div>
                     </th>
-                    <TableRow v-if="hasPermission('CarManager')">
+                    <TableRow v-permission="'mobile_actions_manager'">
                         {{ car.costline?.name }}
                     </TableRow>
                     <TableRow>{{ car.plate }}</TableRow>
@@ -36,18 +39,20 @@
                     <TableRow>
                         <a v-if="car.photo" :href="route('fleet.cars.show.image', { car: car.id }) + '?' + uniqueParam"
                             target="_blank">
-                            <EyeIcon class="w-5 h-5 text-green-600" />
+                            <ShowIcon />
                         </a>
                     </TableRow>
                     <TableRow>{{ car.user.name }}</TableRow>
-                    <TableRow :colspan="2">
+                    <TableRow :colspan="2" v-permission-or="[
+                        'mobile_actions_manager',
+                        'mobile_actions'
+                    ]">
                         <div class="flex space-x-3 justify-center">
-                            <button v-if="hasPermission('Car')" @click="openformDocument(car)">
-                                <DocumentDuplicateIcon class="w-6 h-6"
-                                    :class="car.car_document?.approvel_car_document.length > 0 ? 'text-red-400' : 'text-blue-400'" />
+                            <button v-permission="'mobile_actions'" @click="openformDocument(car)">
+                                <DocumentsIcon
+                                    :color="car.car_document?.approvel_car_document.length > 0 ? 'text-red-400' : 'text-blue-400'" />
                             </button>
-                            <button v-if="hasPermission('Car')" @click="openFormChangeLog(
-                                null, car)">
+                            <button v-permission="'mobile_actions'" @click="openFormChangeLog(null, car)" type="button">
                                 <svg viewBox="0 0 1024 1024" class="w-6 h-6 icon" version="1.1"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path
@@ -55,42 +60,22 @@
                                         fill="#044d14" />
                                 </svg>
                             </button>
-                            <button v-if="hasPermission('CarManager')" type="button" @click="openEditFormCar(car)">
-                                <PencilSquareIcon class="w-6 h-6 text-yellow-400" />
+                            <button v-permission="'mobile_actions_manager'" type="button" @click="openEditFormCar(car)">
+                                <EditIcon />
                             </button>
 
-                            <a v-if="
-                                hasPermission('Car') &&
-                                car.checklist
-                            " :href="route(
-                                'fleet.cars.show_checklist',
-                                { car: car.id }
-                            )
-                                ">
-                                <svg class="w-6 h-6 text-green-600" viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" clip-rule="evenodd"
-                                        d="M8.04832 2.48826C8.33094 2.79108 8.31458 3.26567 8.01176 3.54829L3.72605 7.54829C3.57393 7.69027 3.36967 7.76267 3.1621 7.74818C2.95453 7.7337 2.7623 7.63363 2.63138 7.4719L1.41709 5.9719C1.15647 5.64996 1.20618 5.17769 1.52813 4.91707C1.85007 4.65645 2.32234 4.70616 2.58296 5.0281L3.29089 5.90261L6.98829 2.45171C7.2911 2.16909 7.76569 2.18545 8.04832 2.48826ZM11.25 5C11.25 4.58579 11.5858 4.25 12 4.25H22C22.4142 4.25 22.75 4.58579 22.75 5C22.75 5.41422 22.4142 5.75 22 5.75H12C11.5858 5.75 11.25 5.41422 11.25 5ZM8.04832 9.48826C8.33094 9.79108 8.31458 10.2657 8.01176 10.5483L3.72605 14.5483C3.57393 14.6903 3.36967 14.7627 3.1621 14.7482C2.95453 14.7337 2.7623 14.6336 2.63138 14.4719L1.41709 12.9719C1.15647 12.65 1.20618 12.1777 1.52813 11.9171C1.85007 11.6564 2.32234 11.7062 2.58296 12.0281L3.29089 12.9026L6.98829 9.45171C7.2911 9.16909 7.76569 9.18545 8.04832 9.48826ZM11.25 12C11.25 11.5858 11.5858 11.25 12 11.25H22C22.4142 11.25 22.75 11.5858 22.75 12C22.75 12.4142 22.4142 12.75 22 12.75H12C11.5858 12.75 11.25 12.4142 11.25 12ZM8.04832 16.4883C8.33094 16.7911 8.31458 17.2657 8.01176 17.5483L3.72605 21.5483C3.57393 21.6903 3.36967 21.7627 3.1621 21.7482C2.95453 21.7337 2.7623 21.6336 2.63138 21.4719L1.41709 19.9719C1.15647 19.65 1.20618 19.1777 1.52813 18.9171C1.85007 18.6564 2.32234 18.7062 2.58296 19.0281L3.29089 19.9026L6.98829 16.4517C7.2911 16.1691 7.76569 16.1855 8.04832 16.4883ZM11.25 19C11.25 18.5858 11.5858 18.25 12 18.25H22C22.4142 18.25 22.75 18.5858 22.75 19C22.75 19.4142 22.4142 19.75 22 19.75H12C11.5858 19.75 11.25 19.4142 11.25 19Z"
-                                        fill="#1C274C" />
-                                </svg>
+                            <a v-permission="'mobile_actions'" v-if="car.checklist"
+                                :href="route('fleet.cars.show_checklist', { car: car.id })">
+                                <ListIcon />
                             </a>
 
-                            <button v-if="hasPermission('CarManager')" type="button"
-                                @click="openModalDeleteCars(car.id)" class="text-blue-900">
-                                <TrashIcon class="w-6 h-6 text-red-500" />
+                            <button v-permission="'mobile_actions_manager'" type="button"
+                                @click="openModalDeleteCars(car.id)">
+                                <DeleteIcon />
                             </button>
-                            <button v-if="car.car_changelogs.length > 0" type="button" @click="toogleChangelog(car)"
-                                class="text-blue-900 whitespace-no-wrap">
-                                <svg v-if="carId !== car.id" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                </svg>
-                                <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-                                </svg>
+                            <button v-if="car.car_changelogs.length > 0" type="button" @click="toogleChangelog(car)">
+                                <DownArrowIcon v-if="carId !== car.id" />
+                                <UpArrowIcon v-else />
                             </button>
                         </div>
                     </TableRow>
@@ -134,79 +119,39 @@
                             <TableRow>
                                 <div class="flex justify-center ">
                                     <a target="_blank" :href="route(
-                                    'fleet.cars.show_invoice', { car_changelog: changelog.id }
-                                )
-                                    ">
-                                    <DocumentIcon class="w-5 h-5 text-blue-600 items-center" />
-                                </a>
+                                        'fleet.cars.show_invoice', { car_changelog: changelog.id }
+                                    )">
+                                        <ShowIcon />
+                                    </a>
                                 </div>
                             </TableRow>
                             <TableRow>
                                 <div class="flex flex-col justify-center items-center">
                                     <button type="button" @click="toggleVisibility(changelog.id)">
-                                        <svg v-if="!visibleChangelogs.has(changelog.id)"
-                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                        </svg>
-                                        <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-                                        </svg>
+                                        <DownArrowIcon v-if="!visibleChangelogs.has(changelog.id)" />
+                                        <UpArrowIcon v-else />
                                     </button>
                                 </div>
                             </TableRow>
                             <TableRow>
                                 <div class="flex justify-center items-center gap-2">
-                                    <button v-if="
-                                        changelog.is_accepted ===
-                                        null && hasPermission('CarManager')
-                                    " @click="
-                                        () =>
-                                            validateRegister(
-                                                changelog.id,
-                                                1
-                                            )
-                                    " class="flex items-center rounded-xl text-blue-500 hover:bg-green-200">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-green-500">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                        </svg>
+                                    <button v-permission="'mobile_actions_manager'"
+                                        v-if="changelog.is_accepted === null"
+                                        @click="() => validateRegister(changelog.id, 1)">
+                                        <AcceptIcon />
                                     </button>
-                                    <button v-if="
-                                        changelog.is_accepted ===
-                                        null && hasPermission('CarManager')
-                                    " @click="
-                                        () =>
-                                            validateRegister(
-                                                changelog.id,
-                                                0
-                                            )
-                                    " type="button"
-                                        class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-red-500">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                        </svg>
+                                    <button v-permission="'mobile_actions_manager'"
+                                        v-if="changelog.is_accepted === null"
+                                        @click="() => validateRegister(changelog.id, 0)" type="button">
+                                        <RejectIcon />
                                     </button>
-                                    <button type="button" v-if="hasPermission('CarManager')" @click="
-                                        openEditFormChangeLog(
-                                            changelog,
-                                            car
-                                        )
-                                        ">
-                                        <PencilSquareIcon class="w-5 h-5 text-yellow-400" />
+                                    <button type="button" v-permission="'mobile_actions_manager'" @click="
+                                        openEditFormChangeLog(changelog, car)">
+                                        <EditIcon />
                                     </button>
-                                    <button type="button" v-if="hasPermission('CarManager')" @click="
-                                        openModalDeleteChangelog(
-                                            changelog.id
-                                        )
-                                        ">
-                                        <TrashIcon class="w-5 h-5 text-red-600" />
+                                    <button type="button" v-permission="'mobile_actions_manager'" @click="
+                                        openModalDeleteChangelog(changelog.id)">
+                                        <DeleteIcon />
                                     </button>
                                 </div>
                             </TableRow>
@@ -260,13 +205,6 @@
 import TableTitle from '@/Components/TableTitle.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableRow from '@/Components/TableRow.vue';
-import {
-    EyeIcon,
-    TrashIcon,
-    DocumentIcon,
-    PencilSquareIcon,
-    DocumentDuplicateIcon
-} from "@heroicons/vue/24/outline";
 import Pagination from '@/Components/Pagination.vue';
 import TableHeaderCicsaFilter from '@/Components/TableHeaderCicsaFilter.vue';
 import { ref } from 'vue';
@@ -275,14 +213,15 @@ import FormChangeLog from './FormChangeLog.vue';
 import FormDocument from './FormDocument.vue';
 import { notify } from '@/Components/Notification';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
+import { ShowIcon, EditIcon, DeleteIcon, DownArrowIcon, UpArrowIcon, ListIcon, DocumentsIcon, AcceptIcon, RejectIcon } from '@/Components/Icons/Index';
 
-const { userPermissions, formSearch, cars, cost_line, openEditFormCar
+const { formSearch, cars, cost_line, openEditFormCar, role_id
 } = defineProps({
-    userPermissions: Array,
     formSearch: Object,
     cars: Object,
     cost_line: Object,
-    openEditFormCar: Function
+    openEditFormCar: Function,
+    role_id: Function,
 })
 
 const carId = ref(null);
@@ -355,11 +294,6 @@ function openModalDeleteCars(id) {
 function openModalDeleteChangelog(id) {
     changelogToDelete.value = id ?? null;
     showModalDeleteChangelog.value = !showModalDeleteChangelog.value;
-}
-
-
-function hasPermission(permission) {
-    return userPermissions.includes(permission)
 }
 
 async function deleteChangelog() {

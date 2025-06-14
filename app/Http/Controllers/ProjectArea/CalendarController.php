@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers\ProjectArea;
 
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
 use App\Models\Project;
 use App\Models\Vacation;
-use App\Models\Tasks;
 
 class CalendarController extends Controller
 {
