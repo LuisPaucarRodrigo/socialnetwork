@@ -1894,7 +1894,7 @@ import Search from "@/Components/Search.vue";
 import ShowIcon from "@/Components/Icons/ShowIcon.vue";
 import RechargeIcon from "@/Components/Icons/RechargeIcon.vue";
 import UploadIcon from "@/Components/Icons/UploadIcon.vue";
-import { DownloadIcon, MenuIcon } from "@/Components/Icons/Index";
+import { DownloadIcon, MenuIcon } from "@/Components/Icons";
 import DropdownLink from "@/Components/DropdownLink.vue";
 
 const { auth, projects, center_list, type } = defineProps({

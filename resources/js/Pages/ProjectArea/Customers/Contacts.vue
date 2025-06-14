@@ -112,7 +112,7 @@ import { Head, useForm, router } from '@inertiajs/vue3';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import { DeleteIcon, EditIcon } from "@/Components/Icons/Index";
+import { DeleteIcon, EditIcon } from "@/Components/Icons";
 
 const props = defineProps({
   contacts: Object,

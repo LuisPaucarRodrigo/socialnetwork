@@ -57,7 +57,7 @@ import Pagination from '@/Components/Pagination.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import { ref } from 'vue';
 import { notify, notifyError } from '@/Components/Notification';
-import { DeleteIcon, EditIcon } from "@/Components/Icons/Index";
+import { DeleteIcon, EditIcon } from "@/Components/Icons";
 
 const { auth, add_information } = defineProps({
     auth: Object,

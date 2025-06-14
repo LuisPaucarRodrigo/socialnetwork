@@ -37,7 +37,7 @@
     </Modal>
 </template>
 <script setup>
-import { DeleteIcon } from '@/Components/Icons/Index';
+import { DeleteIcon } from '@/Components/Icons';
 import InputError from '@/Components/InputError.vue';
 import InputFile from '@/Components/InputFile.vue';
 import Modal from '@/Components/Modal.vue';

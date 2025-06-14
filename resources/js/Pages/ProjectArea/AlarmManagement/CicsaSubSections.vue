@@ -291,7 +291,7 @@ import Modal from '@/Components/Modal.vue';
 import { ref, computed } from 'vue';
 import { formattedDate } from '@/utils/utils';
 import { Head, useForm, router, Link } from '@inertiajs/vue3';
-import { DeleteIcon, ShowIcon, EditIcon } from "@/Components/Icons/Index";
+import { DeleteIcon, ShowIcon, EditIcon } from "@/Components/Icons";
 
 const props = defineProps({
   sections: Object,

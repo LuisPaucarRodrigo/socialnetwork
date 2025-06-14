@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\Permissions;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -10,7 +10,7 @@ use App\Models\Permission;
 use App\Models\FunctionalityPermission;
 use Illuminate\Support\Facades\Log;
 
-class FuncionalityPermissionSeeder extends Seeder
+class FunctionalityPermissionSeeder extends Seeder
 {
     /**
      * Run the database seeds.

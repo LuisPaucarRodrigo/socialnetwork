@@ -37,7 +37,7 @@
     </Modal>
 </template>
 <script setup>
-import {ShowIcon} from '@/Components/Icons/Index';
+import {ShowIcon} from '@/Components/Icons';
 import Modal from '@/Components/Modal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { formattedDate } from '@/utils/utils';
