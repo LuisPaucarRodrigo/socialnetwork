@@ -1571,25 +1571,39 @@ class FuncionalityPermissionSeeder extends Seeder
                 'display_name' => 'Agregar proyecto',
                 'key_name' => 'huawei_projects_add',
                 'module' => 'huawei_projects_submodule',
-                'permissions' => ['huawei.projects', 'huawei.projects.search', 'huawei.projects.create', 'huawei.projects.store', 'huawei.projects.import.baselines', 'huawei.projects.baselines.template']
+                'permissions' => ['huawei.projects.create', 'huawei.projects.store', 'huawei.projects.import.baselines', 'huawei.projects.baselines.template']
             ],
             [
                 'display_name' => 'Ver proyecto',
                 'key_name' => 'huawei_projects_see_project',
                 'module' => 'huawei_projects_submodule',
-                'permissions' => ['huawei.projects', 'huawei.projects.search', 'huawei.projects.toupdate', 'huawei.projects.balance']
+                'permissions' => ['huawei.projects.toupdate', 'huawei.projects.balance']
             ],
             [
                 'display_name' => 'Editar proyecto',
                 'key_name' => 'huawei_projects_edit',
                 'module' => 'huawei_projects_submodule',
-                'permissions' => ['huawei.projects', 'huawei.projects.search', 'huawei.projects.toupdate', 'huawei.projects.update', 'huawei.projects.import.baselines', 'huawei.projects.baselines.template']
+                'permissions' => ['huawei.projects.toupdate', 'huawei.projects.update', 'huawei.projects.import.baselines', 'huawei.projects.baselines.template']
             ],
             [
                 'display_name' => 'Administrar proyectos',
                 'key_name' => 'huawei_projects_admin',
                 'module' => 'huawei_projects_submodule',
                 'permissions' => ['huawei.projects.liquidateproject', 'huawei.projects.cancelproject', 'huawei.projects.stopped.resume']
+            ],
+            //liquidations
+            [
+                'display_name' => 'Liquidar Recursos',
+                'key_name' => 'huawei_liquidations',
+                'module' => 'huawei_projects_submodule',
+                'permissions' => ['huawei.projects.liquidations', 'huawei.projects.liquidations.history', 'huawei.projects.liquidations.post', 'huawei.projects.liquidations.searchadvance', 'huawei.projects.liquidations.massiveliquidation']
+            ],
+            //resources
+            [
+                'display_name' => 'Administrar Recursos',
+                'key_name' => 'huawei_resources',
+                'module' => 'huawei_projects_submodule',
+                'permissions' => ['huawei.projects.resources', 'huawei.projects.resources.search', 'huawei.projects.resources.store', 'huawei.projects.refund', 'huawei.projects.resources.searchdetails']
             ]
             //provisional
             // [
@@ -1611,19 +1625,19 @@ class FuncionalityPermissionSeeder extends Seeder
                 'display_name' => 'Agregar Sites',
                 'key_name' => 'huawei_sites_add',
                 'module' => 'huawei_sites_submodule',
-                'permissions' => ['huawei.sites', 'huawei.sites.search', 'huawei.sites.post', 'huawei.sites.verify']
+                'permissions' => ['huawei.sites.post', 'huawei.sites.verify']
             ],
             [
                 'display_name' => 'Actualizar Sites',
                 'key_name' => 'huawei_sites_edit',
                 'module' => 'huawei_sites_submodule',
-                'permissions' => ['huawei.sites', 'huawei.sites.search', 'huawei.sites.put', 'huawei.sites.verify']
+                'permissions' => ['huawei.sites.put', 'huawei.sites.verify']
             ],
             [
                 'display_name' => 'Eliminar Sites',
                 'key_name' => 'huawei_sites_delete',
                 'module' => 'huawei_sites_submodule',
-                'permissions' => ['huawei.sites', 'huawei.sites.search', 'huawei.sites.delete']
+                'permissions' => ['huawei.sites.delete']
             ],
         ];
 
@@ -1632,10 +1646,25 @@ class FuncionalityPermissionSeeder extends Seeder
                 'display_name' => 'Ver Gastos (incluye buscador, filtro, exportación y visualización de imágenes)',
                 'key_name' => 'huawei_expenses_view',
                 'module' => 'huawei_expenses_submodule',
-                'permissions' => ['huawei.projects.additionalcosts', 'huawei.projects.additionalcosts.showimage', 'huawei.projects.additionalcosts.search', 'huawei.projects.additionalcosts.summary', 'huawei.projects.additionalcosts.advancedsearch', 'huawei.projects.additionalcosts.export',
-                                  'huawei.projects.generalbalance', 'huawei.projects.generalbalance.expensesbyzone', 'huawei.projects.general.expenses', 'huawei.projects.general.expenses.search', 'huawei.projects.general.expenses.searchadvance', 'huawei.projects.general.expenses.showimage',
-                                  'huawei.projects.general.expenses.export', 'huawei.projects.general.expenses.downloadzip', 'huawei.projects.monthlyexpenses.downloadimages', 'huawei.projects', 'huawei.projects.search'
-                                ]
+                'permissions' => [
+                    'huawei.projects.additionalcosts',
+                    'huawei.projects.additionalcosts.showimage',
+                    'huawei.projects.additionalcosts.search',
+                    'huawei.projects.additionalcosts.summary',
+                    'huawei.projects.additionalcosts.advancedsearch',
+                    'huawei.projects.additionalcosts.export',
+                    'huawei.projects.generalbalance',
+                    'huawei.projects.generalbalance.expensesbyzone',
+                    'huawei.projects.general.expenses',
+                    'huawei.projects.general.expenses.search',
+                    'huawei.projects.general.expenses.searchadvance',
+                    'huawei.projects.general.expenses.showimage',
+                    'huawei.projects.general.expenses.export',
+                    'huawei.projects.general.expenses.downloadzip',
+                    'huawei.projects.monthlyexpenses.downloadimages',
+                    'huawei.projects',
+                    'huawei.projects.search'
+                ]
             ],
             [
                 'display_name' => 'Agregar Gastos (incluye importar)',

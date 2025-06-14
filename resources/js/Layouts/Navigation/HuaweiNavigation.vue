@@ -11,7 +11,7 @@
         </svg>
         <span class="mx-3">Huawei</span>
     </a>
-    <MyTransition :transitiondemonstration="showHuawei">
+    <MyTransition v-permission="'huawei_sites_view'" :transitiondemonstration="showHuawei">
         <Link class="w-full" :href="route('huawei.sites')">Sites Huawei</Link>
     </MyTransition>
     <MyTransition :transitiondemonstration="showHuawei">
