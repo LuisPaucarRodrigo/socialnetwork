@@ -39,14 +39,13 @@
     </Modal>
 </template>
 <script setup>
-import { DeleteIcon, ShowIcon } from '@/Components/Icons/Index';
+import { DeleteIcon, ShowIcon } from '@/Components/Icons';
 import Modal from '@/Components/Modal.vue';
 import { notify, notifyError } from '@/Components/Notification';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TableRow from '@/Components/TableRow.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
-import axios from 'axios';
 import { ref } from 'vue';
 
 const showImageModal = ref(null)

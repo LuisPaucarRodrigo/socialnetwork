@@ -22,7 +22,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import { Head } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
-import axios from 'axios';
 import { notify, notifyError } from '@/Components/Notification';
 import { Toaster } from 'vue-sonner';
 import ExternalTable from './components/ExternalTable.vue';

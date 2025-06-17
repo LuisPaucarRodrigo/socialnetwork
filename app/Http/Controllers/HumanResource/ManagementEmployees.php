@@ -114,7 +114,8 @@ class ManagementEmployees extends Controller
         }
     }
 
-    public function show_preview_doc_alta($id){
+    public function show_preview_doc_alta($id)
+    {
         $contract = Contract::find($id);
         $filePath = '/documents/discharge_document/' . $contract->discharge_document;
         $path = public_path($filePath);

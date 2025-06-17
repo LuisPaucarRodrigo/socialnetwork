@@ -12,7 +12,6 @@
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Search from '@/Components/Search.vue';
 import { useForm } from '@inertiajs/vue3';
-import axios from 'axios';
 
 const { userPermissions, openCreateProduct } = defineProps({
     userPermissions: Object,

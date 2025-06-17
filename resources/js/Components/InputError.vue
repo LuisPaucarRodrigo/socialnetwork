@@ -1,5 +1,5 @@
 <template>
-    <div v-show="message">
+    <div v-if="message">
         <p :class="`text-red-600 ${textSize}`">
             {{ message }}
         </p>

@@ -312,7 +312,6 @@ import ConfirmateModal from '@/Components/ConfirmateModal.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import InputError from '@/Components/InputError.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
-import axios from 'axios';
 
 const { assigned_products, warehouses, project_id, project } = defineProps({
     assigned_products: Object,

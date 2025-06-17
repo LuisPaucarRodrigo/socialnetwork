@@ -26,31 +26,21 @@
                     <div>
                         <InputLabel for="name">Nombre</InputLabel>
                         <div class="mt-2">
-                            <TextInput
-                                type="text"
-                                v-model="form.name"
-                                id="name"
-                            />
+                            <TextInput type="text" v-model="form.name" id="name" />
                             <InputError :message="form.errors.name" />
                         </div>
                     </div>
                     <div>
                         <InputLabel for="description">Descripcion</InputLabel>
                         <div class="mt-2">
-                            <TextInput
-                                type="text"
-                                v-model="form.description"
-                                id="description"
-                            />
+                            <TextInput type="text" v-model="form.description" id="description" />
                             <InputError :message="form.errors.description" />
                         </div>
                     </div>
                     <div>
                         <InputLabel for="permission">Permisos</InputLabel>
                         <br />
-                        <div
-                            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
-                        >
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                             <div v-for="item in modules" :key="item.id">
                                 <h3 class="font-semibold">
                                     {{ item.display_name }}
@@ -61,22 +51,12 @@
                                             {{ subitem.display_name }}
                                         </h4>
                                         <div class="grid grid-cols-2 gap-1">
-                                            <div
-                                                v-for="subsubitem in subitem.functionalities"
-                                            >
+                                            <div v-for="subsubitem in subitem.functionalities">
                                                 <div class="space-x-1 ">
-                                                    <input
-                                                    class="mt-[1px]"
-                                                        type="checkbox"
-                                                        :id="subsubitem.id"
-                                                        :value="subsubitem.id"
-                                                        v-model="form.functionalities"
-                                                    />
-                                                    <label
-                                                        :for="subsubitem.id"
-                                                        class="text-sm select-none"
-                                                        >
-                                                            {{ subsubitem.display_name }}
+                                                    <input class="mt-[1px]" type="checkbox" :id="subsubitem.id"
+                                                        :value="subsubitem.id" v-model="form.functionalities" />
+                                                    <label :for="subsubitem.id" class="text-sm select-none">
+                                                        {{ subsubitem.display_name }}
                                                     </label>
                                                 </div>
                                             </div>
@@ -108,16 +88,13 @@
                             </option>
                         </select>
                         -->
-                        <InputError :message="form.errors.functionalities" /> 
+                        <InputError :message="form.errors.functionalities" />
                     </div>
                     <div class="mt-6 flex items-center justify-end gap-x-3">
                         <SecondaryButton @click="closeModal">
                             Cancel
                         </SecondaryButton>
-                        <PrimaryButton
-                            type="submit"
-                            :class="{ 'opacity-25': form.processing }"
-                        >
+                        <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
                             {{
                                 stateCreateUpdate === true
                                     ? "Crear"
@@ -152,10 +129,14 @@ const stateCreateUpdate = ref(true);
 const create_rol = ref(false);
 const rol_id_update = ref(null);
 
-const form = useForm({
+const initialForm = {
     name: "",
     description: "",
     functionalities: []
+}
+
+const form = useForm({
+    ...initialForm
 });
 
 const add_rol = () => {
@@ -165,6 +146,8 @@ const add_rol = () => {
 const closeModal = () => {
     create_rol.value = false;
     stateCreateUpdate.value = true;
+    form.defaults({ ...initialForm })
+    form.reset()
 };
 
 const submit = () => {

@@ -168,7 +168,6 @@ import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Pagination from '@/Components/Pagination.vue';
-import axios from 'axios';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import { DeleteIcon, EditIcon, ShowIcon } from '@/Components/Icons';
 

@@ -171,7 +171,6 @@ import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import Pagination from '@/Components/Pagination.vue'
 import Dropdown from '@/Components/Dropdown.vue';
-import axios from 'axios';
 import { ref } from 'vue';
 import { Head, router, Link, useForm } from '@inertiajs/vue3';
 import Search from '@/Components/Search.vue';

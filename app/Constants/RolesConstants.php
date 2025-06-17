@@ -229,7 +229,7 @@ class RolesConstants
     public const SUBMODULES = [
         'user_submodule' => 'user_submodule',
         'roles_submodule' => 'roles_submodule',
-        
+
         'hremployees_submodule' => 'hremployees_submodule',
         'hreemployees_submodule' => 'hreemployees_submodule',
         'hrspreedsheet_submodule' => 'hrspreedsheet_submodule',
@@ -237,7 +237,7 @@ class RolesConstants
         'hrhrstate_submodule' => 'hrhrstate_submodule',
 
         'iproduct_submodule' => 'iproduct_submodule',
-        
+
         'pprovider_submodule' => 'pprovider_submodule',
         'pprequest_submodule' => 'pprequest_submodule',
         'pporder_submodule' => 'pporder_submodule',
@@ -264,5 +264,12 @@ class RolesConstants
 
         'cchanappro_submodule' => 'cchanappro_submodule',
         'cmobileunit_submodule' => 'cmobileunit_submodule',
+
+        'huawei_sites_submodule' => 'huawei_sites_submodule',
+        'huawei_projects_submodule' => 'huawei_projects_submodule',
+        'huawei_inventory_submodule' => 'huawei_inventory_submodule',
+        'huawei_internal_inventory_submodule' => 'huawei_internal_inventory_submodule',
+        'huawei_interal_guides_submodule' => 'huawei_interal_guides_submodule',
+        'huawei_special_returns_submodule' => 'huawei_special_returns_submodule',
     ];
 }

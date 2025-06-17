@@ -244,7 +244,7 @@ import { notify, notifyError } from '@/Components/Notification';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import { ShowIcon, EditIcon, DownArrowIcon, UpArrowIcon } from '@/Components/Icons/Index';
+import { ShowIcon, EditIcon, DownArrowIcon, UpArrowIcon } from '@/Components/Icons';
 
 const { service_order, auth, searchCondition, type } = defineProps({
     service_order: Object,
@@ -299,6 +299,7 @@ function openEditModal(item) {
     form.defaults({ ...item, user_name: auth.user.name, user_id: auth.user.id })
     form.reset()
     showAddEditModal.value = true
+    console.log(form)
 }
 
 async function submit() {

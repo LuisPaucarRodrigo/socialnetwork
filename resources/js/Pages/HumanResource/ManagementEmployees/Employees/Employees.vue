@@ -3,14 +3,12 @@
     <Head title="Gestion de Empleados" />
     <AuthenticatedLayout :redirectRoute="'management.employees'">
         <template #header>
-            Empleados
+            Empleados 
         </template>
         <Toaster richColors />
-        <div>
-            <EmployeesFilter v-model:form="formSearch" @reentry="reentry" />
-            <EmployeesTable v-model:form="formSearch" :employees="employees" :costLine="cost_line"
-                :openReentryModal="openReentryModal" :openFiredModal="openFiredModal" />
-        </div>
+        <EmployeesFilter v-model:form="formSearch" @reentry="reentry" />
+        <EmployeesTable v-model:form="formSearch" :employees="employees" :costLine="cost_line"
+            :openReentryModal="openReentryModal" :openFiredModal="openFiredModal" />
         <ReentryForm ref="reentryForm" :employees="employees"/>
         <FiredForm ref="firedForm" :employees="employees" />
 
@@ -34,8 +32,6 @@ const firedForm = ref(null)
 
 const props = defineProps({
     employee: Object,
-    boolean: Boolean,
-    userPermissions: Array,
     costLine: Object
 })
 

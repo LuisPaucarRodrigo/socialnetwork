@@ -316,7 +316,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import { DeleteIcon } from '@/Components/Icons/Index';
+import { DeleteIcon } from '@/Components/Icons';
 
 const showModal = ref(false)
 const showModalUpdate = ref(false)

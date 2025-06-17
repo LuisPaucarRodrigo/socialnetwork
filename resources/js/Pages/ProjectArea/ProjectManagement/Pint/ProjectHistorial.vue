@@ -87,11 +87,10 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import Pagination from '@/Components/Pagination.vue'
-import axios from 'axios';
 import { ref } from 'vue';
 import { Head, router, Link } from '@inertiajs/vue3';
 import TextInput from '@/Components/TextInput.vue';
-import {EditIcon} from '@/Components/Icons/Index';
+import {EditIcon} from '@/Components/Icons';
 
 const props = defineProps({
     projects: Object,

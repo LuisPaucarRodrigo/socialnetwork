@@ -169,7 +169,7 @@
 </template>
 
 <script setup>
-import { ShowIcon } from '@/Components/Icons/Index';
+import { ShowIcon } from '@/Components/Icons';
 import InputError from '@/Components/InputError.vue';
 import InputFile from '@/Components/InputFile.vue';
 import InputLabel from '@/Components/InputLabel.vue';

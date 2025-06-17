@@ -237,11 +237,10 @@ import InputError from '@/Components/InputError.vue';
 import { computed, ref, watch } from 'vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
-import axios from 'axios';
 import { setAxiosErrors } from '@/utils/utils';
 import { notify, notifyError } from '@/Components/Notification';
 import { Toaster } from 'vue-sonner';
-import { DeleteIcon } from '@/Components/Icons/Index';
+import { DeleteIcon } from '@/Components/Icons';
 
 const showModal = ref(false)
 const showModalUpdate = ref(false)

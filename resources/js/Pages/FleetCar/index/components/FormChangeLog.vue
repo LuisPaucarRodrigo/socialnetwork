@@ -166,7 +166,7 @@
     </Modal>
 </template>
 <script setup>
-import { DeleteIcon, PlusCircleIcon, ShowIcon } from '@/Components/Icons/Index';
+import { DeleteIcon, PlusCircleIcon, ShowIcon } from '@/Components/Icons';
 import InputError from '@/Components/InputError.vue';
 import InputFile from '@/Components/InputFile.vue';
 import InputLabel from '@/Components/InputLabel.vue';

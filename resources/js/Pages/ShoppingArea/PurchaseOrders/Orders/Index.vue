@@ -30,7 +30,7 @@ import OrdersTable from './components/OrdersTable.vue';
 import ShowCotization from './components/ShowCotization.vue';
 import OrderForm from './components/OrderForm.vue';
 import { notify } from '@/Components/Notification';
-import axios from 'axios';
+
 
 const showForm = ref(false);
 const showCotization = ref(false);

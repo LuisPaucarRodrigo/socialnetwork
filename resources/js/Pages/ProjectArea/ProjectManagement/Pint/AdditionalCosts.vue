@@ -196,7 +196,7 @@
                                 {{ actionForm.ids.length ?? "" }}
                             </label>
                         </th>
-                        <th
+                        <!-- <th
                             class="sm:sticky sm:left-14 sm:z-10 border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Zona" :options="zones"
                                 v-model="filterForm.selectedZones" width="w-32" />
@@ -210,7 +210,7 @@
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Documento" :options="docTypes"
                                 v-model="filterForm.selectedDocTypes" width="w-32" />
-                        </th>
+                        </th> -->
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             RUC
@@ -223,22 +223,22 @@
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Numero de Operación
                         </th>
-                        <th
+                        <!-- <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableDateFilter labelClass="text-[11px]" label="Fecha de Operación"
                                 v-model:startDate="filterForm.opStartDate" v-model:endDate="filterForm.opEndDate"
                                 v-model:noDate="filterForm.opNoDate" width="w-40" />
-                        </th>
+                        </th> -->
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Numero de Doc
                         </th>
-                        <th
+                        <!-- <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableDateFilter labelClass="text-[11px]" label="Fecha de Documento"
                                 v-model:startDate="filterForm.docStartDate" v-model:endDate="filterForm.docEndDate"
                                 v-model:noDate="filterForm.docNoDate" width="w-40" />
-                        </th>
+                        </th> -->
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <div class="flex space-x-1 items-center justify-end">
@@ -267,11 +267,11 @@
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Descripción
                         </th>
-                        <th
+                        <!-- <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             <TableHeaderFilter labelClass="text-[11px]" label="Estado" :options="stateTypes"
                                 v-model="filterForm.selectedStateTypes" width="w-48" />
-                        </th>
+                        </th> -->
 
                         <th v-if="project_id.status === null"
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
@@ -346,18 +346,18 @@
                             class="border-b border-gray-200 px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap">
                             S/. {{ item.real_amount.toFixed(2) }}
                         </td>
-                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
+                        <!-- <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <button v-if="item.photo" @click="handlerPreview(item.id)">
                                 <ShowIcon />
                             </button>
                             <span v-else>-</span>
-                        </td>
+                        </td> -->
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <p class="w-[250px]">
                                 {{ item.description }}
                             </p>
                         </td>
-                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
+                        <!-- <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <div v-if="item.is_accepted === null" class="flex gap-3 justify-center w-full">
                                 <button @click="() => openAcceptModal(item)">
                                     <AcceptIcon />
@@ -378,8 +378,8 @@
                             ]">
                                 {{ item.real_state }}
                             </div>
-                        </td>
-                        <td v-if="project_id.status === null"
+                        </td> -->
+                        <!-- <td v-if="project_id.status === null"
                             class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <div class="flex items-center justify-center gap-3 w-full">
                                 <div class="flex gap-3 mr-3">
@@ -391,7 +391,7 @@
                                     </button>
                                 </div>
                             </div>
-                        </td>
+                        </td> -->
                     </tr>
                     <tr class="sticky bottom-0 z-10 text-gray-700">
                         <td class="font-bold border-b border-gray-200 bg-white"></td>
@@ -433,7 +433,6 @@
             <pagination :links="additional_costs.links" />
         </div>
         <Modal :show="create_additional" @close="closeModal">
-            <!-- <Toaster richColors/> -->
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
                     Agregar Costo adicional
@@ -1097,7 +1096,6 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputFile from "@/Components/InputFile.vue";
 import Pagination from "@/Components/Pagination.vue";
 import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
-import axios from "axios";
 import Dropdown from "@/Components/Dropdown.vue";
 import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";

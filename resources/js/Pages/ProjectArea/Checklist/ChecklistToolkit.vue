@@ -182,7 +182,7 @@ import { formattedDate } from "@/utils/utils";
 import TableStructure from "@/Layouts/TableStructure.vue";
 import TableRow from "@/Components/TableRow.vue";
 import TableTitle from "@/Components/TableTitle.vue";
-import { ShowIcon, DeleteIcon } from '@/Components/Icons/Index';
+import { ShowIcon, DeleteIcon } from '@/Components/Icons';
 
 const { checklists } = defineProps({
     checklists: Object,

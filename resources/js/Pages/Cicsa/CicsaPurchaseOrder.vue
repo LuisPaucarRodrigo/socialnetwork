@@ -220,14 +220,13 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import { formattedDate, setAxiosErrors, toFormData } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
-import axios from 'axios';
 import InputFile from '@/Components/InputFile.vue';
 import { notify, notifyError } from '@/Components/Notification';
 import { Toaster } from 'vue-sonner';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import { DownArrowIcon, UpArrowIcon, PlusCircleIcon, ShowIcon, EditIcon } from '@/Components/Icons/Index';
+import { DownArrowIcon, UpArrowIcon, PlusCircleIcon, ShowIcon, EditIcon } from '@/Components/Icons';
 
 const { purchaseOrder, auth, searchCondition, type } = defineProps({
     purchaseOrder: Object,

@@ -7,8 +7,8 @@
             <form @submit.prevent="submit">
                 <div class="border-b border-gray-900/10 pb-12">
                     <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                        <div v-if="form.cropped_image" class="flex justify-center">
-                            <img :src="form.cropped_image" alt="Imagen Personal" class="rounded-full h-45 w-45 py-5">
+                        <div v-if="form.profile" class="flex justify-center">
+                            <img :src="form.profile" alt="Imagen Personal" class="rounded-full h-45 w-45 py-5">
                         </div>
                         <div class="sm:col-span-3">
                             <InputLabel for="reentry_date">Foto de Usuario</InputLabel>
@@ -152,11 +152,12 @@ import TextInput from '@/Components/TextInput.vue';
 import Modal from '@/Components/Modal.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { setAxiosErrors } from '@/utils/utils';
-import axios, { toFormData } from 'axios';
+import { toFormData } from '@/utils/utils';
+// import { toFormData } from 'axios'
 import { useForm } from '@inertiajs/vue3';
 import { notify, notifyError } from '@/Components/Notification';
 import { ref } from 'vue';
+import { useAxiosErrorHandler } from '@/utils/axiosError';
 
 const { employees, costLines } = defineProps({
     employees: Object,
@@ -166,7 +167,7 @@ const { employees, costLines } = defineProps({
 const show_m_employee = ref(false);
 
 const initialState = {
-    id: null,
+    id: '',
     name: '',
     lastname: '',
     cost_line_id: '',
@@ -181,7 +182,7 @@ const initialState = {
     sctr: '',
     curriculum_vitae: null,
     cropped_image: null,
-    profile: ''
+    profile: null
 }
 
 const form = useForm({ ...initialState })
@@ -190,14 +191,13 @@ const handleImagenRecortada = (imagenRecorted) => {
     form.cropped_image = imagenRecorted;
 };
 
-
 function toogleExternal() {
     show_m_employee.value = !show_m_employee.value
 }
 
-function openExternal(employee) {
+function openExternal(item = initialState) {
     toogleExternal()
-    form.defaults(employee ? { ...employee } : { ...initialState });
+    form.defaults({ ...item, profile: item.cropped_image, cropped_image: null, curriculum_vitae: null });
     form.reset();
 }
 
@@ -210,7 +210,7 @@ function closeExternal() {
 async function submit() {
     let url = route('management.external.storeorupdate', { external_id: form.id })
     try {
-        let formData = toFormData(form)
+        let formData = toFormData(form.data())
         let response = await axios.post(url, formData)
         let action = form.id ? 'update' : 'create'
         let itemId = form.id ?? null
@@ -222,15 +222,7 @@ async function submit() {
         }
     } catch (error) {
         console.log(error);
-        if (error.response) {
-            if (error.response.data.errors) {
-                setAxiosErrors(error.response.data.errors, form);
-            } else {
-                notifyError("Server error:", error.response.data);
-            }
-        } else {
-            notifyError("Network or other error:", error);
-        }
+        useAxiosErrorHandler(error, form)
     }
 }
 

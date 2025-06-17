@@ -4,8 +4,7 @@
             <thead class="sticky top-0 z-20">
                 <tr
                     class=" border-b bg-gray-50 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">
-
-                    <th class="bg-gray-100 border-b-2 border-gray-20">
+                    <th class="sticky left-0 z-10 bg-gray-100 border-b-2 border-gray-20">
                         <div class="w-2"></div>
                     </th>
                     <th
@@ -97,7 +96,7 @@
             <tbody>
                 <tr v-for="item in expenses.data || expenses" :key="item.id" class="text-gray-700">
                     <td :class="[
-                        'border-b border-gray-200',
+                        'sticky left-0 z-10 border-b border-gray-200',
                         {
                             'bg-indigo-500': item.is_accepted === null,
                             'bg-green-500': item.is_accepted == true,

@@ -27,7 +27,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { ref, watch } from "vue";
 import { Head } from "@inertiajs/vue3";
-import axios from "axios";
 import { Toaster } from "vue-sonner";
 import { notifyWarning } from "@/Components/Notification";
 import TableHeader from "./components/TableHeader.vue";

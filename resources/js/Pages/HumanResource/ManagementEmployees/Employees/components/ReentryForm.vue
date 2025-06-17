@@ -27,8 +27,8 @@
     </Modal>
 </template>
 <script setup>
-import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
+import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import { notify, notifyError } from '@/Components/Notification';
 import PrimaryButton from '@/Components/PrimaryButton.vue';

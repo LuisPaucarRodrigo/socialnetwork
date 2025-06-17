@@ -254,7 +254,7 @@ import { setAxiosErrors } from '@/utils/utils';
 import Modal from '@/Components/Modal.vue';
 import { ref, watch } from 'vue';
 import { Toaster } from 'vue-sonner';
-import { DeleteIcon, EditIcon, GroupIcon } from '@/Components/Icons/Index';
+import { DeleteIcon, EditIcon, GroupIcon } from '@/Components/Icons';
 
 const { costCenters, cost_line, employees } = defineProps({
     costCenters: Array,

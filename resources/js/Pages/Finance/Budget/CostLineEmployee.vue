@@ -133,7 +133,7 @@ import { setAxiosErrors } from '@/utils/utils';
 import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import { Toaster } from 'vue-sonner';
-import { DeleteIcon } from '@/Components/Icons/Index';
+import { DeleteIcon } from '@/Components/Icons';
 
 const { currentEmployees, employees, cost_line } = defineProps({
     currentEmployees: Array,

@@ -13,11 +13,10 @@
                 v-model:showSwapCostsModal="showSwapCostsModal" v-model:showOpNuDatModal="showOpNuDatModal"
                 :initialFilterFormState="initialFilterFormState" :openCreateAdditionalModal="openCreateAdditionalModal"
                 :openModalImport="openModalImport" />
-            <ExpensesTable :expenses="expenses" :userPermissions="userPermissions" :actionForm="actionForm"
-                :filterForm="filterForm" :zones="zones" :docTypes="docTypes" :expenseTypes="expenseTypes"
-                :stateTypes="stateTypes" :openEditAdditionalModal="openEditAdditionalModal" />
         </div>
-
+        <ExpensesTable :expenses="expenses" :userPermissions="userPermissions" :actionForm="actionForm"
+            :filterForm="filterForm" :zones="zones" :docTypes="docTypes" :expenseTypes="expenseTypes"
+            :stateTypes="stateTypes" :openEditAdditionalModal="openEditAdditionalModal" />
 
         <MasiveUpdate :expenses="expenses" v-model:showOpNuDatModal="showOpNuDatModal" />
         <ExpensesImport :project_id="project_id" :fixedOrAdditional="fixedOrAdditional" ref="expensesImport" />
