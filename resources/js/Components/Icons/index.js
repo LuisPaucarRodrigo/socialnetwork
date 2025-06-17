@@ -14,7 +14,7 @@ export { default as ImagesIcon } from './ImagesIcon.vue';
 export { default as InformationIcon } from './InformationIcon.vue';
 export { default as LinkIcon } from './LinkIcon.vue';
 export { default as ListIcon } from './ListIcon.vue';
-// export { default as MenuIcon } from './MenuIcon.vue';
+export { default as MenuIcon } from './MenuIcon.vue';
 export { default as PlusCircleIcon } from './PlusCircleIcon.vue';
 export { default as RechargeIcon } from './RechargeIcon.vue';
 export { default as RejectIcon } from './RejectIcon.vue';

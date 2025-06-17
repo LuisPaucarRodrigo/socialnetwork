@@ -846,6 +846,13 @@ class HumanResourceRoutes
                 'permission' => true,
                 'name' => 'document.grupal_documents.download',
             ],
+            [
+                'uri' => 'management_employees_documents_masive_create/{employee_id}',
+                'method' => 'post',
+                'action' => [DocumentSpreedSheetController::class, 'createMasive'],
+                'permission' => false,
+                'name' => 'management.employees.document.register.masive',
+            ],
         ];
     }
 }

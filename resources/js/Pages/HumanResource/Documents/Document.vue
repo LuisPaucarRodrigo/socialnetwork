@@ -444,7 +444,7 @@ import { ref, computed, nextTick, watchEffect, reactive, watch } from "vue";
 import { Head, useForm, router } from "@inertiajs/vue3";
 import Dropdown from "@/Components/Dropdown.vue";
 import { Toaster } from "vue-sonner";
-import { EditIcon, DeleteIcon, ShowIcon, DownloadIcon, MenuIcon } from "@/Components/Icons/index";
+import { EditIcon, DeleteIcon, ShowIcon, DownloadIcon, MenuIcon } from "@/Components/Icons";
 import { notify, notifyError } from "@/Components/Notification";
 import { formattedDate } from "@/utils/utils";
 

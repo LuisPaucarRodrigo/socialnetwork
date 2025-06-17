@@ -46,7 +46,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Search from '@/Components/Search.vue';
 import { Link } from '@inertiajs/vue3';
 import Dropdown from "@/Components/Dropdown.vue";
-import { MenuIcon } from '@/Components/Icons/index';
+import { MenuIcon } from '@/Components/Icons';
 
 const { form } = defineProps({
     form: Object

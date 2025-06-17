@@ -175,7 +175,7 @@ import axios from 'axios';
 import { ref } from 'vue';
 import { Head, router, Link, useForm } from '@inertiajs/vue3';
 import Search from '@/Components/Search.vue';
-import { EditIcon, MenuIcon } from '@/Components/Icons/index';
+import { EditIcon, MenuIcon } from '@/Components/Icons';
 
 const props = defineProps({
     projects: Object,
