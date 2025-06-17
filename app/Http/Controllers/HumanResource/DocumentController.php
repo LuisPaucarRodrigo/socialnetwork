@@ -5,6 +5,7 @@ namespace App\Http\Controllers\HumanResource;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\HumanResource\DocumentCreateRequest;
 use App\Http\Requests\HumanResource\DocumentUpdateRequest;
+use App\Models\CostLine;
 use App\Models\Document;
 use App\Models\DocumentRegister;
 use App\Models\DocumentSection;
@@ -126,10 +127,12 @@ class DocumentController extends Controller
         return Inertia::render('HumanResource/Documents/Document', [
             'sections' => DocumentSection::with('subdivisions')->get(),
             'subdivisions' => Subdivision::all(),
+            'cost_lines' => CostLine::select('id', 'name')->get(),
             'employees' => Employee::whereHas('contract', function ($query) {
                 $query->where('state', 'Active');
             })
                 ->orderBy('name')
+                ->with('contract')
                 ->get(),
             'e_employees' => ExternalEmployee::orderBy('name')->get(),
         ]);
@@ -216,7 +219,7 @@ class DocumentController extends Controller
             //             ->where('e_employee_id', $docItem->e_employee_id)
             //             ->first()
             //         : null
-            //     );  
+            //     );
             // if ($docReg) {
             //     $dataDocReg['document_id'] = $docItem->id;
             //     if ($docReg->exp_date === null) {
