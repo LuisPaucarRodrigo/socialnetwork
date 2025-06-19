@@ -276,7 +276,7 @@ import { ref } from 'vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Modal from '@/Components/Modal.vue';
-import { ShowIcon } from '@/Components/Icons';
+import { ShowIcon } from '@/Components/Icons/Index';
 
 const props = defineProps({
     expense: Object,

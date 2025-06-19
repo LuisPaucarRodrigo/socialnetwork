@@ -526,7 +526,7 @@ import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
-import { DeleteIcon, EditIcon, ShowIcon, SortIcon, ServerIcon } from "@/Components/Icons";
+import { DeleteIcon, EditIcon, ShowIcon, SortIcon, ServerIcon } from "@/Components/Icons/Index";
 
 const { payroll, expenses, expenseTypes, docTypes, stateTypes } = defineProps({
     payroll: Object,

@@ -90,7 +90,7 @@ import Pagination from '@/Components/Pagination.vue'
 import { ref } from 'vue';
 import { Head, router, Link } from '@inertiajs/vue3';
 import TextInput from '@/Components/TextInput.vue';
-import {EditIcon} from '@/Components/Icons';
+import {EditIcon} from '@/Components/Icons/Index';
 
 const props = defineProps({
     projects: Object,

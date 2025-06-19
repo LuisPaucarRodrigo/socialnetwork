@@ -1065,7 +1065,7 @@ import { notifyError } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import { formattedDate } from "@/utils/utils";
 import axios from "axios";
-import { DeleteIcon, DownArrowIcon, DownloadIcon, EditIcon, PlusCircleIcon, UpArrowIcon, UploadIcon } from "@/Components/Icons";
+import { DeleteIcon, DownArrowIcon, DownloadIcon, EditIcon, PlusCircleIcon, UpArrowIcon, UploadIcon } from "@/Components/Icons/Index";
 
 const showModal = ref(false);
 const showUpdateModal = ref(false);

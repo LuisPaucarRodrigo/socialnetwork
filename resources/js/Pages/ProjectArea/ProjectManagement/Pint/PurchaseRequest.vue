@@ -245,7 +245,7 @@ import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Dropdown from '@/Components/Dropdown.vue';
-import { EditIcon, ShowIcon } from '@/Components/Icons';
+import { EditIcon, ShowIcon } from '@/Components/Icons/Index';
 
 const confirmingPurchasesDeletion = ref(false);
 const showError = ref(false)

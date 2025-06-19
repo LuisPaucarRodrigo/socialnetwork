@@ -70,7 +70,7 @@
     </div>
 </template>
 <script setup>
-import { DisableIcon, EditIcon } from "@/Components/Icons";
+import { DisableIcon, EditIcon } from "@/Components/Icons/Index";
 import Pagination from '@/Components/Pagination.vue'
 
 const { products, auth, openEditProductModal, confirmDeleteProduct } = defineProps({

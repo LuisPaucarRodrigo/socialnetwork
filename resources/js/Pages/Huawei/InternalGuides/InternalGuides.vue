@@ -154,7 +154,7 @@ import { Head, router, useForm } from "@inertiajs/vue3";
 import { ref } from "vue";
 import { formattedDate } from "@/utils/utils";
 import ErrorOperationModal from "@/Components/ErrorOperationModal.vue";
-import { DeleteIcon, ShowIcon } from "@/Components/Icons";
+import { DeleteIcon, ShowIcon } from "@/Components/Icons/Index";
 
 const create_code = ref(false);
 const showModal = ref(false);

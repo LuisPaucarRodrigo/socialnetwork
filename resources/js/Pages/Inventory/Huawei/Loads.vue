@@ -99,7 +99,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputError from '@/Components/InputError.vue';
-import { ShowIcon } from "@/Components/Icons";
+import { ShowIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
   loads: Object,

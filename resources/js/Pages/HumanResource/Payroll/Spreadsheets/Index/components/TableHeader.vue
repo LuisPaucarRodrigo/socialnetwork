@@ -91,7 +91,7 @@
 import Dropdown from '@/Components/Dropdown.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Link } from '@inertiajs/vue3';
-import { DolarIcon, AcceptIcon } from '@/Components/Icons';
+import { DolarIcon, AcceptIcon } from '@/Components/Icons/Index';
 
 const { payrolls, filterForm, openPayrollApprove, openPaySpreadsheet, searchSpreadSheetsTable, openExportSpreadsheet } = defineProps({
     payrolls: Object,

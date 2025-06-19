@@ -612,7 +612,7 @@ import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import { formattedDate } from '@/utils/utils';
 import InputFile from '@/Components/InputFile.vue';
-import { DeleteIcon, ShowIcon } from '@/Components/Icons';
+import { DeleteIcon, ShowIcon } from '@/Components/Icons/Index';
 
 const props = defineProps({
   brand_models: Object,

@@ -40,7 +40,7 @@
 </template>
 <script setup>
 import Pagination from '@/Components/Pagination.vue';
-import { EditIcon, DeleteIcon, PlusCircleIcon, ShowIcon } from '@/Components/Icons';
+import { EditIcon, DeleteIcon, PlusCircleIcon, ShowIcon } from '@/Components/Icons/Index';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';

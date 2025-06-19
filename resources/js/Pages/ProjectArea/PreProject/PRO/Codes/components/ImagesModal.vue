@@ -39,7 +39,7 @@
     </Modal>
 </template>
 <script setup>
-import { DeleteIcon, ShowIcon } from '@/Components/Icons';
+import { DeleteIcon, ShowIcon } from '@/Components/Icons/Index';
 import Modal from '@/Components/Modal.vue';
 import { notify, notifyError } from '@/Components/Notification';
 import SecondaryButton from '@/Components/SecondaryButton.vue';

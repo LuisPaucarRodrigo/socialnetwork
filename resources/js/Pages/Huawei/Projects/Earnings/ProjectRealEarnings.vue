@@ -361,7 +361,7 @@ import Pagination from '@/Components/Pagination.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import { formattedDate } from '@/utils/utils';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { DeleteIcon, EditIcon } from '@/Components/Icons';
+import { DeleteIcon, EditIcon } from '@/Components/Icons/Index';
 
 const props = defineProps({
     real_earnings: Object,

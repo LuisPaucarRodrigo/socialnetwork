@@ -65,7 +65,7 @@ import TableHeaderFilter from '@/Components/TableHeaderFilter.vue';
 import { Link } from '@inertiajs/vue3';
 import Pagination from '@/Components/Pagination.vue';
 import { notify, notifyError } from '@/Components/Notification';
-import { ShowIcon, EditIcon, DeleteIcon, LinkIcon } from '@/Components/Icons';
+import { ShowIcon, EditIcon, DeleteIcon, LinkIcon } from '@/Components/Icons/Index';
 
 const { users, formSearch, platforms } = defineProps({
     users: Object,

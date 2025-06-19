@@ -432,7 +432,7 @@ import { notify, notifyError } from '@/Components/Notification';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import { ShowIcon, DownArrowIcon, UpArrowIcon, PlusCircleIcon, EditIcon, DeleteIcon } from '@/Components/Icons';
+import { ShowIcon, DownArrowIcon, UpArrowIcon, PlusCircleIcon, EditIcon, DeleteIcon } from '@/Components/Icons/Index';
 
 const { material, auth, searchCondition, type } = defineProps({
     material: Object,

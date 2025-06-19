@@ -565,7 +565,7 @@ import { Toaster } from "vue-sonner";
 import TableStructure from "@/Layouts/TableStructure.vue";
 import TableTitle from "@/Components/TableTitle.vue";
 import TableRow from "@/Components/TableRow.vue";
-import { ShowIcon, EditIcon } from "@/Components/Icons";
+import { ShowIcon, EditIcon } from "@/Components/Icons/Index";
 
 
 const { installation, auth, searchCondition, type } = defineProps({

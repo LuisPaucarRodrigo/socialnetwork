@@ -236,7 +236,7 @@
     </div>
 </template>
 <script setup>
-import { ShowIcon } from '@/Components/Icons';
+import { ShowIcon } from '@/Components/Icons/Index';
 import Pagination from '@/Components/Pagination.vue';
 import TableDateFilter from '@/Components/TableDateFilter.vue';
 import TableHeaderFilter from '@/Components/TableHeaderFilter.vue';

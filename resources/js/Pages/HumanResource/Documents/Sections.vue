@@ -242,7 +242,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { setAxiosErrors } from "@/utils/utils";
 import { notify, notifyError } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
-import { EditIcon, DeleteIcon, DownloadIcon } from "@/Components/Icons";
+import { EditIcon, DeleteIcon, DownloadIcon } from "@/Components/Icons/Index";
 
 const showModal = ref(false);
 const showModalEdit = ref(false);

@@ -247,7 +247,7 @@ import TableAutocompleteFilter from "@/Components/TableAutocompleteFilter.vue";
 import axios from "axios";
 import TextInput from "@/Components/TextInput.vue";
 import { Toaster } from "vue-sonner";
-import { ShowIcon } from "@/Components/Icons";
+import { ShowIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
     expense: Object,

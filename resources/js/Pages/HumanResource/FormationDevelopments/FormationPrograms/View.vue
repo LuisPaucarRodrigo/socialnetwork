@@ -96,7 +96,7 @@ import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
-import { DeleteIcon } from "@/Components/Icons";
+import { DeleteIcon } from "@/Components/Icons/Index";
 
 const { formation_program, userPermissions } = defineProps({
     formation_program: Object,

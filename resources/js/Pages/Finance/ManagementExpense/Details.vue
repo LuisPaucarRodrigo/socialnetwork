@@ -247,7 +247,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { formattedDate } from '@/utils/utils';
-import { ShowIcon } from '@/Components/Icons';
+import { ShowIcon } from '@/Components/Icons/Index';
 
 const props = defineProps({
     expense: Object

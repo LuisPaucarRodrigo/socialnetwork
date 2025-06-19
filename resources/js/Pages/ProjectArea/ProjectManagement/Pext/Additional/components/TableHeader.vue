@@ -65,7 +65,7 @@ import Search from '@/Components/Search.vue';
 import { Link } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 import { notifyError } from '@/Components/Notification';
-import { MenuIcon, PlusCircleIcon } from '@/Components/Icons';
+import { MenuIcon, PlusCircleIcon } from '@/Components/Icons/Index';
 
 const { userPermissions, type, searchCondition, createOrEditModal } = defineProps({
     userPermissions: Array,

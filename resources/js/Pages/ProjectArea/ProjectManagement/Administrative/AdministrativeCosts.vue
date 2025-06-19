@@ -783,7 +783,7 @@ import { Toaster } from "vue-sonner";
 
 import Dropdown from "@/Components/Dropdown.vue";
 import Search from "@/Components/Search.vue";
-import { MenuIcon, EditIcon, DeleteIcon, ShowIcon, ServerIcon } from "@/Components/Icons";
+import { MenuIcon, EditIcon, DeleteIcon, ShowIcon, ServerIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
     additional_costs: Object,

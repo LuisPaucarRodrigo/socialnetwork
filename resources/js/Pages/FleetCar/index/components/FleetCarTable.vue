@@ -213,7 +213,7 @@ import FormChangeLog from './FormChangeLog.vue';
 import FormDocument from './FormDocument.vue';
 import { notify } from '@/Components/Notification';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
-import { ShowIcon, EditIcon, DeleteIcon, DownArrowIcon, UpArrowIcon, ListIcon, DocumentsIcon, AcceptIcon, RejectIcon } from '@/Components/Icons';
+import { ShowIcon, EditIcon, DeleteIcon, DownArrowIcon, UpArrowIcon, ListIcon, DocumentsIcon, AcceptIcon, RejectIcon } from '@/Components/Icons/Index';
 
 const { formSearch, cars, cost_line, openEditFormCar, role_id
 } = defineProps({

@@ -236,7 +236,7 @@ import InputError from '@/Components/InputError.vue';
 import { ref, watch } from 'vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
-import { DeleteIcon } from "@/Components/Icons";
+import { DeleteIcon } from "@/Components/Icons/Index";
 
 const showModal = ref(false)
 const showModalUpdate = ref(false)

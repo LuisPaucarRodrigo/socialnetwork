@@ -139,7 +139,7 @@
     </AuthenticatedLayout>
 </template>
 <script setup>
-import { InformationIcon } from '@/Components/Icons';
+import { InformationIcon } from '@/Components/Icons/Index';
 import Modal from '@/Components/Modal.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import BarChart from '@/Layouts/BarChart.vue';

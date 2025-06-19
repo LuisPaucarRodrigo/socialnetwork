@@ -251,7 +251,7 @@ import { formattedDate } from "@/utils/utils";
 import { ref } from "vue";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 import { notify, notifyError } from "@/Components/Notification";
-import { DeleteIcon, EditIcon, AcceptIcon, RejectIcon, ShowIcon } from "@/Components/Icons";
+import { DeleteIcon, EditIcon, AcceptIcon, RejectIcon, ShowIcon } from "@/Components/Icons/Index";
 
 const { expenses, userPermissions, actionForm, filterForm, zones, docTypes, expenseTypes, stateTypes, openEditAdditionalModal } = defineProps({
     expenses: Object,

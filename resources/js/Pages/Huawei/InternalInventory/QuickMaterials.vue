@@ -169,7 +169,7 @@ import Modal from '@/Components/Modal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Pagination from '@/Components/Pagination.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
-import { DeleteIcon, EditIcon, ShowIcon } from '@/Components/Icons';
+import { DeleteIcon, EditIcon, ShowIcon } from '@/Components/Icons/Index';
 
 const showModal = ref(false);
 const showModalEdit = ref(false);

@@ -40,7 +40,7 @@
     </div>
 </template>
 <script setup>
-import { DeleteIcon, EditIcon, ShowIcon } from '@/Components/Icons';
+import { DeleteIcon, EditIcon, ShowIcon } from '@/Components/Icons/Index';
 import Pagination from '@/Components/Pagination.vue';
 import TableRow from '@/Components/TableRow.vue';
 import TableTitle from '@/Components/TableTitle.vue';

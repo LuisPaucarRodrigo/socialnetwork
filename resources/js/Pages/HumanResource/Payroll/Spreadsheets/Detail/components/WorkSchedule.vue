@@ -126,7 +126,7 @@ import Subsidized from "./Subsidized.vue";
 import { useForm } from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
-import { EditIcon } from "@/Components/Icons";
+import { EditIcon } from "@/Components/Icons/Index";
 
 const { objectData } = defineProps({
     objectData: Object,

@@ -226,7 +226,7 @@ import { Toaster } from 'vue-sonner';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import { DownArrowIcon, UpArrowIcon, PlusCircleIcon, ShowIcon, EditIcon } from '@/Components/Icons';
+import { DownArrowIcon, UpArrowIcon, PlusCircleIcon, ShowIcon, EditIcon } from '@/Components/Icons/Index';
 
 const { purchaseOrder, auth, searchCondition, type } = defineProps({
     purchaseOrder: Object,

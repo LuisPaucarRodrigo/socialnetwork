@@ -3,9 +3,10 @@
 namespace App\Support\RouteDefinitions;
 
 use App\Http\Controllers\Huawei\HuaweiManagementController;
-use App\Http\Controllers\Huawei\HuaweiMonthlyController;
-use App\Http\Controllers\Huawei\HuaweiProjectController;
 use App\Http\Controllers\Huawei\QuickMaterialsController;
+use App\Http\Controllers\Huawei\GeneralExpenses\HuaweiMonthlyController;
+use App\Http\Controllers\Huawei\Projects\HuaweiProjectController;
+use App\Http\Controllers\Huawei\Sites\HuaweiSitesController;
 
 class HuaweiRoutes
 {
@@ -16,42 +17,42 @@ class HuaweiRoutes
             [
                 'uri' => 'huawei/sites/get',
                 'method' => 'get',
-                'action' => [HuaweiProjectController::class, 'getSites'],
+                'action' => [HuaweiSitesController::class, 'getSites'],
                 'permission' => true,
                 'name' => 'huawei.sites',
             ],
             [
                 'uri' => 'huawei/sites/store',
                 'method' => 'post',
-                'action' => [HuaweiProjectController::class, 'storeSite'],
+                'action' => [HuaweiSitesController::class, 'storeSite'],
                 'permission' => true,
                 'name' => 'huawei.sites.post',
             ],
             [
                 'uri' => 'huawei/sites/update/{site}',
                 'method' => 'put',
-                'action' => [HuaweiProjectController::class, 'updateSite'],
+                'action' => [HuaweiSitesController::class, 'updateSite'],
                 'permission' => true,
                 'name' => 'huawei.sites.put',
             ],
             [
                 'uri' => 'huawei/sites/delete/{site}',
                 'method' => 'delete',
-                'action' => [HuaweiProjectController::class, 'destroySite'],
+                'action' => [HuaweiSitesController::class, 'destroySite'],
                 'permission' => true,
                 'name' => 'huawei.sites.delete',
             ],
             [
                 'uri' => 'huawei/sites/verify/{update?}',
                 'method' => 'post',
-                'action' => [HuaweiProjectController::class, 'verifySiteName'],
+                'action' => [HuaweiSitesController::class, 'verifySiteName'],
                 'permission' => true,
                 'name' => 'huawei.sites.verify',
             ],
             [
                 'uri' => 'huawei/sites/search/{request}',
                 'method' => 'get',
-                'action' => [HuaweiProjectController::class, 'searchSites'],
+                'action' => [HuaweiSitesController::class, 'searchSites'],
                 'permission' => true,
                 'name' => 'huawei.sites.search',
             ],

@@ -81,7 +81,7 @@ import { Head, Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { DeleteIcon, ShowIcon } from "@/Components/Icons";
+import { DeleteIcon, ShowIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
     formationPrograms: Object,

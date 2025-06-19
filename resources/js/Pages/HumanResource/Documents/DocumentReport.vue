@@ -293,7 +293,7 @@ import { ref, computed, watch } from "vue";
 import { Head, useForm, router } from "@inertiajs/vue3";
 import Dropdown from "@/Components/Dropdown.vue";
 import { notifyError } from "@/Components/Notification";
-import { EditIcon, DeleteIcon, ShowIcon, DownloadIcon, MenuIcon } from "@/Components/Icons";
+import { EditIcon, DeleteIcon, ShowIcon, DownloadIcon, MenuIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
     sections: Object,
@@ -301,7 +301,6 @@ const props = defineProps({
     subdivisions: Object,
     employees: Array,
     e_employees: Array,
-    userPermissions: Array,
     section: [String, null],
     subdivision: [String, null],
     search: [String, null],
