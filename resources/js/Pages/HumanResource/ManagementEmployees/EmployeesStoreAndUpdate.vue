@@ -5,6 +5,7 @@
         <template #header>
             Perfil
         </template>
+        <Toaster richColors />
         <form @submit.prevent="submit">
             <div class="space-y-6">
                 <div class="border-b border-gray-900/10 pb-12">
@@ -653,12 +654,71 @@
             </div>
         </form>
         <ConfirmCreateModal :confirmingcreation="showModal" itemType="empleado" />
+
+        <Modal :show="showDocumentsModal" :max-width="'6xl'">
+            <div class="p-6 flex flex-col gap-6">
+                <h2>Documentos</h2>
+                <div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                        <div v-for="section in sections" :key="section.id"
+                            class="bg-white p-4 rounded-sm shadow-sm border border-gray-300 relative">
+                            <!-- Encabezado de la sección -->
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="flex items-center justify-between w-full cursor-pointer">
+                                    <span class="text-sm font-semibold text-gray-800 break-words">
+                                        {{ section.name }}
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div class="border-t border-gray-200 my-2"></div>
+
+                            <!-- Subdivisiones -->
+                            <div class="space-y-2">
+                                <div v-for="sub in section.subdivisions" :key="sub.id"
+                                    class="flex items-center justify-between">
+                                    <div class="grid grid-cols-2 w-full items-center">
+                                        <div>
+                                            <label class="flex items-center justify-between w-full cursor-pointer">
+                                                <span class="text-sm break-words font-medium">
+                                                    {{ sub.name }}
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <select v-model="documentsForm[sub.id]" :class="[
+                                                'block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6',
+                                                documentsForm[sub.id] === 'No Corresponde' ? 'text-red-600 focus:ring-red-600' : 'text-indigo-700 focus:ring-indigo-600'
+                                            ]">
+                                                <option>Corresponde</option>
+                                                <option>No Corresponde</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 flex items-center justify-end gap-x-3">
+                    <SecondaryButton type="button" @click="closeDocumentsModal"> Cerrar </SecondaryButton>
+                    <PrimaryButton type="button" @click="submitDocuments">
+                        Aceptar
+                    </PrimaryButton>
+                </div>
+            </div>
+        </Modal>
+
+
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
+import Modal from '@/Components/Modal.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 import ModalImage from '@/Layouts/ModalImage.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
@@ -667,6 +727,10 @@ import InputError from '@/Components/InputError.vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { toFormData } from '@/utils/utils';
+import { notify } from '@/Components/Notification';
+import { Toaster } from 'vue-sonner';
+import { useAxiosErrorHandler } from '@/utils/axiosError';
 
 const showModal = ref(false);
 const props = defineProps({
@@ -675,7 +739,11 @@ const props = defineProps({
         type: Object,
         requerid: false
     },
-    costLines: Array
+    costLines: Array,
+    sections: {
+        type: Array,
+        required: false
+    }
 })
 
 const form = useForm({
@@ -724,6 +792,59 @@ const form = useForm({
     vaccinations: '',
 })
 
+// const form = useForm({
+//     curriculum_vitae: null,
+//     cropped_image: null,
+//     name: 'test',
+//     lastname: 'test lastnamae',
+//     gender: 'Masculino',
+//     state_civil: 'Soltero(a)',
+//     birthdate: '2002-06-21',
+//     dni: '76543777',
+//     email: 'conprocoooo@ccip.com',
+//     email_company: 'conprocoooo@ccip.com',
+//     phone1: '936498348',
+//     nro_cuenta: '23468324-23467-34',
+//     cost_line_id: '1',
+//     personal_segment: 'MOD',
+//     type_contract: 'No Fiscalizado',
+//     state_travel_expenses: true,
+//     discount_remuneration: true,
+//     discount_sctr: true,
+//     pension_type: 'Integra',
+//     basic_salary: 1599,
+//     amount_travel_expenses: '100',
+//     life_ley: 100,
+//     hire_date: '2024-02-01',
+//     education_level: 'Universidad',
+//     education_status: 'Completo',
+//     specialization: 'Ingeniero de software',
+//     street_address: 'Calle mi calle numero mi numero',
+//     department: 'Arequipa',
+//     province: 'Arequipa',
+//     district: 'Arequipa',
+//     emergencyContacts: [
+//         {
+//             emergency_name: 'nombre emergen',
+//             emergency_lastname: 'lastanmae emerge',
+//             emergency_relations: 'Some relation',
+//             emergency_phone: '932864756',
+//         }
+//     ],
+//     familyDependents: [],
+//     blood_group: 'A+',
+//     weight: '72',
+//     height: '178',
+//     shoe_size: '42',
+//     shirt_size: 'M',
+//     pants_size: '32',
+//     medical_condition: 'No',
+//     allergies: 'No',
+//     operations: 'No',
+//     accidents: 'No',
+//     vaccinations: 'No',
+// })
+
 if (props.employees) {
     form.curriculum_vitae = null;
     form.cropped_image = null;
@@ -770,6 +891,8 @@ if (props.employees) {
     form.personal_segment = props.employees.contract.personal_segment
 }
 
+
+
 watch(() => form.state_travel_expenses, (newVal) => {
     form.amount_travel_expenses = ''
 })
@@ -805,31 +928,61 @@ const handleImagenRecortada = (imagenRecorted) => {
     form.cropped_image = imagenRecorted;
 };
 
-const submit = () => {
+const createdEmployee = ref(null)
+const submit = async () => {
     if (props.employees) {
-        form.post(
-            route('management.employees.update', props.employees.id),
-            {
-                onError: (e) => {
-                    console.log(e)
-                }
-            }
-        )
-    } else {
-        form.post(route('management.employees.store'), {
-            onSuccess: () => {
-                showModal.value = true
-                setTimeout(() => {
-                    showModal.value = false;
-                    router.visit(route('management.employees'))
-                }, 2000);
-            },
-            onError: (error) => {
-                console.log(error)
-                console.error('Ha ocurrido un error. Por favor, inténtelo de nuevo.');
+        let url = route('management.employees.update', props.employees.id)
+        form.post(url, {
+            onError: (e) => {
+                console.log(e)
             }
         })
+    } else {
+        try {
+            const payload = form.data()
+            const res = await axios.post(route('management.employees.store'), payload)
+            const id = res.data.employee_id
+            showModal.value = true
+            setTimeout(() => {
+                showModal.value = false;
+                openDocumentsModal(id)
+            }, 2000);
+        } catch (error) {
+            useAxiosErrorHandler(error, form)
+        }
     }
 }
+
+
+
+const showDocumentsModal = ref(false)
+const documentsForm = ref({})
+function openDocumentsModal(id) {
+    props.sections.forEach(item => {
+        item.subdivisions.forEach(subitem => {
+            documentsForm.value[subitem.id] = 'Corresponde'
+        })
+    });
+    createdEmployee.value = id
+    showDocumentsModal.value = true
+}
+
+
+function closeDocumentsModal() {
+    showDocumentsModal.value = false
+    router.visit(route('management.employees'))
+
+}
+
+async function submitDocuments() {
+    const res = await axios.post(route('management.employees.document.register.masive', { employee_id: createdEmployee.value }), documentsForm.value)
+    if (res.status === 200) {
+        notify('Estados de documentos registrados')
+        setTimeout(() => {
+            router.visit(route('management.employees'))
+        }, 2000)
+    }
+}
+
 
 </script>

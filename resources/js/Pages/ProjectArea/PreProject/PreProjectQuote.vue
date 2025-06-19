@@ -807,7 +807,7 @@ import { Head, router, useForm } from '@inertiajs/vue3';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
-import { DeleteIcon, ShowIcon } from "@/Components/Icons/Index";
+import { DeleteIcon, ShowIcon } from "@/Components/Icons";
 
 const showModal = ref(false)
 const showErroModal = ref(false)

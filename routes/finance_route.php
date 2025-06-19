@@ -14,4 +14,5 @@ foreach (FinanceRoutes::all() as $route) {
 
 
 Route::get('/finance/account_statement_excel_export', [AccountStatementController::class, 'excel_export'])->name('finance.account_statement.excel.export');
+Route::get('/management_employees/spreadsheets_export/bank_Table', [AccountStatementController::class, 'export_bank_table'])->name('spreadsheets.export.bank.table');
 

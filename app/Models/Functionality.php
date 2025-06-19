@@ -16,4 +16,11 @@ class Functionality extends Model
         "display_name",
         "module_id",
     ];
+
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class, 'functionality_permissions');
+    }
+
+
 }

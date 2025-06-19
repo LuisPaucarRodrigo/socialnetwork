@@ -56,7 +56,6 @@
                             </template>
                         </dropdown>
                     </div>
-
                 </div>
                 <div class="sm:hidden">
                     <dropdown align="left">
@@ -87,6 +86,7 @@
                                         Actualizar operación
                                     </button>
                                 </div>
+                                
                             </div>
                         </template>
                     </dropdown>
@@ -537,6 +537,7 @@ const { payroll, expenses, expenseTypes, docTypes, stateTypes } = defineProps({
 })
 
 const dataToRender = ref(expenses.data)
+const uniqueParam = `timestamp=${new Date().getTime()}`;
 
 const initialFilterFormState = {
     search: "",
@@ -728,5 +729,4 @@ const submitOpNuDatModal = async () => {
     }
 
 }
-
 </script>

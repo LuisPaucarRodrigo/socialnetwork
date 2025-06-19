@@ -71,7 +71,7 @@ import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
 import Pagination from '@/Components/Pagination.vue';
-import { ShowIcon, EditIcon, DeleteIcon } from "@/Components/Icons/Index";
+import { ShowIcon, EditIcon, DeleteIcon } from "@/Components/Icons";
 
 const { employees, formSearch, cost_line, openExternal, confirmUserDeletion } = defineProps({
     employees: Object,

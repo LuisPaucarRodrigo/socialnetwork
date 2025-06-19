@@ -11,7 +11,7 @@
             <ExternalTable :employees="employees" :formSearch="formSearch" :cost_line="cost_line"
                 :openExternal="openExternal" :confirmUserDeletion="confirmUserDeletion" />
         </div>
-        <ExternalForm ref="externalForm" :employees="employees" :costLines="costLines" />
+        <ExternalForm v-if="showExternalForm" ref="externalForm" :employees="employees" :costLines="costLines" />
         <ConfirmDeleteModal :confirmingDeletion="confirmingUserDeletion" itemType="empleado" deleteText="Eliminar"
             :deleteFunction="deleteEmployee" @closeModal="closeModal" />
     </AuthenticatedLayout>
@@ -21,16 +21,16 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import { Head } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
+import { defineAsyncComponent, ref, watch } from 'vue';
 import { notify, notifyError } from '@/Components/Notification';
 import { Toaster } from 'vue-sonner';
 import ExternalTable from './components/ExternalTable.vue';
 import TableHeader from './components/TableHeader.vue';
-import ExternalForm from './components/ExternalForm.vue';
+
+const ExternalForm = defineAsyncComponent(() => import('./components/ExternalForm.vue'));
 
 const confirmingUserDeletion = ref(false);
 const employeeToDelete = ref(null);
-
 
 const props = defineProps({
     employee: Object,
@@ -39,6 +39,7 @@ const props = defineProps({
 
 const employees = ref({ ...props.employee })
 const cost_line = props.costLines.map(item => item.name)
+const showExternalForm = ref(false)
 const externalForm = ref(null)
 
 const initialFormSearch = {
@@ -88,7 +89,21 @@ const closeModal = () => {
 };
 
 function openExternal(item) {
-    externalForm.value.openExternal(item)
+    showExternalForm.value = true
+    if (externalForm.value) {
+        externalForm.value.openExternal(item);
+        return;
+    }
+
+    const stop = watch(
+        () => externalForm.value,
+        (instance) => {
+            if (instance) {
+                instance.openExternal(item);
+                stop();
+            }
+        }
+    );
 }
 
 async function search() {

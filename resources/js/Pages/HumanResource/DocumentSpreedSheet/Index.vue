@@ -662,6 +662,7 @@ watch(() => docForm.state, () => {
   if (docForm.state !== 'Completado') {
     docForm.document = null
     docForm.exp_date = ''
+    docForm.has_exp_date = 0
   }
 })
 

@@ -302,16 +302,43 @@ class AdditionalCostsController extends Controller
             'ids' => 'required | array | min:1',
             'project_id' => 'required'
         ]);
+        $errors = [];
         foreach ($data['ids'] as $id) {
-            $ac = AdditionalCost::find($id);
-            $newData = collect($ac->toArray())->except(['id', 'project_id'])->toArray();
-            $newData['project_id'] = $data['project_id'];
-            $ac->photo && $this->file_move_toAdditional($ac->photo);
-            // $newData['fixedOrAdditional'] = ($ac->expense_type === PintConstants::COMBUSTIBLE_GEP || $ac->expense_type === PintConstants::COMBUSTIBLE_UM) ? true : false;
-            $newData['fixedOrAdditional'] = false;
-            PextProjectExpense::create($newData);
+            DB::beginTransaction();
+
+            try {
+                $ac = AdditionalCost::find($id);
+
+                $newData = collect($ac->toArray())->except(['id', 'project_id'])->toArray();
+                $newData['project_id'] = $data['project_id'];
+                $newData['fixedOrAdditional'] = false;
+
+                $exists = PextProjectExpense::where('ruc', $newData['ruc'] ?? '')
+                    ->where('doc_number', $newData['doc_number'] ?? '')
+                    ->exists();
+
+                if ($exists) {
+                    throw new \Exception("Ya existe un gasto con RUC '{$newData['ruc']}' y número de documento '{$newData['doc_number']}'");
+                }
+
+                $ac->photo && $this->file_move_toAdditional($ac->photo);
+
+                PextProjectExpense::create($newData);
+                $ac->delete();
+
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollBack();
+                $errors[] = [
+                    'id' => $id,
+                    'error' => $e->getMessage(),
+                ];
+            }
         }
-        AdditionalCost::whereIn('id', $data['ids'])->delete();
+
+        if (count($errors)) {
+            return response()->json('Algunos registros no pudieron ser movidos.', 500);
+        }
         return response()->json(true, 200);
     }
 

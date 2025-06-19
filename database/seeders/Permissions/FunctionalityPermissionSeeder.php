@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\Permissions;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -10,7 +10,7 @@ use App\Models\Permission;
 use App\Models\FunctionalityPermission;
 use Illuminate\Support\Facades\Log;
 
-class FuncionalityPermissionSeeder extends Seeder
+class FunctionalityPermissionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -1031,6 +1031,9 @@ class FuncionalityPermissionSeeder extends Seeder
                     'staticcost.advance.search',
                     'staticcost.excel.export',
                     'projectmanagement.staticCosts.massiveUpdate',
+
+                    'projectmanagement.statitoaddproject.swapCosts',
+                    'projectmanagement.additionalToAdditional.swapCosts',
                 ]
             ],
 
@@ -1621,7 +1624,10 @@ class FuncionalityPermissionSeeder extends Seeder
                     'fleet.cars.update.document',
                     'fleet.cars.store_document',
                     'fleet.cars.search',
-
+                    'fleet.cars.store',
+                    'fleet.cars.update',
+                    'fleet.cars.destroy',
+                    
                     'fleet.cars.alarms',
                     'fleet.cars.checklist.alarms',
                     'fleet.cars.specific.alarms',

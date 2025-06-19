@@ -22,3 +22,4 @@ Route::post('/document_sections/subdivisions/drag_and_drop', [DocumentController
 Route::post('/documents/filter_document/massive_zip/post', [DocumentController::class, 'massiveZip'])->name('documents.filter_document.massive_zip');
 
 Route::get('/management_employees/spreadsheets_details/{payroll_details_id}/employee/{employee_id}', [SpreadsheetsController::class, 'index_payroll_detail'])->name('spreadsheets.details.index');
+

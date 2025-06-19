@@ -43,4 +43,3 @@ export { default as AddUserIcon } from './AddUserIcon.vue';
 export { default as RectangleGroupIcon } from './RectangleGroupIcon.vue';
 
 export { default as IdentificationIcon } from './IdentificationIcon.vue'
-

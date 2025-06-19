@@ -3,32 +3,37 @@
     <Head title="Gestion de Empleados" />
     <AuthenticatedLayout :redirectRoute="'management.employees'">
         <template #header>
-            Empleados 
+            Empleados
         </template>
         <Toaster richColors />
         <EmployeesFilter v-model:form="formSearch" @reentry="reentry" />
         <EmployeesTable v-model:form="formSearch" :employees="employees" :costLine="cost_line"
-            :openReentryModal="openReentryModal" :openFiredModal="openFiredModal" />
-        <ReentryForm ref="reentryForm" :employees="employees"/>
-        <FiredForm ref="firedForm" :employees="employees" />
-
+            :openReentryModal="openReentryModal" :openFiredModal="openFiredModal" :openFotoCheck="openFotoCheck" />
+        <ReentryForm v-if="showReentryForm" ref="reentryForm" :employees="employees" />
+        <FiredForm v-if="showFiredForm" ref="firedForm" :employees="employees" />
+        <FotoCheck v-if="showFotoCheck" ref="fotoCheck" />
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-
 import { Head } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
+import { ref, watch, defineAsyncComponent } from 'vue';
 import { notifyError } from '@/Components/Notification';
 import EmployeesFilter from './components/EmployeesFilter.vue';
 import EmployeesTable from './components/EmployeesTable.vue';
-import ReentryForm from './components/ReentryForm.vue';
-import FiredForm from './components/FiredForm.vue';
 import { Toaster } from 'vue-sonner';
 
+const ReentryForm = defineAsyncComponent(() => import('./components/ReentryForm.vue'));
+const FiredForm = defineAsyncComponent(() => import('./components/FiredForm.vue'));
+const FotoCheck = defineAsyncComponent(() => import('./components/FotoCheck.vue'));
+
+const showReentryForm = ref(false)
 const reentryForm = ref(null)
+const showFiredForm = ref(false)
 const firedForm = ref(null)
+const showFotoCheck = ref(false)
+const fotoCheck = ref(null)
 
 const props = defineProps({
     employee: Object,
@@ -68,12 +73,56 @@ watch(
 );
 
 function openFiredModal(id) {
-    firedForm.value.openFiredModal(id)
+    showFiredForm.value = true
+    if (firedForm.value) {
+        firedForm.value.openFiredModal(id);
+        return;
+    }
+    const stop = watch(
+        () => firedForm.value,
+        (instance) => {
+            if (instance) {
+                instance.openFiredModal(id);
+                stop();
+            }
+        }
+    );
 }
 
 function openReentryModal(id) {
-    reentryForm.value.openReentryModal(id)
+    showReentryForm.value = true
+    if (reentryForm.value) {
+        reentryForm.value.openReentryModal(id);
+        return;
+    }
+
+    const stop = watch(
+        () => reentryForm.value,
+        (instance) => {
+            if (instance) {
+                instance.openReentryModal(id);
+                stop();
+            }
+        }
+    );
 };
+
+function openFotoCheck(item) {
+    showFotoCheck.value = true
+    if (fotoCheck.value) {
+        fotoCheck.value.openFotoCheck(item);
+        return;
+    }
+    const stop = watch(
+        () => fotoCheck.value,
+        (instance) => {
+            if (instance) {
+                instance.openFotoCheck(item);
+                stop();
+            }
+        }
+    );
+}
 
 async function search() {
     let url = route('management.employees.search')

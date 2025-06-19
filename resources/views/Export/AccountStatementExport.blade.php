@@ -5,7 +5,7 @@
             <th>Número de operación</th>
             <th>Descripción</th>
             <th>Cargo</th>
-            <th>Aboono</th>
+            <th>Abono</th>
             <th>Estado</th>
         </tr>
     </thead>

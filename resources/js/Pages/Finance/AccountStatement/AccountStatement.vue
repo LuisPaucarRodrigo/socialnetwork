@@ -9,7 +9,7 @@
 
         <div class="inline-block min-w-full gap-10">
             <div class="flex flex-col sm:flex-row gap-4 sm:gap-0 justify-between">
-                <div class="flex sm:items-center space-x-3">
+                <div class="flex sm:items-center gap-x-3">
                     <PrimaryButton @click="openFormModal" type="button" class="whitespace-nowrap">
                         + Agregar
                     </PrimaryButton>
@@ -53,7 +53,7 @@
                     </div>
                     <div>
                         <button data-tooltip-target="export_register_tooltip" type="button" @click="handleExportExcel()"
-                            class="p-2 bg-green-500 rounded-md text-slate-900 hover:bg-green-400">
+                            class="p-2 bg-green-500 rounded-md hover:bg-green-400">
                             <DownloadIcon color="text-white" />
                         </button>
                         <div id="export_register_tooltip" role="tooltip"
@@ -62,7 +62,18 @@
                             <div class="tooltip-arrow" data-popper-arrow></div>
                         </div>
                     </div>
-
+                    <div>
+                        <a :href="route('spreadsheets.export.bank.table')" target="_blank"
+                            data-tooltip-target="export_tooltip" type="button"
+                            class="p-2 bg-indigo-500 rounded-md hover:bg-indigo-400">
+                            <DownloadIcon color="text-white" />
+                        </a>
+                        <div id="export_tooltip" role="tooltip"
+                            class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                            Descargar Tabla de Bancos
+                            <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div>
+                    </div>
                     <div>
                         <dropdown align="left">
                             <template #trigger>
@@ -92,6 +103,12 @@
                                             Swap
                                         </button> -->
                                     </div>
+                                    <!-- <div class="">
+                                    <button type="button" @click="downloadExcel"
+                                        class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                        Descargar Tabla de Bancos
+                                    </button>
+                                </div> -->
                                 </div>
                             </template>
                         </dropdown>
