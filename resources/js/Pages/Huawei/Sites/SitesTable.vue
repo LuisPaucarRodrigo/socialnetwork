@@ -86,7 +86,7 @@
 
 <script setup>
 import Pagination from "@/Components/Pagination.vue";
-import { DeleteIcon, EditIcon } from "@/Components/Icons/Index";
+import { DeleteIcon, EditIcon } from "@/Components/Icons";
 
 const { dataToRender, links, search } = defineProps({
     dataToRender: Array,
