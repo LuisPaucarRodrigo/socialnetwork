@@ -132,7 +132,7 @@ class HuaweiMonthlyController extends Controller
                 ->values(),
         ];
 
-        return Inertia::render('Huawei/GeneralExpenses/MonthlyExpenses', [
+        return Inertia::render('Huawei/GeneralExpenses/Expenses/MonthlyExpenses', [
             'expense' => $expenses->values(),
             'summary' => $summary,
             'mode' => $mode,
@@ -211,7 +211,7 @@ class HuaweiMonthlyController extends Controller
                 ->values(),
         ];
 
-        return Inertia::render('Huawei/GeneralExpenses/MonthlyExpenses', [
+        return Inertia::render('Huawei/GeneralExpenses/Expenses/MonthlyExpenses', [
             'expense' => $expenses->values(),
             'search' => $request,
             'data' => self::$data,

@@ -1131,331 +1131,18 @@
             </div>
         </Modal>
 
-        <Modal :show="showOpNuDatModal" @close="closeOpNuDatModal">
-            <div class="p-6">
-                <h2 class="text-base font-medium leading-7 text-gray-900">
-                    Actualización Masiva
-                </h2>
-                <form @submit.prevent="submitOpNuDatModal(true)">
-                    <div class="space-y-12">
-                        <div
-                            class="grid grid-cols-1 gap-6 border-gray-900/10"
-                        >
-                            <div>
-                                <InputLabel
-                                    for="operation_date"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >Fecha de Operación E.C.
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input
-                                        type="date"
-                                        v-model="opNuDateForm.ec_expense_date"
-                                        id="operation_date"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError
-                                        :message="
-                                            opNuDateForm.errors.ec_expense_date
-                                        "
-                                    />
-                                </div>
-                            </div>
+        <OperationModal
+            :show="showOpNuDatModal"
+            :close="closeOpNuDatModal"
+            :action-form="actionForm"
+            @update="updateNu"
+        />
 
-                            <div>
-                                <InputLabel
-                                    for="operation_number"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >Numero de Operación E.C.
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input
-                                        type="text"
-                                        v-model="opNuDateForm.ec_op_number"
-                                        id="operation_number"
-                                        min="6"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError
-                                        :message="
-                                            opNuDateForm.errors.ec_op_number
-                                        "
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel
-                                    for="ec_amount"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >Monto en E.C.
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input
-                                        type="text"
-                                        v-model="opNuDateForm.ec_amount"
-                                        id="ec_amount"
-                                        min="6"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError
-                                        :message="
-                                            opNuDateForm.errors.ec_amount
-                                        "
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <div
-                            class="mt-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
-                        >
-                            <button
-                                type="button"
-                                :disabled="isFetching"
-                                @click="submitOpNuDatModal(false)"
-                                :class="{ 'opacity-25': isFetching }"
-                                class="w-full md:w-auto rounded-md border border-red-600 bg-transparent px-6 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
-                            >
-                                Rechazar
-                            </button>
-
-                            <div
-                                class="flex flex-col gap-4 md:flex-row md:gap-5"
-                            >
-                                <SecondaryButton
-                                    @click="closeOpNuDatModal"
-                                    class="w-full md:w-auto justify-center"
-                                >
-                                    Cancelar
-                                </SecondaryButton>
-                                <button
-                                    type="submit"
-                                    :disabled="isFetching"
-                                    :class="{ 'opacity-25': isFetching }"
-                                    class="w-full rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 md:w-auto"
-                                >
-                                    Guardar
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </Modal>
-
-        <Modal :show="show_import" @close="openImportExcel" :closeable="true">
-            <div class="p-6">
-                <h2 class="text-base font-black leading-7 text-gray-900">
-                    Importar Excel
-                </h2>
-                <h2 class="font-black text-lg mt-4 text-indigo-700">
-                    Consideraciones:
-                </h2>
-                <div
-                    class="bg-indigo-50 border-l-4 text-sm border-indigo-500 p-4 rounded-lg shadow-sm mt-2"
-                >
-                    <p class="text-gray-700">
-                        <span class="font-semibold text-indigo-600">•</span>
-                        Descargue la
-                        <a
-                            :href="
-                                route(
-                                    'huawei.projects.general.expenses.donwloadtemplate'
-                                )
-                            "
-                            class="font-black text-indigo-600 hover:underline"
-                            >ESTRUCTURA DE DATOS.</a
-                        >
-                    </p>
-                    <p class="text-gray-700">
-                        <span class="font-semibold text-indigo-600">•</span>
-                        La importación
-                        <span class="font-black text-indigo-600"
-                            >NO VA A SOBREESCRIBIR</span
-                        >
-                        los datos actuales, solo
-                        <span class="font-black text-indigo-600"
-                            >CREARÁ NUEVOS REGISTROS</span
-                        >.
-                    </p>
-                    <p class="text-gray-700">
-                        <span class="font-semibold text-indigo-600">•</span> El
-                        signo (<span class="text-indigo-600 font-semibold"
-                            >*</span
-                        >) indica que el campo es obligatorio.
-                    </p>
-                    <!-- <p class="text-gray-700">
-                        <span class="font-semibold text-indigo-600">•</span> Las
-                        columnas
-                        <span class="font-semibold text-indigo-600"
-                            >A, D y N</span
-                        >
-                        tienen validación de datos (usar los datos de la lista
-                        preferiblemente).
-                    </p> -->
-                    <p class="text-gray-700">
-                        <span class="font-semibold text-indigo-600">•</span>
-                        Escribir las fechas en formato regular, e.j.
-                        <span class="font-mono text-gray-900">20-02-2025</span>.
-                    </p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5 text-sm">
-                    <div
-                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
-                    >
-                        <span class="font-black text-indigo-700"
-                            >* Columna A:</span
-                        >
-                        <span class="text-gray-700">Personal</span>
-                    </div>
-                    <div
-                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
-                    >
-                        <span class="font-black text-indigo-700"
-                            >Columna B:</span
-                        >
-                        <span class="text-gray-700">DU del Proyecto</span>
-                    </div>
-                    <div
-                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
-                    >
-                        <span class="font-black text-indigo-700"
-                            >* Columna C:</span
-                        >
-                        <span class="text-gray-700">Fecha del gasto</span>
-                    </div>
-                    <div
-                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
-                    >
-                        <span class="font-black text-indigo-700"
-                            >* Columna D:</span
-                        >
-                        <span class="text-gray-700">Tipo de CDP</span>
-                    </div>
-                    <div
-                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
-                    >
-                        <span class="font-black text-indigo-700"
-                            >Columna E:</span
-                        >
-                        <span class="text-gray-700">N° de Serie</span>
-                    </div>
-                    <div
-                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
-                    >
-                        <span class="font-black text-indigo-700"
-                            >Columna F:</span
-                        >
-                        <span class="text-gray-700">Correlativo</span>
-                    </div>
-                    <div
-                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
-                    >
-                        <span class="font-black text-indigo-700"
-                            >Columna G:</span
-                        >
-                        <span class="text-gray-700">RUC</span>
-                    </div>
-                    <div
-                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
-                    >
-                        <span class="font-black text-indigo-700"
-                            >* Columna H:</span
-                        >
-                        <span class="text-gray-700">Monto</span>
-                    </div>
-                    <div
-                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
-                    >
-                        <span class="font-black text-indigo-700"
-                            >* Columna I:</span
-                        >
-                        <span class="text-gray-700">Descripción</span>
-                    </div>
-                    <div
-                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
-                    >
-                        <span class="font-black text-indigo-700"
-                            >* Columna J:</span
-                        >
-                        <span class="text-gray-700">Tipo de gasto</span>
-                    </div>
-                    <div
-                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
-                    >
-                        <span class="font-black text-indigo-700"
-                            >Columna K:</span
-                        >
-                        <span class="text-gray-700">Tipo de cuenta</span>
-                    </div>
-                    <div
-                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
-                    >
-                        <span class="font-black text-indigo-700"
-                            >Columna L:</span
-                        >
-                        <span class="text-gray-700"
-                            >Fecha de Depósito E.C.</span
-                        >
-                    </div>
-                    <div
-                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
-                    >
-                        <span class="font-black text-indigo-700"
-                            >Columna M:</span
-                        >
-                        <span class="text-gray-700">N° Operación E.C.</span>
-                    </div>
-                    <div
-                        class="flex items-center gap-2 bg-gray-100 p-3 rounded-lg shadow-sm"
-                    >
-                        <span class="font-black text-indigo-700"
-                            >Columna N:</span
-                        >
-                        <span class="text-gray-700">Monto E.C.</span>
-                    </div>
-                </div>
-
-                <form @submit.prevent="importExcel">
-                    <div class="space-y-12 mt-4">
-                        <div class="grid sm:grid-cols-2 gap-6 pb-6">
-                            <div class="md:col-span-2 col-span-1">
-                                <InputLabel
-                                    for="file"
-                                    class="font-medium leading-6 text-gray-900"
-                                    >Archivo</InputLabel
-                                >
-                                <div class="mt-2">
-                                    <InputFile
-                                        type="file"
-                                        v-model="formFile.file"
-                                        accept=".xlsx"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    />
-                                    <InputError
-                                        :message="formFile.errors.file"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-8 flex justify-end gap-4">
-                        <SecondaryButton @click="openImportExcel">
-                            Cancelar
-                        </SecondaryButton>
-                        <button
-                            type="submit"
-                            :disabled="isFetching"
-                            :class="{ 'opacity-25': isFetching }"
-                            class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                        >
-                            Guardar
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </Modal>
+        <ImportModal
+            :show="show_import"
+            :is-fetching="isFetching"
+            :close="openImportExcel"
+        />
 
         <ConfirmDeleteModal
             :confirmingDeletion="confirmingDocDeletion"
@@ -1507,8 +1194,10 @@ import TextInput from "@/Components/TextInput.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
+import ImportModal from "./ImportModal.vue";
 import { setAxiosErrors, toFormData } from "@/utils/utils";
 import qs from "qs";
+import OperationModal from "./OperationModal.vue";
 
 const props = defineProps({
     expense: Object,
@@ -1776,24 +1465,6 @@ async function validateRegister(expense_id, is_accepted) {
     }
 }
 
-function updateExpense(expense, action, state) {
-    if (action === "create") {
-        expenses.value.unshift(expense);
-        notify("Gasto Guardado");
-    } else if (action === "update") {
-        let index = expenses.value.findIndex((item) => item.id == expense.id);
-        expenses.value[index] = expense;
-        notify("Gasto Actualizado");
-    } else if (action === "delete") {
-        let index = expenses.value.findIndex((item) => item.id == expense);
-        expenses.value.splice(index, 1);
-        notify("Gasto Eliminado");
-    } else if (action === "validate") {
-        let index = expenses.value.findIndex((item) => item.id == expense);
-        expenses.value[index].is_accepted = state;
-    }
-}
-
 const searchForm = useForm({
     searchTerm: props.search ? props.search : "",
 });
@@ -1815,12 +1486,6 @@ const search = () => {
 
 const actionForm = ref({
     ids: [],
-});
-
-const opNuDateForm = useForm({
-    ec_expense_date: "",
-    ec_op_number: "",
-    ec_amount: ""
 });
 
 const validateForm = useForm({
@@ -1846,35 +1511,6 @@ const openNuUpdateModal = () => {
 const closeOpNuDatModal = () => {
     isFetching.value = false;
     showOpNuDatModal.value = false;
-    opNuDateForm.reset();
-};
-
-const submitOpNuDatModal = async (mode) => {
-    isFetching.value = true;
-    const res = await axios
-        .post(route("huawei.projects.general.expenses.massiveupdate", {mode: mode}), {
-            ...opNuDateForm.data(),
-            ...actionForm.value,
-        })
-        .catch((e) => {
-            isFetching.value = false;
-            if (e.response?.data?.errors) {
-                setAxiosErrors(e.response.data.errors, opNuDateForm);
-            } else {
-                notifyError("Server Error");
-            }
-        });
-
-    const originalMap = new Map(expenses.value.map((item) => [item.id, item]));
-    res.data.forEach((update) => {
-        if (originalMap.has(update.id)) {
-            originalMap.set(update.id, update);
-        }
-    });
-    const updatedArray = Array.from(originalMap.values());
-    expenses.value = updatedArray;
-    closeOpNuDatModal();
-    notify("Registros Seleccionados Actualizados");
 };
 
 const fetchSites = (macro) => {
@@ -1913,30 +1549,10 @@ const fetchProjects = (site) => {
         });
 };
 
-const formFile = useForm({
-    file: "",
-});
-
 const openImportExcel = () => {
     show_import.value = !show_import.value;
     sites.value = [];
     projects.value = [];
-};
-
-const importExcel = () => {
-    const url = route("huawei.projects.general.expenses.import");
-    formFile.post(url, {
-        onSuccess: () => {
-            show_import.value = false;
-            notify("Se importó el archivo correctamente");
-            setTimeout(() => {
-                router.visit(route("huawei.projects.general.expenses"));
-            }, 2000);
-        },
-        onError: (e) => {
-            notifyError(e.message);
-        },
-    });
 };
 
 const showExportArchivesModal = ref(false);
@@ -1959,5 +1575,18 @@ function exportArchives() {
         );
     window.location.href = url;
     closeExportArchivesModal();
+}
+
+function updateNu(updateValue){
+    const originalMap = new Map(expenses.value.map((item) => [item.id, item]));
+    updateValue.forEach((update) => {
+        if (originalMap.has(update.id)) {
+            originalMap.set(update.id, update);
+        }
+    });
+    const updatedArray = Array.from(originalMap.values());
+    expenses.value = updatedArray;
+    closeOpNuDatModal();
+    notify("Registros Seleccionados Actualizados");
 }
 </script>
