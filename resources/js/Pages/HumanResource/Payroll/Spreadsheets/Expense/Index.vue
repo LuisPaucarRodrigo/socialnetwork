@@ -6,7 +6,7 @@
         params: { payroll_id: payroll.id },
     }">
         <template #header>
-            Pagos de {{ payroll.month }}
+            Pagos de {{ formattedMonth(payroll.month) }}
         </template>
         <Toaster richColors />
         <div class="inline-block min-w-full mb-4">
@@ -86,7 +86,7 @@
                                         Actualizar operación
                                     </button>
                                 </div>
-                                
+
                             </div>
                         </template>
                     </dropdown>
@@ -515,7 +515,7 @@ import InputLabel from "@/Components/InputLabel.vue";
 import Modal from "@/Components/Modal.vue";
 import { ref, watch } from "vue";
 import { Head, useForm } from "@inertiajs/vue3";
-import { formattedDate } from "@/utils/utils";
+import { formattedDate, formattedMonth } from "@/utils/utils";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputFile from "@/Components/InputFile.vue";
 import Pagination from "@/Components/Pagination.vue";

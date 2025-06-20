@@ -9,7 +9,7 @@ const { size, color } = defineProps({
     size: {
         require: false,
         type: String,
-        default: 'w-5 h-5'
+        default: 'w-6 h-6'
     },
     color: {
         require: false,

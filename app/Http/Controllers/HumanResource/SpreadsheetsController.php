@@ -77,7 +77,7 @@ class SpreadsheetsController extends Controller
         DB::beginTransaction();
         try {
             //Create Payroll
-            $data = collect($validateData)->only(['month', 'state', 'sctr_p', 'sctr_s'])->toArray();
+            $data = collect($validateData)->only(['month', 'state'])->toArray();
             $payroll = $this->payrollServices->createPayroll($data);
             $payroll->setAppends(['total_amount']);
             //Create associated pensions

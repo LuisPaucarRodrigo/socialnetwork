@@ -1661,16 +1661,24 @@ const submitSwapAPModal = async () => {
     isFetching.value = true;
     let url = route("projectmanagement.addctoaddproject.swapCosts")
     try {
-        await axios.post(url,
+        let res = await axios.post(url,
             {
                 ...additionalProjectForm.data(),
                 ...actionForm.value
             }
         );
-        dataToRender.value = dataToRender.value.filter(
-            (item) => !actionForm.value.ids.includes(item.id)
-        );
-        notify("Registros movidos con éxito");
+        if (res?.status === 207) {
+            const ids = res.data.idsList;
+            dataToRender.value = dataToRender.value.filter(
+                item => !ids.includes(item.id)
+            );
+            notifyWarning(`Algunos registros no fueron movidos`);
+        } else {
+            dataToRender.value = dataToRender.value.filter(
+                (item) => !actionForm.value.ids.includes(item.id)
+            );
+            notify("Registros movidos con éxito");
+        }
 
     } catch (e) {
         console.log(e);
@@ -1678,8 +1686,9 @@ const submitSwapAPModal = async () => {
         if (e.response?.data?.errors) {
             setAxiosErrors(e.response.data.errors, additionalProjectForm);
         } else {
-            notifyError(`Server Error: ${e.response?.data ?? e.message}`);
+            notifyError('Error del servidor');
         }
+
     } finally {
         actionForm.value.ids = [];
         closeSwapAPModal();
@@ -1701,6 +1710,7 @@ function getRegularProjects() {
 const swapRPForm = useForm({
     project_id: '',
 })
+
 const showSwapRPModal = ref(false)
 const closeSwapRPModal = () => {
     showSwapRPModal.value = false
@@ -1708,6 +1718,7 @@ const closeSwapRPModal = () => {
     swapRPForm.reset()
     swapRPForm.clearErrors()
 }
+
 const openSwapRPModal = () => {
     if (projects_for_swap.value.length === 0) {
         getRegularProjects()

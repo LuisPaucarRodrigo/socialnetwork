@@ -12,14 +12,14 @@
                 :openExternal="openExternal" :confirmUserDeletion="confirmUserDeletion" />
         </div>
         <ExternalForm v-if="showExternalForm" ref="externalForm" :employees="employees" :costLines="costLines" />
-        <ConfirmDeleteModal :confirmingDeletion="confirmingUserDeletion" itemType="empleado" deleteText="Eliminar"
+        <ConfirmDeleteModal v-if="showConfirmingUserDeletion" ref="confirmDelete"
+            :confirmingDeletion="confirmingUserDeletion" itemType="empleado" deleteText="Eliminar"
             :deleteFunction="deleteEmployee" @closeModal="closeModal" />
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import { Head } from '@inertiajs/vue3';
 import { defineAsyncComponent, ref, watch } from 'vue';
 import { notify, notifyError } from '@/Components/Notification';
@@ -28,9 +28,12 @@ import ExternalTable from './components/ExternalTable.vue';
 import TableHeader from './components/TableHeader.vue';
 
 const ExternalForm = defineAsyncComponent(() => import('./components/ExternalForm.vue'));
+const ConfirmDeleteModal = defineAsyncComponent(() => import('@/Components/ConfirmDeleteModal.vue'));
 
+const showConfirmingUserDeletion = ref(false)
 const confirmingUserDeletion = ref(false);
 const employeeToDelete = ref(null);
+const confirmDelete = ref(null)
 
 const props = defineProps({
     employee: Object,
@@ -60,11 +63,24 @@ watch(
     { deep: true }
 );
 
+const confirmUserDeletion = async (employeeId) => {
+    showConfirmingUserDeletion.value = true
+    if (confirmDelete.value) {
+        employeeToDelete.value = employeeId;
+        confirmingUserDeletion.value = true;
+        return;
+    }
 
-
-const confirmUserDeletion = (employeeId) => {
-    employeeToDelete.value = employeeId;
-    confirmingUserDeletion.value = true;
+    const stop = watch(
+        () => confirmDelete.value,
+        (instance) => {
+            if (instance) {
+                employeeToDelete.value = employeeId;
+                confirmingUserDeletion.value = true;
+                stop();
+            }
+        }
+    );
 };
 
 async function deleteEmployee() {

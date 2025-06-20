@@ -17,7 +17,10 @@ class PextProjectServices
         $project = Project::with('cost_center')->where('cost_line_id', 2)
             ->where('status', $status)
             ->whereHas('cost_center', function ($costCenterQuery) {
-                $costCenterQuery->where('name', 'like', "%Mantto%");
+                $costCenterQuery->where(function ($query) {
+                    $query->where('name', 'like', "%Mantto%")
+                        ->orWhere('name', 'like', "%INDRA%");
+                });
             })->whereHas('preproject')
             ->orderBy('created_at', 'desc');
         return $project;

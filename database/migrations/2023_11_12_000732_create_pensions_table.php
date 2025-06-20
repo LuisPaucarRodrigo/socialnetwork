@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('pensions', function (Blueprint $table) {
             $table->id();
             $table->string('type');
-            $table->decimal('values', 10, 4);
-            $table->decimal('values_seg', 10, 4);
+            //Se cambiaron a nullable para no borrarlo porque talves mas adelante se use.
+            $table->decimal('values', 10, 4)->nullable();
+            $table->decimal('values_seg', 10, 4)->nullable();
             $table->foreignId('payroll_id')->constrained();
             $table->timestamps();
         });

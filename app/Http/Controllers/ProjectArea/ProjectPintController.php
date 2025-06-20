@@ -41,7 +41,7 @@ class ProjectPintController extends Controller
 
     public function pext_create_project($type)
     {
-        $text = "Mantto";
+        $text = "INDRA";
         // $ids = [8];
         $contacts_cicsa = Customers_contact::where('customer_id', 2)->get();
         $cost_line = CostLine::where('name', 'Pext')->with(['cost_center' => function ($query) use ($text) {

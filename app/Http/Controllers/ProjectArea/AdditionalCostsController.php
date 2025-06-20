@@ -302,10 +302,9 @@ class AdditionalCostsController extends Controller
             'ids' => 'required | array | min:1',
             'project_id' => 'required'
         ]);
-        $errors = [];
+        $idsList = [];
         foreach ($data['ids'] as $id) {
             DB::beginTransaction();
-
             try {
                 $ac = AdditionalCost::find($id);
 
@@ -313,8 +312,8 @@ class AdditionalCostsController extends Controller
                 $newData['project_id'] = $data['project_id'];
                 $newData['fixedOrAdditional'] = false;
 
-                $exists = PextProjectExpense::where('ruc', $newData['ruc'] ?? '')
-                    ->where('doc_number', $newData['doc_number'] ?? '')
+                $exists = PextProjectExpense::where('ruc', $newData['ruc'])
+                    ->where('doc_number', $newData['doc_number'])
                     ->exists();
 
                 if ($exists) {
@@ -325,19 +324,15 @@ class AdditionalCostsController extends Controller
 
                 PextProjectExpense::create($newData);
                 $ac->delete();
-
+                $idsList[] = $ac->id;
                 DB::commit();
             } catch (\Exception $e) {
                 DB::rollBack();
-                $errors[] = [
-                    'id' => $id,
-                    'error' => $e->getMessage(),
-                ];
+                return response()->json([
+                    'message' => $e->getMessage(),
+                    'idsList' => $idsList
+                ], 207);
             }
-        }
-
-        if (count($errors)) {
-            return response()->json('Algunos registros no pudieron ser movidos.', 500);
         }
         return response()->json(true, 200);
     }

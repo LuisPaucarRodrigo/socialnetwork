@@ -227,11 +227,15 @@ class AccountStatementController extends Controller
         ];
     }
 
-    public function export_bank_table()
+    public function export_bank_table($date)
     {
+        $fecha = Carbon::createFromFormat('Y-m', $date);
+
+        $month = $fecha->month;
+        $year = $fecha->year;
         $accountStatements = AccountStatement::with(['general_expenses'])
-            ->whereMonth('operation_date', 6)
-            ->whereYear('operation_date', 2025)
+            ->whereMonth('operation_date', $month)
+            ->whereYear('operation_date', $year)
             ->orderBy('operation_date', 'asc')
             ->get();
 
@@ -266,7 +270,8 @@ class AccountStatementController extends Controller
                 'income' => $statement->payment ? 'S/ ' . number_format($statement->payment, 2, '.', '') : '',
             ];
         }
-
-        return Excel::download(new PayrollBankExport($exportData), 'Tabla de Banco ' . date('d-m-Y') . '.xlsx');
+        $fecha = Carbon::createFromDate($year, $month, 1)->locale('es');
+        $formatDate = ucfirst($fecha->translatedFormat('F Y'));
+        return Excel::download(new PayrollBankExport($exportData), 'Tabla de Banco - ' . $formatDate . '.xlsx');
     }
 }

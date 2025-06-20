@@ -23,6 +23,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+
 class ApiController extends Controller
 {
 
@@ -483,7 +484,8 @@ class ApiController extends Controller
         $cicsaProcess = CicsaAssignation::select('id', 'zone', 'project_id', 'project_name')
             ->where(function ($query) use ($zone) {
                 $query->where('zone', $zone)
-                    ->orWhere('zone2', $zone);
+                    ->orWhere('zone2', $zone)
+                    ->orWhere('zone3', $zone);
             });
         $cicsaProcess->whereHas('project', function ($query) use ($currentMonthStart, $currentMonthEnd) {
             $query->where('cost_line_id', 2)
@@ -491,7 +493,10 @@ class ApiController extends Controller
                 ->where(function ($subQuery) use ($currentMonthStart, $currentMonthEnd) {
                     $subQuery->where(function ($subSubQuery) use ($currentMonthStart, $currentMonthEnd) {
                         $subSubQuery->whereHas('cost_center', function ($costCenterQuery) {
-                            $costCenterQuery->where('name', 'like', '%Mantto%');
+                            $costCenterQuery->where(function ($e) {
+                                $e->where('name', 'like', '%Mantto%')
+                                    ->orWhere('name', 'like', '%INDRA%');
+                            });
                         })
                             ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
                             ->where('initial_budget', '>', 0);

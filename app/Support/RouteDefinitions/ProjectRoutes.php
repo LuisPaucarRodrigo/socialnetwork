@@ -1573,6 +1573,7 @@ class ProjectRoutes
             [
                 'uri' => '/preproject/auto-store/pext',
                 'method' => 'post',
+                
                 'action' => [ProjectPintController::class, 'pext_store_project'],
                 'permission' => true,
                 'name' => 'project.auto_store.pext',

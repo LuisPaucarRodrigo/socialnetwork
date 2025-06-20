@@ -78,7 +78,7 @@ class BudgetUpdateController extends Controller
             ->where(function ($query) {
                 $query->whereIn('cost_center_id', [1])
                     ->orWhere(function ($subQuery) {
-                        $subQuery->whereIn('cost_center_id', [4, 5, 6, 7, 8])
+                        $subQuery->whereIn('cost_center_id', [4, 5, 6, 7, 8,12])
                             ->whereHas('preproject', function ($item) {
                                 $item->select('id')
                                     ->where('status', 1);

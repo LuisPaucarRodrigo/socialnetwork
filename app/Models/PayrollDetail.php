@@ -55,112 +55,112 @@ class PayrollDetail extends Model
         return $this->employee->name . ' ' . $this->employee->lastname;
     }
 
-    public function getTruncatedMonthAttribute()
-    {
-        return Carbon::parse($this->fired_date)->diffInMonths(Carbon::parse($this->hire_date));
-    }
+    // public function getTruncatedMonthAttribute()
+    // {
+    //     return Carbon::parse($this->fired_date)->diffInMonths(Carbon::parse($this->hire_date));
+    // }
 
-    public function getTruncatedDaysAttribute()
-    {
-        $truncatedMonth = $this->truncated_month;
-        return Carbon::parse($this->fired_date)->diffInDays(Carbon::parse($this->hire_date)) - ($truncatedMonth * 30) + 1;
-    }
+    // public function getTruncatedDaysAttribute()
+    // {
+    //     $truncatedMonth = $this->truncated_month;
+    //     return Carbon::parse($this->fired_date)->diffInDays(Carbon::parse($this->hire_date)) - ($truncatedMonth * 30) + 1;
+    // }
 
-    public function getSalaryAttribute()
-    {
-        return $this->basic_salary / 2;
-    }
+    // public function getSalaryAttribute()
+    // {
+    //     return $this->basic_salary / 2;
+    // }
 
-    public function getTruncatedVacationsAttribute()
-    {
-        return $this->fired_date !== null && $this->state === 'Inactive'
-            ? ($this->salary / 12 * $this->truncated_month +
-                ($this->salary / (30 * 12) * $this->truncated_days)) -
-            (($this->basic_salary / 30) * $this->days_taken)
-            : 0;
-    }
+    // public function getTruncatedVacationsAttribute()
+    // {
+    //     return $this->fired_date !== null && $this->state === 'Inactive'
+    //         ? ($this->salary / 12 * $this->truncated_month +
+    //             ($this->salary / (30 * 12) * $this->truncated_days)) -
+    //         (($this->basic_salary / 30) * $this->days_taken)
+    //         : 0;
+    // }
 
-    public function getPaymentUntilTodayAttribute()
-    {
-        $dayOfMonth = Carbon::now()->day;
-        $dailySalary = $this->basic_salary / 30;
-        return round($dailySalary * $dayOfMonth, 2);
-    }
+    // public function getPaymentUntilTodayAttribute()
+    // {
+    //     $dayOfMonth = Carbon::now()->day;
+    //     $dailySalary = $this->basic_salary / 30;
+    //     return round($dailySalary * $dayOfMonth, 2);
+    // }
 
-    public function getTotalIncomeAttribute()
-    {
-        $truncatedVacations = $this->truncated_vacations;
-        return $this->payment_until_today - $this->discount + $truncatedVacations;
-    }
+    // public function getTotalIncomeAttribute()
+    // {
+    //     $truncatedVacations = $this->truncated_vacations;
+    //     return $this->payment_until_today - $this->discount + $truncatedVacations;
+    // }
 
-    public function getTotalPensionBaseAttribute()
-    {
-        $truncatedVacations = $this->truncated_vacations;
-        return $this->payment_until_today - $this->discount + $truncatedVacations;
-    }
+    // public function getTotalPensionBaseAttribute()
+    // {
+    //     $truncatedVacations = $this->truncated_vacations;
+    //     return $this->payment_until_today - $this->discount + $truncatedVacations;
+    // }
 
-    public function getSnpAttribute()
-    {
-        return $this->pension->type == 'ONP' ? 100 * $this->pension->values : 0;
-        // return 0;
-    }
+    // public function getSnpAttribute()
+    // {
+    //     return $this->pension->type == 'ONP' ? 100 * $this->pension->values : 0;
+    //     // return 0;
+    // }
 
-    public function getSnpOnpAttribute()
-    {
-        return $this->pension->type == 'ONP' ? $this->total_income * $this->pension->values : 0;
-        // return 0;
-    }
+    // public function getSnpOnpAttribute()
+    // {
+    //     return $this->pension->type == 'ONP' ? $this->total_income * $this->pension->values : 0;
+    //     // return 0;
+    // }
 
-    public function getCommissionAttribute()
-    {
-        return $this->pension->type == 'ONP' ? 0 : ($this->discount_remuneration == 1 ? 100 * $this->pension->values : 0);
-        // return 0;
-    }
+    // public function getCommissionAttribute()
+    // {
+    //     return $this->pension->type == 'ONP' ? 0 : ($this->discount_remuneration == 1 ? 100 * $this->pension->values : 0);
+    //     // return 0;
+    // }
 
-    public function getCommissionOnRaAttribute()
-    {
-        return $this->pension->type == 'ONP' ? 0 : ($this->discount_remuneration == 1 ? $this->total_income * $this->pension->values : 0);
-        // return 0;
-    }
+    // public function getCommissionOnRaAttribute()
+    // {
+    //     return $this->pension->type == 'ONP' ? 0 : ($this->discount_remuneration == 1 ? $this->total_income * $this->pension->values : 0);
+    //     // return 0;
+    // }
 
-    public function getSegAttribute()
-    {
-        return $this->pension->type == 'ONP' ? 0 : 100 * $this->pension->values_seg;
-        // return 0;
-    }
+    // public function getSegAttribute()
+    // {
+    //     return $this->pension->type == 'ONP' ? 0 : 100 * $this->pension->values_seg;
+    //     // return 0;
+    // }
 
-    public function getInsurancePremiumAttribute()
-    {
-        return $this->pension->type == 'ONP' ? 0 : $this->total_income * $this->pension->values_seg;
-        // return 0;
-    }
+    // public function getInsurancePremiumAttribute()
+    // {
+    //     return $this->pension->type == 'ONP' ? 0 : $this->total_income * $this->pension->values_seg;
+    //     // return 0;
+    // }
 
-    public function getMandatoryContributionAttribute()
-    {
-        return $this->pension->type == 'ONP' ? 0 : 10;
-        // return 0;
-    }
+    // public function getMandatoryContributionAttribute()
+    // {
+    //     return $this->pension->type == 'ONP' ? 0 : 10;
+    //     // return 0;
+    // }
 
-    public function getMandatoryContributionAmountAttribute()
-    {
-        return $this->pension->type == 'ONP' ? 0 : $this->total_income * 0.1;
-        // return 0;
-    }
+    // public function getMandatoryContributionAmountAttribute()
+    // {
+    //     return $this->pension->type == 'ONP' ? 0 : $this->total_income * 0.1;
+    //     // return 0;
+    // }
 
-    public function getTotalDiscountAttribute()
-    {
-        return $this->snp_onp + $this->commission_on_ra + $this->insurance_premium + $this->mandatory_contribution_amount;
-    }
+    // public function getTotalDiscountAttribute()
+    // {
+    //     return $this->snp_onp + $this->commission_on_ra + $this->insurance_premium + $this->mandatory_contribution_amount;
+    // }
 
-    public function getNetPayAttribute()
-    {
-        return $this->total_income - $this->total_discount;
-    }
+    // public function getNetPayAttribute()
+    // {
+    //     return $this->total_income - $this->total_discount;
+    // }
 
-    public function getHealthsAttribute()
-    {
-        return $this->total_income * 0.09;
-    }
+    // public function getHealthsAttribute()
+    // {
+    //     return $this->total_income * 0.09;
+    // }
 
     public function getEmployeesSctrAttribute()
     {

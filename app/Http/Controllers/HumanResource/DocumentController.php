@@ -152,14 +152,17 @@ class DocumentController extends Controller
             abort(403, 'Acción no permitida');
         }
 
-        $query = Document::with('subdivision.section', 'employee')
+        $query = Document::with('subdivision.section')
             ->where(function ($q) use ($data) {
-                if (!empty($data['employees'])) {
-                    $q->whereIn('employee_id', $data['employees']);
-                }
-                if (!empty($data['external_employees'])) {
-                    $q->whereIn('e_employee_id', $data['external_employees']);
-                }
+                $q->where(function ($subQ) use ($data) {
+                    if (!empty($data['employees'])) {
+                        $subQ->whereIn('employee_id', $data['employees']);
+                    }
+                    if (!empty($data['external_employees'])) {
+                        $subQ->orWhereIn('e_employee_id', $data['external_employees']);
+                    }
+                });
+
                 if (!empty($data['subdivisions'])) {
                     $q->whereIn('subdivision_id', $data['subdivisions']);
                 }

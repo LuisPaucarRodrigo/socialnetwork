@@ -24,11 +24,11 @@ class StorePayrollRequest extends FormRequest
         return [
             'month' => 'required|unique:payrolls,month',
             'state' => 'required',
-            'sctr_p' => 'required|numeric',
-            'sctr_s' => 'required|numeric',
+            // 'sctr_p' => 'required|numeric',
+            // 'sctr_s' => 'required|numeric',
             'pension_system.*.type' => 'required',
-            'pension_system.*.values' => 'required',
-            'pension_system.*.values_seg' => 'required',
+            // 'pension_system.*.values' => 'required',
+            // 'pension_system.*.values_seg' => 'required',
         ];
     }
 }

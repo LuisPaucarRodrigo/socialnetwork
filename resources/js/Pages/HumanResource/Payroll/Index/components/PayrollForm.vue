@@ -15,7 +15,7 @@
                             <InputError :message="form.errors.month" />
                         </div>
                     </div>
-                    <div class="col-start-1 col-span-1">
+                    <!-- <div class="col-start-1 col-span-1">
                         <InputLabel for="sctr_p" class="font-medium leading-6 text-gray-900">
                             SCTR P
                         </InputLabel>
@@ -56,7 +56,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col-span-3">
                         <p class="text-red-600">
                             Aviso Importante:<br>
@@ -102,7 +102,7 @@ const initialState = {
     month: "",
     state: 0,
     pension_system: [
-        { type: "Habitat", values: null, values_seg: "" },
+        { type: "Habitat", values: "", values_seg: "" },
         { type: "Integra", values: "", values_seg: "" },
         { type: "Prima", values: "", values_seg: "" },
         { type: "Profuturo", values: "", values_seg: "" },
@@ -112,8 +112,8 @@ const initialState = {
         { type: "Primamx", values: "", values_seg: "" },
         { type: "ONP", values: "", values_seg: "" },
     ],
-    sctr_p: '',
-    sctr_s: ''
+    // sctr_p: '',
+    // sctr_s: ''
 }
 
 const form = useForm({ ...initialState })

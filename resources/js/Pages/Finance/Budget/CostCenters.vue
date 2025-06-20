@@ -59,23 +59,13 @@
                                     <button type="button" @click="openCostCenterDestroyModal(item)">
                                         <DeleteIcon />
                                     </button>
+                                    <button type="button" @click="toggleDetails(item.id, item.clc_employees)">
+                                        <DownArrowIcon v-if="row !== item.id" />
+                                        <UpArrowIcon v-else />
+                                    </button>
                                 </div>
                             </td>
-                            <td class="border-b border-gray-200 px-2 py-1 text-sm">
-                                <button type="button" @click="toggleDetails(item.id, item.clc_employees)"
-                                    :class="`flex items-center text-blue-900 rounded-full hover:bg-blue-300`">
-                                    <svg v-if="row !== item.id" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" :class="`w-4 h-4`">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                                    </svg>
-                                    <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="m4.5 15.75 7.5-7.5 7.5 7.5" />
-                                    </svg>
-                                </button>
-                            </td>
+
                         </tr>
                         <template v-if="row == item.id">
                             <tr class="bg-white">
@@ -254,7 +244,7 @@ import { setAxiosErrors } from '@/utils/utils';
 import Modal from '@/Components/Modal.vue';
 import { ref, watch } from 'vue';
 import { Toaster } from 'vue-sonner';
-import { DeleteIcon, EditIcon, GroupIcon } from '@/Components/Icons/Index';
+import { DeleteIcon, DownArrowIcon, EditIcon, GroupIcon, UpArrowIcon } from '@/Components/Icons/Index';
 
 const { costCenters, cost_line, employees } = defineProps({
     costCenters: Array,
@@ -368,7 +358,6 @@ watch(() => assignUserForm.employees, (newVal) => {
         return selectEmployees.value.find(item => item.id == id)
     })
 })
-console.log(dataToRender.value)
 
 const employeesFounded = ref([])
 
@@ -390,8 +379,5 @@ const handleExpansible = (clc_employees) => {
     employeesFounded.value = clc_employees;
     notifyWarning(`Trabajadores Encontrados ${clc_employees.length}`);
 };
-
-
-
 
 </script>

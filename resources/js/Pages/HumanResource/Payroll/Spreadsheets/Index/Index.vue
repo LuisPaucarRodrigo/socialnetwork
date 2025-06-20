@@ -3,7 +3,7 @@
     <Head title="Nomina" />
     <AuthenticatedLayout :redirectRoute="'payroll.index'">
         <template #header>
-            Nomina de {{ payrolls.month }}
+            Nomina de {{ formattedMonth(payrolls.month) }}
         </template>
         <Toaster richColors />
         <div class="min-w-full min-h-full overflow-hidden">
@@ -32,6 +32,7 @@ import ApprovePayroll from './components/ApprovePayroll.vue';
 import SpreadsheetPayModal from './components/SpreadsheetPayModal.vue';
 import SpreadSheetExportDetailModal from './components/SpreadSheetExportDetailModal.vue';
 import { Toaster } from 'vue-sonner';
+import { formattedMonth } from '@/utils/utils';
 
 
 const { spreadsheet, payroll, total, pensionTypes, userPermissions } = defineProps({

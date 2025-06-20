@@ -9,7 +9,7 @@
 
         <div class="inline-block min-w-full gap-10">
             <div class="flex flex-col sm:flex-row gap-4 sm:gap-0 justify-between">
-                <div class="flex sm:items-center gap-x-3">
+                <div class="flex sm:items-center justify-center gap-x-3">
                     <PrimaryButton @click="openFormModal" type="button" class="whitespace-nowrap">
                         + Agregar
                     </PrimaryButton>
@@ -63,9 +63,9 @@
                         </div>
                     </div>
                     <div>
-                        <a :href="route('spreadsheets.export.bank.table')" target="_blank"
-                            data-tooltip-target="export_tooltip" type="button"
-                            class="p-2 bg-indigo-500 rounded-md hover:bg-indigo-400">
+                        <a :href="route('spreadsheets.export.bank.table', { date: monthInput })"
+                            target="_blank" data-tooltip-target="export_tooltip" type="button"
+                            class="p-2 bg-indigo-500 rounded-md hover:bg-indigo-400 flex items-center w-10 h-10">
                             <DownloadIcon color="text-white" />
                         </a>
                         <div id="export_tooltip" role="tooltip"

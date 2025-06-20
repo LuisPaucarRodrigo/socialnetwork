@@ -12,7 +12,7 @@ class ProjectConstantsPext
     public function generateTemplate($data)
     {
         $template = null;
-        $name = 'PEXT OBRA MRD MANTENIMIENTO INTEGRAL REGION SUR ' . $this->formatDate($data['date']);
+        $name = 'MANTENIMIENTO INTEGRAL REGION SUR INDRA ' . $this->formatDate($data['date']);
         $template = [
             'preproject' => [
                 'date' => $data['date'],
@@ -22,7 +22,7 @@ class ProjectConstantsPext
                 'subcustomer_id' => null,
                 'description' => $name,
                 'title' => null,
-                'code' => $this->getCode($data['date'], 'CICSA-PEXTOBRAM'),
+                'code' => $this->getCode($data['date'], 'INDRA'),
                 'cpe' => $data['cpe'],
                 'status' => 1,
 
@@ -31,8 +31,8 @@ class ProjectConstantsPext
             'preproject_quote' => [
                 'name' => $name,
                 'date' => $data['date'],
-                'supervisor' => 'Alexander Azabache',
-                'boss' => 'Hosmer Castillo',
+                'supervisor' => 'Supervisor Indra',
+                'boss' => 'Jefe Indra',
                 'deliverable_time' => $this->getDaysInMonth($data['date']),
                 'validity_time' => 5,
                 'rev' => 1,
