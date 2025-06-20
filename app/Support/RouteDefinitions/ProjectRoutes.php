@@ -1299,7 +1299,7 @@ class ProjectRoutes
                 'name' => 'projectmanagement.pext.additional.store',
             ],
             [
-                'uri' => '/projectPext/additionalOrFixed/expenses/{project_id}/index/{fixedOrAdditional}/{type}',
+                'uri' => '/projectPext/additionalOrFixed/expenses_test/{project_id}/index/{fixedOrAdditional}/{type}',
                 'method' => 'get',
                 'action' => [PextController::class, 'additional_expense_index'],
                 'permission' => true,
@@ -1573,6 +1573,7 @@ class ProjectRoutes
             [
                 'uri' => '/preproject/auto-store/pext',
                 'method' => 'post',
+                
                 'action' => [ProjectPintController::class, 'pext_store_project'],
                 'permission' => true,
                 'name' => 'project.auto_store.pext',
@@ -1645,6 +1646,8 @@ class ProjectRoutes
                 'permission' => true,
                 'name' => 'projectmanagement.deleteStaticCost',
             ],
+
+            //Swap
             [
                 'uri' => '/project/statics_to_addproject_massive_swap/',
                 'method' => 'post',

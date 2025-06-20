@@ -9,7 +9,7 @@
             </div>
 
             <div v-permission="'add_employee'" class="sm:hidden">
-                <dropdown align='left'>
+                <Dropdown align='left'>
                     <template #trigger>
                         <button @click="dropdownOpen = !dropdownOpen"
                             class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100">
@@ -29,7 +29,7 @@
                             </div>
                         </div>
                     </template>
-                </dropdown>
+                </Dropdown>
             </div>
             <PrimaryButton v-permission="'see_inactive_employees_table'" @click="$emit('reentry')" type="button">
                 {{ form.state === 'Inactive' ? "Activos" : "Inactivos" }}
@@ -46,7 +46,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Search from '@/Components/Search.vue';
 import { Link } from '@inertiajs/vue3';
 import Dropdown from "@/Components/Dropdown.vue";
-import { MenuIcon } from '@/Components/Icons/index';
+import { MenuIcon } from '@/Components/Icons/Index';
 
 const { form } = defineProps({
     form: Object

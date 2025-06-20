@@ -6,7 +6,7 @@
         params: { payroll_id: payroll.id },
     }">
         <template #header>
-            Pagos de {{ payroll.month }}
+            Pagos de {{ formattedMonth(payroll.month) }}
         </template>
         <Toaster richColors />
         <div class="inline-block min-w-full mb-4">
@@ -56,7 +56,6 @@
                             </template>
                         </dropdown>
                     </div>
-
                 </div>
                 <div class="sm:hidden">
                     <dropdown align="left">
@@ -87,6 +86,7 @@
                                         Actualizar operación
                                     </button>
                                 </div>
+
                             </div>
                         </template>
                     </dropdown>
@@ -515,7 +515,7 @@ import InputLabel from "@/Components/InputLabel.vue";
 import Modal from "@/Components/Modal.vue";
 import { ref, watch } from "vue";
 import { Head, useForm } from "@inertiajs/vue3";
-import { formattedDate } from "@/utils/utils";
+import { formattedDate, formattedMonth } from "@/utils/utils";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputFile from "@/Components/InputFile.vue";
 import Pagination from "@/Components/Pagination.vue";
@@ -526,7 +526,7 @@ import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
-import { DeleteIcon, EditIcon, ShowIcon, SortIcon, ServerIcon } from "@/Components/Icons";
+import { DeleteIcon, EditIcon, ShowIcon, SortIcon, ServerIcon } from "@/Components/Icons/Index";
 
 const { payroll, expenses, expenseTypes, docTypes, stateTypes } = defineProps({
     payroll: Object,
@@ -537,6 +537,7 @@ const { payroll, expenses, expenseTypes, docTypes, stateTypes } = defineProps({
 })
 
 const dataToRender = ref(expenses.data)
+const uniqueParam = `timestamp=${new Date().getTime()}`;
 
 const initialFilterFormState = {
     search: "",
@@ -728,5 +729,4 @@ const submitOpNuDatModal = async () => {
     }
 
 }
-
 </script>

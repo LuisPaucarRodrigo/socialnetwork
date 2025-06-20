@@ -7,6 +7,7 @@ use App\Http\Requests\HumanResource\CreateManagementEmployees;
 use App\Http\Requests\HumanResource\FiredContractEmployees;
 use App\Http\Requests\HumanResource\StoreOrUpdateEmployeesExternal;
 use App\Http\Requests\HumanResource\UpdateManagementEmployees;
+use App\Models\DocumentSection;
 use App\Services\HumanResource\ManagementEmployeesServices;
 use App\Models\Address;
 use App\Models\Contract;
@@ -49,13 +50,25 @@ class ManagementEmployees extends Controller
     {
         $pension = $this->employeesServices->pensionList;
         $costLines = $this->employeesServices->getCostLine();
-        return Inertia::render('HumanResource/ManagementEmployees/EmployeesStoreAndUpdate', ['pensions' => $pension, 'costLines' => $costLines]);
+        $sections = DocumentSection::with([
+                'subdivisions' => function ($subq) {
+                    $subq->where('is_visible', true);
+                }
+            ])
+            ->where('is_visible', true)
+            ->get();
+        return Inertia::render('HumanResource/ManagementEmployees/EmployeesStoreAndUpdate', [
+            'pensions' => $pension, 
+            'costLines' => $costLines, 
+            'sections' => $sections
+        ]);
     }
 
     public function store(CreateManagementEmployees $request)
     {
 
         $validateData = $request->validated();
+        // return response()->json(['employee_id' => 2]);
         DB::beginTransaction();
         try {
             $employee_id = $this->employeesServices->updateOrCreateEmployee($request, null);
@@ -73,6 +86,7 @@ class ManagementEmployees extends Controller
             }
             $this->employeesServices->updateOrCreateHealth($request->only((new Health())->getFillable()), $employee_id);
             DB::commit();
+            return response()->json(['employee_id' => $employee_id]);
         } catch (Exception $e) {
             DB::rollBack();
             return $e->getMessage();
@@ -114,7 +128,8 @@ class ManagementEmployees extends Controller
         }
     }
 
-    public function show_preview_doc_alta($id){
+    public function show_preview_doc_alta($id)
+    {
         $contract = Contract::find($id);
         $filePath = '/documents/discharge_document/' . $contract->discharge_document;
         $path = public_path($filePath);

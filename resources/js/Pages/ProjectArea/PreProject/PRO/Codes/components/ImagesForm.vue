@@ -45,8 +45,8 @@ import { notify } from '@/Components/Notification';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { useAxiosErrorHandler } from '@/utils/axiosError';
+import { toFormData } from '@/utils/utils';
 import { useForm } from '@inertiajs/vue3';
-import { toFormData } from 'axios';
 import { ref } from 'vue';
 
 const showStoreImage = ref(null)

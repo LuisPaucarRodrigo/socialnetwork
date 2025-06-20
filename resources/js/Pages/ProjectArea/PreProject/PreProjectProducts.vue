@@ -224,7 +224,6 @@ import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import ConfirmateModal from '@/Components/ConfirmateModal.vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
-import axios from 'axios';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 

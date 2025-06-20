@@ -26,7 +26,8 @@
         :transitiondemonstration="showingHumanResource">
         <div class="relative">
             <Link class="w-full" :href="route('management.employees')">Colaboradores</Link>
-            <button v-permission="'happy_birthday_alarm'" @click="showEmployeeBirthdayAlarms = !showEmployeeBirthdayAlarms">
+            <button v-permission="'happy_birthday_alarm'"
+                @click="showEmployeeBirthdayAlarms = !showEmployeeBirthdayAlarms">
                 <span v-if="employeeBirthdayAlarms?.length > 0"
                     class="absolute top-0 right-0 bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
                     {{ employeeBirthdayAlarms.length }}

@@ -130,10 +130,9 @@
 <script setup>
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import { EyeOutlineIcon, EyeSlashSolidIcon } from "@/Components/icons";
+import { EyeOutlineIcon, EyeSlashSolidIcon } from "@/Components/Icons";
 import InputError from "@/Components/InputError.vue";
-import { Link, useForm } from "@inertiajs/vue3";
-import { formattedDate } from "@/utils/utils";
+import { useForm } from "@inertiajs/vue3";
 import { setAxiosErrors } from "@/utils/utils";
 import Modal from "@/Components/Modal.vue";
 import { ref } from "vue";

@@ -49,11 +49,10 @@
                                         </div>
                                     </div>
                                     <div v-if="
-                                        filterForm.employees.length > 0 ||
-                                        filterForm.external_employees
-                                            .length > 0 ||
-                                        filterForm.sections.length > 0 ||
-                                        filterForm.subdivisions.length > 0
+                                        (filterForm.employees.length > 0 ||
+                                            filterForm.external_employees.length > 0) &&
+                                        (filterForm.sections.length > 0 ||
+                                            filterForm.subdivisions.length > 0)
                                     " class="dropdown">
                                         <div v-if="!activatedFilter" class="dropdown-menu">
                                             <button @click="applyFilters" type="button"
@@ -69,22 +68,17 @@
                 </div>
                 <div v-if="!activatedFilter">
                     <PrimaryButton v-if="
-                        filterForm.employees.length > 0 ||
-                        filterForm.external_employees.length > 0 ||
-                        filterForm.sections.length > 0 ||
-                        filterForm.subdivisions.length > 0
+                        (filterForm.employees.length > 0 ||
+                            filterForm.external_employees.length > 0) &&
+                        (filterForm.sections.length > 0 ||
+                            filterForm.subdivisions.length > 0)
                     " @click="applyFilters" type="button"
                         class="hidden sm:block mr-4 rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                         Generar Reporte
                     </PrimaryButton>
                 </div>
                 <div v-else>
-                    <PrimaryButton v-if="
-                        filterForm.employees.length > 0 ||
-                        filterForm.external_employees.length > 0 ||
-                        filterForm.sections.length > 0 ||
-                        filterForm.subdivisions.length > 0
-                    " @click="massiveZip" type="button"
+                    <PrimaryButton @click="massiveZip" type="button"
                         class="hidden sm:block mr-4 rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                         Descargar ZIP
                     </PrimaryButton>
@@ -110,9 +104,44 @@
                 <div class="px-2 flex justify-between items-stretch gap-4">
                     <TextInput type="text" placeholder="Buscar..." v-model="filterForm.search"
                         @input="handleSearchInput" @keydown.enter.prevent="goToNextMatch" class="w-full" />
-                    <div class="flex items-center">
+                    <!-- <div class="flex items-center">
                         <input type="checkbox" :checked="isAllEmpSelected" @change="toggleEmpSelectAll"
                             class="form-checkbox w-6 h-6 aspect-square rounded-sm text-indigo-600" />
+                    </div> -->
+                    <div>
+                        <dropdown align="right">
+                            <template #trigger>
+                                <button @click="dropdownOpen = !dropdownOpen"
+                                    class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100">
+                                    <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 6H20M4 12H20M4 18H20" stroke="#000000" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </button>
+                            </template>
+                            <template #content class="origin-right">
+                                <div @click.stop class="px-4 py-2 transition duration-150 ease-in-out">
+                                    <label
+                                        class="flex items-center space-x-2 text-sm text-black hover:text-black cursor-pointer w-full"
+                                        v-permission="'huawei_expenses_admin'">
+                                        <input type="checkbox" v-model="selectedCostLines" value="TODOS"
+                                            class="form-checkbox text-indigo-600 w-4 h-4" />
+                                        <span>TODOS</span>
+                                    </label>
+                                </div>
+                                <div @click.stop v-for="cost_line in props.cost_lines" :key="cost_line.id"
+                                    class="px-4 py-2 transition duration-150 ease-in-out">
+                                    <label
+                                        class="flex items-center space-x-2 text-sm text-black hover:text-black cursor-pointer w-full"
+                                        v-permission="'huawei_expenses_admin'">
+                                        <input type="checkbox" v-model="selectedCostLines" :value="cost_line.id"
+                                            class="form-checkbox text-indigo-600 w-4 h-4" />
+                                        <span>{{ cost_line.name }}</span>
+                                    </label>
+                                </div>
+                            </template>
+                        </dropdown>
                     </div>
                 </div>
 
@@ -283,8 +312,21 @@
                     </table>
                 </div>
             </div>
-            <div v-if="fileUrl" class="w-[50%] h-[940px]">
-                <iframe :src="fileUrl" class="w-full h-full border rounded" frameborder="0"></iframe>
+
+            <!-- Visor de documento -->
+
+            <div v-if="fileUrl" class="lg:w-1/2 w-full h-[940px] flex flex-col pr-3">
+                <div class="relative flex-1 w-full border rounded overflow-hidden">
+                    <!-- Botón fijo en la parte superior centrado, aparece solo al pasar el mouse por encima -->
+                    <button type="button" @click="fileUrl = null"
+                        class="absolute z-30 top-0 left-1/2 transform -translate-x-1/2 mt-1 px-6 py-1 bg-gray-200 rounded-md shadow text-sm font-medium opacity-0 hover:opacity-100 transition-opacity duration-300"
+                        title="Cerrar visor">
+                        ▲
+                    </button>
+
+                    <!-- Visor PDF -->
+                    <iframe :src="fileUrl" class="w-full h-full rounded" frameborder="0"></iframe>
+                </div>
             </div>
         </div>
 
@@ -444,13 +486,14 @@ import { ref, computed, nextTick, watchEffect, reactive, watch } from "vue";
 import { Head, useForm, router } from "@inertiajs/vue3";
 import Dropdown from "@/Components/Dropdown.vue";
 import { Toaster } from "vue-sonner";
-import { EditIcon, DeleteIcon, ShowIcon, DownloadIcon, MenuIcon } from "@/Components/Icons/index";
+import { EditIcon, DeleteIcon, ShowIcon, DownloadIcon, MenuIcon } from "@/Components/Icons";
 import { notify, notifyError } from "@/Components/Notification";
 import { formattedDate } from "@/utils/utils";
 
 const props = defineProps({
     sections: Object,
     subdivisions: Object,
+    cost_lines: Object,
     employees: Array,
     e_employees: Array
 });
@@ -460,17 +503,64 @@ const mergedEmployeesRaw = computed(() => {
         ...props.employees.map((e) => ({
             id: e.id,
             name: `${e.name} ${e.lastname}`,
+            cost_line: e.contract.cost_line_id,
             type: "normal",
         })),
         ...props.e_employees.map((e) => ({
             id: e.id,
             name: `${e.name} ${e.lastname}`,
+            cost_line: e.cost_line_id,
             type: "external",
         })),
     ];
 });
 
 const mergedEmployees = ref([]);
+
+const selectedCostLines = ref([]);
+const isUpdating = ref(false);
+
+watch(selectedCostLines, (val, oldVal) => {
+    if (isUpdating.value) return;
+
+    const allIds = props.cost_lines.map(cl => cl.id);
+    const hasTodos = val.includes("TODOS");
+    const rawSelected = val.filter(v => v !== 'TODOS');
+
+    isUpdating.value = true;
+
+    if (hasTodos && !oldVal.includes("TODOS")) {
+        selectedCostLines.value = ['TODOS', ...allIds];
+    } else if (!hasTodos && oldVal.includes("TODOS")) {
+        selectedCostLines.value = [];
+    } else if (rawSelected.length > 0) {
+        selectedCostLines.value = ['TODOS', ...rawSelected];
+    } else {
+        selectedCostLines.value = [];
+    }
+
+    nextTick(() => {
+        isUpdating.value = false;
+
+        // Esperamos al siguiente tick para obtener el valor actualizado
+        nextTick(() => {
+            const selected = selectedCostLines.value.filter(v => v !== 'TODOS');
+
+            const filtered = mergedEmployees.value.filter(emp =>
+                selected.includes(emp.cost_line)
+            );
+
+            filterForm.employees = filtered
+                .filter(emp => emp.type === 'normal')
+                .map(emp => emp.id);
+
+            filterForm.external_employees = filtered
+                .filter(emp => emp.type !== 'normal')
+                .map(emp => emp.id);
+        });
+    });
+});
+
 
 watchEffect(() => {
     mergedEmployees.value = mergedEmployeesRaw.value;
@@ -549,13 +639,12 @@ function submit() {
             }, 2000);
         },
         onError: (e) => {
-            console.log(e);
+            console.error(e);
         },
     });
 }
 
 const submitEdit = () => {
-    console.log(form)
     form.post(route("documents.update", { id: form.id }), {
         onSuccess: () => {
             closeModal();
@@ -566,7 +655,7 @@ const submitEdit = () => {
             }, 2000);
         },
         onError: (e) => {
-            console.log(e);
+            console.error(e);
         },
     });
 };
@@ -865,36 +954,13 @@ function openPreviewDocumentModal(documentId) {
 
 async function massiveZip() {
     const ids = dataToRender.value.map((document) => document.id);
-    const url = route("documents.filter_document.massive_zip");
+    const queryString = ids.map((id) => `ids[]=${id}`).join("&");
+    const url = `${route(
+        "documents.filter_document.massive_zip"
+    )}?${queryString}`;
 
-    try {
-        const response = await axios.post(url, { ids }, { responseType: "blob" });
-
-        // Crear blob y URL
-        const blob = new Blob([response.data], { type: 'application/zip' });
-        const downloadUrl = window.URL.createObjectURL(blob);
-
-        // Extraer el nombre del archivo desde headers (si viene)
-        const disposition = response.headers['content-disposition'];
-        let fileName = "download.zip";
-        if (disposition && disposition.indexOf('filename=') !== -1) {
-            const matches = disposition.match(/filename="?(.+)"?/);
-            if (matches.length === 2) fileName = matches[1];
-        }
-
-        // Crear elemento <a> y forzar descarga
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.setAttribute('download', fileName);
-        document.body.appendChild(link);
-        link.click();
-
-        // Limpiar
-        link.remove();
-        window.URL.revokeObjectURL(downloadUrl);
-
-    } catch (error) {
-        console.error(error);
-    }
+    window.open(url, "_blank");
 }
+
+
 </script>

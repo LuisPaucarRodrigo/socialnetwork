@@ -172,12 +172,11 @@ import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import axios from 'axios';
 import TextInput from '@/Components/TextInput.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import { AddUserIcon, DeleteIcon, EditIcon } from "@/Components/Icons";
+import { AddUserIcon, DeleteIcon, EditIcon } from "@/Components/Icons/Index";
 
 const create_customer = ref(false);
 const showModal = ref(false);

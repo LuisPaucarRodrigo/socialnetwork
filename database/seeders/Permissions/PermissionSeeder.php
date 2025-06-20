@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\Permissions;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -62,6 +62,11 @@ class PermissionSeeder extends Seeder
         Permission::insert($routes);
         $routes = array_map(function ($route) {
             return ['name' => $route['name']];
+        }, HuaweiRoutes::all());
+
+        Permission::insert($routes);
+        $routes = array_map(function ($route) {
+            return ['name' => $route['name']];
         }, ShoppingAreaRoutes::all());
 
         Permission::insert($routes);
@@ -74,11 +79,6 @@ class PermissionSeeder extends Seeder
             return ['name' => $route['name']];
         }, SharePointRoutes::all());
 
-        Permission::insert($routes);
-
-        $routes = array_map(function ($route) {
-            return ['name' => $route['name']];
-        }, HuaweiRoutes::all());
         Permission::insert($routes);
     }
 }

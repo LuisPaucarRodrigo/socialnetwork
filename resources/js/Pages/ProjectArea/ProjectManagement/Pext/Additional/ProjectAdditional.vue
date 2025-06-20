@@ -23,7 +23,6 @@
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import axios from 'axios';
 import { ref } from 'vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { setAxiosErrors } from '@/utils/utils';

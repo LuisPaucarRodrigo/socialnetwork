@@ -332,7 +332,7 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import ErrorOperationModal from "@/Components/ErrorOperationModal.vue";
 import DeleteIcon from "@/Components/Icons/DeleteIcon.vue";
-import { AddUserIcon } from "@/Components/Icons";
+import { AddUserIcon } from "@/Components/Icons/Index";
 
 const showModal = ref(false);
 const showUpdateModal = ref(false);

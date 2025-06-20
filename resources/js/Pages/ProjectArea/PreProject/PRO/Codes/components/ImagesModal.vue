@@ -46,7 +46,6 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TableRow from '@/Components/TableRow.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
-import axios from 'axios';
 import { ref } from 'vue';
 
 const showImageModal = ref(null)

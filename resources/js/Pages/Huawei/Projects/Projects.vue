@@ -1,7 +1,7 @@
 <template>
 
     <Head title="Proyectos" />
-    <AuthenticatedLayout :redirectRoute="'huawei.projects'">
+    <AuthenticatedLayout :redirectRoute="{route: 'huawei.projects', params: {status: 1, prefix: 'Claro'}}">
         <template #header>
             Proyectos{{
                 props.status == "2"
@@ -412,8 +412,7 @@ import Modal from "@/Components/Modal.vue";
 import { ref } from "vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import { EditIcon } from "@/Components/Icons";
-import { PlayIcon, PauseIcon } from "@/Components/Icons";
+import { PlayIcon, PauseIcon,EditIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
     projects: Object,

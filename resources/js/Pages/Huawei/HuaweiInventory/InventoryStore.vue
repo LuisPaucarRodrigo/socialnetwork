@@ -608,12 +608,11 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
-import axios from 'axios';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import { formattedDate } from '@/utils/utils';
 import InputFile from '@/Components/InputFile.vue';
-import { DeleteIcon, ShowIcon } from '@/Components/Icons';
+import { DeleteIcon, ShowIcon } from '@/Components/Icons/Index';
 
 const props = defineProps({
   brand_models: Object,

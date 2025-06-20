@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\Permissions;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -10,7 +10,7 @@ use App\Models\Permission;
 use App\Models\FunctionalityPermission;
 use Illuminate\Support\Facades\Log;
 
-class FuncionalityPermissionSeeder extends Seeder
+class FunctionalityPermissionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -1031,6 +1031,9 @@ class FuncionalityPermissionSeeder extends Seeder
                     'staticcost.advance.search',
                     'staticcost.excel.export',
                     'projectmanagement.staticCosts.massiveUpdate',
+
+                    'projectmanagement.statitoaddproject.swapCosts',
+                    'projectmanagement.additionalToAdditional.swapCosts',
                 ]
             ],
 
@@ -1621,7 +1624,10 @@ class FuncionalityPermissionSeeder extends Seeder
                     'fleet.cars.update.document',
                     'fleet.cars.store_document',
                     'fleet.cars.search',
-
+                    'fleet.cars.store',
+                    'fleet.cars.update',
+                    'fleet.cars.destroy',
+                    
                     'fleet.cars.alarms',
                     'fleet.cars.checklist.alarms',
                     'fleet.cars.specific.alarms',
@@ -1683,12 +1689,22 @@ class FuncionalityPermissionSeeder extends Seeder
 
         $huawei_projects_submodule = [
             [
-                'display_name' => 'Ver proyectos (incluye buscar)',
-                'key_name' => 'huawei_projects_view',
+                'display_name' => 'Encargado de Proyectos',
+                'key_name' => 'huawei_projects',
                 'module' => 'huawei_projects_submodule',
                 'permissions' => [
                     'huawei.projects',
                     'huawei.projects.search',
+                    'huawei.projects.create',
+                    'huawei.projects.store',
+                    'huawei.projects.import.baselines',
+                    'huawei.projects.baselines.template',
+                    'huawei.projects.toupdate',
+                    'huawei.projects.balance',
+                    'huawei.projects.liquidateproject',
+                    'huawei.projects.cancelproject',
+                    'huawei.projects.stopped.resume',
+                    
                     'huawei.projects.generalbalance',
                     'huawei.projects.generalbalance.expensesbyzone',
                     'huawei.projects.general.expenses',
@@ -1732,30 +1748,30 @@ class FuncionalityPermissionSeeder extends Seeder
                     'huawei.projects.create.fetchsites'
                 ]
             ],
-            [
-                'display_name' => 'Agregar proyecto',
-                'key_name' => 'huawei_projects_add',
-                'module' => 'huawei_projects_submodule',
-                'permissions' => ['huawei.projects', 'huawei.projects.search', 'huawei.projects.create', 'huawei.projects.store', 'huawei.projects.import.baselines', 'huawei.projects.baselines.template']
-            ],
-            [
-                'display_name' => 'Ver proyecto',
-                'key_name' => 'huawei_projects_see_project',
-                'module' => 'huawei_projects_submodule',
-                'permissions' => ['huawei.projects', 'huawei.projects.search', 'huawei.projects.toupdate', 'huawei.projects.balance']
-            ],
-            [
-                'display_name' => 'Editar proyecto',
-                'key_name' => 'huawei_projects_edit',
-                'module' => 'huawei_projects_submodule',
-                'permissions' => ['huawei.projects', 'huawei.projects.search', 'huawei.projects.toupdate', 'huawei.projects.update', 'huawei.projects.import.baselines', 'huawei.projects.baselines.template']
-            ],
-            [
-                'display_name' => 'Administrar proyectos',
-                'key_name' => 'huawei_projects_admin',
-                'module' => 'huawei_projects_submodule',
-                'permissions' => ['huawei.projects.liquidateproject', 'huawei.projects.cancelproject', 'huawei.projects.stopped.resume']
-            ],
+            // [
+            //     'display_name' => 'Agregar proyecto',
+            //     'key_name' => 'huawei_projects_add',
+            //     'module' => 'huawei_projects_submodule',
+            //     'permissions' => ['huawei.projects', 'huawei.projects.search', 'huawei.projects.create', 'huawei.projects.store', 'huawei.projects.import.baselines', 'huawei.projects.baselines.template']
+            // ],
+            // [
+            //     'display_name' => 'Ver proyecto',
+            //     'key_name' => 'huawei_projects_see_project',
+            //     'module' => 'huawei_projects_submodule',
+            //     'permissions' => ['huawei.projects', 'huawei.projects.search', 'huawei.projects.toupdate', 'huawei.projects.balance']
+            // ],
+            // [
+            //     'display_name' => 'Editar proyecto',
+            //     'key_name' => 'huawei_projects_edit',
+            //     'module' => 'huawei_projects_submodule',
+            //     'permissions' => ['huawei.projects', 'huawei.projects.search', 'huawei.projects.toupdate', 'huawei.projects.update', 'huawei.projects.import.baselines', 'huawei.projects.baselines.template']
+            // ],
+            // [
+            //     'display_name' => 'Administrar proyectos',
+            //     'key_name' => 'huawei_projects_admin',
+            //     'module' => 'huawei_projects_submodule',
+            //     'permissions' => ['huawei.projects.liquidateproject', 'huawei.projects.cancelproject', 'huawei.projects.stopped.resume']
+            // ],
 
             //provisional
             // [

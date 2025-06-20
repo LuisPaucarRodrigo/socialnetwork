@@ -45,7 +45,7 @@ import TableTitle from '@/Components/TableTitle.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { formattedDate } from '@/utils/utils.js';
-import { EditIcon } from '@/Components/Icons';
+import { EditIcon } from '@/Components/Icons/Index';
 
 const { assignations, updateAssignation } = defineProps({
     assignations: Object,

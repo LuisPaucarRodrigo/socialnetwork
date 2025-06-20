@@ -266,7 +266,6 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import { formattedDate } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
-import axios from 'axios';
 import { setAxiosErrors } from "@/utils/utils";
 import { notify, notifyError } from '@/Components/Notification';
 import { Toaster } from 'vue-sonner';

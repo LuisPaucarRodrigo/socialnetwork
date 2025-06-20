@@ -301,7 +301,6 @@ const props = defineProps({
     subdivisions: Object,
     employees: Array,
     e_employees: Array,
-    userPermissions: Array,
     section: [String, null],
     subdivision: [String, null],
     search: [String, null],

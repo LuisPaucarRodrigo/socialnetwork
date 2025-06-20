@@ -93,7 +93,7 @@
                     </th>
                     <th
                         class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                        Acciones
+
                     </th>
                 </tr>
             </thead>
@@ -177,29 +177,26 @@
                         </div>
                     </td>
                     <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                        <div class="flex items-center gap-3 w-full">
-                            <div v-if="item.is_accepted === null" class="flex gap-3 justify-center w-1/2">
-                                <button @click="() =>
-                                    validateRegister(item.id, true)
-                                " class="flex items-center rounded-xl text-blue-500 hover:bg-green-200">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-green-500">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                    </svg>
-                                </button>
-                                <button @click="() =>
-                                    validateRegister(item.id, false)
-                                " type="button"
-                                    class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-red-500">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                    </svg>
-                                </button>
-                            </div>
-                            <div v-else class="w-1/2"></div>
+                        <div v-if="item.is_accepted === null" class="flex gap-3 justify-center w-1/2">
+                            <button @click="() =>
+                                validateRegister(item.id, true)
+                            " class="flex items-center rounded-xl text-blue-500 hover:bg-green-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-green-500">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
+                            </button>
+                            <button @click="() =>
+                                validateRegister(item.id, false)
+                            " type="button"
+                                class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-red-500">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
+                            </button>
                         </div>
                     </td>
                 </tr>
@@ -239,7 +236,7 @@
     </div>
 </template>
 <script setup>
-import { ShowIcon } from '@/Components/Icons';
+import { ShowIcon } from '@/Components/Icons/Index';
 import Pagination from '@/Components/Pagination.vue';
 import TableDateFilter from '@/Components/TableDateFilter.vue';
 import TableHeaderFilter from '@/Components/TableHeaderFilter.vue';

@@ -11,17 +11,20 @@
         </svg>
         <span class="mx-3">Huawei</span>
     </a>
-    <MyTransition :transitiondemonstration="showHuawei">
+    <MyTransition v-if="subModulePermission(submodules.huawei_sites_submodule, userSubModules)"
+        :transitiondemonstration="showHuawei">
         <Link class="w-full" :href="route('huawei.sites')">Sites Huawei</Link>
     </MyTransition>
-    <MyTransition :transitiondemonstration="showHuawei">
+    <MyTransition v-if="subModulePermission(submodules.huawei_projects_submodule, userSubModules)"
+        :transitiondemonstration="showHuawei">
         <Link class="w-full" :href="route('huawei.projects', { status: 1, prefix: 'Claro' })">Proyectos
         Huawei
         </Link>
     </MyTransition>
-    <MyTransition :transitiondemonstration="showHuawei">
+    <MyTransition v-if="subModulePermission(submodules.huawei_inventory_submodule, userSubModules)"
+        :transitiondemonstration="showHuawei">
         <div class="relative">
-            <Link class="w-full" :href="route('huawei.inventory.show', { warehouse: 1 })">Inventario
+            <Link class="w-full" :href="route('huawei.inventory.show', { warehouse: 'Claro' })">Inventario
             Huawei
             </Link>
             <button @click="showPendingOrders = !showPendingOrders">
@@ -47,24 +50,31 @@
         </MyTransition>
     </template>
 
-    <MyTransition :transitiondemonstration="showHuawei">
+    <MyTransition v-if="subModulePermission(submodules.huawei_internal_inventory_submodule, userSubModules)"
+        :transitiondemonstration="showHuawei">
         <Link class="w-full" :href="route('huawei.quickmaterials')">Inventario Interno</Link>
     </MyTransition>
-    <MyTransition :transitiondemonstration="showHuawei">
+    <MyTransition v-if="subModulePermission(submodules.huawei_interal_guides_submodule, userSubModules)"
+        :transitiondemonstration="showHuawei">
         <Link class="w-full" :href="route('huawei.internalguides')">Guías Internas</Link>
     </MyTransition>
-    <MyTransition :transitiondemonstration="showHuawei">
+    <MyTransition v-if="subModulePermission(submodules.huawei_special_returns_submodule, userSubModules)"
+        :transitiondemonstration="showHuawei">
         <Link class="w-full" :href="route('huawei.specialrefunds')">Devoluciones Especiales</Link>
     </MyTransition>
 </template>
 <script setup>
 import MyTransition from '@/Components/MyTransition.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
+import { subModulePermission } from '@/utils/roles/roles';
 import { onMounted, ref } from 'vue';
 
 const showHuawei = ref(false)
 const showPendingOrders = ref(false)
 const pending_orders = ref([])
+
+const { submodules } = usePage().props
+const { userSubModules } = usePage().props.auth
 
 function toogleHUawei() {
     showHuawei.value = !showHuawei.value;

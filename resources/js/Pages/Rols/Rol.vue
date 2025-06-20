@@ -9,11 +9,12 @@
             <PrimaryButton v-permission="'add_role'" @click="add_rol" type="button">
                 + Agregar
             </PrimaryButton>
-
-            <RolTable :rols="rols" :editModalRol="editModalRol" :confirmRolsDeletion="confirmRolsDeletion" :showModal="showModal"/>
         </div>
-        <ShowRol ref="showRol"/>
-        <FormRol ref="formRol" :permissions="permissions" :modules="modules"/>
+        <RolTable :rols="rols" :editModalRol="editModalRol" :confirmRolsDeletion="confirmRolsDeletion"
+            :showModal="showModal" />
+
+        <ShowRol ref="showRol" />
+        <FormRol ref="formRol" :permissions="permissions" :modules="modules" />
         <ConfirmDeleteModal :confirmingDeletion="confirmingRolDeletion" itemType="rol" :deleteFunction="deleteRol"
             @closeModal="closeModalRol" />
     </AuthenticatedLayout>
@@ -23,7 +24,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { ref } from 'vue';
-import { Head,  router } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import RolTable from './components/RolTable.vue';
 import FormRol from './components/FormRol.vue';
 import ShowRol from './components/ShowRol.vue';
@@ -66,7 +67,7 @@ function editModalRol(rol) {
     formRol.value.editModalRol(rol)
 };
 
-function showModal(id){
+function showModal(id) {
     showRol.value.showModal(id)
 }
 </script>

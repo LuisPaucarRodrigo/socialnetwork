@@ -1,8 +1,8 @@
 <template>
 
     <Head title="Huawei" />
-    <AuthenticatedLayout :redirectRoute="{ route: 'huawei.inventory.show', params: { warehouse: 1 } }">
-        <template #header> Pedidos Pendientes </template>
+    <AuthenticatedLayout :redirectRoute="{route: 'huawei.inventory.show', params: {warehouse: 'Claro'}}">
+            <template #header> Pedidos Pendientes </template>
         <Toaster richColors />
 
         <div class="min-w-full rounded-lg shadow">
@@ -341,7 +341,7 @@ import InputFile from "@/Components/InputFile.vue";
 import { notifyError } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import { setAxiosErrors } from "@/utils/utils";
-import { ShowIcon } from "@/Components/Icons";
+import { ShowIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
     pending_orders: Object,

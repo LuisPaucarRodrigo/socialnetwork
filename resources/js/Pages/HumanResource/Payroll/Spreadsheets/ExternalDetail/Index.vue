@@ -163,7 +163,7 @@ import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Modal from "@/Components/Modal.vue";
-import { DeleteIcon, EditIcon } from "@/Components/Icons";
+import { DeleteIcon, EditIcon } from "@/Components/Icons/Index";
 
 const { payroll_external_details, external_employees, payroll_id } =
     defineProps({

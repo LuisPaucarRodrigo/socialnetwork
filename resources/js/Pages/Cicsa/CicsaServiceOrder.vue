@@ -299,6 +299,7 @@ function openEditModal(item) {
     form.defaults({ ...item, user_name: auth.user.name, user_id: auth.user.id })
     form.reset()
     showAddEditModal.value = true
+    console.log(form)
 }
 
 async function submit() {

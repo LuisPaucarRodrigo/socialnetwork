@@ -415,6 +415,31 @@ class DocumentSpreedSheetController extends Controller
         }
     }
 
+    public function createMasive(Request $request, $employee_id) {
+        DB::beginTransaction();
+        try{
+            $data = $request->all();
+            foreach($data as $subdivision_id=>$state){
+                if($state === 'No corresponde'){
+                    DocumentRegister::create([
+                        'subdivision_id'=> $subdivision_id,
+                        'document_id'=> null,
+                        'employee_id'=> $employee_id,
+                        'e_employee_id'=> null,
+                        'exp_date'=> null,
+                        'state'=> $state,
+                        'observations'=> null,
+                    ]);
+                }
+            }
+            DB::commit();
+            return redirect()->back();
+        } catch (\Exception $e){
+            DB::rollBack();
+            return $e->getMessage();
+        }
+    }
+
 
     // public function updateDocReg () {
     //     $items = DocumentRegister::all();

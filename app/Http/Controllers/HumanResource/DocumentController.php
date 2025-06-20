@@ -5,6 +5,7 @@ namespace App\Http\Controllers\HumanResource;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\HumanResource\DocumentCreateRequest;
 use App\Http\Requests\HumanResource\DocumentUpdateRequest;
+use App\Models\CostLine;
 use App\Models\Document;
 use App\Models\DocumentRegister;
 use App\Models\DocumentSection;
@@ -125,10 +126,12 @@ class DocumentController extends Controller
         return Inertia::render('HumanResource/Documents/Document', [
             'sections' => DocumentSection::with('subdivisions')->get(),
             'subdivisions' => Subdivision::all(),
+            'cost_lines' => CostLine::select('id', 'name')->get(),
             'employees' => Employee::whereHas('contract', function ($query) {
                 $query->where('state', 'Active');
             })
                 ->orderBy('name')
+                ->with('contract')
                 ->get(),
             'e_employees' => ExternalEmployee::orderBy('name')->get(),
         ]);
@@ -149,14 +152,17 @@ class DocumentController extends Controller
             abort(403, 'Acción no permitida');
         }
 
-        $query = Document::with('subdivision.section', 'employee')
+        $query = Document::with('subdivision.section')
             ->where(function ($q) use ($data) {
-                if (!empty($data['employees'])) {
-                    $q->whereIn('employee_id', $data['employees']);
-                }
-                if (!empty($data['external_employees'])) {
-                    $q->whereIn('e_employee_id', $data['external_employees']);
-                }
+                $q->where(function ($subQ) use ($data) {
+                    if (!empty($data['employees'])) {
+                        $subQ->whereIn('employee_id', $data['employees']);
+                    }
+                    if (!empty($data['external_employees'])) {
+                        $subQ->orWhereIn('e_employee_id', $data['external_employees']);
+                    }
+                });
+
                 if (!empty($data['subdivisions'])) {
                     $q->whereIn('subdivision_id', $data['subdivisions']);
                 }
@@ -199,7 +205,7 @@ class DocumentController extends Controller
             $data['title'] = $this->file_store($data);
             $docItem = Document::create($data);
             $data['state'] = 'Completado';
-            $data['document_id'] = $docItem->id ;
+            $data['document_id'] = $docItem->id;
             $docReg = $this->getDocumentRegister($docItem);
             if ($docReg) $docReg->update($data);
             else DocumentRegister::create($data);
@@ -214,14 +220,14 @@ class DocumentController extends Controller
         $data = $request->validated();
         $docItem = Document::find($id);
         $prevDocReg = $this->getDocumentRegister($docItem);
-        if ( !$this->areTheSameDocItems($docItem, $data) && $prevDocReg ) {
+        if (!$this->areTheSameDocItems($docItem, $data) && $prevDocReg) {
             $prevDocReg->delete();
         }
         $this->file_delete($docItem);
         $data['title'] = $this->file_store($data);
         $docItem->update($data);
         $data['state'] = 'Completado';
-        $data['document_id'] = $docItem->id ;
+        $data['document_id'] = $docItem->id;
         $docReg = $this->getDocumentRegister($docItem);
         if ($docReg) $docReg->update($data);
         else DocumentRegister::create($data);
@@ -276,9 +282,9 @@ class DocumentController extends Controller
     {
         $item = Document::find($id);
         $docReg = $this->getDocumentRegister($item);
-        if($docReg?->state === 'Completado') $docReg->delete();
+        if ($docReg?->state === 'Completado') $docReg->delete();
         $this->file_delete($item);
-        $item->delete(); 
+        $item->delete();
         return redirect()->back();
     }
 
@@ -524,28 +530,32 @@ class DocumentController extends Controller
     //     }
     // }
 
-    private function areTheSameDocItems ($docItem, $data) {
-        if ( $docItem->subdivision_id !== (int)$data['subdivision_id'] ) return false;
-        if ( $docItem->e_employee_id !== (int)$data['e_employee_id'] ) return false;
-        if ( $docItem->employee_id !== (int)$data['employee_id'] ) return false;
+    private function areTheSameDocItems($docItem, $data)
+    {
+        if ($docItem->subdivision_id !== (int)$data['subdivision_id']) return false;
+        if ($docItem->e_employee_id !== (int)$data['e_employee_id']) return false;
+        if ($docItem->employee_id !== (int)$data['employee_id']) return false;
         return true;
     }
 
-    private function getDocumentRegister($docItem) {
+    private function getDocumentRegister($docItem)
+    {
         return DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
             ->where('employee_id', $docItem->employee_id)
             ->where('e_employee_id', $docItem->e_employee_id)
             ->first();
     }
 
-    private function file_store($data) {
+    private function file_store($data)
+    {
         $document = $data['document'];
         $name = $this->getFileName($data, $document);
         $document->move(public_path('documents/documents/'), $name);
         return $name;
     }
 
-    private function file_delete($docItem) {
+    private function file_delete($docItem)
+    {
         $fileName = $docItem->title;
         $filePath = "documents/documents/$fileName";
         $path = public_path($filePath);
@@ -554,12 +564,13 @@ class DocumentController extends Controller
         }
     }
 
-    private function getFileName ($data, $document) {
+    private function getFileName($data, $document)
+    {
         $employee_name = $data['employee_id'] ? Employee::where('id', $data['employee_id'])
-                ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
-                ->first() : ExternalEmployee::where('id', $data['e_employee_id'])
-                ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
-                ->first();
+            ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
+            ->first() : ExternalEmployee::where('id', $data['e_employee_id'])
+            ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
+            ->first();
         $name = Subdivision::find($data['subdivision_id'])->name . ' - ' . $employee_name->full_name . '.' . $document->getClientOriginalExtension();
         return $name;
     }

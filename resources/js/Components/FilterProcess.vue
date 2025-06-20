@@ -25,7 +25,7 @@
 
 <script setup>
 import { ref, watch, computed, onMounted, onUnmounted } from 'vue';
-import { RectangleGroupIcon } from "@/Components/Icons";
+import { RectangleGroupIcon } from "@/Components/Icons/Index";
 
 const props = defineProps({
   label: {

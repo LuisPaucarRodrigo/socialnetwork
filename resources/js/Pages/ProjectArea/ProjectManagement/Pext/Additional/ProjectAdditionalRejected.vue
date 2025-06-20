@@ -152,7 +152,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue'
-import axios from 'axios';
 import { ref } from 'vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { notifyError, notify } from '@/Components/Notification';

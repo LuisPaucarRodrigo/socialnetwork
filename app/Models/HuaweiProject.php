@@ -95,7 +95,7 @@ class HuaweiProject extends Model
     public function getCodeAttribute()
     {
         $year = Carbon::parse($this->assignation_date)->year;
-        return $year . '-' . str_pad($this->id, 4, '0', STR_PAD_LEFT) . '-' . $this->macro_project . '-' . $this->huawei_site->name;
+        return $year . '-' . str_pad($this->id, 4, '0', STR_PAD_LEFT) . '-' . $this->macro_project . '-' . $this->huawei_site?->name;
     }
 
     public function getStateAttribute()

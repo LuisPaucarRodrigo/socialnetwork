@@ -143,7 +143,7 @@ import Search from "@/Components/Search.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { Link } from "@inertiajs/vue3";
 import { notifyWarning } from "@/Components/Notification";
-import { MenuIcon, ServerIcon } from "@/Components/Icons";
+import { MenuIcon, ServerIcon } from "@/Components/Icons/Index";
 
 const {  project_id, fixedOrAdditional, status, actionForm, initialFilterFormState, openCreateAdditionalModal, openModalImport } = defineProps({
     

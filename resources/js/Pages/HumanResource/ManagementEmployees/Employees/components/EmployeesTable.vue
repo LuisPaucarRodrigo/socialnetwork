@@ -46,6 +46,10 @@
                     'fired_reentry_employee',
                 ]" class="border-b border-gray-200 bg-white px-5 py-2 text-sm">
                     <div v-if="employee.contract.fired_date == null" class="flex space-x-3 justify-center">
+                        <button v-if="employee.cropped_image" @click="openFotoCheck(employee)">
+                            <IdentificationIcon />
+                        </button>
+
                         <Link v-permission="'see_employee'"
                             :href="route('management.employees.show', { id: employee.id })">
                         <ShowIcon />
@@ -67,10 +71,12 @@
             </tr>
         </template>
     </TableStructure>
+
     <div v-if="employees.data"
         class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
         <Pagination :links="employees.links" />
     </div>
+
 </template>
 <script setup>
 import TableHeaderCicsaFilter from '@/Components/TableHeaderCicsaFilter.vue';
@@ -79,15 +85,17 @@ import TableRow from '@/Components/TableRow.vue';
 import Pagination from '@/Components/Pagination.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import { Link } from '@inertiajs/vue3';
-import { UnsubscribeIcon, SuscribeIcon, EditIcon, ShowIcon } from '@/Components/Icons/Index';
+import { UnsubscribeIcon, SuscribeIcon, EditIcon, ShowIcon, IdentificationIcon } from '@/Components/Icons/Index';
 import TableStructure from '@/Layouts/TableStructure.vue';
 
-const { form, employees, costLine, openFiredModal, openReentryModal } = defineProps({
+
+const { form, employees, costLine, openFiredModal, openReentryModal, openFotoCheck } = defineProps({
     form: Object,
     employees: Object,
     costLine: Array,
     openFiredModal: Function,
-    openReentryModal: Function
+    openReentryModal: Function,
+    openFotoCheck: Function
 })
 
 function handlerPreview(contract_id) {
@@ -96,4 +104,8 @@ function handlerPreview(contract_id) {
         '_blank'
     );
 }
+
+
+
+
 </script>

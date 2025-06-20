@@ -433,7 +433,6 @@
             <pagination :links="additional_costs.links" />
         </div>
         <Modal :show="create_additional" @close="closeModal">
-            <!-- <Toaster richColors/> -->
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
                     Agregar Costo adicional
@@ -1097,7 +1096,6 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputFile from "@/Components/InputFile.vue";
 import Pagination from "@/Components/Pagination.vue";
 import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
-import axios from "axios";
 import Dropdown from "@/Components/Dropdown.vue";
 import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
@@ -1105,7 +1103,7 @@ import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import Search from "@/Components/Search.vue";
 import qs from 'qs';
-import { MenuIcon, EditIcon, DeleteIcon, ShowIcon, ServerIcon, AcceptIcon, ExcelIcon, RejectIcon, SortIcon } from "@/Components/Icons";
+import { MenuIcon, EditIcon, DeleteIcon, ShowIcon, ServerIcon, AcceptIcon, ExcelIcon, RejectIcon, SortIcon } from "@/Components/Icons/Index";
 import DropdownLink from "@/Components/DropdownLink.vue";
 
 const props = defineProps({
@@ -1113,7 +1111,6 @@ const props = defineProps({
     project_id: Object,
     providers: Object,
     auth: Object,
-    userPermissions: Array,
     searchQuery: String,
     state: String,
     zones: Array,
@@ -1133,10 +1130,6 @@ stateTypes.sort()
 const dataToRender = ref(props.additional_costs.data);
 const filterMode = ref(false);
 const subDropdownOpen = ref(false)
-
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-};
 
 const form = useForm({
     id: "",
@@ -1638,30 +1631,70 @@ const openSwapAPModal = () => {
     showSwapAPModal.value = true
 }
 
+// const submitSwapAPModal = async () => {
+//     isFetching.value = true;
+//     const res = await axios
+//         .post(route("projectmanagement.addctoaddproject.swapCosts"), {
+//             ...additionalProjectForm.data(),
+//             ...actionForm.value
+//         })
+//         .catch((e) => {
+//             console.log(e)
+//             isFetching.value = false;
+//             if (e.response?.data?.errors) {
+//                 setAxiosErrors(e.response.data.errors, additionalProjectForm);
+//             } else {
+//                 notifyError(`Server Error: ${e.response.data}`);
+//             }
+//         });
+
+//     dataToRender.value = dataToRender.value.filter(
+//         (item) => !actionForm.value.ids.includes(item.id)
+//     );
+//     actionForm.value.ids = []
+
+//     closeSwapAPModal();
+//     notify("Registros Movidos con éxito")
+// }
+
 const submitSwapAPModal = async () => {
     isFetching.value = true;
-    const res = await axios
-        .post(route("projectmanagement.addctoaddproject.swapCosts"), {
-            ...additionalProjectForm.data(),
-            ...actionForm.value
-        })
-        .catch((e) => {
-            isFetching.value = false;
-            if (e.response?.data?.errors) {
-                setAxiosErrors(e.response.data.errors, additionalProjectForm);
-            } else {
-                notifyError("Server Error");
+    let url = route("projectmanagement.addctoaddproject.swapCosts")
+    try {
+        let res = await axios.post(url,
+            {
+                ...additionalProjectForm.data(),
+                ...actionForm.value
             }
-        });
+        );
+        if (res?.status === 207) {
+            const ids = res.data.idsList;
+            dataToRender.value = dataToRender.value.filter(
+                item => !ids.includes(item.id)
+            );
+            notifyWarning(`Algunos registros no fueron movidos`);
+        } else {
+            dataToRender.value = dataToRender.value.filter(
+                (item) => !actionForm.value.ids.includes(item.id)
+            );
+            notify("Registros movidos con éxito");
+        }
 
-    dataToRender.value = dataToRender.value.filter(
-        (item) => !actionForm.value.ids.includes(item.id)
-    );
-    actionForm.value.ids = []
+    } catch (e) {
+        console.log(e);
+        isFetching.value = false;
+        if (e.response?.data?.errors) {
+            setAxiosErrors(e.response.data.errors, additionalProjectForm);
+        } else {
+            notifyError('Error del servidor');
+        }
 
-    closeSwapAPModal();
-    notify("Registros Movidos con éxito")
-}
+    } finally {
+        actionForm.value.ids = [];
+        closeSwapAPModal();
+    }
+};
+
 
 
 
@@ -1677,6 +1710,7 @@ function getRegularProjects() {
 const swapRPForm = useForm({
     project_id: '',
 })
+
 const showSwapRPModal = ref(false)
 const closeSwapRPModal = () => {
     showSwapRPModal.value = false
@@ -1684,6 +1718,7 @@ const closeSwapRPModal = () => {
     swapRPForm.reset()
     swapRPForm.clearErrors()
 }
+
 const openSwapRPModal = () => {
     if (projects_for_swap.value.length === 0) {
         getRegularProjects()

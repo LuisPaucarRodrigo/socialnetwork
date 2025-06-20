@@ -24,7 +24,7 @@ class ManagementEmployeesServices
 
     private function queryEmployeesCostLine($state): Builder
     {
-        $query = Employee::with('contract.cost_line')->whereHas('contract', function ($query) use ($state) {
+        $query = Employee::select('id', 'name', 'lastname', 'dni', 'phone1', 'cropped_image')->with('contract.cost_line')->whereHas('contract', function ($query) use ($state) {
             $query->where('state', $state);
         });
         return $query;
@@ -163,15 +163,11 @@ class ManagementEmployeesServices
         return $data;
     }
 
-    private function storeArchives($file, $url): ?String
+    private function storeArchives($file, $url)
     {
-        if ($file) {
-            $imageUrl = time() . '._' . $file->getClientOriginalName();
-            $file->move(public_path($url), $imageUrl);
-            return $imageUrl;
-        } else {
-            return null;
-        }
+        $imageUrl = time() . '._' . $file->getClientOriginalName();
+        $file->move(public_path($url), $imageUrl);
+        return $imageUrl;
     }
 
     public function updateOrCreateEmployee($request, $employee_id): String
@@ -288,11 +284,16 @@ class ManagementEmployeesServices
     {
         if ($request->hasFile('cropped_image')) {
             $validateData['cropped_image'] = $this->storeArchives($request->file('cropped_image'), 'image/profile/');
+        } else {
+            unset($validateData['cropped_image']);
         }
 
         if ($request->hasFile('curriculum_vitae')) {
             $validateData['curriculum_vitae'] = $this->storeArchives($request->file('curriculum_vitae'), 'documents/curriculum_vitae/');
+        } else {
+            unset($validateData['curriculum_vitae']);
         }
+        
         $e_external = ExternalEmployee::updateOrCreate(
             ['id' => $external_id],
             $validateData
