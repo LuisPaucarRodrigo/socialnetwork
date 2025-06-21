@@ -36,7 +36,7 @@
     <template v-if="employeeBirthdayAlarms?.length !== 0" v-permission="'happy_birthday_alarm'">
         <MyTransition v-for="item in employeeBirthdayAlarms" :key="item.id" class="ml-4"
             :transitiondemonstration="showEmployeeBirthdayAlarms">
-            <Link class="w-full flex items-center" :href="route('see_employee', { id: item.id })">
+            <Link class="w-full flex items-center" :href="route('management.employees.show', { id: item.id })">
             <svg class="w-4 h-4 mr-2 text-red-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                 fill="currentColor" viewBox="0 0 20 20">
                 <path

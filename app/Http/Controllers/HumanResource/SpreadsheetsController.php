@@ -25,6 +25,7 @@ use App\Models\PayrollDetailWorkSchedule;
 use App\Models\PayrollExternalDetail;
 use App\Models\Pension;
 use App\Models\TaxAndContributionParam;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -144,6 +145,21 @@ class SpreadsheetsController extends Controller
         $payrollDetailExpense->update($data);
         $payrollExpense = PayrollDetailExpense::where('payroll_detail_id', $payroll_details_id)->get();
         return response()->json($payrollExpense, 200);
+    }
+
+    public function generate_payroll_bill($payroll_id)
+    {
+        $payroll = Payroll::find($payroll_id);
+        $spreadsheet = $this->payrollServices->getPayrollDetails($payroll_id)->get();
+
+        if (!$payroll) {
+            return response()->json(['message' => 'Payroll not found'], 404);
+        }
+        $pdf = Pdf::loadView('pdf.PayrollBill', [
+            'payroll' => $payroll
+        ]);
+        Log::info($spreadsheet);
+        return $pdf->stream('Planilla.pdf');
     }
 
     public function update_payroll_travelExpense(Request $request, $payroll_details_id)

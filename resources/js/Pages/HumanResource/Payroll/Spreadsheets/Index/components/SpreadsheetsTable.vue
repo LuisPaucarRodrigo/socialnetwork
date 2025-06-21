@@ -73,6 +73,13 @@
                 <TableRow>% {{ spreadsheet.mandatory_contribution.toFixed(2) }}</TableRow>
                 <TableRow>S/ {{ spreadsheet.mandatory_contribution_amount.toFixed(2) }}</TableRow>
                 <TableRow>S/ {{ spreadsheet.total_discount.toFixed(2) }}</TableRow>
+                <TableRow>                      
+                    <a
+                        :href="route('spreadsheets.generate.bill', { payroll_id: spreadsheet.id })"
+                        target="_blank">
+                        <DocumentsIcon />
+                    </a>
+                </TableRow>
                 <TableRow>
                     <div class="flex gap-x-3">
                         <p class="text-gray-900 whitespace-nowrap">
@@ -93,6 +100,7 @@
                                 @click="openPaymentTravelExpenseModal(spreadsheet.payroll_detail_expense[1])">
                                 <EditIcon />
                             </button>
+
                         </template>
                     </div>
                 </TableRow>
@@ -125,7 +133,7 @@
                 <TableRow>S/ {{ spreadsheet.total_contribution.toFixed(2) }}</TableRow>
                 <TableRow>
                     <Link
-                        :href="route('spreadsheets.details.index', { payroll_details_id: spreadsheet.id, employee_id: spreadsheet.employee_id })">
+                        :href="'#'">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-5 h-5 text-amber-400">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -168,7 +176,7 @@ import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import { formattedDate } from '@/utils/utils';
-import { ShowIcon, EditIcon } from "@/Components/Icons/Index";
+import { ShowIcon, EditIcon, DocumentsIcon } from "@/Components/Icons/Index";
 import { Link } from '@inertiajs/vue3';
 
 const { spreadsheets, totals, payrolls, userPermissions, openPaymentTravelExpenseModal, openPaymentSalaryModal, openDiscountModal } = defineProps({
@@ -180,6 +188,8 @@ const { spreadsheets, totals, payrolls, userPermissions, openPaymentTravelExpens
     openPaymentSalaryModal: Function,
     openDiscountModal: Function
 })
+
+console.log(spreadsheets);
 
 function permissions(permission) {
     return userPermissions.includes(permission)
