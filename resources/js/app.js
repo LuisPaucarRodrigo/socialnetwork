@@ -38,6 +38,7 @@ createInertiaApp({
         app.directive('permission', permission.single)
         app.directive('permission-or', permission.or)
         app.directive('permission-and', permission.and)
+        app.directive('permission-not', permission.not) 
         app.mount(el);
     },
     progress: {

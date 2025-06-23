@@ -272,6 +272,10 @@
                             <TableHeaderFilter labelClass="text-[11px]" label="Estado" :options="stateTypes"
                                 v-model="filterForm.selectedStateTypes" width="w-48" />
                         </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            Estado Administrativo
+                        </th>
 
                         <th v-if="project_id.status === null"
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
@@ -358,27 +362,88 @@
                             </p>
                         </td>
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
-                            <div v-if="item.is_accepted === null" class="flex gap-3 justify-center w-full">
-                                <button @click="() => openAcceptModal(item)">
-                                    <AcceptIcon />
-                                </button>
-                                <button @click="() => validateRegister(item.id, false)" type="button">
-                                    <RejectIcon />
-                                </button>
+                            <div v-permission="'pro_pint_validate_expenses'">
+                                <div v-if="item.is_accepted === null ">
+                                    <div v-if="registerToReject.id!==item.id"  class="flex gap-3 justify-center w-full">
+                                        <button @click="() => openAcceptModal(item)">
+                                            <AcceptIcon />
+                                        </button>
+                                        <button @click="displayRejectReason(item.id)" type="button">
+                                            <RejectIcon />
+                                        </button>
+                                    </div>
+                                    <AdditionalCostsRejectForm v-else 
+                                        v-model:item="registerToReject.reject_reason" 
+                                        :closeRejectReason="closeRejectReason" 
+                                        :saveRejectReason="saveRejectReason"
+                                    />
+                                </div>
+    
+                                <div v-else :class="[
+                                    'text-center',
+                                    {
+                                        'text-indigo-500': item.real_state === 'Pendiente',
+                                        'text-green-500': item.real_state == 'Aceptado - Validado',
+                                        'text-amber-500': item.real_state == 'Aceptado',
+                                        'text-red-500': item.real_state == 'Rechazado',
+                                    },
+                                ]">
+                                    {{ item.real_state }}
+                                </div>
                             </div>
-
-                            <div v-else :class="[
-                                'text-center',
-                                {
-                                    'text-indigo-500': item.real_state === 'Pendiente',
-                                    'text-green-500': item.real_state == 'Aceptado - Validado',
-                                    'text-amber-500': item.real_state == 'Aceptado',
-                                    'text-red-500': item.real_state == 'Rechazado',
-                                },
-                            ]">
+                            <div v-permission-not="'pro_pint_validate_expenses'" :class="[
+                                    'text-center',
+                                    {
+                                        'text-indigo-500': item.real_state === 'Pendiente',
+                                        'text-green-500': item.real_state == 'Aceptado - Validado',
+                                        'text-amber-500': item.real_state == 'Aceptado',
+                                        'text-red-500': item.real_state == 'Rechazado',
+                                    },
+                                ]">
                                 {{ item.real_state }}
                             </div>
                         </td>
+
+
+
+                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
+                            <div v-permission="'pro_pint_admin_validate_expenses'">
+                                <div v-if="item.admin_is_accepted === null && item.is_accepted === 1" class="flex gap-3 justify-center w-full">
+                                    <button @click="() => openAcceptModal(item)">
+                                        <AcceptIcon />
+                                    </button>
+                                    <button @click="() => validateRegister(item.id, false)" type="button">
+                                        <RejectIcon />
+                                    </button>
+                                </div>
+                                <div v-else :class="[
+                                    'text-center',
+                                    {
+                                        'text-indigo-500': item.admin_state === 'Pendiente',
+                                        'text-gray-600': item.admin_state === 'No Disponible',
+                                        'text-amber-500': item.admin_state == 'Aceptado',
+                                        'text-red-500': item.admin_state == 'Rechazado',
+                                    },
+                                ]">
+                                    {{ item.admin_state }}
+                                </div>
+                            </div>
+                            <div v-permission-not="'pro_pint_admin_validate_expenses'" :class="[
+                                    'text-center',
+                                    {
+                                        'text-indigo-500': item.admin_state === 'Pendiente',
+                                        'text-gray-600': item.admin_state === 'No Disponible',
+                                        'text-amber-500': item.admin_state == 'Aceptado',
+                                        'text-red-500': item.admin_state == 'Rechazado',
+                                    },
+                                ]">
+                                {{ item.admin_state }}
+                            </div>
+                        </td>
+
+
+
+
                         <td v-if="project_id.status === null"
                             class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <div class="flex items-center justify-center gap-3 w-full">
@@ -392,7 +457,10 @@
                                 </div>
                             </div>
                         </td>
+                     
                     </tr>
+
+
                     <tr class="sticky bottom-0 z-10 text-gray-700">
                         <td class="font-bold border-b border-gray-200 bg-white"></td>
                         <td colspan="10" class="font-bold border-b border-gray-200 bg-white px-5 py-5 text-sm">
@@ -1062,6 +1130,7 @@
             </div>
         </Modal>
 
+
         <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Costo Adicional"
             :deleteFunction="deleteAdditional" @closeModal="closeModalDoc" :processing="isFetching" />
         <SuccessOperationModal :confirming="confirmImport" :title="'Datos Importados'"
@@ -1107,6 +1176,7 @@ import Search from "@/Components/Search.vue";
 import qs from 'qs';
 import { MenuIcon, EditIcon, DeleteIcon, ShowIcon, ServerIcon, AcceptIcon, ExcelIcon, RejectIcon, SortIcon } from "@/Components/Icons";
 import DropdownLink from "@/Components/DropdownLink.vue";
+import AdditionalCostsRejectForm from "./components/AdditionalCostsRejectForm.vue";
 
 const props = defineProps({
     additional_costs: Object,
@@ -1719,4 +1789,36 @@ const submitSwapRPModal = async () => {
     closeSwapRPModal();
     notify("Registros Movidos con éxito")
 }
+
+
+//Reject modal
+
+const rejectInitState = {  id: null, reject_reason: '',}
+const registerToReject = ref({...rejectInitState})
+function displayRejectReason (id) {
+    closeRejectReason()
+    registerToReject.value.id = id
+}
+function closeRejectReason() {
+    registerToReject.value = {...rejectInitState}
+}
+async function saveRejectReason() {
+    try {
+        const res = await axios.post(
+            route("projectmanagement.rejectAdditionalCost", { ac_id: registerToReject.value.id }),
+            { is_accepted:false, ...registerToReject.value }
+        );
+         let index = dataToRender.value.findIndex(
+                (item) => item.id == res.data.additional_cost.id
+            );
+        dataToRender.value.splice(index, 1);
+        notify(res.data.msg)
+        closeRejectReason()
+    } catch (e) {
+        console.log(e)
+        notifyError('Server Error')
+    }
+}
+
+console.log(dataToRender.value)
 </script>

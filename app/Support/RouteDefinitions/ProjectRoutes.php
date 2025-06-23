@@ -1659,6 +1659,13 @@ class ProjectRoutes
                 'permission' => true,
                 'name' => 'projectmanagement.additionalToAdditional.swapCosts',
             ],
+            [
+                'uri' => '/project/additional_cost/reject/{ac_id}',
+                'method' => 'post',
+                'action' => [AdditionalCostsController::class, 'rejectRegisters'],
+                'permission' => true,
+                'name' => 'projectmanagement.rejectAdditionalCost',
+            ],
         ];
     }
 }

@@ -58,7 +58,7 @@ class AdditionalCostsController extends Controller
 
         $additional_costs->getCollection()->transform(function ($item) {
             $item->project->setAppends([]);
-            $item->setAppends(['real_amount', 'real_state']);
+            $item->setAppends(['real_amount', 'real_state', 'admin_state']);
             return $item;
         });
 
@@ -84,7 +84,7 @@ class AdditionalCostsController extends Controller
             ->get();
         $additional_costs->transform(function ($item) {
             $item->project->setAppends([]);
-            $item->setAppends(['real_amount', 'real_state']);
+            $item->setAppends(['real_amount', 'real_state', 'admin_state']);
             return $item;
         });
         $providers = Provider::all();
@@ -122,7 +122,7 @@ class AdditionalCostsController extends Controller
         $item = AdditionalCost::create($data);
         $item->load('project', 'provider:id,company_name');
         $item->project->setAppends([]);
-        $item->setAppends(['real_amount', 'real_state']);
+        $item->setAppends(['real_amount', 'real_state', 'admin_state']);
         return response()->json($item, 200);
     }
 
@@ -189,7 +189,7 @@ class AdditionalCostsController extends Controller
         $additional_cost->update($data);
         $additional_cost->load('project', 'provider:id,company_name');
         $additional_cost->project->setAppends([]);
-        $additional_cost->setAppends(['real_amount', 'real_state']);
+        $additional_cost->setAppends(['real_amount', 'real_state', 'admin_state']);
         return response()->json($additional_cost, 200);
     }
 
@@ -258,7 +258,7 @@ class AdditionalCostsController extends Controller
             ->get();
         $updatedCosts->each(function ($cost) {
             $cost->project->setAppends([]);
-            $cost->setAppends(['real_amount', 'real_state']);
+            $cost->setAppends(['real_amount', 'real_state', 'admin_state']);
         });
         return response()->json($updatedCosts, 200);
     }
@@ -450,6 +450,16 @@ class AdditionalCostsController extends Controller
         //         }
         //     }
         // }
+        return response()->json(['additional_cost' => $ac, 'msg' => 'Validación de gasto exitosa'], 200);
+    }
+
+    public function rejectRegisters(Request $request, $ac_id) {
+        $data = $request->validate([
+            'reject_reason' => 'nullable',
+            'is_accepted' => 'required'
+        ]);
+        $ac = AdditionalCost::with('project', 'provider')->find($ac_id);
+        $ac->update($data);
         return response()->json(['additional_cost' => $ac, 'msg' => 'Validación de gasto exitosa'], 200);
     }
 

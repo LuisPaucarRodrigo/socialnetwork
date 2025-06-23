@@ -38,6 +38,11 @@ return new class extends Migration
                 ->constrained('general_expenses')
                 ->cascadeOnDelete();
             $table->integer('igv')->default('0');
+
+            $table->text('reject_reason')->nullable();
+            $table->boolean('admin_is_accepted')->nullable();
+            $table->text('admin_reject_reason')->nullable();
+
             $table->timestamps();
             $table->unique(['ruc', 'doc_number']);
         });

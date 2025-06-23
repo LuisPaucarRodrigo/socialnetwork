@@ -1016,8 +1016,7 @@ class FunctionalityPermissionSeeder extends Seeder
                     'additionalcost.advance.search',
                     'projectmanagement.importAdditionalCost',
                     'zip.additional.descargar',
-                    'projectmanagement.validateAdditionalCost',
-                    'projectmanagement.additionalCosts.massiveUpdate',
+                    
                     'projectmanagement.additionalCosts.swapCosts',
                     'projectmanagement.addctoaddproject.swapCosts',
                     'projectmanagement.regularprojects.all',
@@ -1033,6 +1032,26 @@ class FunctionalityPermissionSeeder extends Seeder
                     'projectmanagement.staticCosts.massiveUpdate',
                 ]
             ],
+            [
+                'display_name' => 'Validación de gastos por supervisor',
+                'key_name' => 'pro_pint_validate_expenses',
+                'module' => 'ppropint_submodule',
+                'permissions' => [
+                    'projectmanagement.validateAdditionalCost',
+                    'projectmanagement.additionalCosts.massiveUpdate',
+                    'projectmanagement.rejectAdditionalCost',
+                ]
+            ],
+            [
+                'display_name' => 'Validación de gastos por administrativo',
+                'key_name' => 'pro_pint_admin_validate_expenses',
+                'module' => 'ppropint_submodule',
+                'permissions' => [
+                    //to complete
+                ]
+            ],
+
+
 
 
             //asignar productos
