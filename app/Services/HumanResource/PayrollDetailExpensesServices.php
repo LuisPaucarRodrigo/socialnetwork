@@ -75,10 +75,8 @@ class PayrollDetailExpensesServices
                 $sq->whereIn('type_doc', $selectedDocTypes);
             });
         }
-        $result = $query->get()->sortBy(function ($item) {
-            return $item->general_expense->doc_date;
-        });
-        $result->transform(function ($item) {
+        $result = $query->get();
+        $result->each(function ($item) {
             $item->payroll_detail->setAppends([]);
             $item->setAppends(['real_state']);
             return $item;

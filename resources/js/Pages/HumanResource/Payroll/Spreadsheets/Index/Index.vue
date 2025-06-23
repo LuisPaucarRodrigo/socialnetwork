@@ -25,7 +25,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import { ref, provide, watch } from 'vue';
+import { ref} from 'vue';
 import TableHeader from './components/TableHeader.vue';
 import SpreadsheetsTable from './components/SpreadsheetsTable.vue';
 import ApprovePayroll from './components/ApprovePayroll.vue';

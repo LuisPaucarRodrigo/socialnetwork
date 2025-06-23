@@ -445,7 +445,6 @@ class SpreadsheetsController extends Controller
 
 
 
-
     protected static function findAccountStatement($item)
     {
         if (isset($item['operation_number']) && isset($item['operation_date'])) {

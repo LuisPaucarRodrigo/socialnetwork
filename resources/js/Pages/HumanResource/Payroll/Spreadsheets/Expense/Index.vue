@@ -386,7 +386,7 @@
                             <div>
                                 <InputLabel for="amount" class="font-medium leading-6 text-gray-900">Monto</InputLabel>
                                 <div class="mt-2">
-                                    <input type="number" step="0.0001" v-model="form.general_expense.amount" id="amount"
+                                    <input type="number" step="0.01" v-model="form.general_expense.amount" id="amount"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="form.errors['general_expense.amount']" />
                                 </div>
@@ -526,7 +526,7 @@ import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
-import { DeleteIcon, EditIcon, ShowIcon, SortIcon, ServerIcon } from "@/Components/Icons/Index";
+import { DeleteIcon, EditIcon, ShowIcon, SortIcon, ServerIcon } from "@/Components/Icons";
 
 const { payroll, expenses, expenseTypes, docTypes, stateTypes } = defineProps({
     payroll: Object,

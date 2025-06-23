@@ -136,7 +136,7 @@
                                 <InputError :message="form.errors.cost_line_id" />
                             </div>
                         </div>
-                        <div class="mt-3 sm:col-span-2">
+                        <div class="mt-3 col-span-2 md:col-span-1">
                             <InputLabel for="discount_remuneration">
                                 ¿Tiene Descuento sobre remuneración?
                             </InputLabel>
@@ -156,7 +156,27 @@
                                 <InputError :message="form.errors.discount_remuneration" />
                             </div>
                         </div>
-                        <div class="mt-3 sm:col-span-1">
+                        <div class="mt-3 col-span-2 md:col-span-1">
+                            <InputLabel for="life_ley">
+                                ¿Tiene Pòliza de Vida?
+                            </InputLabel>
+                            <div class="mt-2 flex gap-4">
+                                <label class="flex gap-2 items-center">
+                                    Sí
+                                    <input type="radio" v-model="form.life_ley" id="life_ley"
+                                        :value="true"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                </label>
+                                <label class="flex gap-2 items-center">
+                                    No
+                                    <input type="radio" v-model="form.life_ley" id="life_ley"
+                                        :value="false"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                </label>
+                                <InputError :message="form.errors.life_ley" />
+                            </div>
+                        </div>
+                        <div class="mt-3 col-span-2 md:col-span-1">
                             <InputLabel for="discount_sctr">
                                 ¿Tiene SCTR?
                             </InputLabel>
@@ -175,7 +195,7 @@
                             </div>
                         </div>
 
-                        <div class="mt-3 sm:col-span-1">
+                        <div class="mt-3 col-span-2 md:col-span-1">
                             <InputLabel for="state_travel_expenses">
                                 ¿Tiene Refrigerio?
                             </InputLabel>
@@ -260,16 +280,6 @@
                                 <TextInput type="number" v-model="form.amount_travel_expenses"
                                     id="amount_travel_expenses" autocomplete="off" />
                                 <InputError :message="form.errors.amount_travel_expenses" />
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-2">
-                            <InputLabel for="life_ley">Póliza de vida
-                            </InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="number" v-model="form.life_ley" id="life_ley"
-                                    autocomplete="life_ley" />
-                                <InputError :message="form.errors.life_ley" />
                             </div>
                         </div>
 
@@ -866,7 +876,7 @@ if (props.employees) {
     form.basic_salary = props.employees.contract.basic_salary;
     form.nro_cuenta = props.employees.contract.nro_cuenta;
     form.amount_travel_expenses = props.employees.contract.amount_travel_expenses;
-    form.life_ley = props.employees.contract.life_ley;
+    form.life_ley = props.employees.contract.life_ley == 1 ? true : false;
     form.hire_date = props.employees.contract.hire_date;
     form.education_level = props.employees.education.education_level;
     form.education_status = props.employees.education.education_status;
