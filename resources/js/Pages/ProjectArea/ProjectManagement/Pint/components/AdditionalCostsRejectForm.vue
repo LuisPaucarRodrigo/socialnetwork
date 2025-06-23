@@ -4,13 +4,13 @@
             <textarea
                 type="text"
                 v-model="item"
-                placeholder="Motivo de rechazo (no obligatorio)"
+                placeholder="Motivo de rechazo"
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
             />
             <div class="flex flex-col gap-2">
                 <button
                     type="button"
-                    @click="saveRejectReason"
+                    @click="saveAction"
                     class="bg-gray-100 text-indigo-700 rounded-md leading-none text-center flex justify-center items-center p-1.5 focus:outline-none focus:shadow-[inset_0_0_0_1px_#6366f1] hover:shadow-[inset_0_0_0_1px_#6366f1] active:shadow-[inset_0_0_0_1px_#6366f1] transform transition active:scale-95
                             hover:bg-white "
                 >
@@ -63,6 +63,8 @@
 </template>
 
 <script setup>
+import { notifyWarning } from '@/Components/Notification';
+
 const { closeRejectReason, saveRejectReason } = defineProps({
     closeRejectReason: Function,
     saveRejectReason: Function,
@@ -70,5 +72,13 @@ const { closeRejectReason, saveRejectReason } = defineProps({
 
 
 const item = defineModel('item')
+
+function saveAction () {
+    if(!item.value) {
+        notifyWarning('LLene el motivo de rechazo')
+        return
+    } 
+    saveRejectReason()
+}
 
 </script>

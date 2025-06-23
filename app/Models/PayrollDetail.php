@@ -225,13 +225,13 @@ class PayrollDetail extends Model
         return $this->hasOne(PayrollDetailWorkSchedule::class);
     }
     public function payroll_detail_monetary_income() {
-        return $this->hasOne(PayrollDetailMonetaryIncome::class);
+        return $this->hasMany(PayrollDetailMonetaryIncome::class);
     }
     public function payroll_detail_monetary_discounts() {
-        return $this->hasOne(PayrollDetailMonetaryDiscount::class);
+        return $this->hasMany(PayrollDetailMonetaryDiscount::class);
     }
     public function payroll_detail_tax_and_contributions() {
-        return $this->hasOne(PayrollDetailTaxAndContribution::class);
+        return $this->hasMany(PayrollDetailTaxAndContribution::class);
     }
 
 

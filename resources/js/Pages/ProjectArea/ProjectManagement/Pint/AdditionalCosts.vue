@@ -274,10 +274,16 @@
                         </th>
                         <th
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Estado Administrativo
+                            <p class="w-48">
+                                Estado Administrativo
+                            </p>
+                        </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            Motivo de rechazo Administrativo
                         </th>
 
-                        <th v-if="project_id.status === null"
+                        <th v-permission-or="['pro_pint_delete_additional_costs', 'pro_pint_mod_additional_costs' ]" v-if="project_id.status === null"
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Acciones
                         </th>
@@ -404,24 +410,31 @@
                             </div>
                         </td>
 
-
-
                         <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <div v-permission="'pro_pint_admin_validate_expenses'">
-                                <div v-if="item.admin_is_accepted === null && item.is_accepted === 1" class="flex gap-3 justify-center w-full">
-                                    <button @click="() => openAcceptModal(item)">
-                                        <AcceptIcon />
-                                    </button>
-                                    <button @click="() => validateRegister(item.id, false)" type="button">
-                                        <RejectIcon />
-                                    </button>
+                                <div v-if="item.admin_is_accepted === null && item.is_accepted === 1" >
+                                    <div v-if="regToAdminReject.id!==item.id" class="flex gap-3 justify-center w-full">
+                                        <button @click="() => displayAdminAccept(item.id)">
+                                            <AcceptIcon />
+                                        </button>
+                                        <button @click="() => displayAdminRejectReason(item.id)" type="button">
+                                            <RejectIcon />
+                                        </button>
+                                  
+                                    </div>
+                                    <AdditionalCostsRejectForm v-else 
+                                        v-model:item="regToAdminReject.admin_reject_reason" 
+                                        :closeRejectReason="closeAdminRejectReason" 
+                                        :saveRejectReason="saveAdminReject"
+                                    />
                                 </div>
+                                   
                                 <div v-else :class="[
                                     'text-center',
                                     {
                                         'text-indigo-500': item.admin_state === 'Pendiente',
                                         'text-gray-600': item.admin_state === 'No Disponible',
-                                        'text-amber-500': item.admin_state == 'Aceptado',
+                                        'text-green-500': item.admin_state == 'Aceptado',
                                         'text-red-500': item.admin_state == 'Rechazado',
                                     },
                                 ]">
@@ -433,7 +446,7 @@
                                     {
                                         'text-indigo-500': item.admin_state === 'Pendiente',
                                         'text-gray-600': item.admin_state === 'No Disponible',
-                                        'text-amber-500': item.admin_state == 'Aceptado',
+                                        'text-green-500': item.admin_state == 'Aceptado',
                                         'text-red-500': item.admin_state == 'Rechazado',
                                     },
                                 ]">
@@ -441,17 +454,22 @@
                             </div>
                         </td>
 
+                        <td
+                            class="border-b border-gray-200 px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap">
+                           {{ item.admin_reject_reason }}
+                        </td>
 
 
-
-                        <td v-if="project_id.status === null"
+                        <td v-permission-or="[
+                            'pro_pint_mod_additional_costs', 'pro_pint_delete_additional_costs'
+                        ]" v-if="project_id.status === null"
                             class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
                             <div class="flex items-center justify-center gap-3 w-full">
                                 <div class="flex gap-3 mr-3">
-                                    <button @click="openEditAdditionalModal(item)">
+                                    <button v-permission="'pro_pint_mod_additional_costs'" @click="openEditAdditionalModal(item)">
                                         <EditIcon />
                                     </button>
-                                    <button @click="confirmDeleteAdditional(item.id)">
+                                    <button v-permission="'pro_pint_delete_additional_costs'" @click="confirmDeleteAdditional(item.id)">
                                         <DeleteIcon />
                                     </button>
                                 </div>
@@ -897,6 +915,19 @@
                                     </div>
                                 </div>
                             </div>
+                            <div v-if="form.admin_state === 'Rechazado'" class="sm:col-span-2 ring-1 ring-red-400 rounded-md p-2">
+                                <InputLabel class="text-sm leading-6 text-red-700">
+                                    <span class="text-gray-700">
+                                        Motivo de rechazo administrativo: 
+                                    </span>
+                                    {{ form.admin_reject_reason }}
+                                </InputLabel>
+                                <label class="flex text-sm text-gray-700 gap-2 items-center">
+                                    Pedir nueva revisión
+                                    <input type="checkbox" v-model="form.ask_admin_review"
+                                        class="focus:ring-0 outline-none" />
+                                </label>
+                            </div>
                         </div>
                         <div class="mt-6 flex items-center justify-end gap-x-6">
                             <SecondaryButton @click="closeEditModal">
@@ -1225,6 +1256,9 @@ const form = useForm({
     amount: "",
     igv: 0,
     photo_status: "stable",
+    admin_state : "",
+    admin_reject_reason : "",
+    ask_admin_review: false
 });
 
 const create_additional = ref(false);
@@ -1253,7 +1287,8 @@ const openEditAdditionalModal = (additional) => {
     form.zone = editingAdditional.value.zone;
     form.provider_id = editingAdditional.value.provider_id;
     form.photo_name = editingAdditional.value.photo;
-
+    form.admin_state = editingAdditional.value.admin_state
+    form.admin_reject_reason = editingAdditional.value.admin_reject_reason
     editAdditionalModal.value = true;
 };
 
@@ -1820,5 +1855,39 @@ async function saveRejectReason() {
     }
 }
 
-console.log(dataToRender.value)
+// administrative state
+const adminRejectInitState = {  id: null, admin_reject_reason: '', admin_is_accepted:null}
+const regToAdminReject = ref({...adminRejectInitState})
+function displayAdminRejectReason (id) {
+    closeAdminRejectReason()
+    regToAdminReject.value.id = id
+    regToAdminReject.value.admin_is_accepted = 0
+}
+function displayAdminAccept (id) {
+    const payload = {id, admin_is_accepted:1, admin_reject_reason: ''}
+    saveAdminValidate(payload)
+}
+
+function closeAdminRejectReason() {
+    regToAdminReject.value = {...adminRejectInitState}
+}
+
+async function saveAdminReject () {
+    await saveAdminValidate(regToAdminReject.value)
+}
+
+async function saveAdminValidate(payload) {
+    try {
+        const res = await axios.post(route('projectmanagement.administrative.validation', {ac_id: payload.id}), payload)
+        console.log(res.data.additional_cost)
+        let index = dataToRender.value.findIndex((item) => item.id == res.data.additional_cost.id);
+        dataToRender.value[index] = res.data.additional_cost;
+        notify(res.data.msg)
+        closeAdminRejectReason()
+    } catch (e) {
+        console.log(e)
+        notifyError('Server Error')
+    }
+}
+
 </script>

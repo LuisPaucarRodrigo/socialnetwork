@@ -1666,6 +1666,13 @@ class ProjectRoutes
                 'permission' => true,
                 'name' => 'projectmanagement.rejectAdditionalCost',
             ],
+            [
+                'uri' => '/project/additional_cost/admin_validate/{ac_id}',
+                'method' => 'post',
+                'action' => [AdditionalCostsController::class, 'administrativeValidateRegisters'],
+                'permission' => true,
+                'name' => 'projectmanagement.administrative.validation',
+            ],
         ];
     }
 }

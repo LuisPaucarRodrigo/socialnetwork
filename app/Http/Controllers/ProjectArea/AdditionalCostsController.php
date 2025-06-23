@@ -155,6 +155,7 @@ class AdditionalCostsController extends Controller
             'photo' => 'nullable',
             'igv' => 'required',
             'description' => 'required|string',
+            'ask_admin_review' => 'nullable',
         ]);
         $data['account_statement_id'] = null;
         if (isset($data['operation_number']) && isset($data['operation_date'])) {
@@ -186,6 +187,10 @@ class AdditionalCostsController extends Controller
                 $this->file_delete($filename, 'documents/additionalcosts/');
             }
         }
+        if((filter_var($data["ask_admin_review"], FILTER_VALIDATE_BOOLEAN)) ){
+            unset($data["ask_admin_review"]);
+            $data['admin_is_accepted'] = null;
+        } 
         $additional_cost->update($data);
         $additional_cost->load('project', 'provider:id,company_name');
         $additional_cost->project->setAppends([]);
@@ -462,6 +467,20 @@ class AdditionalCostsController extends Controller
         $ac->update($data);
         return response()->json(['additional_cost' => $ac, 'msg' => 'Validación de gasto exitosa'], 200);
     }
+
+    public function administrativeValidateRegisters(Request $request, $ac_id){
+        $data = $request->validate([
+            'admin_is_accepted' => 'required',
+            'admin_reject_reason' => 'nullable'
+        ]);
+        $ac = AdditionalCost::with('project', 'provider')->find($ac_id);
+        $ac->update($data);
+        return response()->json(['additional_cost' => $ac, 'msg' => 'Validación de administrativa exitosa'], 200);
+    }
+
+
+
+
 
 
     public function downloadImages(Request $request, $project_id)

@@ -1011,8 +1011,6 @@ class FunctionalityPermissionSeeder extends Seeder
                     'additionalcost.excel.export',
                     'additionalcost.archive',
                     'projectmanagement.storeAdditionalCost',
-                    'projectmanagement.updateAdditionalCost',
-                    'projectmanagement.deleteAdditionalCost',
                     'additionalcost.advance.search',
                     'projectmanagement.importAdditionalCost',
                     'zip.additional.descargar',
@@ -1033,6 +1031,23 @@ class FunctionalityPermissionSeeder extends Seeder
                 ]
             ],
             [
+                'display_name' => 'Modificación de gastos variables',
+                'key_name' => 'pro_pint_mod_additional_costs',
+                'module' => 'ppropint_submodule',
+                'permissions' => [
+                    'projectmanagement.updateAdditionalCost',
+                ]
+            ],
+            [
+                'display_name' => 'Eliminar gastos variables',
+                'key_name' => 'pro_pint_delete_additional_costs',
+                'module' => 'ppropint_submodule',
+                'permissions' => [
+                    'projectmanagement.deleteAdditionalCost',
+                ]
+            ],
+
+            [
                 'display_name' => 'Validación de gastos por supervisor',
                 'key_name' => 'pro_pint_validate_expenses',
                 'module' => 'ppropint_submodule',
@@ -1047,7 +1062,7 @@ class FunctionalityPermissionSeeder extends Seeder
                 'key_name' => 'pro_pint_admin_validate_expenses',
                 'module' => 'ppropint_submodule',
                 'permissions' => [
-                    //to complete
+                    'projectmanagement.administrative.validation'
                 ]
             ],
 
