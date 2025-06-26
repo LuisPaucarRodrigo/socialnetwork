@@ -53,15 +53,29 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import Modal from "@/Components/Modal.vue";
-import { setAxiosErrors } from "@/utils/utils";
-import { notify, notifyError } from "@/Components/Notification";
+import { notify, notifyWarning } from "@/Components/Notification";
 import { useForm } from "@inertiajs/vue3";
+import { ref } from "vue";
+import { useAxiosErrorHandler } from "@/utils/axiosError";
 
-const { expenses } = defineProps({
-    expenses: Object
+const { expenses, actionForm } = defineProps({
+    expenses: Object,
+    actionForm: Object
 })
 
-const showOpNuDatModal = defineModel('showOpNuDatModal')
+const showOpNuDatModal = ref(false)
+
+function toogleModal() {
+    showOpNuDatModal.value = !showOpNuDatModal.value
+}
+
+const openOpNuDaModal = () => {
+    if (actionForm.ids.length === 0) {
+        notifyWarning("No hay registros seleccionados");
+        return;
+    }
+    toogleModal()
+}
 
 const opNuDateForm = useForm({
     operation_date: '',
@@ -73,40 +87,35 @@ async function submitOpNuDatModal() {
     try {
         let response = await axios.post(url, {
             ...opNuDateForm.data(),
-            ...actionForm.value
+            ...actionForm
         })
         updateExpense(response.data, 'masiveUpdate')
     } catch (error) {
-        // isFetching.value = false;
-        if (error.response?.data?.errors) {
-            setAxiosErrors(error.response.data.errors, opNuDateForm);
-        } else {
-            notifyError("Server Error");
-        }
+        console.log(error)
+        useAxiosErrorHandler(error,opNuDateForm)
     }
 }
 
 function updateExpense(expense, action) {
     let listDate = expenses.data || expenses
     if (action === "masiveUpdate") {
-        const originalMap = new Map(listDate.map(item => [item.id, item]));
         expense.forEach(update => {
-            if (originalMap.has(update.id)) {
-                originalMap.set(update.id, update);
+            const index = listDate.findIndex(item => item.id === update.id);
+            if (index !== -1) {
+                listDate[index] = update;
             }
         });
-        const updatedArray = Array.from(originalMap.values());
-        listDate = updatedArray
         closeOpNuDatModal();
         notify("Registros Seleccionados Actualizados");
     }
 }
 
 const closeOpNuDatModal = () => {
-    showOpNuDatModal.value = false
+    toogleModal()
     // isFetching.value = false
     opNuDateForm.reset()
     opNuDateForm.clearErrors()
 }
 
+defineExpose({ openOpNuDaModal })
 </script>

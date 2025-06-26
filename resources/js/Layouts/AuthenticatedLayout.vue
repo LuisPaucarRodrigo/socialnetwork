@@ -15,8 +15,6 @@
                             <slot name="header-right" />
                         </div>
                     </div>
-
-
                     <slot />
                 </div>
             </main>
@@ -31,8 +29,6 @@ import { onMounted } from 'vue'
 import { initFlowbite } from 'flowbite'
 import { watch } from 'vue';
 import { appAuth } from '@/Store/auth';
-
-
 
 const props = defineProps({
     redirectRoute: [String, Object],

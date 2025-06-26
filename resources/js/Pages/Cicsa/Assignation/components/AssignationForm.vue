@@ -55,6 +55,7 @@
                                     <option>CICSA</option>
                                     <option>STL</option>
                                     <option>INDRA</option>
+                                    <option>OTROS</option>
                                 </select>
                                 <InputError :message="form.errors.customer" />
                             </div>
@@ -145,9 +146,9 @@ const initialState = {
     project_name: '',
     manager: '',
     assignation_date: '',
-    form_name: '',
+    project_name: '',
     customer: '',
-    form_code: '',
+    project_code: '',
     cpe: '',
     zone: '',
     zone2: '',
@@ -165,7 +166,10 @@ function toogleModal() {
 }
 
 function updateAssignation(item) {
-    form.defaults({ ...item })
+    const cleaned = { ...item }
+    delete cleaned.user_id
+
+    form.defaults(cleaned)
     form.reset()
     toogleModal()
 }

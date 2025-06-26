@@ -26,6 +26,7 @@ class Contract extends Model
         'pension_type',
         'personal_segment',
         'discharge_document',
+        'cuspp'
     ];
 
     //RELATIONS

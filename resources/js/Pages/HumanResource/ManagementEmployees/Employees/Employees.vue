@@ -124,6 +124,13 @@ function openFotoCheck(item) {
     );
 }
 
+// function openFotoCheck(item) {
+//     showFotoCheck.value = true
+//     nextTick(() => {
+//         formCar.value.openFotoCheck(item)
+//     });
+// }
+
 async function search() {
     let url = route('management.employees.search')
     try {

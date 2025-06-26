@@ -15,24 +15,27 @@
             :initialFilterFormState="initialFilterFormState" :openModalImport="openModalImport" />
         <ExpensesTable :project_id="project_id" :expenses="expenses" :filterForm="filterForm" :actionForm="actionForm"
             :expenseTypes="expenseTypes" :documentsType="documentsType" :stateTypes="stateTypes" />
-        <Swap ref="swap" :actionForm="actionForm" v-model:expenses="expenses" />
-        <ExpensesImport :project_id="project_id" :fixedOrAdditional="fixedOrAdditional" ref="expensesImport" />
 
-        <!-- <SuccessOperationModal :confirming="confirmValidation" :title="'Validación'"
-            :message="'La validación del gasto fue exitosa.'" /> -->
+        <SuspenseWrapper :when="showSwap">
+            <template #component>
+                <Swap ref="swap" :actionForm="actionForm" v-model:expenses="expenses" />
+            </template>
+        </SuspenseWrapper>
+
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { ref, watch } from "vue";
+import { defineAsyncComponent, ref, watch } from "vue";
 import { Head } from "@inertiajs/vue3";
 import { Toaster } from "vue-sonner";
-import { notifyWarning } from "@/Components/Notification";
 import TableHeader from "./components/TableHeader.vue";
 import ExpensesTable from "./components/ExpensesTable.vue";
-import Swap from "./components/Swap.vue";
-import ExpensesImport from "../../components/ExpensesImport.vue";
+import SuspenseWrapper from "@/Components/SuspenseWrapper.vue";
+import { useLazyRefInvoker } from "@/utils/useLazyRefInvoker";
+
+const Swap = defineAsyncComponent(() => import('./components/Swap.vue'));
 
 const props = defineProps({
     expense: Object,
@@ -50,23 +53,16 @@ const props = defineProps({
     additional_projects: Array,
 });
 
-const expenses = ref({ ...props.expense });
+const showSwap = ref(false)
+
+
+const expenses = ref(props.expense);
 const swap = ref(null)
-const expensesImport = ref(null)
 // const filterMode = ref(false);
 // const subCostCenterZone = ref(null);
 // const subCostCenter = ref(null)
 
-const showOpNuDatModal = ref(false)
-
-const openOpNuDaModal = () => {
-    if (actionForm.value.ids.length === 0) {
-        notifyWarning("No hay registros seleccionados");
-        return;
-    }
-    showOpNuDatModal.value = true
-}
-
+const { invokeWhenReady: invokeSwap } = useLazyRefInvoker(swap, showSwap);
 
 
 const expenseTypes = props.fixedOrAdditional
@@ -139,10 +135,10 @@ watch(
 );
 
 function openSwapAPModal() {
-    swap.value.openSwapAPModal()
+    invokeSwap('openSwapAPModal')
 }
 
 function openModalImport() {
-    expensesImport.value.toogleModalImport()
+    invokeExpenseImport('toogleModalImport')
 };
 </script>

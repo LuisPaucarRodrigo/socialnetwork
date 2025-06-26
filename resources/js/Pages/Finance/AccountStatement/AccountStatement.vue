@@ -62,7 +62,7 @@
                             <div class="tooltip-arrow" data-popper-arrow></div>
                         </div>
                     </div>
-                    <div>
+                    <div v-if="monthInput">
                         <a :href="route('spreadsheets.export.bank.table', { date: monthInput })"
                             target="_blank" data-tooltip-target="export_tooltip" type="button"
                             class="p-2 bg-indigo-500 rounded-md hover:bg-indigo-400 flex items-center w-10 h-10">

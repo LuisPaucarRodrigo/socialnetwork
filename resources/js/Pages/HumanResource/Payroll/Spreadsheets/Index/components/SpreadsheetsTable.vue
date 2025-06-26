@@ -54,14 +54,17 @@
                 <TableRow :style="'text-right bg-green-200'">S/ {{ item.new_totals.net_pay.toFixed(2) }}</TableRow>
                 <TableRow :style="'text-right'">S/ {{ item.new_totals.employer_tac_total.toFixed(2) }}</TableRow>
                 <TableRow>
-                    <Link
-                        :href="route('spreadsheets.details.index', { payroll_details_id: item.id, employee_id: item.employee_id })">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-5 h-5 text-amber-400">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                    </svg>
-                    </Link>
+                    <div class="flex gap-x-3">
+                        <Link
+                            :href="route('spreadsheets.details.index', { payroll_details_id: item.id, employee_id: item.employee_id })">
+                        <EditIcon />
+                        </Link>
+                        <a :href="route('spreadsheets.generate.bill', { payroll_detail_id: item.id }) +
+                            '?' +
+                            uniqueParam" target="_blank">
+                            <DocumentIcon />
+                        </a>
+                    </div>
                 </TableRow>
             </tr>
             <tr>
@@ -86,53 +89,26 @@ import TableStructure from '@/Layouts/TableStructure.vue';
 import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
 import { formattedDate } from '@/utils/utils';
 import { Link } from '@inertiajs/vue3';
-import { watch } from 'vue';
-import { notifyWarning } from "@/Components/Notification";
+import { DocumentIcon, EditIcon } from '@/Components/Icons';
 
 const {
     spreadsheets,
     totals,
     pensionTypes,
-    payrolls,
-    openPaymentTravelExpenseModal,
     actionForm,
     filterForm,
 } = defineProps({
     spreadsheets: Object,
     totals: Object,
     pensionTypes: Array,
-    payrolls: Object,
-    openPaymentTravelExpenseModal: Function,
     actionForm: Object,
     filterForm: Object,
 })
+const uniqueParam = `timestamp=${new Date().getTime()}`;
 
 const handleCheckAll = (e) => {
     if (e.target.checked) { actionForm.ids = spreadsheets.map((item) => item.id); }
     else { actionForm.ids = []; }
 };
-
-
-const emit = defineEmits(['update:spreadsheets', 'update:totals']);
-async function search_advance() {
-    try {
-        let res = await axios.post(route("spreadsheets.index", { payroll_id: payrolls.id, }),
-            filterForm
-        );
-        emit('update:spreadsheets', res.data.spreadsheet);
-        emit('update:totals', res.data.total);
-        notifyWarning(`Se encontraron ${res.data.spreadsheet.length} registro(s)`);
-    } catch (error) {
-        console.error("Error en la solicitud:", error);
-    }
-}
-
-watch(() => filterForm.selectedPensionTypes, () => {
-    search_advance()
-}, { deep: true })
-
-
-
-defineExpose({ search_advance });
 
 </script>

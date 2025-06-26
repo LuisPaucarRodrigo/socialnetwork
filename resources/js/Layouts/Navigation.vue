@@ -12,30 +12,20 @@
 
         <nav class="mt-10" x-data="{ isMultiLevelMenuOpen: false }">
             <template v-for="module in navModules" :key="module.name">
-                <component
-                    v-if="modulePermission(module.name, userModules)"
-                    :is="module.component"
-                />
+                <SuspenseWrapper :when="modulePermission(module.name, userModules)">
+                    <template #component>
+                        <component :is="module.component" />
+                    </template>
+                </SuspenseWrapper>
             </template>
         </nav>
     </div>
 </template>
 
 <script>
-import NavLink from '@/Components/NavLink.vue';
-import MyTransition from '@/Components/MyTransition.vue';
-import { Link, } from '@inertiajs/vue3';
-import FleetNavigation from './Navigation/FleetNavigation.vue';
-import EmployeesNavigation from './Navigation/EmployeesNavigation.vue';
-import ProjectsNavigation from './Navigation/ProjectsNavigation.vue';
-import InventoryNavigation from './Navigation/InventoryNavigation.vue';
-import FinanceNavigation from './Navigation/FinanceNavigation.vue';
-import PurchaseNavigation from './Navigation/PurchaseNavigation.vue';
-import BillingNavigation from './Navigation/BillingNavigation.vue';
-import UserNavigation from './Navigation/UserNavigation.vue';
-import HuaweiNavigation from '@/Layouts/Navigation/HuaweiNavigation.vue';
-import SharePointNavigation from './Navigation/SharePointNavigation.vue';
 import { modulePermission } from '@/utils/roles/roles';
+import { defineAsyncComponent } from 'vue';
+import SuspenseWrapper from '@/Components/SuspenseWrapper.vue';
 
 // import DocumentGestionNavigation from './Navigation/DocumentGestionNavigation.vue';
 
@@ -47,25 +37,23 @@ export default {
     },
 
     components: {
-        NavLink,
-        Link,
-        MyTransition,
-        UserNavigation,
-        FleetNavigation,
-        EmployeesNavigation,
-        ProjectsNavigation,
-        InventoryNavigation,
-        FinanceNavigation,
-        PurchaseNavigation,
-        BillingNavigation,
-        HuaweiNavigation,
-        SharePointNavigation
+        SuspenseWrapper,
+        UserNavigation: defineAsyncComponent(() => import('./Navigation/UserNavigation.vue')),
+        FleetNavigation: defineAsyncComponent(() => import('./Navigation/FleetNavigation.vue')),
+        EmployeesNavigation: defineAsyncComponent(() => import('./Navigation/EmployeesNavigation.vue')),
+        ProjectsNavigation: defineAsyncComponent(() => import('./Navigation/ProjectsNavigation.vue')),
+        InventoryNavigation: defineAsyncComponent(() => import('./Navigation/InventoryNavigation.vue')),
+        FinanceNavigation: defineAsyncComponent(() => import('./Navigation/FinanceNavigation.vue')),
+        PurchaseNavigation: defineAsyncComponent(() => import('./Navigation/PurchaseNavigation.vue')),
+        BillingNavigation: defineAsyncComponent(() => import('./Navigation/BillingNavigation.vue')),
+        HuaweiNavigation: defineAsyncComponent(() => import('@/Layouts/Navigation/HuaweiNavigation.vue')),
+        SharePointNavigation: defineAsyncComponent(() => import('./Navigation/SharePointNavigation.vue')),
         // DocumentGestionNavigation
     },
 
     data() {
         return {
-            userModules : this.$page.props.auth.userModules,
+            userModules: this.$page.props.auth.userModules,
             navModules: [
                 { name: 'USERS_MODULE', component: 'UserNavigation' },
                 { name: 'HR_MODULE', component: 'EmployeesNavigation' },

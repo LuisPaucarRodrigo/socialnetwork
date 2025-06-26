@@ -13,11 +13,13 @@ use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
 class UserController extends Controller
-{   
+{
     public function index_user()
-    {   
+    {
         return Inertia::render('Users/Index/Index', [
-            'user' => User::with(['role', 'employee:id,user_id'])->paginate(20)
+            'user' => User::with(['role:id,name', 'employee:id,user_id'])
+                ->select(['id', 'name', 'platform', 'email', 'dni', 'phone', 'role_id'])
+                ->paginate(20)
         ]);
     }
 
@@ -25,10 +27,12 @@ class UserController extends Controller
     {
         $searchQuery = $request->searchQuery;
         $platform = $request->platform;
-        $user = User::with(['role', 'employee:id,user_id'])->where(function ($query) use ($searchQuery) {
-            $query->where('name', 'like', "%$searchQuery%")
-                ->orWhere('dni', 'like', "%$searchQuery%");
-        });
+        $user = User::with(['role:id,name', 'employee:id,user_id'])
+            ->select(['id', 'name', 'platform', 'email', 'dni', 'phone', 'role_id'])
+            ->where(function ($query) use ($searchQuery) {
+                $query->where('name', 'like', "%$searchQuery%")
+                    ->orWhere('dni', 'like', "%$searchQuery%");
+            });
         if (count($platform) < 3) {
             $user->whereIn('platform', $platform);
         }

@@ -9,6 +9,7 @@ use App\Models\PayrollDetail;
 use App\Models\PayrollDetailExpense;
 use App\Models\Pension;
 use App\Constants\PayrollConstants;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 
@@ -61,11 +62,23 @@ class PayrollServices
         return $payrollDetail;
     }
 
-    public function getActiveEmployees()
+    public function getActiveEmployees($month)
     {
+        $startOfMonth = Carbon::parse($month)->startOfMonth();
+        $endOfMonth = Carbon::parse($month)->endOfMonth();
+
         return Employee::select('id')
             ->with('contract')
-            ->whereHas('contract', fn($query) => $query->where('state', 'Active'));
+            ->whereHas('contract', function ($query) use ($startOfMonth, $endOfMonth) {
+                $query->whereDate('hire_date', '<=', $endOfMonth)
+                    ->where(function ($q) use ($startOfMonth, $endOfMonth) {
+                        $q->where('state', 'Active')
+                            ->orWhere(function ($subQuery) use ($startOfMonth, $endOfMonth) {
+                                $subQuery->where('state', 'Inactive')
+                                    ->whereBetween('fired_date', [$startOfMonth, $endOfMonth]);
+                            });
+                    });
+            });
     }
 
     function createPayrollDetailForEmployee($employee, $payroll, $listPension)
@@ -131,11 +144,11 @@ class PayrollServices
         ];
     }
 
-    public function getPayrollDetails($payroll_id, Request $request=null)
+    public function getPayrollDetails($payroll_id, Request $request = null)
     {
-        $query = PayrollDetail::with('payroll', 'payroll_detail_expense', 'employee', 'pension')
+        $query = PayrollDetail::with('payroll', 'payroll_detail_expense', 'employee:id,dni,name,lastname', 'pension:id,type')
             ->where('payroll_id', $payroll_id);
-        if(!$request)return $query;
+        if (!$request) return $query;
 
         if ($request->search) {
             $searchQuery = $request->search;
@@ -146,14 +159,15 @@ class PayrollServices
         }
         if (count($request->selectedPensionTypes) < PayrollConstants::payrollPensionTypes()) {
             $selectedPensionTypes = $request->selectedPensionTypes;
-            $query->whereHas('pension', function($sq) use ($selectedPensionTypes){
+            $query->whereHas('pension', function ($sq) use ($selectedPensionTypes) {
                 $sq->whereIn('type', $selectedPensionTypes);
             });
         }
         return $query;
     }
 
-    public function getPayrollDetailsAllValues($payroll_id) {
+    public function getPayrollDetailsAllValues($payroll_id)
+    {
         $query = PayrollDetail::where('payroll_id', $payroll_id);
         return $query;
     }

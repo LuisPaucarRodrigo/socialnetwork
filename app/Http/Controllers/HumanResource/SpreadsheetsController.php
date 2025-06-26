@@ -39,6 +39,7 @@ use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\AccountStatement;
 use App\Services\HumanResource\PayrollServices;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Arr;
 
 class SpreadsheetsController extends Controller
@@ -83,12 +84,13 @@ class SpreadsheetsController extends Controller
             //Create associated pensions
             $this->payrollServices->forCreatePension($validateData, $payroll);
             //Cargar pensiones
-            $listPension = $payroll->load('pension');
+            $payroll->load('pension');
+            $listPension = $payroll;
             //Obtener empleados activos
-            $employees = $this->payrollServices->getActiveEmployees()->get();
+            $employees = $this->payrollServices->getActiveEmployees($payroll['month'])->get();
             //Crear detalles por empleado
             foreach ($employees as $employee) {
-                $payrollDetail = $this->payrollServices->createPayrollDetailForEmployee($employee, $payroll, $listPension);
+                $this->payrollServices->createPayrollDetailForEmployee($employee, $payroll, $listPension);
                 // $this->payrollServices->createPayrollDetailExpenses($payrollDetail);
             }
             DB::commit();
@@ -128,6 +130,81 @@ class SpreadsheetsController extends Controller
         }
     }
 
+    public function generate_payroll_bill($payroll_detail_id)
+    {
+        $payroll_detail = PayrollDetail::with('payroll_detail_work_schedule')->find($payroll_detail_id);
+        // $spreadsheet = $this->payrollServices->getPayrollDetails($payroll_id)->first();
+        if (!$payroll_detail) {
+            return response()->json(['message' => 'Payroll not found'], 404);
+        }
+        $days = $this->sum_schedule_days($payroll_detail->payroll_detail_work_schedule);
+        $hours = $this->sum_schedule_hours($payroll_detail->payroll_detail_work_schedule);
+
+        $payroll_data = [
+            'month' => $payroll_detail->payroll->month,
+            'dni' => $payroll_detail->employee->dni,
+            'name' => $payroll_detail->employee_name,
+            'hire_date' => $payroll_detail->employee->contract->hire_date,
+            'pension_type' => $payroll_detail->pension->type,
+            'cuspp' => $payroll_detail->employee->contract->cuspp ?? 'Sin Cuspp',
+
+            'days_worked' => $days['result'],
+            'days_not_worked' => $days['countNotSub'],
+            'days_subsided' => $days['countSub'],
+            'subsidized_days' => $days['result'],
+
+            'total_ordinary_hours' => $hours['regular_hours']['hours'] ?? 0,
+            'total_ordinary_minutes' => $hours['regular_hours']['minutes'] ?? 0,
+            'total_overtime_hours' => $hours['overtime_hours']['hours'] ?? 0,
+            'total_overtime_minutes' => $hours['overtime_hours']['minutes'] ?? 0,
+
+            'basic_salary' => $payroll_detail->basic_salary,
+            'cts' => $payroll_detail->cts,
+            'rnp_amount' => $payroll_detail->rnp_amount,
+            'cp_amount' => $payroll_detail->cp_amount,
+            'rq_amount' => $payroll_detail->rq_amount,
+            'ps_amount' => $payroll_detail->ps_amount,
+            'ap_amount' => $payroll_detail->ap_amount,
+            'net_pay' => $payroll_detail->new_totals['net_pay'],
+            'eSalud' => $payroll_detail->basic_salary * 0.1,
+        ];
+        $pdf = Pdf::loadView('pdf.PayrollBill', [
+            'spreadsheet' => $payroll_data
+        ]);
+        return $pdf->stream('Planilla.pdf');
+    }
+
+    public function sum_schedule_days($schedule): array
+    {
+        $countSub = 0;
+        $countNotSub = 0;
+        if ($schedule != null) {
+            foreach ($schedule->subsidized_days as $item) {
+                $countSub += $item['quantity'];
+            }
+            foreach ($schedule->non_subsidized_days as $item) {
+                $countNotSub += $item['quantity'];
+            }
+        }
+        $result = 31 - $countSub - $countNotSub;
+        return ['result' => $result, 'countSub' => $countSub, 'countNotSub' => $countNotSub];
+    }
+
+    public function sum_schedule_hours($schedule): array
+    {
+        $hours = [];
+        if ($schedule != null) {
+            [$hoursO, $minutesO] = explode(':', $schedule->regular_hours);
+            [$hoursS, $minutesS] = explode(':', $schedule->overtime_hours);
+
+            $hours = [
+                'regular_hours' => ['hours' => $hoursO, 'minutes' => $minutesO],
+                'overtime_hours' => ['hours' => $hoursS, 'minutes' => $minutesS],
+            ];
+        }
+
+        return $hours;
+    }
 
     public function export_excel_payroll_detail($payroll_id)
     {

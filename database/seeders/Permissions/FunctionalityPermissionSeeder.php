@@ -170,6 +170,7 @@ class FunctionalityPermissionSeeder extends Seeder
                     'payroll.store',
                     'payroll.state.update',
                     'spreadsheets.index',
+                    'spreadsheets.generate.bill',
                     'index.worker.data',
                     'payroll.show.payroll.detail.work.schedule',
                     'payroll.store.payroll.detail.work.schedule',
@@ -1389,6 +1390,7 @@ class FunctionalityPermissionSeeder extends Seeder
                     'cicsa.assignation.destroy',
                     'assignation.index',
                     'assignation.export',
+                    'assignation.update',
                     'feasibilities.index',
                     'feasibilities.storeOrUpdate',
                     'feasibilities.export',
@@ -1627,7 +1629,7 @@ class FunctionalityPermissionSeeder extends Seeder
                     'fleet.cars.store',
                     'fleet.cars.update',
                     'fleet.cars.destroy',
-                    
+
                     'fleet.cars.alarms',
                     'fleet.cars.checklist.alarms',
                     'fleet.cars.specific.alarms',
@@ -1704,7 +1706,7 @@ class FunctionalityPermissionSeeder extends Seeder
                     'huawei.projects.liquidateproject',
                     'huawei.projects.cancelproject',
                     'huawei.projects.stopped.resume',
-                    
+
                     'huawei.projects.generalbalance',
                     'huawei.projects.generalbalance.expensesbyzone',
                     'huawei.projects.general.expenses',

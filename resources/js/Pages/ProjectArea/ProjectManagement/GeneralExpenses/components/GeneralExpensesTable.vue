@@ -1,10 +1,13 @@
 <template>
     <div class="overflow-x-auto h-[85vh]">
+        <!-- <div class="mb-4">
+            <ChartsAdditionalExpenses :acExpensesAmounts="acExpensesAmounts" :scExpensesAmounts="scExpensesAmounts" />
+        </div> -->
         <table class="w-full">
             <thead class="sticky top-0 z-20">
                 <tr
                     class=" border-b bg-gray-50 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">
-                    <th class="sticky left-0 z-10 bg-gray-100 border-b-2 border-gray-20">
+                    <th class="bg-gray-100 border-b-2 border-gray-20 sticky left-0 z-10">
                         <div class="w-2"></div>
                     </th>
                     <th
@@ -15,14 +18,6 @@
                             {{ actionForm.ids.length ?? "" }}
                         </label>
                     </th>
-                    <!-- <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Proyecto
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Centro de Costos
-                        </th> -->
                     <th
                         class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                         <TableHeaderFilter labelClass="text-[11px]" label="Zona" :options="zones"
@@ -35,7 +30,7 @@
                     </th>
                     <th
                         class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                        <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Documento" :options="docTypes"
+                        <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Documento" :options="documentsType"
                             v-model="filterForm.selectedDocTypes" width="w-40" />
                     </th>
                     <th
@@ -50,6 +45,10 @@
                         class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                         Numero de Operacion
                     </th>
+                    <!-- <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            Fecha de Operacion
+                        </th> -->
                     <th
                         class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                         <TableDateFilter labelClass="text-[11px]" label="Fecha de Operación"
@@ -60,6 +59,10 @@
                         class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                         Numero de Doc
                     </th>
+                    <!-- <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            Fecha de Documento
+                        </th> -->
                     <th
                         class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                         <TableDateFilter labelClass="text-[11px]" label="Fecha de Documento"
@@ -98,20 +101,12 @@
                     <td :class="[
                         'sticky left-0 z-10 border-b border-gray-200',
                         {
-                            'bg-indigo-500': item.is_accepted === null,
-                            'bg-green-500': item.is_accepted == true,
-                            'bg-red-500': item.is_accepted == false,
+                            'bg-indigo-500': item.real_state === 'Pendiente',
+                            'bg-green-500': item.real_state == 'Aceptado - Validado',
+                            'bg-amber-500': item.real_state == 'Aceptado',
+                            'bg-red-500': item.real_state == 'Rechazado',
                         },
-                    ]">
-                    </td>
-                    <!-- <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap">
-                            {{ item.cicsa_assignation?.project_name }}
-                        </td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap">
-                            {{ item.project?.cost_center?.name }}
-                        </td> -->
+                    ]"></td>
                     <td
                         class="sticky left-2 z-10 border-b border-r border-gray-200 bg-amber-100 text-center text-[13px] whitespace-nowrap tabular-nums">
                         <label :for="`check-${item.id}`" class="block w-12 px-2 py-1">
@@ -140,7 +135,7 @@
                     </td>
                     <td
                         class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap">
-                        {{ formattedDate(item.operation_date) }}
+                        {{ item.operation_date }}
                     </td>
                     <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums">
                         {{ item.doc_number }}
@@ -183,18 +178,27 @@
                     <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                         <div class="flex items-center gap-3 w-full">
                             <div v-if="item.is_accepted === null" class="flex gap-3 justify-center w-1/2">
-                                <button @click="() => validateRegister(item.id, true)" type="button">
+                                <button @click="() =>
+                                    validateRegister(item.id, true)
+                                " type="button">
                                     <AcceptIcon />
                                 </button>
-                                <button @click="() => validateRegister(item.id, false)" type="button">
+                                <button @click="() =>
+                                    validateRegister(item.id, false)
+                                " type="button">
                                     <RejectIcon />
                                 </button>
                             </div>
                             <div v-else class="w-1/2"></div>
 
                             <div class="flex gap-3 mr-3">
-                                <button v-if="!filterForm.rejected" @click="() => validateRegister(item.id, true)">
-                                    <AcceptIcon />
+                                <button v-if="!filterForm.rejected" data-tooltip-target="tooltip-up-ac" @click="() => validateRegister(item.id, true)
+                                " class="flex items-center rounded-xl text-blue-700 hover:bg-green-200">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15m0-3-3-3m0 0-3 3m3-3V15" />
+                                    </svg>
                                 </button>
                                 <button @click="openEditAdditionalModal(item)">
                                     <EditIcon />
@@ -209,10 +213,12 @@
                 <tr class="sticky bottom-0 z-10 text-gray-700">
                     <td class="font-bold border-b border-gray-200 bg-white">
                     </td>
+                    <td class="font-bold border-b border-gray-200 bg-white">
+                    </td>
                     <td class="font-bold border-b border-gray-200 bg-white px-5 py-5 text-sm">
                         TOTAL
                     </td>
-                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="9"></td>
+                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="8"></td>
                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
                         S/.
                         {{
@@ -242,23 +248,25 @@
     </div>
 </template>
 <script setup>
-import TableDateFilter from "@/Components/TableDateFilter.vue";
-import Pagination from "@/Components/Pagination.vue";
-import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
+import TableHeaderFilter from '@/Components/TableHeaderFilter.vue';
+// import ChartsAdditionalExpenses from '../../ChartsAdditionalExpenses.vue';
+import TableDateFilter from '@/Components/TableDateFilter.vue';
+import { AcceptIcon, DeleteIcon, EditIcon, RejectIcon, ShowIcon } from '@/Components/Icons';
 import { formattedDate } from "@/utils/utils";
-import { ref } from "vue";
-import { notify, notifyError } from "@/Components/Notification";
-import { DeleteIcon, EditIcon, AcceptIcon, RejectIcon, ShowIcon } from "@/Components/Icons";
+import Pagination from "@/Components/Pagination.vue";
+import { notify } from '@/Components/Notification';
 
-const { expenses, filterForm, zones, docTypes, expenseTypes, stateTypes, openEditAdditionalModal, confirmDeleteAdditional } = defineProps({
+const { expenses, openEditAdditionalModal, confirmDeleteAdditional, filterForm, zones, expenseTypes, documentsType, stateTypes, acExpensesAmounts, scExpensesAmounts } = defineProps({
     expenses: Object,
+    openEditAdditionalModal: Function,
+    confirmDeleteAdditional: Function,
     filterForm: Object,
     zones: Array,
-    docTypes: Array,
     expenseTypes: Array,
+    documentsType: Array,
     stateTypes: Array,
-    openEditAdditionalModal: Function,
-    confirmDeleteAdditional: Function
+    acExpensesAmounts: Array,
+    scExpensesAmounts: Array,
 })
 const actionForm = defineModel('actionForm')
 
@@ -271,15 +279,16 @@ async function validateRegister(expense_id, is_accepted) {
         } else {
             updateExpense(expense_id, "rejectedValidate")
         }
-    } catch (error) {
-        console.log(error);
-        if (error.response) {
-            notifyError(`Server Error: ${error.response.data}`)
-        } else {
-            notifyError('Server Error')
-        }
+    } catch (e) {
+        console.log(e);
     }
 }
+
+const handleCheckAll = (e) => {
+    let listDate = expenses.data || expenses
+    if (e.target.checked) { actionForm.value.ids = listDate.map((item) => item.id); }
+    else { actionForm.value.ids = []; }
+};
 
 function handlerPreview(id) {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
@@ -290,8 +299,6 @@ function handlerPreview(id) {
         "_blank"
     );
 }
-
-
 
 function updateExpense(expense, action, state) {
     let listDate = expenses.data || expenses
@@ -310,11 +317,4 @@ function updateExpense(expense, action, state) {
         notify('El gasto paso a ser aceptado')
     }
 }
-
-const handleCheckAll = (e) => {
-    let listDate = expenses.data || expenses
-    if (e.target.checked) { actionForm.value.ids = listDate.map((item) => item.id); }
-    else { actionForm.value.ids = []; }
-};
-
 </script>

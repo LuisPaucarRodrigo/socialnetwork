@@ -25,8 +25,8 @@ class CreateManagementEmployees extends FormRequest
     public function rules(): array
     {
         return [
-            'curriculum_vitae' => 'nullable|mimes:pdf|max:51200',
-            'cropped_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'curriculum_vitae' => 'nullable|max:51200',
+            'cropped_image' => 'nullable|image|max:2048',
             'name' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
             'gender' => 'required|string|in:Masculino,Femenino',
@@ -39,7 +39,9 @@ class CreateManagementEmployees extends FormRequest
             'nro_cuenta' => 'nullable|unique:' . Contract::class,
 
             'cost_line_id' => 'required|numeric',
+            
             'type_contract' => 'required|string',
+            'cuspp' => 'required_unless:type_contract,ONP|max:12',
             'state_travel_expenses' => 'required|boolean',
             'amount_travel_expenses' => 'nullable|numeric|required_if:state_travel_expenses,true',
 

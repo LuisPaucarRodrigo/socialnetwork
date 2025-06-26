@@ -65,16 +65,14 @@ import TableHeaderFilter from '@/Components/TableHeaderFilter.vue';
 import { Link } from '@inertiajs/vue3';
 import Pagination from '@/Components/Pagination.vue';
 import { notify, notifyError } from '@/Components/Notification';
-import { ShowIcon, EditIcon, DeleteIcon, LinkIcon } from '@/Components/Icons/Index';
+import { ShowIcon, EditIcon, DeleteIcon, LinkIcon } from '@/Components/Icons';
 
-const { users, formSearch, platforms } = defineProps({
+const { users, formSearch, platforms, confirmUserDeletion } = defineProps({
     users: Object,
     formSearch: Object,
     platforms: Array,
+    confirmUserDeletion: Function
 })
-
-const usersToDelete = defineModel('usersToDelete')
-const confirmingUserDeletion = defineModel('confirmingUserDeletion')
 
 async function linkEmployee(id) {
     let url = route('users.linkEmployee', { user: id })
@@ -96,11 +94,6 @@ async function linkEmployee(id) {
         }
     }
 }
-
-const confirmUserDeletion = (userId) => {
-    confirmingUserDeletion.value = true;
-    usersToDelete.value = userId;
-};
 
 function updateFrontEnd(action, data) {
     const validations = users.data || users

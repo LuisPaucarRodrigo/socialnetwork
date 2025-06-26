@@ -163,14 +163,12 @@
                             <div class="mt-2 flex gap-4">
                                 <label class="flex gap-2 items-center">
                                     Sí
-                                    <input type="radio" v-model="form.life_ley" id="life_ley"
-                                        :value="true"
+                                    <input type="radio" v-model="form.life_ley" id="life_ley" :value="true"
                                         class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
                                 </label>
                                 <label class="flex gap-2 items-center">
                                     No
-                                    <input type="radio" v-model="form.life_ley" id="life_ley"
-                                        :value="false"
+                                    <input type="radio" v-model="form.life_ley" id="life_ley" :value="false"
                                         class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
                                 </label>
                                 <InputError :message="form.errors.life_ley" />
@@ -229,6 +227,16 @@
                                     </option>
                                 </select>
                                 <InputError :message="form.errors.pension_type" />
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-2" v-if="form.pension_type !== 'ONP'">
+                            <InputLabel for="cuspp">
+                                CUSPP
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="text" v-model="form.cuspp" id="cuspp" maxlength="12" :toUppercase="true"/>
+                                <InputError :message="form.errors.cuspp" />
                             </div>
                         </div>
 
@@ -772,6 +780,7 @@ const form = useForm({
     cost_line_id: '',
     personal_segment: '',
     type_contract: '',
+    cuspp: '',
     state_travel_expenses: true,
     discount_remuneration: '',
     discount_sctr: '',
@@ -869,6 +878,7 @@ if (props.employees) {
     form.phone1 = props.employees.phone1;
     form.cost_line_id = props.employees.contract.cost_line_id;
     form.type_contract = props.employees.contract.type_contract;
+    form.cuspp = props.employees.contract.cuspp;
     form.state_travel_expenses = props.employees.contract.state_travel_expenses == 1 ? true : false;
     form.discount_remuneration = props.employees.contract.discount_remuneration == 1 ? true : false;
     form.discount_sctr = props.employees.contract.discount_sctr == 1 ? true : false;

@@ -206,17 +206,10 @@ async function submit() {
 
 }
 
-
-
-
-
-
-
-
-
 function openDetailsModal(payroll_detail_id) {
     showDetails.value = true
 }
+
 function closeDetailsModal() {
     showDetails.value = false
 }

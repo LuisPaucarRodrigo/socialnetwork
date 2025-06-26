@@ -73,7 +73,7 @@ class PextProjectServices
 
     public function baseSearch($fixedOrAdditional)
     {
-        $expense = PextProjectExpense::with(['provider:id,company_name', 'project.cost_center'])
+        $expense = PextProjectExpense::with(['provider:id,company_name'])
             ->where('fixedOrAdditional', $fixedOrAdditional);
         return $expense;
     }
@@ -143,7 +143,7 @@ class PextProjectServices
             $expense->where('operation_date', '<=', $request->opEndDate);
         }
 
-        if ($request->selectedZones && count($request->selectedZones) < 7) {
+        if (count($request->selectedZones) < 9) {
             $expense->whereIn('zone', $request->selectedZones);
         }
 
@@ -247,7 +247,7 @@ class PextProjectServices
 
     public function project_expenses_base(int $project_id, $fixedOrAdditional): Builder
     {
-        $expense = PextProjectExpense::with(['provider:id,company_name', 'project.cost_center'])
+        $expense = PextProjectExpense::with(['provider:id,company_name'])
             ->where('fixedOrAdditional', json_decode($fixedOrAdditional))
             ->where('project_id', $project_id)
             ->where(function ($query) {

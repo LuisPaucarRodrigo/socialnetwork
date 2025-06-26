@@ -16,7 +16,6 @@
             <br>
             <PayrollTable :payrolls="payrolls" />
         </div>
-
         <PayrollForm :payrolls="payrolls" ref="payrollForm" />
     </AuthenticatedLayout>
 </template>
