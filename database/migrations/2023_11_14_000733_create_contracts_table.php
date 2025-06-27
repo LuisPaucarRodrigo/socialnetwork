@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('type_contract');
             $table->string('pension_type');
             $table->string('discharge_document')->nullable();
+            $table->string('cuspp')->nullable();
             $table->float('amount_travel_expenses')->nullable();
             $table->foreignId('employee_id')->constrained()->onDelete('cascade');
             $table->foreignId('cost_line_id')->nullable()->constrained('cost_lines')->nullOnDelete();

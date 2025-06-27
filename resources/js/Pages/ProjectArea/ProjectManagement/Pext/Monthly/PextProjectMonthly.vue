@@ -8,11 +8,11 @@
         <Toaster richColors />
         <div class="min-w-full">
             <TableHeader v-model:projects="projects" :createOrEditModal="createOrEditModal" />
-            <br>
+            
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 <ProjectCard v-for="item in projects.data || projects" :key="item.id" :item="item" :auth="auth" />
             </div>
-            <br>
+            
             <div v-if="projects.data" class="flex flex-col items-center px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="projects.links" />
             </div>

@@ -151,7 +151,7 @@
                     </div>
                   </td>
                   <td v-if="sectionIsVisible(sec.name) && sec.id === 9" :class="['px-2 py-2', 'text-center border-2',
-                    (emp.l_policy && emp.policy_exp_date === null) && 'bg-red-100'
+                    (emp.contract?.life_ley && emp.policy_exp_date === null) && 'bg-red-100'
                   ]">
                     <div class="min-w-[170px] flex items-center">
 
@@ -613,7 +613,7 @@ async function submitInsurance() {
         item.sctr_exp_date = insuranceForm.exp_date
         item.sctr_about_to_expire = actual >= newDate
       }
-      if (item.l_policy && title === 'Póliza') {
+      if (item.contract?.life_ley && title === 'Póliza') {
         item.policy_exp_date = insuranceForm.exp_date
         item.policy_about_to_expire = actual >= newDate
       }
@@ -635,7 +635,8 @@ async function submitInsurance() {
     setTimeout(() => {
       notify(`${title} Actualizado`)
     }, 100)
-  } catch {
+  } catch(error) {
+    console.error(error)
     closeInsuranceModal()
     setTimeout(() => {
       notify('Server Error')

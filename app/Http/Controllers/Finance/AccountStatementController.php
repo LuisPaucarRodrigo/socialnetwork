@@ -254,7 +254,7 @@ class AccountStatementController extends Controller
                     $boletas[] = $expense->doc_number . ';';
                 } elseif (($type === 'recibo por honorarios') && $expense->doc_number) {
                     $rrhh[] = $expense->doc_number . ';';
-                } elseif ($type === 'sin comprobante') {
+                } elseif ($type === 'sin comprobante' || $type === 'efectivo') {
                     $efectivoTotal += floatval($expense->amount);
                 }
             }

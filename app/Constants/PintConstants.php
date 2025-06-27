@@ -65,6 +65,8 @@ class PintConstants
     public const ACEPTADO = "Aceptado";    
     public const ACEPTADO_VALIDADO = "Aceptado - Validado";    
     public const RECHAZADO = "Rechazado";
+    public const NO_DISPONIBLE = "No Disponible";
+
 
     //zones
     public const AREQUIPA = "Arequipa";

@@ -1,24 +1,27 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<link rel="icon" href="/image/LOGO CCIP.png" type="image/png">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+    <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <!-- Favicon -->
+    <link rel="icon" href="/image/LOGO CCIP.png" type="image/png">
 
-        <!-- Scripts -->
-        <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGdFiWfnd_SLlV4KRR1sgCfBRO17Gaxvs&callback=initMap"></script> -->
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-        @routes
-        @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
-        @inertiaHead
-    </head>
-    <body class="font-sans antialiased">
-        @inertia
-    </body>
+    <!-- Scripts -->
+    <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGdFiWfnd_SLlV4KRR1sgCfBRO17Gaxvs&callback=initMap"></script> -->
+
+    @routes
+    @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
+    @inertiaHead
+</head>
+
+<body class="font-sans antialiased">
+    @inertia
+</body>
 </html>

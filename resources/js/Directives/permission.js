@@ -16,4 +16,9 @@ export default {
             checkPermissions(el, binding, "or");
         },
     },
+    not: {
+        mounted(el, binding) {
+            checkPermissions(el, binding, "not"); 
+        },
+    },
 };

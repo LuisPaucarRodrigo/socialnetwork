@@ -41,6 +41,7 @@
                                 <option>CICSA</option>
                                 <option>STL</option>
                                 <option>INDRA</option>
+                                <option>OTROS</option>
                             </select>
                             <InputError :message="form.errors.customer" />
                         </div>

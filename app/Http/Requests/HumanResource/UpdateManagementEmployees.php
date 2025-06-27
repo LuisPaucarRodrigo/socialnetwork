@@ -22,12 +22,12 @@ class UpdateManagementEmployees extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    {   
+    {
 
         $contract = Contract::where('employee_id', $this->route('id'))->first();
         return [
-            'curriculum_vitae' => 'nullable|mimes:pdf|max:51200',
-            'cropped_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'curriculum_vitae' => 'nullable|max:51200',
+            'cropped_image' => 'nullable|image|max:2048',
             'name' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
             'gender' => 'required|string|in:Masculino,Femenino',
@@ -41,18 +41,19 @@ class UpdateManagementEmployees extends FormRequest
 
             'cost_line_id' => 'required|numeric',
             'type_contract' => 'required|string',
+            'cuspp' => 'required_unless:type_contract,ONP|max:12',
             'state_travel_expenses' => 'required|boolean',
             'amount_travel_expenses' => 'nullable|numeric|required_if:state_travel_expenses,true',
-            
+
             'discount_remuneration' => 'required|boolean',
             'discount_sctr' => 'required|boolean',
             'pension_type' => 'required|string',
             'basic_salary' => 'required|numeric',
-            'life_ley' => 'required|numeric',
+            'life_ley' => 'required|boolean',
             'hire_date' => 'required|date',
             'education_level' => 'required|string|in:Universidad,Instituto,Otros',
             'education_status' => 'required|string|in:Incompleto,Completo,En Progreso',
-            
+
             'specialization' => 'required|string|max:255',
             'street_address' => 'required|string|max:255',
             'department' => 'required|string|max:255',

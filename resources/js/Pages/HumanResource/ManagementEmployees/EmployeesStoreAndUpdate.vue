@@ -136,7 +136,7 @@
                                 <InputError :message="form.errors.cost_line_id" />
                             </div>
                         </div>
-                        <div class="mt-3 sm:col-span-2">
+                        <div class="mt-3 col-span-2 md:col-span-1">
                             <InputLabel for="discount_remuneration">
                                 ¿Tiene Descuento sobre remuneración?
                             </InputLabel>
@@ -156,7 +156,25 @@
                                 <InputError :message="form.errors.discount_remuneration" />
                             </div>
                         </div>
-                        <div class="mt-3 sm:col-span-1">
+                        <div class="mt-3 col-span-2 md:col-span-1">
+                            <InputLabel for="life_ley">
+                                ¿Tiene Pòliza de Vida?
+                            </InputLabel>
+                            <div class="mt-2 flex gap-4">
+                                <label class="flex gap-2 items-center">
+                                    Sí
+                                    <input type="radio" v-model="form.life_ley" id="life_ley" :value="true"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                </label>
+                                <label class="flex gap-2 items-center">
+                                    No
+                                    <input type="radio" v-model="form.life_ley" id="life_ley" :value="false"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                </label>
+                                <InputError :message="form.errors.life_ley" />
+                            </div>
+                        </div>
+                        <div class="mt-3 col-span-2 md:col-span-1">
                             <InputLabel for="discount_sctr">
                                 ¿Tiene SCTR?
                             </InputLabel>
@@ -175,7 +193,7 @@
                             </div>
                         </div>
 
-                        <div class="mt-3 sm:col-span-1">
+                        <div class="mt-3 col-span-2 md:col-span-1">
                             <InputLabel for="state_travel_expenses">
                                 ¿Tiene Refrigerio?
                             </InputLabel>
@@ -209,6 +227,16 @@
                                     </option>
                                 </select>
                                 <InputError :message="form.errors.pension_type" />
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-2" v-if="form.pension_type !== 'ONP'">
+                            <InputLabel for="cuspp">
+                                CUSPP
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="text" v-model="form.cuspp" id="cuspp" maxlength="12" :toUppercase="true"/>
+                                <InputError :message="form.errors.cuspp" />
                             </div>
                         </div>
 
@@ -260,16 +288,6 @@
                                 <TextInput type="number" v-model="form.amount_travel_expenses"
                                     id="amount_travel_expenses" autocomplete="off" />
                                 <InputError :message="form.errors.amount_travel_expenses" />
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-2">
-                            <InputLabel for="life_ley">Póliza de vida
-                            </InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="number" v-model="form.life_ley" id="life_ley"
-                                    autocomplete="life_ley" />
-                                <InputError :message="form.errors.life_ley" />
                             </div>
                         </div>
 
@@ -762,6 +780,7 @@ const form = useForm({
     cost_line_id: '',
     personal_segment: '',
     type_contract: '',
+    cuspp: '',
     state_travel_expenses: true,
     discount_remuneration: '',
     discount_sctr: '',
@@ -792,58 +811,6 @@ const form = useForm({
     vaccinations: '',
 })
 
-// const form = useForm({
-//     curriculum_vitae: null,
-//     cropped_image: null,
-//     name: 'test',
-//     lastname: 'test lastnamae',
-//     gender: 'Masculino',
-//     state_civil: 'Soltero(a)',
-//     birthdate: '2002-06-21',
-//     dni: '76543777',
-//     email: 'conprocoooo@ccip.com',
-//     email_company: 'conprocoooo@ccip.com',
-//     phone1: '936498348',
-//     nro_cuenta: '23468324-23467-34',
-//     cost_line_id: '1',
-//     personal_segment: 'MOD',
-//     type_contract: 'No Fiscalizado',
-//     state_travel_expenses: true,
-//     discount_remuneration: true,
-//     discount_sctr: true,
-//     pension_type: 'Integra',
-//     basic_salary: 1599,
-//     amount_travel_expenses: '100',
-//     life_ley: 100,
-//     hire_date: '2024-02-01',
-//     education_level: 'Universidad',
-//     education_status: 'Completo',
-//     specialization: 'Ingeniero de software',
-//     street_address: 'Calle mi calle numero mi numero',
-//     department: 'Arequipa',
-//     province: 'Arequipa',
-//     district: 'Arequipa',
-//     emergencyContacts: [
-//         {
-//             emergency_name: 'nombre emergen',
-//             emergency_lastname: 'lastanmae emerge',
-//             emergency_relations: 'Some relation',
-//             emergency_phone: '932864756',
-//         }
-//     ],
-//     familyDependents: [],
-//     blood_group: 'A+',
-//     weight: '72',
-//     height: '178',
-//     shoe_size: '42',
-//     shirt_size: 'M',
-//     pants_size: '32',
-//     medical_condition: 'No',
-//     allergies: 'No',
-//     operations: 'No',
-//     accidents: 'No',
-//     vaccinations: 'No',
-// })
 
 if (props.employees) {
     form.curriculum_vitae = null;
@@ -859,6 +826,7 @@ if (props.employees) {
     form.phone1 = props.employees.phone1;
     form.cost_line_id = props.employees.contract.cost_line_id;
     form.type_contract = props.employees.contract.type_contract;
+    form.cuspp = props.employees.contract.cuspp;
     form.state_travel_expenses = props.employees.contract.state_travel_expenses == 1 ? true : false;
     form.discount_remuneration = props.employees.contract.discount_remuneration == 1 ? true : false;
     form.discount_sctr = props.employees.contract.discount_sctr == 1 ? true : false;
@@ -866,7 +834,7 @@ if (props.employees) {
     form.basic_salary = props.employees.contract.basic_salary;
     form.nro_cuenta = props.employees.contract.nro_cuenta;
     form.amount_travel_expenses = props.employees.contract.amount_travel_expenses;
-    form.life_ley = props.employees.contract.life_ley;
+    form.life_ley = props.employees.contract.life_ley == 1 ? true : false;
     form.hire_date = props.employees.contract.hire_date;
     form.education_level = props.employees.education.education_level;
     form.education_status = props.employees.education.education_status;

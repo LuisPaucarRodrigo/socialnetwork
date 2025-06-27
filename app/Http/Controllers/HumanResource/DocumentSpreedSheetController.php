@@ -26,7 +26,7 @@ class DocumentSpreedSheetController extends Controller
         if ($request->isMethod('get')) {
             $employees = Employee::with([
                 'document_registers',
-                'contract:id,state,employee_id,hire_date,discount_sctr',
+                'contract:id,state,employee_id,hire_date,discount_sctr,life_ley',
             ])->whereHas('contract', function ($query) {
                 $query->where('state', 'Active');
             })
@@ -68,7 +68,7 @@ class DocumentSpreedSheetController extends Controller
             $searchquery = $request->searchquery;
             $employees = Employee::with([
                 'document_registers',
-                'contract:id,state,employee_id,hire_date,discount_sctr,cost_line_id',
+                'contract:id,state,employee_id,hire_date,discount_sctr,life_ley,cost_line_id',
                 'contract.cost_line:id,name'
             ])
                 ->whereHas('contract', function ($query) {
@@ -362,7 +362,9 @@ class DocumentSpreedSheetController extends Controller
             ExternalEmployee::where('sctr', 1)->update(['sctr_exp_date' => $data['exp_date']]);
         }
         if ($data['title'] === 'Póliza') {
-            Employee::where('l_policy', '1')->update(['policy_exp_date' => $data['exp_date']]);
+            Employee::whereHas('contract', function ($query) {
+                $query->where('life_ley', 1);
+            })->update(['policy_exp_date' => $data['exp_date']]);
             ExternalEmployee::where('l_policy', 1)->update(['sctr_exp_date' => $data['exp_date']]);
         }
         return response()->json(['msg' => 'success'], 200);
@@ -415,26 +417,27 @@ class DocumentSpreedSheetController extends Controller
         }
     }
 
-    public function createMasive(Request $request, $employee_id) {
+    public function createMasive(Request $request, $employee_id)
+    {
         DB::beginTransaction();
-        try{
+        try {
             $data = $request->all();
-            foreach($data as $subdivision_id=>$state){
-                if($state === 'No corresponde'){
+            foreach ($data as $subdivision_id => $state) {
+                if ($state === 'No corresponde') {
                     DocumentRegister::create([
-                        'subdivision_id'=> $subdivision_id,
-                        'document_id'=> null,
-                        'employee_id'=> $employee_id,
-                        'e_employee_id'=> null,
-                        'exp_date'=> null,
-                        'state'=> $state,
-                        'observations'=> null,
+                        'subdivision_id' => $subdivision_id,
+                        'document_id' => null,
+                        'employee_id' => $employee_id,
+                        'e_employee_id' => null,
+                        'exp_date' => null,
+                        'state' => $state,
+                        'observations' => null,
                     ]);
                 }
             }
             DB::commit();
             return redirect()->back();
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             DB::rollBack();
             return $e->getMessage();
         }

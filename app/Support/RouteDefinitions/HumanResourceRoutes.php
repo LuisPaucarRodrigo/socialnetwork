@@ -481,7 +481,13 @@ class HumanResourceRoutes
                 'permission' => true,
                 'name' => 'spreadsheets.index',
             ],
-
+            [
+                'uri' => 'managemet_employees/spreadsheets/{payroll_detail_id}/generate_bill',
+                'method' => 'get',
+                'action' => [SpreadsheetsController::class, 'generate_payroll_bill'],
+                'permission' => false,
+                'name' => 'spreadsheets.generate.bill',
+            ],
             [
                 'uri' => 'management_employees/worker_data/{employee_id}',
                 'method' => 'get',

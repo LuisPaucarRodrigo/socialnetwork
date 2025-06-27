@@ -2,16 +2,16 @@
     <div class="mt-6 flex flex-col sm:flex-row sm:items-center justify-between sm:gap-x-3 gap-y-4">
         <div class="flex items-center justify-between gap-x-6 w-full">
             <div class="hidden sm:flex sm:items-center sm:space-x-2 pl-3">
-                <button v-if="!payrolls.state" @click="openPayrollApprove()"
+                <!-- <button v-if="!payrolls.state" @click="openPayrollApprove()"
                     class="rounded-md px-1 py-2 text-center text-sm text-white hover:bg-green-400">
                     <AcceptIcon />
-                </button>
+                </button> -->
                 <button @click="openPaySpreadsheet()"
                     class="rounded-md px-1 py-2 text-blue-600 text-center text-sm hover:bg-blue-200">
                     <DolarIcon />
                 </button>
 
-                
+
                 <Link :href="route('payroll.index.payroll.external.detail', { payroll_id: payrolls.id })"
                     class="bg-indigo-600 hover:bg-indigo-500 rounded-md px-4 py-2 text-center text-sm text-white">
                 PS 4ta categoría
@@ -67,7 +67,7 @@
                         <div>
                             <div class="dropdown">
                                 <div class="dropdown-menu">
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -77,7 +77,7 @@
             <div>
                 <!-- <TextInput type="text" placeholder="Buscar..." @input="search($event.target.value)" /> -->
                 <TextInput data-tooltip-target="search_fields" type="text" placeholder="Buscar..."
-                    v-model="filterForm.search" @keyup.enter="searchSpreadSheetsTable()" />
+                    v-model="filterForm.search" @keyup.enter="search_advance()" />
                 <div id="search_fields" role="tooltip"
                     class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
                     Nombre
@@ -91,19 +91,15 @@
 import Dropdown from '@/Components/Dropdown.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Link } from '@inertiajs/vue3';
-import { DolarIcon, AcceptIcon } from '@/Components/Icons/Index';
+import { DolarIcon } from '@/Components/Icons';
 
-const { payrolls, filterForm, openPayrollApprove, openPaySpreadsheet, searchSpreadSheetsTable, openExportSpreadsheet } = defineProps({
+const { payrolls, filterForm, openPaySpreadsheet, search_advance, openExportSpreadsheet } = defineProps({
     payrolls: Object,
     filterForm: Object,
-    openPayrollApprove: Function,
     openPaySpreadsheet: Function,
-    searchSpreadSheetsTable: Function,
+    search_advance: Function,
     openExportSpreadsheet: Function,
 })
-
-const spreadsheets = defineModel('spreadsheets')
-const totals = defineModel('totals')
 
 function exportGeneralExcel() {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
