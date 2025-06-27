@@ -811,58 +811,6 @@ const form = useForm({
     vaccinations: '',
 })
 
-// const form = useForm({
-//     curriculum_vitae: null,
-//     cropped_image: null,
-//     name: 'test',
-//     lastname: 'test lastnamae',
-//     gender: 'Masculino',
-//     state_civil: 'Soltero(a)',
-//     birthdate: '2002-06-21',
-//     dni: '76543777',
-//     email: 'conprocoooo@ccip.com',
-//     email_company: 'conprocoooo@ccip.com',
-//     phone1: '936498348',
-//     nro_cuenta: '23468324-23467-34',
-//     cost_line_id: '1',
-//     personal_segment: 'MOD',
-//     type_contract: 'No Fiscalizado',
-//     state_travel_expenses: true,
-//     discount_remuneration: true,
-//     discount_sctr: true,
-//     pension_type: 'Integra',
-//     basic_salary: 1599,
-//     amount_travel_expenses: '100',
-//     life_ley: 100,
-//     hire_date: '2024-02-01',
-//     education_level: 'Universidad',
-//     education_status: 'Completo',
-//     specialization: 'Ingeniero de software',
-//     street_address: 'Calle mi calle numero mi numero',
-//     department: 'Arequipa',
-//     province: 'Arequipa',
-//     district: 'Arequipa',
-//     emergencyContacts: [
-//         {
-//             emergency_name: 'nombre emergen',
-//             emergency_lastname: 'lastanmae emerge',
-//             emergency_relations: 'Some relation',
-//             emergency_phone: '932864756',
-//         }
-//     ],
-//     familyDependents: [],
-//     blood_group: 'A+',
-//     weight: '72',
-//     height: '178',
-//     shoe_size: '42',
-//     shirt_size: 'M',
-//     pants_size: '32',
-//     medical_condition: 'No',
-//     allergies: 'No',
-//     operations: 'No',
-//     accidents: 'No',
-//     vaccinations: 'No',
-// })
 
 if (props.employees) {
     form.curriculum_vitae = null;

@@ -1012,13 +1012,10 @@ class FunctionalityPermissionSeeder extends Seeder
                     'additionalcost.excel.export',
                     'additionalcost.archive',
                     'projectmanagement.storeAdditionalCost',
-                    'projectmanagement.updateAdditionalCost',
-                    'projectmanagement.deleteAdditionalCost',
                     'additionalcost.advance.search',
                     'projectmanagement.importAdditionalCost',
                     'zip.additional.descargar',
-                    'projectmanagement.validateAdditionalCost',
-                    'projectmanagement.additionalCosts.massiveUpdate',
+                    
                     'projectmanagement.additionalCosts.swapCosts',
                     'projectmanagement.addctoaddproject.swapCosts',
                     'projectmanagement.regularprojects.all',
@@ -1037,6 +1034,43 @@ class FunctionalityPermissionSeeder extends Seeder
                     'projectmanagement.additionalToAdditional.swapCosts',
                 ]
             ],
+            [
+                'display_name' => 'Modificación de gastos variables',
+                'key_name' => 'pro_pint_mod_additional_costs',
+                'module' => 'ppropint_submodule',
+                'permissions' => [
+                    'projectmanagement.updateAdditionalCost',
+                ]
+            ],
+            [
+                'display_name' => 'Eliminar gastos variables',
+                'key_name' => 'pro_pint_delete_additional_costs',
+                'module' => 'ppropint_submodule',
+                'permissions' => [
+                    'projectmanagement.deleteAdditionalCost',
+                ]
+            ],
+
+            [
+                'display_name' => 'Validación de gastos por supervisor',
+                'key_name' => 'pro_pint_validate_expenses',
+                'module' => 'ppropint_submodule',
+                'permissions' => [
+                    'projectmanagement.validateAdditionalCost',
+                    'projectmanagement.additionalCosts.massiveUpdate',
+                    'projectmanagement.rejectAdditionalCost',
+                ]
+            ],
+            [
+                'display_name' => 'Validación de gastos por administrativo',
+                'key_name' => 'pro_pint_admin_validate_expenses',
+                'module' => 'ppropint_submodule',
+                'permissions' => [
+                    'projectmanagement.administrative.validation'
+                ]
+            ],
+
+
 
 
             //asignar productos

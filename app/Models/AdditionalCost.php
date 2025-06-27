@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Constants\PintConstants;
 use App\Constants\ProjectConstants;
+use Illuminate\Support\Facades\Log;
 
 class AdditionalCost extends Model
 {
@@ -25,11 +26,15 @@ class AdditionalCost extends Model
         'project_id',
         'provider_id',
         'photo',
-        'is_accepted',
         'igv',
         'user_id',
         'general_expense_id',
         'account_statement_id',
+
+        'is_accepted',
+        'reject_reason',
+        'admin_is_accepted',
+        'admin_reject_reason'
     ];
 
     protected $casts = [
@@ -38,7 +43,8 @@ class AdditionalCost extends Model
 
     protected $appends = [
         'real_amount',
-        'real_state'
+        'real_state',
+        'admin_state',
     ];
 
     public function general_expense()
@@ -75,6 +81,19 @@ class AdditionalCost extends Model
             return PintConstants::ACEPTADO_VALIDADO;
         }
         if ($this->is_accepted) {
+            return PintConstants::ACEPTADO;
+        }
+        return PintConstants::PENDIENTE;
+    }
+
+    public function getAdminStateAttribute() {
+        if ($this->is_accepted === null) {
+            return PintConstants::NO_DISPONIBLE;
+        }
+        if ($this->admin_is_accepted === 0) {
+            return PintConstants::RECHAZADO;
+        }
+        if ($this->admin_is_accepted) {
             return PintConstants::ACEPTADO;
         }
         return PintConstants::PENDIENTE;
