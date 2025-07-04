@@ -252,7 +252,7 @@ import { notify, notifyError } from '@/Components/Notification';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import { DownArrowIcon, UpArrowIcon, EditIcon } from '@/Components/Icons/Index';
+import { DownArrowIcon, UpArrowIcon, EditIcon } from '@/Components/Icons';
 
 const { purchase_validation, auth, searchCondition, type } = defineProps({
     purchase_validation: Object,

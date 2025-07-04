@@ -297,7 +297,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import { formattedDate } from '@/utils/utils';
-import { PlayIcon, AcceptIcon } from '@/Components/Icons/Index';
+import { PlayIcon, AcceptIcon } from '@/Components/Icons';
 
 const { tasks, project, projects, userPermissions } = defineProps({
     tasks: Object,

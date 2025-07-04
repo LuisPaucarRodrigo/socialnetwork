@@ -1203,7 +1203,7 @@ import { Toaster } from "vue-sonner";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import Search from "@/Components/Search.vue";
 import qs from 'qs';
-import { MenuIcon, EditIcon, DeleteIcon, ShowIcon, ServerIcon, AcceptIcon, ExcelIcon, RejectIcon, SortIcon } from "@/Components/Icons/Index";
+import { MenuIcon, EditIcon, DeleteIcon, ShowIcon, ServerIcon, AcceptIcon, ExcelIcon, RejectIcon, SortIcon } from "@/Components/Icons";
 import DropdownLink from "@/Components/DropdownLink.vue";
 import AdditionalCostsRejectForm from "./components/AdditionalCostsRejectForm.vue";
 

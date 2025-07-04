@@ -186,7 +186,7 @@ import { ref } from 'vue';
 import Pagination from "@/Components/Pagination.vue";
 import InputFile from '@/Components/InputFile.vue';
 import { Toaster } from 'vue-sonner';
-import { DeleteIcon, EditIcon, DownloadIcon } from '@/Components/Icons/Index';
+import { DeleteIcon, EditIcon, DownloadIcon } from '@/Components/Icons';
 
 const { grupal_documents, types } = defineProps({
     grupal_documents: Object,

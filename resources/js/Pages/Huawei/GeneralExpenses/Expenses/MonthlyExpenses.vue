@@ -735,7 +735,7 @@ import { Toaster } from "vue-sonner";
 import ImportModal from "./ImportModal.vue";
 import { setAxiosErrors, toFormData } from "@/utils/utils";
 import qs from "qs";
-import { DeleteIcon, EditIcon, ShowIcon } from "@/Components/Icons/Index";
+import { DeleteIcon, EditIcon, ShowIcon } from "@/Components/Icons";
 import OperationModal from "./OperationModal.vue";
 
 const props = defineProps({

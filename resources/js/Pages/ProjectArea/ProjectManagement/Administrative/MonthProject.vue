@@ -123,7 +123,7 @@ import { Head, router, Link, useForm } from "@inertiajs/vue3";
 import Modal from "@/Components/Modal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import { setAxiosErrors } from "@/utils/utils";
-import { DeleteIcon, EditIcon, MenuIcon } from "@/Components/Icons/Index";
+import { DeleteIcon, EditIcon, MenuIcon } from "@/Components/Icons";
 import Dropdown from '@/Components/Dropdown.vue';
 
 const { month_projects } = defineProps({

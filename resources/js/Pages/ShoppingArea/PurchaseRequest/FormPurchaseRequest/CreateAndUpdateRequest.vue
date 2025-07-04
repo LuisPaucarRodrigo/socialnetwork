@@ -141,7 +141,7 @@ import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
 import AddProducts from './components/AddProducts.vue';
 import { notify } from '@/Components/Notification';
-import { DeleteIcon } from "@/Components/Icons/Index";
+import { DeleteIcon } from "@/Components/Icons";
 
 const showModal = ref(false);
 // const type_product = ref('')

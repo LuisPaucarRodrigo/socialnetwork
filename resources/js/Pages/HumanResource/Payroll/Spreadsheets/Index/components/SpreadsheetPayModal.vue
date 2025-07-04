@@ -1,5 +1,5 @@
 <template>
-    <Modal :show="showPayModal" :maxWidth="showDetails ? '8xl' : '6xl'">
+    <Modal :show="showPayModal" :maxWidth="showDetails ? '8xl' : '7xl'">
         <div class="p-6 flex flex-col gap-6">
             <h2 class="text-lg font-medium text-gray-800 border-b-2 border-gray-100">
                 Registrar Pagos
@@ -10,7 +10,66 @@
                         <div class="overflow-auto rounded-lg shadow-sm">
                             <table class="w-full ">
                                 <thead>
+                                    <tr class="font-bold">
+                                        <th></th>
+                                        <th></th>
+                                        <td
+                                            class="text-xs text-gray-800 bg-white border-b border-gray-200 px-2 py-1 text-center">
+                                            <select @change="handleHeaderMasive" name="expense_type"
+                                                class="inline-block w-28 rounded-md border-0 py-1 text-indigo-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-xs sm:leading-6 h-full">
+                                                <option value="">
+                                                    Seleccionar
+                                                </option>
+                                                <option v-for="op in expenseConstants.expenseTypes">
+                                                    {{ op }}
+                                                </option>
+                                            </select>
+                                        </td>
+                                        <th
+                                            class="text-xs text-gray-800 bg-white border-b border-gray-200 px-2 py-1 text-center">
+                                            <select @change="handleHeaderMasive" name="type_doc"
+                                                class="inline-block w-28 rounded-md border-0 py-1 text-indigo-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-xs sm:leading-6 h-full">
+                                                <option value="">
+                                                    Seleccionar
+                                                </option>
+                                                <option v-for="op in expenseConstants.docTypes">
+                                                    {{ op }}
+                                                </option>
+                                            </select>
+                                        </th>
+                                        <th
+                                            class="text-xs text-gray-800 bg-white border-b border-gray-200 px-2 py-1 text-center">
+                                            <input type="date" @input="handleHeaderMasive" name="doc_date"
+                                                class="inline-block  rounded-md border-0 py-1 text-indigo-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-xs sm:leading-6" />
+                                        </th>
+                                        <th
+                                            class="text-xs text-gray-800 bg-white border-b border-gray-200 px-2 py-1 text-center">
+                                            <input type="text" @input="handleHeaderMasive" name="doc_number"
+                                                class="inline-block w-28 text-center  rounded-md border-0 py-1 text-indigo-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-xs sm:leading-6" />
+                                        </th>
+                                        <th
+                                            class="text-xs text-gray-800 bg-white border-b border-gray-200 px-2 py-1 text-center">
+                                            <input type="date" @input="handleHeaderMasive" name="operation_date"
+                                                class="inline-block  rounded-md border-0 py-1 text-indigo-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-xs sm:leading-6" />
+                                        </th>
+                                        <th class="text-xs text-gray-800 bg-white border-b border-gray-200 px-2 py-1">
+                                            <input type="text" @input="handleHeaderMasive" name="operation_number"
+                                                class="inline-block w-28 text-center  rounded-md border-0 py-1 text-indigo-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-xs sm:leading-6" />
+                                        </th>
+                                        <th>
+                                        </th>
+                                        <th>
+                                        </th>
+                                    </tr>
                                     <tr>
+                                        <th
+                                            class="text-xs text-gray-600 bg-gray-100 py-1">
+                                            <label :for="`check-all`" class="flex gap-2 justify-center tex-center py-1">
+                                                <input @change="handleCheckAll" :id="`check-all`" :checked="selectedIds.ids.length > 0"
+                                                    type="checkbox" />
+                                                {{ selectedIds.ids.length ?? "" }}
+                                            </label>
+                                        </th>
                                         <th class="text-xs text-gray-600 bg-gray-100 py-1">Nombre</th>
                                         <th class="text-xs text-gray-600 bg-gray-100 py-1">Tipo de gasto <span
                                                 class="text-red-500">*</span></th>
@@ -23,11 +82,15 @@
                                         <th class="text-xs text-gray-600 bg-gray-100 py-1">Monto <span
                                                 class="text-red-500">*</span></th>
                                         <th class="text-xs text-gray-600 bg-gray-100 py-1"></th>
-
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(item, i) in form.payroll_detail_expenses" :key="i">
+                                        <td class="text-xs text-gray-800 bg-white border-b border-gray-200 px-2 py-1">
+                                            <label :for="`mod-check-${i}`" class="block px-2 py-3">
+                                                <input v-model="selectedIds.ids" :value="i" :id="`mod-check-${i}`" type="checkbox" />
+                                            </label>
+                                        </td>
                                         <td class="text-xs text-gray-800 bg-white border-b border-gray-200 px-2 py-1">{{
                                             i+1 }}. {{ item.employee_name }}</td>
                                         <td
@@ -99,7 +162,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="7" class="text-sm text-gray-800">Total</td>
+                                        <td colspan="8" class="text-sm text-gray-800">Total</td>
                                         <td class="text-sm text-gray-800 bg-white px-2 py-1 text-right">
                                             S/. {{parseFloat(form.payroll_detail_expenses.reduce((a, b) => a + b.amount, 0)).toFixed(2)}}</td>
                                         <td></td>
@@ -107,11 +170,14 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="mt-6 flex justify-end">
+                        <div class="mt-6 flex gap-3 justify-end">
+                            <SecondaryButton type="button" @click="minimizePayModal">
+                                Minimizar
+                            </SecondaryButton>
                             <SecondaryButton type="button" @click="closePayModal">
                                 Cancelar
                             </SecondaryButton>
-                            <PrimaryButton class="ml-3 tracking-widest uppercase text-xs"
+                            <PrimaryButton class="tracking-widest uppercase text-xs"
                                 :class="{ 'opacity-25': form.processing }" :disabled="form.processing" type="submit">
                                 Guardar
                             </PrimaryButton>
@@ -163,11 +229,29 @@ const form = useForm({
 function openPayModal() {
     getConstants()
     if (actionForm.ids.length <= 0) { notifyWarning('No hay registros seleccionados'); return }
-    data.forEach(item => {
-        if (actionForm.ids.includes(item.id))
+    const formIds = form.payroll_detail_expenses.map(item=>item.payroll_detail_id)
+    const setActionFormIds = new Set(actionForm.ids);
+    const setFormIds = new Set(formIds);
+    const idsToAdd = actionForm.ids.filter(x => !setFormIds.has(x));
+    const idsToDelete = formIds.filter(x => !setActionFormIds.has(x));
+    idsToDelete.forEach(element => {
+        const index = form.payroll_detail_expenses.findIndex(item=>item.payroll_detail_id === element)
+        console.log(index)
+        selectedIds.value.ids = selectedIds.value.ids.filter(n => n !== index);
+    });
+    const setIdsToDelete = new Set(idsToDelete);
+    const result = form.payroll_detail_expenses.filter(obj => !setIdsToDelete.has(obj.payroll_detail_id));
+    form.payroll_detail_expenses = result
+
+
+
+
+    idsToAdd.forEach(item => {
+        const rgFromData = data.find(i=>i.id===item)
+        if(rgFromData)
             form.payroll_detail_expenses.push({
-                payroll_detail_id: item.id,
-                employee_name: item.employee_name,
+                payroll_detail_id: rgFromData.id,
+                employee_name: rgFromData.employee_name,
                 zone: 'Oficina',
                 expense_type: '',
                 location: `Planilla ${payroll.month}`,
@@ -185,6 +269,9 @@ function openPayModal() {
 function closePayModal() {
     form.reset()
     form.clearErrors()
+    showPayModal.value = false;
+}
+function minimizePayModal() {
     showPayModal.value = false;
 }
 
@@ -225,9 +312,29 @@ async function getConstants() {
 
 
 
+const selectedIds = ref({ ids: [], });
+const handleCheckAll = (e) => {
+    if (e.target.checked) { selectedIds.value.ids = form.payroll_detail_expenses.map((item, i) => i); }
+    else { selectedIds.value.ids = []; }
+};
 
+const handleHeaderMasive = (e) => {
+    const { name, value } = e.target
+    selectedIds.value.ids.forEach(element => {
+        form.payroll_detail_expenses[element][name] = value
+    });
 
+    if (name === 'expense_type'){
+        if(value === 'AFP') {
+            selectedIds.value.ids.forEach(element => {
+                const expense = form.payroll_detail_expenses[element]
+                const reg = data.find(item=>item.id === expense.payroll_detail_id)
+                expense.amount = reg.new_totals.employee_tac_total
+            });
+        }
+    }
 
+}
 
 
 defineExpose({ openPayModal });

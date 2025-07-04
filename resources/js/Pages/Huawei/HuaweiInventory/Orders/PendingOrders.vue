@@ -341,7 +341,7 @@ import InputFile from "@/Components/InputFile.vue";
 import { notifyError } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import { setAxiosErrors } from "@/utils/utils";
-import { ShowIcon } from "@/Components/Icons/Index";
+import { ShowIcon } from "@/Components/Icons";
 
 const props = defineProps({
     pending_orders: Object,

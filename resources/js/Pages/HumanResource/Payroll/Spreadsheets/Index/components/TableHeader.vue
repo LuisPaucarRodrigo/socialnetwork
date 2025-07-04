@@ -10,6 +10,10 @@
                     class="rounded-md px-1 py-2 text-blue-600 text-center text-sm hover:bg-blue-200">
                     <DolarIcon />
                 </button>
+                <button @click="openPaySpreadsheet()"
+                    class="rounded-md px-1 py-2 text-blue-600 text-center text-sm hover:bg-blue-200">
+                    <DolarIcon color="text-blue-600" />
+                </button>
 
 
                 <Link :href="route('payroll.index.payroll.external.detail', { payroll_id: payrolls.id })"

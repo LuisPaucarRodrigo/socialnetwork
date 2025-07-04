@@ -412,7 +412,7 @@ import Modal from "@/Components/Modal.vue";
 import { ref } from "vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import { PlayIcon, PauseIcon,EditIcon } from "@/Components/Icons/Index";
+import { PlayIcon, PauseIcon,EditIcon } from "@/Components/Icons";
 
 const props = defineProps({
     projects: Object,

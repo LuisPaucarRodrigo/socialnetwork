@@ -77,7 +77,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import { Link } from '@inertiajs/vue3';
 import TextInput from '@/Components/TextInput.vue';
-import { MenuIcon, PlusCircleIcon } from '@/Components/Icons/Index';
+import { MenuIcon, PlusCircleIcon } from '@/Components/Icons';
 
 const { createOrEditModal } = defineProps({
     createOrEditModal: Function

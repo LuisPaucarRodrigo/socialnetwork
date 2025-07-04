@@ -39,7 +39,7 @@
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Search from '@/Components/Search.vue';
 import Dropdown from "@/Components/Dropdown.vue";
-import { MenuIcon } from '@/Components/Icons/Index';
+import { MenuIcon } from '@/Components/Icons';
 
 const { openExternal, formSearch } = defineProps({
     openExternal: Function,

@@ -90,7 +90,7 @@
     </div>
 </template>
 <script setup>
-import { DeleteIcon, PlusDocumentIcon, DownloadIcon, EditIcon, ShowIcon } from '@/Components/Icons/Index';
+import { DeleteIcon, PlusDocumentIcon, DownloadIcon, EditIcon, ShowIcon } from '@/Components/Icons';
 import { notifyError } from '@/Components/Notification';
 import Pagination from '@/Components/Pagination.vue';
 import TableRow from '@/Components/TableRow.vue';

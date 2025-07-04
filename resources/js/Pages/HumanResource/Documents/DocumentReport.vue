@@ -293,7 +293,7 @@ import { ref, computed, watch } from "vue";
 import { Head, useForm, router } from "@inertiajs/vue3";
 import Dropdown from "@/Components/Dropdown.vue";
 import { notifyError } from "@/Components/Notification";
-import { EditIcon, DeleteIcon, ShowIcon, DownloadIcon, MenuIcon } from "@/Components/Icons/Index";
+import { EditIcon, DeleteIcon, ShowIcon, DownloadIcon, MenuIcon } from "@/Components/Icons";
 
 const props = defineProps({
     sections: Object,

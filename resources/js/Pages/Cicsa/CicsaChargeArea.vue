@@ -341,7 +341,7 @@ import InputFile from '@/Components/InputFile.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import { ShowIcon, EditIcon, DownArrowIcon, UpArrowIcon } from '@/Components/Icons/Index';
+import { ShowIcon, EditIcon, DownArrowIcon, UpArrowIcon } from '@/Components/Icons';
 
 const { charge_area, auth, searchCondition, type } = defineProps({
     charge_area: Object,

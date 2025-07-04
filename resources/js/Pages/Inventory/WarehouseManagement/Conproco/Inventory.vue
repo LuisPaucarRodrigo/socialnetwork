@@ -89,7 +89,7 @@ import Pagination from '@/Components/Pagination.vue'
 import ConfirmDisableModal from '@/Components/ConfirmDisableModal.vue';
 import { ref } from 'vue';
 import { Head, router, Link } from '@inertiajs/vue3';
-import { ShowIcon } from "@/Components/Icons/Index";
+import { ShowIcon } from "@/Components/Icons";
 
 const props = defineProps({
     products: {
