@@ -428,6 +428,12 @@ class SpreadsheetsController extends Controller
         ]);
     }
 
+    public function show_payroll_detail_expenses($payroll_detail_id)
+    {
+        $data = PayrollDetailExpense::with('general_expense')->where('payroll_detail_id', $payroll_detail_id)->get();
+        return response()->json($data);
+    }
+
     public function store_payroll_detail_expense(StorePayrollDetailExpenseRequest $request)
     {
         $data = $request->validated();

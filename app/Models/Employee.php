@@ -168,6 +168,20 @@ class Employee extends Model
             ->exists();
         return $missing;
     }
+    public function getTimeWorkedAttribute()
+    {
+        $hireDate = Carbon::parse($this->contract()->first()->hire_date);
+        $now = Carbon::now();
+        $totalMonths = $hireDate->diffInMonths($now);
+
+        // Fecha del último mes completo
+        $fechaDesdeUltimoMes = $hireDate->copy()->addMonths($totalMonths);
+
+        // Diferencia en días desde ese último mes hasta ahora
+        $restantesDias = $fechaDesdeUltimoMes->diffInDays($now);
+
+        return "{$totalMonths} meses y {$restantesDias} días";
+    }
 
     protected static function booted()
     {

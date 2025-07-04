@@ -7,6 +7,7 @@ export const principalData = [
 export const personalData = [
     { title: 'DNI', propName: 'dni', propClass: 'text-center' },
     { title: 'Fecha de Ingreso', propName: 'contract?.hire_date', propClass: 'text-center', propType: 'date' },
+    { title: 'Tiempo laborado', propName: 'time_worked', propClass: 'text-center' },
     { title: 'Número de Celular', propName: 'phone1', propClass: 'text-center' },
     { title: 'Correo Personal', propName: 'email', propClass: 'text-center' },
     { title: 'Correo Empresa', propName: 'email_company', propClass: 'text-center' },

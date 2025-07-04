@@ -186,6 +186,7 @@ class FunctionalityPermissionSeeder extends Seeder
                     'payroll.detail.expenses.multiple.store',
                     'payroll.detail.expense.constants.show',
                     'payroll.detail.expense.index',
+                    'payroll.detail.expenses.show',
                     'payroll.detail.expense.search',
                     'payroll.detail.expenses.store',
                     'payroll.detail.expense.destroy',

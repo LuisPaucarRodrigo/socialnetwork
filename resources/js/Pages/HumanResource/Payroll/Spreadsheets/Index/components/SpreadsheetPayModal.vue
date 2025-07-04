@@ -64,8 +64,8 @@
                                     <tr>
                                         <th
                                             class="text-xs text-gray-600 bg-gray-100 py-1">
-                                            <label :for="`check-all`" class="flex gap-2 justify-center tex-center py-1">
-                                                <input @change="handleCheckAll" :id="`check-all`" :checked="selectedIds.ids.length > 0"
+                                            <label :for="`mod-check-all`" class="flex gap-2 justify-center tex-center py-1">
+                                                <input @change="handleCheckAll" :id="`mod-check-all`" :checked="selectedIds.ids.length > 0"
                                                     type="checkbox" />
                                                 {{ selectedIds.ids.length ?? "" }}
                                             </label>
@@ -96,11 +96,16 @@
                                         <td
                                             class="text-xs text-gray-800 bg-white border-b border-gray-200 px-2 py-1 text-center">
                                             <select v-model="item.expense_type"
-                                                class="inline-block w-28 rounded-md border-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-xs sm:leading-6 h-full">
+                                                class="inline-block w-28 rounded-md border-0 py-1 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-xs sm:leading-6 h-full"
+                                                :class="[{
+                                                    ' text-gray-900': !!item.expense_type,
+                                                    ' text-gray-300': !!!item.expense_type,
+                                                }]"
+                                                >
                                                 <option disabled value="">
                                                     Seleccionar
                                                 </option>
-                                                <option v-for="op in expenseConstants.expenseTypes">
+                                                <option v-for="op in expenseConstants.expenseTypes" class="text-gray-900">
                                                     {{ op }}
                                                 </option>
                                             </select>
@@ -110,11 +115,15 @@
                                         <td
                                             class="text-xs text-gray-800 bg-white border-b border-gray-200 px-2 py-1 text-center">
                                             <select v-model="item.type_doc"
-                                                class="inline-block w-28 rounded-md border-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-xs sm:leading-6 h-full">
+                                                class="inline-block w-28 rounded-md border-0 py-1 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-xs sm:leading-6 h-full"
+                                                :class="[{
+                                                    ' text-gray-900': !!item.type_doc,
+                                                    ' text-gray-300': !!!item.type_doc,
+                                                }]">
                                                 <option disabled value="">
                                                     Seleccionar
                                                 </option>
-                                                <option v-for="op in expenseConstants.docTypes">
+                                                <option v-for="op in expenseConstants.docTypes" class="text-gray-900">
                                                     {{ op }}
                                                 </option>
                                             </select>
@@ -124,21 +133,33 @@
                                         <td
                                             class="text-xs text-gray-800 bg-white border-b border-gray-200 px-2 py-1 text-center">
                                             <input type="date" v-model="item.doc_date"
-                                                class="inline-block  rounded-md border-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-xs sm:leading-6" />
+                                                class="inline-block  rounded-md border-0 py-1 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-xs sm:leading-6" 
+                                                :class="[{
+                                                    ' text-gray-900': !!item.doc_date,
+                                                    ' text-gray-300': !!!item.doc_date,
+                                                }]"
+                                                />
                                             <InputError textSize="text-xs"
                                                 :message="form.errors[`payroll_detail_expenses.${i}.doc_date`]" />
                                         </td>
                                         <td
                                             class="text-xs text-gray-800 bg-white border-b border-gray-200 px-2 py-1 text-center">
                                             <input type="text" v-model="item.doc_number"
-                                                class="inline-block w-28 text-center  rounded-md border-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-xs sm:leading-6" />
+                                                class="inline-block w-28 text-center  rounded-md border-0 py-1 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-xs sm:leading-6"
+                                                
+                                                />
                                             <InputError textSize="text-xs"
                                                 :message="form.errors[`payroll_detail_expenses.${i}.doc_number`]" />
                                         </td>
                                         <td
                                             class="text-xs text-gray-800 bg-white border-b border-gray-200 px-2 py-1 text-center">
                                             <input type="date" v-model="item.operation_date"
-                                                class="inline-block  rounded-md border-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-xs sm:leading-6" />
+                                                class="inline-block  rounded-md border-0 py-1 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-xs sm:leading-6" 
+                                                :class="[{
+                                                    ' text-gray-900': !!item.operation_date,
+                                                    ' text-gray-300': !!!item.operation_date,
+                                                }]"
+                                                />
                                             <InputError textSize="text-xs"
                                                 :message="form.errors[`payroll_detail_expenses.${i}.operation_date`]" />
                                         </td>
@@ -185,8 +206,35 @@
                     </form>
                 </div>
                 <div v-if="showDetails" class="relative md:w-1/4 bg-gray-100 rounded-lg p-4 overflow-y-auto">
-                    <div>
-                        <!-- to complete -->
+                    <div v-if="currentPayrollDetailExpenses.length>0" class="mt-8 flex flex-col gap-4">
+                        <h1 class="text-sm font-bold">
+                            Pagos hechos a: {{ currentPayrollDetailExpenses[0].employee_name }}
+                        </h1>
+                        <div>
+                            <div  class="font-semibold text-sm grid grid-cols-3">
+                                <p>
+                                    Gasto
+                                </p>
+                                <p>
+                                    N° Doc
+                                </p>
+                            </div>
+                            <div v-for="item in currentPayrollDetailExpenses"  class="text-sm grid grid-cols-3">
+                                <p>
+                                    {{ item.general_expense.expense_type }}
+                                </p>
+                                <p>
+                                    {{ item.general_expense.doc_number }}
+                                </p>
+                                <p class="text-right">
+                                    S/. {{ item.general_expense.amount.toFixed(2) }}
+                                </p>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div v-else class="italic text-gray-500 text-center mt-8">
+                        No hay pagos registrados
                     </div>
                     <button class="absolute top-2 left-2 p-2  bg-gray-400 rounded-md" @click="closeDetailsModal">
                         <EyeSlashSolidIcon class="text-gray-200 h-4 w-4" />
@@ -267,11 +315,13 @@ function openPayModal() {
 }
 
 function closePayModal() {
+    closeDetailsModal()
     form.reset()
     form.clearErrors()
     showPayModal.value = false;
 }
 function minimizePayModal() {
+    closeDetailsModal()
     showPayModal.value = false;
 }
 
@@ -295,9 +345,11 @@ async function submit() {
 
 function openDetailsModal(payroll_detail_id) {
     showDetails.value = true
+    getExpenses(payroll_detail_id)
 }
 
 function closeDetailsModal() {
+    currentPayrollDetailExpenses.value = []
     showDetails.value = false
 }
 
@@ -335,6 +387,19 @@ const handleHeaderMasive = (e) => {
     }
 
 }
+
+
+const currentPayrollDetailExpenses = ref([])
+async function getExpenses(payroll_detail_id) {
+    const res = await axios.get(route('payroll.detail.expenses.show', {payroll_detail_id}))
+        .catch(e => notifyError("Server Error"))
+    if (res.status === 200) {
+        console.log(res.data)
+        currentPayrollDetailExpenses.value = res.data
+    }
+
+}
+
 
 
 defineExpose({ openPayModal });
