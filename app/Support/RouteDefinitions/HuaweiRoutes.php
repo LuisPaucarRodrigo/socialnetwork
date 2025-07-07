@@ -2,9 +2,12 @@
 
 namespace App\Support\RouteDefinitions;
 
-use App\Http\Controllers\Huawei\HuaweiManagementController;
-use App\Http\Controllers\Huawei\QuickMaterialsController;
 use App\Http\Controllers\Huawei\GeneralExpenses\HuaweiMonthlyController;
+use App\Http\Controllers\Huawei\HuaweiInventory\HuaweiDetailsController;
+use App\Http\Controllers\Huawei\HuaweiInventory\HuaweiGeneralController;
+use App\Http\Controllers\Huawei\HuaweiInventory\HuaweiManagementController;
+use App\Http\Controllers\Huawei\HuaweiInventory\HuaweiOrdersController;
+use App\Http\Controllers\Huawei\HuaweiInventory\HuaweiRefundsController;
 use App\Http\Controllers\Huawei\Projects\HuaweiProjectController;
 use App\Http\Controllers\Huawei\Sites\HuaweiSitesController;
 
@@ -513,8 +516,8 @@ class HuaweiRoutes
                 'name' => 'huawei.projects.monthlyexpenses.downloadimages',
             ],
 
-            //Inventory
 
+            //huawei_inventory
             [
                 'uri' => 'huawei/inventory/{warehouse}/get/{equipment?}',
                 'method' => 'get',
@@ -525,28 +528,28 @@ class HuaweiRoutes
             [
                 'uri' => 'huawei/inventory/orders/pending_orders/get',
                 'method' => 'get',
-                'action' => [HuaweiManagementController::class, 'getPendingOrders'],
+                'action' => [HuaweiOrdersController::class, 'getPendingOrders'],
                 'permission' => true,
                 'name' => 'huawei.inventory.pendingorders',
             ],
             [
                 'uri' => 'huawei/inventory/orders/pending_orders/search_advance/post',
                 'method' => 'post',
-                'action' => [HuaweiManagementController::class, 'ordersSearchAdvance'],
+                'action' => [HuaweiOrdersController::class, 'ordersSearchAdvance'],
                 'permission' => true,
                 'name' => 'huawei.inventory.pendingorders.searchadvance',
             ],
             [
                 'uri' => 'huawei/inventory/orders/pending_orders/assign_guide/{order}/post',
                 'method' => 'post',
-                'action' => [HuaweiManagementController::class, 'orderAssignGuide'],
+                'action' => [HuaweiOrdersController::class, 'orderAssignGuide'],
                 'permission' => true,
                 'name' => 'huawei.inventory.pendingorders.assignguide',
             ],
             [
                 'uri' => 'huawei/inventory/orders/pending_orders/fetch_orders/get',
                 'method' => 'get',
-                'action' => [HuaweiManagementController::class, 'fetchPendingOrders'],
+                'action' => [HuaweiOrdersController::class, 'fetchPendingOrders'],
                 'permission' => true,
                 'name' => 'huawei.inventory.pendingorders.fetch',
             ],
@@ -574,7 +577,7 @@ class HuaweiRoutes
             [
                 'uri' => 'huawei/inventory/create/form/post_order/order',
                 'method' => 'post',
-                'action' => [HuaweiManagementController::class, 'storeOrder'],
+                'action' => [HuaweiOrdersController::class, 'storeOrder'],
                 'permission' => true,
                 'name' => 'huawei.inventory.store.order',
             ],
@@ -595,42 +598,42 @@ class HuaweiRoutes
             [
                 'uri' => 'huawei/inventory/details/{id}/{equipment?}',
                 'method' => 'get',
-                'action' => [HuaweiManagementController::class, 'showDetails'],
+                'action' => [HuaweiDetailsController::class, 'showDetails'],
                 'permission' => true,
                 'name' => 'huawei.inventory.show.details',
             ],
             [
                 'uri' => 'huawei/inventory/details/{id}/without_diu/get',
                 'method' => 'get',
-                'action' => [HuaweiManagementController::class, 'detailsWithoutDiu'],
+                'action' => [HuaweiDetailsController::class, 'detailsWithoutDiu'],
                 'permission' => true,
                 'name' => 'huawei.inventory.show.details.withoutdiu',
             ],
             [
                 'uri' => 'huawei/inventory/details/search/{id}/{request}/{equipment?}',
                 'method' => 'get',
-                'action' => [HuaweiManagementController::class, 'search'],
+                'action' => [HuaweiDetailsController::class, 'search'],
                 'permission' => true,
                 'name' => 'huawei.inventory.show.details.search',
             ],
             [
                 'uri' => 'huawei/inventory/details/refunds/post/{equipment?}',
                 'method' => 'post',
-                'action' => [HuaweiManagementController::class, 'refund'],
+                'action' => [HuaweiRefundsController::class, 'refund'],
                 'permission' => true,
                 'name' => 'huawei.inventory.details.refund',
             ],
             [
                 'uri' => 'huawei/inventory/refunds/view/get/{warehouse}/{equipment?}',
                 'method' => 'get',
-                'action' => [HuaweiManagementController::class, 'getRefunds'],
+                'action' => [HuaweiRefundsController::class, 'getRefunds'],
                 'permission' => true,
                 'name' => 'huawei.inventory.refunds',
             ],
             [
                 'uri' => 'huawei/inventory/refunds/view/search/{warehouse}/{request}/{equipment?}',
                 'method' => 'get',
-                'action' => [HuaweiManagementController::class, 'searchRefunds'],
+                'action' => [HuaweiRefundsController::class, 'searchRefunds'],
                 'permission' => true,
                 'name' => 'huawei.inventory.refunds.search',
             ],
@@ -644,58 +647,44 @@ class HuaweiRoutes
             [
                 'uri' => 'huawei/inventory/details/assign_diu/post',
                 'method' => 'post',
-                'action' => [HuaweiManagementController::class, 'assignDIU'],
+                'action' => [HuaweiDetailsController::class, 'assignDIU'],
                 'permission' => true,
                 'name' => 'huawei.inventory.details.assigndiu',
             ],
             [
                 'uri' => 'huawei/inventory/export/general/export/get',
                 'method' => 'get',
-                'action' => [HuaweiManagementController::class, 'exportInventory'],
+                'action' => [HuaweiGeneralController::class, 'exportInventory'],
                 'permission' => true,
                 'name' => 'huawei.inventory.export',
             ],
             [
                 'uri' => 'huawei/inventory/general/general_equipments/{prefix}/get',
                 'method' => 'get',
-                'action' => [HuaweiManagementController::class, 'getGeneralEquipments'],
+                'action' => [HuaweiGeneralController::class, 'getGeneralEquipments'],
                 'permission' => true,
                 'name' => 'huawei.inventory.general.equipments',
             ],
             [
                 'uri' => 'huawei/inventory/general/general_equipments/{prefix}/search_advance/post',
                 'method' => 'post',
-                'action' => [HuaweiManagementController::class, 'searchGeneralAdvance'],
+                'action' => [HuaweiGeneralController::class, 'searchGeneralAdvance'],
                 'permission' => true,
                 'name' => 'huawei.inventory.general.equipments.searchadvance',
             ],
             [
                 'uri' => 'huawei/inventory/general/general_equipments/massive_update/post',
                 'method' => 'post',
-                'action' => [HuaweiManagementController::class, 'generalMassiveUpdate'],
+                'action' => [HuaweiGeneralController::class, 'generalMassiveUpdate'],
                 'permission' => true,
                 'name' => 'huawei.inventory.general.equipments.massiveupdate',
             ],
             [
                 'uri' => 'huawei/inventory/general/general_equipments/{prefix}/search/{request}',
                 'method' => 'get',
-                'action' => [HuaweiManagementController::class, 'searchGeneralEquipments'],
+                'action' => [HuaweiGeneralController::class, 'searchGeneralEquipments'],
                 'permission' => true,
                 'name' => 'huawei.inventory.general.equipments.search',
-            ],
-            [
-                'uri' => 'huawei/inventory/update_entry_detail_date/{huawei_entry_detail}/put',
-                'method' => 'put',
-                'action' => [HuaweiManagementController::class, 'updateEntryDate'],
-                'permission' => true,
-                'name' => 'huawei.inventory.update.entrydetail',
-            ],
-            [
-                'uri' => 'huawei/inventory/update_entry_detail_site/{huawei_entry_detail}/put',
-                'method' => 'put',
-                'action' => [HuaweiManagementController::class, 'updateSite'],
-                'permission' => true,
-                'name' => 'huawei.inventory.update.entrydetail.site',
             ],
             [
                 'uri' => 'huawei/inventory/create/{equipment}/verify_serie/post',
@@ -710,169 +699,6 @@ class HuaweiRoutes
                 'action' => [HuaweiManagementController::class, 'getInventoryPerWarehouse'],
                 'permission' => true,
                 'name' => 'huawei.inventory.create.getinventory',
-            ],
-
-            //Internal Inventory
-            [
-                'uri' => 'huawei/quick_materials/get',
-                'method' => 'get',
-                'action' => [QuickMaterialsController::class, 'getMaterials'],
-                'permission' => true,
-                'name' => 'huawei.quickmaterials',
-            ],
-            [
-                'uri' => 'huawei/quick_materials/{request}/search',
-                'method' => 'get',
-                'action' => [QuickMaterialsController::class, 'searchMaterial'],
-                'permission' => true,
-                'name' => 'huawei.quickmaterials.search',
-            ],
-            [
-                'uri' => 'huawei/quick_materials/post',
-                'method' => 'post',
-                'action' => [QuickMaterialsController::class, 'storeMaterial'],
-                'permission' => true,
-                'name' => 'huawei.quickmaterials.store',
-            ],
-            [
-                'uri' => 'huawei/quick_materials/{material}/update',
-                'method' => 'put',
-                'action' => [QuickMaterialsController::class, 'updateMaterial'],
-                'permission' => true,
-                'name' => 'huawei.quickmaterials.update',
-            ],
-            [
-                'uri' => 'huawei/quick_materials/{material}/delete',
-                'method' => 'delete',
-                'action' => [QuickMaterialsController::class, 'deleteMaterial'],
-                'permission' => true,
-                'name' => 'huawei.quickmaterials.delete',
-            ],
-            [
-                'uri' => 'huawei/quick_materials/verify_name/{update?}',
-                'method' => 'post',
-                'action' => [QuickMaterialsController::class, 'verifyName'],
-                'permission' => true,
-                'name' => 'huawei.quickmaterials.verifyname',
-            ],
-
-            [
-                'uri' => 'huawei/quick_materials/{material_id}/details/get',
-                'method' => 'get',
-                'action' => [QuickMaterialsController::class, 'index'],
-                'permission' => true,
-                'name' => 'huawei.quickmaterials.details',
-            ],
-            [
-                'uri' => 'huawei/quick_materials/{material_id}/details/store',
-                'method' => 'post',
-                'action' => [QuickMaterialsController::class, 'store'],
-                'permission' => true,
-                'name' => 'huawei.quickmaterials.details.store',
-            ],
-            [
-                'uri' => 'huawei/quick_materials/details/{quick_material}/delete',
-                'method' => 'delete',
-                'action' => [QuickMaterialsController::class, 'destroy'],
-                'permission' => true,
-                'name' => 'huawei.quickmaterials.details.delete',
-            ],
-
-            [
-                'uri' => 'huawei/quick_materials/details/store/output/{entry_id}',
-                'method' => 'post',
-                'action' => [QuickMaterialsController::class, 'storeOutput'],
-                'permission' => true,
-                'name' => 'huawei.quickmaterials.details.output.store',
-            ],
-            [
-                'uri' => 'huawei/quick_materials/details/delete/output/{output}',
-                'method' => 'delete',
-                'action' => [QuickMaterialsController::class, 'destroyOutput'],
-                'permission' => true,
-                'name' => 'huawei.quickmaterials.details.output.delete',
-            ],
-            [
-                'uri' => 'huawei/quick_materials/details/fetchprojects/output/{site_id}',
-                'method' => 'post',
-                'action' => [QuickMaterialsController::class, 'fetchProjects'],
-                'permission' => true,
-                'name' => 'huawei.quickmaterials.details.output.fetchprojects',
-            ],
-            [
-                'uri' => 'huawei/quick_materials/details/selectproject/output/{entry_id}/{project_id}/{output_id?}',
-                'method' => 'post',
-                'action' => [QuickMaterialsController::class, 'selectProject'],
-                'permission' => true,
-                'name' => 'huawei.quickmaterials.details.output.selectproject',
-            ],
-
-            //Internal guides
-            [
-                'uri' => 'huawei/internal_guides/get',
-                'method' => 'get',
-                'action' => [QuickMaterialsController::class, 'internalGuides'],
-                'permission' => true,
-                'name' => 'huawei.internalguides',
-            ],
-            [
-                'uri' => 'huawei/internal_guides/generate',
-                'method' => 'post',
-                'action' => [QuickMaterialsController::class, 'generateInternalGuide'],
-                'permission' => true,
-                'name' => 'huawei.internalguides.store',
-            ],
-            [
-                'uri' => 'huawei/internal_guides/{id}/delete',
-                'method' => 'delete',
-                'action' => [QuickMaterialsController::class, 'deleteInternalGuide'],
-                'permission' => true,
-                'name' => 'huawei.internalguides.delete',
-            ],
-            [
-                'uri' => 'huawei/internal_guides/{id}/show',
-                'method' => 'get',
-                'action' => [QuickMaterialsController::class, 'showInternalGuide'],
-                'permission' => true,
-                'name' => 'huawei.internalguides.show',
-            ],
-
-            //Special returns
-
-            [
-                'uri' => 'huawei/special_refunds/get',
-                'method' => 'get',
-                'action' => [HuaweiManagementController::class, 'getSpecialRefunds'],
-                'permission' => true,
-                'name' => 'huawei.specialrefunds',
-            ],
-            [
-                'uri' => 'huawei/speacial_refunds/search/{request}',
-                'method' => 'get',
-                'action' => [HuaweiManagementController::class, 'searchSpecialRefunds'],
-                'permission' => true,
-                'name' => 'huawei.specialrefunds.search',
-            ],
-            [
-                'uri' => 'huawei/special_refunds/post',
-                'method' => 'post',
-                'action' => [HuaweiManagementController::class, 'storeSpecialRefund'],
-                'permission' => true,
-                'name' => 'huawei.specialrefunds.store',
-            ],
-            [
-                'uri' => 'huawei/special_refunds/{id}/put',
-                'method' => 'put',
-                'action' => [HuaweiManagementController::class, 'updateSpecialRefund'],
-                'permission' => true,
-                'name' => 'huawei.specialrefunds.update',
-            ],
-            [
-                'uri' => 'huawei/special_refunds/{id}/delete',
-                'method' => 'delete',
-                'action' => [HuaweiManagementController::class, 'deleteSpecialRefund'],
-                'permission' => true,
-                'name' => 'huawei.specialrefunds.delete',
             ],
 
         ];

@@ -1,81 +1,147 @@
 <template>
-
     <Head title="Gestion de Costos" />
     <AuthenticatedLayout :redirectRoute="'huawei.projects.generalbalance'">
         <template #header>
-            Gastos Generales {{ props.mode ? "Fijos" : "Variables" }}</template>
+            Gastos Generales {{ props.mode ? "Fijos" : "Variables" }}</template
+        >
         <br />
         <Toaster richColors />
         <div class="inline-block min-w-full mb-4">
             <div class="flex flex-wrap items-center gap-4">
-                <!-- Botones Agregar y Exportar visibles en pantallas medianas y grandes -->
                 <div class="hidden sm:flex sm:items-center space-x-3">
-                    <PrimaryButton @click="openCreateAdditionalModal" type="button" class="whitespace-nowrap">
+                    <PrimaryButton
+                        v-permission="'huawei_expenses_add'"
+                        @click="openCreateAdditionalModal"
+                        type="button"
+                        class="whitespace-nowrap"
+                    >
                         + Agregar
                     </PrimaryButton>
-                    <button data-tooltip-target="import_tooltip" type="button"
+                    <button
+                        v-permission="'huawei_expenses_add'"
+                        data-tooltip-target="import_tooltip"
+                        type="button"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500"
-                        @click="openImportExcel">
-                        <svg class="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        @click="openImportExcel"
+                    >
+                        <svg
+                            class="w-5 h-5"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
                             <title />
 
                             <g id="Complete">
                                 <g id="upload">
                                     <g>
-                                        <path d="M3,12.3v7a2,2,0,0,0,2,2H19a2,2,0,0,0,2-2v-7" fill="none" stroke="white"
-                                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                                        <path
+                                            d="M3,12.3v7a2,2,0,0,0,2,2H19a2,2,0,0,0,2-2v-7"
+                                            fill="none"
+                                            stroke="white"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                        />
 
                                         <g>
-                                            <polyline data-name="Right" fill="none" id="Right-2"
-                                                points="7.9 6.7 12 2.7 16.1 6.7" stroke="white" stroke-linecap="round"
-                                                stroke-linejoin="round" stroke-width="2" />
+                                            <polyline
+                                                data-name="Right"
+                                                fill="none"
+                                                id="Right-2"
+                                                points="7.9 6.7 12 2.7 16.1 6.7"
+                                                stroke="white"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                            />
 
-                                            <line fill="none" stroke="white" stroke-linecap="round"
-                                                stroke-linejoin="round" stroke-width="2" x1="12" x2="12" y1="16.3"
-                                                y2="4.8" />
+                                            <line
+                                                fill="none"
+                                                stroke="white"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                x1="12"
+                                                x2="12"
+                                                y1="16.3"
+                                                y2="4.8"
+                                            />
                                         </g>
                                     </g>
                                 </g>
                             </g>
                         </svg>
                     </button>
-                    <div id="import_tooltip" role="tooltip"
-                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                    <div
+                        id="import_tooltip"
+                        role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                    >
                         Importar Excel
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
-                    <button data-tooltip-target="export_tooltip" type="button"
+                    <button
+                        data-tooltip-target="export_tooltip"
+                        type="button"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500"
-                        @click="openExportExcel">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd"
+                        @click="openExportExcel"
+                    >
+                        <svg
+                            class="h-5 w-5"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                fill-rule="evenodd"
+                                clip-rule="evenodd"
                                 d="M9.29289 1.29289C9.48043 1.10536 9.73478 1 10 1H18C19.6569 1 21 2.34315 21 4V9C21 9.55228 20.5523 10 20 10C19.4477 10 19 9.55228 19 9V4C19 3.44772 18.5523 3 18 3H11V8C11 8.55228 10.5523 9 10 9H5V20C5 20.5523 5.44772 21 6 21H7C7.55228 21 8 21.4477 8 22C8 22.5523 7.55228 23 7 23H6C4.34315 23 3 21.6569 3 20V8C3 7.73478 3.10536 7.48043 3.29289 7.29289L9.29289 1.29289ZM6.41421 7H9V4.41421L6.41421 7ZM19 12C19.5523 12 20 12.4477 20 13V19H23C23.5523 19 24 19.4477 24 20C24 20.5523 23.5523 21 23 21H19C18.4477 21 18 20.5523 18 20V13C18 12.4477 18.4477 12 19 12ZM11.8137 12.4188C11.4927 11.9693 10.8682 11.8653 10.4188 12.1863C9.96935 12.5073 9.86526 13.1318 10.1863 13.5812L12.2711 16.5L10.1863 19.4188C9.86526 19.8682 9.96935 20.4927 10.4188 20.8137C10.8682 21.1347 11.4927 21.0307 11.8137 20.5812L13.5 18.2205L15.1863 20.5812C15.5073 21.0307 16.1318 21.1347 16.5812 20.8137C17.0307 20.4927 17.1347 19.8682 16.8137 19.4188L14.7289 16.5L16.8137 13.5812C17.1347 13.1318 17.0307 12.5073 16.5812 12.1863C16.1318 11.8653 15.5073 11.9693 15.1863 12.4188L13.5 14.7795L11.8137 12.4188Z"
-                                fill="#ffffff" />
+                                fill="#ffffff"
+                            />
                         </svg>
                     </button>
-                    <div id="export_tooltip" role="tooltip"
-                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                    <div
+                        id="export_tooltip"
+                        role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                    >
                         Exportar Excel
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
 
-                    <button type="button"
+                    <button
+                        type="button"
                         class="rounded-md bg-blue-600 px-4 py-2 text-center text-sm text-white hover:bg-blue-500 h-full"
-                        @click="openExportArchivesModal" data-tooltip-target="export-photo-tooltip">
-                        <svg fill="#ffffff" width="20px" height="20px" viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg">
+                        @click="openExportArchivesModal"
+                        data-tooltip-target="export-photo-tooltip"
+                    >
+                        <svg
+                            fill="#ffffff"
+                            width="20px"
+                            height="20px"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
                             <g id="SVGRepo_bgCarrier" stroke-width="0" />
 
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" />
+                            <g
+                                id="SVGRepo_tracerCarrier"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
 
                             <g id="SVGRepo_iconCarrier">
                                 <path
-                                    d="M22.71,6.29a1,1,0,0,0-1.42,0L20,7.59V2a1,1,0,0,0-2,0V7.59l-1.29-1.3a1,1,0,0,0-1.42,1.42l3,3a1,1,0,0,0,.33.21.94.94,0,0,0,.76,0,1,1,0,0,0,.33-.21l3-3A1,1,0,0,0,22.71,6.29ZM19,13a1,1,0,0,0-1,1v.38L16.52,12.9a2.79,2.79,0,0,0-3.93,0l-.7.7L9.41,11.12a2.85,2.85,0,0,0-3.93,0L4,12.6V7A1,1,0,0,1,5,6h8a1,1,0,0,0,0-2H5A3,3,0,0,0,2,7V19a3,3,0,0,0,3,3H17a3,3,0,0,0,3-3V14A1,1,0,0,0,19,13ZM5,20a1,1,0,0,1-1-1V15.43l2.9-2.9a.79.79,0,0,1,1.09,0l3.17,3.17,0,0L15.46,20Zm13-1a.89.89,0,0,1-.18.53L13.31,15l.7-.7a.77.77,0,0,1,1.1,0L18,17.21Z" />
+                                    d="M22.71,6.29a1,1,0,0,0-1.42,0L20,7.59V2a1,1,0,0,0-2,0V7.59l-1.29-1.3a1,1,0,0,0-1.42,1.42l3,3a1,1,0,0,0,.33.21.94.94,0,0,0,.76,0,1,1,0,0,0,.33-.21l3-3A1,1,0,0,0,22.71,6.29ZM19,13a1,1,0,0,0-1,1v.38L16.52,12.9a2.79,2.79,0,0,0-3.93,0l-.7.7L9.41,11.12a2.85,2.85,0,0,0-3.93,0L4,12.6V7A1,1,0,0,1,5,6h8a1,1,0,0,0,0-2H5A3,3,0,0,0,2,7V19a3,3,0,0,0,3,3H17a3,3,0,0,0,3-3V14A1,1,0,0,0,19,13ZM5,20a1,1,0,0,1-1-1V15.43l2.9-2.9a.79.79,0,0,1,1.09,0l3.17,3.17,0,0L15.46,20Zm13-1a.89.89,0,0,1-.18.53L13.31,15l.7-.7a.77.77,0,0,1,1.1,0L18,17.21Z"
+                                />
                             </g>
                         </svg>
                     </button>
-                    <div id="export-photo-tooltip" role="tooltip"
-                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                    <div
+                        id="export-photo-tooltip"
+                        role="tooltip"
+                        class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700"
+                    >
                         Facturas, Boletas y Vouchers de Pago
                         <div class="tooltip-arrow" data-popper-arrow></div>
                     </div>
@@ -83,27 +149,50 @@
                     <div>
                         <dropdown align="left">
                             <template #trigger>
-                                <button data-tooltip-target="action_button_tooltip"
+                                <button
+                                    data-tooltip-target="action_button_tooltip"
                                     @click="dropdownOpen = !dropdownOpen"
-                                    class="relative block overflow-hidden rounded-md text-white hover:bg-indigo-400 text-center text-sm bg-indigo-600 p-2">
-                                    <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4 6H20M4 12H20M4 18H20" stroke="#ffffff" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round" />
+                                    class="relative block overflow-hidden rounded-md text-white hover:bg-indigo-400 text-center text-sm bg-indigo-600 p-2"
+                                >
+                                    <svg
+                                        width="20px"
+                                        height="20px"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            d="M4 6H20M4 12H20M4 18H20"
+                                            stroke="#ffffff"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
                                     </svg>
                                 </button>
-                                <div id="action_button_tooltip" role="tooltip"
-                                    class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700 whitespace-nowrap">
+                                <div
+                                    id="action_button_tooltip"
+                                    role="tooltip"
+                                    class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700 whitespace-nowrap"
+                                >
                                     Acciones
-                                    <div class="tooltip-arrow" data-popper-arrow></div>
+                                    <div
+                                        class="tooltip-arrow"
+                                        data-popper-arrow
+                                    ></div>
                                 </div>
                             </template>
 
                             <template #content class="origin-left">
                                 <div>
                                     <div class="">
-                                        <button @click="openNuUpdateModal"
-                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                        <button
+                                            v-permission="
+                                                'huawei_expenses_admin'
+                                            "
+                                            @click="openNuUpdateModal"
+                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                                        >
                                             Actualizar Operación
                                         </button>
                                     </div>
@@ -117,45 +206,62 @@
                 <div class="sm:hidden flex-shrink-0">
                     <dropdown align="left">
                         <template #trigger>
-                            <button @click="dropdownOpen = !dropdownOpen"
-                                class="block rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-gray-700 hover:bg-gray-100">
-                                <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4 6H20M4 12H20M4 18H20" stroke="#000000" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round" />
+                            <button
+                                @click="dropdownOpen = !dropdownOpen"
+                                class="block rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-gray-700 hover:bg-gray-100"
+                            >
+                                <svg
+                                    width="25px"
+                                    height="25px"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M4 6H20M4 12H20M4 18H20"
+                                        stroke="#000000"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
                                 </svg>
                             </button>
                         </template>
                         <template #content>
                             <div class="dropdown">
                                 <div class="dropdown-menu">
-                                    <button @click="openCreateAdditionalModal"
-                                        class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition ease-in-out">
+                                    <button
+                                        v-permission="'huawei_expenses_add'"
+                                        @click="openCreateAdditionalModal"
+                                        class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition ease-in-out"
+                                    >
                                         Agregar
                                     </button>
                                 </div>
                                 <div class="dropdown-menu">
-                                    <button @click="openImportExcel"
-                                        class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition ease-in-out">
+                                    <button
+                                        v-permission="'huawei_expenses_add'"
+                                        @click="openImportExcel"
+                                        class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition ease-in-out"
+                                    >
                                         Importar
                                     </button>
                                 </div>
                                 <div class="dropdown-menu">
-                                    <button @click="openExportExcel"
-                                        class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition ease-in-out">
+                                    <button
+                                        @click="openExportExcel"
+                                        class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition ease-in-out"
+                                    >
                                         Exportar
                                     </button>
                                 </div>
                                 <div class="dropdown-menu">
-                                    <button @click="openNuUpdateModal"
-                                        class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition ease-in-out">
+                                    <button
+                                        v-permission="'huawei_expenses_admin'"
+                                        @click="openNuUpdateModal"
+                                        class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition ease-in-out"
+                                    >
                                         Actualizar Operación
-                                    </button>
-                                </div>
-                                <div class="dropdown-menu">
-                                    <button @click="openMassiveValidate"
-                                        class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition ease-in-out">
-                                        Actualizar Estado
                                     </button>
                                 </div>
                             </div>
@@ -165,526 +271,77 @@
 
                 <!-- Buscador siempre alineado a la derecha -->
                 <div class="flex-grow sm:flex sm:justify-end">
-                    <form @submit.prevent="search" class="flex items-center w-full justify-end">
-                        <TextInput type="text" placeholder="Buscar..." v-model="searchForm.searchTerm"
-                            class="flex-grow mr-2 max-w-[200px]" />
-                        <button type="submit" :class="{ 'opacity-25': searchForm.processing }"
-                            class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                            <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
+                    <form
+                        @submit.prevent="search"
+                        class="flex items-center w-full justify-end"
+                    >
+                        <TextInput
+                            type="text"
+                            placeholder="Buscar..."
+                            v-model="searchForm.searchTerm"
+                            class="flex-grow mr-2 max-w-[200px]"
+                        />
+                        <button
+                            type="submit"
+                            :class="{ 'opacity-25': searchForm.processing }"
+                            class="ml-2 rounded-md bg-indigo-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        >
+                            <svg
+                                width="20px"
+                                height="20px"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
                                 <path
                                     d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
-                                    stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    stroke="white"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                />
                             </svg>
                         </button>
                     </form>
                 </div>
             </div>
         </div>
-        <div class="overflow-x-auto h-[85vh]">
-            <table class="w-full">
-                <thead class="sticky top-0 z-20">
-                    <tr
-                        class="border-b bg-gray-50 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">
-                        <th class="sticky left-0 z-10 bg-gray-100 border-b-2 border-gray-20">
-                            <div class="w-2"></div>
-                        </th>
-                        <th
-                            class="sticky left-2 z-10 border-b-2 border-r border-gray-200 bg-gray-100 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 w-12">
-                            <label :for="`check-all`" class="flex gap-3 justify-center w-full px-2 py-1">
-                                <input @change="handleCheckAll" :id="`check-all`" :checked="actionForm.ids.length > 0"
-                                    type="checkbox" />
-                                {{ actionForm.ids.length ?? "" }}
-                            </label>
-                        </th>
 
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <TableAutocompleteFilter labelClass="text-[11px]" label="Tipo de Gasto"
-                                :options="expenseTypes" v-model="filterForm.selectedExpenseTypes" width="w-48" />
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <TableAutocompleteFilter labelClass="text-[11px]" label="Zona"
-                                :options="props.summary.zones" v-model="filterForm.selectedZones" width="w-48" />
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <TableAutocompleteFilter labelClass="text-[11px]" label="DU del Proyecto"
-                                :options="props.summary.assigned_dius" v-model="filterForm.selectedDus" :empty="true"
-                                width="w-72" />
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <TableAutocompleteFilter labelClass="text-[11px]" label="Empleado" :options="employees"
-                                v-model="filterForm.selectedEmployees" width="w-72" />
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <TableAutocompleteFilter labelClass="text-[11px]" label="Tipo de Documento"
-                                :options="cdp_types" v-model="filterForm.selectedCDPTypes" width="w-48" />
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <TableDateFilter labelClass="text-[11px]" label="Fecha de Gasto"
-                                v-model:startDate="filterForm.exStartDate" v-model:endDate="filterForm.exEndDate"
-                                v-model:noDate="filterForm.exNoDate" width="w-40" />
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Número de Serie
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Correlativo
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            RUC
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Descripción del Gasto
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Monto
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Imagen
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <TableDateFilter labelClass="text-[11px]" label="Fecha de Depósito E.C."
-                                v-model:startDate="filterForm.opStartDate" v-model:endDate="filterForm.opEndDate"
-                                v-model:noDate="filterForm.opNoDate" width="w-40" />
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <TableAutocompleteFilter labelClass="text-[11px]" label="N° de Operación de E.C."
-                                :options="op_numbers" v-model="filterForm.ecOpNumbers" :empty="true" width="w-48" />
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Monto en E.C.
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <TableAutocompleteFilter labelClass="text-[11px]" label="Estado" :options="[
-                                'Aceptado',
-                                'Rechazado',
-                                'Pendiente',
-                                'Aceptado-Validado',
-                            ]" v-model="filterForm.selectedStates" width="w-48" />
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Acciones
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="item in expenses" :key="item.id" class="text-gray-700">
-                        <td :class="[
-                            'sticky left-0 z-10 border-b border-gray-200',
-                            {
-                                'bg-indigo-500':
-                                    item.real_state === 'Pendiente',
-                                'bg-green-500':
-                                    item.real_state === 'Aceptado-Validado',
-                                'bg-amber-500':
-                                    item.real_state === 'Aceptado',
-                                'bg-red-500':
-                                    item.real_state === 'Rechazado',
-                            },
-                        ]"></td>
-                        <td
-                            class="sticky left-2 z-10 border-b border-r border-gray-200 bg-amber-100 text-center text-[13px] whitespace-nowrap tabular-nums">
-                            <label :for="`check-${item.id}`" class="block w-full px-2 py-1">
-                                <input v-model="actionForm.ids" :value="item.id" :id="`check-${item.id}`"
-                                    type="checkbox" />
-                            </label>
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                            <p class="w-48 break-words">
-                                {{ item.expense_type }}
-                            </p>
-                        </td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center whitespace-nowrap text-[13px]">
-                            {{ item.zone }}
-                        </td>
-                        <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center whitespace-nowrap text-[13px]">
-                            {{ item.huawei_project?.assigned_diu }}
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                            {{ item.employee }}
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                            {{ item.cdp_type }}
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums">
-                            {{ formattedDate(item.expense_date) }}
-                        </td>
-                        <td
-                            class="border-b whitespace-nowrap border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                            {{ item.doc_number }}
-                        </td>
-                        <td
-                            class="border-b whitespace-nowrap border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums">
-                            {{ item.op_number }}
-                        </td>
-                        <td
-                            class="border-b whitespace-nowrap border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap">
-                            {{ item.ruc }}
-                        </td>
-                        <td
-                            class="border-b whitespace-nowrap border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums">
-                            {{ item.description }}
-                        </td>
-                        <td
-                            class="border-b whitespace-nowrap border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                            S/. {{ item.amount ? item.amount.toFixed(2) : "" }}
-                        </td>
+        <ExpensesTable
+            :expenses="expenses"
+            :search="props.search"
+            :mode="props.mode"
+            :employees="props.data.employees"
+            :expense-types="
+                props.mode
+                    ? props.data.static_expense_types
+                    : props.data.variable_expense_types
+            "
+            :cdp-types="props.data.cdp_types"
+            :op-numbers="props.summary.op_numbers"
+            :zones="props.summary.zones"
+            :assigned_dius="props.summary.assigned_dius"
+            @edit="openEditAdditionalModal"
+            @delete="confirmDeleteAdditional"
+            @options="handleOptions"
+            @data="searchAdvance"
+            @validate="validateExpense"
+        />
 
-                        <td
-                            class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] whitespace-nowrap">
-                            <button v-if="item.image" @click="openPreviewDocumentModal(item.id)"
-                                class="flex items-center justify-center w-full">
-                                <ShowIcon />
-                            </button>
-                        </td>
-
-                        <td
-                            class="border-b whitespace-nowrap border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap">
-                            {{ formattedDate(item.ec_expense_date) }}
-                        </td>
-                        <td
-                            class="border-b whitespace-nowrap border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap">
-                            {{ item.ec_op_number }}
-                        </td>
-                        <td
-                            class="border-b whitespace-nowrap border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap">
-                            {{
-                                item.ec_amount
-                                    ? "S/. " + item.ec_amount.toFixed(2)
-                                    : ""
-                            }}
-                        </td>
-                        <td class="border-b whitespace-nowrap border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap"
-                            :class="[
-                                'text-center',
-                                {
-                                    'text-indigo-500':
-                                        item.real_state === 'Pendiente',
-                                    'text-green-500':
-                                        item.real_state === 'Aceptado-Validado',
-                                    'text-amber-500':
-                                        item.real_state === 'Aceptado',
-                                    'text-red-500':
-                                        item.real_state === 'Rechazado',
-                                },
-                            ]">
-                            {{ item.real_state }}
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                            <div class="flex items-center gap-3 w-full justify-center">
-                                <div v-if="item.is_accepted == null" class="flex gap-3 justify-center w-1/2">
-                                    <button @click="
-                                        () =>
-                                            validateRegister(item.id, true)
-                                    " class="flex items-center rounded-xl text-blue-500 hover:bg-green-200">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-green-500">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                        </svg>
-                                    </button>
-                                    <button @click="
-                                        () =>
-                                            validateRegister(item.id, false)
-                                    " type="button"
-                                        class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-red-500">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                        </svg>
-                                    </button>
-                                </div>
-
-                                <div class="flex gap-3 justify-center w-1/2">
-                                    <button @click="openEditAdditionalModal(item)">
-                                        <EditIcon />
-                                    </button>
-                                    <button @click="
-                                        confirmDeleteAdditional(item.id)
-                                        ">
-                                        <DeleteIcon />
-                                    </button>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="sticky bottom-0 z-10 text-gray-700">
-                        <td class="font-bold border-b border-gray-200 bg-white"></td>
-                        <td class="font-bold border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            TOTAL
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="10"></td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
-                            S/.
-                            {{
-                                expenses
-                                    ?.reduce((a, item) => a + item.amount, 0)
-                                    .toFixed(2)
-                            }}
-                        </td>
-
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="9"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- <div
-            v-if="!filterMode && !props.search"
-            class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between"
-        >
-            <pagination :links="expenses.links" />
-        </div> -->
-        <Modal :show="create_additional" @close="closeModal">
-            <div class="p-6">
-                <h2 class="text-base font-medium leading-7 text-gray-900">
-                    Agregar Gasto
-                </h2>
-                <form @submit.prevent="form.id ? submit(true) : submit(false)">
-                    <div class="space-y-12 mt-4">
-                        <div class="grid sm:grid-cols-2 gap-6 pb-6">
-                            <div class="md:col-span-2 col-span-1 p-4 border border-black rounded-lg">
-                                <div class="grid sm:grid-cols-4 gap-6">
-                                    <div class="sm:col-span-2">
-                                        <InputLabel for="refund_status" class="font-medium leading-6 text-gray-900">
-                                            Macroproyecto</InputLabel>
-                                        <div class="mt-2">
-                                            <select v-model="selectedMacro" @change="fetchSites" id="refund_status"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                                <option disabled value="">
-                                                    Seleccionar Macroproyecto
-                                                </option>
-                                                <option v-for="macro in props.data
-                                                    .macro_projects" :value="macro">
-                                                    {{ macro }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="sm:col-span-2" v-if="selectedMacro">
-                                        <InputLabel for="refund_status" class="font-medium leading-6 text-gray-900">Site
-                                        </InputLabel>
-                                        <div class="mt-2">
-                                            <select v-model="selectedSite" @change="fetchProjects" id="refund_status"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                                <option disabled value="">
-                                                    Seleccionar site
-                                                </option>
-                                                <option v-for="site in sites" :key="site.id" :value="site.id">
-                                                    {{ site.name }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="sm:col-span-4" v-if="selectedSite">
-                                        <InputLabel for="huawei_project_id" class="font-medium leading-6 text-gray-900">
-                                            Proyecto
-                                        </InputLabel>
-                                        <div class="mt-2">
-                                            <select v-model="form.huawei_project_id" id="huawei_project_id"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                                <option disabled value="">
-                                                    Seleccionar Proyecto
-                                                </option>
-                                                <option v-for="project in projects" :key="project.id"
-                                                    :value="project.id">
-                                                    {{ project.assigned_diu }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel for="expense_type" class="font-medium leading-6 text-gray-900">Tipo de Gasto
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <select v-model="form.expense_type" id="expense_type"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                        <option disabled value="">
-                                            Seleccionar Gasto
-                                        </option>
-                                        <option v-for="op in expenseTypes">
-                                            {{ op }}
-                                        </option>
-                                    </select>
-                                    <InputError :message="form.errors.expense_type" />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel for="employee" class="font-medium leading-6 text-gray-900">Empleado
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <select v-model="form.employee" id="employee"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                        <option disabled value="">
-                                            Seleccionar Empleado
-                                        </option>
-                                        <option v-for="emp in employees">
-                                            {{ emp }}
-                                        </option>
-                                    </select>
-                                    <InputError :message="form.errors.employee" />
-                                </div>
-                            </div>
-                            <div>
-                                <InputLabel for="cdp_type" class="font-medium leading-6 text-gray-900">Tipo de Documento
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <select v-model="form.cdp_type" id="cdp_type"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                        <option disabled value="">
-                                            Seleccionar Tipo de Documento
-                                        </option>
-                                        <option v-for="cdp in cdp_types">
-                                            {{ cdp }}
-                                        </option>
-                                    </select>
-                                    <InputError :message="form.errors.cdp_type" />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel for="expense_date" class="font-medium leading-6 text-gray-900">Fecha de
-                                    Gasto
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input type="date" v-model="form.expense_date" id="expense_date"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors.expense_date" />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel for="doc_number" class="font-medium leading-6 text-gray-900">Número de Serie
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input type="text" v-model="form.doc_number" id="doc_number"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors.doc_number" />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel for="op_number" class="font-medium leading-6 text-gray-900">Correlativo
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input type="text" v-model="form.op_number" id="op_number"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors.op_number" />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel for="ruc" class="font-medium leading-6 text-gray-900">RUC
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input type="text" maxlength="11" v-model="form.ruc" id="ruc"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors.ruc" />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel for="description" class="font-medium leading-6 text-gray-900">Descripción
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <textarea type="text" v-model="form.description" id="description"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors.description" />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel for="amount" class="font-medium leading-6 text-gray-900">Monto</InputLabel>
-                                <div class="mt-2">
-                                    <input type="number" min="0" step="0.01" v-model="form.amount" id="amount"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors.amount" />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel for="ec_expense_date" class="font-medium leading-6 text-gray-900">Fecha de
-                                    Depósito
-                                    de E.C.</InputLabel>
-                                <div class="mt-2">
-                                    <input type="date" v-model="form.ec_expense_date" id="ec_expense_date"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors.ec_expense_date" />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel for="ec_op_number" class="font-medium leading-6 text-gray-900">N° de
-                                    Operación de
-                                    E.C.</InputLabel>
-                                <div class="mt-2">
-                                    <input type="text" v-model="form.ec_op_number" id="ec_op_number"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors.ec_op_number" />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel for="ec_amount" class="font-medium leading-6 text-gray-900">Monto de E.C.
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input type="number" min="0" step="0.01" v-model="form.ec_amount" id="ec_amount"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors.ec_amount" />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel class="font-medium leading-6 text-gray-900">
-                                    Imagen
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <InputFile type="file" v-model="form.image" accept=".jpeg, .jpg, .png, .pdf"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="form.errors.image" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-6 flex items-center justify-end gap-x-6">
-                            <SecondaryButton @click="closeModal">
-                                Cancelar
-                            </SecondaryButton>
-                            <button type="submit" :disabled="form.processing || isFetching"
-                                :class="{ 'opacity-25': form.processing }"
-                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                Guardar
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </Modal>
+        <MainFormModal
+            :show="create_additional"
+            :close="closeModal"
+            :edit-form="editForm"
+            :macro-projects="props.data.macro_projects"
+            :expense-types="
+                props.mode
+                    ? props.data.static_expense_types
+                    : props.data.variable_expense_types
+            "
+            :cdp-types="props.data.cdp_types"
+            :employees="props.data.employees"
+            @update="updateExpense"
+        />
 
         <OperationModal
             :show="showOpNuDatModal"
@@ -698,45 +355,39 @@
             :is-fetching="isFetching"
             :close="openImportExcel"
         />
-
-        <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Gasto"
-            :deleteFunction="deleteAdditional" @closeModal="closeModalDoc" />
-        <SuccessOperationModal :confirming="confirmValidation" :title="'Validación'"
-            :message="'La validación del gasto fue exitosa.'" />
-        <SuccessOperationModal :confirming="showSuccessModal" :title="'Éxito'" :message="successMessage" />
-        <ConfirmateModal tittle="Descarga de archivos"
+        <ConfirmDeleteModal
+            :confirmingDeletion="confirmingDocDeletion"
+            itemType="Gasto"
+            :deleteFunction="deleteAdditional"
+            @closeModal="closeModalDoc"
+        />
+        <ConfirmateModal
+            tittle="Descarga de archivos"
             text="La descarga de archivos será en base a los filtros que están activos, si no hay filtros activos se descargarán de todos los registros. PARA AMBOS CASOS SOLO ES PARA REGISTROS ACEPTADOS"
-            :showConfirm="showExportArchivesModal" :actionFunction="exportArchives"
-            @closeModal="closeExportArchivesModal" />
+            :showConfirm="showExportArchivesModal"
+            :actionFunction="exportArchives"
+            @closeModal="closeExportArchivesModal"
+        />
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
-import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
-import SecondaryButton from "@/Components/SecondaryButton.vue";
-import InputError from "@/Components/InputError.vue";
-import InputLabel from "@/Components/InputLabel.vue";
 import ConfirmateModal from "@/Components/ConfirmateModal.vue";
-import Modal from "@/Components/Modal.vue";
-import { ref, watch } from "vue";
+import { ref, } from "vue";
 import { Head, useForm, router } from "@inertiajs/vue3";
-import { formattedDate } from "@/utils/utils";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import InputFile from "@/Components/InputFile.vue";
-import TableDateFilter from "@/Components/TableDateFilter.vue";
-import TableAutocompleteFilter from "@/Components/TableAutocompleteFilter.vue";
 import axios from "axios";
 import TextInput from "@/Components/TextInput.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
-import ImportModal from "./ImportModal.vue";
-import { setAxiosErrors, toFormData } from "@/utils/utils";
 import qs from "qs";
-import { DeleteIcon, EditIcon, ShowIcon } from "@/Components/Icons/Index";
-import OperationModal from "./OperationModal.vue";
+import ExpensesTable from "./components/ExpensesTable.vue";
+import MainFormModal from "./components/MainFormModal.vue";
+import OperationModal from "./components/OperationModal.vue";
+import ImportModal from "./components/ImportModal.vue";
 
 const props = defineProps({
     expense: Object,
@@ -747,31 +398,7 @@ const props = defineProps({
 });
 
 const expenses = ref(props.expense);
-const filterMode = ref(false);
-const showSuccessModal = ref(false);
-const successMessage = ref("");
 const showOpNuDatModal = ref(false);
-const isFetching = ref(false);
-
-const form = useForm({
-    id: "",
-    expense_type: "",
-    zone: "",
-    employee: "",
-    expense_date: "",
-    cdp_type: "",
-    doc_number: "",
-    op_number: "",
-    ruc: "",
-    description: "",
-    amount: "",
-    image: "",
-    ec_expense_date: "",
-    ec_op_number: "",
-    ec_amount: "",
-    huawei_project_id: "",
-});
-
 const create_additional = ref(false);
 const confirmingDocDeletion = ref(false);
 const docToDelete = ref(null);
@@ -779,94 +406,24 @@ const sites = ref([]);
 const projects = ref([]);
 const selectedMacro = ref("");
 const selectedSite = ref("");
+const isFetching = ref(false);
+const show_import = ref(false);
 
 const openCreateAdditionalModal = () => {
     create_additional.value = true;
 };
 
-const openEditAdditionalModal = async (additional) => {
-    Object.assign(form, additional);
-    if (additional.huawei_project_id) {
-        axios
-            .get(
-                route("huawei.projects.general.expenses.fetchsites", {
-                    macro: additional.huawei_project?.macro_project,
-                })
-            )
-            .then((response) => {
-                sites.value = response.data;
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+const editForm = ref({});
 
-        axios
-            .get(
-                route("huawei.projects.general.expenses.fetchprojects", {
-                    macro: additional.huawei_project?.macro_project,
-                    site_id: additional.huawei_project?.huawei_site_id,
-                })
-            )
-            .then((response) => {
-                projects.value = response.data;
-                selectedMacro.value = additional.huawei_project?.macro_project;
-                selectedSite.value = additional.huawei_project?.huawei_site_id;
-                create_additional.value = true;
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    } else {
-        create_additional.value = true;
-    }
+const openEditAdditionalModal = async (additional) => {
+    editForm.value = { ...additional };
+    create_additional.value = true;
 };
 
 const closeModal = () => {
-    form.clearErrors();
-    form.reset();
     (selectedMacro.value = ""), (selectedSite.value = "");
-    isFetching.value = false;
     create_additional.value = false;
 };
-
-async function submit(update) {
-    isFetching.value = true;
-    const url = update
-        ? route("huawei.projects.general.expenses.update", { expense: form.id })
-        : route("huawei.projects.general.expenses.store");
-
-    const formData = toFormData(form);
-
-    try {
-        const res = await axios.post(url, formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-        });
-
-        const originalMap = new Map(
-            expenses.value.map((item) => [item.id, item])
-        );
-        const newExpense = res.data;
-        newExpense.amount = Number(newExpense.amount);
-        newExpense.ec_amount = Number(newExpense.ec_amount);
-
-        originalMap.set(newExpense.id, newExpense);
-        expenses.value = Array.from(originalMap.values());
-        closeModal();
-        notify(
-            update
-                ? "Se actualizó el registro correctamente"
-                : "Se creó el registro correctamente"
-        );
-    } catch (e) {
-        console.error(e);
-        isFetching.value = false;
-        if (e.response?.data?.errors) {
-            setAxiosErrors(e.response.data.errors, form);
-        } else {
-            notifyError("Server Error");
-        }
-    }
-}
 
 const confirmDeleteAdditional = (additionalId) => {
     docToDelete.value = additionalId;
@@ -896,112 +453,11 @@ async function deleteAdditional() {
     }
 }
 
-const openPreviewDocumentModal = (expense) => {
-    const routeToShow = route("huawei.projects.general.expenses.showimage", {
-        expense: expense,
-    });
-    window.open(routeToShow, "_blank");
-};
-
-const employees = props.data.employees;
-const expenseTypes = props.mode
-    ? props.data.static_expense_types
-    : props.data.variable_expense_types;
-const cdp_types = props.data.cdp_types;
-const op_numbers = props.summary.op_numbers;
-
-const filterForm = ref({
-    search: props.search ?? "",
-    selectedEmployees: employees,
-    selectedZones: props.summary.zones,
-    selectedDus: props.summary.assigned_dius,
-    selectedExpenseTypes: expenseTypes,
-    selectedCDPTypes: cdp_types,
-    exStartDate: "",
-    exEndDate: "",
-    exNoDate: false,
-    opStartDate: "",
-    opEndDate: "",
-    ecOpNumbers: op_numbers,
-    selectedStates: ["Aceptado", "Rechazado", "Pendiente", "Aceptado-Validado"],
-    opNoDate: false,
-});
-
-watch(
-    () => [
-        filterForm.value.search,
-        filterForm.value.selectedEmployees,
-        filterForm.value.selectedZones,
-        filterForm.value.selectedDus,
-        filterForm.value.selectedExpenseTypes,
-        filterForm.value.selectedCDPTypes,
-        filterForm.value.exStartDate,
-        filterForm.value.exEndDate,
-        filterForm.value.exNoDate,
-        filterForm.value.opStartDate,
-        filterForm.value.opEndDate,
-        filterForm.value.opNoDate,
-        filterForm.value.ecOpNumbers,
-        filterForm.value.selectedStates,
-    ],
-    () => {
-        (filterMode.value = true), search_advance(filterForm.value);
-    },
-    { deep: true }
-);
-async function search_advance($data) {
-    let url = route("huawei.projects.general.expenses.searchadvance", {
-        mode: props.mode,
-    });
-    try {
-        let response = await axios.post(url, $data);
-        expenses.value = response.data.expenses;
-    } catch (error) {
-        console.error("Error en la solicitud:", error);
-    }
-}
-
 function openExportExcel() {
     const url = route("huawei.projects.general.expenses.export", {
         mode: props.mode,
     });
     window.location.href = url;
-}
-
-watch([() => form.type_doc, () => form.zone], () => {
-    if (form.type_doc === "Factura" && !["", "MDD"].includes(form.zone)) {
-        form.igv = form.igv ? form.igv : 18;
-    } else {
-        form.igv = 0;
-    }
-});
-
-const confirmValidation = ref(false);
-
-async function validateRegister(expense_id, is_accepted) {
-    const url = route("huawei.projects.general.expenses.validate", {
-        expense: expense_id,
-    });
-    try {
-        const response = await axios.put(url, { is_accepted: is_accepted });
-        const originalMap = new Map(
-            expenses.value.map((item) => [item.id, item])
-        );
-        const newExpense = response.data;
-        newExpense.amount = Number(newExpense.amount);
-        newExpense.ec_amount = Number(newExpense.ec_amount);
-
-        originalMap.set(newExpense.id, newExpense);
-        expenses.value = Array.from(originalMap.values());
-        notify(
-            is_accepted
-                ? "Registro validado correctamente"
-                : "Registro rechazado correctamente"
-        );
-    } catch (e) {
-        console.log(e);
-        notifyError("Error al validar el registro");
-    }
 }
 
 const searchForm = useForm({
@@ -1023,21 +479,17 @@ const search = () => {
     }
 };
 
+const searchAdvance = (data) => {
+    expenses.value = data;
+};
+
 const actionForm = ref({
     ids: [],
 });
 
-const validateForm = useForm({
-    state: "",
-});
-
-const handleCheckAll = (e) => {
-    if (e.target.checked) {
-        actionForm.value.ids = expenses.value.map((item) => item.id);
-    } else {
-        actionForm.value.ids = [];
-    }
-};
+function handleOptions(newIds) {
+    actionForm.value.ids = newIds;
+}
 
 const openNuUpdateModal = () => {
     if (actionForm.value.ids.length === 0) {
@@ -1050,42 +502,6 @@ const openNuUpdateModal = () => {
 const closeOpNuDatModal = () => {
     isFetching.value = false;
     showOpNuDatModal.value = false;
-};
-
-const fetchSites = (macro) => {
-    selectedSite.value = "";
-    form.huawei_project_id = "";
-    axios
-        .get(
-            route("huawei.projects.general.expenses.fetchsites", {
-                macro: macro.target.value,
-            })
-        )
-        .then((response) => {
-            sites.value = response.data;
-        })
-        .catch((error) => {
-            console.error(error);
-        });
-};
-
-const show_import = ref(false);
-
-const fetchProjects = (site) => {
-    form.huawei_project_id = "";
-    axios
-        .get(
-            route("huawei.projects.general.expenses.fetchprojects", {
-                macro: selectedMacro.value,
-                site_id: site.target.value,
-            })
-        )
-        .then((response) => {
-            projects.value = response.data;
-        })
-        .catch((error) => {
-            console.error(error);
-        });
 };
 
 const openImportExcel = () => {
@@ -1116,7 +532,7 @@ function exportArchives() {
     closeExportArchivesModal();
 }
 
-function updateNu(updateValue){
+function updateNu(updateValue) {
     const originalMap = new Map(expenses.value.map((item) => [item.id, item]));
     updateValue.forEach((update) => {
         if (originalMap.has(update.id)) {
@@ -1127,5 +543,44 @@ function updateNu(updateValue){
     expenses.value = updatedArray;
     closeOpNuDatModal();
     notify("Registros Seleccionados Actualizados");
+}
+
+function updateExpense({ expense, mode }) {
+    if (expense === "error") {
+        notifyError("Server Error");
+        return;
+    }
+    const originalMap = new Map(expenses.value.map((item) => [item.id, item]));
+    const newExpense = expense;
+    newExpense.amount = Number(newExpense.amount);
+    newExpense.ec_amount = Number(newExpense.ec_amount);
+
+    originalMap.set(newExpense.id, newExpense);
+    expenses.value = Array.from(originalMap.values());
+    closeModal();
+    notify(
+        mode
+            ? "Se actualizó el registro correctamente"
+            : "Se creó el registro correctamente"
+    );
+}
+
+function validateExpense({validate, is_accepted}) {
+    if (validate === "error") {
+        notifyError("Server Error");
+        return;
+    }
+    const originalMap = new Map(expenses.value.map((item) => [item.id, item]));
+    const newExpense = validate;
+    newExpense.amount = Number(newExpense.amount);
+    newExpense.ec_amount = Number(newExpense.ec_amount);
+
+    originalMap.set(newExpense.id, newExpense);
+    expenses.value = Array.from(originalMap.values());
+    notify(
+        is_accepted
+            ? "Registro validado correctamente"
+            : "Registro rechazado correctamente"
+    );
 }
 </script>

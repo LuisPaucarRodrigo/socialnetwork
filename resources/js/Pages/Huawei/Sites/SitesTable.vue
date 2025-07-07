@@ -4,31 +4,38 @@
             <thead>
                 <tr>
                     <th
-                        class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider text-center">
+                        class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider text-center"
+                    >
                         Código
                     </th>
                     <th
-                        class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider text-center">
+                        class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider text-center"
+                    >
                         Nombre
                     </th>
                     <th
-                        class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider text-center">
+                        class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider text-center"
+                    >
                         Operador
                     </th>
                     <th
-                        class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider text-center">
+                        class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider text-center"
+                    >
                         Dirección
                     </th>
                     <th
-                        class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider text-center">
+                        class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider text-center"
+                    >
                         Latitud
                     </th>
                     <th
-                        class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider text-center">
+                        class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider text-center"
+                    >
                         Longitud
                     </th>
                     <th
-                        class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider text-center">
+                        class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider text-center"
+                    >
                         Acciones
                     </th>
                 </tr>
@@ -67,11 +74,19 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-center">
                         <div class="flex justify-center gap-2 items-center">
-                            <button v-permission="'huawei_sites_edit'" @click="$emit('edit', site)">
-                                <EditIcon />
+                            <button
+                                v-permission="'huawei_sites_edit'"
+                                @click="$emit('edit', site)"
+                                class="text-orange-400 hover:underline"
+                            >
+                                <PencilSquareIcon class="h-5 w-5" />
                             </button>
-                            <button v-permission="'huawei_sites_delete'" @click="$emit('delete', site.id)">
-                                <DeleteIcon />
+                            <button
+                                v-permission="'huawei_sites_delete'"
+                                @click="$emit('delete', site.id)"
+                                class="text-red-600 hover:underline"
+                            >
+                                <TrashIcon class="h-5 w-5" />
                             </button>
                         </div>
                     </td>
@@ -79,14 +94,17 @@
             </tbody>
         </table>
     </div>
-    <div v-if="!search" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
+    <div
+        v-if="!search"
+        class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between"
+    >
         <pagination :links="links" />
     </div>
 </template>
 
 <script setup>
+import { PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import Pagination from "@/Components/Pagination.vue";
-import { DeleteIcon, EditIcon } from "@/Components/Icons";
 
 const { dataToRender, links, search } = defineProps({
     dataToRender: Array,

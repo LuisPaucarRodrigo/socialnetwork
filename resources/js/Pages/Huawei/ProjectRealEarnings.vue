@@ -1,10 +1,10 @@
 <template>
 
-    <Head title="Gestion de Ingresos" />
+    <Head title="Gestion de Ingresos Reales" />
     <AuthenticatedLayout
       :redirectRoute="{ route: 'huawei.projects', params: {status: backStatus, prefix: 'Claro'}}">
       <template #header>
-        Ingresos Proyectados del Proyecto {{ props.huawei_project.name }}
+        Ingresos Actuales del Proyecto {{ props.huawei_project.name }}
       </template>
       <div class="flex flex-col sm:flex-row gap-4 justify-between rounded-lg p-4">
     <!-- Botones principales visibles en pantallas grandes -->
@@ -17,7 +17,7 @@
             class="hidden sm:block rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500 whitespace-nowrap">
             Importar Datos
         </button>
-        <a :href="route('huawei.projects.earnings.export', {huawei_project: props.huawei_project})" type="button"
+        <a :href="route('huawei.projects.realearnings.export', {huawei_project: props.huawei_project})" type="button"
             class="hidden sm:block rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500 whitespace-nowrap">
             Exportar Datos
         </a>
@@ -42,7 +42,7 @@
                         <button @click.prevent="openImportModal" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                             Importar Datos
                         </button>
-                        <a :href="route('huawei.projects.earnings.export', {huawei_project: props.huawei_project})" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                        <a :href="route('huawei.projects.realearnings.export', {huawei_project: props.huawei_project})" type="button" class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                             Exportar Datos
                         </a>
                     </div>
@@ -73,32 +73,48 @@
             <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                 <th
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
-                Código</th>
+                N° de Factura</th>
                 <th
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600 min-w-[300px]">
-                Descripción</th>
+                Monto</th>
               <th
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
-                Cantidad</th>
+                Fecha de Facturación</th>
                 <th
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
-                Precio Unitario</th>
+                Fecha de Depósito</th>
                 <th
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
-                Monto</th>
+                Monto BCP</th>
+                <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
+                N° Operación BCP</th>
+                <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
+                Fecha de Detracción</th>
+                <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
+                Monto de Detracción</th>
+                <th
+                class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
+                N° Operación Detracción</th>
               <th v-if="props.huawei_project.status"
                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-center text-gray-600">
                 </th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in (props.search ? props.earnings : earnings.data)" :key="item.id" class="text-gray-700">
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.code }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.description }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ item.quantity }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? "S/. " + item.unit_price.toFixed(2) : '-' }}</td>
-              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.unit_price ? "S/. " + (item.unit_price * item.quantity).toFixed(2) : '-' }}</td>
-              <!-- <td v-if="props.huawei_project.status" class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
+            <tr v-for="item in (props.search ? props.real_earnings : real_earnings.data)" :key="item.id" class="text-gray-700">
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.invoice_number }}</td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">S/. {{ item.amount.toFixed(2) }}</td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">{{ formattedDate(item.invoice_date) }}</td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ formattedDate(item.deposit_date) }}</td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.main_amount ? "S/. " + item.main_amount.toFixed(2) : '' }}</td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.main_op_number }}</td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.detraction_date ? formattedDate(item.detraction_date) : ''}}</td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.detraction_amount ? "S/. " + item.detraction_amount.toFixed(2) : '' }}</td>
+              <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center whitespace-nowrap">{{ item.detraction_op_number }}</td>
+              <td v-if="props.huawei_project.status" class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                 <div class="flex justify-center items-center">
                     <button @click="openEditAdditionalModal(item)" class="text-orange-400 hover:underline mr-2">
                         <PencilSquareIcon class="h-5 w-5 ml-1" />
@@ -107,23 +123,13 @@
                         <TrashIcon class="h-5 w-5" />
                     </button>
                 </div>
-            </td> -->
-            <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
-                <select id="selectState"
-                    @change="change_state(item.id, $event.target.value)">
-                    <option selected disabled>{{ item.state }}</option>
-                    <option v-for="option in availableOptions(item.state)" :key="option"
-                            :value="option">
-                            {{ option }}
-                    </option>
-                </select>
             </td>
             </tr>
           </tbody>
         </table>
       </div>
       <div v-if="!props.search" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-        <pagination :links="props.earnings.links" />
+        <pagination :links="props.real_earnings.links" />
       </div>
 
       <Modal :show="create_additional || editAdditionalModal">
@@ -134,52 +140,91 @@
             <form @submit.prevent="create_additional ? submit(false) : submit(true)">
             <div class="space-y-12">
                 <div class="border-b border-gray-900/10 pb-12">
+
                     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
 
                         <div class="col-span-1">
-                            <InputLabel for="quantity" class="font-medium leading-6 text-gray-900">Cantidad</InputLabel>
+                            <InputLabel for="invoice_number" class="font-medium leading-6 text-gray-900">Nª de Factura</InputLabel>
                             <div class="mt-2">
-                                <input type="number" v-model="form.quantity" id="quantity"
+                                <input type="text" v-model="form.invoice_number" id="invoice_number"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.quantity" />
+                                <InputError :message="form.errors.invoice_number" />
                             </div>
                         </div>
 
                         <div class="col-span-1">
-                            <InputLabel for="unit_price" class="font-medium leading-6 text-gray-900">Precio Unitario</InputLabel>
+                            <InputLabel for="amount" class="font-medium leading-6 text-gray-900">Monto</InputLabel>
                             <div class="mt-2">
-                                <input type="number" step="0.01" v-model="form.unit_price" id="unit_price"
+                                <input type="number" step="0.01" v-model="form.amount" id="amount"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.unit_price" />
+                                <InputError :message="form.errors.amount" />
                             </div>
                         </div>
 
                         <div class="col-span-1">
-                            <InputLabel for="state" class="font-medium leading-6 text-gray-900">Estado</InputLabel>
+                            <InputLabel for="main_amount" class="font-medium leading-6 text-gray-900">Monto BCP</InputLabel>
                             <div class="mt-2">
-                                <select v-model="form.state" id="state"
-                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option value="" disabled>Selecciona un estado</option>
-                                    <option>Pendiente</option>
-                                    <option>En Proceso</option>
-                                    <option>Completado</option>
-                                    <option>Cancelado</option>
-                                </select>
-                                <InputError :message="form.errors.state" />
+                                <input type="number" step="0.01" v-model="form.main_amount" id="main_amount"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.main_amount" />
                             </div>
                         </div>
 
-                        <div class="col-span-1 sm:col-span-1">
-                            <InputLabel for="description" class="font-medium leading-6 text-gray-900">Descripción del Ingreso</InputLabel>
+                        <div class="col-span-1">
+                            <InputLabel for="detraction_amount" class="font-medium leading-6 text-gray-900">Monto Detracción</InputLabel>
                             <div class="mt-2">
-                                <textarea v-model="form.description" id="description"
+                                <input type="number" step="0.01" v-model="form.detraction_amount" id="detraction_amount"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                <InputError :message="form.errors.description" />
+                                <InputError :message="form.errors.detraction_amount" />
+                            </div>
+                        </div>
+
+                        <div class="col-span-1">
+                            <InputLabel for="main_op_number" class="font-medium leading-6 text-gray-900">N° Operación BCP</InputLabel>
+                            <div class="mt-2">
+                                <input type="text" v-model="form.main_op_number" id="main_op_number"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.main_op_number" />
+                            </div>
+                        </div>
+
+                        <div class="col-span-1">
+                            <InputLabel for="detraction_op_number" class="font-medium leading-6 text-gray-900">N° Operación Detracción</InputLabel>
+                            <div class="mt-2">
+                                <input type="text" v-model="form.detraction_op_number" id="detraction_op_number"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.detraction_op_number" />
+                            </div>
+                        </div>
+
+                        <div class="col-span-1">
+                            <InputLabel for="invoice_date" class="font-medium leading-6 text-gray-900">Fecha de Facturación</InputLabel>
+                            <div class="mt-2">
+                                <input type="date" v-model="form.invoice_date" id="invoice_date"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.invoice_date" />
+                            </div>
+                        </div>
+
+                        <div class="col-span-1">
+                            <InputLabel for="deposit_date" class="font-medium leading-6 text-gray-900">Fecha de Depósito</InputLabel>
+                            <div class="mt-2">
+                                <input type="date" v-model="form.deposit_date" id="deposit_date"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.deposit_date" />
+                            </div>
+                        </div>
+
+                        <div class="col-span-1">
+                            <InputLabel for="detraction_date" class="font-medium leading-6 text-gray-900">Fecha de Detracción</InputLabel>
+                            <div class="mt-2">
+                                <input type="date" v-model="form.detraction_date" id="detraction_date"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                <InputError :message="form.errors.detraction_date" />
                             </div>
                         </div>
 
                     </div>
-
 
                 <div class="mt-6 flex items-center justify-end gap-x-6">
                     <SecondaryButton @click="closeModals">
@@ -199,7 +244,7 @@
                 <h2 class="text-base font-medium leading-7 text-gray-900">
                     Importar Excel
                 </h2>
-                <form @submit.prevent="importExcel">
+                <form @submit.prevent="verify">
                 <div class="space-y-12">
                     <div class="border-b border-gray-900/10 pb-12">
                         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -210,20 +255,6 @@
                                     <InputFile type="file" accept="xls,xlsx" v-model="importForm.file" id="file"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                     <InputError :message="importForm.errors.file" />
-                                </div>
-                            </div>
-                            <div class="col-span-2">
-                                <InputLabel for="zone" class="font-medium leading-6 text-gray-900">Zona</InputLabel>
-                                <div class="mt-2">
-                                    <select v-model="importForm.zone" id="zone"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                        <option value="" disabled>Seleccione una opción</option>
-                                        <option value="1">B1</option>
-                                        <option value="2">B2</option>
-                                        <option value="3">B3</option>
-                                        <option value="4">B4</option>
-                                    </select>
-                                    <InputError :message="importForm.errors.zone" />
                                 </div>
                             </div>
                         </div>
@@ -241,14 +272,32 @@
             </div>
         </Modal>
 
+        <Modal :show="verifyModal" :maxWidth="'sm'">
+            <div class="p-6">
+                <h2 class="text-base font-medium leading-7 text-gray-900 text-center">
+                    ¿Está seguro de importar el excel?
+                </h2>
+                <p class="mt-1 text-sm text-gray-600 text-wrap">
+                    Existen registros con el mismo N° Factura de los que se desean importar, los cuales se actualizarán con la nueva información.
+                </p>
+                <div class="space-y-12">
+                <div class="border-gray-900/10">
+                    <div class="mt-6 flex items-center justify-end gap-x-3">
+                    <SecondaryButton @click="reject"> No </SecondaryButton>
+                    <PrimaryButton @click="importExcel"
+                        class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Si</PrimaryButton>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </Modal>
+
       <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Ingreso"
         :deleteFunction="deleteAdditional" @closeModal="closeModalDoc" />
       <ConfirmCreateModal :confirmingcreation="showModal" itemType="Ingreso" />
       <ConfirmUpdateModal :confirmingupdate="showModalEdit" itemType="Ingreso" />
       <SuccessOperationModal :confirming="confirmImport" :title="'Éxito'"
       :message="'Se importaron los datos correctamente.'" />
-      <SuccessOperationModal :confirming="confirmUpdateState" :title="'Éxito'"
-      :message="'Se actualizó correctamente el estado de la línea.'" />
     </AuthenticatedLayout>
   </template>
 
@@ -263,14 +312,17 @@ import InputError from '@/Components/InputError.vue';
 import InputFile from '@/Components/InputFile.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
+import { TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
 import TextInput from '@/Components/TextInput.vue';
 import Pagination from '@/Components/Pagination.vue';
 import Dropdown from '@/Components/Dropdown.vue';
+import { formattedDate } from '@/utils/utils';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
-  earnings: Object,
+  real_earnings: Object,
   huawei_project: Object,
   auth: Object,
   userPermissions: Array,
@@ -280,13 +332,17 @@ const props = defineProps({
 
 const backStatus = props.huawei_project.status == 1 ? '1' : (props.huawei_project.status == null ? '2' : '3');
 
-
 const form = useForm({
   id: '',
-  description: '',
-  quantity: '',
-  unit_price: '',
-  state: '',
+  invoice_number: '',
+  amount: '',
+  invoice_date: '',
+  deposit_date: '',
+  main_amount: '',
+  main_op_number: '',
+  detraction_amount: '',
+  detraction_date: '',
+  detraction_op_number: '',
   huawei_project_id: props.huawei_project.id,
 });
 
@@ -305,7 +361,27 @@ const editingAdditional = ref(null);
 const importModal = ref(false);
 const confirmImport = ref(false);
 const dropdownOpen = ref(false);
-const confirmUpdateState = ref(false);
+const originalAmount = ref(null);
+const verifyModal = ref(false);
+
+watch(() => form.amount, (newValue) => {
+  if (newValue && !form.id) {
+    form.main_amount = (newValue * 0.88).toFixed(2);
+    form.detraction_amount = (newValue * 0.12).toFixed(2);
+  }
+  if (form.id && newValue !== originalAmount.value) {
+    form.main_amount = (newValue * 0.88).toFixed(2);
+    form.detraction_amount = (newValue * 0.12).toFixed(2);
+  }
+});
+
+const reject = () => {
+    importForm.reset();
+    importForm.clearErrors();
+    verifyModal.value = false;
+    importModal.value = false;
+}
+
 
 const openImportModal = () => {
     importModal.value = true;
@@ -322,12 +398,14 @@ const openCreateAdditionalModal = () => {
 };
 
 const closeCreateModal = () => {
+    originalAmount.value = 0;
     form.reset();
     form.clearErrors();
     create_additional.value = false;
 }
 
 const closeEditModal = () => {
+    originalAmount.value = 0;
     form.reset();
     form.clearErrors();
     editAdditionalModal.value = false;
@@ -337,24 +415,51 @@ const openEditAdditionalModal = (additional) => {
   // Copia de los datos de la subsección existente al formulario
   editingAdditional.value = JSON.parse(JSON.stringify(additional));
   form.id = editingAdditional.value.id;
-  form.description = editingAdditional.value.description;
-  form.quantity = editingAdditional.value.quantity;
-  form.unit_price = editingAdditional.value.unit_price;
-  form.huawei_project_id = editingAdditional.value.huawei_project_id;
-  form.state = editingAdditional.value.state;
+  form.invoice_number = editingAdditional.value.invoice_number;
+  form.amount = editingAdditional.value.amount;
+  form.invoice_date = editingAdditional.value.invoice_date;
+  form.deposit_date = editingAdditional.value.deposit_date;
+  form.main_amount = editingAdditional.value.main_amount;
+  form.main_op_number = editingAdditional.value.main_op_number;
+  form.detraction_amount = editingAdditional.value.detraction_amount;
+  form.detraction_op_number = editingAdditional.value.detraction_op_number;
+  form.detraction_date = editingAdditional.value.detraction_date;
+  originalAmount.value = editingAdditional.value.amount;
   editAdditionalModal.value = true;
 };
 
 const closeModals = () => {
+  originalAmount.value = 0;
   form.clearErrors();
   form.reset();
   editAdditionalModal.value = false;
   create_additional.value = false;
 };
 
+const verify = () => {
+    let formData = new FormData();
+    formData.append('file', importForm.file); // Agrega el archivo al FormData
+
+    axios.post(route('huawei.projects.realearnings.verify', {huawei_project: props.huawei_project.id}), formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data', // Especifica que estás enviando un archivo
+        },
+    })
+    .then(res => {
+        if (res.data.message == 'found') {
+            verifyModal.value = true;
+        } else {
+            importExcel();
+        }
+    })
+    .catch(error => {
+        console.error('Error en la petición:', error);
+    });
+};
+
 const submit = (update) => {
     if (!update){
-        form.post(route('huawei.projects.earnings.store'), {
+        form.post(route('huawei.projects.realearnings.store'), {
             onSuccess: () => {
             closeCreateModal();
             form.reset();
@@ -365,7 +470,7 @@ const submit = (update) => {
             }
         });
     }else{
-        form.put(route('huawei.projects.earnings.update', { huawei_project_earning: form.id }), {
+        form.put(route('huawei.projects.realearnings.update', { huawei_project_real_earning: form.id }), {
             onSuccess: () => {
             closeEditModal();
             form.reset();
@@ -379,10 +484,11 @@ const submit = (update) => {
 };
 
 const importExcel = () => {
-    importForm.post(route('huawei.projects.earnings.import', {huawei_project: props.huawei_project}), {
+    importForm.post(route('huawei.projects.realearnings.import', {huawei_project: props.huawei_project.id}), {
         onSuccess: () => {
             closeImportModal();
             confirmImport.value = true;
+            verifyModal.value = false;
             setTimeout(() => {
                 confirmImport.value = false;
             }, 2000);
@@ -405,7 +511,7 @@ const closeModalDoc = () => {
 const deleteAdditional = () => {
   const docId = docToDelete.value;
   if (docId) {
-    router.delete(route('huawei.projects.earnings.delete', { huawei_project_earning: docId }), {
+    router.delete(route('huawei.projects.realearnings.delete', { huawei_project_real_earning: docId }), {
       onSuccess: () => closeModalDoc()
     });
   }
@@ -417,33 +523,10 @@ const searchForm = useForm({
 
 const search = () => {
     if (searchForm.searchTerm == ''){
-        router.visit(route('huawei.projects.earnings', {huawei_project: props.huawei_project.id}));
+        router.visit(route('huawei.projects.realearnings', {huawei_project: props.huawei_project.id}));
     }else{
-        router.visit(route('huawei.projects.earnings.search', {huawei_project: props.huawei_project.id, request: searchForm.searchTerm}));
+        router.visit(route('huawei.projects.realearnings.search', {huawei_project: props.huawei_project.id, request: searchForm.searchTerm}));
     }
-}
-
-const availableOptions = (state) => {
-    const options = ref(['Pendiente', 'En Proceso', 'Completada', 'Cancelada']);
-    const filteredOptions = options.value.filter(option => option !== state);
-
-    return filteredOptions;
-}
-
-const change_state = (id, state) => {
-    router.put(route('huawei.projects.earnings.updatestate', {huawei_project: props.huawei_project.id, earning: id}), {state: state},
-        {onSuccess: () => {
-            confirmUpdateState.value = true;
-            setTimeout(()=> {
-                confirmUpdateState.value = false;
-                router.visit(route('huawei.projects.earnings', {huawei_project: props.huawei_project.id}));
-            }, 2000);
-        },
-        onError: (e) => {
-            console.error(e);
-        }
-    }
-    )
 }
 
 </script>

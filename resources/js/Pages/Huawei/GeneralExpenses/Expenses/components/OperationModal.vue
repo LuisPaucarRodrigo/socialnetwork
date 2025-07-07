@@ -1,5 +1,5 @@
 <template>
-            <Modal :show="show" @close="close" :closeable="true">
+            <Modal :show="show" @close="handleClose" :closeable="true">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
                     Actualización Masiva
