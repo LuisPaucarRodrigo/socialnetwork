@@ -1652,6 +1652,7 @@ const props = defineProps({
     macro_projects: Array,
 });
 
+console.log(props.employees);
 
 const initialState = {
     description: props.huawei_project ? props.huawei_project.description : "",

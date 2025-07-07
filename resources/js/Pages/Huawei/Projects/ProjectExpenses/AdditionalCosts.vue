@@ -347,26 +347,14 @@
 
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
-import SuccessOperationModal from "@/Components/SuccessOperationModal.vue";
-import SecondaryButton from "@/Components/SecondaryButton.vue";
-import InputError from "@/Components/InputError.vue";
-import InputLabel from "@/Components/InputLabel.vue";
-import Modal from "@/Components/Modal.vue";
 import { ref, watch } from "vue";
 import { Head, useForm, router } from "@inertiajs/vue3";
-import { TrashIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { formattedDate } from "@/utils/utils";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
-import InputFile from "@/Components/InputFile.vue";
-import Pagination from "@/Components/Pagination.vue";
 import { EyeIcon } from "@heroicons/vue/24/outline";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import TableAutocompleteFilter from "@/Components/TableAutocompleteFilter.vue";
 import axios from "axios";
 import TextInput from "@/Components/TextInput.vue";
-import Dropdown from "@/Components/Dropdown.vue";
-import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 
 const props = defineProps({

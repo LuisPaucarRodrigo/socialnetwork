@@ -445,7 +445,6 @@ import {
 import TableAutocompleteFilter from "@/Components/TableAutocompleteFilter.vue";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import axios from "axios";
-import { validate } from "uuid";
 
 const {
     expenses,
@@ -474,7 +473,7 @@ const filterMode = ref(false);
 
 const handleCheckAll = (e) => {
     if (e.target.checked) {
-        actionForm.value.ids = expenses.value.map((item) => item.id);
+        actionForm.value.ids = expenses.map((item) => item.id);
     } else {
         actionForm.value.ids = [];
     }
@@ -548,6 +547,8 @@ async function search_advance($data) {
     });
     try {
         let response = await axios.post(url, $data);
+        actionForm.value.ids = [];
+        emits("options", actionForm.value.ids);
         emits("data", response.data.expenses);
     } catch (error) {
         console.error("Error en la solicitud:", error);
