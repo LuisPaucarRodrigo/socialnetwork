@@ -3,6 +3,11 @@
 namespace App\Support\RouteDefinitions;
 
 use App\Http\Controllers\Huawei\GeneralExpenses\HuaweiMonthlyController;
+use App\Http\Controllers\Huawei\HuaweiInventory\HuaweiDetailsController;
+use App\Http\Controllers\Huawei\HuaweiInventory\HuaweiGeneralController;
+use App\Http\Controllers\Huawei\HuaweiInventory\HuaweiManagementController;
+use App\Http\Controllers\Huawei\HuaweiInventory\HuaweiOrdersController;
+use App\Http\Controllers\Huawei\HuaweiInventory\HuaweiRefundsController;
 use App\Http\Controllers\Huawei\Projects\HuaweiProjectController;
 use App\Http\Controllers\Huawei\Projects\Liquidations\HuaweiLiquidationController;
 use App\Http\Controllers\Huawei\Projects\Resources\HuaweiResourceController;
@@ -402,6 +407,192 @@ class HuaweiRoutes
                 'permission' => true,
                 'name' => 'huawei.projects.monthlyexpenses.downloadimages',
             ],
+
+
+            //huawei_inventory
+            [
+                'uri' => 'huawei/inventory/{warehouse}/get/{equipment?}',
+                'method' => 'get',
+                'action' => [HuaweiManagementController::class, 'show'],
+                'permission' => true,
+                'name' => 'huawei.inventory.show',
+            ],
+            [
+                'uri' => 'huawei/inventory/orders/pending_orders/get',
+                'method' => 'get',
+                'action' => [HuaweiOrdersController::class, 'getPendingOrders'],
+                'permission' => true,
+                'name' => 'huawei.inventory.pendingorders',
+            ],
+            [
+                'uri' => 'huawei/inventory/orders/pending_orders/search_advance/post',
+                'method' => 'post',
+                'action' => [HuaweiOrdersController::class, 'ordersSearchAdvance'],
+                'permission' => true,
+                'name' => 'huawei.inventory.pendingorders.searchadvance',
+            ],
+            [
+                'uri' => 'huawei/inventory/orders/pending_orders/assign_guide/{order}/post',
+                'method' => 'post',
+                'action' => [HuaweiOrdersController::class, 'orderAssignGuide'],
+                'permission' => true,
+                'name' => 'huawei.inventory.pendingorders.assignguide',
+            ],
+            [
+                'uri' => 'huawei/inventory/orders/pending_orders/fetch_orders/get',
+                'method' => 'get',
+                'action' => [HuaweiOrdersController::class, 'fetchPendingOrders'],
+                'permission' => true,
+                'name' => 'huawei.inventory.pendingorders.fetch',
+            ],
+            [
+                'uri' => 'huawei/inventory/search/{warehouse}/get/{request}/{equipment?}',
+                'method' => 'get',
+                'action' => [HuaweiManagementController::class, 'searchIndex'],
+                'permission' => true,
+                'name' => 'huawei.inventory.show.search',
+            ],
+            [
+                'uri' => 'huawei/inventory/create/form/get',
+                'method' => 'get',
+                'action' => [HuaweiManagementController::class, 'create'],
+                'permission' => true,
+                'name' => 'huawei.inventory.create',
+            ],
+            [
+                'uri' => 'huawei/inventory/create/form/post',
+                'method' => 'post',
+                'action' => [HuaweiManagementController::class, 'store'],
+                'permission' => true,
+                'name' => 'huawei.inventory.store',
+            ],
+            [
+                'uri' => 'huawei/inventory/create/form/post_order/order',
+                'method' => 'post',
+                'action' => [HuaweiOrdersController::class, 'storeOrder'],
+                'permission' => true,
+                'name' => 'huawei.inventory.store.order',
+            ],
+            [
+                'uri' => 'huawei/inventory/create/get/brand_post',
+                'method' => 'post',
+                'action' => [HuaweiManagementController::class, 'storeBrand'],
+                'permission' => true,
+                'name' => 'huawei.inventory.create.brand',
+            ],
+            [
+                'uri' => 'huawei/inventory/create/get/brand_model_post',
+                'method' => 'post',
+                'action' => [HuaweiManagementController::class, 'storeBrandModel'],
+                'permission' => true,
+                'name' => 'huawei.inventory.create.brandmodel',
+            ],
+            [
+                'uri' => 'huawei/inventory/details/{id}/{equipment?}',
+                'method' => 'get',
+                'action' => [HuaweiDetailsController::class, 'showDetails'],
+                'permission' => true,
+                'name' => 'huawei.inventory.show.details',
+            ],
+            [
+                'uri' => 'huawei/inventory/details/{id}/without_diu/get',
+                'method' => 'get',
+                'action' => [HuaweiDetailsController::class, 'detailsWithoutDiu'],
+                'permission' => true,
+                'name' => 'huawei.inventory.show.details.withoutdiu',
+            ],
+            [
+                'uri' => 'huawei/inventory/details/search/{id}/{request}/{equipment?}',
+                'method' => 'get',
+                'action' => [HuaweiDetailsController::class, 'search'],
+                'permission' => true,
+                'name' => 'huawei.inventory.show.details.search',
+            ],
+            [
+                'uri' => 'huawei/inventory/details/refunds/post/{equipment?}',
+                'method' => 'post',
+                'action' => [HuaweiRefundsController::class, 'refund'],
+                'permission' => true,
+                'name' => 'huawei.inventory.details.refund',
+            ],
+            [
+                'uri' => 'huawei/inventory/refunds/view/get/{warehouse}/{equipment?}',
+                'method' => 'get',
+                'action' => [HuaweiRefundsController::class, 'getRefunds'],
+                'permission' => true,
+                'name' => 'huawei.inventory.refunds',
+            ],
+            [
+                'uri' => 'huawei/inventory/refunds/view/search/{warehouse}/{request}/{equipment?}',
+                'method' => 'get',
+                'action' => [HuaweiRefundsController::class, 'searchRefunds'],
+                'permission' => true,
+                'name' => 'huawei.inventory.refunds.search',
+            ],
+            [
+                'uri' => 'huawei/inventory/show_guide/{entry}/get',
+                'method' => 'get',
+                'action' => [HuaweiManagementController::class, 'showGuide'],
+                'permission' => true,
+                'name' => 'huawei.inventory.showguide',
+            ],
+            [
+                'uri' => 'huawei/inventory/details/assign_diu/post',
+                'method' => 'post',
+                'action' => [HuaweiDetailsController::class, 'assignDIU'],
+                'permission' => true,
+                'name' => 'huawei.inventory.details.assigndiu',
+            ],
+            [
+                'uri' => 'huawei/inventory/export/general/export/get',
+                'method' => 'get',
+                'action' => [HuaweiGeneralController::class, 'exportInventory'],
+                'permission' => true,
+                'name' => 'huawei.inventory.export',
+            ],
+            [
+                'uri' => 'huawei/inventory/general/general_equipments/{prefix}/get',
+                'method' => 'get',
+                'action' => [HuaweiGeneralController::class, 'getGeneralEquipments'],
+                'permission' => true,
+                'name' => 'huawei.inventory.general.equipments',
+            ],
+            [
+                'uri' => 'huawei/inventory/general/general_equipments/{prefix}/search_advance/post',
+                'method' => 'post',
+                'action' => [HuaweiGeneralController::class, 'searchGeneralAdvance'],
+                'permission' => true,
+                'name' => 'huawei.inventory.general.equipments.searchadvance',
+            ],
+            [
+                'uri' => 'huawei/inventory/general/general_equipments/massive_update/post',
+                'method' => 'post',
+                'action' => [HuaweiGeneralController::class, 'generalMassiveUpdate'],
+                'permission' => true,
+                'name' => 'huawei.inventory.general.equipments.massiveupdate',
+            ],
+            [
+                'uri' => 'huawei/inventory/general/general_equipments/{prefix}/search/{request}',
+                'method' => 'get',
+                'action' => [HuaweiGeneralController::class, 'searchGeneralEquipments'],
+                'permission' => true,
+                'name' => 'huawei.inventory.general.equipments.search',
+            ],
+            [
+                'uri' => 'huawei/inventory/create/{equipment}/verify_serie/post',
+                'method' => 'post',
+                'action' => [HuaweiManagementController::class, 'verifySerie'],
+                'permission' => true,
+                'name' => 'huawei.inventory.create.verifyserie',
+            ],
+            [
+                'uri' => 'huawei/inventory/create/{value}/get_inventory/get',
+                'method' => 'get',
+                'action' => [HuaweiManagementController::class, 'getInventoryPerWarehouse'],
+                'permission' => true,
+                'name' => 'huawei.inventory.create.getinventory',
+            ],
+
         ];
     }
 }
