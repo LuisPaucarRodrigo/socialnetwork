@@ -123,8 +123,7 @@
                             <template #content class="origin-right">
                                 <div @click.stop class="px-4 py-2 transition duration-150 ease-in-out">
                                     <label
-                                        class="flex items-center space-x-2 text-sm text-black hover:text-black cursor-pointer w-full"
-                                        v-permission="'huawei_expenses_admin'">
+                                        class="flex items-center space-x-2 text-sm text-black hover:text-black cursor-pointer w-full">
                                         <input type="checkbox" v-model="selectedCostLines" value="TODOS"
                                             class="form-checkbox text-indigo-600 w-4 h-4" />
                                         <span>TODOS</span>
@@ -133,8 +132,7 @@
                                 <div @click.stop v-for="cost_line in props.cost_lines" :key="cost_line.id"
                                     class="px-4 py-2 transition duration-150 ease-in-out">
                                     <label
-                                        class="flex items-center space-x-2 text-sm text-black hover:text-black cursor-pointer w-full"
-                                        v-permission="'huawei_expenses_admin'">
+                                        class="flex items-center space-x-2 text-sm text-black hover:text-black cursor-pointer w-full">
                                         <input type="checkbox" v-model="selectedCostLines" :value="cost_line.id"
                                             class="form-checkbox text-indigo-600 w-4 h-4" />
                                         <span>{{ cost_line.name }}</span>

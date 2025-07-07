@@ -25,16 +25,9 @@ class AdministrativeCostsController extends Controller
         $zones = PintConstants::scZones();
         $stateTypes = PintConstants::scStatesTypes();
 
-        $additional_costs = AdministrativeCost::where('month_project_id', $month_project_id->id)->with('month_project', 'provider')->orderBy('updated_at', 'desc')->paginate(20);
-        $additional_costs->getCollection()->transform(function ($item) {
-            $item->month_project->setAppends([]);
-            $item->setAppends(['real_amount', 'real_state']);
-            return $item;
-        });
         $searchQuery = '';
         $providers = Provider::all();
         return Inertia::render('ProjectArea/ProjectManagement/Administrative/AdministrativeCosts', [
-            'additional_costs' => $additional_costs,
             'month_project_id' => $month_project_id,
             'providers' => $providers,
             'searchQuery' => $searchQuery,
@@ -43,6 +36,17 @@ class AdministrativeCostsController extends Controller
             'docTypes' => $docTypes,
             'stateTypes' => $stateTypes,
         ]);
+    }
+
+    public function getAdminitrativeExpenses($month_id)
+    {
+        $additional_costs = AdministrativeCost::where('month_project_id', $month_id)->with('month_project', 'provider')->orderBy('updated_at', 'desc')->paginate(20);
+        $additional_costs->getCollection()->transform(function ($item) {
+            $item->month_project->setAppends([]);
+            $item->setAppends(['real_amount', 'real_state']);
+            return $item;
+        });
+        return response()->json($additional_costs, 200);
     }
 
     public function search_costs(Request $request, $month_project_id)

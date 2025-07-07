@@ -24,7 +24,7 @@
                 </div>
             </div>
             <br>
-            <TableStructure>
+            <TableStructure :info="purchaseOrders">
                 <template #thead>
                     <TableTitle :colspan="2">Nombre de Proyecto</TableTitle>
                     <TableTitle :colspan="2">Codigo de Proyecto</TableTitle>

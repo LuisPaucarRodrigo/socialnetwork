@@ -13,7 +13,7 @@
         </button>
       </div>
     </div>
-    <TableStructure>
+    <TableStructure :info="contacts">
       <template #thead>
         <tr>
           <TableTitle>Nombre</TableTitle>
@@ -23,7 +23,7 @@
         </tr>
       </template>
       <template #tbody>
-        <tr v-for="contact in props.contacts.data" :key="contact.id">
+        <tr v-for="contact in contacts.data" :key="contact.id">
           <TableRow>{{ contact.name }}</TableRow>
           <TableRow>{{ contact.phone }}</TableRow>
           <TableRow>{{ contact.additional_information }}</TableRow>
@@ -112,7 +112,7 @@ import { Head, useForm, router } from '@inertiajs/vue3';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import { DeleteIcon, EditIcon } from "@/Components/Icons/Index";
+import { DeleteIcon, EditIcon } from "@/Components/Icons";
 
 const props = defineProps({
   contacts: Object,

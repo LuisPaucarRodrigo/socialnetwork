@@ -21,7 +21,7 @@
                 </div>
             </div>
             <br>
-            <TableStructure>
+            <TableStructure :info="charge_areas">
                 <template #thead>
                     <tr>
                         <TableTitle :colspan="4">Nombre de Proyecto</TableTitle>

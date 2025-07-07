@@ -96,226 +96,10 @@
                     fields="Ruc , Numero de Documento, Numero de Operacion, Descripcion, Monto Total" />
             </div>
         </div>
-
-        <div class="overflow-x-auto h-[72vh] z-10">
-            <table class="w-full">
-                <thead>
-                    <tr
-                        class="sticky top-0 z-20 border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                        <th class="sticky left-0 z-10 bg-gray-100 border-b-2 border-gray-20">
-                            <div class="w-2"></div>
-                        </th>
-                        <th
-                            class="sticky left-2 z-10 border-b-2 border-r border-gray-200 bg-gray-100 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 w-12">
-                            <label :for="`check-all`" class="flex gap-3 justify-center w-full px-2 py-1">
-                                <input @change="handleCheckAll" :id="`check-all`" :checked="actionForm.ids.length > 0"
-                                    type="checkbox" />
-                                {{ actionForm.ids.length ?? "" }}
-                            </label>
-                        </th>
-                        <th
-                            class="sm:sticky sm:left-14 sm:z-10 border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <TableHeaderFilter labelClass="text-[11px]" label="Zona" :options="zones"
-                                v-model="filterForm.selectedZones" width="w-32" />
-                        </th>
-                        <th
-                            class="sm:sticky sm:left-48 sm:z-10 border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Gasto" :options="expenseTypes"
-                                v-model="filterForm.selectedExpenseTypes" width="w-44" />
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Documento" :options="docTypes"
-                                v-model="filterForm.selectedDocTypes" width="w-32" />
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            RUC
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Proveedor
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Numero de Operación
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <TableDateFilter labelClass="text-[11px]" label="Fecha de Operación"
-                                v-model:startDate="filterForm.opStartDate" v-model:endDate="filterForm.opEndDate"
-                                v-model:noDate="filterForm.opNoDate" width="w-40" />
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Numero de Documento
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <TableDateFilter labelClass="text-[11px]" label="Fecha de Documento"
-                                v-model:startDate="filterForm.docStartDate" v-model:endDate="filterForm.docEndDate"
-                                v-model:noDate="filterForm.docNoDate" width="w-40" />
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Monto TOtal
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Monto sin IGV
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Foto de Factura
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Descripción
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <TableHeaderFilter labelClass="text-[11px]" label="Estado" :options="stateTypes"
-                                v-model="filterForm.selectedStateTypes" width="w-48" />
-                        </th>
-                        <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Acciones
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(item, i) in dataToRender" :key="item.id"
-                        class="text-gray-700 bg-white hover:bg-gray-200 hover:opacity-80">
-                        <td :class="[
-                            'sticky left-0 z-10 border-b border-gray-200 ',
-                            {
-                                'bg-indigo-500': item.real_state === 'Pendiente',
-                                'bg-green-500': item.real_state == 'Aceptado - Validado',
-                                'bg-amber-500': item.real_state == 'Aceptado',
-                                'bg-red-500': item.real_state == 'Rechazado',
-
-                            },
-                        ]"></td>
-                        <td
-                            class="sticky left-2 z-10 border-b border-r border-gray-200 bg-amber-100 text-center text-[13px] whitespace-nowrap tabular-nums">
-                            <label :for="`check-${item.id}`" class="block w-full px-2 py-1">
-                                <input v-model="actionForm.ids" :value="item.id" :id="`check-${item.id}`"
-                                    type="checkbox" />
-                            </label>
-                        </td>
-                        <td
-                            class="sm:sticky sm:left-14 sm:z-10 border-b w-32 border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
-                            {{ item.zone }}
-                        </td>
-                        <td
-                            class="sm:sticky sm:left-48 sm:z-10 border-b border-gray-200 bg-amber-100 px-2 py-2 text-center text-[13px]">
-                            <p class="w-48 break-words">
-                                {{ item.expense_type }}
-                            </p>
-                        </td>
-                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
-                            {{ item.type_doc }}
-                        </td>
-                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
-                            {{ item.ruc }}
-                        </td>
-                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
-                            <p class="line-clamp-2 hover:line-clamp-none">
-                                {{ item?.provider?.company_name }}
-                            </p>
-                        </td>
-                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
-                            {{ item.operation_number }}
-                        </td>
-                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px] ">
-                            {{ item.operation_date && formattedDate(item.operation_date) }}
-                        </td>
-                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px] whitespace-nowrap">
-                            {{ item.doc_number }}
-                        </td>
-                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
-                            {{ formattedDate(item.doc_date) }}
-                        </td>
-                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px] whitespace-nowrap">
-                            S/. {{ item.amount.toFixed(2) }}
-                        </td>
-                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px] whitespace-nowrap">
-                            S/. {{ item.real_amount.toFixed(2) }}
-                        </td>
-                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
-                            <button v-if="item.photo" @click="handlerPreview(item.id)">
-                                <ShowIcon />
-                            </button>
-                            <span v-else>-</span>
-                        </td>
-                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
-                            <p class="w-[250px]">
-                                {{ item.description }}
-                            </p>
-                        </td>
-                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
-                            <div :class="[
-                                'text-center',
-                                {
-                                    'text-indigo-500': item.real_state === 'Pendiente',
-                                    'text-green-500': item.real_state == 'Aceptado - Validado',
-                                    'text-amber-500': item.real_state == 'Aceptado',
-                                    'text-red-500': item.real_state == 'Rechazado',
-                                },
-                            ]">
-                                {{ item.real_state }}
-                            </div>
-                        </td>
-
-                        <td class="border-b border-gray-200 px-2 py-2 text-center text-[13px]">
-                            <div class="flex items-center">
-                                <button @click="openEditAdditionalModal(item)">
-                                    <EditIcon />
-                                </button>
-                                <button @click="confirmDeleteAdditional(item.id)">
-                                    <DeleteIcon />
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="sticky bottom-0 z-10 text-gray-700">
-                        <td class="border-b border-gray-200 bg-white text-sm"></td>
-                        <td colspan="10" class="font-bold border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            TOTAL
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
-                            S/.
-                            {{
-                                dataToRender
-                                    .reduce((a, item) => a + item.amount, 0)
-                                    .toFixed(2)
-                            }}
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
-                            S/.
-                            {{
-                                dataToRender
-                                    .reduce(
-                                        (a, item) => a + item.real_amount,
-                                        0
-                                    )
-                                    .toFixed(2)
-                            }}
-                        </td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
-                        <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                            <div class="flex items-center"></div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div v-if="!filterMode"
-            class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-            <pagination :links="additional_costs.links" />
-        </div>
+        <AdministrativeTable :dataToRender="dataToRender" :listOfData="listOfData" :actionForm="actionForm"
+            :filterForm="filterForm" :openEditAdditionalModal="openEditAdditionalModal"
+            :confirmDeleteAdditional="confirmDeleteAdditional" :expenseTypes="expenseTypes" :docTypes="docTypes"
+            :zones="zones" :stateTypes="stateTypes" v-model:loading="loading" />
         <Modal :show="create_additional">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
@@ -711,50 +495,11 @@
                 </form>
             </div>
         </Modal>
-
-        <Modal :show="showOpNuDatModal" @close="closeOpNuDatModal">
-            <div class="p-6">
-                <h2 class="text-base font-medium leading-7 text-gray-900">
-                    Actualización Masiva
-                </h2>
-                <form @submit.prevent="submitOpNuDatModal">
-                    <div class="space-y-12">
-                        <div class="border-b grid grid-cols-1 gap-6 border-gray-900/10 pb-12">
-                            <div>
-                                <InputLabel for="operation_number" class="font-medium leading-6 text-gray-900">Numero de
-                                    Operación
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input type="text" v-model="opNuDateForm.operation_number" id="operation_number"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="opNuDateForm.errors.operation_number" />
-                                </div>
-                            </div>
-
-                            <div>
-                                <InputLabel for="operation_date" class="font-medium leading-6 text-gray-900">Fecha de
-                                    Operación
-                                </InputLabel>
-                                <div class="mt-2">
-                                    <input type="date" v-model="opNuDateForm.operation_date" id="operation_date"
-                                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
-                                    <InputError :message="opNuDateForm.errors.operation_date" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-6 flex items-center justify-end gap-x-6">
-                            <SecondaryButton @click="closeOpNuDatModal">
-                                Cancelar
-                            </SecondaryButton>
-                            <button type="submit" :disabled="isFetching" :class="{ 'opacity-25': isFetching }"
-                                class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                Guardar
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </Modal>
+        <SuspenseWrapper :when="showUpdateMassive">
+            <template #component>
+                <UpdateMassive ref="updateMassive" v-model:dataToRender="dataToRender" :actionForm="actionForm" />
+            </template>
+        </SuspenseWrapper>
 
         <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Gasto Administrativo"
             :deleteFunction="deleteAdditional" @closeModal="closeModalDoc" />
@@ -768,25 +513,24 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import Modal from "@/Components/Modal.vue";
-import { ref, watch } from "vue";
+import { defineAsyncComponent, onMounted, ref, watch } from "vue";
 import { Head, useForm } from "@inertiajs/vue3";
-import { formattedDate } from "@/utils/utils";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputFile from "@/Components/InputFile.vue";
-import Pagination from "@/Components/Pagination.vue";
-import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
-import TableDateFilter from "@/Components/TableDateFilter.vue";
 import axios from "axios";
 import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
-
 import Dropdown from "@/Components/Dropdown.vue";
 import Search from "@/Components/Search.vue";
-import { MenuIcon, EditIcon, DeleteIcon, ShowIcon, ServerIcon } from "@/Components/Icons/Index";
+import { MenuIcon, DeleteIcon, ServerIcon } from "@/Components/Icons";
+import SuspenseWrapper from "@/Components/SuspenseWrapper.vue";
+import { useLazyRefInvoker } from "@/utils/useLazyRefInvoker";
+import AdministrativeTable from "./components/AdministrativeTable.vue";
+
+const UpdateMassive = defineAsyncComponent(() => import('./components/UpdateMassive.vue'));
 
 const props = defineProps({
-    additional_costs: Object,
     month_project_id: Object,
     providers: Object,
     auth: Object,
@@ -798,16 +542,29 @@ const props = defineProps({
     stateTypes: Array,
 });
 
-console.log(props.month_project_id.id)
-
 const { expenseTypes, docTypes, zones, stateTypes } = props
 expenseTypes.sort()
 docTypes.sort()
 zones.sort()
 stateTypes.sort()
 
-const dataToRender = ref(props.additional_costs.data);
+const showUpdateMassive = ref(false)
+const updateMassive = ref(null)
+
+const dataToRender = ref([]);
+const listOfData = ref([])
 const filterMode = ref(false);
+const loading = ref(true)
+
+const { invokeWhenReady: invokeUpdateMassive } = useLazyRefInvoker(updateMassive, showUpdateMassive);
+
+
+onMounted(async () => {
+    const res = await axios.get(route('getExpenses.administrativeCosts', { month_project_id: props.month_project_id.id }));
+    dataToRender.value = res.data.data;
+    listOfData.value = res.data
+    loading.value = false;
+});
 
 const form = useForm({
     id: "",
@@ -953,15 +710,7 @@ const handleRucDniAutocomplete = (e) => {
     }
 };
 
-function handlerPreview(id) {
-    const uniqueParam = `timestamp=${new Date().getTime()}`;
-    window.open(
-        route("administrativeCosts.archive", { static_cost_id: id }) +
-        "?" +
-        uniqueParam,
-        "_blank"
-    );
-}
+
 
 function openExportPhoto() {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
@@ -975,10 +724,10 @@ function openExportPhoto() {
 
 const initialFilterFormState = {
     search: "",
-    selectedZones: zones,
-    selectedExpenseTypes: expenseTypes,
-    selectedDocTypes: docTypes,
-    selectedStateTypes: stateTypes,
+    selectedZones: [...zones],
+    selectedExpenseTypes: [...expenseTypes],
+    selectedDocTypes: [...docTypes],
+    selectedStateTypes: [...stateTypes],
     opStartDate: "",
     opEndDate: "",
     opNoDate: false,
@@ -1010,6 +759,7 @@ watch(
     { deep: true }
 );
 
+
 async function search_advance(data) {
     const $search = data || filterForm.value
     let res = await axios.post(
@@ -1019,6 +769,7 @@ async function search_advance(data) {
     dataToRender.value = res.data;
     notifyWarning(`Se encontraron ${res.data.length} registro(s)`)
 }
+
 
 // async function handleSearch() {
 //     filterMode.value = true;
@@ -1053,13 +804,6 @@ const actionForm = ref({
     ids: [],
 });
 
-const handleCheckAll = (e) => {
-    if (e.target.checked) {
-        actionForm.value.ids = dataToRender.value.map((item) => item.id);
-    } else {
-        actionForm.value.ids = [];
-    }
-};
 
 watch(
     () => filterForm.value,
@@ -1070,54 +814,51 @@ watch(
 );
 
 
-const opNuDateForm = useForm({
-    operation_date: '',
-    operation_number: '',
-})
+// const opNuDateForm = useForm({
+//     operation_date: '',
+//     operation_number: '',
+// })
 
-const showOpNuDatModal = ref(false)
+// const showOpNuDatModal = ref(false)
 
-const closeOpNuDatModal = () => {
-    showOpNuDatModal.value = false
-    isFetching.value = false
-    opNuDateForm.reset()
-}
+// const closeOpNuDatModal = () => {
+//     showOpNuDatModal.value = false
+//     isFetching.value = false
+//     opNuDateForm.reset()
+// }
 
 const openOpNuDaModal = () => {
-    if (actionForm.value.ids.length === 0) {
-        notifyWarning("No hay registros selccionados");
-        return;
-    }
-    showOpNuDatModal.value = true
+    invokeUpdateMassive('openOpNuDaModal')
 }
 
-const submitOpNuDatModal = async () => {
-    isFetching.value = true;
-    const res = await axios
-        .post(route("projectmanagement.administrativeCosts.massiveUpdate"), {
-            ...opNuDateForm.data(),
-            ...actionForm.value
-        })
-        .catch((e) => {
-            isFetching.value = false;
-            if (e.response?.data?.errors) {
-                setAxiosErrors(e.response.data.errors, opNuDateForm);
-            } else {
-                notifyError("Server Error");
-            }
-        });
+// const submitOpNuDatModal = async () => {
+//     isFetching.value = true;
+//     const res = await axios
+//         .post(route("projectmanagement.administrativeCosts.massiveUpdate"), {
+//             ...opNuDateForm.data(),
+//             ...actionForm.value
+//         })
+//         .catch((e) => {
+//             isFetching.value = false;
+//             if (e.response?.data?.errors) {
+//                 setAxiosErrors(e.response.data.errors, opNuDateForm);
+//             } else {
+//                 notifyError("Server Error");
+//             }
+//         });
 
-    const originalMap = new Map(dataToRender.value.map(item => [item.id, item]));
-    res.data.forEach(update => {
-        if (originalMap.has(update.id)) {
-            originalMap.set(update.id, update);
-        }
-    });
-    const updatedArray = Array.from(originalMap.values());
-    dataToRender.value = updatedArray
-    closeOpNuDatModal();
-    notify("Registros Seleccionados Actualizados");
-}
+//     const originalMap = new Map(dataToRender.value.map(item => [item.id, item]));
+//     res.data.forEach(update => {
+//         if (originalMap.has(update.id)) {
+//             originalMap.set(update.id, update);
+//         }
+//     });
+//     const updatedArray = Array.from(originalMap.values());
+//     dataToRender.value = updatedArray
+//     closeOpNuDatModal();
+//     notify("Registros Seleccionados Actualizados");
+// }
+
 
 
 </script>

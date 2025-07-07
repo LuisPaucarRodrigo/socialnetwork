@@ -11,10 +11,10 @@
         <Toaster richColors />
         <TableHeader :openOpNuDaModal="openOpNuDaModal" :openCreateAdditionalModal="openCreateAdditionalModal"
             :filterForm="filterForm" :fixedOrAdditional="fixedOrAdditional" :type="type" />
-        <GeneralExpensesTable :expenses="expenses" :openEditAdditionalModal="openEditAdditionalModal"
+        <GeneralExpensesTable v-model:expenses="expenses" :openEditAdditionalModal="openEditAdditionalModal"
             :confirmDeleteAdditional="confirmDeleteAdditional" :filterForm="filterForm" v-model:actionForm="actionForm"
             :zones="zones" :expenseTypes="expenseTypes" :documentsType="documentsType" :stateTypes="stateTypes"
-             />
+            v-model:loading="loading" />
 
         <SuspenseWrapper :when="showExpensesForm">
             <template #component>
@@ -46,7 +46,7 @@
 
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { defineAsyncComponent, ref, watch } from "vue";
+import { defineAsyncComponent, onMounted, ref, watch } from "vue";
 import { Head } from "@inertiajs/vue3";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
@@ -60,7 +60,6 @@ const MassiveUpdate = defineAsyncComponent(() => import('./components/MassiveUpd
 const DeleteExpense = defineAsyncComponent(() => import('./components/DeleteExpense.vue'));
 
 const props = defineProps({
-    expense: Object,
     providers: Object,
     auth: Object,
     cost_center: Object,
@@ -84,7 +83,8 @@ const deleteExpense = ref(null)
 const expensesForm = ref(null)
 const massiveUpdate = ref(null)
 
-const expenses = ref(props.expense);
+const expenses = ref([]);
+const loading = ref(true);
 // const filterMode = ref(false);
 // const subCostCenterZone = ref(null);
 // const subCostCenter = ref(null)
@@ -209,7 +209,11 @@ async function search_advance(data) {
     }
 }
 
-
+onMounted(async () => {
+    const res = await axios.get(route('getExpenses.general', { fixedOrAdditional: props.fixedOrAdditional, type: props.type }));
+    expenses.value = res.data;
+    loading.value = false;
+});
 
 // watch([() => form.type_doc, () => form.zone], () => {
 //     if (

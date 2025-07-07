@@ -520,7 +520,7 @@ class ApiController extends Controller
         })
             ->orderBy('project_name')
             ->get();
-
+        
         $cicsaProcess->each->setAppends([]);
         return response()->json($cicsaProcess, 200);
     }

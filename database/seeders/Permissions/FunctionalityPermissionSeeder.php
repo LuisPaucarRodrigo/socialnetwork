@@ -702,6 +702,7 @@ class FunctionalityPermissionSeeder extends Seeder
                 'permissions' => [
                     'preprojects.index',
                     'project.auto.pint',
+                    'project.auto_store.pint',
                     'pint_project.products.cpe',
                     'project.auto.pint.getEmployees',
                 ]

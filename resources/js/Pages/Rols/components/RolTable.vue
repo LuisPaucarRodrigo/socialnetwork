@@ -1,5 +1,5 @@
 <template>
-    <TableStructure>
+    <TableStructure :info="rols">
         <template #thead>
             <tr>
                 <TableTitle>Nombre</TableTitle>
@@ -40,7 +40,7 @@
     </div>
 </template>
 <script setup>
-import { DeleteIcon, EditIcon, ShowIcon } from '@/Components/Icons/Index';
+import { DeleteIcon, EditIcon, ShowIcon } from '@/Components/Icons';
 import Pagination from '@/Components/Pagination.vue';
 import TableRow from '@/Components/TableRow.vue';
 import TableTitle from '@/Components/TableTitle.vue';

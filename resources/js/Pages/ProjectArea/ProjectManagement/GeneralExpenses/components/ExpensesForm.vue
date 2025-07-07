@@ -13,7 +13,7 @@
                             <div class="mt-2">
                                 <select id="zone" v-model="form.zone"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                    <option disabled value="">
+                                    <option disabled :value=null>
                                         Seleccionar Zona
                                     </option>
                                     <option v-for="zone in zones" :value="zone">
@@ -221,14 +221,25 @@ const { expenses, providers, fixedOrAdditional, zones, expenseTypes, documentsTy
 })
 
 const create_additional = ref(false);
-const cicsaAssignation = ref(null);
+const cicsaAssignation = ref([]);
+
+async function getProject() {
+    let url = route('pext.additional.expense.general.getCicsaAssignation')
+    let data = { type: type, zone: form.zone }
+    try {
+        let response = await axios.post(url, data);
+        cicsaAssignation.value = response.data
+    } catch (error) {
+        notifyError(error)
+    }
+}
 
 const form = useForm({
     id: "",
     fixedOrAdditional: fixedOrAdditional,
     expense_type: "",
     ruc: "",
-    zone: "",
+    zone: null,
     provider_id: "",
     project_id: "",
     type_doc: "",
@@ -255,8 +266,10 @@ watch([() => form.type_doc, () => form.zone], () => {
 });
 
 watch(() => form.project_id, (newval) => {
-    const project = cicsaAssignation.value.find(item => item.project_id == newval);
-    form.description = project ? project.project_name : "";
+    if (!form.id) {
+        const project = cicsaAssignation.value.find(item => item.project_id == newval);
+        form.description = project ? project.project_name : "";
+    }
 });
 
 
@@ -264,16 +277,7 @@ watch(() => form.zone, () => {
     getProject()
 })
 
-async function getProject() {
-    let url = route('pext.additional.expense.general.getCicsaAssignation')
-    let data = { type: type, zone: form.zone }
-    try {
-        let response = await axios.post(url, data);
-        cicsaAssignation.value = response.data
-    } catch (error) {
-        notifyError(error)
-    }
-}
+
 
 async function submit() {
     const url = route('pext.expenses.storeOrUpdate', { 'expense_id': form.id ?? null })

@@ -20,7 +20,7 @@
                 </div>
             </div>
         </div>
-        <TableStructure>
+        <TableStructure :info="customers">
             <template #thead>
                 <tr>
                     <TableTitle>Ruc</TableTitle>

@@ -3,10 +3,9 @@
         <!-- <div class="mb-4">
             <ChartsAdditionalExpenses :acExpensesAmounts="acExpensesAmounts" :scExpensesAmounts="scExpensesAmounts" />
         </div> -->
-        <table class="w-full">
-            <thead class="sticky top-0 z-20">
-                <tr
-                    class=" border-b bg-gray-50 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">
+        <TableStructure :info="expenses" :style="'h-[85vh]'">
+            <template #thead>
+                <tr>
                     <th class="bg-gray-100 border-b-2 border-gray-20 sticky left-0 z-10">
                         <div class="w-2"></div>
                     </th>
@@ -18,85 +17,47 @@
                             {{ actionForm.ids.length ?? "" }}
                         </label>
                     </th>
-                    <th
-                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                        <TableHeaderFilter labelClass="text-[11px]" label="Zona" :options="zones"
-                            v-model="filterForm.selectedZones" width="w-40" />
-                    </th>
-                    <th
-                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 ">
-                        <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Gasto" :options="expenseTypes"
-                            v-model="filterForm.selectedExpenseTypes" width="w-40" />
-                    </th>
-                    <th
-                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                        <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Documento" :options="documentsType"
-                            v-model="filterForm.selectedDocTypes" width="w-40" />
-                    </th>
-                    <th
-                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                        RUC
-                    </th>
-                    <th
-                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                        Proveedor
-                    </th>
-                    <th
-                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                        Numero de Operacion
-                    </th>
-                    <!-- <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Fecha de Operacion
-                        </th> -->
-                    <th
-                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                        <TableDateFilter labelClass="text-[11px]" label="Fecha de Operación"
-                            v-model:startDate="filterForm.opStartDate" v-model:endDate="filterForm.opEndDate"
-                            v-model:noDate="filterForm.opNoDate" width="w-40" />
-                    </th>
-                    <th
-                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                        Numero de Doc
-                    </th>
-                    <!-- <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Fecha de Documento
-                        </th> -->
-                    <th
-                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                        <TableDateFilter labelClass="text-[11px]" label="Fecha de Documento"
-                            v-model:startDate="filterForm.docStartDate" v-model:endDate="filterForm.docEndDate"
-                            v-model:noDate="filterForm.docNoDate" width="w-40" />
-                    </th>
-                    <th
-                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                        Monto
-                    </th>
-                    <th
-                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                        Monto sin IGV
-                    </th>
-                    <th
-                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                        Archivo
-                    </th>
-                    <th
-                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                        Descripción
-                    </th>
-                    <th
-                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                        <TableHeaderFilter labelClass="text-[11px]" label="Estado" :options="stateTypes"
-                            v-model="filterForm.selectedStateTypes" width="w-48" />
-                    </th>
-                    <th
-                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                        Acciones
-                    </th>
+                    <TableTitle>
+                        <TableHeaderFilter label="Zona" :options="zones" v-model="filterForm.selectedZones" width="w-40"
+                            labelClass="text-[11px]" />
+                    </TableTitle>
+                    <TableTitle>
+                        <TableHeaderFilter label="Tipo de Gasto" :options="expenseTypes"
+                            v-model="filterForm.selectedExpenseTypes" width="w-40" labelClass="text-[11px]" />
+                    </TableTitle>
+                    <TableTitle>
+                        <TableHeaderFilter label="Tipo de Documento" :options="documentsType"
+                            v-model="filterForm.selectedDocTypes" width="w-40" labelClass="text-[11px]" />
+                    </TableTitle>
+
+                    <TableTitle>RUC</TableTitle>
+                    <TableTitle>Proveedor</TableTitle>
+                    <TableTitle>Numero de Operacion</TableTitle>
+
+                    <TableTitle>
+                        <TableDateFilter label="Fecha de Operación" v-model:startDate="filterForm.opStartDate"
+                            v-model:endDate="filterForm.opEndDate" v-model:noDate="filterForm.opNoDate" width="w-40"
+                            labelClass="text-[11px]" />
+                    </TableTitle>
+                    <TableTitle>Numero de Doc</TableTitle>
+                    <TableTitle>
+                        <TableDateFilter label="Fecha de Documento" v-model:startDate="filterForm.docStartDate"
+                            v-model:endDate="filterForm.docEndDate" v-model:noDate="filterForm.docNoDate" width="w-40"
+                            labelClass="text-[11px]" />
+                    </TableTitle>
+                    <TableTitle>Monto</TableTitle>
+                    <TableTitle>Monto sin IGV</TableTitle>
+                    <TableTitle>Archivo</TableTitle>
+                    <TableTitle>Descripción</TableTitle>
+                    <TableTitle>
+                        <TableHeaderFilter label="Estado" :options="stateTypes" v-model="filterForm.selectedStateTypes"
+                            width="w-48" labelClass="text-[11px]" />
+                    </TableTitle>
+                    <TableTitle>Acciones</TableTitle>
                 </tr>
-            </thead>
-            <tbody>
+            </template>
+
+            <template #tbody>
                 <tr v-for="item in expenses.data || expenses" :key="item.id" class="text-gray-700">
                     <td :class="[
                         'sticky left-0 z-10 border-b border-gray-200',
@@ -107,62 +68,37 @@
                             'bg-red-500': item.real_state == 'Rechazado',
                         },
                     ]"></td>
+
                     <td
                         class="sticky left-2 z-10 border-b border-r border-gray-200 bg-amber-100 text-center text-[13px] whitespace-nowrap tabular-nums">
                         <label :for="`check-${item.id}`" class="block w-12 px-2 py-1">
                             <input v-model="actionForm.ids" :value="item.id" :id="`check-${item.id}`" type="checkbox" />
                         </label>
                     </td>
-                    <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                        {{ item.zone }}
-                    </td>
-                    <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                        <p class="w-48 break-words">
-                            {{ item.expense_type }}
-                        </p>
-                    </td>
-                    <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                        {{ item.type_doc }}
-                    </td>
-                    <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums">
-                        {{ item.ruc }}
-                    </td>
-                    <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                        {{ item?.provider?.company_name }}
-                    </td>
-                    <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums">
-                        {{ item.operation_number }}
-                    </td>
-                    <td
-                        class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap">
-                        {{ item.operation_date }}
-                    </td>
-                    <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums">
-                        {{ item.doc_number }}
-                    </td>
-                    <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                        {{ formattedDate(item.doc_date) }}
-                    </td>
-                    <td
-                        class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap">
-                        S/. {{ item.amount.toFixed(2) }}
-                    </td>
-                    <td
-                        class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px] tabular-nums whitespace-nowrap">
-                        S/. {{ item.real_amount.toFixed(2) }}
-                    </td>
-                    <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+
+                    <TableRow>{{ item.zone }}</TableRow>
+                    <TableRow>
+                        <p class="w-48 break-words">{{ item.expense_type }}</p>
+                    </TableRow>
+                    <TableRow>{{ item.type_doc }}</TableRow>
+                    <TableRow>{{ item.ruc }}</TableRow>
+                    <TableRow>{{ item?.provider?.company_name }}</TableRow>
+                    <TableRow>{{ item.operation_number }}</TableRow>
+                    <TableRow>{{ item.operation_date }}</TableRow>
+                    <TableRow>{{ item.doc_number }}</TableRow>
+                    <TableRow>{{ formattedDate(item.doc_date) }}</TableRow>
+                    <TableRow>S/. {{ item.amount.toFixed(2) }}</TableRow>
+                    <TableRow>S/. {{ item.real_amount.toFixed(2) }}</TableRow>
+                    <TableRow>
                         <button v-if="item.photo" @click="handlerPreview(item.id)">
                             <ShowIcon />
                         </button>
                         <span v-else>-</span>
-                    </td>
-                    <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                        <p class="w-[250px]">
-                            {{ item.description }}
-                        </p>
-                    </td>
-                    <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                    </TableRow>
+                    <TableRow :width="'w-[400px]'">
+                        {{ item.description }}
+                    </TableRow>
+                    <TableRow>
                         <div :class="[
                             'text-center',
                             {
@@ -170,30 +106,24 @@
                                 'text-green-500': item.real_state == 'Aceptado - Validado',
                                 'text-amber-500': item.real_state == 'Aceptado',
                                 'text-red-500': item.real_state == 'Rechazado',
-                            },
+                            }
                         ]">
                             {{ item.real_state }}
                         </div>
-                    </td>
-                    <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                    </TableRow>
+                    <TableRow>
                         <div class="flex items-center gap-3 w-full">
                             <div v-if="item.is_accepted === null" class="flex gap-3 justify-center w-1/2">
-                                <button @click="() =>
-                                    validateRegister(item.id, true)
-                                " type="button">
+                                <button @click="() => validateRegister(item.id, true)">
                                     <AcceptIcon />
                                 </button>
-                                <button @click="() =>
-                                    validateRegister(item.id, false)
-                                " type="button">
+                                <button @click="() => validateRegister(item.id, false)">
                                     <RejectIcon />
                                 </button>
                             </div>
                             <div v-else class="w-1/2"></div>
-
                             <div class="flex gap-3 mr-3">
-                                <button v-if="!filterForm.rejected" data-tooltip-target="tooltip-up-ac" @click="() => validateRegister(item.id, true)
-                                " class="flex items-center rounded-xl text-blue-700 hover:bg-green-200">
+                                <button v-if="!filterForm.rejected" @click="() => validateRegister(item.id, true)">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -208,43 +138,32 @@
                                 </button>
                             </div>
                         </div>
-                    </td>
+                    </TableRow>
                 </tr>
+
+                <!-- Fila de totales -->
                 <tr class="sticky bottom-0 z-10 text-gray-700">
-                    <td class="font-bold border-b border-gray-200 bg-white">
-                    </td>
-                    <td class="font-bold border-b border-gray-200 bg-white">
-                    </td>
-                    <td class="font-bold border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                        TOTAL
-                    </td>
-                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="8"></td>
+                    <td colspan="3" class="font-bold border-b border-gray-200 bg-white px-5 py-5 text-sm">TOTAL</td>
+                    <td colspan="8" class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
-                        S/.
-                        {{
-                            (expenses.data || expenses)
-                                ?.reduce((a, item) => a + item.amount, 0)
-                                .toFixed(2)
+                        S/. {{
+                            (expenses.data || expenses)?.reduce((a, item) => a + item.amount, 0).toFixed(2)
                         }}
                     </td>
                     <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
-                        S/.
-                        {{
-                            (expenses.data || expenses)
-                                .reduce(
-                                    (a, item) => a + item.real_amount, 0)
-                                .toFixed(2)
+                        S/. {{
+                            (expenses.data || expenses)?.reduce((a, item) => a + item.real_amount, 0).toFixed(2)
                         }}
                     </td>
-                    <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm" colspan="4"></td>
+                    <td colspan="4" class="border-b border-gray-200 bg-white px-5 py-5 text-sm"></td>
                 </tr>
-            </tbody>
-        </table>
+            </template>
+        </TableStructure>
     </div>
 
     <div v-if="expenses.data"
         class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-        <pagination :links="expenses.links" />
+        <PaginationAxios :links="expenses.links" @navigate="fetchExpensesByUrl" />
     </div>
 </template>
 <script setup>
@@ -253,11 +172,13 @@ import TableHeaderFilter from '@/Components/TableHeaderFilter.vue';
 import TableDateFilter from '@/Components/TableDateFilter.vue';
 import { AcceptIcon, DeleteIcon, EditIcon, RejectIcon, ShowIcon } from '@/Components/Icons';
 import { formattedDate } from "@/utils/utils";
-import Pagination from "@/Components/Pagination.vue";
 import { notify } from '@/Components/Notification';
+import PaginationAxios from '@/Components/PaginationAxios.vue';
+import TableStructure from '@/Layouts/TableStructure.vue';
+import TableTitle from '@/Components/TableTitle.vue';
+import TableRow from '@/Components/TableRow.vue';
 
-const { expenses, openEditAdditionalModal, confirmDeleteAdditional, filterForm, zones, expenseTypes, documentsType, stateTypes, acExpensesAmounts, scExpensesAmounts } = defineProps({
-    expenses: Object,
+const { openEditAdditionalModal, confirmDeleteAdditional, filterForm, zones, expenseTypes, documentsType, stateTypes, acExpensesAmounts, scExpensesAmounts } = defineProps({
     openEditAdditionalModal: Function,
     confirmDeleteAdditional: Function,
     filterForm: Object,
@@ -269,6 +190,9 @@ const { expenses, openEditAdditionalModal, confirmDeleteAdditional, filterForm, 
     scExpensesAmounts: Array,
 })
 const actionForm = defineModel('actionForm')
+const expenses = defineModel('expenses')
+const loading = defineModel('loading')
+
 
 async function validateRegister(expense_id, is_accepted) {
     const url = route("projectmanagement.pext.expenses.validate", { 'expense_id': expense_id })
@@ -285,7 +209,7 @@ async function validateRegister(expense_id, is_accepted) {
 }
 
 const handleCheckAll = (e) => {
-    let listDate = expenses.data || expenses
+    let listDate = expenses.value.data || expenses.value
     if (e.target.checked) { actionForm.value.ids = listDate.map((item) => item.id); }
     else { actionForm.value.ids = []; }
 };
@@ -317,4 +241,17 @@ function updateExpense(expense, action, state) {
         notify('El gasto paso a ser aceptado')
     }
 }
+
+async function fetchExpensesByUrl(url) {
+    loading.value = true;
+    try {
+        const res = await axios.get(url);
+        expenses.value = res.data;
+    } catch (err) {
+        console.error(err);
+    } finally {
+        loading.value = false;
+    }
+}
+
 </script>

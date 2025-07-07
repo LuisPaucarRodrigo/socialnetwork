@@ -1,6 +1,6 @@
 <template>
 
-    <TableStructure>
+    <TableStructure :info="purchases">
         <template #thead>
             <tr>
                 <TableTitle>Código de Solicitud</TableTitle>

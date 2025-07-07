@@ -52,10 +52,7 @@
                                 <select id="customer" v-model="form.customer"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option value="">Seleccionar Cliente</option>
-                                    <option>CICSA</option>
-                                    <option>STL</option>
-                                    <option>INDRA</option>
-                                    <option>OTROS</option>
+                                    <option v-for="item in clientsList" :key="item" :value="item">{{ item }}</option>
                                 </select>
                                 <InputError :message="form.errors.customer" />
                             </div>
@@ -82,29 +79,29 @@
                                 <select id="zone" v-model="form.zone" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option value="">Seleccionar Zona</option>
-                                    <option v-for="zone in zones" :key="zone" :value="zone">{{ zone }}</option>
+                                    <option v-for="zone in zonesList" :key="zone" :value="zone">{{ zone }}</option>
                                 </select>
                                 <InputError :message="form.errors.zone" />
                             </div>
                         </div>
                         <div class="">
-                            <InputLabel for="zone2">Zona2 (Opcional)</InputLabel>
+                            <InputLabel for="zone2">Zona 2 (Opcional)</InputLabel>
                             <div class="mt-2">
                                 <select id="zone2" v-model="form.zone2" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option value="">Seleccionar Zona</option>
-                                    <option v-for="zone in zones" :key="zone" :value="zone">{{ zone }}</option>
+                                    <option v-for="zone in zonesList" :key="zone" :value="zone">{{ zone }}</option>
                                 </select>
                                 <InputError :message="form.errors.zone2" />
                             </div>
                         </div>
                         <div class="">
-                            <InputLabel for="zone2">Zona3 (Opcional)</InputLabel>
+                            <InputLabel for="zone2">Zona 3 (Opcional)</InputLabel>
                             <div class="mt-2">
                                 <select id="zone2" v-model="form.zone3" autocomplete="off"
                                     class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                     <option value="">Seleccionar Zona</option>
-                                    <option v-for="zone in zones" :key="zone" :value="zone">{{ zone }}</option>
+                                    <option v-for="zone in zonesList" :key="zone" :value="zone">{{ zone }}</option>
                                 </select>
                                 <InputError :message="form.errors.zone3" />
                             </div>
@@ -130,14 +127,14 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import { notify } from '@/Components/Notification';
 import { useAxiosErrorHandler } from '@/utils/axiosError';
-import { zones } from '../constants';
 
-const { assignations } = defineProps({
-    assignations: Object
+const { assignations, type } = defineProps({
+    assignations: Object,
+    type: String,
 })
 
 const initialState = {
@@ -160,6 +157,8 @@ const form = useForm({
 })
 
 const showModal = ref(false)
+const zonesList = ref([])
+const clientsList = ref([])
 
 function toogleModal() {
     showModal.value = !showModal.value
@@ -200,6 +199,12 @@ function updateFrontEnd(response, action, itemId) {
         closeForm()
     }
 }
+
+onMounted(async () => {
+    const res = await axios.get(route('facturation', { type: type }));
+    zonesList.value = res.data.zonesList;
+    clientsList.value = res.data.clientsList;
+});
 
 defineExpose({ updateAssignation })
 </script>
