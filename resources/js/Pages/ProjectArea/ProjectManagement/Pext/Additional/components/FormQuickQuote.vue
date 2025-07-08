@@ -81,7 +81,7 @@
                                             Unidad</th>
                                         <th
                                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                            Dias</th>
+                                            Cantidad</th>
                                         <th
                                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                                             Metrado</th>
