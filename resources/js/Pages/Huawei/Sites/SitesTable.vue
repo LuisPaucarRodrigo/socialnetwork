@@ -79,14 +79,14 @@
                                 @click="$emit('edit', site)"
                                 class="text-orange-400 hover:underline"
                             >
-                                <PencilSquareIcon class="h-5 w-5" />
+                                <EditIcon class="h-5 w-5" />
                             </button>
                             <button
                                 v-permission="'huawei_sites_delete'"
                                 @click="$emit('delete', site.id)"
                                 class="text-red-600 hover:underline"
                             >
-                                <TrashIcon class="h-5 w-5" />
+                                <DeleteIcon class="h-5 w-5" />
                             </button>
                         </div>
                     </td>
@@ -103,7 +103,7 @@
 </template>
 
 <script setup>
-// import { PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/outline";
+import { EditIcon, DeleteIcon } from "@/Components/Icons";
 import Pagination from "@/Components/Pagination.vue";
 
 const { dataToRender, links, search } = defineProps({

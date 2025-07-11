@@ -27,8 +27,8 @@
                             type="button"
                             v-permission="'huawei_projects_add'"
                             class="hidden sm:block items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs hover:text-gray-700 uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-200 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white whitespace-nowrap"
-                        >v-if
-                            + Agregar
+                        >
+                            +Agregar
                         </Link>
                         <Link
                             v-if="props.status == '1'"
@@ -447,7 +447,7 @@
                             >
                                 Asignar Productos
                             </Link>
-                            <Link
+                            <!-- <Link
                                 :href="
                                     route('huawei.projects.earnings', {
                                         huawei_project: item.id,
@@ -466,7 +466,7 @@
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600"
                             >
                                 Ingresos Actuales
-                            </Link>
+                            </Link> -->
                             <Link
                                 :href="
                                     route('huawei.projects.liquidations', {
@@ -584,16 +584,14 @@
 </template>
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import Pagination from "@/Components/Pagination.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import { Head, router, Link, useForm } from "@inertiajs/vue3";
-// import { PencilIcon, PauseIcon, PlayIcon } from "@heroicons/vue/24/outline";
+import { EditIcon, PauseIcon, PlayIcon } from "@/Components/Icons";
 import TextInput from "@/Components/TextInput.vue";
 import Modal from "@/Components/Modal.vue";
 import { ref } from "vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import { EditIcon } from "@/Components/Icons";
 
 const props = defineProps({
     projects: Object,

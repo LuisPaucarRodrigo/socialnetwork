@@ -87,7 +87,7 @@ class ModuleSeeder extends Seeder
                     'billingpext_submodule' => 'Pext',
                 ]
             ],
-            [
+[
                 'name' => 'HUAWEI_MODULE',
                 'display_name' => 'Huawei',
                 'submodules' => [

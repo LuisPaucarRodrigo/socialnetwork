@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Huawei\Projects\Liquidations;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Huawei\Utils\HuaweiUtils;
 use Illuminate\Http\Request;
 use App\Models\HuaweiProject;
 use App\Models\HuaweiProjectLiquidation;
@@ -47,11 +48,11 @@ class HuaweiLiquidationController extends Controller
         ];
 
         foreach ($equipments as $resource) {
-            $resource->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($resource->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name);
+            $resource->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name = HuaweiUtils::sanitizeText2($resource->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name);
         }
 
         foreach ($materials as $resource) {
-            $resource->huawei_entry_detail->huawei_material->name = $this->sanitizeText2($resource->huawei_entry_detail->huawei_material->name);
+            $resource->huawei_entry_detail->huawei_material->name = HuaweiUtils::sanitizeText2($resource->huawei_entry_detail->huawei_material->name);
         }
 
         return Inertia::render('Huawei/Projects/Liquidations/Liquidations', [
@@ -120,11 +121,11 @@ class HuaweiLiquidationController extends Controller
         $materials = $materials->get();
 
         foreach ($equipments as $equipment) {
-            $equipment->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($equipment->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name);
+            $equipment->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name = HuaweiUtils::sanitizeText2($equipment->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name);
         }
 
         foreach ($materials as $material) {
-            $material->huawei_entry_detail->huawei_material->name = $this->sanitizeText2($material->huawei_entry_detail->huawei_material->name);
+            $material->huawei_entry_detail->huawei_material->name = HuaweiUtils::sanitizeText2($material->huawei_entry_detail->huawei_material->name);
         }
 
         return response()->json(['materials' => $materials, 'equipments' => $equipments], 200);
@@ -216,7 +217,7 @@ class HuaweiLiquidationController extends Controller
                 ->paginate(10);
 
             foreach ($liquidations as $resource) {
-                $resource->huawei_project_resource->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name = $this->sanitizeText2($resource->huawei_project_resource->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name);
+                $resource->huawei_project_resource->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name = HuaweiUtils::sanitizeText2($resource->huawei_project_resource->huawei_entry_detail->huawei_equipment_serie->huawei_equipment->name);
             }
         } else {
             $liquidations = HuaweiProjectLiquidation::whereHas('huawei_project_resource.huawei_entry_detail', function ($query) {
@@ -228,7 +229,7 @@ class HuaweiLiquidationController extends Controller
                 ->with('huawei_project_resource.huawei_entry_detail.huawei_material')
                 ->paginate(10);
             foreach ($liquidations as $resource) {
-                $resource->huawei_project_resource->huawei_entry_detail->huawei_material->name = $this->sanitizeText2($resource->huawei_project_resource->huawei_entry_detail->huawei_material->name);
+                $resource->huawei_project_resource->huawei_entry_detail->huawei_material->name = HuaweiUtils::sanitizeText2($resource->huawei_project_resource->huawei_entry_detail->huawei_material->name);
             }
         }
 

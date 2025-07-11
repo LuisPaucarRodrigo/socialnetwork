@@ -279,7 +279,7 @@
                             @click="openPreviewDocumentModal(item.id)"
                             class="flex items-center justify-center w-full"
                         >
-                            <EyeIcon class="h-5 w-5 text-green-400" />
+                            <EyeOutlineIcon class="h-5 w-5 text-green-400" />
                         </button>
                     </td>
 
@@ -377,14 +377,14 @@
                                     @click="$emit('edit', item)"
                                     class="text-amber-600 hover:underline"
                                 >
-                                    <PencilSquareIcon class="h-5 w-5 ml-1" />
+                                    <EditIcon class="h-5 w-5 ml-1" />
                                 </button>
                                 <button
                                     v-permission="'huawei_expenses_delete'"
                                     @click="$emit('delete', item.id)"
                                     class="text-red-600 hover:underline"
                                 >
-                                    <TrashIcon class="h-5 w-5" />
+                                    <DeleteIcon class="h-5 w-5" />
                                 </button>
                             </div>
                         </div>
@@ -437,11 +437,7 @@
 <script setup>
 import { formattedDate } from "@/utils/utils";
 import { ref, watch } from "vue";
-// import {
-//     EyeIcon,
-//     PencilSquareIcon,
-//     TrashIcon,
-// } from "@heroicons/vue/24/outline";
+import { EditIcon, DeleteIcon, EyeOutlineIcon } from "@/Components/Icons";
 import TableAutocompleteFilter from "@/Components/TableAutocompleteFilter.vue";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import axios from "axios";
