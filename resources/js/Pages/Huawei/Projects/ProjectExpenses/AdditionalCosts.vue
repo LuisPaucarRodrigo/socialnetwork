@@ -268,7 +268,7 @@
                                 @click="openPreviewDocumentModal(item.id)"
                                 class="flex items-center justify-center w-full"
                             >
-                                <EyeIcon class="h-5 w-5 text-green-400" />
+                                <EyeOutlineIcon class="h-5 w-5 text-green-400" />
                             </button>
                         </td>
 
@@ -350,7 +350,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { ref, watch } from "vue";
 import { Head, useForm, router } from "@inertiajs/vue3";
 import { formattedDate } from "@/utils/utils";
-import { EyeIcon } from "@heroicons/vue/24/outline";
+import { EyeOutlineIcon } from "@/Components/Icons/Index";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import TableAutocompleteFilter from "@/Components/TableAutocompleteFilter.vue";
 import axios from "axios";

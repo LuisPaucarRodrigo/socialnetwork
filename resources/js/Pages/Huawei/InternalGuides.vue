@@ -66,7 +66,7 @@
                                     @click="openPreviewDocumentModal(item.id)"
                                     class="flex items-center text-green-600 hover:underline"
                                 >
-                                    <EyeIcon class="h-5 w-5 ml-1" />
+                                    <EyeOutlineIcon class="h-5 w-5 ml-1" />
                                 </button>
                                 <button
                                     type="button"
@@ -196,7 +196,7 @@ import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
 import Modal from "@/Components/Modal.vue";
 import InputFile from "@/Components/InputFile.vue";
-import { TrashIcon, EyeIcon } from "@heroicons/vue/24/outline";
+import { TrashIcon, EyeOutlineIcon } from "@/Components/Icons";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import { Head, router, useForm } from "@inertiajs/vue3";
 import { ref } from "vue";

@@ -9,6 +9,9 @@ use App\Http\Controllers\Huawei\HuaweiInventory\HuaweiManagementController;
 use App\Http\Controllers\Huawei\HuaweiInventory\HuaweiOrdersController;
 use App\Http\Controllers\Huawei\HuaweiInventory\HuaweiRefundsController;
 use App\Http\Controllers\Huawei\Projects\HuaweiProjectController;
+use App\Http\Controllers\Huawei\Projects\Liquidations\HuaweiLiquidationController;
+use App\Http\Controllers\Huawei\Projects\ProjectExpenses\HuaweiProjectExpensesController;
+use App\Http\Controllers\Huawei\Projects\Resources\HuaweiResourceController;
 use App\Http\Controllers\Huawei\Sites\HuaweiSitesController;
 
 class HuaweiRoutes
@@ -150,42 +153,42 @@ class HuaweiRoutes
             [
                 'uri' => 'huawei/projects/{huawei_project}/additional_costs/get/{mode?}',
                 'method' => 'get',
-                'action' => [HuaweiProjectController::class, 'getAdditionalCosts'],
+                'action' => [HuaweiProjectExpensesController::class, 'getAdditionalCosts'],
                 'permission' => true,
                 'name' => 'huawei.projects.additionalcosts',
             ],
             [
                 'uri' => 'huawei/projects/{expense}/huawei_projects/show_image',
                 'method' => 'get',
-                'action' => [HuaweiProjectController::class, 'showImage'],
+                'action' => [HuaweiProjectExpensesController::class, 'showImage'],
                 'permission' => true,
                 'name' => 'huawei.projects.additionalcosts.showimage',
             ],
             [
                 'uri' => 'huawei/projects/{huawei_project}/additional_costs/search/{request}/{mode?}',
                 'method' => 'get',
-                'action' => [HuaweiProjectController::class, 'searchAdditionalCosts'],
+                'action' => [HuaweiProjectExpensesController::class, 'searchAdditionalCosts'],
                 'permission' => true,
                 'name' => 'huawei.projects.additionalcosts.search',
             ],
             [
                 'uri' => 'huawei/projects/{huawei_project}/addtitional_costs/summary',
                 'method' => 'get',
-                'action' => [HuaweiProjectController::class, 'getCostSummary'],
+                'action' => [HuaweiProjectExpensesController::class, 'getCostSummary'],
                 'permission' => true,
                 'name' => 'huawei.projects.additionalcosts.summary',
             ],
             [
                 'uri' => 'huawei/projects/{huawei_project_id}/additional_cost/advanced_search/{mode?}',
                 'method' => 'post',
-                'action' => [HuaweiProjectController::class, 'search_costs'],
+                'action' => [HuaweiProjectExpensesController::class, 'search_costs'],
                 'permission' => true,
                 'name' => 'huawei.projects.additionalcosts.advancedsearch',
             ],
             [
                 'uri' => 'huawei/projects/{huawei_project_id}/additional_costs/export/{mode?}',
                 'method' => 'get',
-                'action' => [HuaweiProjectController::class, 'exportAdditionalCosts'],
+                'action' => [HuaweiProjectExpensesController::class, 'exportAdditionalCosts'],
                 'permission' => true,
                 'name' => 'huawei.projects.additionalcosts.export',
             ],
@@ -195,35 +198,35 @@ class HuaweiRoutes
             [
                 'uri' => 'huawei/projects/{huawei_project}/liquidations/get_resources',
                 'method' => 'get',
-                'action' => [HuaweiProjectController::class, 'geResourcesToLiquidate'],
+                'action' => [HuaweiLiquidationController::class, 'geResourcesToLiquidate'],
                 'permission' => true,
                 'name' => 'huawei.projects.liquidations',
             ],
             [
                 'uri' => 'huawei/projects/{huawei_project}/liquidations/history/{equipment?}',
                 'method' => 'get',
-                'action' => [HuaweiProjectController::class, 'liquidationsHistory'],
+                'action' => [HuaweiLiquidationController::class, 'liquidationsHistory'],
                 'permission' => true,
                 'name' => 'huawei.projects.liquidations.history',
             ],
             [
                 'uri' => 'huawei/projects/{huawei_project}/liquidations/store_liquidation/{equipment?}',
                 'method' => 'post',
-                'action' => [HuaweiProjectController::class, 'liquidate'],
+                'action' => [HuaweiLiquidationController::class, 'liquidate'],
                 'permission' => true,
                 'name' => 'huawei.projects.liquidations.post',
             ],
             [
                 'uri' => 'huawei/projects/{huawei_project}/liquidations/get_resources/search_advance/post',
                 'method' => 'post',
-                'action' => [HuaweiProjectController::class, 'search_advance_liquidate'],
+                'action' => [HuaweiLiquidationController::class, 'search_advance_liquidate'],
                 'permission' => true,
                 'name' => 'huawei.projects.liquidations.searchadvance',
             ],
             [
                 'uri' => 'huawei/projects/liquidations/massive_liquidation/post/liquidations/{equipment?}',
                 'method' => 'post',
-                'action' => [HuaweiProjectController::class, 'massiveLiquidation'],
+                'action' => [HuaweiLiquidationController::class, 'massiveLiquidation'],
                 'permission' => true,
                 'name' => 'huawei.projects.liquidations.massiveliquidation',
             ],
@@ -232,42 +235,42 @@ class HuaweiRoutes
             [
                 'uri' => 'huawei/projects/{huawei_project}/resources/get/{equipment?}',
                 'method' => 'get',
-                'action' => [HuaweiProjectController::class, 'getResources'],
+                'action' => [HuaweiResourceController::class, 'getResources'],
                 'permission' => true,
                 'name' => 'huawei.projects.resources',
             ],
             [
                 'uri' => 'huawei/projects/{huawei_project}/resources/search/{request}/{equipment?}',
                 'method' => 'get',
-                'action' => [HuaweiProjectController::class, 'searchResources'],
+                'action' => [HuaweiResourceController::class, 'searchResources'],
                 'permission' => true,
                 'name' => 'huawei.projects.resources.search',
             ],
             [
                 'uri' => 'huawei/projects/{huawei_project}/resources/post/{equipment?}',
                 'method' => 'post',
-                'action' => [HuaweiProjectController::class, 'storeProjectResource'],
+                'action' => [HuaweiResourceController::class, 'storeProjectResource'],
                 'permission' => true,
                 'name' => 'huawei.projects.resources.store',
             ],
             [
                 'uri' => 'huawei/projects/refund_resource/{huawei_resource}/{equipment?}',
                 'method' => 'put',
-                'action' => [HuaweiProjectController::class, 'refundResource'],
+                'action' => [HuaweiResourceController::class, 'refundResource'],
                 'permission' => true,
                 'name' => 'huawei.projects.refund',
             ],
             [
                 'uri' => 'huawei/projects/{huawei_project}/resources/search_details/{id}/post/{equipment?}',
                 'method' => 'post',
-                'action' => [HuaweiProjectController::class, 'searchEntryDetails'],
+                'action' => [HuaweiResourceController::class, 'searchEntryDetails'],
                 'permission' => true,
                 'name' => 'huawei.projects.resources.searchdetails',
             ],
             [
                 'uri' => 'huawei/projects/create/fetch_sites/post',
                 'method' => 'post',
-                'action' => [HuaweiProjectController::class, 'fetchSites'],
+                'action' => [HuaweiResourceController::class, 'fetchSites'],
                 'permission' => true,
                 'name' => 'huawei.projects.create.fetchsites',
             ],

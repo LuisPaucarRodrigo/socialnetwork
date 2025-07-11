@@ -57,11 +57,11 @@
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                             <div class="flex">
                                 <button @click="openUpdateSite(item)" class="text-orange-400 hover:underline mr-2">
-                                    <PencilSquareIcon class="h-5 w-5 ml-1" />
+                                    <EditIcon class="h-5 w-5 ml-1" />
                                 </button>
                                 <button @click="confirmDeleteDocument(item.id)"
                                     class="flex items-center text-red-600 hover:underline">
-                                    <TrashIcon class="h-5 w-5" />
+                                    <DeleteIcon class="h-5 w-5" />
                                 </button>
                             </div>
                         </td>
@@ -141,11 +141,12 @@
   import TextInput from '@/Components/TextInput.vue';
   import InputError from '@/Components/InputError.vue';
   import { Head, useForm, router } from '@inertiajs/vue3';
-  import { TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
+  import { EditIcon, DeleteIcon } from "@/Components/Icons/Index";
   import { ref } from 'vue';
   import Modal from '@/Components/Modal.vue';
   import PrimaryButton from '@/Components/PrimaryButton.vue';
   import Pagination from '@/Components/Pagination.vue';
+import DeleteIcon from '@/Components/icons/DeleteIcon.vue';
 
   const showModal = ref(false);
   const showModalEdit = ref(false);
