@@ -534,7 +534,6 @@ const props = defineProps({
     month_project_id: Object,
     providers: Object,
     auth: Object,
-    userPermissions: Array,
     searchQuery: String,
     zones: Array,
     expenseTypes: Array,

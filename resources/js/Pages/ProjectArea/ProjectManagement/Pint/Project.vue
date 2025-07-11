@@ -174,7 +174,7 @@ import Dropdown from '@/Components/Dropdown.vue';
 import { ref } from 'vue';
 import { Head, router, Link, useForm } from '@inertiajs/vue3';
 import Search from '@/Components/Search.vue';
-import { EditIcon, MenuIcon } from '@/Components/Icons/Index';
+import { EditIcon, MenuIcon } from '@/Components/Icons';
 
 const props = defineProps({
     projects: Object,

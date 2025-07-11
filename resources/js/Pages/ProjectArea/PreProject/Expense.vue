@@ -131,21 +131,15 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { ShowIcon } from '@/Components/Icons/Index';
+import { ShowIcon } from '@/Components/Icons';
 
 const props = defineProps({
     quotes: Object,
     purchases: {
         type: Boolean,
         required: false
-    },
-    userPermissions: Array
+    }
 })
-
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
-
 
 function openPreviewDocumentModal(documentId) {
     const url = route('purchasesrequest.show', { id: documentId });

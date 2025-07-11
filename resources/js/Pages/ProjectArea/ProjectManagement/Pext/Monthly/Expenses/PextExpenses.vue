@@ -11,7 +11,8 @@
             <TableHeader v-model:filterForm="filterForm" :project_id="project_id" :fixedOrAdditional="fixedOrAdditional"
                 :status="status" :openSwapCostsModal="openSwapCostsModal"
                 :initialFilterFormState="initialFilterFormState" :openCreateAdditionalModal="openCreateAdditionalModal"
-                :openOpNuDaModal="openOpNuDaModal" :openModalImport="openModalImport" />
+                :openOpNuDaModal="openOpNuDaModal" :openModalImport="openModalImport"
+                :openExportArchivesModal="openExportArchivesModal" />
         </div>
         <ExpensesTable :expenses="expenses" v-model:actionForm="actionForm" :filterForm="filterForm" :zones="zones"
             :docTypes="docTypes" :expenseTypes="expenseTypes" :stateTypes="stateTypes"
@@ -48,6 +49,13 @@
                 <DeleteExpenses ref="deleteExpenses" :expenses="expenses" />
             </template>
         </SuspenseWrapper>
+
+        <SuspenseWrapper :when="showConfirmDownloadFiles">
+            <template #component>
+                <ConfirmDownloadFiles ref="confirmDownloadFiles" :filterForm="filterForm" :project_id="project_id"
+                    :fixedOrAdditional="fixedOrAdditional" />
+            </template>
+        </SuspenseWrapper>
     </AuthenticatedLayout>
 </template>
 
@@ -61,7 +69,7 @@ import ExpensesTable from "./components/ExpensesTable.vue";
 import { useLazyRefInvoker } from "@/utils/useLazyRefInvoker";
 import SuspenseWrapper from "@/Components/SuspenseWrapper.vue";
 
-
+const ConfirmDownloadFiles = defineAsyncComponent(() => import('./components/ConfirmDownloadFiles.vue'));
 const MassiveUpdate = defineAsyncComponent(() => import('./components/MassiveUpdate.vue'));
 const ExpensesImport = defineAsyncComponent(() => import('../../components/ExpensesImport.vue'));
 const FormExpenses = defineAsyncComponent(() => import('./components/FormExpenses.vue'));
@@ -92,11 +100,14 @@ const showExpensesImport = ref(false)
 const showSwap = ref(false)
 const showDeleteExpenses = ref(false)
 
+const confirmDownloadFiles = ref(null)
+const showConfirmDownloadFiles = ref(false)
 
 const expenses = ref(props.expense);
 
 const redirectRoute = props.status ? 'projectmanagement.pext.historial' : 'projectmanagement.pext.index'
 
+const { invokeWhenReady: invokeConfirmDownloadFiles } = useLazyRefInvoker(confirmDownloadFiles, showConfirmDownloadFiles);
 const { invokeWhenReady: invokeExpensesForm } = useLazyRefInvoker(formExpenses, showFormExpenses);
 const { invokeWhenReady: invokeMassiveUpdate } = useLazyRefInvoker(massiveUpdate, showMassiveUpdate);
 const { invokeWhenReady: invokeExpensesImport } = useLazyRefInvoker(expensesImport, showExpensesImport);
@@ -126,6 +137,8 @@ function openSwapCostsModal() {
 function confirmDeleteAdditional(additionalId) {
     invokeDeleteExpense('confirmDeleteAdditional', additionalId)
 }
+
+function openExportArchivesModal() { invokeConfirmDownloadFiles('openExportArchivesModal') }
 
 const expenseTypes = props.fixedOrAdditional
     ? props.expenseTypesFixed

@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Constants\PextConstants;
 use App\Models\PextProjectExpense;
+use App\Models\Project;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithStartRow;
@@ -17,7 +18,7 @@ class PextProjectExpensesImport implements ToCollection, WithStartRow
 
     private $project_id;
     private $fixedOrAdditional;
-    private $startRow = 3;
+    private $startRow = 2;
 
     public function __construct($project_id, $fixedOrAdditional)
     {
@@ -84,27 +85,28 @@ class PextProjectExpensesImport implements ToCollection, WithStartRow
 
     public function collection(Collection $collection)
     {
+        $project = Project::find($this->project_id);
         foreach ($collection as $index => $row) {
             $rowIndex = $index + $this->startRow;
             try {
                 $item = [
                     'fixedOrAdditional' => $this->fixedOrAdditional === "true" ? 1 : 0,
-                    'expense_type' => $this->verifyExpenseType($row[8], $rowIndex),
-                    'ruc' => $row[5] ?? "Sin Ruc",
-                    'type_doc' => $this->verifyTypeDoc($row[3], $rowIndex),
-                    'zone' => $this->verifyZone($row[1], $rowIndex),
-                    'operation_number' => $this->verifyOperationNumber($row[10]),
-                    'operation_date' => $this->verifyDate($row[9]),
-                    'doc_number' => $row[4],
-                    'doc_date' => $this->verifyDate($row[2]),
-                    'description' => $row[0] . ' ' . $row[7],
-                    'amount' => $row[6],
+                    'expense_type' => $this->verifyExpenseType($row[7], $rowIndex),
+                    'ruc' => $row[4] ?? "Sin Ruc",
+                    'type_doc' => $this->verifyTypeDoc($row[2], $rowIndex),
+                    'zone' => $this->verifyZone($row[0], $rowIndex),
+                    'operation_number' => $this->verifyOperationNumber($row[9]),
+                    'operation_date' => $this->verifyDate($row[8]),
+                    'doc_number' => $row[3],
+                    'doc_date' => $this->verifyDate($row[1]),
+                    'description' => $project->description . ' ' . $row[6],
+                    'amount' => $row[5] ?? 0,
                     'provider_id' => null,
                     'photo' => null,
                     'is_accepted' => 1,
-                    'igv' => $this->verifyIgv($row[1]),
+                    'igv' => $this->verifyIgv($row[0]),
                     'user_id' => null,
-                    'project_id' => $this->project_id,
+                    'project_id' => $project->id,
                     'account_statement_id' => null,
                     'general_expense_id' => null,
                 ];

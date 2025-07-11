@@ -728,17 +728,15 @@ import { Toaster } from "vue-sonner";
 import Search from "@/Components/Search.vue";
 import { DeleteIcon, EditIcon, ShowIcon } from "@/Components/Icons";
 
-
 const props = defineProps({
     additional_costs: Object,
     project_id: Object,
     providers: Object,
     auth: Object,
-    userPermissions: Array,
     searchQuery: String,
     state: String,
 });
-console.log(props.additional_costs)
+
 const dataToRender = ref(props.additional_costs);
 const filterMode = ref(false);
 

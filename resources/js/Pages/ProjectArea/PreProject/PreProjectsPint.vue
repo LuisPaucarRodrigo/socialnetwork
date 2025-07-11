@@ -183,14 +183,13 @@ import Modal from '@/Components/Modal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputError from '@/Components/InputError.vue';
-import { DeleteIcon, EditIcon } from "@/Components/Icons/Index";
+import { DeleteIcon, EditIcon } from "@/Components/Icons";
 
 const props = defineProps({
     preprojects: Object,
     auth: Object,
     preprojects_status: String,
     users: Object,
-    userPermissions: Array,
     type: String
 })
 

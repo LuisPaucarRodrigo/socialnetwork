@@ -272,7 +272,7 @@ import { Toaster } from 'vue-sonner';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableRow from '@/Components/TableRow.vue';
 import TableTitle from '@/Components/TableTitle.vue';
-import { DeleteIcon, PlusCircleIcon, EditIcon } from '@/Components/Icons/Index';
+import { DeleteIcon, PlusCircleIcon, EditIcon } from '@/Components/Icons';
 
 const { feasibility, auth, searchCondition, type } = defineProps({
     feasibility: Object,

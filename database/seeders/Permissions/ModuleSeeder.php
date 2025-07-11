@@ -47,6 +47,7 @@ class ModuleSeeder extends Seeder
                 'display_name' => 'Área de Compras',
                 'submodules' => [
                     'pprovider_submodule' => 'Proveedores',
+                    'ppayment_approval_submodule' => 'Programación de Pagos',
                     // 'pprequest_submodule' => 'Solicitudes',
                     // 'pporder_submodule' => 'Órdenes',
                     // 'ppcpurchase_submodule' => 'Compras Completadas',
@@ -90,12 +91,10 @@ class ModuleSeeder extends Seeder
                 'name' => 'HUAWEI_MODULE',
                 'display_name' => 'Huawei',
                 'submodules' => [
-                    'huawei_sites_submodule' => 'Sites Huawei',
-                    'huawei_projects_submodule' => 'Proyectos Huawei',
                     'huawei_inventory_submodule' => 'Inventario Huawei',
-                    'huawei_internal_inventory_submodule' => 'Inventario Interno',
-                    'huawei_interal_guides_submodule' => 'Guias Internas',
-                    'huawei_special_returns_submodule' => 'Devolucion Especiales',
+                    'huawei_projects_submodule' => 'Proyectos Huawei',
+                    'huawei_sites_submodule' => 'Sites Huawei',
+                    'huawei_expenses_submodule' => 'Gastos Huawei',
                 ]
             ],
             [

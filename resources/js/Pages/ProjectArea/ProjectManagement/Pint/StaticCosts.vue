@@ -846,7 +846,7 @@ import { Toaster } from "vue-sonner";
 import Dropdown from "@/Components/Dropdown.vue";
 import Search from "@/Components/Search.vue";
 import qs from 'qs';
-import { MenuIcon, EditIcon, DeleteIcon, ShowIcon, ServerIcon } from "@/Components/Icons/Index";
+import { MenuIcon, EditIcon, DeleteIcon, ShowIcon, ServerIcon } from "@/Components/Icons";
 
 
 const props = defineProps({
@@ -854,7 +854,6 @@ const props = defineProps({
     project_id: Object,
     providers: Object,
     auth: Object,
-    userPermissions: Array,
     searchQuery: String,
     zones: Array,
     expenseTypes: Array,
@@ -871,10 +870,6 @@ stateTypes.sort()
 
 const dataToRender = ref(props.additional_costs.data);
 const filterMode = ref(false);
-
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-};
 
 const form = useForm({
     id: "",

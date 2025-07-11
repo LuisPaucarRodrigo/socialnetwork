@@ -215,14 +215,12 @@ import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 import TableStructure from "@/Layouts/TableStructure.vue";
 import TableTitle from "@/Components/TableTitle.vue";
 import TableRow from "@/Components/TableRow.vue";
-import { DeleteIcon, ShowIcon } from "@/Components/Icons/Index";
-import { info } from "autoprefixer";
+import { DeleteIcon, ShowIcon } from "@/Components/Icons";
 
 
 const { checklists } = defineProps({
     checklists: Object,
-    auth: Object,
-    userPermissions: Array,
+    auth: Object
 });
 
 const showChecklistModal = ref(false);

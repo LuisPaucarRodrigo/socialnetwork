@@ -21,7 +21,7 @@ import ProviderTable from './components/ProviderTable.vue';
 import ProviderHeader from './components/ProviderHeader.vue';
 import ProviderModal from './components/ProviderModal.vue';
 
-const { provider, auth , category } = defineProps({
+const { provider, auth, category } = defineProps({
     provider: Object,
     auth: Object,
     category: Object
@@ -40,6 +40,7 @@ const initialStateForm = {
     email: '',
     category_id: '',
     segments: [],
+    account_number: '',
     zone: '',
     ruc: '',
     id: '',

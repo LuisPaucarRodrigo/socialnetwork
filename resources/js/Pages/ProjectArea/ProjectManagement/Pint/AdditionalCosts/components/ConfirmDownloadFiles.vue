@@ -25,5 +25,6 @@ function exportArchives() {
     window.location.href = url;
     closeExportArchivesModal()
 }
+
 defineExpose({ openExportArchivesModal })
 </script>

@@ -1623,14 +1623,14 @@ import InputError from "@/Components/InputError.vue";
 import Modal from "@/Components/Modal.vue";
 import { ref, watch, computed } from "vue";
 import { Head, router, useForm } from "@inertiajs/vue3";
-import {
-    TrashIcon,
-    ChevronRightIcon,
-    ChevronDownIcon,
-    ChevronUpIcon,
-    ArrowDownTrayIcon,
-    PencilSquareIcon,
-} from "@heroicons/vue/24/outline";
+// import {
+//     TrashIcon,
+//     ChevronRightIcon,
+//     ChevronDownIcon,
+//     ChevronUpIcon,
+//     ArrowDownTrayIcon,
+//     PencilSquareIcon,
+// } from "@heroicons/vue/24/outline";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputFile from "@/Components/InputFile.vue";
@@ -1647,7 +1647,6 @@ const props = defineProps({
     huawei_project: Object,
     employees: Object,
     auth: Object,
-    userPermissions: Array,
     operators: Array,
     macro_projects: Array,
 });

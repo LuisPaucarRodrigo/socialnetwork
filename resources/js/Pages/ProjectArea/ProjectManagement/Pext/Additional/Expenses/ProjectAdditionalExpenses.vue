@@ -11,7 +11,7 @@
         <br />
         <Toaster richColors />
         <TableHeader :project_id="project_id" :fixedOrAdditional="fixedOrAdditional" :type="type"
-            v-model:filterForm="filterForm" :userPermissions="userPermissions" :openSwapAPModal="openSwapAPModal"
+            v-model:filterForm="filterForm" :openSwapAPModal="openSwapAPModal"
             :initialFilterFormState="initialFilterFormState" :openModalImport="openModalImport" />
         <ExpensesTable :project_id="project_id" :expenses="expenses" :filterForm="filterForm" :actionForm="actionForm"
             :expenseTypes="expenseTypes" :documentsType="documentsType" :stateTypes="stateTypes" />
@@ -41,7 +41,6 @@ const props = defineProps({
     expense: Object,
     providers: Object,
     auth: Object,
-    userPermissions: Array,
     cost_center: Object,
     project_id: String,
     fixedOrAdditional: Boolean,

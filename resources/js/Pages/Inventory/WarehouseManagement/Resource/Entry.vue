@@ -204,7 +204,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import { formattedDate } from '@/utils/utils';
-import { ShowIcon } from "@/Components/Icons/Index";
+import { ShowIcon } from "@/Components/Icons";
 
 const props = defineProps({
     purchase_orders: {
@@ -217,10 +217,6 @@ const props = defineProps({
         required: false
     }
 });
-
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
 
 const approvating = ref(false);
 const showModal = ref(false);

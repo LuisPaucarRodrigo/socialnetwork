@@ -176,7 +176,7 @@ import TextInput from '@/Components/TextInput.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import { AddUserIcon, DeleteIcon, EditIcon } from "@/Components/Icons/Index";
+import { AddUserIcon, DeleteIcon, EditIcon } from "@/Components/Icons";
 
 const create_customer = ref(false);
 const showModal = ref(false);
@@ -188,7 +188,6 @@ const docToDelete = ref(null);
 
 const props = defineProps({
     customers: Object,
-    userPermissions: Array
 })
 
 const customers = ref(props.customers);

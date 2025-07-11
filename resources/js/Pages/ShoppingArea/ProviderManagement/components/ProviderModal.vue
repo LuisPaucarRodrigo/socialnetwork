@@ -11,16 +11,19 @@
                         :error-message="form.errors.ruc" col-span="sm:col-span-2" />
 
                     <FormInput id="company_name" label="Compañía" v-model="form.company_name"
-                        :error-message="form.errors.company_name" to-uppercase/>
+                        :error-message="form.errors.company_name" to-uppercase />
 
                     <FormInput id="contact_name" label="Nombre de Contacto" v-model="form.contact_name"
                         :error-message="form.errors.contact_name" col-span="sm:col-span-2" to-uppercase />
+
+                    <FormInput id="account_number" label="Numero de Cuenta" v-model="form.account_number" :error-message="form.errors.account_number"
+                        col-span="sm:col-span-3" to-uppercase />
 
                     <FormInput id="zone" label="Zona" v-model="form.zone" :error-message="form.errors.zone"
                         col-span="sm:col-span-3" to-uppercase />
 
                     <FormInput id="address" label="Dirección" v-model="form.address"
-                        :error-message="form.errors.address" col-span="sm:col-span-3" />
+                        :error-message="form.errors.address" col-span="sm:col-span-2" />
 
                     <FormInput id="email" label="Email" type="email" v-model="form.email"
                         :error-message="form.errors.email" col-span="sm:col-span-2" />

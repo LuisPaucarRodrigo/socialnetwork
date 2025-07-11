@@ -103,7 +103,7 @@
 </template>
 
 <script setup>
-import { PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/outline";
+// import { PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/outline";
 import Pagination from "@/Components/Pagination.vue";
 
 const { dataToRender, links, search } = defineProps({

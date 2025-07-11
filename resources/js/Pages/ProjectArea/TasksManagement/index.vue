@@ -297,18 +297,13 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import { formattedDate } from '@/utils/utils';
-import { PlayIcon, AcceptIcon } from '@/Components/Icons/Index';
+import { PlayIcon, AcceptIcon } from '@/Components/Icons';
 
-const { tasks, project, projects, userPermissions } = defineProps({
+const { tasks, project, projects } = defineProps({
     tasks: Object,
     project: Object,
     projects: Object,
-    userPermissions: Array
 })
-
-const hasPermission = (permission) => {
-    return userPermissions.includes(permission);
-}
 
 let backUrl = project.cost_line_id === 1 ? project.status === null
     ? 'projectmanagement.index'

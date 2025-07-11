@@ -50,14 +50,14 @@
         </MyTransition>
     </template>
 
-    <MyTransition v-if="subModulePermission(submodules.huawei_internal_inventory_submodule, userSubModules)"
+    <!-- <MyTransition v-if="subModulePermission(submodules.huawei_internal_inventory_submodule, userSubModules)"
         :transitiondemonstration="showHuawei">
         <Link class="w-full" :href="route('huawei.quickmaterials')">Inventario Interno</Link>
-    </MyTransition>
-    <MyTransition v-if="subModulePermission(submodules.huawei_interal_guides_submodule, userSubModules)"
+    </MyTransition> -->
+    <!-- <MyTransition v-if="subModulePermission(submodules.huawei_interal_guides_submodule, userSubModules)"
         :transitiondemonstration="showHuawei">
         <Link class="w-full" :href="route('huawei.internalguides')">Guías Internas</Link>
-    </MyTransition>
+    </MyTransition> -->
     <MyTransition v-if="subModulePermission(submodules.huawei_special_returns_submodule, userSubModules)"
         :transitiondemonstration="showHuawei">
         <Link class="w-full" :href="route('huawei.specialrefunds')">Devoluciones Especiales</Link>

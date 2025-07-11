@@ -81,17 +81,12 @@ import { Head, Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { DeleteIcon, ShowIcon } from "@/Components/Icons/Index";
+import { DeleteIcon, ShowIcon } from "@/Components/Icons";
 
 const props = defineProps({
     formationPrograms: Object,
     employees: Object,
-    userPermissions: Array
 })
-
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
 
 const add_information = () => {
     router.get(route('management.employees.formation_development.formation_programs.create'));

@@ -437,11 +437,11 @@
 <script setup>
 import { formattedDate } from "@/utils/utils";
 import { ref, watch } from "vue";
-import {
-    EyeIcon,
-    PencilSquareIcon,
-    TrashIcon,
-} from "@heroicons/vue/24/outline";
+// import {
+//     EyeIcon,
+//     PencilSquareIcon,
+//     TrashIcon,
+// } from "@heroicons/vue/24/outline";
 import TableAutocompleteFilter from "@/Components/TableAutocompleteFilter.vue";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import axios from "axios";

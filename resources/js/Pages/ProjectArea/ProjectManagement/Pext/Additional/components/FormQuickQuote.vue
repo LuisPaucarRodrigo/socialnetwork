@@ -81,10 +81,10 @@
                                             Unidad</th>
                                         <th
                                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                            Cantidad</th>
+                                            Dias</th>
                                         <th
                                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                                            Metrado</th>
+                                            Cantidad</th>
                                         <th
                                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                                             Valor Unitario</th>
@@ -98,33 +98,40 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(item, index) in formQuote.project_quote_valuations" :key="index">
+                                    <tr v-for="(item, i) in formQuote.project_quote_valuations" :key="i">
                                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                                             {{
-                                                item.description }}</td>
+                                                item.description
+                                            }}
+                                        </td>
                                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                                             {{
-                                                item.unit }}</td>
+                                                item.unit
+                                            }}
+                                        </td>
                                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                                            {{
-                                                item.days }}</td>
+                                            <input required type="number" min="0"
+                                                v-model="formQuote.project_quote_valuations[i]['days']"
+                                                class="text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                        </td>
+
+                                        <!-- Campo 'metrado' editable -->
                                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                                            {{
-                                                item.metrado }}</td>
+                                            <input required type="number" min="0"
+                                                v-model="formQuote.project_quote_valuations[i]['metrado']"
+                                                class=" text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                        </td>
                                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                                            {{
-                                                item.unit_value }}</td>
+                                            <input required type="number" min="0" step="0.01"
+                                                v-model="formQuote.project_quote_valuations[i]['unit_value']"
+                                                class="text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                                        </td>
                                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                                            {{
-                                                item.days * item.metrado * item.unit_value }}</td>
+                                            {{ (item.days * item.metrado * item.unit_value).toFixed(2) }}
+                                        </td>
                                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                                            <button type="button" @click="deleteValoration(index)">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                    stroke-width="1.5" stroke="currentColor"
-                                                    class="w-6 h-6 text-red-500">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                                </svg>
+                                            <button type="button" @click="deleteValoration(i)">
+                                                <DeleteIcon />
                                             </button>
                                         </td>
                                     </tr>
@@ -147,7 +154,7 @@
             </form>
         </div>
     </Modal>
-    <FormValuation ref="formValuation" :auth="auth" v-model:formQuote="formQuote"/>
+    <FormValuation ref="formValuation" :auth="auth" v-model:formQuote="formQuote" />
 </template>
 <script setup>
 import InputError from '@/Components/InputError.vue';
@@ -161,6 +168,7 @@ import { ref } from 'vue';
 import FormValuation from './FormValuation.vue';
 import { useForm } from '@inertiajs/vue3';
 import { setAxiosErrors } from '@/utils/utils';
+import { DeleteIcon } from '@/Components/Icons';
 
 const { projects, auth } = defineProps({
     projects: Object,
@@ -170,6 +178,7 @@ const { projects, auth } = defineProps({
 const showQuickQuote = ref(false)
 const formValuation = ref(null)
 const initialStateQuote = {
+    id: '',
     project_id: '',
     delivery_place: '',
     delivery_time: null,
@@ -208,7 +217,6 @@ async function submitQuickQuote() {
     let url = route('projectmanagement.pext.store.quote', { project_quote_id: formQuote.id })
     try {
         let response = await axios.post(url, formQuote)
-        closeQuickQuote()
         updatePext(response.data, 'updateQuote')
     } catch (error) {
         console.log(error)
@@ -230,6 +238,7 @@ function updatePext(pext, action) {
         let index = validations.findIndex(item => item.project_id === pext.project_id)
         validations[index].project.project_quote = pext
         notify('Cotizacion Exitosa')
+        closeQuickQuote()
     }
 }
 

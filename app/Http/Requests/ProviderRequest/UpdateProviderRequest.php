@@ -50,6 +50,7 @@ class UpdateProviderRequest extends FormRequest
             'category_id' => 'required|numeric',
             'segments' => 'required|array',
             'zone' => 'required|string',
+            'account_number' => 'required|string',
             'ruc' => [
                 'required',
                 'string',

@@ -240,7 +240,7 @@ import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import { setAxiosErrors } from '@/utils/utils';
 import { notify, notifyError } from '@/Components/Notification';
 import { Toaster } from 'vue-sonner';
-import { DeleteIcon } from '@/Components/Icons/Index';
+import { DeleteIcon } from '@/Components/Icons';
 
 const showModal = ref(false)
 const showModalUpdate = ref(false)

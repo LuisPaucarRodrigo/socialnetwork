@@ -96,16 +96,11 @@ import Modal from '@/Components/Modal.vue';
 import { ref } from 'vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
-import { DeleteIcon } from "@/Components/Icons/Index";
+import { DeleteIcon } from "@/Components/Icons";
 
-const { formation_program, userPermissions } = defineProps({
-    formation_program: Object,
-    userPermissions: Array
+const { formation_program } = defineProps({
+    formation_program: Object
 });
-
-const hasPermission = (permission) => {
-    return userPermissions.includes(permission);
-}
 
 const delete_employee = (id) => {
     router.delete(route('management.employees.formation_development.employee.delete',

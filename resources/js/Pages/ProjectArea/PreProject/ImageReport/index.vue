@@ -221,7 +221,7 @@ import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { notifyError } from '@/Components/Notification';
 import { setAxiosErrors } from '@/utils/utils';
-import { ShowIcon, AcceptIcon, RejectIcon, DownloadIcon, DeleteIcon } from '@/Components/Icons/Index';
+import { ShowIcon, AcceptIcon, RejectIcon, DownloadIcon, DeleteIcon } from '@/Components/Icons';
 
 const showApproveCode = ref(false);
 const title_code_id = ref(null);
@@ -233,7 +233,6 @@ const props = defineProps({
     preprojectImage: Object,
     imagesCode: Object,
     preproject: Object,
-    userPermissions: Array,
     stages: Object,
     titles: Object
 });

@@ -31,9 +31,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head } from "@inertiajs/vue3";
 import CheckListCard from "./CheckListCard.vue";
-import { LlaveIcon, SecurityIcon, ToolIcon, VehicleIcon } from "@/Components/Icons/Index";
+import { LlaveIcon, SecurityIcon, ToolIcon } from "@/Components/Icons";
 
-const props = defineProps({
-    userPermissions: Array,
-});
 </script>

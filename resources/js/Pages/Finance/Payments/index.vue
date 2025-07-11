@@ -288,7 +288,6 @@ import { formattedDate } from '@/utils/utils';
 const props = defineProps({
     payments: Object,
     search: String,
-    userPermissions: Array
 })
 
 const showModalSuccess = ref(false);

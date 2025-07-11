@@ -128,7 +128,7 @@ import { setAxiosErrors } from "@/utils/utils";
 import Modal from "@/Components/Modal.vue";
 import { Toaster } from "vue-sonner";
 import { ref } from "vue";
-import { PlusCircleIcon, DeleteIcon, EditIcon } from "@/Components/Icons/Index";
+import { PlusCircleIcon, DeleteIcon, EditIcon } from "@/Components/Icons";
 
 const { projects, costLines } = defineProps({
     projects: Object,

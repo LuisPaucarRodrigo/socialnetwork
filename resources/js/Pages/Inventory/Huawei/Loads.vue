@@ -99,11 +99,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputError from '@/Components/InputError.vue';
-import { ShowIcon } from "@/Components/Icons/Index";
+import { ShowIcon } from "@/Components/Icons";
 
 const props = defineProps({
-  loads: Object,
-  userPermissions: Array,
+  loads: Object
 });
 
 const importExcelModal = ref(false);

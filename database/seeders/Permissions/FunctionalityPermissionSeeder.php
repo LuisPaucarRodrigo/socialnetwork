@@ -186,6 +186,7 @@ class FunctionalityPermissionSeeder extends Seeder
                     'payroll.detail.expenses.multiple.store',
                     'payroll.detail.expense.constants.show',
                     'payroll.detail.expense.index',
+                    'payroll.detail.expenses.show',
                     'payroll.detail.expense.search',
                     'payroll.detail.expenses.store',
                     'payroll.detail.expense.destroy',
@@ -406,6 +407,57 @@ class FunctionalityPermissionSeeder extends Seeder
                 'key_name' => 'delete_provider',
                 'module' => 'pprovider_submodule',
                 'permissions' => ['providersmanagement.index', 'providersmanagement.destroy']
+            ],
+        ];
+
+        $ppaymentApprovalSubmodule = [
+            [
+                'display_name' => 'Ver tabla de programación (incluye buscar)',
+                'key_name' => 'see_payment_approval_table',
+                'module' => 'ppayment_approval_submodule',
+                'permissions' => [
+                    'payment.approval.index',
+                    'payment.approval.getPaymentApproval',
+                    'payment.approval.searchPaymentApproval',
+                    'payment.approval.show_document',
+                ]
+            ],
+            [
+                'display_name' => 'Agregar Programación',
+                'key_name' => 'add_payment_approval',
+                'module' => 'ppayment_approval_submodule',
+                'permissions' => [
+                    'payment.approval.index',
+                    'payment.approval.getPaymentApproval',
+                    'payment.approval.searchPaymentApproval',
+                    'payment.approval.show_document',
+                    'payment.approval.store',
+                ]
+            ],
+            [
+                'display_name' => 'Agregar documento(Incluye alarma)',
+                'key_name' => 'add_document_payment_approval',
+                'module' => 'ppayment_approval_submodule',
+                'permissions' => [
+                    'payment.approval.index',
+                    'payment.approval.getPaymentApproval',
+                    'payment.approval.searchPaymentApproval',
+                    'payment.approval.document',
+                    'payment.approval.show_document',
+                    'payment.approval.alarm.pending.payments',
+                ]
+            ],
+            [
+                'display_name' => 'Eliminar Programación',
+                'key_name' => 'delete_payment_approval',
+                'module' => 'ppayment_approval_submodule',
+                'permissions' => [
+                    'payment.approval.index',
+                    'payment.approval.getPaymentApproval',
+                    'payment.approval.searchPaymentApproval',
+                    'payment.approval.show_document',
+                    'payment.approval.delete',
+                ]
             ],
         ];
 
@@ -1226,6 +1278,9 @@ class FunctionalityPermissionSeeder extends Seeder
                     'projectmanagement.pext.expenses.export',
                     'projectmanagement.pext.expenset_type_zone',
                     'projectmanagement.pext.expense_dashboard_bar',
+                    'projectmanagement.pext.expenses.download.zip',
+                    'projectmanagement.pext.structure.excel.export',
+                    'projectmanagement.pext.import.expenses'
                 ]
             ],
 
@@ -1901,6 +1956,7 @@ class FunctionalityPermissionSeeder extends Seeder
             $HrhrstateSubModule,
 
             $pproviderSubModule,
+            $ppaymentApprovalSubmodule,
             // $pprequest_submodule,
             // $pporder_submodule,
             // $ppcpurchase_submodule,

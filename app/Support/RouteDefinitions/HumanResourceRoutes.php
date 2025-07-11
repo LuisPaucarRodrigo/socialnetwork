@@ -594,6 +594,13 @@ class HumanResourceRoutes
                 'name' => 'payroll.detail.expense.index',
             ],
             [
+                'uri' => 'management_employees/payroll_detail_expense_show/{payroll_detail_id}',
+                'method' => 'get',
+                'action' => [SpreadsheetsController::class, 'show_payroll_detail_expenses'],
+                'permission' => true,
+                'name' => 'payroll.detail.expenses.show',
+            ],
+            [
                 'uri' => 'management_employees/payroll_detail_expense_search/{payroll_id}',
                 'method' => 'post',
                 'action' => [SpreadsheetsController::class, 'search_payroll_detail_expenses'],

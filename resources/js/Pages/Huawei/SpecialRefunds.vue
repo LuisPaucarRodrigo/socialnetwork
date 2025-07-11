@@ -141,7 +141,7 @@
   import TextInput from '@/Components/TextInput.vue';
   import InputError from '@/Components/InputError.vue';
   import { Head, useForm, router } from '@inertiajs/vue3';
-  import { TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
+  // import { TrashIcon, PencilSquareIcon } from '@heroicons/vue/24/outline';
   import { ref } from 'vue';
   import Modal from '@/Components/Modal.vue';
   import PrimaryButton from '@/Components/PrimaryButton.vue';

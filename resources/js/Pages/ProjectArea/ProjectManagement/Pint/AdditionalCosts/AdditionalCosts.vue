@@ -76,7 +76,7 @@
 
         <SuspenseWrapper :when="showConfirmDownloadFiles">
             <template #component>
-                <ConfirmDownloadFiles ref="confirmDownloadFiles" :project_id="project_id.id" />
+                <ConfirmDownloadFiles ref="confirmDownloadFiles" :filterForm="filterForm" :project_id="project_id.id" />
             </template>
         </SuspenseWrapper>
 
@@ -93,7 +93,6 @@ import SuspenseWrapper from "@/Components/SuspenseWrapper.vue";
 import { useLazyRefInvoker } from "@/utils/useLazyRefInvoker";
 import AdditionalTable from "./components/AdditionalTable.vue";
 import TableHeader from "./components/TableHeader.vue";
-import ExpensesForm from "./components/ExpensesForm.vue";
 
 const ConfirmDeleteExpenses = defineAsyncComponent(() => import('./components/ConfirmDeleteExpenses.vue'));
 const ConfirmSwapCostModal = defineAsyncComponent(() => import('./components/ConfirmSwapCostModal.vue'));
@@ -103,6 +102,7 @@ const AcceptModal = defineAsyncComponent(() => import('./components/AcceptModal.
 const SwapAPModal = defineAsyncComponent(() => import('./components/SwapAPModal.vue'));
 const SwapRPModal = defineAsyncComponent(() => import('./components/SwapRPModal.vue'));
 const UpdateMassiveOpNuDat = defineAsyncComponent(() => import('./components/UpdateMassiveOpNuDat.vue'));
+const ExpensesForm = defineAsyncComponent(() => import('./components/ExpensesForm.vue'));
 
 const props = defineProps({
     project_id: Object,

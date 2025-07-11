@@ -196,7 +196,7 @@ import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
 import Modal from "@/Components/Modal.vue";
 import InputFile from "@/Components/InputFile.vue";
-import { TrashIcon, EyeIcon } from "@heroicons/vue/24/outline";
+// import { TrashIcon, EyeIcon } from "@heroicons/vue/24/outline";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import { Head, router, useForm } from "@inertiajs/vue3";
 import { ref } from "vue";
@@ -211,8 +211,7 @@ const errorModal = ref(false);
 const errorMessage = ref("");
 
 const props = defineProps({
-    internal_guides: Object,
-    userPermissions: Array,
+    internal_guides: Object
 });
 
 const add_code = () => {

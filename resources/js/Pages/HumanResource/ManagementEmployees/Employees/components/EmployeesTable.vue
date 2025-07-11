@@ -85,7 +85,7 @@ import TableRow from '@/Components/TableRow.vue';
 import Pagination from '@/Components/Pagination.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import { Link } from '@inertiajs/vue3';
-import { UnsubscribeIcon, SuscribeIcon, EditIcon, ShowIcon, IdentificationIcon } from '@/Components/Icons/Index';
+import { UnsubscribeIcon, SuscribeIcon, EditIcon, ShowIcon, IdentificationIcon } from '@/Components/Icons';
 import TableStructure from '@/Layouts/TableStructure.vue';
 
 

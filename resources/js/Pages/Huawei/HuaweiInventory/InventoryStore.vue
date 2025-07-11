@@ -543,7 +543,7 @@
     import { ref, computed } from 'vue';
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
     import { Head, Link, useForm, router } from '@inertiajs/vue3';
-    import { EyeIcon, TrashIcon } from '@heroicons/vue/24/outline';
+    // import { EyeIcon, TrashIcon } from '@heroicons/vue/24/outline';
     import InputError from '@/Components/InputError.vue';
     import Modal from '@/Components/Modal.vue';
     import SecondaryButton from '@/Components/SecondaryButton.vue';

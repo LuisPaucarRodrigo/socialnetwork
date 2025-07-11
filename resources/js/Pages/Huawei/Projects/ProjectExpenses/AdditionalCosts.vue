@@ -350,7 +350,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { ref, watch } from "vue";
 import { Head, useForm, router } from "@inertiajs/vue3";
 import { formattedDate } from "@/utils/utils";
-import { EyeIcon } from "@heroicons/vue/24/outline";
+// import { EyeIcon } from "@heroicons/vue/24/outline";
 import TableDateFilter from "@/Components/TableDateFilter.vue";
 import TableAutocompleteFilter from "@/Components/TableAutocompleteFilter.vue";
 import axios from "axios";

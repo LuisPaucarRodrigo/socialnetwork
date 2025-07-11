@@ -28,7 +28,7 @@
     </TableStructure>
 </template>
 <script setup>
-import { FolderIcon, DownloadIcon } from '@/Components/Icons/Index';
+import { FolderIcon, DownloadIcon } from '@/Components/Icons';
 import TableRow from '@/Components/TableRow.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';

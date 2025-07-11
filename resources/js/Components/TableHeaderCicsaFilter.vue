@@ -39,7 +39,7 @@
 
 <script setup>
 import { ref, watch, computed, onMounted, onUnmounted } from 'vue';
-import { CalendarIcon } from "@/Components/Icons/Index";
+import { CalendarIcon } from "@/Components/Icons";
 import TextInput from '@/Components/TextInput.vue';
 import SortDateIcon from './Icons/SortDateIcon.vue';
 

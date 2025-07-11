@@ -587,18 +587,17 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import Pagination from "@/Components/Pagination.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import { Head, router, Link, useForm } from "@inertiajs/vue3";
-import { PencilIcon, PauseIcon, PlayIcon } from "@heroicons/vue/24/outline";
+// import { PencilIcon, PauseIcon, PlayIcon } from "@heroicons/vue/24/outline";
 import TextInput from "@/Components/TextInput.vue";
 import Modal from "@/Components/Modal.vue";
 import { ref } from "vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import { EditIcon } from "@/Components/Icons/Index";
+import { EditIcon } from "@/Components/Icons";
 
 const props = defineProps({
     projects: Object,
     auth: Object,
-    userPermissions: Array,
     search: String,
     prefix: String,
     status: String,

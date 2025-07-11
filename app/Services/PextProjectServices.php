@@ -119,7 +119,7 @@ class PextProjectServices
 
     public function filterAdvance($expense, $request)
     {
-        if ($request->docNoDate) {
+        if (filter_var($request->docNoDate, FILTER_VALIDATE_BOOLEAN)) {
             $expense->where('doc_date', null);
         }
 
@@ -131,7 +131,7 @@ class PextProjectServices
             $expense->where('doc_date', '<=', $request->docEndDate);
         }
 
-        if ($request->opNoDate) {
+        if (filter_var($request->opNoDate, FILTER_VALIDATE_BOOLEAN)) {
             $expense->where('operation_date', null);
         }
 

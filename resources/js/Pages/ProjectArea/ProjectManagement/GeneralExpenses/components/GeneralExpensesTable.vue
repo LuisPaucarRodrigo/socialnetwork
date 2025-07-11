@@ -225,7 +225,7 @@ function handlerPreview(id) {
 }
 
 function updateExpense(expense, action, state) {
-    let listDate = expenses.data || expenses
+    let listDate = expenses.value.data || expenses.value
     if (action === "validate") {
         let index = listDate.findIndex(item => item.id == expense)
         if (state) {
