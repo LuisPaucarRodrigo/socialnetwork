@@ -239,6 +239,7 @@ class RolesConstants
         'iproduct_submodule' => 'iproduct_submodule',
 
         'pprovider_submodule' => 'pprovider_submodule',
+        'ppayment_approval_submodule' => 'ppayment_approval_submodule',
         'pprequest_submodule' => 'pprequest_submodule',
         'pporder_submodule' => 'pporder_submodule',
         'ppcpurchase_submodule' => 'ppcpurchase_submodule',

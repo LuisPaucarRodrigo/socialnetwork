@@ -487,6 +487,7 @@ class ApiController extends Controller
                     ->orWhere('zone2', $zone)
                     ->orWhere('zone3', $zone);
             });
+            
         $cicsaProcess->whereHas('project', function ($query) use ($currentMonthStart, $currentMonthEnd) {
             $query->where('cost_line_id', 2)
                 ->where('is_accepted', 1)
@@ -506,6 +507,7 @@ class ApiController extends Controller
                         });
                 });
         });
+
         $cicsaProcess = $cicsaProcess->where(function ($query) {
             $query->whereHas('cicsa_charge_area', function ($subQuery) {
                 $subQuery->select('id', 'cicsa_assignation_id', 'invoice_number', 'invoice_date', 'amount', 'deposit_date')
@@ -520,7 +522,7 @@ class ApiController extends Controller
         })
             ->orderBy('project_name')
             ->get();
-
+        
         $cicsaProcess->each->setAppends([]);
         return response()->json($cicsaProcess, 200);
     }

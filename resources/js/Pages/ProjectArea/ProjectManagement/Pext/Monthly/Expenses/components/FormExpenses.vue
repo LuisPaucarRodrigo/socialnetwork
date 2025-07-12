@@ -273,7 +273,7 @@ async function submit() {
 
 const handleRucDniAutocomplete = (e) => {
     let ruc = e.target.value;
-    let findProv = props.providers.find((item) => item.ruc == ruc);
+    let findProv = providers.find((item) => item.ruc == ruc);
     if (findProv) {
         form.provider_id = findProv.id;
     } else {

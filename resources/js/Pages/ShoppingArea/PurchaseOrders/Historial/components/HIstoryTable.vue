@@ -1,5 +1,5 @@
 <template>
-    <TableStructure>
+    <TableStructure :info="orders">
         <template #thead>
             <tr>
                 <TableTitle>Codigo de Orden</TableTitle>
@@ -45,7 +45,7 @@ import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
 import Pagination from '@/Components/Pagination.vue';
-import { ShowIcon } from '@/Components/Icons/Index';
+import { ShowIcon } from '@/Components/Icons';
 
 const { orders } = defineProps({
     orders: Object

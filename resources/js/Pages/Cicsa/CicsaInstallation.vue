@@ -21,7 +21,7 @@
                 </div>
             </div>
             <br />
-            <TableStructure>
+            <TableStructure :info="installations">
                 <template #thead>
                     <TableTitle>Nombre del Proyecto</TableTitle>
                     <TableTitle>Código del Proyecto</TableTitle>
@@ -565,7 +565,7 @@ import { Toaster } from "vue-sonner";
 import TableStructure from "@/Layouts/TableStructure.vue";
 import TableTitle from "@/Components/TableTitle.vue";
 import TableRow from "@/Components/TableRow.vue";
-import { ShowIcon, EditIcon } from "@/Components/Icons/Index";
+import { ShowIcon, EditIcon } from "@/Components/Icons";
 
 
 const { installation, auth, searchCondition, type } = defineProps({

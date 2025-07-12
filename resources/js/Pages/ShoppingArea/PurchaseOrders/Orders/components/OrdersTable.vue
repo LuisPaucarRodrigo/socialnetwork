@@ -1,5 +1,5 @@
 <template>
-    <TableStructure>
+    <TableStructure :info="orders">
         <template #thead>
             <tr>
                 <TableTitle>Proyecto</TableTitle>
@@ -64,17 +64,16 @@ import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import { formattedDate } from '@/utils/utils';
-import { ShowIcon } from '@/Components/Icons/Index';
+import { ShowIcon } from '@/Components/Icons';
 
-const { orders, openCotization, updateState, userPermissions } = defineProps({
+const { orders, openCotization, updateState } = defineProps({
     orders: Object,
     openCotization: Function,
     updateState: Function,
-    userPermissions: Array
 })
 
 const availableOptions = (state) => {
-    if (state === 'Pendiente' || userPermissions.includes('UserManager')) {
+    if (state === 'Pendiente') {
         return ['Pendiente', 'OC Enviada', 'Completada'];
     } else if (state === 'OC Enviada') {
         return ['OC Enviada', 'Completada'];

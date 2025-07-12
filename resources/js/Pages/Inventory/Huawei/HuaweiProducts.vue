@@ -155,7 +155,6 @@ const props = defineProps({
   loadId: String,
   noPg: String,
   total: Number,
-  userPermissions: Array,
 });
 
 const showModal = ref(false);

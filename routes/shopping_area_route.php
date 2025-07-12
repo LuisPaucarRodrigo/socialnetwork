@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\ShoppingArea\PaymentApprovalController;
 use Illuminate\Support\Facades\Route;
 use App\Support\RouteDefinitions\ShoppingAreaRoutes;
-
 
 foreach (ShoppingAreaRoutes::all() as $route) {
     $routeInstance = Route::{$route['method']}($route['uri'], $route['action'])

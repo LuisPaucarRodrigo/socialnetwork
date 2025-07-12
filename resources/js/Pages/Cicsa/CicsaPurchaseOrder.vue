@@ -24,7 +24,7 @@
                 </div>
             </div>
             <br>
-            <TableStructure>
+            <TableStructure :info="purchaseOrders">
                 <template #thead>
                     <TableTitle :colspan="2">Nombre de Proyecto</TableTitle>
                     <TableTitle :colspan="2">Codigo de Proyecto</TableTitle>
@@ -226,7 +226,7 @@ import { Toaster } from 'vue-sonner';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import { DownArrowIcon, UpArrowIcon, PlusCircleIcon, ShowIcon, EditIcon } from '@/Components/Icons/Index';
+import { DownArrowIcon, UpArrowIcon, PlusCircleIcon, ShowIcon, EditIcon } from '@/Components/Icons';
 
 const { purchaseOrder, auth, searchCondition, type } = defineProps({
     purchaseOrder: Object,

@@ -1,5 +1,5 @@
 <template>
-    <TableStructure>
+    <TableStructure :info="codes">
         <template #thead>
             <tr>
                 <TableTitle>Código</TableTitle>
@@ -40,7 +40,7 @@
 </template>
 <script setup>
 import Pagination from '@/Components/Pagination.vue';
-import { EditIcon, DeleteIcon, PlusCircleIcon, ShowIcon } from '@/Components/Icons/Index';
+import { EditIcon, DeleteIcon, PlusCircleIcon, ShowIcon } from '@/Components/Icons';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';

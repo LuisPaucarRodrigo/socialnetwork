@@ -55,7 +55,7 @@
     </div>
 </template>
 <script setup>
-import { EditIcon } from '@/Components/Icons/Index';
+import { EditIcon } from '@/Components/Icons';
 import { router, Link } from '@inertiajs/vue3';
 
 const { item, auth } = defineProps({

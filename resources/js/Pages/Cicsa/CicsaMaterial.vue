@@ -23,7 +23,7 @@
                 </div>
             </div>
             <br>
-            <TableStructure>
+            <TableStructure :info="materials">
                 <template #thead>
                     <TableTitle>Nombre de Proyecto</TableTitle>
                     <TableTitle>Codigo de Proyecto</TableTitle>
@@ -432,7 +432,7 @@ import { notify, notifyError } from '@/Components/Notification';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import { ShowIcon, DownArrowIcon, UpArrowIcon, PlusCircleIcon, EditIcon, DeleteIcon } from '@/Components/Icons/Index';
+import { ShowIcon, DownArrowIcon, UpArrowIcon, PlusCircleIcon, EditIcon, DeleteIcon } from '@/Components/Icons';
 
 const { material, auth, searchCondition, type } = defineProps({
     material: Object,

@@ -139,10 +139,9 @@ import { formattedDate } from '@/utils/utils';
 import { Head, router } from '@inertiajs/vue3';
 
 
-const { warehouse, disToApToCom, userPermissions } = defineProps({
+const { warehouse, disToApToCom } = defineProps({
     warehouse: Object,
     disToApToCom: Object,
-    auth: Object
 });
 
 

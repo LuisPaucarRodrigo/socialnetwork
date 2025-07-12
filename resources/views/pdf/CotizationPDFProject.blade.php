@@ -113,7 +113,7 @@
         <td class="td-custom" style="width: 60px; text-align: center; background: #2e75b5; font-weight: normal;">Partida</td>
         <td class="td-custom" style="width: 265px; text-align: center; background: #2e75b5; font-weight: normal;">Descripción</td>
         <td class="td-custom" style="width: 55px; text-align: center; background: #2e75b5; font-weight: normal;">Unidad</td>
-        <td class="td-custom" style="width: 67px; text-align: center; background: #2e75b5; font-weight: normal;">Dias</td>
+        <td class="td-custom" style="width: 67px; text-align: center; background: #2e75b5; font-weight: normal;">Cantidad</td>
         <td class="td-custom" style="width: 67px; text-align: center; background: #2e75b5; font-weight: normal;">Metrado</td>
         <td class="td-custom" style="width: 73px; text-align: center; background: #2e75b5; font-weight: normal;">Valor Unitario</td>
         <td class="td-custom" style="width: 80px; text-align: center; background: #2e75b5; font-weight: normal;">Valor total</td>

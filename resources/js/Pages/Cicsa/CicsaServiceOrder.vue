@@ -23,7 +23,7 @@
                 </div>
             </div>
             <br>
-            <TableStructure>
+            <TableStructure :info="service_orders">
                 <template #thead>
                     <tr>
                         <TableTitle :colspan="3">Nombre de Proyecto</TableTitle>
@@ -244,7 +244,7 @@ import { notify, notifyError } from '@/Components/Notification';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import { ShowIcon, EditIcon, DownArrowIcon, UpArrowIcon } from '@/Components/Icons/Index';
+import { ShowIcon, EditIcon, DownArrowIcon, UpArrowIcon } from '@/Components/Icons';
 
 const { service_order, auth, searchCondition, type } = defineProps({
     service_order: Object,

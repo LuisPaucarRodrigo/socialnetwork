@@ -31,9 +31,34 @@ class HuaweiConstants
             ->pluck('full_name')
             ->toArray();
 
+        $contractors = [
+            "Gustavo Raul Condori Ccahuaya (GSB)",
+            "Jeancarlo Soto Yaulli (GSB)",
+            "Manuel Oscar Flores Cuentas (GSB)",
+            "Abel Adan Lencinas Ticona (GSB)",
+            "Daniel Romell Ccallo Leguia (GSB)",
+            "Cesar Samuel Armando Martinez Muñoz (GSB)",
+            "Fredy Rolando Laurente Chipana (COMTECSO)",
+            "Franklin Raul Laurente Flores (COMTECSO)",
+            "Frank Antony Arviri Flores (COMTECSO)",
+            "Clinton Christian Chipana Parisuaña (GSB)",
+            "Tabory Ramos Cristhian Angelo (GSB)",
+            "Villalobos Perez Ricardo Cesar (GSB)",
+            "Neira Mamani Edward Yazmani (GSB)",
+            "Clinton Christian Chipana Parisuaña (GSB)",
+            "Robert Cutire Montañez (GSB)",
+            "Yancaya Santos Samuel Antonio(GSB)",
+            "Zamata Meza Juan Carlos (GSB)",
+            "Oscar Alfredo Choquehuanca Mollo (GSB)",
+            "Laurente Flores Fredy Ruben (COMTECSO)",
+        ];
+
+
         $merged = array_merge($employees, $external_employees);
         $merged = array_unique($merged);
         sort($merged);
+        sort($contractors);
+        $merged = array_merge($merged, $contractors);
 
         if (!in_array('ADMINISTRATIVO', $merged)) {
             array_unshift($merged, 'ADMINISTRATIVO');

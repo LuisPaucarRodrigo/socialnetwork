@@ -1,5 +1,5 @@
 <template>
-    <TableStructure>
+    <TableStructure :info="checklist">
         <template #thead>
             <tr>
                 <TableTitle>Fecha de Registro</TableTitle>
@@ -43,7 +43,7 @@ import Pagination from "@/Components/Pagination.vue";
 import TableStructure from "@/Layouts/TableStructure.vue";
 import TableTitle from "@/Components/TableTitle.vue";
 import TableRow from "@/Components/TableRow.vue";
-import { ShowIcon, ImagesIcon } from "@/Components/Icons/Index";
+import { ShowIcon, ImagesIcon } from "@/Components/Icons";
 
 const { checklist, openImages, openChecklist } = defineProps({
     checklist: Object,

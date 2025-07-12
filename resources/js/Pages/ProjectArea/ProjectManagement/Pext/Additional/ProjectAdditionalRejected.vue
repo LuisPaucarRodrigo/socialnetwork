@@ -16,8 +16,8 @@
             <br>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 <ProjectCard v-for="item in projects.data || projects" :key="item.id" :item="item"
-                    :hasPermission="hasPermission" :rejectOrReturnAdditionalProject="approveAdditionalProject"
-                    :type="type" :openQuickQuote="openQuickQuote" :editProject="editProject" />
+                    :rejectOrReturnAdditionalProject="approveAdditionalProject" :type="type"
+                    :openQuickQuote="openQuickQuote" :editProject="editProject" />
             </div>
             <div v-if="projects.data" class="flex flex-col items-center px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="projects.links" />
@@ -160,9 +160,8 @@ import ProjectCard from './components/ProjectCard.vue';
 import Search from '@/Components/Search.vue';
 import FormQuickQuote from './components/FormQuickQuote.vue';
 
-const { project, auth, userPermissions, cost_line, type } = defineProps({
+const { project, auth, cost_line, type } = defineProps({
     project: Object,
-    userPermissions: Array,
     auth: Object,
     cost_line: Object,
     type: String,
@@ -193,10 +192,6 @@ const form = useForm({ ...initialState })
 //     endDate: ""
 // })
 // const modalExport = ref(false)
-
-const hasPermission = (permission) => {
-    return userPermissions.includes(permission);
-}
 
 const showModal = ref(false)
 const projects = ref({ ...project });

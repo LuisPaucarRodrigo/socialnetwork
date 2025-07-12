@@ -353,7 +353,7 @@ import Modal from "@/Components/Modal.vue";
 import PastProjectUtilities from "@/Components/ProjectExpenses/PastProjectUtilities.vue";
 import ProjectBalance from "@/Components/ProjectExpenses/ProjectBalance.vue";
 import ProjectZoneExpenses from "@/Components/ProjectExpenses/ProjectZoneExpenses.vue";
-import { InformationIcon } from "@/Components/Icons/Index";
+import { InformationIcon } from "@/Components/Icons";
 
 const {
     project,

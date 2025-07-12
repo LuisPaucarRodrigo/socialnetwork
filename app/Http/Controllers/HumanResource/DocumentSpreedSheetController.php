@@ -44,7 +44,7 @@ class DocumentSpreedSheetController extends Controller
                 )
                 ->orderBy('name')
                 ->get();
-            $employees->each->setAppends(['sctr_about_to_expire', 'policy_about_to_expire']);
+            $employees->each->setAppends(['sctr_about_to_expire', 'policy_about_to_expire', 'time_worked']);
             $e_employees = ExternalEmployee::with([
                 'document_registers',
             ])
@@ -97,7 +97,7 @@ class DocumentSpreedSheetController extends Controller
                 })
                 ->orderBy('name')
                 ->get();
-            $employees->each->setAppends(['sctr_about_to_expire', 'policy_about_to_expire']);
+            $employees->each->setAppends(['sctr_about_to_expire', 'policy_about_to_expire', 'time_worked']);
 
             $e_employees = ExternalEmployee::with([
                 'document_registers',

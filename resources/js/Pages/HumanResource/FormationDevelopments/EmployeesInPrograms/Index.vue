@@ -166,11 +166,10 @@ import InputError from '@/Components/InputError.vue';
 import { formattedDate } from '@/utils/utils.js';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { ShowIcon } from '@/Components/Icons/Index';
+import { ShowIcon } from '@/Components/Icons';
 
-const { employees, userPermissions } = defineProps({
+const { employees } = defineProps({
     employees: Object,
-    userPermissions: Array
 })
 
 const showNotCompletedModal = ref(false)

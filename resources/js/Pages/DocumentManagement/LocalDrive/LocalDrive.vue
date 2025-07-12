@@ -246,7 +246,7 @@ import { ref } from 'vue';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import InputFile from '@/Components/InputFile.vue';
-import { DocumentIcon, FolderIcon } from '@/Components/Icons/Index';
+import { DocumentIcon, FolderIcon } from '@/Components/Icons';
 
 
 const { folders_archives, currentPath, previousPath, auth } = defineProps({

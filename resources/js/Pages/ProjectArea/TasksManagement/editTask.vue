@@ -126,7 +126,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import { formattedDate } from '@/utils/utils'
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { AddUserIcon, DeleteIcon } from '@/Components/Icons/Index';
+import { AddUserIcon, DeleteIcon } from '@/Components/Icons';
 
 const props = defineProps({
     projects: Object,
@@ -135,12 +135,7 @@ const props = defineProps({
     employeesToAssign: Object,
     added_employees: Object,
     auth: Object,
-    userPermissions: Array
 })
-
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
 
 const { tasks } = props;
 const newcomment = useForm({

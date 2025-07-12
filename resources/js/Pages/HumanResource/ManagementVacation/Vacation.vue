@@ -252,7 +252,7 @@ import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { ShowIcon } from '@/Components/Icons/Index';
+import { ShowIcon } from '@/Components/Icons';
 
 const props = defineProps({
     vacations: Object,

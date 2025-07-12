@@ -248,13 +248,8 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({
     retrievalDispatchesApproved: Object,
-    auth: Object,
-    userPermissions: Array
+    auth: Object
 });
-
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission)
-}
 
 const requested_quantity = ref(null);
 

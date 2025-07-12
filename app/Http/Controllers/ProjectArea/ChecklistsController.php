@@ -382,8 +382,6 @@ class ChecklistsController extends Controller
         } else {
             $isGEP = true;
         }
-
-
         try {
             $doc_date = Carbon::createFromFormat('d/m/Y', $data['doc_date']);
             $startOfMonth = $doc_date->startOfMonth()->format('Y-m-d');
@@ -413,9 +411,6 @@ class ChecklistsController extends Controller
                     ->first();
                 $projectId = Project::where('preproject_id', $preprojectId->id)->select('id')->first();
             }
-
-
-
             //Errror if neither exists
             if (!$projectId) {
                 return response()->json(['error' => "No se encontraron preproyectos pint para este mes."], 404);

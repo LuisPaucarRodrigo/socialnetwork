@@ -433,6 +433,14 @@ class ProjectRoutes
                 'name' => 'projectmanagement.pext.expenses.validate',
             ],
 
+            [
+                'uri' => 'projectPext/expenses/downloadImages/{project_id}/fixedOrAdditional/{fixedOrAdditional}',
+                'method' => 'get',
+                'action' => [PextController::class, 'downloadImages'],
+                'permission' => true,
+                'name' => 'projectmanagement.pext.expenses.download.zip',
+            ],
+
             // Project
             [
                 'uri' => 'project/create',
@@ -1254,6 +1262,14 @@ class ProjectRoutes
                 'name' => 'projectmanagement.pext.expenses.general.export',
             ],
 
+            [
+                'uri' => '/projectPext/expenses/structure/excel_export',
+                'method' => 'get',
+                'action' => [PextController::class, 'structure_excel_export'],
+                'permission' => true,
+                'name' => 'projectmanagement.pext.structure.excel.export',
+            ],
+
             // Project Pext Additional
             [
                 'uri' => '/projectPext/additional_index/{type}/{searchCondition?}',
@@ -1369,6 +1385,13 @@ class ProjectRoutes
                 'action' => [PextController::class, 'barChart'],
                 'permission' => true,
                 'name' => 'projectmanagement.pext.expense_dashboard_bar',
+            ],
+            [
+                'uri' => '/projectPext/import_expenses',
+                'method' => 'post',
+                'action' => [PextController::class, 'import_excel_expenses'],
+                'permission' => true,
+                'name' => 'projectmanagement.pext.import.expenses',
             ],
             // Project calendar
             [
@@ -1573,7 +1596,7 @@ class ProjectRoutes
             [
                 'uri' => '/preproject/auto-store/pext',
                 'method' => 'post',
-                
+
                 'action' => [ProjectPintController::class, 'pext_store_project'],
                 'permission' => true,
                 'name' => 'project.auto_store.pext',

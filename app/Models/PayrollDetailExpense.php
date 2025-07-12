@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Constants\PintConstants;
-use Illuminate\Support\Facades\Log;
-use App\Constants\ProjectConstants;
 
 class PayrollDetailExpense extends Model
 {

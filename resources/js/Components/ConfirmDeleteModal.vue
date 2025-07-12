@@ -2,7 +2,7 @@
   <Modal :show="confirmingDeletion">
     <div class="p-6">
       <h2 class="text-lg font-medium text-gray-900">
-        ¿Estás seguro de eliminar al {{ itemType }}?
+        ¿Estás seguro de eliminar al/el {{ itemType }}?
       </h2>
       <p class="mt-1 text-sm text-gray-600">
         Se eliminará toda la información relacionada con {{ nameText == null ? itemType : nameText }}. Esta accion no

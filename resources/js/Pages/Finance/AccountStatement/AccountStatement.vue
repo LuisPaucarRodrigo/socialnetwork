@@ -692,7 +692,7 @@ import { formattedDate, setAxiosErrors } from "@/utils/utils";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import { ref, watch } from "vue";
-import { DeleteIcon, EditIcon, UploadIcon, DownloadIcon, SortIcon, MenuIcon } from '@/Components/Icons/Index';
+import { DeleteIcon, EditIcon, UploadIcon, DownloadIcon, SortIcon, MenuIcon } from '@/Components/Icons';
 import qs from 'qs';
 const {
     accountStatements,
@@ -702,8 +702,7 @@ const {
     totalITFM,
     totalPayment,
     balanceMedia,
-    auth,
-    userPermissions,
+    auth
 } = defineProps({
     accountStatements: Object,
     previousBalance: Number,
@@ -713,7 +712,6 @@ const {
     totalPayment: Number,
     totalITFM: Number,
     auth: Object,
-    userPermissions: Array,
 });
 
 const now = new Date();

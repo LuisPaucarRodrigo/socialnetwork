@@ -176,8 +176,7 @@ import ShowIcon from '@/Components/Icons/ShowIcon.vue';
 
 const props = defineProps({
     expenses: Object,
-    boolean: Boolean,
-    userPermissions: Array
+    boolean: Boolean
 })
 
 const expenses = ref(props.expenses);

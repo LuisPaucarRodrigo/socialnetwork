@@ -177,8 +177,7 @@ import { setAxiosErrors } from '@/utils/utils';
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
-const { userPermissions, type_product, resource_type, products } = defineProps({
-    userPermissions: Object,
+const { type_product, resource_type, products } = defineProps({
     type_product: Object,
     resource_type: Object,
     products: Object

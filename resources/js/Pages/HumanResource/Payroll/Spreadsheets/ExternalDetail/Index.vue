@@ -1,5 +1,4 @@
 <template>
-
     <Head title="4ta Categoría" />
     <Toaster richColors />
     <AuthenticatedLayout :redirectRoute="{
@@ -13,7 +12,7 @@
                 + Agregar
             </button>
         </div>
-        <TableStructure>
+        <TableStructure :info="dataToRender">
             <template #thead>
                 <TableTitle>Tipo Doc</TableTitle>
                 <TableTitle>Número Doc</TableTitle>
@@ -163,7 +162,7 @@ import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Modal from "@/Components/Modal.vue";
-import { DeleteIcon, EditIcon } from "@/Components/Icons/Index";
+import { DeleteIcon, EditIcon } from "@/Components/Icons";
 
 const { payroll_external_details, external_employees, payroll_id } =
     defineProps({

@@ -235,7 +235,8 @@
                                 CUSPP
                             </InputLabel>
                             <div class="mt-2">
-                                <TextInput type="text" v-model="form.cuspp" id="cuspp" maxlength="12" :toUppercase="true"/>
+                                <TextInput type="text" v-model="form.cuspp" id="cuspp" maxlength="12"
+                                    :toUppercase="true" />
                                 <InputError :message="form.errors.cuspp" />
                             </div>
                         </div>
@@ -676,6 +677,15 @@
         <Modal :show="showDocumentsModal" :max-width="'6xl'">
             <div class="p-6 flex flex-col gap-6">
                 <h2>Documentos</h2>
+                <div class="flex justify-end mb-4">
+                    <select @change="applyPreset($event.target.value)"
+                        class="border border-gray-300 rounded-md text-sm px-2 py-1 focus:ring-indigo-500">
+                        <option value="">Seleccionar configuración predefinida</option>
+                        <option value="Vericom">Vericom</option>
+                        <option value="Tecnico">Tecnico</option>
+                        <option value="Administrativo">Administrativo</option>
+                    </select>
+                </div>
                 <div>
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
                         <div v-for="section in sections" :key="section.id"
@@ -952,5 +962,25 @@ async function submitDocuments() {
     }
 }
 
+const applyPreset = (preset) => {
+    if (preset === 'Vericom') {
+        const idList = [1, 4, 10, 27, 28]
+        defaults(idList)
+    } else if (preset === 'Tecnico') {
+        const idList = [1, 2, 3, 4, 15, 16, 18, 19, 20, 22, 23, 24, 25, 26]
+        defaults(idList)
+    } else if (preset === 'Administrativo') {
+        const idList = [1, 2, 3, 4, 9, 15, 16, 24];
+        defaults(idList)
+    }
+};
+
+function defaults(idList) {
+    Object.keys(documentsForm.value).forEach((id) => {
+        documentsForm.value[id] = idList.includes(Number(id))
+            ? 'Corresponde'
+            : 'No Corresponde';
+    });
+}
 
 </script>

@@ -1,5 +1,5 @@
 <template>
-    <TableStructure>
+    <TableStructure :info="spreadsheets">
         <template #thead>
             <tr class="bg-gray-100">
                 <TableTitle></TableTitle>

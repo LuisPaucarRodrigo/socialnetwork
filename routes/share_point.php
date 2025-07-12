@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Services\SharePointController;
 use App\Support\RouteDefinitions\SharePointRoutes;
 use Illuminate\Support\Facades\Route;
 

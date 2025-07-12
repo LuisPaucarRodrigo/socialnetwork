@@ -55,9 +55,8 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
 
-const { item, hasPermission, rejectOrReturnAdditionalProject, openQuickQuote, editProject, type } = defineProps({
+const { item, rejectOrReturnAdditionalProject, openQuickQuote, editProject, type } = defineProps({
     item: Object,
-    hasPermission: Function,
     rejectOrReturnAdditionalProject: Function,
     openQuickQuote: Function,
     editProject: Function,

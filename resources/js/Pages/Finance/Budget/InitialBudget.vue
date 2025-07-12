@@ -199,8 +199,7 @@ const props = defineProps({
   project: Object,
   budgetUpdate: Object,
   budgetUpdates: Object,
-  auth: Object,
-  userPermissions:Array
+  auth: Object
 });
 
 const isModalOpen2 = ref(false);

@@ -1,10 +1,11 @@
 <template>
-    <TableStructure>
+    <TableStructure :info="providers">
         <template #thead>
             <tr>
                 <TableTitle>RUC</TableTitle>
                 <TableTitle>Compańia</TableTitle>
                 <TableTitle>Contacto</TableTitle>
+                <TableTitle>Numero de Cuenta</TableTitle>
                 <TableTitle>Zona</TableTitle>
                 <TableTitle>Dirección</TableTitle>
                 <TableTitle>Telefono</TableTitle>
@@ -19,6 +20,7 @@
                 <TableRow>{{ item.ruc }}</TableRow>
                 <TableRow>{{ item.company_name }}</TableRow>
                 <TableRow>{{ item.contact_name }}</TableRow>
+                <TableRow>{{ item.account_number }}</TableRow>
                 <TableRow>{{ item.zone }}</TableRow>
                 <TableRow :width="'w-[500px]'">{{ item.address }}</TableRow>
                 <TableRow>{{ item.phone1 }} {{ item.phone2 }}</TableRow>
@@ -57,7 +59,7 @@ import Pagination from '@/Components/Pagination.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import { ref } from 'vue';
 import { notify, notifyError } from '@/Components/Notification';
-import { DeleteIcon, EditIcon } from "@/Components/Icons/Index";
+import { DeleteIcon, EditIcon } from "@/Components/Icons";
 
 const { auth, add_information } = defineProps({
     auth: Object,

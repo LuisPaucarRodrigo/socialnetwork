@@ -21,7 +21,7 @@ class CreateProviderRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    
+
     public function rules(): array
     {
         return [
@@ -49,6 +49,7 @@ class CreateProviderRequest extends FormRequest
             'category_id' => 'required|numeric',
             'segments' => 'required|array',
             'zone' => 'required|string',
+            'account_number' => 'required|string',
             'ruc' => [
                 'required',
                 'string',

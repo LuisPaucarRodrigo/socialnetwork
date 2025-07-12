@@ -333,7 +333,11 @@
                     PORCENTUAL</td>
                 <td style="border-bottom: none; border-top: none; border-left: none; border-right: none;"></td>
                 <td style="border-bottom: none; border-top: none; border-left: none; border-right: none; text-align: right;"
+<<<<<<< HEAD
                     class="amount-right">{{number_format($spreadsheet['cp_amount'],2)}}</td>
+=======
+                    class="amount-right">0.00</td>
+>>>>>>> origin/huawei_data
                 <td style="border-bottom: none; border-top: none; border-left: none;"></td>
             </tr>
             <tr>

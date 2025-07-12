@@ -186,6 +186,7 @@ class FunctionalityPermissionSeeder extends Seeder
                     'payroll.detail.expenses.multiple.store',
                     'payroll.detail.expense.constants.show',
                     'payroll.detail.expense.index',
+                    'payroll.detail.expenses.show',
                     'payroll.detail.expense.search',
                     'payroll.detail.expenses.store',
                     'payroll.detail.expense.destroy',
@@ -406,6 +407,57 @@ class FunctionalityPermissionSeeder extends Seeder
                 'key_name' => 'delete_provider',
                 'module' => 'pprovider_submodule',
                 'permissions' => ['providersmanagement.index', 'providersmanagement.destroy']
+            ],
+        ];
+
+        $ppaymentApprovalSubmodule = [
+            [
+                'display_name' => 'Ver tabla de programación (incluye buscar)',
+                'key_name' => 'see_payment_approval_table',
+                'module' => 'ppayment_approval_submodule',
+                'permissions' => [
+                    'payment.approval.index',
+                    'payment.approval.getPaymentApproval',
+                    'payment.approval.searchPaymentApproval',
+                    'payment.approval.show_document',
+                ]
+            ],
+            [
+                'display_name' => 'Agregar Programación',
+                'key_name' => 'add_payment_approval',
+                'module' => 'ppayment_approval_submodule',
+                'permissions' => [
+                    'payment.approval.index',
+                    'payment.approval.getPaymentApproval',
+                    'payment.approval.searchPaymentApproval',
+                    'payment.approval.show_document',
+                    'payment.approval.store',
+                ]
+            ],
+            [
+                'display_name' => 'Agregar documento(Incluye alarma)',
+                'key_name' => 'add_document_payment_approval',
+                'module' => 'ppayment_approval_submodule',
+                'permissions' => [
+                    'payment.approval.index',
+                    'payment.approval.getPaymentApproval',
+                    'payment.approval.searchPaymentApproval',
+                    'payment.approval.document',
+                    'payment.approval.show_document',
+                    'payment.approval.alarm.pending.payments',
+                ]
+            ],
+            [
+                'display_name' => 'Eliminar Programación',
+                'key_name' => 'delete_payment_approval',
+                'module' => 'ppayment_approval_submodule',
+                'permissions' => [
+                    'payment.approval.index',
+                    'payment.approval.getPaymentApproval',
+                    'payment.approval.searchPaymentApproval',
+                    'payment.approval.show_document',
+                    'payment.approval.delete',
+                ]
             ],
         ];
 
@@ -702,6 +754,7 @@ class FunctionalityPermissionSeeder extends Seeder
                 'permissions' => [
                     'preprojects.index',
                     'project.auto.pint',
+                    'project.auto_store.pint',
                     'pint_project.products.cpe',
                     'project.auto.pint.getEmployees',
                 ]
@@ -1015,7 +1068,7 @@ class FunctionalityPermissionSeeder extends Seeder
                     'additionalcost.advance.search',
                     'projectmanagement.importAdditionalCost',
                     'zip.additional.descargar',
-                    
+
                     'projectmanagement.additionalCosts.swapCosts',
                     'projectmanagement.addctoaddproject.swapCosts',
                     'projectmanagement.regularprojects.all',
@@ -1225,6 +1278,9 @@ class FunctionalityPermissionSeeder extends Seeder
                     'projectmanagement.pext.expenses.export',
                     'projectmanagement.pext.expenset_type_zone',
                     'projectmanagement.pext.expense_dashboard_bar',
+                    'projectmanagement.pext.expenses.download.zip',
+                    'projectmanagement.pext.structure.excel.export',
+                    'projectmanagement.pext.import.expenses'
                 ]
             ],
 
@@ -1707,108 +1763,52 @@ class FunctionalityPermissionSeeder extends Seeder
         ];
 
         //Huawei
-        $huawei_sites_submodule = [
+        //Proyectos de Huawei
+        $huaweiProjectsSubmodule = [
             [
-                'display_name' => 'Encargado de Sites Huawei',
-                'key_name' => 'huawei_sites',
-                'module' => 'huawei_sites_submodule',
-                'permissions' => [
-                    'huawei.sites',
-                    'huawei.sites.post',
-                    'huawei.sites.put',
-                    'huawei.sites.delete',
-                    'huawei.sites.verify',
-                    'huawei.sites.search',
-                ]
-            ],
-        ];
-
-        $huawei_projects_submodule = [
-            [
-                'display_name' => 'Encargado de Proyectos',
-                'key_name' => 'huawei_projects',
+                'display_name' => 'Ver proyectos (incluye buscar)',
+                'key_name' => 'huawei_projects_view',
                 'module' => 'huawei_projects_submodule',
-                'permissions' => [
-                    'huawei.projects',
-                    'huawei.projects.search',
-                    'huawei.projects.create',
-                    'huawei.projects.store',
-                    'huawei.projects.import.baselines',
-                    'huawei.projects.baselines.template',
-                    'huawei.projects.toupdate',
-                    'huawei.projects.balance',
-                    'huawei.projects.liquidateproject',
-                    'huawei.projects.cancelproject',
-                    'huawei.projects.stopped.resume',
-
-                    'huawei.projects.generalbalance',
-                    'huawei.projects.generalbalance.expensesbyzone',
-                    'huawei.projects.general.expenses',
-                    'huawei.projects.general.expenses.search',
-                    'huawei.projects.general.expenses.searchadvance',
-                    'huawei.projects.general.expenses.store',
-                    'huawei.projects.general.expenses.update',
-                    'huawei.projects.general.expenses.delete',
-                    'huawei.projects.general.expenses.validate',
-                    'huawei.projects.general.expenses.showimage',
-                    'huawei.projects.general.expenses.export',
-                    'huawei.projects.general.expenses.massiveupdate',
-                    'huawei.projects.general.expenses.fetchsites',
-                    'huawei.projects.general.expenses.fetchprojects',
-                    'huawei.projects.general.expenses.import',
-                    'huawei.projects.general.expenses.donwloadtemplate',
-                    'huawei.projects.general.expenses.downloadzip',
-                    'huawei.projects.monthlyexpenses.downloadimages',
-
-                    //Project Costs
-                    'huawei.projects.additionalcosts',
-                    'huawei.projects.additionalcosts.showimage',
-                    'huawei.projects.additionalcosts.search',
-                    'huawei.projects.additionalcosts.summary',
-                    'huawei.projects.additionalcosts.advancedsearch',
-                    'huawei.projects.additionalcosts.export',
-
-                    //Liquidations
-                    'huawei.projects.liquidations',
-                    'huawei.projects.liquidations.history',
-                    'huawei.projects.liquidations.post',
-                    'huawei.projects.liquidations.searchadvance',
-                    'huawei.projects.liquidations.massiveliquidation',
-
-                    //Resources
-                    'huawei.projects.resources',
-                    'huawei.projects.resources.search',
-                    'huawei.projects.resources.store',
-                    'huawei.projects.refund',
-                    'huawei.projects.resources.searchdetails',
-                    'huawei.projects.create.fetchsites'
-                ]
+                'permissions' => ['huawei.projects', 'huawei.projects.search']
             ],
-            // [
-            //     'display_name' => 'Agregar proyecto',
-            //     'key_name' => 'huawei_projects_add',
-            //     'module' => 'huawei_projects_submodule',
-            //     'permissions' => ['huawei.projects', 'huawei.projects.search', 'huawei.projects.create', 'huawei.projects.store', 'huawei.projects.import.baselines', 'huawei.projects.baselines.template']
-            // ],
-            // [
-            //     'display_name' => 'Ver proyecto',
-            //     'key_name' => 'huawei_projects_see_project',
-            //     'module' => 'huawei_projects_submodule',
-            //     'permissions' => ['huawei.projects', 'huawei.projects.search', 'huawei.projects.toupdate', 'huawei.projects.balance']
-            // ],
-            // [
-            //     'display_name' => 'Editar proyecto',
-            //     'key_name' => 'huawei_projects_edit',
-            //     'module' => 'huawei_projects_submodule',
-            //     'permissions' => ['huawei.projects', 'huawei.projects.search', 'huawei.projects.toupdate', 'huawei.projects.update', 'huawei.projects.import.baselines', 'huawei.projects.baselines.template']
-            // ],
-            // [
-            //     'display_name' => 'Administrar proyectos',
-            //     'key_name' => 'huawei_projects_admin',
-            //     'module' => 'huawei_projects_submodule',
-            //     'permissions' => ['huawei.projects.liquidateproject', 'huawei.projects.cancelproject', 'huawei.projects.stopped.resume']
-            // ],
-
+            [
+                'display_name' => 'Agregar proyecto',
+                'key_name' => 'huawei_projects_add',
+                'module' => 'huawei_projects_submodule',
+                'permissions' => ['huawei.projects.create', 'huawei.projects.store', 'huawei.projects.import.baselines', 'huawei.projects.baselines.template']
+            ],
+            [
+                'display_name' => 'Ver proyecto',
+                'key_name' => 'huawei_projects_see_project',
+                'module' => 'huawei_projects_submodule',
+                'permissions' => ['huawei.projects.toupdate', 'huawei.projects.balance']
+            ],
+            [
+                'display_name' => 'Editar proyecto',
+                'key_name' => 'huawei_projects_edit',
+                'module' => 'huawei_projects_submodule',
+                'permissions' => ['huawei.projects.toupdate', 'huawei.projects.update', 'huawei.projects.import.baselines', 'huawei.projects.baselines.template']
+            ],
+            [
+                'display_name' => 'Administrar proyectos',
+                'key_name' => 'huawei_projects_admin',
+                'module' => 'huawei_projects_submodule',
+                'permissions' => ['huawei.projects.liquidateproject', 'huawei.projects.cancelproject', 'huawei.projects.stopped.resume']
+            ],
+            //liquidations
+            [
+                'display_name' => 'Liquidar Recursos',
+                'key_name' => 'huawei_liquidations',
+                'module' => 'huawei_projects_submodule',
+                'permissions' => ['huawei.projects.liquidations', 'huawei.projects.liquidations.history', 'huawei.projects.liquidations.post', 'huawei.projects.liquidations.searchadvance', 'huawei.projects.liquidations.massiveliquidation']
+            ],
+            //resources
+            [
+                'display_name' => 'Administrar Recursos',
+                'key_name' => 'huawei_resources',
+                'module' => 'huawei_projects_submodule',
+                'permissions' => ['huawei.projects.resources', 'huawei.projects.resources.search', 'huawei.projects.resources.store', 'huawei.projects.refund', 'huawei.projects.resources.searchdetails']
+            ]
             //provisional
             // [
             //     'display_name' => 'Eliminar proyecto',
@@ -1817,95 +1817,130 @@ class FunctionalityPermissionSeeder extends Seeder
             //     'permissions' => []
             // ],
         ];
-        $huawei_inventory_submodule = [
+
+        //Sites de Huawei
+        $huaweiSitesSubmodule = [
             [
-                'display_name' => 'Encargado de Inventario huawei',
-                'key_name' => 'huawei_inventory',
+                'display_name' => 'Ver Sites (incluye buscar)',
+                'key_name' => 'huawei_sites_view',
+                'module' => 'huawei_sites_submodule',
+                'permissions' => ['huawei.sites', 'huawei.sites.search']
+            ],
+            [
+                'display_name' => 'Agregar Sites',
+                'key_name' => 'huawei_sites_add',
+                'module' => 'huawei_sites_submodule',
+                'permissions' => ['huawei.sites.post', 'huawei.sites.verify']
+            ],
+            [
+                'display_name' => 'Actualizar Sites',
+                'key_name' => 'huawei_sites_edit',
+                'module' => 'huawei_sites_submodule',
+                'permissions' => ['huawei.sites.put', 'huawei.sites.verify']
+            ],
+            [
+                'display_name' => 'Eliminar Sites',
+                'key_name' => 'huawei_sites_delete',
+                'module' => 'huawei_sites_submodule',
+                'permissions' => ['huawei.sites.delete']
+            ],
+        ];
+
+        //Gastos de Huawei
+        $huaweiExpensesSubmodule = [
+            [
+                'display_name' => 'Ver Gastos (incluye buscador, filtro, exportación y visualización de imágenes)',
+                'key_name' => 'huawei_expenses_view',
+                'module' => 'huawei_expenses_submodule',
+                'permissions' => [
+                    'huawei.projects.additionalcosts',
+                    'huawei.projects.additionalcosts.showimage',
+                    'huawei.projects.additionalcosts.search',
+                    'huawei.projects.additionalcosts.summary',
+                    'huawei.projects.additionalcosts.advancedsearch',
+                    'huawei.projects.additionalcosts.export',
+                    'huawei.projects.generalbalance',
+                    'huawei.projects.generalbalance.expensesbyzone',
+                    'huawei.projects.general.expenses',
+                    'huawei.projects.general.expenses.search',
+                    'huawei.projects.general.expenses.searchadvance',
+                    'huawei.projects.general.expenses.showimage',
+                    'huawei.projects.general.expenses.export',
+                    'huawei.projects.general.expenses.downloadzip',
+                    'huawei.projects.monthlyexpenses.downloadimages',
+                    'huawei.projects',
+                    'huawei.projects.search'
+                ]
+            ],
+            [
+                'display_name' => 'Agregar Gastos (incluye importar)',
+                'key_name' => 'huawei_expenses_add',
+                'module' => 'huawei_expenses_submodule',
+                'permissions' => ['huawei.projects.general.expenses.store', 'huawei.projects.general.expenses.fetchsites', 'huawei.projects.general.expenses.fetchprojects', 'huawei.projects.general.expenses.import', 'huawei.projects.general.expenses.donwloadtemplate']
+            ],
+            [
+                'display_name' => 'Editar Gastos',
+                'key_name' => 'huawei_expenses_edit',
+                'module' => 'huawei_expenses_submodule',
+                'permissions' => ['huawei.projects.general.expenses.update', 'huawei.projects.general.expenses.fetchsites', 'huawei.projects.general.expenses.fetchprojects']
+            ],
+            [
+                'display_name' => 'Administrar Gastos',
+                'key_name' => 'huawei_expenses_admin',
+                'module' => 'huawei_expenses_submodule',
+                'permissions' => ['huawei.projects.general.expenses.validate', 'huawei.projects.general.expenses.massiveupdate']
+            ],
+            [
+                'display_name' => 'Eliminar Gastos',
+                'key_name' => 'huawei_expenses_delete',
+                'module' => 'huawei_expenses_submodule',
+                'permissions' => ['huawei.projects.general.expenses.delete']
+            ],
+        ];
+
+        //inventario de Huawei
+        $huaweiInventorySubmodule = [
+            [
+                'display_name' => 'Ver Inventario (incluye buscar)',
+                'key_name' => 'huawei_inventory_view',
                 'module' => 'huawei_inventory_submodule',
                 'permissions' => [
                     'huawei.inventory.show',
                     'huawei.inventory.pendingorders',
                     'huawei.inventory.pendingorders.searchadvance',
-                    'huawei.inventory.pendingorders.assignguide',
                     'huawei.inventory.pendingorders.fetch',
                     'huawei.inventory.show.search',
+                    'huawei.inventory.show.details',
+                    'huawei.inventory.show.details.withoutdiu',
+                    'huawei.inventory.show.details.search',
+                    'huawei.inventory.refunds',
+                    'huawei.inventory.refunds.search',
+                    'huawei.inventory.showguide',
+                    'huawei.inventory.export',
+                    'huawei.inventory.general.equipments',
+                    'huawei.inventory.general.equipments.searchadvance',
+                    'huawei.inventory.general.equipments.search',
+                    'huawei.inventory.create.getinventory'
+                ]
+            ],
+            [
+                'display_name' => 'Agregar Inventario',
+                'key_name' => 'huawei_inventory_add',
+                'module' => 'huawei_inventory_submodule',
+                'permissions' => [
                     'huawei.inventory.create',
                     'huawei.inventory.store',
                     'huawei.inventory.store.order',
                     'huawei.inventory.create.brand',
                     'huawei.inventory.create.brandmodel',
-                    'huawei.inventory.show.details',
-                    'huawei.inventory.show.details.withoutdiu',
-                    'huawei.inventory.show.details.search',
-                    'huawei.inventory.details.refund',
-                    'huawei.inventory.refunds',
-                    'huawei.inventory.refunds.search',
-                    'huawei.inventory.showguide',
-                    'huawei.inventory.details.assigndiu',
-                    'huawei.inventory.export',
-                    'huawei.inventory.general.equipments',
-                    'huawei.inventory.general.equipments.searchadvance',
-                    'huawei.inventory.general.equipments.massiveupdate',
-                    'huawei.inventory.general.equipments.search',
-                    'huawei.inventory.update.entrydetail',
-                    'huawei.inventory.update.entrydetail.site',
-                    'huawei.inventory.create.verifyserie',
-                    'huawei.inventory.create.getinventory',
-                ]
-            ]
-        ];
-
-        $huawei_inventory_internal_submodule = [
-            [
-                'display_name' => 'Encargado de Inventario Interno',
-                'key_name' => 'Inventario Interno',
-                'module' => 'huawei_internal_inventory_submodule',
-                'permissions' => [
-                    'huawei.quickmaterials',
-                    'huawei.quickmaterials.search',
-                    'huawei.quickmaterials.store',
-                    'huawei.quickmaterials.update',
-                    'huawei.quickmaterials.delete',
-                    'huawei.quickmaterials.verifyname',
-
-                    'huawei.quickmaterials.details',
-                    'huawei.quickmaterials.details.store',
-                    'huawei.quickmaterials.details.delete',
-
-                    'huawei.quickmaterials.details.output.store',
-                    'huawei.quickmaterials.details.output.delete',
-                    'huawei.quickmaterials.details.output.fetchprojects',
-                    'huawei.quickmaterials.details.output.selectproject',
+                    'huawei.inventory.create.verifyserie'
                 ]
             ],
-        ];
-
-        $huawei_interal_guides_submodule = [
             [
-                'display_name' => 'Encargado de Guias Internas',
-                'key_name' => 'Guias Internas',
-                'module' => 'huawei_interal_guides_submodule',
-                'permissions' => [
-                    'huawei.internalguides',
-                    'huawei.internalguides.store',
-                    'huawei.internalguides.delete',
-                    'huawei.internalguides.show',
-                ]
-            ],
-        ];
-
-        $huawei_special_returns_submodule = [
-            [
-                'display_name' => 'Encargado de Devoluciones Especiales',
-                'key_name' => 'Devoluciones Especiales',
-                'module' => 'huawei_special_returns_submodule',
-                'permissions' => [
-                    'huawei.specialrefunds',
-                    'huawei.specialrefunds.search',
-                    'huawei.specialrefunds.store',
-                    'huawei.specialrefunds.update',
-                    'huawei.specialrefunds.delete',
-                ]
+                'display_name' => 'Administrar Inventario',
+                'key_name' => 'huawei_inventory_manage',
+                'module' => 'huawei_inventory_submodule',
+                'permissions' => ['huawei.inventory.pendingorders.assignguide', 'huawei.inventory.details.refund', 'huawei.inventory.details.assigndiu', 'huawei.inventory.general.equipments.massiveupdate']
             ],
         ];
 
@@ -1921,6 +1956,7 @@ class FunctionalityPermissionSeeder extends Seeder
             $HrhrstateSubModule,
 
             $pproviderSubModule,
+            $ppaymentApprovalSubmodule,
             // $pprequest_submodule,
             // $pporder_submodule,
             // $ppcpurchase_submodule,
@@ -1969,12 +2005,10 @@ class FunctionalityPermissionSeeder extends Seeder
             $sharedoc_submodule,
 
             //Huawei
-            $huawei_sites_submodule,
-            $huawei_projects_submodule,
-            $huawei_inventory_submodule,
-            $huawei_inventory_internal_submodule,
-            $huawei_interal_guides_submodule,
-            $huawei_special_returns_submodule,
+            $huaweiProjectsSubmodule,
+            $huaweiSitesSubmodule,
+            $huaweiExpensesSubmodule,
+            $huaweiInventorySubmodule,
 
             //Productos
             $iproduct_submodule

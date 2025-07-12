@@ -7,7 +7,7 @@
         </template>
         <div class="min-w-full overflow-hidden rounded-lg shadow">
             <TableHeader v-model:orders="orders" />
-            <OrdersTable :orders="orders" :userPermissions="userPermissions" :openCotization="openCotization"
+            <OrdersTable :orders="orders" :openCotization="openCotization"
                 :updateState="updateState" />
         </div>
 
@@ -46,8 +46,7 @@ const data = ref({
 });
 
 const props = defineProps({
-    order: Object,
-    userPermissions: Array
+    order: Object
 })
 
 const orders = ref(props.order)

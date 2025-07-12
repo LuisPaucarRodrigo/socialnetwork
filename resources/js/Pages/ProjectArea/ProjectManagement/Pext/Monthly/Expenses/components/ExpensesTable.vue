@@ -292,7 +292,6 @@ function handlerPreview(id) {
 }
 
 
-
 function updateExpense(expense, action, state) {
     let listDate = expenses.data || expenses
     if (action === "validate") {
