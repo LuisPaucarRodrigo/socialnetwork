@@ -1696,6 +1696,121 @@ class FunctionalityPermissionSeeder extends Seeder
             ]
         ];
 
+        /////////////////////////////////////////////////////////////////
+        $rorenapprovSubmodule = [
+            [
+                'display_name' => 'Aprobacion de Cambios',
+                'key_name' => 'RoomRentalManager',
+                'module' => 'rorenapprov_submodule',
+                'permissions' => [
+                    'room.rental.show_approvals_document',
+                    'room.rental.approve.change',
+                    'room.rental.rejected.change',
+                    'room.rental.index.approvel',
+                ],
+            ],
+        ];
+
+        $roomunitSubmodule = [
+            [
+                'display_name' => 'Ver Todos las habitaciones',
+                'key_name' => 'see_all_rooms',
+                'module' => 'roomunit_submodule',
+                'permissions' => [
+                    'room.rental.index',
+                    'room.rental.show_checklist.send_images',
+                    'room.rental.show.image',
+                    'room.rental.show_checklist',
+                    'room.rental.show_invoice',
+                    'room.rental.show_checklist.accept_or_decline',
+                    'room.rental.search',
+
+                    'room.rental.alarms',
+                    'room.rental.checklist.alarms',
+                    'room.rental.specific.alarms',
+                    'room.rental.alarms.changelogs',
+                ]
+            ],
+
+            [
+                'display_name' => 'Ver habitaciones propios',
+                'key_name' => 'see_room_unit',
+                'module' => 'roomunit_submodule',
+                'permissions' => [
+                    'room.rental.index',
+                    'room.rental.show_checklist.send_images',
+                    'room.rental.show.image',
+                    'room.rental.show_checklist',
+                    'room.rental.show_invoice',
+                    'room.rental.show_checklist.accept_or_decline',
+                    'room.rental.search',
+
+                    'room.rental.alarms',
+                    'room.rental.checklist.alarms',
+                    'room.rental.specific.alarms',
+                    'room.rental.alarms.changelogs',
+                ]
+            ],
+
+            [
+                'display_name' => 'Acciones de Manager',
+                'key_name' => 'room_actions_manager',
+                'module' => 'roomunit_submodule',
+                'permissions' => [
+                    'room.rental.index',
+                    'room.rental.show_checklist.send_images',
+                    'room.rental.show.image',
+                    'room.rental.show_checklist',
+                    'room.rental.show_checklist.accept_or_decline',
+                    'room.rental.destroy_changelog',
+                    'room.rental.show_invoice',
+                    'room.rental.update_changelog',
+                    'room.rental.store_changelog',
+                    'room.rental.show_documents',
+                    'room.rental.update.document',
+                    'room.rental.store_document',
+                    'room.rental.search',
+                    'room.rental.store',
+                    'room.rental.update',
+                    'room.rental.destroy',
+
+                    'room.rental.alarms',
+                    'room.rental.checklist.alarms',
+                    'room.rental.specific.alarms',
+                    'room.rental.alarms.changelogs',
+                ]
+            ],
+
+            [
+                'display_name' => 'Acciones de Propietario',
+                'key_name' => 'room_actions',
+                'module' => 'roomunit_submodule',
+                'permissions' => [
+                    'room.rental.index',
+                    'room.rental.show_checklist.send_images',
+                    'room.rental.show.image',
+                    'room.rental.show_checklist',
+                    'room.rental.show_checklist.accept_or_decline',
+                    'room.rental.destroy_changelog',
+                    'room.rental.show_invoice',
+                    'room.rental.update_changelog',
+                    'room.rental.store_changelog',
+                    'room.rental.show_documents',
+                    'room.rental.update.document',
+                    'room.rental.store_document',
+                    'room.rental.search',
+                ]
+            ]
+
+
+        ];
+
+
+        /////////////////////////////////////////////////////////////////
+
+
+
+
         $sharedoc_submodule = [
             [
                 'display_name' => 'Manager sharepoint',
@@ -1965,6 +2080,9 @@ class FunctionalityPermissionSeeder extends Seeder
             $cSeeMobile,
             $cmobileActionsManager,
             $cmobileActions,
+
+            $rorenapprovSubmodule,
+            $roomunitSubmodule,
 
             //Sharepoint
             $sharedoc_submodule,

@@ -40,6 +40,7 @@ export default {
         SuspenseWrapper,
         UserNavigation: defineAsyncComponent(() => import('./Navigation/UserNavigation.vue')),
         FleetNavigation: defineAsyncComponent(() => import('./Navigation/FleetNavigation.vue')),
+        RoomNavigation: defineAsyncComponent(() => import('./Navigation/RoomNavigation.vue')),
         EmployeesNavigation: defineAsyncComponent(() => import('./Navigation/EmployeesNavigation.vue')),
         ProjectsNavigation: defineAsyncComponent(() => import('./Navigation/ProjectsNavigation.vue')),
         InventoryNavigation: defineAsyncComponent(() => import('./Navigation/InventoryNavigation.vue')),
@@ -64,6 +65,7 @@ export default {
                 { name: 'BILLING_MODULE', component: 'BillingNavigation' },
                 { name: 'HUAWEI_MODULE', component: 'HuaweiNavigation' },
                 { name: 'CAR_MODULE', component: 'FleetNavigation' },
+                { name: 'ROOM_RENTAL_MODULE', component: 'RoomNavigation' },
                 { name: 'SHAREPOINT_MODULE', component: 'SharePointNavigation' }
             ],
         };
