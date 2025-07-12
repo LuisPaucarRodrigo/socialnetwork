@@ -296,13 +296,8 @@ import { DeleteIcon, ShowIcon, EditIcon } from "@/Components/Icons";
 const props = defineProps({
   sections: Object,
   subSections: Object,
-  auth: Object,
-  userPermissions: Array
+  auth: Object
 });
-
-const hasPermission = (permission) => {
-  return props.userPermissions.includes(permission)
-}
 
 const form = useForm({
   id: '',

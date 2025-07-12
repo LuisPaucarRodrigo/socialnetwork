@@ -3,7 +3,7 @@
     <Head title="ChecklistVehicular" />
     <AuthenticatedLayout :redirectRoute="'checklist.index'">
         <template #header> Checklist Vehicular </template>
-        <TableStructure>
+        <TableStructure :info="checklists">
             <template #thead>
                 <tr>
                     <TableTitle>Fecha de Registro</TableTitle>
@@ -220,8 +220,7 @@ import { DeleteIcon, ShowIcon } from "@/Components/Icons";
 
 const { checklists } = defineProps({
     checklists: Object,
-    auth: Object,
-    userPermissions: Array,
+    auth: Object
 });
 
 const showChecklistModal = ref(false);

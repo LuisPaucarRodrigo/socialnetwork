@@ -138,14 +138,8 @@ const props = defineProps({
     purchases: {
         type: Boolean,
         required: false
-    },
-    userPermissions: Array
+    }
 })
-
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
-
 
 function openPreviewDocumentModal(documentId) {
     const url = route('purchasesrequest.show', { id: documentId });

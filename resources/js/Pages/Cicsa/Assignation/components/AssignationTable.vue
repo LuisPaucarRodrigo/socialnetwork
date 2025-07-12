@@ -1,5 +1,5 @@
 <template>
-    <TableStructure>
+    <TableStructure :info="assignations">
         <template #thead>
             <tr>
                 <TableTitle>Nombre del Proyecto</TableTitle>

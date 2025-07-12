@@ -702,8 +702,7 @@ const {
     totalITFM,
     totalPayment,
     balanceMedia,
-    auth,
-    userPermissions,
+    auth
 } = defineProps({
     accountStatements: Object,
     previousBalance: Number,
@@ -713,7 +712,6 @@ const {
     totalPayment: Number,
     totalITFM: Number,
     auth: Object,
-    userPermissions: Array,
 });
 
 const now = new Date();

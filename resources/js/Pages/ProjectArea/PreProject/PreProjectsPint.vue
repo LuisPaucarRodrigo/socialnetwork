@@ -190,7 +190,6 @@ const props = defineProps({
     auth: Object,
     preprojects_status: String,
     users: Object,
-    userPermissions: Array,
     type: String
 })
 

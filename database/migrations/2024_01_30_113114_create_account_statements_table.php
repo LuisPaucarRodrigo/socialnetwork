@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('account_statements', function (Blueprint $table) {
             $table->id();
             $table->date('operation_date');
-            $table->string('operation_number')->nullable()->unique();
+            $table->string('operation_number')->nullable();
             $table->string('description');
             $table->double('charge')->nullable();
             $table->double('payment')->nullable();
             $table->timestamps();
+            $table->unique(['operation_date', 'operation_number']);
 
             $table->index('operation_number');
             $table->index('operation_date');

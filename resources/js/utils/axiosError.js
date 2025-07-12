@@ -3,6 +3,7 @@ import { notifyError } from "@/Components/Notification";
 import { setAxiosErrors } from "./utils";
 
 export function useAxiosErrorHandler(error, form = null) {
+    console.log(error)
     if (error.response) {
         if (error.response.data.errors && form) {
             setAxiosErrors(error.response.data.errors, form);

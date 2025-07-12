@@ -32,7 +32,6 @@ class GeneralExpense extends Model
         'bill'
     ];
 
-
     public function additional_cost()
     {
         return $this->hasOne(AdditionalCost::class, "general_expense_id");

@@ -61,9 +61,8 @@ function toogleModalImport() {
 }
 
 async function submit() {
-    let url = route('importar.excel.expenses')
+    let url = route('projectmanagement.pext.import.expenses')
     try {
-        console.log(form)
         let formData = toFormData(form)
         let response = await axios.post(url, formData)
         toogleModalImport()

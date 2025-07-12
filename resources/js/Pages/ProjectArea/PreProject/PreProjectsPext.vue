@@ -190,13 +190,8 @@ const props = defineProps({
     auth: Object,
     preprojects_status: String,
     users: Object,
-    userPermissions: Array,
     type: String
 })
-
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
 
 const assignUserModal = ref(false);
 const successAssign = ref(false);

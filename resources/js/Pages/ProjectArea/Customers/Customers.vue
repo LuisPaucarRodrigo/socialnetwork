@@ -20,7 +20,7 @@
                 </div>
             </div>
         </div>
-        <TableStructure>
+        <TableStructure :info="customers">
             <template #thead>
                 <tr>
                     <TableTitle>Ruc</TableTitle>
@@ -188,7 +188,6 @@ const docToDelete = ref(null);
 
 const props = defineProps({
     customers: Object,
-    userPermissions: Array
 })
 
 const customers = ref(props.customers);

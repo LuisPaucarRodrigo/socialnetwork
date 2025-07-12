@@ -103,10 +103,6 @@ const props = defineProps({
     }
 });
 
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
-
 const docToDelete = ref(null);
 const confirmingDocDeletion = ref(false);
 

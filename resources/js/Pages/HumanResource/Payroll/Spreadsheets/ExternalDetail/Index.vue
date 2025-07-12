@@ -1,5 +1,4 @@
 <template>
-
     <Head title="4ta Categoría" />
     <Toaster richColors />
     <AuthenticatedLayout :redirectRoute="{
@@ -13,7 +12,7 @@
                 + Agregar
             </button>
         </div>
-        <TableStructure>
+        <TableStructure :info="dataToRender">
             <template #thead>
                 <TableTitle>Tipo Doc</TableTitle>
                 <TableTitle>Número Doc</TableTitle>

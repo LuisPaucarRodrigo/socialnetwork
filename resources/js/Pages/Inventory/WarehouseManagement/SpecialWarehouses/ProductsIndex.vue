@@ -178,7 +178,7 @@ import { Head, Link, router } from '@inertiajs/vue3';
 const showError = ref(false)
 
 
-const { warehouse, special_products, userPermissions } = defineProps({
+const { warehouse, special_products } = defineProps({
     warehouse: Object,
     special_products: Object,
     auth: Object

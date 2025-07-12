@@ -218,10 +218,6 @@ const props = defineProps({
     }
 });
 
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
-
 const approvating = ref(false);
 const showModal = ref(false);
 const showQuoteDetailsModal = ref(false);

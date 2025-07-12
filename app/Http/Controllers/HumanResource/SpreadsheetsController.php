@@ -32,6 +32,7 @@ use App\Models\PayrollDetailWorkSchedule;
 use App\Models\PayrollExternalDetail;
 use App\Models\TaxAndContributionParam;
 use App\Services\HumanResource\PayrollDetailExpensesServices;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -39,7 +40,6 @@ use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\AccountStatement;
 use App\Services\HumanResource\PayrollServices;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Arr;
 
 class SpreadsheetsController extends Controller
@@ -408,7 +408,6 @@ class SpreadsheetsController extends Controller
             'docTypes' => PayrollConstants::payrollDocTypes(),
         ]);
     }
-
 
     public function index_payroll_detail_expense($payroll_id)
     {

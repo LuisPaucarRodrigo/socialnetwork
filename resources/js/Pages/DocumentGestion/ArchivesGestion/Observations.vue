@@ -138,7 +138,6 @@
     auth: Object,
     folder_id: String,
     canObservate: Boolean,
-    userPermissions: Array,
   });
 
   const form = useForm({

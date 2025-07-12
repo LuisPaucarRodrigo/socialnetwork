@@ -1,5 +1,5 @@
 <template>
-    <TableStructure>
+    <TableStructure :info="changes">
         <template #thead>
             <tr>
                 <TableTitle>Placa</TableTitle>

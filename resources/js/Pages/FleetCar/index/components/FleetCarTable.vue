@@ -1,5 +1,5 @@
 <template>
-    <TableStructure :style="'h-[72vh]'">
+    <TableStructure :style="'h-[72vh]'" :info="cars">
         <template #thead>
             <tr>
                 <th class="bg-gray-100">

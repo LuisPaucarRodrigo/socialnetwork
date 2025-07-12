@@ -1,5 +1,5 @@
 <template>
-    <TableStructure>
+    <TableStructure :info="checklist">
         <template #thead>
             <tr>
                 <TableTitle>Fecha de Registro</TableTitle>

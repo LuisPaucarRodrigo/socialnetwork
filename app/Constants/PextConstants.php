@@ -16,7 +16,8 @@ class PextConstants
             "Puno",
             "MDD1-PM",
             "MDD2-MAZ",
-            "Sandia"
+            "Sandia",
+            "Chala"
         ];
     }
 

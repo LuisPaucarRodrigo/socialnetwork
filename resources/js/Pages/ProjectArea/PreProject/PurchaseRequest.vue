@@ -11,7 +11,7 @@
                     + Agregar
                 </PrimaryButton>
             </div>
-            <TableStructure>
+            <TableStructure :info="purchases">
                 <template #thead>
                     <tr>
                         <TableTitle>Código</TableTitle>

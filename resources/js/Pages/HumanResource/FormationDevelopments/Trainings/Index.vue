@@ -83,12 +83,7 @@ import { DeleteIcon, EditIcon } from "@/Components/Icons";
 
 const props = defineProps({
     trainings: Object,
-    userPermissions: Array
 })
-
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
 
 const add_information = () => {
     router.get(route('management.employees.formation_development.trainings.create'));

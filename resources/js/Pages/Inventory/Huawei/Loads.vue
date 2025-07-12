@@ -102,8 +102,7 @@ import InputError from '@/Components/InputError.vue';
 import { ShowIcon } from "@/Components/Icons";
 
 const props = defineProps({
-  loads: Object,
-  userPermissions: Array,
+  loads: Object
 });
 
 const importExcelModal = ref(false);

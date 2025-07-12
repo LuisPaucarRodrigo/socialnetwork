@@ -7,11 +7,11 @@
         </template>
         <Toaster richColors />
         <div class="min-w-full">
-            <TableHeader v-model:projects="projects" :userPermissions="userPermissions" :type="type"
+            <TableHeader v-model:projects="projects" :type="type"
                 :searchCondition="searchCondition" :createOrEditModal="createOrEditModal" />
             <br>
 
-            <AdditionalTable :projects="projects" :userPermissions="userPermissions" :type="type"
+            <AdditionalTable :projects="projects"  :type="type"
                 :openQuickQuote="openQuickQuote" :editProject="editProject" />
         </div>
 
@@ -33,10 +33,9 @@ import AdditionalTable from './components/AdditionalTable.vue';
 import FormAssignation from './components/FormAssignation.vue';
 import FormQuickQuote from './components/FormQuickQuote.vue';
 
-const { project, auth, userPermissions, searchCondition, cost_line, type, optionZones } = defineProps({
+const { project, auth, searchCondition, cost_line, type, optionZones } = defineProps({
     project: Object,
     auth: Object,
-    userPermissions: Array,
     cost_line: Object,
     type: String,
     searchCondition: {
@@ -45,7 +44,6 @@ const { project, auth, userPermissions, searchCondition, cost_line, type, option
     },
     optionZones: Array
 })
-
 const initialStateQuote = {
     id: null,
     project_id: '',

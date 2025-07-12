@@ -32,8 +32,7 @@ import ImagesForm from './components/ImagesForm.vue';
 import ImagesModal from './components/ImagesModal.vue';
 
 const props = defineProps({
-    code: Object,
-    userPermissions: Array
+    code: Object
 })
 
 const codesForm = ref(null);

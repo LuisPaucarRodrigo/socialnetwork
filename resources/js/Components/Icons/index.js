@@ -1,5 +1,6 @@
 // Esto permite Tree-shaking
 export { default as AcceptIcon } from './AcceptIcon.vue';
+export { default as ChartIcon } from './ChartIcon.vue';
 export { default as DeleteIcon } from './DeleteIcon.vue';
 export { default as DisableIcon } from './DisableIcon.vue';
 export { default as DocumentsIcon } from './DocumentsIcon.vue';

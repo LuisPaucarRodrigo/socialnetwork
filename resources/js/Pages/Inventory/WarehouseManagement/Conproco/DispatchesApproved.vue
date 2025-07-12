@@ -244,12 +244,7 @@ const props = defineProps({
     project_entries: Object,
     warehouseId: Number,
     auth: Object,
-    userPermissions:Array
 });
-
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
 
 const requested_quantity = ref(null);
 //Expandible row

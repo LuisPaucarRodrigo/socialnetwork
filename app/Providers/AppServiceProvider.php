@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\ShoppingArea\PaymentApproval;
+use App\Observers\ShoppingArea\PaymentApprobal\PaymentApprobalObserver;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
 
@@ -25,5 +27,6 @@ class AppServiceProvider extends ServiceProvider
                 'message' => session('message'),
             ],
         ]);
+        PaymentApproval::observe(PaymentApprobalObserver::class);
     }
 }

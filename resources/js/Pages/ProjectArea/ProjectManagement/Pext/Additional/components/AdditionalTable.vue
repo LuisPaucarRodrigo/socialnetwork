@@ -22,8 +22,8 @@
             </div>
         </div>
         <ProjectCard v-for="item in projects.data || projects" :key="item.id" :item="item"
-            :hasPermission="hasPermission" :rejectOrReturnAdditionalProject="rejectAdditionalProject" :type="type"
-            :openQuickQuote="openQuickQuote" :editProject="editProject" />
+            :rejectOrReturnAdditionalProject="rejectAdditionalProject" :type="type" :openQuickQuote="openQuickQuote"
+            :editProject="editProject" />
         <div v-if="projects.data"
             class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
             <pagination :links="projects.links" />
@@ -35,17 +35,12 @@ import Pagination from '@/Components/Pagination.vue'
 import { Link } from '@inertiajs/vue3';
 import ProjectCard from './ProjectCard.vue';
 
-const { projects, userPermissions, type, openQuickQuote, editProject } = defineProps({
+const { projects, type, openQuickQuote, editProject } = defineProps({
     projects: Object,
-    userPermissions: Array,
     type: String,
     openQuickQuote: Function,
     editProject: Function
 })
-
-const hasPermission = (permission) => {
-    return userPermissions.includes(permission);
-}
 
 async function rejectAdditionalProject(id) {
     try {

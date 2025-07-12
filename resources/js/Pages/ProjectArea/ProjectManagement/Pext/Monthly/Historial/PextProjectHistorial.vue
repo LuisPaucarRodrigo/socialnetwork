@@ -1,4 +1,5 @@
 <template>
+
     <Head title="Proyectos" />
     <AuthenticatedLayout :redirectRoute="'projectmanagement.pext.index'">
         <template #header>
@@ -18,8 +19,7 @@
             </div>
             <br>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                <ProjectCard v-for="item in projects.data || projects" :key="item.id" :item="item"
-                    :user-permissions="userPermissions" :auth="auth" />
+                <ProjectCard v-for="item in projects.data || projects" :key="item.id" :item="item" :auth="auth" />
             </div>
             <br>
             <div v-if="projects.data" class="flex flex-col items-center px-5 py-5 xs:flex-row xs:justify-between">
@@ -36,9 +36,8 @@ import { Head } from '@inertiajs/vue3';
 import TextInput from '@/Components/TextInput.vue';
 import ProjectCard from '@/Pages/ProjectArea/ProjectManagement/Pext/Monthly/components/ProjectCard.vue';
 
-const { project, userPermissions, auth } = defineProps({
+const { project, auth } = defineProps({
     project: Object,
-    userPermissions: Array,
     auth: Object,
 })
 

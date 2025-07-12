@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('phone2')->unique()->nullable();
             $table->string('email')->nullable();
             $table->string('zone');
+            $table->string('account_number');
             $table->string('ruc')->unique();
             $table->foreignId('category_id')->constrained();
             $table->timestamps();

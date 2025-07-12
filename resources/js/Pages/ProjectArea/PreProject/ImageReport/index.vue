@@ -233,7 +233,6 @@ const props = defineProps({
     preprojectImage: Object,
     imagesCode: Object,
     preproject: Object,
-    userPermissions: Array,
     stages: Object,
     titles: Object
 });

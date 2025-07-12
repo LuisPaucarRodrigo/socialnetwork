@@ -135,12 +135,7 @@ const props = defineProps({
     employeesToAssign: Object,
     added_employees: Object,
     auth: Object,
-    userPermissions: Array
 })
-
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
 
 const { tasks } = props;
 const newcomment = useForm({

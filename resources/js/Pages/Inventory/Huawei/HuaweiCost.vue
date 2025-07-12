@@ -104,8 +104,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { ShowIcon } from "@/Components/Icons";
 
 const props = defineProps({
-  loads: Object,
-  userPermissions: Array,
+  loads: Object
 });
 
 </script>

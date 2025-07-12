@@ -23,7 +23,7 @@
                 </div>
             </div>
             <br>
-            <TableStructure>
+            <TableStructure :info="service_orders">
                 <template #thead>
                     <tr>
                         <TableTitle :colspan="3">Nombre de Proyecto</TableTitle>

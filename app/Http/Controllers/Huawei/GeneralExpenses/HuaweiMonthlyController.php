@@ -268,7 +268,7 @@ class HuaweiMonthlyController extends Controller
         if (count($request->selectedEmployees) < $summary['employees']) {
             $expensesQuery->whereIn('employee', $request->selectedEmployees);
         }
-        if (!empty($request->selectedZones) && ($request->selectedZones) < $summary['zones']) {
+        if (!empty($request->selectedZones) && count($request->selectedZones) < $summary['zones']) {
             $expensesQuery->whereIn('zone', $request->selectedZones);
         }
 
@@ -558,6 +558,7 @@ class HuaweiMonthlyController extends Controller
         $projects = HuaweiProject::select('id', 'assigned_diu')
             ->where('macro_project', $macro)
             ->where('huawei_site_id', $site_id)
+            ->where("status", 1)
             ->get()
             ->makeHidden([
                 'code',
@@ -574,11 +575,8 @@ class HuaweiMonthlyController extends Controller
                 'total_employee_costs',
                 'total_essalud_employee_cost',
                 'huawei_project_resources'
-            ])
-            ->filter(function ($project) {
-                return $project->state == 1;
-            });
-
+            ]);
+            
         return response()->json($projects, 200);
     }
 

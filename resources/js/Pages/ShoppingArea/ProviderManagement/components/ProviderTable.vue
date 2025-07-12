@@ -1,10 +1,11 @@
 <template>
-    <TableStructure>
+    <TableStructure :info="providers">
         <template #thead>
             <tr>
                 <TableTitle>RUC</TableTitle>
                 <TableTitle>Compańia</TableTitle>
                 <TableTitle>Contacto</TableTitle>
+                <TableTitle>Numero de Cuenta</TableTitle>
                 <TableTitle>Zona</TableTitle>
                 <TableTitle>Dirección</TableTitle>
                 <TableTitle>Telefono</TableTitle>
@@ -19,6 +20,7 @@
                 <TableRow>{{ item.ruc }}</TableRow>
                 <TableRow>{{ item.company_name }}</TableRow>
                 <TableRow>{{ item.contact_name }}</TableRow>
+                <TableRow>{{ item.account_number }}</TableRow>
                 <TableRow>{{ item.zone }}</TableRow>
                 <TableRow :width="'w-[500px]'">{{ item.address }}</TableRow>
                 <TableRow>{{ item.phone1 }} {{ item.phone2 }}</TableRow>

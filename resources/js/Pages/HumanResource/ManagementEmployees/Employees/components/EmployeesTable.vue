@@ -1,5 +1,5 @@
 <template>
-    <TableStructure :style="'h-[72vh]'">
+    <TableStructure :style="'h-[72vh]'" :info="employees">
         <template #thead>
             <tr>
                 <TableTitle>Perfil</TableTitle>

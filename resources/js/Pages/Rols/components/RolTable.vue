@@ -1,5 +1,5 @@
 <template>
-    <TableStructure>
+    <TableStructure :info="rols">
         <template #thead>
             <tr>
                 <TableTitle>Nombre</TableTitle>

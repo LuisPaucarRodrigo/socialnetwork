@@ -86,12 +86,7 @@ import { DeleteIcon, ShowIcon } from "@/Components/Icons";
 const props = defineProps({
     formationPrograms: Object,
     employees: Object,
-    userPermissions: Array
 })
-
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
 
 const add_information = () => {
     router.get(route('management.employees.formation_development.formation_programs.create'));

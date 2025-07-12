@@ -116,7 +116,6 @@ const props = defineProps({
         type: Object,
         required: false
     },
-    userPermissions: Array
 });
 
 const vacations = ref(false)

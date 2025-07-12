@@ -1,5 +1,5 @@
 <template>
-    <TableStructure>
+    <TableStructure :info="codes">
         <template #thead>
             <tr>
                 <TableTitle>Código</TableTitle>

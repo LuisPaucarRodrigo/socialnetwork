@@ -3,7 +3,7 @@
     <Head title="ChecklistEPPS" />
     <AuthenticatedLayout :redirectRoute="'checklist.index'">
         <template #header> Checklist EPPS </template>
-        <TableStructure>
+        <TableStructure :info="checklists">
             <template #thead>
                 <tr>
                     <TableTitle>Fecha de Registro</TableTitle>
@@ -98,7 +98,6 @@ import { DeleteIcon, ShowIcon } from "@/Components/Icons";
 const { checklists } = defineProps({
     checklists: Object,
     auth: Object,
-    userPermissions: Array,
 });
 
 const showChecklistModal = ref(false);

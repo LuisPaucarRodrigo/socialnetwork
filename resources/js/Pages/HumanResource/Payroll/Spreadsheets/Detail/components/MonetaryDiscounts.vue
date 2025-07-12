@@ -60,14 +60,11 @@
     </div>
 </template>
 <script setup>
-import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TableTitle from "@/Components/TableTitle.vue";
 import TableRow from "@/Components/TableRow.vue";
 import TableStructure from "@/Layouts/TableStructure.vue";
-import TextInput from "@/Components/TextInput.vue";
-import { useForm } from "@inertiajs/vue3";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref } from "vue";
 
 
 const { objectData } = defineProps({

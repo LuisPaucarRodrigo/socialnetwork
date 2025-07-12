@@ -122,11 +122,10 @@ import { Head, useForm, router } from '@inertiajs/vue3';
 import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import { DownloadIcon, ShowIcon } from "@/Components/Icons";
 
-const { documents, preproject, photoreport, auth, userPermissions } = defineProps({
+const { documents, preproject, photoreport, auth } = defineProps({
   photoreport: Object,
   preproject: Object,
   auth: Object,
-  userPermissions: Array
 });
 
 const initial_state = {

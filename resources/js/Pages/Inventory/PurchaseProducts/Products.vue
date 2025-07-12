@@ -7,17 +7,17 @@
         </template>
         <Toaster richColors />
         <div class="min-w-full p-3">
-            <TableHeader v-model:products="products" :userPermissions="userPermissions"
+            <TableHeader v-model:products="products"
                 :openCreateProduct="openCreateProduct" />
 
             <br>
 
-            <ProductsTable :products="products" :userPermissions="userPermissions"
+            <ProductsTable :products="products" 
                 :openEditProductModal="openEditProductModal" :auth="auth"
                 :confirmDeleteProduct="confirmDeleteProduct" />
         </div>
 
-        <ProductsForm ref="productForm" :userPermissions="userPermissions" :type_product="type_product"
+        <ProductsForm ref="productForm"  :type_product="type_product"
             :resource_type="resource_type" :products="products"/>
 
         <ConfirmDisableModal :confirmingDeletion="confirmingDocDeletion" itemType="Producto"
@@ -42,7 +42,6 @@ const props = defineProps({
     resource_type: Object,
     auth: Object,
     search: String,
-    userPermissions: Object
 });
 
 const products = ref({ ...props.product })

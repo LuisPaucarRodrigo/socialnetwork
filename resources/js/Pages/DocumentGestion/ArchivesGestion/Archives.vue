@@ -508,7 +508,6 @@ const props = defineProps({
   archives: Object,
   folder: Object,
   auth: Object,
-  userPermissions: Array,
   userHasPermission: Boolean
 });
 

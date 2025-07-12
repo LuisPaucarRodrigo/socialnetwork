@@ -227,12 +227,11 @@ import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 
-const { assigned_products, warehouses, preproject, userPermissions } = defineProps({
+const { assigned_products, warehouses, preproject } = defineProps({
     assigned_products: Object,
     warehouses: Object,
     preproject: Object,
-    auth: Object,
-    userPermissions:Array
+    auth: Object
 })
 
 
