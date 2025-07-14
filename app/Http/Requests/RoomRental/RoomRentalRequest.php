@@ -22,13 +22,11 @@ class RoomRentalRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'brand' => 'required',
-            'model' => 'required',
-            'plate' => 'required',
-            'year' => 'required',
-            'type' => 'required',
+            'rental_type' => 'required',
+            'address' => 'required',
+            'observations' => 'nullable',
             'photo' => 'nullable',
-            'user_id' => 'required',
+            'provider_id' => 'required',
             'cost_line_id' => 'required',
         ];
     }

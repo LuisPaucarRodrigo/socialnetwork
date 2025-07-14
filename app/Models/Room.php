@@ -13,6 +13,7 @@ class Room extends Model
 
     protected $fillable = [
         'rental_type',
+        'address',
         'observations',
         'photo',
         'provider_id',

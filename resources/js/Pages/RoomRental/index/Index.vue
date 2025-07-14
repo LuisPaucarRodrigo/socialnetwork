@@ -68,7 +68,7 @@ const props = defineProps({
     users: Object,
     providers: Object,
 });
-console.log(props.providers)
+
 const showFormCar = ref(false)
 const showFormDocument = ref(false)
 const showFormChangeLog = ref(false)

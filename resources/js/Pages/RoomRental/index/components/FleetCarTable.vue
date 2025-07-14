@@ -9,13 +9,14 @@
                     <TableHeaderCicsaFilter label="Linea de Negocio" labelClass="text-gray-600" :options="cost_line"
                         v-model="formSearch.cost_line" />
                 </TableTitle>
-                <TableTitle>Placa</TableTitle>
-                <TableTitle>Modelo</TableTitle>
-                <TableTitle>Marca</TableTitle>
-                <TableTitle>Año</TableTitle>
+                <TableTitle>Proveedor</TableTitle>
+                <TableTitle>Contacto</TableTitle>
+                <TableTitle>Zona</TableTitle>
+                <TableTitle>Teléfono</TableTitle>
                 <TableTitle>Tipo</TableTitle>
+                <TableTitle>Dirección</TableTitle>
+                
                 <TableTitle>Foto</TableTitle>
-                <TableTitle>Dueño</TableTitle>
                 <TableTitle :colspan="2" v-permission-or="[
                     'room_actions_manager',
                     'room_actions',

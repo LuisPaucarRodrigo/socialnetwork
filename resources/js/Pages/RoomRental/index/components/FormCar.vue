@@ -39,10 +39,18 @@
                         </div>
                     </div>
                     <div class="mt-2">
-                        <InputLabel for="plate">Placa </InputLabel>
+                        <InputLabel for="plate">Tipo de alquiler </InputLabel>
                         <div class="mt-2">
-                            <TextInput type="text" id="plate" v-model="form.plate" />
-                            <InputError :message="form.errors.plate" />
+                            <select id="rental_type" v-model="form.rental_type" autocomplete="off"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option value="">
+                                    Seleccionar tipo
+                                </option>
+                                <option v-for="item in ['Garage', 'Habitación']" >
+                                    {{ item }}
+                                </option>
+                            </select>
+                            <InputError :message="form.errors.rental_type" />
                         </div>
                     </div>
                     <div class="mt-2">
@@ -121,11 +129,8 @@ const showModalCar = ref(false);
 
 const initialForm = {
     id: "",
-    brand: "",
-    model: "",
-    plate: "",
-    year: "",
-    type: "",
+    rental_type: "",
+    observations: "",
     photo: "",
     provider_id: "",
     cost_line_id: "",
