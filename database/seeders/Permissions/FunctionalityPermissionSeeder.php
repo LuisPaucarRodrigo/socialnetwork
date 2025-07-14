@@ -2140,7 +2140,6 @@ class FunctionalityPermissionSeeder extends Seeder
                     'display_name' => $func['display_name'],
                     'module_id' => $module->id
                 ]);
-
                 foreach ($func['permissions'] as $funcperm) {
                     $permission = Permission::where('name', $funcperm)->first();
                     FunctionalityPermission::create([

@@ -6,6 +6,7 @@ use App\Models\Functionality;
 use App\Models\RoleFunctionality;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Models\Role;
 
 use Database\Seeders\Permissions\FunctionalityPermissionSeeder;
@@ -43,7 +44,7 @@ class AllPermissionsSeeder extends Seeder
             
             DB::beginTransaction();
             // Seeders hijos
-            $this->call([
+            $this->call([   
                 ModuleSeeder::class,
                 PermissionSeeder::class,
                 FunctionalityPermissionSeeder::class,
