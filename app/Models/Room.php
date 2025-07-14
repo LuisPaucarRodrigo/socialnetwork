@@ -12,19 +12,16 @@ class Room extends Model
     protected $table = 'rooms';
 
     protected $fillable = [
-        'brand',
-        'model',
-        'plate',
-        'year',
-        'type',
+        'rental_type',
+        'observations',
         'photo',
-        'user_id',
+        'provider_id',
         'cost_line_id',
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(Provider::class, 'provider_id');
     }
 
     public function costline()

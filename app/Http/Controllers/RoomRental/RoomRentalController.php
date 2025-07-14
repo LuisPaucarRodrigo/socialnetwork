@@ -8,6 +8,7 @@ use App\Http\Requests\RoomRental\RoomRentalDocumentRequest;
 use App\Http\Requests\RoomRental\RoomRentalRequest;
 
 use App\Models\ApprovalRoomDocument;
+use App\Models\Provider;
 use App\Models\Room;
 use App\Models\RoomChangelog;
 use App\Models\RoomChangelogItem;
@@ -47,9 +48,13 @@ class RoomRentalController extends Controller
             'room_document.approvel_room_document:id,room_document_id', 
             'room_changelogs.room_changelog_items'
         ])->orderBy('created_at', 'desc');
-        $users = User::select(['id', 'name'])->whereHas('role.functionalities', function ($query) {
-            $query->whereIn('key_name', ['room_actions', 'see_room_unit']);
+
+        $providers = Provider::whereHas('category', function($query) {
+            $query->where('name', 'like', '%alquiler%');
+        })->whereHas('segments', function($query) {
+            $query->where('name', 'like', '%cuart%');
         })->get();
+       
 
         $hasPermissions = $this->notHaveManagerPermission();
         if ($hasPermissions) {
@@ -60,8 +65,8 @@ class RoomRentalController extends Controller
         return Inertia::render('RoomRental/index/Index', [
             'car' => $cars,
             'costLine' => CostLine::all(),
-            'users' => $users,
             'id' => $id,
+            'providers' => $providers
         ]);
     }
 

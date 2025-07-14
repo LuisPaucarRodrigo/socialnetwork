@@ -1,8 +1,8 @@
 <template>
 
-    <Head title="Gestion de Empleados" />
+    <Head title="Alquileres" />
     <AuthenticatedLayout :redirectRoute="'room.rental.index'">
-        <template #header> Vehiculos </template>
+        <template #header> Alquileres </template>
         <Toaster richColors />
         <div class="w-full">
             <TableHeader :form="formSearch" :openCreateFormCar="openCreateFormCar" />
@@ -13,7 +13,7 @@
         </div>
         <SuspenseWrapper :when="showFormCar">
             <template #component>
-                <FormCar :cars="cars" :users="users" :costLine="costLine" ref="formCar" />
+                <FormCar :cars="cars" :providers="providers" :costLine="costLine" ref="formCar" />
             </template>
         </SuspenseWrapper>
 
@@ -66,8 +66,9 @@ const props = defineProps({
     car: Object,
     costLine: Object,
     users: Object,
+    providers: Object,
 });
-console.log(props.car)
+console.log(props.providers)
 const showFormCar = ref(false)
 const showFormDocument = ref(false)
 const showFormChangeLog = ref(false)

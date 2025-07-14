@@ -7,19 +7,19 @@
             <form @submit.prevent="submit">
                 <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
                     <div v-permission="'room_actions_manager'" v-if="!form.id" class="mt-2">
-                        <InputLabel for="user_id">Proveedores de UM
+                        <InputLabel for="provider_id">Proveedores de Habitaciones
                         </InputLabel>
                         <div class="mt-2">
-                            <select id="user_id" v-model="form.user_id" autocomplete="off"
+                            <select id="provider_id" v-model="form.provider_id" autocomplete="off"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                 <option value="">
                                     Seleccionar Usuario
                                 </option>
-                                <option v-for="item in users" :value="item.id">
-                                    {{ item.name }} - {{ item.dni }}
+                                <option v-for="item in providers" :value="item.id">
+                                    {{ item.company_name }}
                                 </option>
                             </select>
-                            <InputError :message="form.errors.user_id" />
+                            <InputError :message="form.errors.provider_id" />
                         </div>
                     </div>
                     <div class="mt-2">
@@ -111,9 +111,9 @@ import { useAxiosErrorHandler } from "@/utils/axiosError";
 
 defineExpose({ openModalCreate, openModalEdit })
 
-const { cars, users, costLine } = defineProps({
+const { cars, providers, costLine } = defineProps({
     cars: Object,
-    users: Object,
+    providers: Object,
     costLine: Object,
 })
 
@@ -127,7 +127,7 @@ const initialForm = {
     year: "",
     type: "",
     photo: "",
-    user_id: "",
+    provider_id: "",
     cost_line_id: "",
 };
 
