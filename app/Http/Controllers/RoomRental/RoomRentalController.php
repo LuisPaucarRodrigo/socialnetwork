@@ -43,7 +43,7 @@ class RoomRentalController extends Controller
     public function index($id = null)
     {
         $cars = Room::with([
-            'user:id,name', 
+            'provider:id,company_name,contact_name,zone', 
             'costline:id,name', 
             'room_document.approvel_room_document:id,room_document_id', 
             'room_changelogs.room_changelog_items'
@@ -77,17 +77,22 @@ class RoomRentalController extends Controller
         $search = $request->search;
 
         $cars = Room::with([
-            'user:id,name', 
+            'provider:id,company_name,contact_name,zone', 
             'costline:id,name', 
             'room_document.approvel_room_document:id,room_document_id', 
             'room_changelogs.room_changelog_items'
         ])
             ->where(function ($query) use ($search) {
-                $query->where('plate', 'like', "%$search%")
-                    ->orWhere('brand', 'like', "%$search%")
-                    ->orWhere('model', 'like', "%$search%")
-                    ->orWhere('type', 'like', "%$search%");
-            })->orderBy('created_at', 'desc');
+                $query->where('rental_type', 'like', "%$search%")
+                    ->orWhere('address', 'like', "%$search%")
+                    ->orWhere('observations', 'like', "%$search%");
+            })
+            ->whereHas('provider', function($query) use ($search){
+                $query->where('company_name', 'like', "%$search%")
+                    ->where('contact_name', 'like', "%$search%")
+                    ->where('zone', 'like', "%$search%");
+            })
+            ->orderBy('created_at', 'desc');
         $hasPermissions = $this->notHaveManagerPermission();
 
         if ($hasPermissions) {
@@ -188,7 +193,7 @@ class RoomRentalController extends Controller
                 $data['photo'] = $this->saveImage($request->file('photo'), 'image/room/', 'room');
             }
             $car = Room::create($data);
-            $car->load(['user', 'costline', 'room_changelogs.room_changelog_items', 'checklist']);
+            $car->load(['provider', 'costline', 'room_changelogs.room_changelog_items', 'checklist']);
             return response()->json($car, 200);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 500);
@@ -209,7 +214,6 @@ class RoomRentalController extends Controller
     public function update(RoomRentalRequest $request, Room $car)
     {
         $data = $request->validated();
-        $data['year'] = intval($data['year']);
         if ($request->hasFile('photo')) {
             $fileName = $car->photo;
             if ($fileName) {
@@ -221,7 +225,7 @@ class RoomRentalController extends Controller
             $data['photo'] = $this->saveImage($request->file('photo'), 'image/room/', 'room');
         }
         $car->update($data);
-        $car->load(['user', 'costline', 'room_changelogs.room_changelog_items', 'checklist']);
+        $car->load(['provider', 'costline', 'room_changelogs.room_changelog_items', 'checklist']);
         return response()->json($car, 200);
     }
 

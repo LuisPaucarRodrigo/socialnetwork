@@ -54,35 +54,23 @@
                         </div>
                     </div>
                     <div class="mt-2">
-                        <InputLabel for="model">Modelo </InputLabel>
+                        <InputLabel for="address"> Dirección </InputLabel>
                         <div class="mt-2">
-                            <TextInput type="text" id="model" v-model="form.model" />
-                            <InputError :message="form.errors.model" />
+                            <TextInput type="text" id="address" v-model="form.address" />
+                            <InputError :message="form.errors.address" />
                         </div>
                     </div>
 
                     <div class="mt-6">
-                        <InputLabel for="brand">Marca </InputLabel>
+                        <InputLabel for="observations"> Observaciones </InputLabel>
                         <div class="mt-2">
-                            <TextInput type="text" id="brand" v-model="form.brand" />
-                            <InputError :message="form.errors.brand" />
+                            <textarea
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                rows="4" v-model="form.observations" autocomplete="off" />
+                            <InputError :message="form.errors.observations" />
                         </div>
                     </div>
-                    <div class="mt-6">
-                        <InputLabel for="year">Año </InputLabel>
-                        <div class="mt-2">
-                            <TextInput type="number" id="year" :min="1900" :max="new Date().getFullYear()"
-                                v-model="form.year" />
-                            <InputError :message="form.errors.year" />
-                        </div>
-                    </div>
-                    <div class="mt-6">
-                        <InputLabel for="type">Tipo </InputLabel>
-                        <div class="mt-2">
-                            <TextInput type="text" id="type" v-model="form.type" />
-                            <InputError :message="form.errors.type" />
-                        </div>
-                    </div>
+            
                     <div class="mt-6">
                         <InputLabel for="photo">Foto </InputLabel>
                         <div class="mt-2">
