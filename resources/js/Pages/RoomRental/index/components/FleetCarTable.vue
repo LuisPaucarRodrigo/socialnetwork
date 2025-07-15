@@ -15,7 +15,6 @@
                 <TableTitle>Teléfono</TableTitle>
                 <TableTitle>Tipo</TableTitle>
                 <TableTitle>Dirección</TableTitle>
-                
                 <TableTitle>Foto</TableTitle>
                 <TableTitle :colspan="2" v-permission-or="[
                     'room_actions_manager',
@@ -32,18 +31,18 @@
                     <TableRow v-permission="'room_actions_manager'">
                         {{ car.costline?.name }}
                     </TableRow>
-                    <TableRow>{{ car.plate }}</TableRow>
-                    <TableRow>{{ car.model }}</TableRow>
-                    <TableRow>{{ car.brand }}</TableRow>
-                    <TableRow>{{ car.year }}</TableRow>
-                    <TableRow>{{ car.type }}</TableRow>
+                    <TableRow>{{ car.provider.company_name }}</TableRow>
+                    <TableRow>{{ car.provider.contact_name }}</TableRow>
+                    <TableRow>{{ car.provider.zone }}</TableRow>
+                    <TableRow>{{ [car.phone1,car.phone2].join(', ') }}</TableRow>
+                    <TableRow>{{ car.rental_type }}</TableRow>
+                    <TableRow>{{ car.address }}</TableRow>
                     <TableRow>
                         <a v-if="car.photo" :href="route('room.rental.show.image', { car: car.id }) + '?' + uniqueParam"
                             target="_blank">
                             <ShowIcon />
                         </a>
                     </TableRow>
-                    <TableRow>{{ car.user.name }}</TableRow>
                     <TableRow :colspan="2" v-permission-or="[
                         'room_actions_manager',
                         'room_actions'

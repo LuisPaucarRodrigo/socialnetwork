@@ -20,7 +20,7 @@ class Room extends Model
         'cost_line_id',
     ];
 
-    public function user()
+    public function provider()
     {
         return $this->belongsTo(Provider::class, 'provider_id');
     }

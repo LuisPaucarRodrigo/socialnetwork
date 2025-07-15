@@ -43,7 +43,7 @@ class RoomRentalController extends Controller
     public function index($id = null)
     {
         $cars = Room::with([
-            'provider:id,company_name,contact_name,zone', 
+            'provider:id,company_name,contact_name,zone,phone1,phone2', 
             'costline:id,name', 
             'room_document.approvel_room_document:id,room_document_id', 
             'room_changelogs.room_changelog_items'
@@ -77,7 +77,7 @@ class RoomRentalController extends Controller
         $search = $request->search;
 
         $cars = Room::with([
-            'provider:id,company_name,contact_name,zone', 
+            'provider:id,company_name,contact_name,zone,phone1,phone2',
             'costline:id,name', 
             'room_document.approvel_room_document:id,room_document_id', 
             'room_changelogs.room_changelog_items'
@@ -193,7 +193,7 @@ class RoomRentalController extends Controller
                 $data['photo'] = $this->saveImage($request->file('photo'), 'image/room/', 'room');
             }
             $car = Room::create($data);
-            $car->load(['provider', 'costline', 'room_changelogs.room_changelog_items', 'checklist']);
+            $car->load(['provider', 'costline', 'room_changelogs.room_changelog_items']);
             return response()->json($car, 200);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 500);
@@ -225,7 +225,7 @@ class RoomRentalController extends Controller
             $data['photo'] = $this->saveImage($request->file('photo'), 'image/room/', 'room');
         }
         $car->update($data);
-        $car->load(['provider', 'costline', 'room_changelogs.room_changelog_items', 'checklist']);
+        $car->load(['provider', 'costline', 'room_changelogs.room_changelog_items']);
         return response()->json($car, 200);
     }
 
