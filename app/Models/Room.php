@@ -30,9 +30,9 @@ class Room extends Model
         return $this->belongsTo(CostLine::class, 'cost_line_id');
     }
 
-    public function room_document()
+    public function room_documents()
     {
-        return $this->hasOne(RoomDocument::class, 'room_id');
+        return $this->hasMany(RoomDocument::class, 'room_id');
     }
 
     public function room_changelogs()

@@ -12,18 +12,9 @@ class RoomDocument extends Model
     protected $table = 'room_documents';
 
     protected $fillable = [
-        'ownership_card',
-        'technical_review',
-        'technical_review_date',
-        'soat',
-        'soat_date',
-        'insurance',
-        'insurance_date',
-        'rental_contract',
-        'rental_contract_date',
-        'address_web',
-        'user',
-        'password',
+        'archive',
+        'observations',
+        'expiration_date',
         'room_id',
     ];
 

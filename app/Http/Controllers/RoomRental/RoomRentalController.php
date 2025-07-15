@@ -45,7 +45,7 @@ class RoomRentalController extends Controller
         $cars = Room::with([
             'provider:id,company_name,contact_name,zone,phone1,phone2', 
             'costline:id,name', 
-            'room_document.approvel_room_document:id,room_document_id', 
+            'room_documents.approvel_room_document:id,room_document_id', 
             'room_changelogs.room_changelog_items'
         ])->orderBy('created_at', 'desc');
 
@@ -79,7 +79,7 @@ class RoomRentalController extends Controller
         $cars = Room::with([
             'provider:id,company_name,contact_name,zone,phone1,phone2',
             'costline:id,name', 
-            'room_document.approvel_room_document:id,room_document_id', 
+            'room_documents.approvel_room_document:id,room_document_id', 
             'room_changelogs.room_changelog_items'
         ])
             ->where(function ($query) use ($search) {
@@ -117,8 +117,8 @@ class RoomRentalController extends Controller
 
         $hasPermissions = $this->notHaveManagerPermission();
         $user = Auth::user();
-        $carsQuery = !$hasPermissions ? Room::with('room_document') : Room::where('user_id', $user->id);
-        $cars = $carsQuery->whereHas('room_document', function ($query) use ($expirationThreshold) {
+        $carsQuery = !$hasPermissions ? Room::with('room_documents') : Room::where('user_id', $user->id);
+        $cars = $carsQuery->whereHas('room_documents', function ($query) use ($expirationThreshold) {
             $query->where('technical_review_date', '<=', $expirationThreshold)
                 ->orWhere('soat_date', '<=', $expirationThreshold)
                 ->orWhere('insurance_date', '<=', $expirationThreshold)
@@ -264,7 +264,7 @@ class RoomRentalController extends Controller
     {
         $data = $request->validated();
         try {
-            $archives = ['ownership_card', 'technical_review', 'soat', 'insurance', 'rental_contract'];
+            $archives = ['archive'];
             foreach ($archives as $archive) {
                 if ($request->hasFile($archive)) {
                     $document = $request->file($archive);
@@ -461,8 +461,8 @@ class RoomRentalController extends Controller
     public function indexApprovelCarDocument()
     {
         $changes = ApprovalRoomDocument::with([
-            'room_document:id,room_id',
-            'room_document.room:id,plate'
+            'room_documents:id,room_id',
+            'room_documents.room:id,plate'
         ])->get();
         return Inertia::render("RoomRental/approvals/IndexApprovals", [
             'change' => $changes

@@ -2,24 +2,25 @@
     <Modal :show="showModalDocumentCar">
         <div class="p-6">
             <h2 class="text-base font-medium leading-7 text-gray-900">
-                {{ formDocument.id ? "Editar " : "Nueva " }}Documentaciòn UM
+                {{ formDocument.id ? "Editar " : "Nueva " }}Documentaciòn de alquiler
             </h2>
-            <p>Dueño: {{ show_owner }} Placa: {{ show_plate }}</p>
+            <p>Propietario: {{ show_owner }} </p>
             <form @submit.prevent="submitDocument">
-                <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
-                    <div class="mt-2">
-                        <InputLabel for="ownership_card">Tarjeta de Propiedad
+                <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-1">
+                    <div>
+                        <InputLabel for="archive">
+                            Contrato de alquiler
                         </InputLabel>
                         <div class="mt-2">
-                            <InputFile id="ownership_card" accept=".pdf" v-model="formDocument.ownership_card" />
-                            <InputError :message="formDocument.errors.ownership_card
+                            <InputFile id="archive" accept=".pdf" v-model="formDocument.archive" />
+                            <InputError :message="formDocument.errors.archive
                                 " />
                         </div>
-                        <div v-if="archivesDocument.ownership_card" class="flex items-center">
+                        <div v-if="archivesDocument.archive" class="flex items-center">
                             <span>Archivo: </span>
                             <a target="_blank" :href="route('room.rental.show_documents', {
                                 car_document: formDocument.id,
-                                fieldName: 'ownership_card',
+                                fieldName: 'archive',
                             }) + '?' + uniqueParam
                                 ">
                                 <ShowIcon />
@@ -27,133 +28,28 @@
                         </div>
                     </div>
 
-                    <div class="mt-2">
-                        <InputLabel for="technical_review">Revision Tecnica
+                    <div>
+                        <InputLabel for="expiration_date">
+                            Fecha de Expiración
                         </InputLabel>
                         <div class="mt-2">
-                            <InputFile id="technical_review" accept=".pdf" v-model="formDocument.technical_review" />
-                            <InputError :message="formDocument.errors.technical_review
-                                " />
+                            <TextInput type="date" id="expiration_date" v-model="formDocument.expiration_date" />
+                            <InputError :message="formDocument.errors.expiration_date" />
                         </div>
-                        <div v-if="archivesDocument.technical_review" class="flex items-center">
-                            <span>Archivo: </span>
-                            <a target="_blank" :href="route('room.rental.show_documents', {
-                                car_document: formDocument.id,
-                                fieldName: 'technical_review',
-                            }) + '?' + uniqueParam
-                                ">
-                                <ShowIcon />
-                            </a>
-                        </div>
-                        <template v-if="date_technical_review">
-                            <InputLabel for="technical_review">
-                                Fecha de Revision Tecnica
-                            </InputLabel>
-                            <div class="mt-2">
-                                <TextInput id="technical_review_date" type="date" v-model="formDocument.technical_review_date
-                                    " />
-                                <InputError :message="formDocument.errors
-                                    .technical_review_date
-                                    " />
-                            </div>
-                        </template>
                     </div>
-                    <div class="mt-6">
-                        <InputLabel for="soat">SOAT </InputLabel>
-                        <div class="mt-2">
-                            <InputFile id="soat" accept=".pdf" v-model="formDocument.soat" />
-                            <InputError :message="formDocument.errors.soat" />
-                        </div>
-
-                        <div v-if="archivesDocument.soat" class="flex items-center">
-                            <span>Archivo: </span>
-                            <a target="_blank" :href="route('room.rental.show_documents', {
-                                car_document: formDocument.id,
-                                fieldName: 'soat',
-                            }) + '?' + uniqueParam
-                                ">
-                                <ShowIcon />
-                            </a>
-                        </div>
-                        <InputLabel for="soat_date">
-                            Fecha de Soat
+                    <div>
+                        <InputLabel for="observations">
+                            Observaciones
                         </InputLabel>
                         <div class="mt-2">
-                            <TextInput id="soat_date" type="date" v-model="formDocument.soat_date" />
-                            <InputError :message="formDocument.errors.soat_date" />
-                        </div>
-                    </div>
-                    <div class="mt-6">
-                        <InputLabel for="insurance">Seguro </InputLabel>
-                        <div class="mt-2">
-                            <InputFile id="insurance" accept=".pdf" v-model="formDocument.insurance" />
-                            <InputError :message="formDocument.errors.insurance" />
-                        </div>
-
-                        <div v-if="archivesDocument.insurance" class="flex items-center">
-                            <span>Archivo: </span>
-                            <a target="_blank" :href="route('room.rental.show_documents', {
-                                car_document: formDocument.id,
-                                fieldName: 'insurance',
-                            }) + '?' + uniqueParam
-                                ">
-                                <ShowIcon />
-                                <ShowIcon />
-                            </a>
-                        </div>
-                        <InputLabel for="insurance_date">
-                            Fecha de Seguro
-                        </InputLabel>
-                        <div class="mt-2">
-                            <TextInput type="date" id="insurance_date" v-model="formDocument.insurance_date" />
-                            <InputError :message="formDocument.errors.insurance_date" />
+                            <textarea
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                rows="3" v-model="formDocument.observations" autocomplete="off" />
+                            <InputError :message="formDocument.errors.observations" />
                         </div>
                     </div>
 
-                    <div class="mt-6">
-                        <InputLabel for="rental_contract">Contrato de alquiler </InputLabel>
-                        <div class="mt-2">
-                            <InputFile id="rental_contract" accept=".pdf" v-model="formDocument.rental_contract" />
-                            <InputError :message="formDocument.errors.rental_contract" />
-                        </div>
-
-                        <div v-if="archivesDocument.rental_contract" class="flex items-center">
-                            <span>Archivo: </span>
-                            <a target="_blank" :href="route('room.rental.show_documents', {
-                                car_document: formDocument.id,
-                                fieldName: 'rental_contract',
-                            }) + '?' + uniqueParam
-                                ">
-                                <ShowIcon />
-                            </a>
-                        </div>
-                        <InputLabel for="rental_contract_date">
-                            Fecha de Contrato de Alquiler
-                        </InputLabel>
-                        <div class="mt-2">
-                            <TextInput type="date" id="rental_contract_date"
-                                v-model="formDocument.rental_contract_date" />
-                            <InputError :message="formDocument.errors.rental_contract_date" />
-                        </div>
-                    </div>
-
-                    <div class="mt-6">
-                        <InputLabel for="GPS">GPS</InputLabel>
-                        <div class="mt-2">
-                            <InputLabel for="address_web">Direccion Web </InputLabel>
-                            <TextInput type="text" id="address_web" v-model="formDocument.address_web" />
-                            <InputError :message="formDocument.errors.address_web" />
-
-                            <InputLabel for="gps_user">Usuario </InputLabel>
-                            <TextInput type="text" id="gps_user" v-model="formDocument.user" />
-                            <InputError :message="formDocument.errors.user" />
-
-                            <InputLabel for="gps_password">Password </InputLabel>
-                            <TextInput type="text" id="password" v-model="formDocument.password" />
-                            <InputError :message="formDocument.errors.password" />
-                        </div>
-                    </div>
-
+  
                 </div>
                 <div class="mt-6 flex items-center justify-end gap-x-3">
                     <SecondaryButton @click="openModalDocument">
@@ -197,19 +93,10 @@ const uniqueParam = `timestamp=${new Date().getTime()}`;
 
 const initialFormDocument = {
     id: "",
-    ownership_card: "",
-    technical_review: "",
-    technical_review_date: "",
-    soat: "",
-    soat_date: "",
-    insurance: "",
-    insurance_date: "",
-    rental_contract: "",
-    rental_contract_date: "",
-    address_web: "",
-    user: "",
-    password: "",
-    car_id: "",
+    archive: "",
+    observations: "",
+    expiration_date: "",
+    room_id: "",
 };
 
 const formDocument = useForm({
@@ -243,15 +130,14 @@ async function submitDocument() {
 }
 
 function openModalCreateDocument(item) {
-    show_owner.value = item.user.name
-    show_plate.value = item.plate
+    show_owner.value = item.provider.company_name
     date_technical_review.value = item.year + 4 <= new Date().getFullYear();
     archivesDocument.value = {};
     openModalDocument();
     archivesDocument.value = { ...(item.room_document ?? initialFormDocument) };
     formDocument.defaults({
         ...(item.room_document ?? initialFormDocument),
-        car_id: item.id,
+        room_id: item.id,
     });
     formDocument.reset();
 }

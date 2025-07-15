@@ -51,7 +51,7 @@
                             <button v-permission-or="['room_actions', 'room_actions_manager']"
                                 @click="openformDocument(car)">
                                 <DocumentsIcon
-                                    :color="car.room_document?.approvel_room_document.length > 0 ? 'text-red-400' : 'text-blue-400'" />
+                                    :color="'text-blue-400'" />
                             </button>
                             <button v-permission-or="['room_actions', 'room_actions_manager']"
                                 @click="openFormChangeLog(null, car)" type="button">
@@ -75,7 +75,7 @@
                                 @click="openModalDeleteCars(car.id)">
                                 <DeleteIcon />
                             </button>
-                            <button v-if="car.room_changelogs.length > 0" type="button" @click="toogleChangelog(car)">
+                            <button v-if="car.room_documents.length > 0" type="button" @click="toogleChangelog(car)">
                                 <DownArrowIcon v-if="carId !== car.id" />
                                 <UpArrowIcon v-else />
                             </button>
@@ -84,108 +84,84 @@
                 </tr>
                 <template v-if="carId == car.id">
                     <tr>
-                        <th class="sticky left-0 z-10 bg-gray-200 border-b-2 border-gray-20">
-                            <div class="w-2"></div>
-                        </th>
-                        <TableTitle :style="'bg-gray-200'">Fecha</TableTitle>
-                        <TableTitle :style="'bg-gray-200'">Kilometraje</TableTitle>
-                        <TableTitle :style="'bg-gray-200'">Tipo</TableTitle>
-                        <TableTitle :style="'bg-gray-200'">Taller</TableTitle>
-                        <TableTitle :style="'bg-gray-200'">Nombre de Contacto</TableTitle>
-                        <TableTitle :style="'bg-gray-200'">Teléfono de Contacto</TableTitle>
-                        <TableTitle :style="'bg-gray-200'">Observación</TableTitle>
-                        <TableTitle :style="'bg-gray-200'">Factura</TableTitle>
-                        <TableTitle :style="'bg-gray-200'">Items</TableTitle>
-                        <TableTitle :style="'bg-gray-200'"></TableTitle>
+                        <td colspan="100%">
+                            <table class="w-full">
+                                <thead>
+                                    <TableTitle :style="'bg-gray-200'">Fecha de expiración</TableTitle>
+                                    <TableTitle :style="'bg-gray-200'">Archivo</TableTitle>
+                                    <TableTitle :style="'bg-gray-200'">Observaciones</TableTitle>
+                                    <TableTitle :style="'bg-gray-200'"></TableTitle>
+                                </thead>
+                                <tbody>
+                                    <template v-for="document in car.room_documents" :key="document.id">
+                                        <tr>
+                                            <TableRow>{{ formattedDate(document.expiration_date) }}</TableRow>
+                                            <TableRow>{{ document.archive }}</TableRow>
+                                            <TableRow>{{ document.observations }}</TableRow>
+                                            <!-- <TableRow>
+                                                <div class="flex justify-center ">
+                                                    <a target="_blank" :href="route(
+                                                        'room.rental.show_invoice', { car_changelog: changelog.id }
+                                                    )">
+                                                        <ShowIcon />
+                                                    </a>
+                                                </div>
+                                            </TableRow> -->
+                                            <TableRow>
+                                                <div class="flex justify-center items-center gap-2">
+                                                    <!-- <button v-permission="'room_actions_manager'"
+                                                        v-if="changelog.is_accepted === null"
+                                                        @click="() => validateRegister(changelog.id, 1)">
+                                                        <AcceptIcon />
+                                                    </button>
+                                                    <button v-permission="'room_actions_manager'"
+                                                        v-if="changelog.is_accepted === null"
+                                                        @click="() => validateRegister(changelog.id, 0)" type="button">
+                                                        <RejectIcon />
+                                                    </button> -->
+                                                    <button type="button" v-permission="'room_actions_manager'" @click="
+                                                        openEditFormChangeLog(changelog, car)">
+                                                        <EditIcon />
+                                                    </button>
+                                                    <button type="button" v-permission="'room_actions_manager'" @click="
+                                                        openModalDeleteChangelog(changelog.id)">
+                                                        <DeleteIcon />
+                                                    </button>
+                                                </div>
+                                            </TableRow>
+                                        </tr>
+                                        <!-- <tr v-if="visibleChangelogs.has(changelog.id)" class="border-b bg-gray-50">
+                                            <td colspan="11" class="py-1 px-2">
+                                                <table class="w-full">
+                                                    <thead>
+                                                        <tr
+                                                            class="border-b text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                                                            <th
+                                                                class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
+                                                                N°
+                                                            </th>
+                                                            <th
+                                                                class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
+                                                                Nombre
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="(item, index) in changelog.room_changelog_items" :key="item.id">
+                                                            <td class="border-b px-2 py-2 text-center text-[11px] text-gray-600">
+                                                                {{ index + 1 }}</td>
+                                                            <td class="border-b px-2 py-2 text-center text-[11px] text-gray-600">
+                                                                {{ item.name }}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr> -->
+                                    </template>
+                                </tbody>
+                            </table>
+                        </td>
                     </tr>
-                    <template v-for="changelog in car.room_changelogs" :key="changelog.id">
-                        <tr>
-                            <td :class="[
-                                'sticky left-0 z-10 border-b border-gray-200',
-                                {
-                                    'bg-indigo-500':
-                                        changelog.is_accepted === null,
-                                    'bg-green-500':
-                                        changelog.is_accepted == 1,
-                                    'bg-red-500':
-                                        changelog.is_accepted == 0,
-                                },
-                            ]"></td>
-                            <TableRow>{{ formattedDate(changelog.date) }}</TableRow>
-                            <TableRow>{{ changelog.mileage }}</TableRow>
-                            <TableRow>{{ changelog.type }}</TableRow>
-                            <TableRow>{{ changelog.workshop }}</TableRow>
-                            <TableRow>{{ changelog.contact_name }}</TableRow>
-                            <TableRow>{{ changelog.contact_phone }}</TableRow>
-                            <TableRow>{{ changelog.observation }}</TableRow>
-                            <TableRow>
-                                <div class="flex justify-center ">
-                                    <a target="_blank" :href="route(
-                                        'room.rental.show_invoice', { car_changelog: changelog.id }
-                                    )">
-                                        <ShowIcon />
-                                    </a>
-                                </div>
-                            </TableRow>
-                            <TableRow>
-                                <div class="flex flex-col justify-center items-center">
-                                    <button type="button" @click="toggleVisibility(changelog.id)">
-                                        <DownArrowIcon v-if="!visibleChangelogs.has(changelog.id)" />
-                                        <UpArrowIcon v-else />
-                                    </button>
-                                </div>
-                            </TableRow>
-                            <TableRow>
-                                <div class="flex justify-center items-center gap-2">
-                                    <button v-permission="'room_actions_manager'"
-                                        v-if="changelog.is_accepted === null"
-                                        @click="() => validateRegister(changelog.id, 1)">
-                                        <AcceptIcon />
-                                    </button>
-                                    <button v-permission="'room_actions_manager'"
-                                        v-if="changelog.is_accepted === null"
-                                        @click="() => validateRegister(changelog.id, 0)" type="button">
-                                        <RejectIcon />
-                                    </button>
-                                    <button type="button" v-permission="'room_actions_manager'" @click="
-                                        openEditFormChangeLog(changelog, car)">
-                                        <EditIcon />
-                                    </button>
-                                    <button type="button" v-permission="'room_actions_manager'" @click="
-                                        openModalDeleteChangelog(changelog.id)">
-                                        <DeleteIcon />
-                                    </button>
-                                </div>
-                            </TableRow>
-                        </tr>
-                        <tr v-if="visibleChangelogs.has(changelog.id)" class="border-b bg-gray-50">
-                            <td colspan="11" class="py-1 px-2">
-                                <table class="w-full">
-                                    <thead>
-                                        <tr
-                                            class="border-b text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                            <th
-                                                class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
-                                                N°
-                                            </th>
-                                            <th
-                                                class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-600">
-                                                Nombre
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="(item, index) in changelog.room_changelog_items" :key="item.id">
-                                            <td class="border-b px-2 py-2 text-center text-[11px] text-gray-600">
-                                                {{ index + 1 }}</td>
-                                            <td class="border-b px-2 py-2 text-center text-[11px] text-gray-600">
-                                                {{ item.name }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                    </template>
                 </template>
             </template>
         </template>
