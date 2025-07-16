@@ -1,5 +1,5 @@
 <template>
-    <ConfirmDeleteModal :confirmingDeletion="showModalDeleteChangelog" itemType="registro de cambios"
+    <ConfirmDeleteModal :confirmingDeletion="showModalDeleteChangelog" itemType="Documento"
         :deleteFunction="deleteChangelog" @closeModal="closeModal()" />
 </template>
 <script setup>
@@ -31,7 +31,7 @@ async function deleteChangelog() {
     const docId = changelogToDelete.value;
     if (docId) {
         const response = await axios.delete(
-            route("room.rental.destroy_changelog", { car_changelog: docId })
+            route("room.rental.destroy_document", { car_document: docId })
         );
         if (response.data) {
             updateCar(response.data, "deleteChangelog");
@@ -47,7 +47,7 @@ function updateCar(data, action) {
         let index = validations.findIndex((item) => item.id === data.id);
         validations[index] = data;
         closeModal()
-        if (validations[index].room_changelogs.length === 0) {
+        if (validations[index].room_documents.length === 0) {
             carId.value = null;
         }
         notify("Eliminación Exitosa");

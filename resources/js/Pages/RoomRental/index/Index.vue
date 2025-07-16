@@ -138,8 +138,8 @@ function openEditFormChangeLog(e, car) {
     invokeFormChangeLog('openEditChangelog', e, car)
 }
 
-function openformDocument(item) {
-    invokeFormDocument('openModalCreateDocument', item)
+function openformDocument(room, room_document=null) {
+    invokeFormDocument('openModalCreateDocument', room, room_document)
 }
 
 function openModalDeleteCars(id) {

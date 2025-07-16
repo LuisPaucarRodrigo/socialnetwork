@@ -52,7 +52,7 @@
   
                 </div>
                 <div class="mt-6 flex items-center justify-end gap-x-3">
-                    <SecondaryButton @click="openModalDocument">
+                    <SecondaryButton @click="closeModalDocument">
                         Cancel
                     </SecondaryButton>
                     <PrimaryButton type="submit" :class="{ 'opacity-25': formDocument.processing }">
@@ -110,11 +110,7 @@ async function submitDocument() {
     let formData = toFormData(formDocument);
     try {
         let response = await axios.post(url, formData);
-        if (response.data) {
-            updateCar(response.data, 'udpateDocument')
-        } else {
-            updateCar(null, 'changeEntry')
-        }
+        updateCar(response.data, 'storeRoomDocument')
     } catch (error) {
         console.log(error);
         if (error.response) {
@@ -129,20 +125,19 @@ async function submitDocument() {
     }
 }
 
-function openModalCreateDocument(item) {
-    show_owner.value = item.provider.company_name
-    date_technical_review.value = item.year + 4 <= new Date().getFullYear();
+function openModalCreateDocument(room, room_document=null) {
+    show_owner.value = room.provider.company_name
     archivesDocument.value = {};
-    openModalDocument();
-    archivesDocument.value = { ...(item.room_document ?? initialFormDocument) };
+    closeModalDocument();
+    archivesDocument.value = { ...(room_document ?? initialFormDocument) };
     formDocument.defaults({
-        ...(item.room_document ?? initialFormDocument),
-        room_id: item.id,
+        ...(room_document ?? initialFormDocument),
+        room_id: room.id,
     });
     formDocument.reset();
 }
 
-function openModalDocument() {
+function closeModalDocument() {
     formDocument.clearErrors();
     formDocument.defaults({ ...initialFormDocument });
     formDocument.reset();
@@ -151,14 +146,25 @@ function openModalDocument() {
 
 function updateCar(data, action) {
     const validations = cars.data || cars;
-    if (action === "udpateDocument") {
-        const index = validations.findIndex(item => item.id === formDocument.car_id);
-        validations[index].room_document = data;
-        openModalDocument();
-        notify("Acciòn Exitosa");
-    } else if (action === "changeEntry") {
-        openModalDocument();
-        notify("Solicitud de actualizacion exitosa");
+    if (action === "storeRoomDocument") {
+        let index = validations.findIndex((item) => item.id === data.id);
+        validations[index] = data;
+        closeModalDocument();
+        notify("Acción Exitosa");
     }
 }
+
+
+// function updateCar(data, action) {
+//     const validations = cars.data || cars;
+//     if (action === "udpateDocument") {
+//         const index = validations.findIndex(item => item.id === formDocument.car_id);
+//         validations[index].room_document = data;
+//         closeModalDocument();
+//         notify("Acciòn Exitosa");
+//     } else if (action === "changeEntry") {
+//         closeModalDocument();
+//         notify("Solicitud de actualizacion exitosa");
+//     }
+// }
 </script>

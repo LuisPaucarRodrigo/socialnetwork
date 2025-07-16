@@ -1,5 +1,5 @@
 <template>
-    <ConfirmDeleteModal :confirmingDeletion="showModalDeleteCars" itemType="vehiculo" :deleteFunction="deleteCars"
+    <ConfirmDeleteModal :confirmingDeletion="showModalDeleteCars" itemType="Alquiler" :deleteFunction="deleteCars"
         @closeModal="closeModal()" />
 </template>
 <script setup>

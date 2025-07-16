@@ -45,7 +45,9 @@ class RoomRentalController extends Controller
         $cars = Room::with([
             'provider:id,company_name,contact_name,zone,phone1,phone2', 
             'costline:id,name', 
-            'room_documents.approvel_room_document:id,room_document_id', 
+            'room_documents' => function ($query) {
+                $query->orderBy('expiration_date', 'desc');
+            }, 
             'room_changelogs.room_changelog_items'
         ])->orderBy('created_at', 'desc');
 
@@ -79,7 +81,9 @@ class RoomRentalController extends Controller
         $cars = Room::with([
             'provider:id,company_name,contact_name,zone,phone1,phone2',
             'costline:id,name', 
-            'room_documents.approvel_room_document:id,room_document_id', 
+            'room_documents' => function ($query) {
+                $query->orderBy('expiration_date', 'desc');
+            }, 
             'room_changelogs.room_changelog_items'
         ])
             ->where(function ($query) use ($search) {
@@ -273,8 +277,11 @@ class RoomRentalController extends Controller
                 }
             }
             $carDocument = RoomDocument::create($data);
-            $carDocument->load("approvel_room_document");
-            return response()->json($carDocument, 200);
+            $car = Room::find($carDocument->room_id);
+            $car->load(['provider', 'costline', 'room_documents' => function ($query) {
+                $query->orderBy('expiration_date', 'desc');
+            }, 'room_changelogs.room_changelog_items']);
+            return response()->json($car, 200);
         } catch (Exception $e) {
             return response()->json($e->getMessage(), 500);
         }
@@ -283,7 +290,7 @@ class RoomRentalController extends Controller
     public function updateDocument(RoomRentalDocumentRequest $request, RoomDocument $carDocument)
     {
         $data = $request->validated();
-        $archives = ['ownership_card', 'technical_review', 'soat', 'insurance', 'rental_contract'];
+        $archives = ['archive', 'technical_review', 'soat', 'insurance', 'rental_contract'];
         $hasPermissions = $this->notHaveManagerPermission();
 
         if (!$hasPermissions) {
@@ -302,8 +309,11 @@ class RoomRentalController extends Controller
                 }
             }
             $carDocument->update($data);
-            $carDocument->load("approvel_room_document");
-            return response()->json($carDocument, 200);
+            $car = Room::find($carDocument->room_id);
+            $car->load(['provider', 'costline', 'room_documents' => function ($query) {
+                $query->orderBy('expiration_date', 'desc');
+            }, 'room_changelogs.room_changelog_items']);
+            return response()->json($car, 200);
         } else {
             foreach ($archives as $archive) {
                 if ($request->hasFile($archive)) {
@@ -313,7 +323,7 @@ class RoomRentalController extends Controller
                 }
             }
 
-            $data['car_document_id'] = $carDocument->id;
+            $data['room_document_id'] = $carDocument->id;
             ApprovalRoomDocument::create($data);
             return response()->json([], 200);
         }
@@ -321,8 +331,9 @@ class RoomRentalController extends Controller
 
     public function destroyDocument(RoomDocument $carDocument)
     {
+        $room = Room::find($carDocument->room_id);
         $carDocument->delete();
-        $archives = ['ownership_card', 'technical_review', 'soat', 'insurance', 'rental_contract'];
+        $archives = ['archive'];
         foreach ($archives as $archive) {
             $fileName = $carDocument->$archive;
             $file_path = "documents/roomrental/room_documents/$fileName";
@@ -330,7 +341,10 @@ class RoomRentalController extends Controller
                 unlink(public_path($file_path));
             }
         }
-        return response()->json(true);
+        $room->load(['provider', 'costline', 'room_documents' => function ($query) {
+            $query->orderBy('expiration_date', 'desc');
+        }, 'room_changelogs.room_changelog_items']);
+        return response()->json($room, 200);
     }
 
     //changelogs
