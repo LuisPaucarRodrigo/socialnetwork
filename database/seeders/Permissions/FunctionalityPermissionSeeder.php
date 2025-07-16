@@ -435,7 +435,7 @@ class FunctionalityPermissionSeeder extends Seeder
                 ]
             ],
             [
-                'display_name' => 'Agregar documento(Incluye alarma)',
+                'display_name' => 'Validar Programacion(Incluye alarma)',
                 'key_name' => 'add_document_payment_approval',
                 'module' => 'ppayment_approval_submodule',
                 'permissions' => [
@@ -444,6 +444,7 @@ class FunctionalityPermissionSeeder extends Seeder
                     'payment.approval.searchPaymentApproval',
                     'payment.approval.document',
                     'payment.approval.show_document',
+                    'payment.approval.validate', 
                     'payment.approval.alarm.pending.payments',
                 ]
             ],

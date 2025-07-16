@@ -12,7 +12,6 @@
     Route::middleware(['auth:sanctum'])->group(function () {
         //Verification of token
         Route::get('/verification_token', [ApiController::class, 'verificationToken']);
-
         Route::get('/users/{id}', [ApiController::class, 'users']);
 
         //Preprojects

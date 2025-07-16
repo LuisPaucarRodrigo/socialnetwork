@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('ruc');
             $table->string('beneficiary');
             $table->string('document')->nullable();
+            $table->boolean('is_validated')->nullable();
             $table->foreignId('cost_line_id')->constrained();
             $table->foreignId('provider_id')->constrained()->nullable();
             $table->timestamps();

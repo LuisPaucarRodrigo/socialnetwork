@@ -487,7 +487,7 @@ class ApiController extends Controller
                     ->orWhere('zone2', $zone)
                     ->orWhere('zone3', $zone);
             });
-            
+
         $cicsaProcess->whereHas('project', function ($query) use ($currentMonthStart, $currentMonthEnd) {
             $query->where('cost_line_id', 2)
                 ->where('is_accepted', 1)
@@ -522,7 +522,7 @@ class ApiController extends Controller
         })
             ->orderBy('project_name')
             ->get();
-        
+
         $cicsaProcess->each->setAppends([]);
         return response()->json($cicsaProcess, 200);
     }
@@ -532,7 +532,8 @@ class ApiController extends Controller
         $validateData = $request->validated();
         try {
             $validateData = $this->apiService->transformExpenseData($validateData);
-            PextProjectExpense::create($validateData);
+            $expense = PextProjectExpense::create($validateData);
+            // return response()->json($expense, 200);
             return response()->json([], 200);
         } catch (Exception $e) {
             return response()->json([

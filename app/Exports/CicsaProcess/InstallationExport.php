@@ -10,8 +10,8 @@ use Maatwebsite\Excel\Concerns\WithColumnWidths;
 class InstallationExport implements FromView, WithColumnWidths
 {
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
     protected $type;
     public function __construct($type)
     {
@@ -36,11 +36,13 @@ class InstallationExport implements FromView, WithColumnWidths
                 'Encargado'
             ],
             'assignations' => CicsaAssignation::select('id', 'project_name', 'project_code', 'cpe',  'project_id')
-            ->whereHas('project', function ($subQuery) {
-                $subQuery->where('cost_line_id', $this->type);
-            })
-            ->with('cicsa_installation')
-            ->get()
+                ->whereHas('project', function ($subQuery) {
+                    $subQuery->where('cost_line_id', $this->type)
+                        ->where('project_id', "!=", 320)
+                    ->where('is_accepted',1);
+                })
+                ->with('cicsa_installation')
+                ->get()
         ]);
     }
 

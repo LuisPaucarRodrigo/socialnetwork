@@ -142,8 +142,8 @@ class PextProjectServices
         if ($request->opEndDate) {
             $expense->where('operation_date', '<=', $request->opEndDate);
         }
-
-        if (count($request->selectedZones) < 9) {
+        
+        if ($request->selectedZones && count($request->selectedZones) < 9) {
             $expense->whereIn('zone', $request->selectedZones);
         }
 

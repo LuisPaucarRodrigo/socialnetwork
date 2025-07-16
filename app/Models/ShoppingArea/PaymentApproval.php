@@ -19,6 +19,7 @@ class PaymentApproval extends Model
         'ruc',
         'beneficiary',
         'document',
+        'is_validated',
         'cost_line_id',
         'provider_id'
     ];
@@ -28,6 +29,11 @@ class PaymentApproval extends Model
         if ($this->document) {
             return 'Completado';
         }
+
+        if ($this->is_validated) {
+            return 'En Proceso';
+        }
+        
         return 'Pendiente';
     }
 

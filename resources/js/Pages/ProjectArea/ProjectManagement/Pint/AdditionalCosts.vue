@@ -1914,7 +1914,6 @@ async function saveAdminReject () {
 async function saveAdminValidate(payload) {
     try {
         const res = await axios.post(route('projectmanagement.administrative.validation', {ac_id: payload.id}), payload)
-        console.log(res.data.additional_cost)
         let index = dataToRender.value.findIndex((item) => item.id == res.data.additional_cost.id);
         dataToRender.value[index] = res.data.additional_cost;
         notify(res.data.msg)

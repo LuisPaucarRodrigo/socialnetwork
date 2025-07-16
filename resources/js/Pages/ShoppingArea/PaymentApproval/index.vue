@@ -20,13 +20,13 @@
 
         <SuspenseWrapper :when="showDocumentForm">
             <template #component>
-                <DocumentForm ref="documentForm" :payments="payments"/>
+                <DocumentForm ref="documentForm" :payments="payments" />
             </template>
         </SuspenseWrapper>
 
         <SuspenseWrapper :when="showConfirmPaymentDelete">
             <template #component>
-                <ConfirmPaymentDelete ref="confirmPaymentDelete" :payments="payments"/>
+                <ConfirmPaymentDelete ref="confirmPaymentDelete" :payments="payments" />
             </template>
         </SuspenseWrapper>
     </AuthenticatedLayout>
@@ -68,7 +68,7 @@ const { zones, costLines, providers, banks } = defineProps({
 })
 
 const cost_line = costLines.map(item => item.name)
-const states = ['Pendiente', 'Completado']
+const states = ['Pendiente', 'En Proceso', 'Completado']
 const payments = ref([])
 
 onMounted(async () => {
@@ -110,7 +110,7 @@ function createPayment() {
 }
 
 function openDocumentModal(paymentId) {
-    invokeDocumentForm('openDocumentModal',paymentId)
+    invokeDocumentForm('openDocumentModal', paymentId)
 }
 
 function confirmPaymentDeletion(paymentId) {

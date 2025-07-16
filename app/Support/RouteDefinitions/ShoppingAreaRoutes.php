@@ -344,6 +344,13 @@ class ShoppingAreaRoutes
                 'permission' => true,
                 'name' => 'payment.approval.alarm.pending.payments',
             ],
+            [
+                'uri' => 'payment_approval/validate_payment/{id}',
+                'method' => 'put',
+                'action' => [PaymentApprovalController::class, 'validate_payment'],
+                'permission' => true,
+                'name' => 'payment.approval.validate',
+            ],
         ];
     }
 }

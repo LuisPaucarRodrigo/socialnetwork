@@ -48,9 +48,13 @@
                 <TableRow>{{ item.state }}</TableRow>
                 <TableRow v-permission-or="['add_document_payment_approval', 'delete_payment_approval']">
                     <div class="flex justify-center gap-x-2">
-                        <!-- <button>
-                            <RejectIcon />
-                        </button> -->
+                        <div v-if="item.is_validated === null" class="flex gap-3 justify-center w-1/2">
+                            <button @click="() =>
+                                validateRegister(item.id, true)
+                            " class="flex items-center rounded-xl text-blue-500 hover:bg-green-200">
+                                <AcceptIcon />
+                            </button>
+                        </div>
                         <button v-permission="'add_document_payment_approval'" v-if="!item.document"
                             @click="openDocumentModal(item.id)">
                             <PlusDocumentIcon />
@@ -69,7 +73,8 @@
     </div>
 </template>
 <script setup>
-import { DeleteIcon, PlusDocumentIcon, ShowIcon } from '@/Components/Icons';
+import { AcceptIcon, DeleteIcon, PlusDocumentIcon, RejectIcon, ShowIcon } from '@/Components/Icons';
+import { notify } from '@/Components/Notification';
 import PaginationAxios from '@/Components/PaginationAxios.vue';
 import TableHeaderFilter from '@/Components/TableHeaderFilter.vue';
 import TableRow from '@/Components/TableRow.vue';
@@ -104,5 +109,22 @@ async function fetchExpensesByUrl(url) {
 function documentPreview(paymentId) {
     const url = route('payment.approval.show_document', { id: paymentId });
     window.open(url, '_blank');
+}
+
+async function validateRegister(paymentId, is_validated) {
+    const url = route("payment.approval.validate", { 'id': paymentId })
+    try {
+        const res = await axios.put(url, { 'is_validated': is_validated });
+        updateExpense(res.data, "validate", paymentId)
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+function updateExpense(data, action, paymentId) {
+    const listData = payments.value.data || payments.value
+    const index = listData.findIndex(item => item.id === paymentId)
+    listData[index].is_validated = data
+    notify('Validación Exitosa')
 }
 </script>

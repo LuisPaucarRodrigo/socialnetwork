@@ -167,12 +167,15 @@ class PextController extends Controller
     public function expense_validate(Request $request, $expense_id)
     {
         $validatedData = $request->validate([
-            'is_accepted' => 'required|boolean'
+            'is_accepted' => 'required|boolean',
+            'operation_date' => 'sometimes|required',
+            'operation_number' => 'sometimes|required',
         ]);
         $expense = PextProjectExpense::find($expense_id);
         $expense->update($validatedData);
+        $expense->append('real_state');
 
-        return response()->noContent();
+        return response()->json($expense, 200);
     }
 
     public function downloadImages(Request $request, $project_id, $fixedOrAdditional)

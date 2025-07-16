@@ -77,7 +77,7 @@ class PaymentApprovalController extends Controller
     public function store(PaymentApprovalRequest $request)
     {
         $validateData = $request->validated();
-        $item = PaymentApproval::create($validateData);
+        $item = PaymentApproval::create($validateData)->fresh();
         $item->append('state');
         $item->load('cost_line');
         return response()->json($item, 200);
@@ -129,6 +129,16 @@ class PaymentApprovalController extends Controller
     public function pending_payments()
     {
         $payment = PaymentApproval::whereNull('document')->get();
+        return response()->json($payment, 200);
+    }
+
+    public function validate_payment(Request $request, $id)
+    {
+        $validateData = $request->validate([
+            'is_validated' => 'required'
+        ]);
+        $payment = PaymentApproval::find($id);
+        $payment->update($validateData);
         return response()->json($payment, 200);
     }
 }

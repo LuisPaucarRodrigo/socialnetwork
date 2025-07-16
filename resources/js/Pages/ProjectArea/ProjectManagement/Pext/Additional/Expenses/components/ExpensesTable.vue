@@ -19,11 +19,6 @@
                             {{ actionForm.ids.length ?? "" }}
                         </label>
                     </th>
-                    <!-- <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            <TableHeaderFilter labelClass="text-[11px]" label="Zona" :options="zones"
-                                v-model="filterForm.selectedZones" width="w-40" />
-                        </th> -->
                     <th
                         class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600 ">
                         <TableHeaderFilter labelClass="text-[11px]" label="Tipo de Gasto" :options="expenseTypes"
@@ -46,10 +41,6 @@
                         class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                         Numero de Operacion
                     </th>
-                    <!-- <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Fecha de Operacion
-                        </th> -->
                     <th
                         class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                         <TableDateFilter labelClass="text-[11px]" label="Fecha de Operación"
@@ -60,10 +51,6 @@
                         class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                         Numero de Doc
                     </th>
-                    <!-- <th
-                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-                            Fecha de Documento
-                        </th> -->
                     <th
                         class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                         <TableDateFilter labelClass="text-[11px]" label="Fecha de Documento"
@@ -91,10 +78,6 @@
                         <TableHeaderFilter labelClass="text-[11px]" label="Estado" :options="stateTypes"
                             v-model="filterForm.selectedStateTypes" width="w-48" />
                     </th>
-                    <th
-                        class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
-
-                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -108,9 +91,6 @@
                             'bg-red-500': item.real_state == 'Rechazado',
                         },
                     ]"></td>
-                    <!-- <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                            {{ item.zone }}
-                        </td> -->
                     <td
                         class="sticky left-2 z-10 border-b border-r border-gray-200 bg-amber-100 text-center text-[13px] whitespace-nowrap tabular-nums">
                         <label :for="`check-${item.id}`" class="block w-12 px-2 py-1">
@@ -176,29 +156,6 @@
                             {{ item.real_state }}
                         </div>
                     </td>
-                    <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                        <div v-if="item.is_accepted === null" class="flex gap-3 justify-center w-1/2">
-                            <button @click="() =>
-                                validateRegister(item.id, true)
-                            " class="flex items-center rounded-xl text-blue-500 hover:bg-green-200">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-green-500">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                </svg>
-                            </button>
-                            <button @click="() =>
-                                validateRegister(item.id, false)
-                            " type="button"
-                                class="rounded-xl whitespace-no-wrap text-center text-sm text-red-900 hover:bg-red-200">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-red-500">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                </svg>
-                            </button>
-                        </div>
-                    </td>
                 </tr>
                 <tr class="sticky bottom-0 z-10 text-gray-700">
                     <td class="font-bold border-b border-gray-200 bg-white">
@@ -236,7 +193,7 @@
     </div>
 </template>
 <script setup>
-import { ShowIcon } from '@/Components/Icons';
+import { AcceptIcon, RejectIcon, ShowIcon } from '@/Components/Icons';
 import Pagination from '@/Components/Pagination.vue';
 import TableDateFilter from '@/Components/TableDateFilter.vue';
 import TableHeaderFilter from '@/Components/TableHeaderFilter.vue';
@@ -255,20 +212,6 @@ const { expenses, filterForm, actionForm, expenseTypes, documentsType, stateType
 })
 
 const reload_flag = ref(true)
-
-async function validateRegister(expense_id, is_accepted) {
-    const url = route("projectmanagement.pext.expenses.validate", { 'expense_id': expense_id })
-    try {
-        await axios.put(url, { 'is_accepted': is_accepted });
-        if (filterForm.value.rejected) {
-            updateExpense(expense_id, "validate", is_accepted)
-        } else {
-            updateExpense(expense_id, "rejectedValidate")
-        }
-    } catch (e) {
-        console.log(e);
-    }
-}
 
 function handlerPreview(id) {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
@@ -289,4 +232,5 @@ const handleCheckAll = (e) => {
         actionForm.ids = [];
     }
 };
+
 </script>

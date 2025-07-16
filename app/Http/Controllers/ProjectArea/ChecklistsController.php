@@ -436,9 +436,22 @@ class ChecklistsController extends Controller
                 );
             }
             $data['user_id'] = Auth::user()->id;
-
-            AdditionalCost::create($data);
-            return response()->json(['msg' => "saved"], 200);
+            $expense = AdditionalCost::create($data);
+            return response()->json([], 200);
+            // if ($expense) {
+            //     $project = Project::select('id')->find($expense->project_id);
+            //     $response = [
+            //         'amount' => $expense->amount,
+            //         'created_at' => $expense->created_at,
+            //         'project' => $project->description,
+            //         'zone' => $expense->zone,
+            //         'expense_type' => $expense->expense_type,
+            //     ];
+            //     return response()->json($response, 200);
+            // }
+            // return response()->json([
+            //     'error' => 'Hubo un error al momento de ingresar.Porvafor intentenlo mas tarde.'
+            // ], 500);
         } catch (Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
