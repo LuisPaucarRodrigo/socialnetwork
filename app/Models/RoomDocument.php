@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
+
 
 class RoomDocument extends Model
 {
@@ -26,5 +29,11 @@ class RoomDocument extends Model
     public function approvel_room_document()
     {
         return $this->hasMany(ApprovalRoomDocument::class);
+    }
+
+    public function getExpirationStateAttribute () {
+        $today = Carbon::now();
+        $expirationThreshold = $today->copy()->addDays(7);
+        return $this->expiration_date <= $expirationThreshold;
     }
 }

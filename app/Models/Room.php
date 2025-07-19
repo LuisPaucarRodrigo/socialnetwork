@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class Room extends Model
 {
@@ -40,9 +41,9 @@ class Room extends Model
         return $this->hasMany(RoomChangelog::class, 'room_id');
     }
 
-    // public function checklist()
-    // {
-    //     return $this->hasMany(ChecklistCar::class, 'car_id');
-    // }
+    public function getDocumentsToExpireAttribute()
+    {
+        return $this->room_documents()->get()->filter(fn($rm)=>$rm->expiration_state)->count();
+    }
 
 }

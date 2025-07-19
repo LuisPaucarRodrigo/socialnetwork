@@ -116,23 +116,14 @@ class RoomRentalController extends Controller
     public function alarms()
     {
 
-        $today = Carbon::now();
-        $expirationThreshold = $today->copy()->addDays(7);
-
-        $hasPermissions = $this->notHaveManagerPermission();
-        $user = Auth::user();
-        $carsQuery = !$hasPermissions ? Room::with('room_documents') : Room::where('user_id', $user->id);
-        $cars = $carsQuery->whereHas('room_documents', function ($query) use ($expirationThreshold) {
-            $query->where('technical_review_date', '<=', $expirationThreshold)
-                ->orWhere('soat_date', '<=', $expirationThreshold)
-                ->orWhere('insurance_date', '<=', $expirationThreshold)
-                ->orWhere('rental_contract_date', '<=', $expirationThreshold);
-        })
-
-            ->get();
+        $rooms = Room::with('provider')->get()
+            ->each->append('documents_to_expire')
+            ->filter(function($room){
+                return $room->documents_to_expire;
+            });
 
         return response()->json([
-            'documentsCarToExpire' => $cars,
+            'documentsCarToExpire' => $rooms,
         ], 200);
     }
 
