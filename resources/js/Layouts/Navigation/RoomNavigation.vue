@@ -12,16 +12,10 @@
 
         <span class="mx-3">A. de Habitaciones</span>
     </a>
-    <MyTransition v-if="subModulePermission(submodules.rorenapprov_submodule, userSubModules)"
-        :transitiondemonstration="showFleetCars">
-        <div class="relative">
-            <Link class="w-full" :href="route('room.rental.index.approvel')">Aprobación de Cambios</Link>
-        </div>
-    </MyTransition>
     <MyTransition v-if="subModulePermission(submodules.roomunit_submodule, userSubModules)"
         :transitiondemonstration="showFleetCars">
         <div class="relative">
-            <Link class="w-full" :href="route('room.rental.index')">Habitaciones</Link>
+            <Link class="w-full" :href="route('room.rental.index')">Alquileres</Link>
             <div class="absolute top-0 right-0 flex justify-end gap-3">
                 <button v-if="checkListCarToExpire.length > 0" @click="() => {
                     showCheckListCarToExpireAlarms = !showCheckListCarToExpireAlarms

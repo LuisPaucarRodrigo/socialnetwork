@@ -197,7 +197,7 @@ class RoomRentalController extends Controller
                 $data['photo'] = $this->saveImage($request->file('photo'), 'image/room/', 'room');
             }
             $car = Room::create($data);
-            $car->load(['provider', 'costline', 'room_changelogs.room_changelog_items']);
+            $car->load(['provider', 'room_documents', 'costline', 'room_changelogs.room_changelog_items']);
             return response()->json($car, 200);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 500);
@@ -229,7 +229,7 @@ class RoomRentalController extends Controller
             $data['photo'] = $this->saveImage($request->file('photo'), 'image/room/', 'room');
         }
         $car->update($data);
-        $car->load(['provider', 'costline', 'room_changelogs.room_changelog_items']);
+        $car->load(['provider', 'room_documents', 'costline', 'room_changelogs.room_changelog_items']);
         return response()->json($car, 200);
     }
 

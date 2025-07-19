@@ -7,8 +7,7 @@
         <div class="w-full">
             <TableHeader :form="formSearch" :openCreateFormCar="openCreateFormCar" />
             <FleetCarTable :cars="cars" v-model:formSearch="formSearch" :cost_line="cost_line"
-                :openEditFormCar="openEditFormCar" :openFormChangeLog="openFormChangeLog"
-                :openEditFormChangeLog="openEditFormChangeLog" :openformDocument="openformDocument"
+                :openEditFormCar="openEditFormCar" :openformDocument="openformDocument"
                 :openModalDeleteCars="openModalDeleteCars" :openModalDeleteChangelog="openModalDeleteChangelog" />
         </div>
         <SuspenseWrapper :when="showFormCar">
@@ -23,11 +22,6 @@
             </template>
         </SuspenseWrapper>
 
-        <SuspenseWrapper :when="showFormChangeLog">
-            <template #component>
-                <FormChangeLog :cars="cars" ref="formChangeLog" />
-            </template>
-        </SuspenseWrapper>
 
         <SuspenseWrapper :when="showDeleteCar">
             <template #component>
@@ -57,7 +51,6 @@ import SuspenseWrapper from "@/Components/SuspenseWrapper.vue";
 
 const FormCar = defineAsyncComponent(() => import('./components/FormCar.vue'));
 const FormDocument = defineAsyncComponent(() => import('./components/FormDocument.vue'));
-const FormChangeLog = defineAsyncComponent(() => import('./components/FormChangeLog.vue'));
 
 const DeleteCar = defineAsyncComponent(() => import('./components/DeleteCar.vue'));
 const DeleteChangeLog = defineAsyncComponent(() => import('./components/DeleteChangeLog.vue'));
@@ -71,14 +64,12 @@ const props = defineProps({
 
 const showFormCar = ref(false)
 const showFormDocument = ref(false)
-const showFormChangeLog = ref(false)
 const showDeleteCar = ref(false)
 const showChangeLog = ref(false)
 
 
 const cars = ref(props.car);
 const formCar = ref(null)
-const formChangeLog = ref(null)
 const formDocument = ref(null)
 const deleteCar = ref(null)
 const changeLog = ref(null)
@@ -87,8 +78,6 @@ const cost_line = props.costLine.map((item) => item.name);
 
 const { invokeWhenReady: invokeFormCar } = useLazyRefInvoker(formCar, showFormCar);
 const { invokeWhenReady: invokeFormDocument } = useLazyRefInvoker(formDocument, showFormDocument);
-const { invokeWhenReady: invokeFormChangeLog } = useLazyRefInvoker(formChangeLog, showFormChangeLog);
-
 const { invokeWhenReady: invokeDeleteCar } = useLazyRefInvoker(deleteCar, showDeleteCar);
 const { invokeWhenReady: invokeChangeLog } = useLazyRefInvoker(changeLog, showChangeLog);
 
@@ -128,14 +117,6 @@ function openCreateFormCar() {
 
 function openEditFormCar(item) {
     invokeFormCar('openModalEdit', item)
-}
-
-function openFormChangeLog(e, car) {
-    invokeFormChangeLog('openCreateModalChangelog', e, car)
-}
-
-function openEditFormChangeLog(e, car) {
-    invokeFormChangeLog('openEditChangelog', e, car)
 }
 
 function openformDocument(room, room_document=null) {

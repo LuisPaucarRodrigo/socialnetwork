@@ -109,8 +109,7 @@ class ModuleSeeder extends Seeder
                 'name' => 'ROOM_RENTAL_MODULE',
                 'display_name' => 'A. de Habitaciones',
                 'submodules' => [
-                    'rorenapprov_submodule' => 'Aprobación de Cambios',
-                    'roomunit_submodule' => 'Habitación',
+                    'roomunit_submodule' => 'Alquileres',
                 ]
             ],
             [
