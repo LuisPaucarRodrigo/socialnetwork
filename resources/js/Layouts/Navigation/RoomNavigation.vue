@@ -60,7 +60,6 @@ const { userSubModules } = usePage().props.auth
 const showFleetCars = ref(false)
 const showDocumentsCarToExpireAlarms = ref(false)
 const documentsCarToExpire = ref([])
-const changelogAlarms = ref([]);
 
 let intervalId;
 const fetchAllAlarms = () => {
