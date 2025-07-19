@@ -118,6 +118,7 @@ const showModalCar = ref(false);
 const initialForm = {
     id: "",
     rental_type: "",
+    address: "",
     observations: "",
     photo: "",
     provider_id: "",

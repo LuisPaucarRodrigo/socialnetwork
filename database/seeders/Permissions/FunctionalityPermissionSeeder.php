@@ -1760,17 +1760,10 @@ class FunctionalityPermissionSeeder extends Seeder
                 'module' => 'roomunit_submodule',
                 'permissions' => [
                     'room.rental.index',
-                    'room.rental.show_checklist.send_images',
                     'room.rental.show.image',
-                    'room.rental.show_checklist',
-                    'room.rental.show_invoice',
-                    'room.rental.show_checklist.accept_or_decline',
                     'room.rental.search',
 
                     'room.rental.alarms',
-                    'room.rental.checklist.alarms',
-                    'room.rental.specific.alarms',
-                    'room.rental.alarms.changelogs',
                 ]
             ],
 
@@ -1780,26 +1773,16 @@ class FunctionalityPermissionSeeder extends Seeder
                 'module' => 'roomunit_submodule',
                 'permissions' => [
                     'room.rental.index',
-                    'room.rental.show_checklist.send_images',
                     'room.rental.show.image',
-                    'room.rental.show_checklist',
-                    'room.rental.show_checklist.accept_or_decline',
-                    'room.rental.destroy_changelog',
-                    'room.rental.show_invoice',
-                    'room.rental.update_changelog',
-                    'room.rental.store_changelog',
                     'room.rental.show_documents',
                     'room.rental.update.document',
                     'room.rental.store_document',
+                    'room.rental.destroy_document',
                     'room.rental.search',
                     'room.rental.store',
                     'room.rental.update',
                     'room.rental.destroy',
-
                     'room.rental.alarms',
-                    'room.rental.checklist.alarms',
-                    'room.rental.specific.alarms',
-                    'room.rental.alarms.changelogs',
                 ]
             ],
 
