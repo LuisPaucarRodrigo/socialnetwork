@@ -1751,7 +1751,6 @@ class FunctionalityPermissionSeeder extends Seeder
             ]
         ];
 
-        /////////////////////////////////////////////////////////////////
 
         $roomunitSubmodule = [
             [
@@ -1762,7 +1761,6 @@ class FunctionalityPermissionSeeder extends Seeder
                     'room.rental.index',
                     'room.rental.show.image',
                     'room.rental.search',
-
                     'room.rental.alarms',
                 ]
             ],
@@ -1788,11 +1786,6 @@ class FunctionalityPermissionSeeder extends Seeder
 
 
         ];
-
-
-        /////////////////////////////////////////////////////////////////
-
-
 
 
         $sharedoc_submodule = [

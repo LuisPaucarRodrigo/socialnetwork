@@ -3,23 +3,13 @@
 namespace App\Http\Controllers\RoomRental;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\RoomRental\RoomRentalChangelogRequest;
 use App\Http\Requests\RoomRental\RoomRentalDocumentRequest;
 use App\Http\Requests\RoomRental\RoomRentalRequest;
 
-use App\Models\ApprovalRoomDocument;
 use App\Models\Provider;
 use App\Models\Room;
-use App\Models\RoomChangelog;
-use App\Models\RoomChangelogItem;
 use App\Models\RoomDocument;
-
-
-use App\Models\ChecklistCar;
-
 use App\Models\CostLine;
-use App\Models\User;
-use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -48,7 +38,6 @@ class RoomRentalController extends Controller
             'room_documents' => function ($query) {
                 $query->orderBy('expiration_date', 'desc');
             }, 
-            'room_changelogs.room_changelog_items'
         ])->orderBy('created_at', 'desc');
 
         $providers = Provider::whereHas('category', function($query) {
@@ -84,7 +73,6 @@ class RoomRentalController extends Controller
             'room_documents' => function ($query) {
                 $query->orderBy('expiration_date', 'desc');
             }, 
-            'room_changelogs.room_changelog_items'
         ])
             ->where(function ($query) use ($search) {
                 $query->where('rental_type', 'like', "%$search%")
@@ -127,58 +115,6 @@ class RoomRentalController extends Controller
         ], 200);
     }
 
-    public function getChangelogAlarms()
-    {
-        $user = Auth::user();
-        $hasPermissions = $this->notHaveManagerPermission();
-        $carsQuery = !$hasPermissions ? Room::query() : Room::where('user_id', $user->id);
-        $cars = $carsQuery->whereHas('room_changelogs', function ($query) {
-            $query->whereNull('is_accepted');
-        })
-            ->get();
-
-        // if (!$hasPermissions) {
-        //     $cars = Car::whereHas('car_changelogs', function ($query) {
-        //         $query->whereNull('is_accepted');
-        //     })
-        //         ->get();
-        // } else {
-        //     $cars = Car::where('user_id', $user->id)
-        //         ->whereHas('car_changelogs', function ($query) {
-        //             $query->whereNull('is_accepted');
-        //         })
-        //         ->get();
-        // }
-        return response()->json([
-            'carsToExpire' => $cars,
-        ], 200);
-    }
-
-    public function specificAlarm($car_id)
-    {
-        $today = Carbon::now();
-        $expirationThreshold = $today->copy()->addDays(7);
-        $document = RoomDocument::where('room_id', $car_id)->first();
-        $expiring = [];
-
-        if ($document->technical_review_date && $document->technical_review_date <= $expirationThreshold) {
-            $expiring['Revisión Técnica'] = $document->technical_review_date;
-        }
-
-        if ($document->soat_date && $document->soat_date <= $expirationThreshold) {
-            $expiring['SOAT'] = $document->soat_date;
-        }
-
-        if ($document->insurance_date && $document->insurance_date <= $expirationThreshold) {
-            $expiring['Seguro'] = $document->insurance_date;
-        }
-
-        if ($document->rental_contract_date && $document->rental_contract_date <= $expirationThreshold) {
-            $expiring['Contrato'] = $document->rental_contract_date;
-        }
-
-        return response()->json($expiring, 200);
-    }
 
     public function store(RoomRentalRequest $request)
     {
@@ -188,7 +124,7 @@ class RoomRentalController extends Controller
                 $data['photo'] = $this->saveImage($request->file('photo'), 'image/room/', 'room');
             }
             $car = Room::create($data);
-            $car->load(['provider', 'room_documents', 'costline', 'room_changelogs.room_changelog_items']);
+            $car->load(['provider', 'room_documents', 'costline']);
             return response()->json($car, 200);
         } catch (\Exception $e) {
             return response()->json($e->getMessage(), 500);
@@ -220,7 +156,7 @@ class RoomRentalController extends Controller
             $data['photo'] = $this->saveImage($request->file('photo'), 'image/room/', 'room');
         }
         $car->update($data);
-        $car->load(['provider', 'room_documents', 'costline', 'room_changelogs.room_changelog_items']);
+        $car->load(['provider', 'room_documents', 'costline',]);
         return response()->json($car, 200);
     }
 
@@ -271,7 +207,7 @@ class RoomRentalController extends Controller
             $car = Room::find($carDocument->room_id);
             $car->load(['provider', 'costline', 'room_documents' => function ($query) {
                 $query->orderBy('expiration_date', 'desc');
-            }, 'room_changelogs.room_changelog_items']);
+            }]);
             return response()->json($car, 200);
         } catch (Exception $e) {
             return response()->json($e->getMessage(), 500);
@@ -303,7 +239,7 @@ class RoomRentalController extends Controller
             $car = Room::find($carDocument->room_id);
             $car->load(['provider', 'costline', 'room_documents' => function ($query) {
                 $query->orderBy('expiration_date', 'desc');
-            }, 'room_changelogs.room_changelog_items']);
+            }]);
             return response()->json($car, 200);
         } else {
             foreach ($archives as $archive) {
@@ -315,7 +251,6 @@ class RoomRentalController extends Controller
             }
 
             $data['room_document_id'] = $carDocument->id;
-            ApprovalRoomDocument::create($data);
             return response()->json([], 200);
         }
     }
@@ -334,268 +269,12 @@ class RoomRentalController extends Controller
         }
         $room->load(['provider', 'costline', 'room_documents' => function ($query) {
             $query->orderBy('expiration_date', 'desc');
-        }, 'room_changelogs.room_changelog_items']);
+        }]);
         return response()->json($room, 200);
     }
 
-    //changelogs
-    public function storeChangelog(RoomRentalChangelogRequest $request, Room $car)
-    {
-        $data = $request->validated();
-        if ($request->hasFile('invoice')) {
-            $document = $request->file('invoice');
-            $data['invoice'] = uniqid() . '_' . time() . '_' . $document->getClientOriginalName();
-            $document->move(public_path('documents/roomrental/invoices'), $data['invoice']);
-        }
-        $data['room_id'] = $car->id;
-        $carChangelog = RoomChangelog::create($data);
-        if (!empty($data['items']) && is_array($data['items'])) {
-            foreach ($data['items'] as $item) {
-                RoomChangelogItem::create([
-                    'name' => $item,
-                    'room_changelog_id' => $carChangelog->id
-                ]);
-            }
-        }
-
-        return response()->json($car->load(['user', 'costline', 'room_changelogs' => function ($query) {
-            $query->orderBy('created_at', 'desc');
-        }, 'room_changelogs.room_changelog_items', 'checklist']));
-    }
-
-    public function updateChangelog(RoomRentalChangelogRequest $request, RoomChangelog $carChangelog)
-    {
-        $data = $request->validated();
-        $fileName = $carChangelog->invoice;
-        $file_path = "documents/roomrental/invoices/$fileName";
-        if ($request->hasFile('invoice')) {
-            if (file_exists(public_path($file_path))) {
-                unlink(public_path($file_path));
-            }
-            $document = $request->file('invoice');
-            $data['invoice'] = uniqid() . '_' . time() . '_' . $document->getClientOriginalName();
-            $document->move(public_path('documents/roomrental/invoices'), $data['invoice']);
-        }
-        $carChangelog->update($data);
-
-        if (!empty($data['items']) && is_array($data['items'])) {
-            RoomChangelogItem::where('room_changelog_id', $carChangelog->id)->delete();
-            foreach ($data['items'] as $item) {
-                RoomChangelogItem::create([
-                    'name' => $item,
-                    'room_changelog_id' => $carChangelog->id
-                ]);
-            }
-        }
-        $car = Room::find($carChangelog->car_id);
-        return response()->json($car->load(['user', 'costline', 'room_changelogs' => function ($query) {
-            $query->orderBy('created_at', 'desc');
-        }, 'room_changelogs.room_changelog_items', 'checklist']));
-    }
-
-    public function destroyChangelog(RoomChangelog $carChangelog)
-    {
-        $car = Room::find($carChangelog->car_id);
-        $fileName = $carChangelog->invoice;
-        $file_path = "documents/roomrental/invoices/$fileName";
-        if (file_exists(public_path($file_path))) {
-            unlink(public_path($file_path));
-        }
-        $carChangelog->delete();
-        return response()->json($car->load(['user', 'costline', 'room_changelogs' => function ($query) {
-            $query->orderBy('created_at', 'desc');
-        }, 'room_changelogs.room_changelog_items', 'checklist']));
-    }
-
-    public function showChangelogInvoice(RoomChangelog $carChangelog)
-    {
-        $fileName = $carChangelog->invoice;
-        $file_path = "documents/roomrental/invoices/$fileName";
-        if (file_exists(public_path($file_path))) {
-            ob_end_clean();
-            return response()->file(public_path($file_path));
-        }
-        abort(404, 'Factura no encontrada');
-    }
-
-    //checklist
-    public function showChecklist(Room $car)
-    {
-        $checklist = ChecklistCar::where('car_id', $car->id)->orderBy('created_at', 'desc')->paginate();
-        return Inertia::render('RoomRental/checklist/CheckList', [
-            'car' => $car->load('user'),
-            'checklist' => $checklist
-        ]);
-    }
-    public function sendChecklistImages(CheckListCar $checklist)
-    {
-        $basePath = 'image/checklist/checklistcar';
-        $images = [];
-
-        // Campos y sus traducciones
-        $fields = [
-            'maintenanceTools' => 'Foto Herraientas de Mantenimiento',
-            'preventionTools' => 'Foto Herramientas de Prevencion',
-            'imageSpareTire' => 'Foto Llanta de Repuesto',
-            'front' => 'Foto Delantera',
-            'leftSide' => 'Foto Lateral Izquierda',
-            'rightSide' => 'Foto Lateral Derecha',
-            'interior' => 'Foto Interior',
-            'rearLeftTire' => 'Foto Llanta Trasera Izquierda',
-            'rearRightTire' => 'Foto Llanta Trasera Derecha',
-            'frontRightTire' => 'Foto Llanta Delantera Derecha',
-            'frontLeftTire' => 'Foto Llanta Delantera Izquierda',
-            'back' => 'Foto Trasera',
-            'dashboard' => 'Foto de Tablero',
-            'rearSeat' => 'Foto de Asiento Trasero'
-        ];
-
-        foreach ($fields as $field => $translatedName) {
-            $imagePath = public_path($basePath . '/' . $checklist->$field);
-
-            if (!empty($checklist->$field) && file_exists($imagePath)) {
-                $absolutePath = asset($basePath . '/' . $checklist->$field);
-                $images[] = [$translatedName => $absolutePath];
-            }
-        }
-
-        return response()->json($images);
-    }
 
 
-    public function indexApprovelCarDocument()
-    {
-        $changes = ApprovalRoomDocument::with([
-            'room_documents:id,room_id',
-            'room_documents.room:id,plate'
-        ])->get();
-        return Inertia::render("RoomRental/approvals/IndexApprovals", [
-            'change' => $changes
-        ]);
-    }
 
-    public function approveChanges($id)
-    {
-        $archives = ['ownership_card', 'technical_review', 'soat', 'insurance', 'rental_contract'];
-        try {
-            $approve_car = ApprovalRoomDocument::find($id);
-            if ($approve_car) {
-                $car = RoomDocument::find($approve_car->car_document_id);
-                foreach ($archives as $archive) {
-                    if ($car->$archive && $car->$archive !== $approve_car->$archive) {
-                        $fileName = $car->$archive;
-                        $file_path = "documents/roomrental/room_documents/$fileName";
-                        if (file_exists(public_path($file_path))) {
-                            unlink(public_path($file_path));
-                        }
-                    }
-                }
-                $car->update($approve_car->toArray());
 
-                $approve_car->delete();
-                $pendingApprovals = ApprovalRoomDocument::where('room_document_id', $car->id)->get();
-
-                foreach ($pendingApprovals as $approval) {
-                    foreach ($archives as $item) {
-                        if ($approval->$item) {
-                            $file_path = "documents/roomrental/room_documents/{$approval->file_name}";
-                            if (file_exists(public_path($file_path))) {
-                                unlink(public_path($file_path));
-                            }
-                        }
-                    }
-                    $approval->delete();
-                }
-            }
-            $approve_car->delete();
-            return response()->json([], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function deleteChanges($id)
-    {
-        $archives = ['ownership_card', 'technical_review', 'soat', 'insurance', 'rental_contract'];
-        $changes = ApprovalRoomDocument::find($id);
-        foreach ($archives as $item) {
-            if ($changes->$item) {
-                $file_path = "documents/roomrental/room_documents/{$changes->$item}";
-                if (file_exists(public_path($file_path))) {
-                    unlink(public_path($file_path));
-                }
-            }
-        }
-        $changes->delete();
-        return response()->json([], 200);
-    }
-
-    public function showDocumentsApproval(ApprovalRoomDocument $approval_car, $fieldName)
-    {
-        $fileName = $approval_car->$fieldName;
-        $file_path = "documents/roomrental/room_documents/$fileName";
-        if (file_exists(public_path($file_path))) {
-            ob_end_clean();
-            return response()->file(public_path($file_path));
-        }
-        abort(404, 'Archivo no encontrada');
-    }
-
-    public function approveAlarms()
-    {
-        $approval = RoomDocument::whereHas('approvel_room_document')->get();
-        return response()->json($approval, 200);
-    }
-
-    public function acceptOrDecline(RoomChangelog $changelog, $is_accepted)
-    {
-        $hasPermissions = $this->notHaveManagerPermission();
-
-        if ($hasPermissions) {
-            abort(403, 'Acción no permitida');
-        }
-
-        $changelog->update(['is_accepted' => $is_accepted]);
-        $car = Room::with([
-            'user',
-            'costline',
-            'room_changelogs' => function ($query) {
-                $query->orderBy('created_at', 'desc');
-            },
-            'room_changelogs.room_changelog_items',
-            'checklist'
-        ])
-            ->find($changelog->car_id);
-
-        return response()->json($car);
-    }
-
-    public function checkListAlarms()
-    {
-        $user = Auth::user();
-        $hasPermissions = $this->notHaveManagerPermission();
-        $checkList = $hasPermissions
-            ? Room::where('user_id', $user->id)
-            : Room::query();
-
-        $checkList = $checkList->with(['checklist' => function ($query) {
-            $query->orderBy('created_at', 'desc');
-        }])
-            ->get();
-        $checkList = $checkList->filter(function ($car) {
-            $lastChecklist = $car->checklist->first();
-            return !$lastChecklist || $lastChecklist->created_at < Carbon::now()->subDays(7);
-        });
-
-        $checkList->each(function ($car) {
-            $lastChecklist = $car->checklist->first();
-            $car->days = $lastChecklist
-                ? Carbon::now()->diffInDays(Carbon::parse($lastChecklist->created_at)->addDays(7)) . ' R'
-                : 'Sin checklist';
-        });
-
-        return response()->json($checkList->values(), 200);
-    }
 }

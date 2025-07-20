@@ -36,11 +36,6 @@ class Room extends Model
         return $this->hasMany(RoomDocument::class, 'room_id');
     }
 
-    public function room_changelogs()
-    {
-        return $this->hasMany(RoomChangelog::class, 'room_id');
-    }
-
     public function getDocumentsToExpireAttribute()
     {
         return $this->room_documents()->get()->filter(fn($rm)=>$rm->expiration_state)->count();

@@ -26,10 +26,6 @@ class RoomDocument extends Model
         return $this->belongsTo(Room::class, 'room_id');
     }
 
-    public function approvel_room_document()
-    {
-        return $this->hasMany(ApprovalRoomDocument::class);
-    }
 
     public function getExpirationStateAttribute () {
         $today = Carbon::now();
