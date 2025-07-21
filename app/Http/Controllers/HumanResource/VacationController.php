@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\HumanResource;
 
+use App\Helpers\FileHandler;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VacationRequest\CreateVacationRequest;
 use App\Http\Requests\VacationRequest\UpdateVacationRequest;
@@ -140,26 +141,13 @@ class VacationController extends Controller
 
     public function download($filename)
     {
-        $filePath = '/documents/permissions/' . $filename;
-        $path = public_path($filePath);
-        if (file_exists($path)) {
-            return response()->download($path, $filename, [
-                'Content-Type' => 'application/pdf',
-            ]);
-        }
-        abort(404);
+        return FileHandler::downloadFile('/documents/permissions/', $filename);
     }
 
     public function showDocument(Vacation $id)
     {
         $fileName = $id->doc_permission;
-        $filePath = 'documents/permissions/' . $fileName;
-        $path = public_path($filePath);
-        if (file_exists($path)) {
-            return response()->file($path);
-        }
-
-        abort(404, 'Documento no encontrado');
+        return FileHandler::showFile('documents/permissions/', $fileName);
     }
 
     public function alarmPermissions()

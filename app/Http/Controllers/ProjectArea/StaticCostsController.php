@@ -16,6 +16,7 @@ use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Log;
 use App\Constants\PintConstants;
+use App\Helpers\FileHandler;
 use ZipArchive;
 
 class StaticCostsController extends Controller
@@ -87,13 +88,7 @@ class StaticCostsController extends Controller
     public function download_ac_photo(StaticCost $static_cost_id)
     {
         $fileName = $static_cost_id->photo;
-        $filePath = '/documents/staticcosts/' . $fileName;
-        $path = public_path($filePath);
-        if (file_exists($path)) {
-            ob_end_clean();
-            return response()->file($path);
-        }
-        abort(404, 'Documento no encontrado');
+        return FileHandler::showFile('/documents/staticcosts/', $fileName);
     }
 
     public function update(Request $request, StaticCost $additional_cost)
@@ -127,7 +122,6 @@ class StaticCostsController extends Controller
                 $this->file_delete($filename, 'documents/staticcosts/');
             }
             $data['photo'] = $this->file_store($request->file('photo'), 'documents/staticcosts/');
-
         } else if ($request->photo_status === 'stable') {
             $filename = $additional_cost->photo;
             if ($filename) {
@@ -224,7 +218,6 @@ class StaticCostsController extends Controller
                 $zip->close();
                 ob_end_clean();
                 return response()->download($zipFilePath)->deleteFileAfterSend(true);
-
             } else {
                 Log::error('No se pudo abrir el archivo ZIP para escritura.');
                 return response()->json(['error' => 'No se pudo abrir el archivo ZIP para escritura.'], 500);

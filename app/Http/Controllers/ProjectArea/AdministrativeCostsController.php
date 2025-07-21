@@ -14,6 +14,7 @@ use App\Http\Requests\CostsRequest\AdministrativeCostsRequest;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Log;
 use App\Exports\AdministrativeCostsExport;
+use App\Helpers\FileHandler;
 use ZipArchive;
 
 class AdministrativeCostsController extends Controller
@@ -128,13 +129,7 @@ class AdministrativeCostsController extends Controller
     public function download_ac_photo(AdministrativeCost $static_cost_id)
     {
         $fileName = $static_cost_id->photo;
-        $filePath = '/documents/administrativecosts/' . $fileName;
-        $path = public_path($filePath);
-        if (file_exists($path)) {
-            ob_end_clean();
-            return response()->file($path);
-        }
-        abort(404, 'Documento no encontrado');
+        return FileHandler::showFile('/documents/administrativecosts/', $fileName);
     }
 
     public function update(Request $request, AdministrativeCost $additional_cost)

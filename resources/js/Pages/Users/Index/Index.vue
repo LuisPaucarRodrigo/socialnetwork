@@ -8,8 +8,8 @@
         <Toaster richColors />
         <div class="min-w-full">
             <TableHeader v-model:formSearch="formSearch" v-model:users="users" />
-            <UsersTable :users="users" :formSearch="formSearch" :platforms="platforms"
-                :confirmUserDeletion="confirmUserDeletion" />
+            <UsersTable v-model:users="users" :formSearch="formSearch" :platforms="platforms"
+                :confirmUserDeletion="confirmUserDeletion" v-model:loading="loading" />
         </div>
         <SuspenseWrapper :when="showDeleteModal">
             <template #component>
@@ -22,7 +22,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import { defineAsyncComponent, ref } from 'vue';
+import { defineAsyncComponent, onMounted, ref } from 'vue';
 import { Toaster } from 'vue-sonner';
 import UsersTable from './components/UsersTable.vue';
 import TableHeader from './components/TableHeader.vue';
@@ -31,13 +31,18 @@ import SuspenseWrapper from '@/Components/SuspenseWrapper.vue';
 
 const DeleteModal = defineAsyncComponent(() => import('./components/DeleteModal.vue'));
 
-const { user } = defineProps({
-    user: Object
-})
-
 const showDeleteModal = ref(false)
 const deleteModal = ref(null)
-const users = ref(user)
+const users = ref([])
+const loading = ref(true)
+
+async function getUsers() {
+    const res = await axios.get(route('getUsers'));
+    users.value = res.data;
+    loading.value = false;
+}
+
+onMounted(() => getUsers())
 const { invokeWhenReady } = useLazyRefInvoker(deleteModal, showDeleteModal);
 
 const platforms = [

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ShoppingArea;
 
+use App\Helpers\FileHandler;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PurchaseQuoteRequest\CreatePurchaseQuoteRequest;
 use App\Http\Requests\PurchaseRequest\CreatePurchaseRequest;
@@ -65,14 +66,14 @@ class PurchaseRequestController extends Controller
     }
 
     public function edit($id)
-    {   
+    {
         $purchase = Purchasing_request::with('products')->find($id);
         $type = $purchase->products->first()->type;
-        
+
         return Inertia::render('ShoppingArea/PurchaseRequest/FormPurchaseRequest/CreateAndUpdateRequest', [
             'purchase' => $purchase,
             'typeProduct' => TypeProduct::all(),
-            'allProducts' => Purchase_product::with('resource_type')->where('type',$type)->get(),
+            'allProducts' => Purchase_product::with('resource_type')->where('type', $type)->get(),
             'resourceType' => ResourceType::all()
         ]);
     }
@@ -119,7 +120,6 @@ class PurchaseRequestController extends Controller
         return Inertia::render('ShoppingArea/PurchaseRequest/PurchasingDetails', ['details' => Purchasing_request::with('project', 'products')->find($id)]);
     }
 
-
     public function quote(CreatePurchaseQuoteRequest $request)
     {
         $data = $request->validated();
@@ -142,11 +142,7 @@ class PurchaseRequestController extends Controller
     public function showDocument(Purchase_quote $id)
     {
         $fileName = $id->purchase_doc;
-        $filePath = public_path("documents/quote/$fileName");
-        if (file_exists($filePath)) {
-            return response()->file($filePath);
-        }
-        abort(404, 'Documento no encontrado');
+        return FileHandler::showFile('documents/quote/', $fileName);
     }
 
     public function reject_request(Purchasing_request $id)
@@ -233,7 +229,7 @@ class PurchaseRequestController extends Controller
         });
 
         $combined_purchasing_requests = $purchasing_requests_by_title->merge($purchasing_requests_by_code)->unique();
-        return response()->json($combined_purchasing_requests,200);
+        return response()->json($combined_purchasing_requests, 200);
     }
 
     public function purchase_quote_complete_details(Purchase_quote $id)

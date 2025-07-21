@@ -9,7 +9,7 @@
         <TableHeader :createPayment="createPayment" :filterForm="filterForm" />
         <PaymentTable v-model:payments="payments" :filterForm="filterForm" :openDocumentModal="openDocumentModal"
             :cost_line="cost_line" :zones="zones" :banks="banks" :states="states" v-model:loading="loading"
-            :confirmPaymentDeletion="confirmPaymentDeletion" />
+            :confirmPaymentDeletion="confirmPaymentDeletion" :openRejectedModal="openRejectedModal" />
 
         <SuspenseWrapper :when="showPaymentsForm">
             <template #component>
@@ -20,13 +20,19 @@
 
         <SuspenseWrapper :when="showDocumentForm">
             <template #component>
-                <DocumentForm ref="documentForm" :payments="payments" />
+                <ProofPaymentForm ref="documentForm" :payments="payments" />
             </template>
         </SuspenseWrapper>
 
         <SuspenseWrapper :when="showConfirmPaymentDelete">
             <template #component>
                 <ConfirmPaymentDelete ref="confirmPaymentDelete" :payments="payments" />
+            </template>
+        </SuspenseWrapper>
+
+        <SuspenseWrapper :when="showRejection">
+            <template #component>
+                <Rejection ref="rejection" :payments="payments" />
             </template>
         </SuspenseWrapper>
     </AuthenticatedLayout>
@@ -42,8 +48,12 @@ import { Toaster } from 'vue-sonner';
 import { Head } from '@inertiajs/vue3';
 
 const PaymentsForm = defineAsyncComponent(() => import('./components/PaymentsForm.vue'));
-const DocumentForm = defineAsyncComponent(() => import('./components/DocumentForm.vue'));
+const ProofPaymentForm = defineAsyncComponent(() => import('./components/ProofPaymentForm.vue'));
 const ConfirmPaymentDelete = defineAsyncComponent(() => import('./components/ConfirmPaymentDelete.vue'));
+const Rejection = defineAsyncComponent(() => import('./components/Rejection.vue'));
+
+const showRejection = ref(false)
+const rejection = ref(null)
 
 const showPaymentsForm = ref(false)
 const paymentsForm = ref(null)
@@ -59,6 +69,7 @@ const loading = ref(true)
 const { invokeWhenReady: invokePaymentsForm } = useLazyRefInvoker(paymentsForm, showPaymentsForm);
 const { invokeWhenReady: invokeDocumentForm } = useLazyRefInvoker(documentForm, showDocumentForm);
 const { invokeWhenReady: invokeConfirmPaymentDelete } = useLazyRefInvoker(confirmPaymentDelete, showConfirmPaymentDelete);
+const { invokeWhenReady: invokeRejection } = useLazyRefInvoker(rejection, showRejection);
 
 const { zones, costLines, providers, banks } = defineProps({
     zones: Array,
@@ -68,7 +79,7 @@ const { zones, costLines, providers, banks } = defineProps({
 })
 
 const cost_line = costLines.map(item => item.name)
-const states = ['Pendiente', 'En Proceso', 'Completado']
+const states = ['Rechazado', 'Pendiente', 'En Proceso', 'Completado']
 const payments = ref([])
 
 onMounted(async () => {
@@ -115,5 +126,9 @@ function openDocumentModal(paymentId) {
 
 function confirmPaymentDeletion(paymentId) {
     invokeConfirmPaymentDelete('confirmPaymentDeletion', paymentId)
+}
+
+function openRejectedModal(paymentId) {
+    invokeRejection('openRejectedModal', paymentId)
 }
 </script>

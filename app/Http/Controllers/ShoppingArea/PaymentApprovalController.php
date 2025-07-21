@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\ShoppingArea;
 
 use App\Constants\PextConstants;
+use App\Helpers\FileHandler;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ShoppingArea\PaymentApproval\PaymentApprovalRequest;
 use App\Models\CostLine;
 use App\Models\Provider;
 use App\Models\ShoppingArea\PaymentApproval;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class PaymentApprovalController extends Controller
@@ -30,7 +32,7 @@ class PaymentApprovalController extends Controller
 
     public function getPaymentApproval()
     {
-        $data = PaymentApproval::with('cost_line')->paginate(20);
+        $data = PaymentApproval::with('cost_line')->latest()->paginate(20);
         $data->getCollection()->each(function ($item) {
             $item->append('state');
         });
@@ -39,7 +41,7 @@ class PaymentApprovalController extends Controller
 
     public function searchPaymentApproval(Request $request)
     {
-        $data = PaymentApproval::with('cost_line');
+        $data = PaymentApproval::with('cost_line')->latest();
         $searchQuery = $request->searchQuery;
         $data->where(function ($e) use ($searchQuery) {
             $e->where('account_number', 'like', "%$searchQuery%")
@@ -77,7 +79,15 @@ class PaymentApprovalController extends Controller
     public function store(PaymentApprovalRequest $request)
     {
         $validateData = $request->validated();
+        $name = $validateData['ruc'] . '_' . $validateData['beneficiary'];
+        if ($request->document) {
+            $validateData['document'] = FileHandler::generateFilename($name, 'Documento');
+        }
         $item = PaymentApproval::create($validateData)->fresh();
+        if ($request->document) {
+            $url = 'documents/shoppingArea/paymentApproval/';
+            FileHandler::storeFile($request->file('document'), $url, $validateData['document']);
+        }
         $item->append('state');
         $item->load('cost_line');
         return response()->json($item, 200);
@@ -86,37 +96,42 @@ class PaymentApprovalController extends Controller
     public function document(Request $request, $id)
     {
         $validateData = $request->validate([
-            'document' => 'required|file'
+            'proof_payment' => 'required|file'
         ]);
+        $payment = PaymentApproval::with('cost_line')->find($id);
+        $name = $payment->ruc . '_' . $payment->beneficiary;
+        $validateData['proof_payment'] = FileHandler::generateFilename($name, 'Constancia de Pago');
+        try {
+            $payment->update([
+                'proof_payment' => $validateData['proof_payment'],
+                'is_validated' => 1,
+                'reason_rejection' => null,
+            ]);
+            $url = 'documents/shoppingArea/paymentApproval/';
+            FileHandler::storeFile($request->file('proof_payment'), $url, $validateData['proof_payment']);
+            $payment->append('state');
+            return response()->json($payment, 200);
+        } catch (\Exception $e) {
+            return response()->json($e->getMessage(), 500);
+        }
+    }
 
-        $url = 'documents/shoppingArea/paymentApproval/';
-        $validateData['document'] = $this->storeArchives($request->file('document'), $url);
-
-        $payment = PaymentApproval::find($id);
-        $payment->update([
-            'document' => $validateData['document']
+    public function rejected(Request $request, $id)
+    {
+        $validateData = $request->validate([
+            'reason_rejection' => 'required',
+            'is_validated' => 'required'
         ]);
+        $payment = PaymentApproval::with('cost_line')->find($id);
+        $payment->update($validateData);
         $payment->append('state');
-        $payment->load('cost_line');
-
         return response()->json($payment, 200);
     }
 
-    private function storeArchives($file, $url)
-    {
-        $imageUrl = time() . '._' . $file->getClientOriginalName();
-        $file->move(public_path($url), $imageUrl);
-        return $imageUrl;
-    }
-
-    public function download_document($id)
+    public function download_document($id, $kind)
     {
         $payment = PaymentApproval::find($id);
-        $filePath = 'documents/shoppingArea/paymentApproval/' . $payment->document;
-        $path = public_path($filePath);
-        if (file_exists($path)) {
-            return response()->file($path);
-        }
+        return FileHandler::showFile('documents/shoppingArea/paymentApproval/', $payment->$kind);
     }
 
     public function delete($id)
@@ -128,7 +143,8 @@ class PaymentApprovalController extends Controller
 
     public function pending_payments()
     {
-        $payment = PaymentApproval::whereNull('document')->get();
+        $payment = PaymentApproval::whereNull('is_validated')
+            ->get();
         return response()->json($payment, 200);
     }
 
@@ -137,8 +153,9 @@ class PaymentApprovalController extends Controller
         $validateData = $request->validate([
             'is_validated' => 'required'
         ]);
-        $payment = PaymentApproval::find($id);
+        $payment = PaymentApproval::with('cost_line')->find($id);
         $payment->update($validateData);
+        $payment->append('state');
         return response()->json($payment, 200);
     }
 }

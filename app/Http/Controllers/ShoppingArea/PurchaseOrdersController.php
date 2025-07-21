@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\ShoppingArea;
 
+use App\Helpers\FileHandler;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PurchaseOrderRequest\CreatePurchaseOrderRequest;
 use App\Models\Purchase_order;
@@ -109,11 +110,7 @@ class PurchaseOrdersController extends Controller
     public function showFacture(Purchase_order $id)
     {
         $fileName = $id->facture_doc;
-        $filePath = public_path("documents/purchaseorder/facture/$fileName");
-        if (file_exists($filePath)) {
-            return response()->file($filePath);
-        }
-        abort(404, 'Documento no encontrado');
+        return FileHandler::showFile('documents/purchaseorder/facture/', $fileName);
     }
 
     public function search(Request $request)

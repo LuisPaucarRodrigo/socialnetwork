@@ -15,10 +15,15 @@ class ManagementRolsController extends Controller
     public function rols_index()
     {
         return Inertia::render('Rols/Rol', [
-            'rols' => Role::where('id', '!=', 1)->with('functionalities')->paginate(),
             'permissions' => [],
-            'modules' => Module::with('submodules.functionalities')->where('type', 'module')->get() 
+            'modules' => Module::with('submodules.functionalities')->where('type', 'module')->get()
         ]);
+    }
+
+    public function getRols()
+    {
+        $roles = Role::where('id', '!=', 1)->with('functionalities')->paginate();
+        return response()->json($roles, 200);
     }
 
     public function store(CreateRolRequest $request)
@@ -45,7 +50,7 @@ class ManagementRolsController extends Controller
     public function delete($id)
     {
         Role::destroy($id);
-        return to_route('rols.index');
+        return response()->json([], 200);
     }
 
     public function details($id)

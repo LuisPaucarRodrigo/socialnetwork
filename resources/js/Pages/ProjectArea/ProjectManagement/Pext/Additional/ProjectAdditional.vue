@@ -169,18 +169,4 @@ async function submitQuickQuote() {
 function deleteValoration(index) {
     formQuote.project_quote_valuations.splice(index, 1)
 }
-
-
-// function modalExportExcel() {
-//     modalExport.value = !modalExport.value
-// }
-
-// async function exportExcel() {
-//     const uniqueParam = `timestamp=${new Date().getTime()}`;
-//     let url =
-//         route("projectmanagement.pext.export.expenses") +
-//         `?start_date=${encodeURIComponent(formExport.startDate)}&end_date=${encodeURIComponent(formExport.endDate)}&${uniqueParam}`;
-//     window.location.href = url;
-//     modalExportExcel()
-// }
 </script>

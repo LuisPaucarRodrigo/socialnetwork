@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\HumanResource;
 
+use App\Helpers\FileHandler;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\HumanResource\DocumentCreateRequest;
 use App\Http\Requests\HumanResource\DocumentUpdateRequest;
@@ -291,25 +292,13 @@ class DocumentController extends Controller
     public function downloadDocument(Document $document)
     {
         $fileName = $document->title;
-        $filePath = "documents/documents/$fileName";
-        $path = public_path($filePath);
-        if (file_exists($path)) {
-            ob_end_clean();
-            return response()->download($path, $fileName);
-        }
-        abort(404, 'Documento no encontrado');
+        return FileHandler::downloadFile('documents/documents/', $fileName);
     }
 
     public function showDocument(Document $document)
     {
         $fileName = $document->title;
-        $filePath = '/documents/documents/' . $fileName;
-        $path = public_path($filePath);
-        if (file_exists($path)) {
-            ob_end_clean();
-            return response()->file($path);
-        }
-        abort(404, 'Documento no encontrado');
+        return FileHandler::showFile('/documents/documents/', $fileName);
     }
 
     public function massiveZip(Request $request)

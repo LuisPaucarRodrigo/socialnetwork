@@ -81,13 +81,21 @@
                             <InputError :message="form.errors.beneficiary" />
                         </div>
                     </div>
-
                     <div class="">
-                        <InputLabel for="description">Descripcion</InputLabel>
+                        <InputLabel for="description">Descripción</InputLabel>
                         <div class="mt-2">
                             <textarea v-model="form.description" autocomplete="off" id="description"
                                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                             <InputError :message="form.errors.description" />
+                        </div>
+                    </div>
+                    <div>
+                        <InputLabel class="font-medium leading-6 text-gray-900">
+                            Documento
+                        </InputLabel>
+                        <div class="mt-2">
+                            <InputFile v-model="form.document" accept=".pdf" />
+                            <InputError :message="form.errors.document" />
                         </div>
                     </div>
                 </div>
@@ -104,12 +112,14 @@
 </template>
 <script setup>
 import InputError from '@/Components/InputError.vue';
+import InputFile from '@/Components/InputFile.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
 import { notify } from '@/Components/Notification';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { useAxiosErrorHandler } from '@/utils/axiosError';
+import { toFormData } from '@/utils/utils';
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
@@ -130,7 +140,7 @@ const initialState = {
     bank: '',
     ruc: '',
     beneficiary: '',
-    document: '',
+    document: null,
     cost_line_id: '',
     provider_id: ''
 }
@@ -157,7 +167,8 @@ function closeModal() {
 async function submit() {
     let url = route('payment.approval.store')
     try {
-        const res = await axios.post(url, form)
+        let formData = toFormData(form)
+        const res = await axios.post(url, formData)
         updateFrontEnd(res.data, 'create')
     } catch (error) {
         useAxiosErrorHandler(error, form)

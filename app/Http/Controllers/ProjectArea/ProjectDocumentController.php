@@ -3,14 +3,10 @@
 namespace App\Http\Controllers\ProjectArea;
 
 use App\Http\Controllers\Controller;
-use App\Models\Project;
-use Exception;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
-use Response;
 
 class ProjectDocumentController extends Controller
 {
@@ -141,10 +137,6 @@ class ProjectDocumentController extends Controller
             return response()->json(['message' => 'Archivo no encontrado'], 404);
         }
     }
-
-
-
-
 
 
     public function project_doc_download(Request $request)

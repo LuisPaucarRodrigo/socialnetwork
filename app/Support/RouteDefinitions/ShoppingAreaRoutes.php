@@ -323,8 +323,16 @@ class ShoppingAreaRoutes
                 'permission' => true,
                 'name' => 'payment.approval.document',
             ],
+
             [
-                'uri' => 'payment_approval/download_document/{id}',
+                'uri' => 'payment_approval/rejected/{id}',
+                'method' => 'post',
+                'action' => [PaymentApprovalController::class, 'rejected'],
+                'permission' => true,
+                'name' => 'payment.approval.rejected',
+            ],
+            [
+                'uri' => 'payment_approval/download_document/{id}/kind/{kind}',
                 'method' => 'get',
                 'action' => [PaymentApprovalController::class, 'download_document'],
                 'permission' => true,

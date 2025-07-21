@@ -15,6 +15,7 @@
                     'see_user',
                     'edit_user',
                     'delete_user',
+                    'link_user',
                 ]"></TableTitle>
             </tr>
         </template>
@@ -32,7 +33,7 @@
                     'delete_user',
                 ]">
                     <div class="flex space-x-3 justify-center">
-                        <button v-permission="'edit_user'" v-if="(user.platform === 'Web/Movil' || user.platform === 'Movil')
+                        <button v-permission="'link_user'" v-if="(user.platform === 'Web/Movil' || user.platform === 'Movil')
                             && !user.employee" @click="linkEmployee(user.id)">
                             <LinkIcon />
                         </button>
@@ -54,7 +55,7 @@
     </TableStructure>
     <div v-if="users.data"
         class="flex flex-col items-center border-t bg-white px-5 py-3 xs:flex-row xs:justify-between">
-        <pagination :links="users.links" />
+        <PaginationAxios :links="users.links" @navigate="fetchExpensesByUrl" />
     </div>
 </template>
 <script setup>
@@ -63,16 +64,18 @@ import TableStructure from '@/Layouts/TableStructure.vue';
 import TableRow from '@/Components/TableRow.vue';
 import TableHeaderFilter from '@/Components/TableHeaderFilter.vue';
 import { Link } from '@inertiajs/vue3';
-import Pagination from '@/Components/Pagination.vue';
 import { notify, notifyError } from '@/Components/Notification';
 import { ShowIcon, EditIcon, DeleteIcon, LinkIcon } from '@/Components/Icons';
+import PaginationAxios from '@/Components/PaginationAxios.vue';
 
-const { users, formSearch, platforms, confirmUserDeletion } = defineProps({
-    users: Object,
+const { formSearch, platforms, confirmUserDeletion } = defineProps({
     formSearch: Object,
     platforms: Array,
     confirmUserDeletion: Function
 })
+
+const users = defineModel('users')
+const loading = defineModel('loading')
 
 async function linkEmployee(id) {
     let url = route('users.linkEmployee', { user: id })
@@ -101,6 +104,18 @@ function updateFrontEnd(action, data) {
         const index = validations.findIndex(item => item.dni === data.dni)
         validations[index].employee = data
         notify(`El vínculo se realizó correctamente con ${data.name}`);
+    }
+}
+
+async function fetchExpensesByUrl(url) {
+    loading.value = true;
+    try {
+        const res = await axios.get(url);
+        users.value = res.data;
+    } catch (err) {
+        console.error(err);
+    } finally {
+        loading.value = false;
     }
 }
 </script>

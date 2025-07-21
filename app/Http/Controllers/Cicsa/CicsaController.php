@@ -356,7 +356,7 @@ class CicsaController extends Controller
         try {
             if ($request->hasFile('document')) {
                 $document = $request->file('document');
-                $validateData['document'] = time() . '._' . $document->getClientOriginalName();
+                $validateData['document'] =  $document->getClientOriginalName() . '-OC-' . time();
             }
             $validateData['amount'] = floatval($validateData['amount']);
             $purchase_order = CicsaPurchaseOrder::updateOrCreate(

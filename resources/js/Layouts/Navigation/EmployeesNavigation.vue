@@ -158,21 +158,21 @@
         :transitiondemonstration="showingHumanResource">
         <div class="relative" v-permission="'doc_alarm_hr'">
             <div class="absolute top-0 right-0 flex justify-end gap-3">
-                <button @click="() => {
+                <button v-if="noDocuments.length > 0" @click="() => {
                     showNoDocumentsAlarms = !showNoDocumentsAlarms;
                     showDocumentsToExpireAlarms = false;
                 }"
                     class="cursor-pointer bg-indigo-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
-                    <span v-if="noDocuments.length > 0">
+                    <span>
                         {{ noDocuments.length }}
                     </span>
                 </button>
-                <button @click="() => {
+                <button v-if="documentsToExpire.length > 0" @click="() => {
                     showDocumentsToExpireAlarms = !showDocumentsToExpireAlarms;
                     showNoDocumentsAlarms = false;
                 }"
                     class="cursor-pointer bg-red-500 text-white rounded-full h-6 w-6 flex items-center justify-center text-xs leading-4">
-                    <span v-if="documentsToExpire.length > 0">
+                    <span>
                         {{ documentsToExpire.length }}
                     </span>
                 </button>

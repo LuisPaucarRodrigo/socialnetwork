@@ -31,18 +31,6 @@
         </p>
         <div class="text-sm ">
             <div class="grid grid-cols-1 gap-y-1">
-                <div v-permission="'pro_pext_tasks'">
-                    <Link v-if="item?.initial_budget > 0" :href="route('tasks.index', { id: item.id })"
-                        class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Tareas
-                    </Link>
-                    <span v-else class="text-gray-400">Tareas</span>
-                </div>
-                <div v-permission="'pro_pext_one_calendar'">
-                    <Link v-if="item?.initial_budget > 0" :href="route('projectscalendar.show', { project: item.id })"
-                        class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Calendario
-                    </Link>
-                    <span v-else class="text-gray-400">Calendario</span>
-                </div>
                 <div v-permission="'pro_pext_purchase_expenses'">
                     <Link v-if="item?.initial_budget > 0"
                         :href="route('projectmanagement.pext.expenses.index', { project_id: item.id, fixedOrAdditional: false, status: item.status })"

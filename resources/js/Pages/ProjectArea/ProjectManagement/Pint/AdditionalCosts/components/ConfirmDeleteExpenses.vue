@@ -31,7 +31,6 @@ const deleteAdditional = async () => {
     try {
         const res = await axios.delete(
             route("projectmanagement.deleteAdditionalCost", {
-                project_id: project_id,
                 additional_cost: docId,
             })
         );

@@ -48,6 +48,12 @@ class FunctionalityPermissionSeeder extends Seeder
                 'key_name' => 'delete_user',
                 'module' => 'user_submodule',
                 'permissions' => ['users.index', 'users.destroy']
+            ],
+            [
+                'display_name' => 'Vincular usuario',
+                'key_name' => 'link_user',
+                'module' => 'user_submodule',
+                'permissions' => ['users.index', 'users.linkEmployee']
             ]
         ];
 
@@ -57,31 +63,31 @@ class FunctionalityPermissionSeeder extends Seeder
                 'display_name' => 'Ver tabla roles',
                 'key_name' => 'see_roles_table',
                 'module' => 'roles_submodule',
-                'permissions' => ['rols.index',]
+                'permissions' => ['rols.index', 'getRols']
             ],
             [
                 'display_name' => 'Agregar rol',
                 'key_name' => 'add_role',
                 'module' => 'roles_submodule',
-                'permissions' => ['rols.index', 'rols.store']
+                'permissions' => ['rols.index', 'getRols', 'rols.store']
             ],
             [
                 'display_name' => 'Ver rol',
                 'key_name' => 'see_role',
                 'module' => 'roles_submodule',
-                'permissions' => ['rols.index', 'rols.details']
+                'permissions' => ['rols.index', 'getRols', 'rols.details']
             ],
             [
                 'display_name' => 'Editar rol',
                 'key_name' => 'edit_role',
                 'module' => 'roles_submodule',
-                'permissions' => ['rols.index', 'rols.update']
+                'permissions' => ['rols.index', 'getRols', 'rols.update']
             ],
             [
                 'display_name' => 'Eliminar rol',
                 'key_name' => 'delete_role',
                 'module' => 'roles_submodule',
-                'permissions' => ['rols.index', 'rols.delete']
+                'permissions' => ['rols.index', 'getRols', 'rols.delete']
             ],
         ];
 
@@ -444,7 +450,7 @@ class FunctionalityPermissionSeeder extends Seeder
                     'payment.approval.searchPaymentApproval',
                     'payment.approval.document',
                     'payment.approval.show_document',
-                    'payment.approval.validate', 
+                    'payment.approval.validate',
                     'payment.approval.alarm.pending.payments',
                 ]
             ],
@@ -981,7 +987,11 @@ class FunctionalityPermissionSeeder extends Seeder
                     'projectmanagement.pext.additional.index',
                     'projectmanagement.pext.store.quote',
                     'projectmanagement.pext.additional.store',
+
+                    'pext.additional.expense.index',
+                    'projectmanagement.projectadditional.expenses',
                     'pext.additional.expense.general.index',
+                    'getExpenses.general',
                     'pext.expenses.storeOrUpdate',
                     'pext.expenses.delete',
                     'projectmanagement.pext.expenses.image.show',
@@ -994,7 +1004,6 @@ class FunctionalityPermissionSeeder extends Seeder
                     'projectmanagement.pext.export.pdf.quote',
                     'projectmanagement.pext.additional.reject',
                     'projectmanagement.pext.additional.index_rejected',
-                    'pext.additional.expense.index',
                 ]
             ],
             [
@@ -1006,40 +1015,40 @@ class FunctionalityPermissionSeeder extends Seeder
                     'projectmanagement.liquidation',
                 ]
             ],
-            [
-                'display_name' => 'Tareas de un proyecto',
-                'key_name' => 'pro_pint_tasks',
-                'module' => 'ppropint_submodule',
-                'permissions' => [
-                    'projectmanagement.index',
-                    'tasks.index',
-                    'tasks.create',
-                    'tasks.edit.status',
-                    'tasks.duplicated',
-                    'tasks.edit.date',
-                    'tasks.delete',
-                ]
-            ],
-            [
-                'display_name' => 'Calendario de un proyecto',
-                'key_name' => 'pro_pint_one_calendar',
-                'module' => 'ppropint_submodule',
-                'permissions' => [
-                    'projectmanagement.index',
-                    'projectscalendar.show',
-                ]
-            ],
+            // [
+            //     'display_name' => 'Tareas de un proyecto',
+            //     'key_name' => 'pro_pint_tasks',
+            //     'module' => 'ppropint_submodule',
+            //     'permissions' => [
+            //         'projectmanagement.index',
+            //         'tasks.index',
+            //         'tasks.create',
+            //         'tasks.edit.status',
+            //         'tasks.duplicated',
+            //         'tasks.edit.date',
+            //         'tasks.delete',
+            //     ]
+            // ],
+            // [
+            //     'display_name' => 'Calendario de un proyecto',
+            //     'key_name' => 'pro_pint_one_calendar',
+            //     'module' => 'ppropint_submodule',
+            //     'permissions' => [
+            //         'projectmanagement.index',
+            //         'projectscalendar.show',
+            //     ]
+            // ],
 
             //servicios
-            [
-                'display_name' => 'Servicios',
-                'key_name' => 'pro_pint_services',
-                'module' => 'ppropint_submodule',
-                'permissions' => [
-                    'projectmanagement.index',
-                    'projectmanagement.resources',
-                ]
-            ],
+            // [
+            //     'display_name' => 'Servicios',
+            //     'key_name' => 'pro_pint_services',
+            //     'module' => 'ppropint_submodule',
+            //     'permissions' => [
+            //         'projectmanagement.index',
+            //         'projectmanagement.resources',
+            //     ]
+            // ],
 
             //Purchase and expenses
             [

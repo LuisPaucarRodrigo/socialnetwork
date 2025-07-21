@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\HumanResource;
 
+use App\Helpers\FileHandler;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\HumanResource\CreateManagementEmployees;
 use App\Http\Requests\HumanResource\FiredContractEmployees;
@@ -51,15 +52,15 @@ class ManagementEmployees extends Controller
         $pension = $this->employeesServices->pensionList;
         $costLines = $this->employeesServices->getCostLine();
         $sections = DocumentSection::with([
-                'subdivisions' => function ($subq) {
-                    $subq->where('is_visible', true);
-                }
-            ])
+            'subdivisions' => function ($subq) {
+                $subq->where('is_visible', true);
+            }
+        ])
             ->where('is_visible', true)
             ->get();
         return Inertia::render('HumanResource/ManagementEmployees/EmployeesStoreAndUpdate', [
-            'pensions' => $pension, 
-            'costLines' => $costLines, 
+            'pensions' => $pension,
+            'costLines' => $costLines,
             'sections' => $sections
         ]);
     }
@@ -131,13 +132,7 @@ class ManagementEmployees extends Controller
     public function show_preview_doc_alta($id)
     {
         $contract = Contract::find($id);
-        $filePath = '/documents/discharge_document/' . $contract->discharge_document;
-        $path = public_path($filePath);
-        if (file_exists($path)) {
-            ob_end_clean();
-            return response()->file($path);
-        }
-        abort(404, 'Documento no encontrado');
+        return FileHandler::showFile('documents/discharge_document/', $contract->discharge_document);
     }
 
     public function destroy($id)
@@ -213,6 +208,7 @@ class ManagementEmployees extends Controller
 
     public function preview_curriculum_vitae(ExternalEmployee $external_preview_id)
     {
+
         $file = $this->employeesServices->preview($external_preview_id->curriculum_vitae);
         return $file;
     }

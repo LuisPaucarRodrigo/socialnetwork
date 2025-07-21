@@ -36,20 +36,34 @@
         </template>
     </TableStructure>
     <div v-if="rols.data" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-        <Pagination :links="rols.links" />
+        <PaginationAxios :links="rols.links" @navigate="fetchExpensesByUrl" />
     </div>
 </template>
 <script setup>
 import { DeleteIcon, EditIcon, ShowIcon } from '@/Components/Icons';
-import Pagination from '@/Components/Pagination.vue';
+import PaginationAxios from '@/Components/PaginationAxios.vue';
 import TableRow from '@/Components/TableRow.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 
-const { rols, showModal, editModalRol, confirmRolsDeletion } = defineProps({
-    rols: Object,
+const { showModal, editModalRol, confirmRolsDeletion } = defineProps({
     showModal: Function,
     editModalRol: Function,
     confirmRolsDeletion: Function
 })
+
+const rols = defineModel('rols')
+const loading = defineModel('loading')
+
+async function fetchExpensesByUrl(url) {
+    loading.value = true;
+    try {
+        const res = await axios.get(url);
+        rols.value = res.data;
+    } catch (err) {
+        console.error(err);
+    } finally {
+        loading.value = false;
+    }
+}
 </script>

@@ -2,6 +2,7 @@
 
 namespace App\Observers\ShoppingArea\PaymentApprobal;
 
+use App\Helpers\FileHandler;
 use App\Models\ShoppingArea\PaymentApproval;
 
 class PaymentApprobalObserver
@@ -27,11 +28,13 @@ class PaymentApprobalObserver
      */
     public function deleted(PaymentApproval $paymentApproval): void
     {
+        $path = 'documents/shoppingArea/paymentApproval/';
         if ($paymentApproval->document) {
-            $file = public_path('documents/shoppingArea/paymentApproval/' . $paymentApproval->document);
-            if (file_exists($file)) {
-                unlink($file);
-            }
+            FileHandler::deleteFile($path, $paymentApproval->document);
+        }
+
+        if ($paymentApproval->proof_payment) {
+            FileHandler::deleteFile($path, $paymentApproval->proof_payment);
         }
     }
 

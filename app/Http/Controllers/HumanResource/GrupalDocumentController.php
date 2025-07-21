@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\HumanResource;
 
 use App\Constants\DocumentConstants;
+use App\Helpers\FileHandler;
 use App\Http\Controllers\Controller;
 use App\Models\GrupalDocument;
 use Illuminate\Http\Request;
@@ -71,20 +72,12 @@ class GrupalDocumentController extends Controller
         $grupal_document->archive && $this->file_delete($grupal_document->archive, 'documents/documents/grupal/');
         $grupal_document->delete();
         return response()->json(['msg' => 'success'], 200);
-
     }
 
     public function download($gd_id)
-    {   
+    {
         $grupal_document = GrupalDocument::findOrFail($gd_id);
-        $fileName = $grupal_document->archive;
-        $filePath = "documents/documents/grupal/$fileName";
-        $path = public_path($filePath);
-        if (file_exists($path)) {
-            ob_end_clean();
-            return response()->download($path, $fileName);
-        }
-        abort(404, 'Documento no encontrado');
+        return FileHandler::downloadFile('documents/documents/grupal/', $grupal_document->archive);
     }
 
 
@@ -106,5 +99,4 @@ class GrupalDocumentController extends Controller
         if (file_exists($path))
             unlink($path);
     }
-
 }
