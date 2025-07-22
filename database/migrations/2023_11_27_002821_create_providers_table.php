@@ -24,6 +24,8 @@ return new class extends Migration
             $table->string('ruc')->unique();
             $table->foreignId('category_id')->constrained();
             $table->timestamps();
+
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->unique(['ruc', 'email', 'phone1']);
         });
     }

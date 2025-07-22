@@ -1761,6 +1761,47 @@ class FunctionalityPermissionSeeder extends Seeder
             ]
         ];
 
+
+        $roomunitSubmodule = [
+            [
+                'display_name' => 'Ver tabla de alquileres',
+                'key_name' => 'see_all_rooms',
+                'module' => 'roomunit_submodule',
+                'permissions' => [
+                    'room.rental.index',
+                    'room.rental.getImages',
+                    'room.rental.show.image',
+                    'room.rental.search',
+                    'room.rental.alarms',
+                ]
+            ],
+
+            [
+                'display_name' => 'Acciones de Manager',
+                'key_name' => 'room_actions_manager',
+                'module' => 'roomunit_submodule',
+                'permissions' => [
+                    'room.rental.index',
+                    'room.rental.getImages',
+                    'room.rental.store_images',
+                    'room.rental.show.image',
+                    'room.rental.destroy_image',
+                    'room.rental.show_documents',
+                    'room.rental.update.document',
+                    'room.rental.store_document',
+                    'room.rental.destroy_document',
+                    'room.rental.search',
+                    'room.rental.store',
+                    'room.rental.update',
+                    'room.rental.destroy',
+                    'room.rental.alarms',
+                ]
+            ],
+
+
+        ];
+
+
         $sharedoc_submodule = [
             [
                 'display_name' => 'Manager sharepoint',
@@ -2011,6 +2052,8 @@ class FunctionalityPermissionSeeder extends Seeder
             $cmobileActionsManager,
             $cmobileActions,
 
+            $roomunitSubmodule,
+
             //Sharepoint
             $sharedoc_submodule,
 
@@ -2032,7 +2075,6 @@ class FunctionalityPermissionSeeder extends Seeder
                     'display_name' => $func['display_name'],
                     'module_id' => $module->id
                 ]);
-
                 foreach ($func['permissions'] as $funcperm) {
                     $permission = Permission::where('name', $funcperm)->first();
                     FunctionalityPermission::create([

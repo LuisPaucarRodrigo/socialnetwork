@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class Employee extends Model
 {
@@ -172,15 +173,16 @@ class Employee extends Model
     {
         $hireDate = Carbon::parse($this->contract()->first()->hire_date);
         $now = Carbon::now();
-        $totalMonths = $hireDate->diffInMonths($now);
+        $diff = $hireDate->diff($now);
+        $years = $diff->y;
+        $months = $diff->m;
+        $days = $diff->d;
+        $parts = [];
 
-        // Fecha del último mes completo
-        $fechaDesdeUltimoMes = $hireDate->copy()->addMonths($totalMonths);
-
-        // Diferencia en días desde ese último mes hasta ahora
-        $restantesDias = $fechaDesdeUltimoMes->diffInDays($now);
-
-        return "{$totalMonths} meses y {$restantesDias} días";
+        if ($years > 0) $parts[] = "{$years} " . ($years === 1 ? 'año' : 'años');
+        if ($months > 0)  $parts[] = "{$months} " . ($months === 1 ? 'mes' : 'meses');
+        if ($days > 0 || empty($parts)) $parts[] = "{$days} " . ($days === 1 ? 'día' : 'días');
+        return implode(', ', $parts);
     }
 
     protected static function booted()

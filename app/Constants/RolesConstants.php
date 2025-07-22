@@ -4,7 +4,7 @@ namespace App\Constants;
 
 class RolesConstants
 {
-
+    
     //USERS
     public const user_submodule = [
         'UserGestionManager',
@@ -265,6 +265,8 @@ class RolesConstants
 
         'cchanappro_submodule' => 'cchanappro_submodule',
         'cmobileunit_submodule' => 'cmobileunit_submodule',
+
+        'roomunit_submodule' => 'roomunit_submodule',
 
         'huawei_sites_submodule' => 'huawei_sites_submodule',
         'huawei_projects_submodule' => 'huawei_projects_submodule',

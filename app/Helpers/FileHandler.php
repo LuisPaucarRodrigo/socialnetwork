@@ -8,7 +8,7 @@ class FileHandler
 {
     public static function generateFilename(string $baseName, string $kinds): string
     {
-        return Str::slug($baseName, '_') . "_{$kinds}_" . time();
+        return Str::slug($baseName, '_') . "_{$kinds}_" . uniqid('', true);
     }
 
     public static function storeFile($file, string $folder, string $filename)

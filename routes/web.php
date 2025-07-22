@@ -32,6 +32,7 @@ Route::middleware(['auth', 'checkPlatformWeb'])->group(function () {
     include_once 'huawei_route.php';
     include_once 'cicsa_route.php';
     include_once 'fleet_car_route.php';
+    include_once 'room_rental_route.php';
     include_once 'share_point.php';
     include_once 'constant_route.php';
     require 'documentgestion_route.php';

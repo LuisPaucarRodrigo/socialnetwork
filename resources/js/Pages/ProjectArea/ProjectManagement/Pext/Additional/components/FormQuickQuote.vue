@@ -61,11 +61,7 @@
                                 Valoración
                             </InputLabel>
                             <button class="text-green-500" type="button" @click="openValuation">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                </svg>
+                                <PlusCircleIcon />
                             </button>
                         </div>
                         <div class="mt-4 overflow-x-auto">
@@ -110,7 +106,7 @@
                                             }}
                                         </td>
                                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
-                                            <input required type="number" min="0"
+                                            <input required type="number" min="0" step="0.01"
                                                 v-model="formQuote.project_quote_valuations[i]['days']"
                                                 class="text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
                                         </td>
@@ -168,7 +164,8 @@ import { ref } from 'vue';
 import FormValuation from './FormValuation.vue';
 import { useForm } from '@inertiajs/vue3';
 import { setAxiosErrors } from '@/utils/utils';
-import { DeleteIcon } from '@/Components/Icons';
+import { DeleteIcon, PlusCircleIcon } from '@/Components/Icons';
+import { useAxiosErrorHandler } from '@/utils/axiosError';
 
 const { projects, auth } = defineProps({
     projects: Object,
@@ -219,16 +216,7 @@ async function submitQuickQuote() {
         let response = await axios.post(url, formQuote)
         updatePext(response.data, 'updateQuote')
     } catch (error) {
-        console.log(error)
-        if (error.response) {
-            if (error.response.data.errors) {
-                setAxiosErrors(error.response.data.errors, formQuote)
-            } else {
-                notifyError("Server error:", error.response.data)
-            }
-        } else {
-            notifyError("Network or other error:", error)
-        }
+        useAxiosErrorHandler(error, formQuote)
     }
 }
 
