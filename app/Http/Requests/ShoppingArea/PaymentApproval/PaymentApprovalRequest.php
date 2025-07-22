@@ -29,8 +29,8 @@ class PaymentApprovalRequest extends FormRequest
             'bank' => 'required',
             'ruc' => 'required|size:11',
             'beneficiary' => 'required',
+            'document' => 'nullable|file',
             'cost_line_id' => 'required',
-            'provider_id' => 'required',
         ];
     }
 }

@@ -89,11 +89,11 @@
             <Link v-if="fixedOrAdditional"
                 class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
                 :href="route('projectmanagement.pext.expenses.index', { project_id: project_id, fixedOrAdditional: false, status: status })">
-            G.Adicionales
+            G.A.
             </Link>
             <Link v-else class="rounded-md px-4 py-2 text-center text-sm text-white bg-indigo-600 hover:bg-indigo-500"
                 :href="route('projectmanagement.pext.expenses.index', { project_id: project_id, fixedOrAdditional: true, status: status })">
-            G. F.
+            G.F.
             </Link>
             <Link class="rounded-md px-4 py-2 text-center text-sm text-white bg-green-600 hover:bg-green-500"
                 :href="route('projectmanagement.pext.expense_dashboard', { project_id: project_id })">

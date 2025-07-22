@@ -57,6 +57,13 @@ class UserAdminRoutes
                 'name' => 'users.index',
             ],
             [
+                'uri' => 'users/getUsers',
+                'method' => 'get',
+                'action' => [UserController::class, 'getUsers'],
+                'permission' => true,
+                'name' => 'getUsers',
+            ],
+            [
                 'uri' => 'users/search',
                 'method' => 'post',
                 'action' => [UserController::class, 'search'],
@@ -92,6 +99,13 @@ class UserAdminRoutes
                 'action' => [ManagementRolsController::class, 'rols_index'],
                 'permission' => true,
                 'name' => 'rols.index',
+            ],
+            [
+                'uri' => 'rols/getRols',
+                'method' => 'get',
+                'action' => [ManagementRolsController::class, 'getRols'],
+                'permission' => true,
+                'name' => 'getRols',
             ],
             [
                 'uri' => 'rols/store',

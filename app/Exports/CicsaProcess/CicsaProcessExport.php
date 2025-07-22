@@ -95,7 +95,9 @@ class CicsaProcessExport implements FromView
         ];
         $title = [];
         $stageExport = CicsaAssignation::whereHas('project', function ($subQuery) {
-            $subQuery->where('cost_line_id', $this->type);
+            $subQuery->where('cost_line_id', $this->type)
+            ->where('project_id', "!=", 320)
+                    ->where('is_accepted',1);
         });
         if ($this->stages === 'Proyecto') {
             $title = array_merge($titleBase,$titleProject);

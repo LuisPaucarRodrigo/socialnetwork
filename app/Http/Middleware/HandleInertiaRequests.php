@@ -36,9 +36,12 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request)
     {
         $user = $request->user();
+        $modules = Module::where('type', 'module');
+        $submodules = Module::where('type', 'submodule');
+
         if ($user?->role?->id===1) {
-            $userModules = Module::where('type', 'module')->pluck('name');
-            $userSubModules = Module::where('type', 'submodule')->pluck('name');
+            $userModules = $modules->pluck('name');
+            $userSubModules = $submodules->pluck('name');
         }
         else  {
             $userModules = $user?->role?->getCurrentModules()['modules'];
@@ -56,8 +59,8 @@ class HandleInertiaRequests extends Middleware
                     'success' => $request->session()->get('success'),
                 ];
             },
-            'modules' => RolesConstants::MODULES,
-            'submodules' => RolesConstants::SUBMODULES,
+            'modules' => $modules->pluck('name', 'name'),
+            'submodules' => $submodules->pluck('name', 'name'),
             'showingMobileMenu' => false,
         ]);
     }

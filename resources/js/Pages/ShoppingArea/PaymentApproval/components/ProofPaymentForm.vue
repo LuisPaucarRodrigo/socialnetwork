@@ -12,8 +12,8 @@
                                 Archivo
                             </InputLabel>
                             <div class="mt-2">
-                                <InputFile v-model="form.document" accept=".pdf" />
-                                <InputError :message="form.errors.document" />
+                                <InputFile v-model="form.proof_payment" accept=".pdf" />
+                                <InputError :message="form.errors.proof_payment" />
                             </div>
                         </div>
                     </div>
@@ -51,7 +51,7 @@ const showModal = ref(false)
 const paymentId = ref(null)
 
 const initialState = ({
-    document: null,
+    proof_payment: null,
 })
 
 const form = useForm({

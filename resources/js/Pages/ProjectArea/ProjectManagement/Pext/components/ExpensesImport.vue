@@ -64,7 +64,7 @@ async function submit() {
     let url = route('projectmanagement.pext.import.expenses')
     try {
         let formData = toFormData(form)
-        let response = await axios.post(url, formData)
+        await axios.post(url, formData)
         toogleModalImport()
         notify("Importación Exitosa")
     } catch (error) {

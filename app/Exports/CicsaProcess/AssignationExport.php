@@ -30,8 +30,10 @@ class AssignationExport implements FromView, WithColumnWidths
                 'Gestor',
                 'Encargado'
             ],
-            'assignations' => CicsaAssignation::whereHas('project', function ($subQuery)  {
-                $subQuery->where('cost_line_id', $this->type);
+            'assignations' => CicsaAssignation::whereHas('project', function ($subQuery) {
+                $subQuery->where('cost_line_id', $this->type)
+                    ->where('project_id', "!=", 320)
+                    ->where('is_accepted',1);
             })->get()
         ]);
     }

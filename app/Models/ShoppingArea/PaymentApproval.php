@@ -19,15 +19,28 @@ class PaymentApproval extends Model
         'ruc',
         'beneficiary',
         'document',
+        'proof_payment',
+        'is_validated',
+        'reason_rejection',
         'cost_line_id',
         'provider_id'
     ];
 
     public function getStateAttribute()
     {
-        if ($this->document) {
+        if ($this->proof_payment) {
             return 'Completado';
         }
+
+        if ($this->is_validated == '0') {
+            return 'Rechazado';
+        }
+    
+
+        if ($this->is_validated == '1') {
+            return 'Programado';
+        }
+
         return 'Pendiente';
     }
 

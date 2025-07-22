@@ -42,7 +42,9 @@ class OCValidationExport implements FromView, WithColumnWidths
                 'cicsa_purchase_order_validation.cicsa_purchase_order:id,oc_number,amount',
             ])
                 ->whereHas('project', function ($subQuery) {
-                    $subQuery->where('cost_line_id', $this->type);
+                    $subQuery->where('cost_line_id', $this->type)
+                    ->where('project_id', "!=", 320)
+                    ->where('is_accepted',1);
                 })
                 ->get()
             // 'cicsa_purchase_order_validations' => CicsaPurchaseOrderValidation::with([

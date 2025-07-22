@@ -16,11 +16,15 @@ class UserController extends Controller
 {
     public function index_user()
     {
-        return Inertia::render('Users/Index/Index', [
-            'user' => User::with(['role:id,name', 'employee:id,user_id'])
-                ->select(['id', 'name', 'platform', 'email', 'dni', 'phone', 'role_id'])
-                ->paginate(20)
-        ]);
+        return Inertia::render('Users/Index/Index');
+    }
+
+    public function getUsers()
+    {
+        $users = User::with(['role:id,name', 'employee:id,user_id'])
+            ->select(['id', 'name', 'platform', 'email', 'dni', 'phone', 'role_id'])
+            ->paginate(20);
+        return response()->json($users, 200);
     }
 
     public function search(Request $request)
@@ -85,8 +89,6 @@ class UserController extends Controller
 
     public function details($id)
     {
-        // $user = User::with('role', 'area')->find($id);
-        // return response()->json($user, 200);
         return Inertia::render('Users/UserDetails', [
             'users' => User::with('role', 'area')->find($id)
         ]);

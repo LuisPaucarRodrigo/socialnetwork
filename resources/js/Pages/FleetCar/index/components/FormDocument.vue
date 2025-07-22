@@ -98,7 +98,6 @@
                             }) + '?' + uniqueParam
                                 ">
                                 <ShowIcon />
-                                <ShowIcon />
                             </a>
                         </div>
                         <InputLabel for="insurance_date">

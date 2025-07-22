@@ -12,6 +12,7 @@
             <th> Formato Maestro </th>
             <th> Item 3456 </th>
             <th> Presupuesto </th>
+            <th> Gestor </th>
         </tr>
     </thead>
     <tbody>
@@ -30,6 +31,7 @@
             <td> {{ $item?->master_format }} </td>
             <td> {{ $item?->item3456 }} </td>
             <td> {{ $item?->budget }} </td>
+            <td> {{ $purchaseOrder?->manager }} </td>
         </tr>
         @endforeach
         @else

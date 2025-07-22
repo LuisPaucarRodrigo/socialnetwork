@@ -1,0 +1,170 @@
+<template>
+    <Modal :show="showModalCar">
+        <div class="p-6">
+            <h2 class="text-base font-medium leading-7 text-gray-900">
+                {{ form.id ? "Editar alquiler" : "Nuevo alquiler" }}
+            </h2>
+            <form @submit.prevent="submit">
+                <div class="grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2">
+                    <div v-permission="'room_actions_manager'" v-if="!form.id" class="mt-2">
+                        <InputLabel for="provider_id">Proveedores de Habitaciones
+                        </InputLabel>
+                        <div class="mt-2">
+                            <select id="provider_id" v-model="form.provider_id" autocomplete="off"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option value="">
+                                    Seleccionar proveedor
+                                </option>
+                                <option v-for="item in providers" :value="item.id">
+                                    {{ item.company_name }}
+                                </option>
+                            </select>
+                            <InputError :message="form.errors.provider_id" />
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <InputLabel for="cost_line_id">Linea de Negocio
+                        </InputLabel>
+                        <div class="mt-2">
+                            <select id="cost_line_id" v-model="form.cost_line_id" autocomplete="off"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option value="">
+                                    Seleccionar Linea de Costo
+                                </option>
+                                <option v-for="item in costLine" :value="item.id">
+                                    {{ item.name }}
+                                </option>
+                            </select>
+                            <InputError :message="form.errors.cost_line_id" />
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <InputLabel for="plate">Tipo de alquiler </InputLabel>
+                        <div class="mt-2">
+                            <select id="rental_type" v-model="form.rental_type" autocomplete="off"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                <option value="">
+                                    Seleccionar tipo
+                                </option>
+                                <option v-for="item in ['Cochera', 'Habitación', 'Almacen', 'Habitación/Cochera']">
+                                    {{ item }}
+                                </option>
+                            </select>
+                            <InputError :message="form.errors.rental_type" />
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <InputLabel for="address"> Dirección </InputLabel>
+                        <div class="mt-2">
+                            <TextInput type="text" id="address" v-model="form.address" />
+                            <InputError :message="form.errors.address" />
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <InputLabel for="observations"> Observaciones </InputLabel>
+                        <div class="mt-2">
+                            <textarea
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                rows="3" v-model="form.observations" autocomplete="off" />
+                            <InputError :message="form.errors.observations" />
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="mt-6 flex items-center justify-end gap-x-3">
+                    <SecondaryButton @click="openModalCar">
+                        Cancel
+                    </SecondaryButton>
+                    <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
+                        {{ form.id ? "Actualizar" : "Crear" }}
+                    </PrimaryButton>
+                </div>
+            </form>
+        </div>
+    </Modal>
+</template>
+<script setup>
+import SecondaryButton from "@/Components/SecondaryButton.vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import TextInput from "@/Components/TextInput.vue";
+import Modal from "@/Components/Modal.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import InputFile from "@/Components/InputFile.vue";
+import InputError from "@/Components/InputError.vue";
+import { toFormData } from "@/utils/utils";
+import { notify } from "@/Components/Notification";
+import { ref } from "vue";
+import { useForm } from "@inertiajs/vue3";
+import { useAxiosErrorHandler } from "@/utils/axiosError";
+import { DeleteIcon, PlusCircleIcon } from "@/Components/Icons";
+
+defineExpose({ openModalCreate, openModalEdit })
+
+const { cars, providers, costLine } = defineProps({
+    cars: Object,
+    providers: Object,
+    costLine: Object,
+})
+
+const showModalCar = ref(false);
+
+const initialForm = {
+    id: "",
+    rental_type: "",
+    address: "",
+    observations: "",
+    provider_id: "",
+    cost_line_id: "",
+};
+
+const form = useForm({
+    ...initialForm,
+});
+
+function openModalCar() {
+    showModalCar.value = !showModalCar.value;
+    form.clearErrors();
+}
+
+function openModalCreate() {
+    openModalCar();
+    form.defaults({ ...initialForm });
+    form.reset();
+}
+
+function openModalEdit(item) {
+    openModalCar();
+    form.defaults({ ...item, photos: item.room_images });
+    form.reset();
+}
+
+async function submit() {
+    let url = form.id
+        ? route("room.rental.update", { car: form.id })
+        : route("room.rental.store");
+    let data = toFormData(form);
+    try {
+        let response = await axios.post(url, data);
+        let action = form.id ? "edit" : "create";
+        updateCar(response.data, action);
+    } catch (error) {
+        useAxiosErrorHandler(error, form)
+    }
+}
+
+function updateCar(data, action) {
+    const validations = cars.data || cars;
+    if (action === "create") {
+        validations.unshift(data);
+        openModalCar();
+        notify("Creaciòn Exitosa");
+    } else if (action === "edit") {
+        let index = validations.findIndex((item) => item.id === data.id);
+        validations[index] = data;
+        openModalCar();
+        notify("Actualización Exitosa");
+    }
+}
+
+</script>

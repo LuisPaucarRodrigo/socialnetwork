@@ -862,7 +862,6 @@ const deleteAdditional = async () => {
     try {
         const res = await axios.delete(
             route("projectmanagement.deleteAdditionalCost", {
-                project_id: props.project_id.id,
                 additional_cost: docId,
             }))
         isFetching.value = false

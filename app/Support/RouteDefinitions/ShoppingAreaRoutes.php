@@ -323,8 +323,16 @@ class ShoppingAreaRoutes
                 'permission' => true,
                 'name' => 'payment.approval.document',
             ],
+
             [
-                'uri' => 'payment_approval/download_document/{id}',
+                'uri' => 'payment_approval/rejected/{id}',
+                'method' => 'post',
+                'action' => [PaymentApprovalController::class, 'rejected'],
+                'permission' => true,
+                'name' => 'payment.approval.rejected',
+            ],
+            [
+                'uri' => 'payment_approval/download_document/{id}/kind/{kind}',
                 'method' => 'get',
                 'action' => [PaymentApprovalController::class, 'download_document'],
                 'permission' => true,
@@ -343,6 +351,13 @@ class ShoppingAreaRoutes
                 'action' => [PaymentApprovalController::class, 'pending_payments'],
                 'permission' => true,
                 'name' => 'payment.approval.alarm.pending.payments',
+            ],
+            [
+                'uri' => 'payment_approval/validate_payment/{id}',
+                'method' => 'put',
+                'action' => [PaymentApprovalController::class, 'validate_payment'],
+                'permission' => true,
+                'name' => 'payment.approval.validate',
             ],
         ];
     }

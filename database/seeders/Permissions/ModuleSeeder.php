@@ -106,6 +106,13 @@ class ModuleSeeder extends Seeder
                 ]
             ],
             [
+                'name' => 'ROOM_RENTAL_MODULE',
+                'display_name' => 'A. de Habitaciones',
+                'submodules' => [
+                    'roomunit_submodule' => 'Alquileres',
+                ]
+            ],
+            [
                 'name' => 'SHAREPOINT_MODULE',
                 'display_name' => 'Sharepoint',
                 'submodules' => [

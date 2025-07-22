@@ -5,10 +5,21 @@ namespace App\Http\Controllers;
 use App\Constants\HuaweiConstants;
 use App\Constants\PextConstants;
 use App\Constants\PintConstants;
+use App\Http\Requests\ChecklistRequest\ChecklistCarRequest;
+use App\Http\Requests\ChecklistRequest\ChecklistDailytoolkitRequest;
+use App\Http\Requests\ChecklistRequest\ChecklistEppRequest;
+use App\Http\Requests\ChecklistRequest\ChecklistToolkitRequest;
+use App\Http\Requests\CostsRequest\AdditionalCostsApiRequest;
 use App\Http\Requests\Huawei\HuaweiMobileRequest;
 use App\Http\Requests\LoginMobileRequest;
 use App\Http\Requests\PextProjectRequest\ApiStoreExpensesRequest;
 use App\Http\Requests\PreprojectRequest\ImageRequest;
+use App\Models\AdditionalCost;
+use App\Models\Car;
+use App\Models\ChecklistCar;
+use App\Models\ChecklistDailytoolkit;
+use App\Models\ChecklistEpp;
+use App\Models\ChecklistToolkit;
 use App\Models\CicsaAssignation;
 use App\Models\Employee;
 use App\Models\HuaweiMonthlyExpense;
@@ -16,6 +27,9 @@ use App\Models\HuaweiProject;
 use App\Models\Imagespreproject;
 use App\Models\PreprojectCode;
 use App\Models\PextProjectExpense;
+use App\Models\Preproject;
+use App\Models\Project;
+use App\Models\StaticCost;
 use App\Services\ApiServices;
 use Carbon\Carbon;
 use Exception;
@@ -185,212 +199,6 @@ class ApiController extends Controller
     }
 
     //huawei
-    // public function indexHuaweiProjectGeneral()
-    // {
-    //     $projects = HuaweiProject::where('status', 1)->with(['huawei_site' => function ($query) {
-    //         $query->select('id', 'name'); // Selecciona campos específicos del modelo relacionado
-    //     }])->select('id', 'assigned_diu', 'huawei_site_id')->get()
-    //         ->makeHidden([
-    //             'total_earnings',
-    //             'total_real_earnings',
-    //             'total_real_earnings_without_deposit',
-    //             'total_project_cost',
-    //             'total_employee_costs',
-    //             'total_essalud_employee_cost',
-    //             'additional_cost_total',
-    //             'static_cost_total',
-    //             'materials_in_project',
-    //             'equipments_in_project',
-    //             'materials_liquidated',
-    //             'equipments_liquidated',
-    //             'huawei_project_resources',
-    //             'state'
-    //         ]);;
-
-    //     return response()->json($projects, 201);
-    // }
-
-    // public function storeHuaweiProjectGeneral(Request $request)
-    // {
-    //     $request->validate([
-    //         'site' => 'required',
-    //         'diu' => 'required',
-    //     ]);
-
-    //     $inputSiteName = $request->input('site');
-
-    //     $maxSimilarity = 0;
-    //     $bestMatch = null;
-    //     $siteToUse = null;
-    //     // Retrieve all site names
-    //     $sites = HuaweiSite::all()->pluck('name')->toArray();
-
-    //     // Iterate through sites to find the best match
-    //     foreach ($sites as $site) {
-    //         similar_text(strtolower($inputSiteName), strtolower($site), $similarity);
-
-    //         if ($similarity > 70 && $similarity > $maxSimilarity) {
-    //             $maxSimilarity = $similarity;
-    //             $bestMatch = $site;
-    //         }
-    //     }
-
-    //     if ($bestMatch) {
-    //         // Found a similar site
-    //         $siteToUse = HuaweiSite::where('name', $bestMatch)->first();
-    //     } else {
-    //         // No similar site found, create a new one
-    //         $siteToUse = HuaweiSite::create([
-    //             'name' => $this->sanitizeText($inputSiteName),
-    //         ]);
-    //     }
-
-    //     HuaweiProject::create([
-    //         'name' => $request->diu,
-    //         'assigned_diu' => $request->diu,
-    //         'huawei_site_id' => $siteToUse->id,
-    //         'status' => 1,
-    //     ]);
-
-    //     return response()->json([], 200);
-    // }
-
-    // private function sanitizeText($text)
-    // {
-    //     $sanitizedText = strtoupper($text);
-    //     $sanitizedText = str_replace(['-', '_'], ' ', $sanitizedText);
-
-    //     return $sanitizedText;
-    // }
-
-
-    // public function getStagesPerProject(HuaweiProject $huawei_project)
-    // {
-    //     $stages = HuaweiProjectStage::where('huawei_project_id', $huawei_project->id)
-    //         ->where('status', 1)
-    //         ->with([
-    //             'huawei_project_codes' => function ($query) {
-    //                 $query->select('id', 'huawei_project_stage_id', 'huawei_code_id', 'status')
-    //                     ->with([
-    //                         'huawei_code' => function ($query) {
-    //                             $query->select('id', 'code');
-    //                         }
-    //                     ]);
-    //             },
-    //             'huawei_project_codes.huawei_code' => function ($query) {
-    //                 $query->select('id', 'code');
-    //             }
-    //         ])
-    //         ->select('id', 'description')
-    //         ->get();
-
-    //     // Ocultar los `huawei_project_images` en cada `huawei_project_code`
-    //     $stages->each(function ($stage) {
-    //         $stage->huawei_project_codes->each(function ($code) {
-    //             $code->makeHidden(['huawei_project_images']);
-    //         });
-    //     });
-
-    //     return response()->json(['stages' => $stages], 200);
-    // }
-
-
-    // public function storeImagePerCode(HuaweiProjectCode $code, Request $request)
-
-    // {
-    //     $data = $request->validate([
-    //         'id' => 'required|numeric',
-    //         'photo' => 'required',
-    //         'description' => 'nullable',
-    //         'latitude' => 'required',
-    //         'longitude' => 'required',
-    //         'site' => 'required'
-    //     ]);
-
-    //     DB::beginTransaction();
-    //     try {
-    //         $image = str_replace('data:image/png;base64,', '', $data['photo']);
-    //         $image = str_replace(' ', '+', $image);
-    //         $imageContent = base64_decode($image);
-    //         $data['photo'] = time() . '.png';
-    //         file_put_contents(public_path('documents/huawei/photoreports/') . $data['photo'], $imageContent);
-
-    //         HuaweiProjectImage::create([
-    //             'description' => $data['description'],
-    //             'image' => $data['photo'],
-    //             'lat' => $data['latitude'],
-    //             'lon' => $data['longitude'],
-    //             'site' => $data['site'],
-    //             'huawei_project_code_id' => $data['id'],
-    //         ]);
-    //         DB::commit();
-    //         return response()->json([201]);
-    //     } catch (\Exception $e) {
-    //         DB::rollback();
-    //         return response()->json([
-    //             'error' => $e->getMessage(),
-    //         ], 500);
-    //     }
-    // }
-
-    // public function getImageHistoryPerCode(HuaweiProjectCode $code)
-    // {
-    //     $images = HuaweiProjectImage::where('huawei_project_code_id', $code->id)
-    //         ->select('id', 'huawei_project_code_id', 'image', 'description', 'observation', 'lat', 'lon', 'state')
-    //         ->get()
-    //         ->map(function ($image) {
-    //             $image->image = asset('documents/huawei/photoreports/' . $image->image);
-    //             return $image;
-    //         });
-
-    //     return response()->json(['images' => $images], 200);
-    // }
-
-    // public function getCodesAndProjectCode($code)
-    // {
-    //     $project_code = HuaweiProjectCode::where('id', $code)
-    //         ->select('id', 'status', 'huawei_code_id', 'huawei_project_stage_id')
-    //         ->with([
-    //             'huawei_project_stage' => function ($query) {
-    //                 $query->select('id', 'huawei_project_id');
-    //             },
-    //             'huawei_project_stage.huawei_project' => function ($query) {
-    //                 $query->select('id');
-    //             }
-    //         ])
-    //         ->first()
-    //         ->makeHidden(['huawei_project_images']);
-
-    //     $project_code->huawei_project_stage->huawei_project->makeHidden([
-    //         'additional_cost_total',
-    //         'static_cost_total',
-    //         'state',
-    //         'materials_in_project',
-    //         'equipments_in_project',
-    //         'materials_liquidated',
-    //         'equipments_liquidated',
-    //         'total_earnings',
-    //         'total_real_earnings',
-    //         'total_real_earnings_without_deposit',
-    //         'total_project_cost',
-    //         'total_employee_costs',
-    //         'total_essalud_employee_cost'
-    //     ]);
-
-    //     $found_code = HuaweiCode::where('id', $project_code->huawei_code_id)
-    //         ->select('id', 'code', 'description')
-    //         ->first();
-
-    //     $data = [
-    //         'id' => $code,
-    //         'scenario' => $found_code->code,
-    //         'scenario_description' => $found_code->description,
-    //         'project_code' => $project_code->huawei_project_stage->huawei_project->code,
-    //         'project_code_state' => $project_code->state
-    //     ];
-
-    //     return response()->json($data);
-    // }
 
     public function localDriveIndex(Request $request)
     {
@@ -420,11 +228,6 @@ class ApiController extends Controller
             ], 500);
         }
     }
-
-    // public function getSites()
-    // {
-    //     return response()->json(['sites' => HuaweiSite::select('id', 'name')->get()], 200);
-    // }
 
     private function scanFolder($folderPath)
     {
@@ -487,7 +290,7 @@ class ApiController extends Controller
                     ->orWhere('zone2', $zone)
                     ->orWhere('zone3', $zone);
             });
-            
+
         $cicsaProcess->whereHas('project', function ($query) use ($currentMonthStart, $currentMonthEnd) {
             $query->where('cost_line_id', 2)
                 ->where('is_accepted', 1)
@@ -522,7 +325,7 @@ class ApiController extends Controller
         })
             ->orderBy('project_name')
             ->get();
-        
+
         $cicsaProcess->each->setAppends([]);
         return response()->json($cicsaProcess, 200);
     }
@@ -532,7 +335,21 @@ class ApiController extends Controller
         $validateData = $request->validated();
         try {
             $validateData = $this->apiService->transformExpenseData($validateData);
-            PextProjectExpense::create($validateData);
+            $expense = PextProjectExpense::create($validateData);
+            // if ($expense) {
+            //     $project = Project::select('description')->find($expense->project_id);
+            //     $response = [
+            //         'amount' => $expense->amount,
+            //         'created_at' => $expense->created_at,
+            //         'project' => $project->description,
+            //         'zone' => $expense->zone,
+            //         'expense_type' => $expense->expense_type,
+            //     ];
+            //     return response()->json($response, 200);
+            // }
+            // return response()->json([
+            //     'error' => 'Hubo un error al momento de ingresar.Porvafor intentenlo mas tarde.'
+            // ], 500);
             return response()->json([], 200);
         } catch (Exception $e) {
             return response()->json([
@@ -553,117 +370,7 @@ class ApiController extends Controller
         return response()->json($employees, 200);
     }
 
-    //expenses_dus
-    // public function fetchSites(Request $request)
-    // {
-    //     $request->validate([
-    //         'macro_project' => 'required'
-    //     ]);
-
-    //     $projects = HuaweiProject::where('macro_project', $request->macro_project)->get();
-
-    //     $sites = $projects->flatMap(function ($project) {
-    //         return $project->huawei_site()->get()->map(function ($site) {
-    //             return [
-    //                 'id' => $site->id,
-    //                 'name' => $site->name,
-    //             ];
-    //         });
-    //     })->unique('id');
-
-    //     return response()->json($sites, 200);
-    // }
-
-    // public function fetchProjects(Request $request)
-    // {
-    //     $request->validate([
-    //         'macro_project' => 'required',
-    //         'site' => 'required'
-    //     ]);
-    //     $projects = HuaweiProject::select('id', 'name', 'assigned_diu')
-    //         ->where('macro_project', $request->macro_project)
-    //         ->where('huawei_site_id', $request->site)
-    //         ->get()
-    //         ->makeHidden([
-    //             'code',
-    //             'additional_cost_total',
-    //             'static_cost_total',
-    //             'materials_in_project',
-    //             'equipments_in_project',
-    //             'materials_liquidated',
-    //             'equipments_liquidated',
-    //             'total_earnings',
-    //             'total_real_earnings',
-    //             'total_real_earnings_without_deposit',
-    //             'total_project_cost',
-    //             'total_employee_costs',
-    //             'total_essalud_employee_cost',
-    //             'huawei_project_resources'
-    //         ])
-    //         ->filter(function ($project) {
-    //             return $project->state == 1;
-    //         });
-
-    //     return response()->json($projects, 200);
-    // }
-
-    // public function storeExpense($huawei_project, Request $request)
-    // {
-    //     $data = $request->validate([
-    //         'id' => 'required|numeric',
-    //         'expense_type' => 'required',
-    //         'employee' => 'required',
-    //         'cdp_type' => 'required',
-    //         'doc_number' => 'required',
-    //         'op_number' => 'required',
-    //         'ruc' => 'required',
-    //         'description' => 'required',
-    //         'amount' => 'required',
-    //         'image1' => 'required',
-    //         'image2' => 'nullable',
-    //         'image3' => 'nullable',
-    //     ]);
-
-    //     $data['expense_date'] = Carbon::now();
-    //     $data['huawei_project_id'] = $huawei_project;
-    //     $data['refund_status'] = 'PENDIENTE';
-
-    //     DB::beginTransaction();
-
-    //     $new_expense = HuaweiAdditionalCost::create([
-    //         'expense_type' => $data['expense_type'],
-    //         'employee' => $data['employee'],
-    //         'expense_date' => $data['expense_date'],
-    //         'cdp_type' => $data['cdp_type'],
-    //         'doc_number' => $data['doc_number'],
-    //         'op_number' => $data['op_number'],
-    //         'ruc' => $data['ruc'],
-    //         'description' => $data['description'],
-    //         'amount' => $data['amount'],
-    //         'refund_status' => $data['refund_status'],
-    //         'huawei_project_id' => $data['huawei_project_id']
-    //     ]);
-
-    //     try {
-    //         $expenseDirectory = 'documents/huawei/monthly_expenses/';
-    //         $imageFields = ['image1', 'image2', 'image3'];
-    //         $imageUpdates = [];
-
-    //         foreach ($imageFields as $index => $field) {
-    //             if (isset($data[$field])) {
-    //                 $imageUpdates[$field] = $this->apiService->storeBase64Image($data[$field], $expenseDirectory, null);
-    //             }
-    //         }
-    //         $new_expense->update($imageUpdates);
-    //         DB::commit();
-    //         return response()->json([], 200);
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         return response()->json([
-    //             'error' => $e->getMessage()
-    //         ], 500);
-    //     }
-    // }
+    //fleetcar
 
     public function index_car($cost_line_id)
     {
@@ -781,8 +488,22 @@ class ApiController extends Controller
             if (isset($data['image'])) {
                 $data['image'] = $this->apiService->storeBase64Image($data['image'], $expenseDirectory, null);
             }
-            HuaweiMonthlyExpense::create($data);
+            $expense = HuaweiMonthlyExpense::create($data);
             DB::commit();
+            // if ($expense) {
+            //     $project = HuaweiProject::select('description')->find($expense->project_id);
+            //     $response = [
+            //         'amount' => $expense->amount,
+            //         'created_at' => $expense->created_at,
+            //         'project' => $project->description,
+            //         'zone' => $expense->zone,
+            //         'expense_type' => $expense->expense_type,
+            //     ];
+            //     return response()->json($response, 200);
+            // }
+            // return response()->json([
+            //     'error' => 'Hubo un error al momento de ingresar.Porvafor intentenlo mas tarde.'
+            // ], 500);
             return response()->json([], 200);
         } catch (\Exception $e) {
             Log::info('Error storing Huawei expense: ' . $e->getMessage());
@@ -790,6 +511,269 @@ class ApiController extends Controller
             return response()->json([
                 'error' => $e->getMessage()
             ], 500);
+        }
+    }
+
+    public function car_store(ChecklistCarRequest $request)
+    {
+        $data = $request->validated();
+        try {
+            $data['maintenanceTools'] = $this->storeBase64Image($data['maintenanceTools'], 'image/checklist/checklistcar', 'maintenanceTools');
+            $data['preventionTools'] = $this->storeBase64Image($data['preventionTools'], 'image/checklist/checklistcar', 'preventionTools');
+            $data['imageSpareTire'] = $this->storeBase64Image($data['imageSpareTire'], 'image/checklist/checklistcar', 'imageSpareTire');
+            $data['front'] = $this->storeBase64Image($data['front'], 'image/checklist/checklistcar', 'front');
+            $data['leftSide'] = $this->storeBase64Image($data['leftSide'], 'image/checklist/checklistcar', 'leftSide');
+            $data['rightSide'] = $this->storeBase64Image($data['rightSide'], 'image/checklist/checklistcar', 'rightSide');
+            $data['interior'] = $this->storeBase64Image($data['interior'], 'image/checklist/checklistcar', 'interior');
+            $data['rearLeftTire'] = $this->storeBase64Image($data['rearLeftTire'], 'image/checklist/checklistcar', 'rearLeftTire');
+            $data['rearRightTire'] = $this->storeBase64Image($data['rearRightTire'], 'image/checklist/checklistcar', 'rearRightTire');
+            $data['frontRightTire'] = $this->storeBase64Image($data['frontRightTire'], 'image/checklist/checklistcar', 'frontRightTire');
+            $data['frontLeftTire'] = $this->storeBase64Image($data['frontLeftTire'], 'image/checklist/checklistcar', 'frontLeftTire');
+            $data['back'] = $this->storeBase64Image($data['back'], 'image/checklist/checklistcar', 'back');
+            $data['dashboard'] = $this->storeBase64Image($data['dashboard'], 'image/checklist/checklistcar', 'dashboard');
+            $data['rearSeat'] = $this->storeBase64Image($data['rearSeat'], 'image/checklist/checklistcar', 'rearSeat');
+
+            $data['user_id'] = Auth::user()->id;
+            $data['user_name'] = Auth::user()->name;
+            $car = Car::find($data['car_id']);
+            $data['plate'] = $car->plate;
+            ChecklistCar::create($data);
+            return response()->json([], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function toolkit_store(ChecklistToolkitRequest $request)
+    {
+        $data = $request->validated();
+        try {
+            if ($data['badTools']) {
+                $data['badTools'] = $this->storeBase64Image($data['badTools'], 'image/checklist/checklisttoolkit', 'badTools');
+            }
+            if ($data['goodTools']) {
+                $data['goodTools'] = $this->storeBase64Image($data['goodTools'], 'image/checklist/checklisttoolkit', 'goodTools');
+            }
+            $data['user_id'] = Auth::user()->id;
+            $data['user_name'] = Auth::user()->name;
+            ChecklistToolkit::create($data);
+            return response()->json([], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function dailytoolkit_store(ChecklistDailytoolkitRequest $request)
+    {
+        $data = $request->validated();
+        DB::beginTransaction();
+        try {
+            $data['user_id'] = Auth::user()->id;
+            $data['user_name'] = Auth::user()->name;
+            ChecklistDailytoolkit::create($data);
+            DB::commit();
+            return response()->json([], 200);
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'error' => 'Ocurrió un error al procesar la solicitud',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function epp_store(ChecklistEppRequest $request)
+    {
+        $data = $request->validated();
+        $data['user_id'] = Auth::user()->id;
+        $data['user_name'] = Auth::user()->name;
+        ChecklistEpp::create($data);
+        return response()->json([], 200);
+    }
+
+    public function checklist_history()
+    {
+        $userId = Auth::user()->id;
+
+        $cars = ChecklistCar::where('user_id', $userId)->select('created_at')->get();
+        $toolkits = ChecklistToolkit::where('user_id', $userId)->select('created_at')->get();
+        $dailytoolkits = ChecklistDailytoolkit::where('user_id', $userId)->select('created_at')->get();
+        $epps = ChecklistEpp::where('user_id', $userId)->select('created_at')->get();
+
+        $cars = $cars->map(function ($item) {
+            $item->type = 'Vehiculo';
+            return $item;
+        });
+
+        $toolkits = $toolkits->map(function ($item) {
+            $item->type = 'Herramientas';
+            return $item;
+        });
+
+        $dailytoolkits = $dailytoolkits->map(function ($item) {
+            $item->type = 'Diario';
+            return $item;
+        });
+
+        $epps = $epps->map(function ($item) {
+            $item->type = 'Epps';
+            return $item;
+        });
+
+        $combined = $cars->concat($toolkits)->concat($dailytoolkits)->concat($epps);
+
+        $sorted = $combined->sortByDesc('created_at');
+
+        return response()->json($sorted->values()->all());
+    }
+
+    public function expenseStore(AdditionalCostsApiRequest $request)
+    {
+        $data = $request->validated();
+        $isGEP = false;
+        $isStaticOrAdditional = false;
+        if ($data['expense_type'] !== PintConstants::COMBUSTIBLE_GEP) {
+            $isStaticOrAdditional = true;
+        } else {
+            $isGEP = true;
+        }
+        try {
+            $doc_date = Carbon::createFromFormat('d/m/Y', $data['doc_date']);
+            $startOfMonth = $doc_date->startOfMonth()->format('Y-m-d');
+            $endOfMonth = $doc_date->endOfMonth()->format('Y-m-d');
+
+            $projectId = null;
+
+            //MantoPINT
+            if ($isStaticOrAdditional) {
+                $preprojectId = Preproject::where('date', '>=', $startOfMonth)
+                    ->where('cost_center_id', 1)
+                    ->where('cost_line_id', 1)
+                    ->where('date', '<=', $endOfMonth)
+                    ->where('customer_id', 1)
+                    ->select('id')
+                    ->first();
+                $projectId = Project::where('preproject_id', $preprojectId->id)->select('id')->first();
+            }
+            //GEPPINT
+            if ($isGEP) {
+                $preprojectId = Preproject::where('date', '>=', $startOfMonth)
+                    ->where('cost_center_id', 2)
+                    ->where('cost_line_id', 1)
+                    ->where('date', '<=', $endOfMonth)
+                    ->where('customer_id', 1)
+                    ->select('id')
+                    ->first();
+                $projectId = Project::where('preproject_id', $preprojectId->id)->select('id')->first();
+            }
+            //Errror if neither exists
+            if (!$projectId) {
+                return response()->json(['error' => "No se encontraron preproyectos pint para este mes."], 404);
+            }
+
+            //Format fields to insert
+            $data['project_id'] = $projectId->id;
+            $docDate = Carbon::createFromFormat('d/m/Y', $data['doc_date']);
+            $data['doc_date'] = $docDate->format('Y-m-d');
+            if (($data['zone'] !== PintConstants::MDD1_PM
+                    && $data['zone'] !== PintConstants::MDD2_MAZ)
+                && $data['type_doc'] === PintConstants::FACTURA
+            ) {
+                $data['igv'] = 18;
+            }
+            $newDesc = Auth::user()->name . ", " . $data['description'];
+            $data['description'] = $newDesc;
+            if (isset($data['photo'])) {
+                $data['photo'] = $this->storeBase64Image(
+                    $data['photo'],
+                    'documents/additionalcosts',
+                    'Gasto'
+                );
+            }
+            $data['user_id'] = Auth::user()->id;
+            $expense = AdditionalCost::create($data);
+            return response()->json([], 200);
+            // if ($expense) {
+            //     $project = Project::select('description')->find($expense->project_id);
+            //     $response = [
+            //         'amount' => $expense->amount,
+            //         'created_at' => $expense->created_at,
+            //         'project' => $project->description,
+            //         'zone' => $expense->zone,
+            //         'expense_type' => $expense->expense_type,
+            //     ];
+            //     return response()->json($response, 200);
+            // }
+            // return response()->json([
+            //     'error' => 'Hubo un error al momento de ingresar.Porvafor intentenlo mas tarde.'
+            // ], 500);
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+
+    public function expenseIndex()
+    {
+        try {
+            $startOfMonth = Carbon::now()->startOfMonth();
+            $endOfMonth = Carbon::now()->endOfMonth();
+
+            $userId = Auth::user()->id;
+
+            $expense = AdditionalCost::where('user_id', $userId)
+                ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+                ->select('zone', 'expense_type', 'amount', 'is_accepted', 'description', 'created_at', 'general_expense_id')
+                ->get()
+                ->toArray();
+            $expense2 = StaticCost::where('user_id', $userId)
+                ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+                ->select('zone', 'expense_type', 'amount', 'description', 'created_at', 'general_expense_id')
+                ->get()
+                ->toArray();
+            $expense3 = PextProjectExpense::where('user_id', $userId)
+                ->whereHas('project', function ($query) {
+                    $query->where('cost_line_id', 1);
+                })
+                ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+                ->select('zone', 'expense_type', 'amount', 'is_accepted', 'description', 'created_at', 'general_expense_id')
+                ->get()
+                ->toArray();
+            $allExpenses = array_merge($expense, $expense2, $expense3);
+
+            usort($allExpenses, function ($a, $b) {
+                return strtotime($b['created_at']) - strtotime($a['created_at']);
+            });
+
+            return response()->json($allExpenses, 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    private function storeBase64Image($photo, $path, $name)
+    {
+        try {
+            $image = str_replace('data:image/png;base64,', '', $photo);
+            $image = str_replace(' ', '+', $image);
+            $imageContent = base64_decode($image);
+            $imagename = time() . $name . '.png';
+            file_put_contents(public_path($path) . "/" . $imagename, $imageContent);
+            return $imagename;
+        } catch (Exception $e) {
+            abort(500, 'something went wrong');
         }
     }
 }

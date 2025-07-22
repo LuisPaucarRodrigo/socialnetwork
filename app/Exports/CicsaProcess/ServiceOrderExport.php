@@ -38,7 +38,9 @@ class ServiceOrderExport implements FromView, WithColumnWidths
                 'cicsa_service_order.cicsa_purchase_order:id,oc_number',
             ])
                 ->whereHas('project', function ($subQuery) {
-                    $subQuery->where('cost_line_id', $this->type);
+                    $subQuery->where('cost_line_id', $this->type)
+                    ->where('project_id', "!=", 320)
+                    ->where('is_accepted',1);
                 })
                 ->get()
         ]);

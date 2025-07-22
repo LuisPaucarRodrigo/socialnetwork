@@ -1,8 +1,5 @@
 <template>
     <div class="overflow-x-auto h-[85vh]">
-        <!-- <div class="mb-4">
-            <ChartsAdditionalExpenses :acExpensesAmounts="acExpensesAmounts" :scExpensesAmounts="scExpensesAmounts" />
-        </div> -->
         <TableStructure :info="expenses" :style="'h-[85vh]'">
             <template #thead>
                 <tr>
@@ -114,9 +111,12 @@
                     <TableRow>
                         <div class="flex items-center gap-3 w-full">
                             <div v-if="item.is_accepted === null" class="flex gap-3 justify-center w-1/2">
-                                <button @click="() => validateRegister(item.id, true)">
+                                <button @click="() => openAcceptModal(item.id)">
                                     <AcceptIcon />
                                 </button>
+                                <!-- <button @click="() => validateRegister(item.id, true)">
+                                    <AcceptIcon />
+                                </button> -->
                                 <button @click="() => validateRegister(item.id, false)">
                                     <RejectIcon />
                                 </button>
@@ -178,7 +178,7 @@ import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
 
-const { openEditAdditionalModal, confirmDeleteAdditional, filterForm, zones, expenseTypes, documentsType, stateTypes, acExpensesAmounts, scExpensesAmounts } = defineProps({
+const { openEditAdditionalModal, confirmDeleteAdditional, filterForm, zones, expenseTypes, documentsType, stateTypes, openAcceptModal } = defineProps({
     openEditAdditionalModal: Function,
     confirmDeleteAdditional: Function,
     filterForm: Object,
@@ -186,8 +186,7 @@ const { openEditAdditionalModal, confirmDeleteAdditional, filterForm, zones, exp
     expenseTypes: Array,
     documentsType: Array,
     stateTypes: Array,
-    acExpensesAmounts: Array,
-    scExpensesAmounts: Array,
+    openAcceptModal: Function
 })
 const actionForm = defineModel('actionForm')
 const expenses = defineModel('expenses')
@@ -197,11 +196,11 @@ const loading = defineModel('loading')
 async function validateRegister(expense_id, is_accepted) {
     const url = route("projectmanagement.pext.expenses.validate", { 'expense_id': expense_id })
     try {
-        await axios.put(url, { 'is_accepted': is_accepted });
+        const res = await axios.put(url, { 'is_accepted': is_accepted });
         if (filterForm.rejected) {
-            updateExpense(expense_id, "validate", is_accepted)
+            updateExpense(res.data, expense_id, "validate", is_accepted)
         } else {
-            updateExpense(expense_id, "rejectedValidate")
+            updateExpense(res.data, expense_id, "rejectedValidate")
         }
     } catch (e) {
         console.log(e);
@@ -224,12 +223,12 @@ function handlerPreview(id) {
     );
 }
 
-function updateExpense(expense, action, state) {
+function updateExpense(item, expense, action, state) {
     let listDate = expenses.value.data || expenses.value
     if (action === "validate") {
         let index = listDate.findIndex(item => item.id == expense)
         if (state) {
-            listDate[index].is_accepted = state;
+            listDate[index].is_accepted = item.is_accepted;
             notify('Gasto Aceptado')
         } else {
             listDate.splice(index, 1);

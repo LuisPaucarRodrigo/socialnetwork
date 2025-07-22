@@ -20,9 +20,11 @@
                 <TableTitle>Beneficiario</TableTitle>
                 <TableTitle>Documento</TableTitle>
                 <TableTitle>Descripción</TableTitle>
+                <TableTitle>Motivo de Rechazo</TableTitle>
+                <TableTitle>Constancia de Pago</TableTitle>
                 <TableTitle>
                     <TableHeaderFilter label="Estado" :options="states" v-model="filterForm.selectedState" width="w-40"
-                        labelClass="text-[11px]" />
+                        labelClass="text-[11px]" :information="information" />
                 </TableTitle>
                 <TableTitle v-permission-or="['add_document_payment_approval', 'delete_payment_approval']">
                     Acciones
@@ -39,22 +41,40 @@
                 <TableRow>{{ item.ruc }}</TableRow>
                 <TableRow>{{ item.beneficiary }}</TableRow>
                 <TableRow>
-                    <button v-if="item.document" @click="documentPreview(item.id)">
+                    <button v-if="item.document" @click="documentPreview(item.id, 'document')">
                         <ShowIcon />
                     </button>
                     <span v-else> - </span>
                 </TableRow>
                 <TableRow>{{ item.description }}</TableRow>
+                <TableRow>{{ item.reason_rejection }}</TableRow>
+                <TableRow>
+                    <button v-if="item.proof_payment" @click="documentPreview(item.id, 'proof_payment')">
+                        <ShowIcon />
+                    </button>
+                    <span v-else> - </span>
+                </TableRow>
                 <TableRow>{{ item.state }}</TableRow>
                 <TableRow v-permission-or="['add_document_payment_approval', 'delete_payment_approval']">
                     <div class="flex justify-center gap-x-2">
-                        <!-- <button>
-                            <RejectIcon />
-                        </button> -->
-                        <button v-permission="'add_document_payment_approval'" v-if="!item.document"
-                            @click="openDocumentModal(item.id)">
-                            <PlusDocumentIcon />
-                        </button>
+                        <template v-if="item.is_validated === null" class="flex gap-3 justify-center w-1/2">
+                            <button @click="() =>
+                                validateRegister(item.id, true)
+                            " class="flex items-center rounded-xl text-blue-500 hover:bg-green-200">
+                                <AcceptIcon />
+                            </button>
+                            <button @click="() =>
+                                openRejectedModal(item.id)
+                            " class="flex items-center rounded-xl text-blue-500 hover:bg-green-200">
+                                <RejectIcon />
+                            </button>
+                        </template>
+                        <template v-else>
+                            <button v-permission="'add_document_payment_approval'" v-if="!item.proof_payment"
+                                @click="openDocumentModal(item.id)">
+                                <PlusDocumentIcon />
+                            </button>
+                        </template>
                         <button v-permission="'delete_payment_approval'" @click="confirmPaymentDeletion(item.id)">
                             <DeleteIcon />
                         </button>
@@ -69,25 +89,33 @@
     </div>
 </template>
 <script setup>
-import { DeleteIcon, PlusDocumentIcon, ShowIcon } from '@/Components/Icons';
+import { AcceptIcon, DeleteIcon, PlusDocumentIcon, RejectIcon, ShowIcon } from '@/Components/Icons';
+import { notify } from '@/Components/Notification';
 import PaginationAxios from '@/Components/PaginationAxios.vue';
 import TableHeaderFilter from '@/Components/TableHeaderFilter.vue';
 import TableRow from '@/Components/TableRow.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 
-const { zones, cost_line, states, banks, filterForm, openDocumentModal, confirmPaymentDeletion } = defineProps({
+const { zones, cost_line, states, banks, filterForm, openDocumentModal, confirmPaymentDeletion, openRejectedModal } = defineProps({
     zones: Array,
     cost_line: Array,
     states: Array,
     banks: Array,
     filterForm: Object,
     openDocumentModal: Function,
-    confirmPaymentDeletion: Function
+    confirmPaymentDeletion: Function,
+    openRejectedModal: Function
 })
 
 const payments = defineModel('payments')
 const loading = defineModel('loading')
+let information = [
+    'Rechazado:Se Rechazo por encargado.',
+    'Pendiente:Falta aceptar por encargado.',
+    'Programado:Se acepto y programo en teleticket.',
+    'Completado:Se pago la programación y se subio constancia.'
+]
 
 async function fetchExpensesByUrl(url) {
     loading.value = true;
@@ -101,8 +129,25 @@ async function fetchExpensesByUrl(url) {
     }
 }
 
-function documentPreview(paymentId) {
-    const url = route('payment.approval.show_document', { id: paymentId });
+function documentPreview(paymentId, kind) {
+    const url = route('payment.approval.show_document', { id: paymentId, kind: kind });
     window.open(url, '_blank');
+}
+
+async function validateRegister(paymentId, is_validated) {
+    const url = route("payment.approval.validate", { 'id': paymentId })
+    try {
+        const res = await axios.put(url, { 'is_validated': is_validated });
+        updateExpense(res.data, "validate", paymentId)
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+function updateExpense(data, action, paymentId) {
+    const listData = payments.value.data || payments.value
+    const index = listData.findIndex(item => item.id === paymentId)
+    listData[index] = data
+    notify('Validación Exitosa')
 }
 </script>

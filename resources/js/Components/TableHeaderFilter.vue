@@ -5,6 +5,16 @@
         <button @click="togglePopup">
             <SortDateIcon />
         </button>
+        <template v-if="information">
+            <InformationIcon data-tooltip-target="information" />
+            <div id="information" role="tooltip"
+                class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-green-700 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                <p v-for="info in information" class="whitespace-nowrap normal-case">
+                    {{ info }}
+                </p>
+                <div class="tooltip-arrow" data-popper-arrow></div>
+            </div>
+        </template>
         <div v-if="showPopup"
             :class="['absolute z-40 top-8 right-0 mt-0 bg-white border border-gray-300 shadow-lg rounded-sm', widthClass]">
             <div class="">
@@ -27,7 +37,7 @@
 
 <script setup>
 import { ref, watch, computed, onMounted, onUnmounted } from 'vue';
-import SortDateIcon from './Icons/SortDateIcon.vue';
+import { InformationIcon, SortDateIcon } from './Icons';
 
 const props = defineProps({
     label: {
@@ -53,6 +63,10 @@ const props = defineProps({
     reverse: {
         type: Boolean,
         default: false
+    },
+    information: {
+        type: Array,
+        required: false
     }
 });
 

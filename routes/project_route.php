@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\ProjectArea\AdditionalCostsController;
 use App\Http\Controllers\ProjectArea\AdministrativeCostsController;
-use App\Http\Controllers\ProjectArea\PextController;
+use App\Http\Controllers\ProjectArea\Pext\PextController;
 use Illuminate\Support\Facades\Route;
 use App\Support\RouteDefinitions\ProjectRoutes;
 
@@ -15,10 +15,10 @@ foreach (ProjectRoutes::all() as $route) {
     }
 }
 
-Route::get('/project/project_additionals/expenses/{project_id}', [PextController::class, 'additional_project_expensese'])->name('projectmanagement.projectadditional.expenses');
+// Route::get('/project/project_additionals/expenses/{project_id}', [PextController::class, 'additional_project_expensese'])->name('projectmanagement.projectadditional.expenses');
 
 //General expenses
-Route::get('/project/getExpenses/{fixedOrAdditional}/general/{type}', [PextController::class, 'getExpenses'])->name('getExpenses.general');
+// Route::get('/project/getExpenses/{fixedOrAdditional}/general/{type}', [PextController::class, 'getExpenses'])->name('getExpenses.general');
 
 //AdditionalCost
 Route::get('/project/additional_Projects/{project_id}', [AdditionalCostsController::class, 'additionalProjects'])->name('additionalProjects');

@@ -2,6 +2,7 @@
 
 namespace App\Services\HumanResource;
 
+use App\Helpers\FileHandler;
 use App\Models\Address;
 use App\Models\Contract;
 use App\Models\CostLine;
@@ -82,11 +83,12 @@ class ManagementEmployeesServices
     public function firedEmployees($validateData, $request, $id)
     {
         $contract = Contract::where('employee_id', $id)->first();
+        $employee = Employee::select('name', 'lastname')->find($id);
         DB::beginTransaction();
         try {
             if ($request->hasFile('discharge_document')) {
                 $document = $request->file('discharge_document');
-                $validateData['discharge_document'] = time() . '._' . $document->getClientOriginalName();
+                $validateData['discharge_document'] = $employee->name . '_' . $employee->lastname . '-doc_baja-' . time();
             }
             $contract->update($validateData);
             DB::commit();
@@ -120,13 +122,7 @@ class ManagementEmployeesServices
     public function download($id)
     {
         $filename = $id->curriculum_vitae;
-        $filePath = 'documents/curriculum_vitae/' . $filename;
-        $path = public_path($filePath);
-
-        if (file_exists($path)) {
-            return response()->download($filePath, $filename);
-        }
-        abort(404);
+        return FileHandler::downloadFile('documents/curriculum_vitae/', $filename);
     }
 
     public function reentry($request, $id)
@@ -293,7 +289,7 @@ class ManagementEmployeesServices
         } else {
             unset($validateData['curriculum_vitae']);
         }
-        
+
         $e_external = ExternalEmployee::updateOrCreate(
             ['id' => $external_id],
             $validateData
@@ -305,12 +301,6 @@ class ManagementEmployeesServices
 
     public function preview($fileName): BinaryFileResponse
     {
-        $filePath = '/documents/curriculum_vitae/' . $fileName;
-        $path = public_path($filePath);
-        if (file_exists($path)) {
-            ob_end_clean();
-            return response()->file($path);
-        }
-        abort(404, 'Documento no encontrado');
+        return FileHandler::showFile('/documents/curriculum_vitae/', $fileName);
     }
 }

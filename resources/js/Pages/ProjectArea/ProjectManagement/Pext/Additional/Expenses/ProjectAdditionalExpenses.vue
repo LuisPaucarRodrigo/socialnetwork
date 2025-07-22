@@ -12,7 +12,8 @@
         <Toaster richColors />
         <TableHeader :project_id="project_id" :fixedOrAdditional="fixedOrAdditional" :type="type"
             v-model:filterForm="filterForm" :openSwapAPModal="openSwapAPModal"
-            :initialFilterFormState="initialFilterFormState" :openModalImport="openModalImport" />
+            :initialFilterFormState="initialFilterFormState" :openModalImport="openModalImport" 
+            :openExportArchivesModal="openExportArchivesModal"/>
         <ExpensesTable :project_id="project_id" :expenses="expenses" :filterForm="filterForm" :actionForm="actionForm"
             :expenseTypes="expenseTypes" :documentsType="documentsType" :stateTypes="stateTypes" />
 
@@ -21,7 +22,17 @@
                 <Swap ref="swap" :actionForm="actionForm" v-model:expenses="expenses" />
             </template>
         </SuspenseWrapper>
-
+        <SuspenseWrapper :when="showConfirmDownloadFiles">
+            <template #component>
+                <ConfirmDownloadFiles ref="confirmDownloadFiles" :filterForm="filterForm" :project_id="project_id"
+                    :fixedOrAdditional="fixedOrAdditional" />
+            </template>
+        </SuspenseWrapper>
+        <SuspenseWrapper :when="showExpensesImport">
+            <template #component>
+                <ExpensesImport :project_id="project_id" :fixedOrAdditional="fixedOrAdditional" ref="expensesImport" />
+            </template>
+        </SuspenseWrapper>
     </AuthenticatedLayout>
 </template>
 
@@ -35,7 +46,9 @@ import ExpensesTable from "./components/ExpensesTable.vue";
 import SuspenseWrapper from "@/Components/SuspenseWrapper.vue";
 import { useLazyRefInvoker } from "@/utils/useLazyRefInvoker";
 
+const ConfirmDownloadFiles = defineAsyncComponent(() => import('./components/ConfirmDownloadFiles.vue'));
 const Swap = defineAsyncComponent(() => import('./components/Swap.vue'));
+const ExpensesImport = defineAsyncComponent(() => import('../../components/ExpensesImport.vue'));
 
 const props = defineProps({
     expense: Object,
@@ -54,15 +67,21 @@ const props = defineProps({
 
 const showSwap = ref(false)
 
+const confirmDownloadFiles = ref(null)
+const showConfirmDownloadFiles = ref(false)
 
 const expenses = ref(props.expense);
 const swap = ref(null)
+
+const showExpensesImport = ref(false)
+const expensesImport = ref(null)
 // const filterMode = ref(false);
 // const subCostCenterZone = ref(null);
 // const subCostCenter = ref(null)
 
+const { invokeWhenReady: invokeConfirmDownloadFiles } = useLazyRefInvoker(confirmDownloadFiles, showConfirmDownloadFiles);
 const { invokeWhenReady: invokeSwap } = useLazyRefInvoker(swap, showSwap);
-
+const { invokeWhenReady: invokeExpensesImport } = useLazyRefInvoker(expensesImport, showExpensesImport);
 
 const expenseTypes = props.fixedOrAdditional
     ? props.expenseTypeFixed
@@ -138,6 +157,8 @@ function openSwapAPModal() {
 }
 
 function openModalImport() {
-    invokeExpenseImport('toogleModalImport')
+    invokeExpensesImport('toogleModalImport')
 };
+
+function openExportArchivesModal() { invokeConfirmDownloadFiles('openExportArchivesModal') }
 </script>

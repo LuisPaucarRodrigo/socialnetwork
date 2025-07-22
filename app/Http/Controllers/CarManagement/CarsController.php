@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\CarManagement;
 
+use App\Helpers\FileHandler;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FleetCar\FleetCarChangelogRequest;
 use App\Http\Requests\FleetCar\FleetCarDocumentRequest;
@@ -208,13 +209,7 @@ class CarsController extends Controller
 
     public function showImage(Car $car)
     {
-        $fileName = $car->photo;
-        $file_path = "image/car/$fileName";
-        if (file_exists(public_path($file_path))) {
-            ob_end_clean();
-            return response()->file(public_path($file_path));
-        }
-        abort(404, 'Archivo no encontrada');
+        return FileHandler::showFile('image/car/', $car->photo);
     }
 
     public function destroy(Car $car)
@@ -223,18 +218,11 @@ class CarsController extends Controller
         return response()->json(true);
     }
 
-
-
     //documents
     public function showDocuments(CarDocument $car_document, $fieldName)
     {
         $fileName = $car_document->$fieldName;
-        $file_path = "documents/fleetcar/car_documents/$fileName";
-        if (file_exists(public_path($file_path))) {
-            ob_end_clean();
-            return response()->file(public_path($file_path));
-        }
-        abort(404, 'Archivo no encontrada');
+        return FileHandler::showFile('documents/fleetcar/car_documents/', $fileName);
     }
 
     public function storeDocument(FleetCarDocumentRequest $request)
@@ -382,12 +370,7 @@ class CarsController extends Controller
     public function showChangelogInvoice(CarChangelog $carChangelog)
     {
         $fileName = $carChangelog->invoice;
-        $file_path = "documents/fleetcar/invoices/$fileName";
-        if (file_exists(public_path($file_path))) {
-            ob_end_clean();
-            return response()->file(public_path($file_path));
-        }
-        abort(404, 'Factura no encontrada');
+        return FileHandler::showFile('documents/fleetcar/invoices/', $fileName);
     }
 
     //checklist
@@ -507,12 +490,7 @@ class CarsController extends Controller
     public function showDocumentsApproval(ApprovalCarDocument $approval_car, $fieldName)
     {
         $fileName = $approval_car->$fieldName;
-        $file_path = "documents/fleetcar/car_documents/$fileName";
-        if (file_exists(public_path($file_path))) {
-            ob_end_clean();
-            return response()->file(public_path($file_path));
-        }
-        abort(404, 'Archivo no encontrada');
+        return FileHandler::showFile('documents/fleetcar/car_documents/', $fileName);
     }
 
     public function approveAlarms()

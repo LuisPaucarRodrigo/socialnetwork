@@ -46,7 +46,7 @@ function updateFrontEnd(action, id) {
         const index = validations.findIndex(item => item.id === id)
         validations.splice(index, 1)
         closeModal()
-        notify("Usuario eliminado con exito.")
+        notify("Eliminación exitosa.")
     }
 }
 

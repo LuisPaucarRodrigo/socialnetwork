@@ -16,6 +16,7 @@ use Inertia\Inertia;
 use App\Models\Project;
 use App\Models\AdditionalCost;
 use App\Exports\AdditionalCostsExport;
+use App\Helpers\FileHandler;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -157,13 +158,7 @@ class AdditionalCostsController extends Controller
     public function download_ac_photo(AdditionalCost $additional_cost_id)
     {
         $fileName = $additional_cost_id->photo;
-        $filePath = '/documents/additionalcosts/' . $fileName;
-        $path = public_path($filePath);
-        if (file_exists($path)) {
-            ob_end_clean();
-            return response()->file($path);
-        }
-        abort(404, 'Documento no encontrado');
+        return FileHandler::showFile('/documents/additionalcosts/', $fileName);
     }
 
 
@@ -394,7 +389,7 @@ class AdditionalCostsController extends Controller
         return response()->json(true, 200);
     }
 
-    public function destroy(Project $project_id, AdditionalCost $additional_cost)
+    public function destroy(AdditionalCost $additional_cost)
     {
         $additional_cost->photo && $this->file_delete($additional_cost->photo, 'documents/additionalcosts/');
         $additional_cost->delete();

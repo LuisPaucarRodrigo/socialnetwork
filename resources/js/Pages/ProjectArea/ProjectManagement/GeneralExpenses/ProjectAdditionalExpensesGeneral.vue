@@ -10,11 +10,12 @@
         </template>
         <Toaster richColors />
         <TableHeader :openOpNuDaModal="openOpNuDaModal" :openCreateAdditionalModal="openCreateAdditionalModal"
-            :filterForm="filterForm" :fixedOrAdditional="fixedOrAdditional" :type="type" />
+            v-model:filterForm="filterForm" :fixedOrAdditional="fixedOrAdditional" :type="type"
+            :initialFilterFormState="initialFilterFormState"/>
         <GeneralExpensesTable v-model:expenses="expenses" :openEditAdditionalModal="openEditAdditionalModal"
             :confirmDeleteAdditional="confirmDeleteAdditional" :filterForm="filterForm" v-model:actionForm="actionForm"
             :zones="zones" :expenseTypes="expenseTypes" :documentsType="documentsType" :stateTypes="stateTypes"
-            v-model:loading="loading" />
+            v-model:loading="loading" :openAcceptModal="openAcceptModal"/>
 
         <SuspenseWrapper :when="showExpensesForm">
             <template #component>
@@ -36,11 +37,11 @@
             </template>
         </SuspenseWrapper>
 
-        <!-- <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Gasto"
-            :deleteFunction="deleteAdditional" @closeModal="closeModalDoc" /> -->
-        <!-- <ConfirmateModal :showConfirm="showSwapCostsModal" tittle="Cambio de gastos adicionales a fijos"
-            text="La siguiente acción ya no se podrá revertir, ¿Desea continuar?" :actionFunction="swapCosts"
-            @closeModal="closeSwapCostsModal" /> -->
+        <SuspenseWrapper :when="showAcceptModal">
+            <template #component>
+                <AcceptModal ref="acceptModal" :expenses="expenses" />
+            </template>
+        </SuspenseWrapper>
     </AuthenticatedLayout>
 </template>
 
@@ -58,6 +59,7 @@ import { useLazyRefInvoker } from "@/utils/useLazyRefInvoker";
 const ExpensesForm = defineAsyncComponent(() => import('./components/ExpensesForm.vue'));
 const MassiveUpdate = defineAsyncComponent(() => import('./components/MassiveUpdate.vue'));
 const DeleteExpense = defineAsyncComponent(() => import('./components/DeleteExpense.vue'));
+const AcceptModal = defineAsyncComponent(() => import('./components/AcceptModal.vue'));
 
 const props = defineProps({
     providers: Object,
@@ -65,8 +67,6 @@ const props = defineProps({
     cost_center: Object,
     fixedOrAdditional: Boolean,
     type: String,
-    // acExpensesAmounts: Array,
-    // scExpensesAmounts: Array,
     zones: Array,
     expenseType: Array,
     documentsType: Array,
@@ -85,6 +85,9 @@ const massiveUpdate = ref(null)
 
 const expenses = ref([]);
 const loading = ref(true);
+
+const showAcceptModal = ref(false)
+const acceptModal = ref(null)
 // const filterMode = ref(false);
 // const subCostCenterZone = ref(null);
 // const subCostCenter = ref(null)
@@ -92,7 +95,7 @@ const loading = ref(true);
 const { invokeWhenReady: invokeExpensesForm } = useLazyRefInvoker(expensesForm, showExpensesForm);
 const { invokeWhenReady: invokeMassiveUpdate } = useLazyRefInvoker(massiveUpdate, showMassiveUpdate);
 const { invokeWhenReady: invokeDeleteExpense } = useLazyRefInvoker(deleteExpense, showDeleteExpense);
-
+const { invokeWhenReady: invokeAcceptModal } = useLazyRefInvoker(acceptModal, showAcceptModal);
 
 // const opNuDateForm = useForm({
 //     operation_date: '',
@@ -112,6 +115,10 @@ const openEditAdditionalModal = (additional) => {
 
 const openOpNuDaModal = () => {
     invokeMassiveUpdate('openOpNuDaModal')
+}
+
+const openAcceptModal = (paymentId) => {
+    invokeAcceptModal('openAcceptModal', paymentId)
 }
 
 // const closeOpNuDatModal = () => {
@@ -214,34 +221,6 @@ onMounted(async () => {
     expenses.value = res.data;
     loading.value = false;
 });
-
-// watch([() => form.type_doc, () => form.zone], () => {
-//     if (
-//         form.type_doc === "Factura" &&
-//         !["", "MDD"].includes(form.zone)
-//     ) {
-//         form.igv = form.igv ? form.igv : 18;
-//     } else {
-//         form.igv = 0;
-//     }
-// });
-
-// // const confirmValidation = ref(false);
-// async function validateRegister(expense_id, is_accepted) {
-//     const url = route("projectmanagement.pext.expenses.validate", { 'expense_id': expense_id })
-//     try {
-//         await axios.put(url, { 'is_accepted': is_accepted });
-//         if (filterForm.value.rejected) {
-//             updateExpense(expense_id, "validate", is_accepted)
-//         } else {
-//             updateExpense(expense_id, "rejectedValidate")
-//         }
-//     } catch (e) {
-//         console.log(e);
-//     }
-// }
-
-
 
 const actionForm = ref({ ids: [] });
 

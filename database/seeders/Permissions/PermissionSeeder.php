@@ -8,6 +8,7 @@ use App\Support\RouteDefinitions\CicsaRoutes;
 use App\Support\RouteDefinitions\DocumentGestionRoutes;
 use App\Support\RouteDefinitions\FinanceRoutes;
 use App\Support\RouteDefinitions\FleetCarRoutes;
+use App\Support\RouteDefinitions\RoomRentalRoutes;
 use App\Support\RouteDefinitions\HumanResourceRoutes;
 use App\Support\RouteDefinitions\InventoryRoutes;
 use App\Support\RouteDefinitions\ProjectRoutes;
@@ -48,6 +49,11 @@ class PermissionSeeder extends Seeder
         $routes = array_map(function ($route) {
             return ['name' => $route['name']];
         }, FleetCarRoutes::all());
+
+        Permission::insert($routes);
+        $routes = array_map(function ($route) {
+            return ['name' => $route['name']];
+        }, RoomRentalRoutes::all());
 
         Permission::insert($routes);
         $routes = array_map(function ($route) {

@@ -7,11 +7,11 @@
       <tbody>
         <template v-if="info">
           <tr v-if="loading">
-            <td colspan="100%" class="text-center py-4 text-gray-500">Cargando gastos...</td>
+            <td colspan="100%" class="text-center py-4 text-gray-500">Cargando datos...</td>
           </tr>
 
           <tr v-else-if="(info.data || info).length === 0">
-            <td colspan="100%" class="text-center py-4 text-gray-500">No hay gastos disponibles.</td>
+            <td colspan="100%" class="text-center py-4 text-gray-500">No hay datos disponibles.</td>
           </tr>
         </template>
         <slot name="tbody"></slot>
