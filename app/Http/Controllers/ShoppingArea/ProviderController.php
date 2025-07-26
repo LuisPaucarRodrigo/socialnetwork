@@ -8,6 +8,7 @@ use App\Http\Requests\ProviderRequest\CreateProviderRequest;
 use App\Models\Provider;
 use App\Models\Category;
 use App\Models\Segment;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -55,27 +56,15 @@ class ProviderController extends Controller
 
     public function destroy($id)
     {
-        Provider::destroy($id);
-        return response()->json(['msg' => 'allfine']);
-    }
-
-    public function category_provider(Request $request)
-    {
-        $data = $request->validate([
-            'name' => 'required|string'
-        ]);
-        $new = Category::create($data);
-        return response()->json(['new' => $new], 200);
-    }
-
-    public function segment_provider(Request $request)
-    {
-        $data = $request->validate([
-            'category_id' => 'required',
-            'name' => 'required'
-        ]);
-        Segment::create($data);
-        return response()->json([], 200);
+        try {
+            Provider::destroy($id);
+            return response()->json([], 200);
+        } catch (QueryException $e) {
+            if ($e->getCode() === '23000') {
+                return response()->json('No se puede eliminar: existen datos relacionados.', 422);
+            }
+            throw $e;
+        }
     }
 
     public function segment_list($category_id = null)

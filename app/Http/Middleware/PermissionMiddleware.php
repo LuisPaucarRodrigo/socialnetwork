@@ -2,14 +2,9 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Functionality;
 use App\Models\FunctionalityPermission;
 use App\Models\Permission;
 use Closure;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
-use Symfony\Component\HttpFoundation\Response;
 
 class PermissionMiddleware
 {

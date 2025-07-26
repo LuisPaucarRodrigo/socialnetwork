@@ -12,7 +12,9 @@
                 <TableTitle>Email</TableTitle>
                 <TableTitle>Categoria</TableTitle>
                 <TableTitle>Segmento</TableTitle>
-                <TableTitle v-if="auth.user.role_id == 1"></TableTitle>
+                <TableTitle v-permission-or="['edit_provider', 'delete_provider']">
+                    Acciones
+                </TableTitle>
             </tr>
         </template>
         <template #tbody>
@@ -31,12 +33,12 @@
                         {{ i.name }}<span v-if="index < item.segments.length - 1">, </span>
                     </p>
                 </TableRow>
-                <TableRow v-if="auth.user.role_id == 1">
+                <TableRow v-permission-or="['edit_provider', 'delete_provider']">
                     <div class="flex space-x-3 justify-center">
-                        <button type="button" @click="add_information(item)">
+                        <button v-permission="'edit_provider'" type="button" @click="editProviderForm(item)">
                             <EditIcon />
                         </button>
-                        <button type="button" @click="confirmProviderDeletion(item)">
+                        <button v-permission="'delete_provider'" type="button" @click="confirmProviderDeletion(item)">
                             <DeleteIcon />
                         </button>
                     </div>
@@ -61,9 +63,9 @@ import { ref } from 'vue';
 import { notify, notifyError } from '@/Components/Notification';
 import { DeleteIcon, EditIcon } from "@/Components/Icons";
 
-const { auth, add_information } = defineProps({
+const { auth, editProviderForm } = defineProps({
     auth: Object,
-    add_information: Function
+    editProviderForm: Function
 })
 
 const providers = defineModel('providers')
@@ -88,7 +90,8 @@ async function deleteProvider() {
         updateProvider(provider_id.value, 'delete')
         closeModal()
     } catch (error) {
-        notifyError(error)
+        console.log(error)
+        notifyError(`${error.response.data}`)
     }
 };
 

@@ -38,7 +38,7 @@
                     <TableRow>{{ car.rental_type }}</TableRow>
                     <TableRow>{{ car.address }}</TableRow>
                     <TableRow>
-                        <button @click="openImagesModal(car.id)">
+                        <button v-if="car.room_images_count > 0" @click="openImagesModal(car.id)">
                             <ShowIcon />
                         </button>
                     </TableRow>
@@ -47,8 +47,7 @@
                         'room_actions'
                     ]">
                         <div class="flex space-x-3 justify-center">
-                            <button v-permission="'room_actions_manager'"
-                                @click="openImagesForm(car.id)">
+                            <button v-permission="'room_actions_manager'" @click="openImagesForm(car.id)">
                                 <ImagesIcon />
                             </button>
                             <button v-permission-or="['room_actions', 'room_actions_manager']"

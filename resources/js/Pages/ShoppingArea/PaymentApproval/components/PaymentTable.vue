@@ -7,6 +7,10 @@
                         v-model="filterForm.selectedCostLine" width="w-40" labelClass="text-[11px]" />
                 </TableTitle>
                 <TableTitle>
+                    <TableHeaderFilter label="Usuarios" :options="user" v-model="filterForm.selectedUser" width="w-40"
+                        labelClass="text-[11px]" />
+                </TableTitle>
+                <TableTitle>
                     <TableHeaderFilter label="Zona" :options="zones" v-model="filterForm.selectedZone" width="w-40"
                         labelClass="text-[11px]" />
                 </TableTitle>
@@ -22,6 +26,7 @@
                 <TableTitle>Descripción</TableTitle>
                 <TableTitle>Motivo de Rechazo</TableTitle>
                 <TableTitle>Constancia de Pago</TableTitle>
+                <TableTitle>Fecha de ingreso</TableTitle>
                 <TableTitle>
                     <TableHeaderFilter label="Estado" :options="states" v-model="filterForm.selectedState" width="w-40"
                         labelClass="text-[11px]" :information="information" />
@@ -34,6 +39,7 @@
         <template #tbody>
             <tr v-for="item in payments.data || payments">
                 <TableRow>{{ item.cost_line.name }}</TableRow>
+                <TableRow>{{ item.user?.name }}</TableRow>
                 <TableRow>{{ item.zone }}</TableRow>
                 <TableRow>{{ item.bank }}</TableRow>
                 <TableRow>{{ item.account_number }}</TableRow>
@@ -54,6 +60,7 @@
                     </button>
                     <span v-else> - </span>
                 </TableRow>
+                <TableRow>{{ formattedDate(item.created_at) }}</TableRow>
                 <TableRow>{{ item.state }}</TableRow>
                 <TableRow v-permission-or="['add_document_payment_approval', 'delete_payment_approval']">
                     <div class="flex justify-center gap-x-2">
@@ -96,8 +103,9 @@ import TableHeaderFilter from '@/Components/TableHeaderFilter.vue';
 import TableRow from '@/Components/TableRow.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
+import { formattedDate } from '@/utils/utils';
 
-const { zones, cost_line, states, banks, filterForm, openDocumentModal, confirmPaymentDeletion, openRejectedModal } = defineProps({
+const { zones, cost_line, states, banks, filterForm, openDocumentModal, confirmPaymentDeletion, openRejectedModal, user } = defineProps({
     zones: Array,
     cost_line: Array,
     states: Array,
@@ -105,7 +113,8 @@ const { zones, cost_line, states, banks, filterForm, openDocumentModal, confirmP
     filterForm: Object,
     openDocumentModal: Function,
     confirmPaymentDeletion: Function,
-    openRejectedModal: Function
+    openRejectedModal: Function,
+    user: Array
 })
 
 const payments = defineModel('payments')

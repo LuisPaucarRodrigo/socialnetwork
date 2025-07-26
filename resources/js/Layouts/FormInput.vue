@@ -25,7 +25,7 @@ defineProps({
     errorMessage: String,
     colSpan: {
         type: String,
-        default: "sm:col-span-2"
+        default: "sm:col-span-6"
     },
     autocomplete: {
         type: String,

@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('reason_rejection')->nullable();
             $table->foreignId('cost_line_id')->constrained();
             $table->foreignId('provider_id')->constrained()->nullable();
+            $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });
     }

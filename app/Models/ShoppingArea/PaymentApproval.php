@@ -4,6 +4,7 @@ namespace App\Models\ShoppingArea;
 
 use App\Models\CostLine;
 use App\Models\Provider;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -23,7 +24,8 @@ class PaymentApproval extends Model
         'is_validated',
         'reason_rejection',
         'cost_line_id',
-        'provider_id'
+        'provider_id',
+        'user_id'
     ];
 
     public function getStateAttribute()
@@ -35,7 +37,7 @@ class PaymentApproval extends Model
         if ($this->is_validated == '0') {
             return 'Rechazado';
         }
-    
+
 
         if ($this->is_validated == '1') {
             return 'Programado';
@@ -52,5 +54,10 @@ class PaymentApproval extends Model
     public function cost_line()
     {
         return $this->belongsTo(CostLine::class, 'cost_line_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

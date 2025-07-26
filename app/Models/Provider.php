@@ -37,4 +37,9 @@ class Provider extends Model
     {
         return $this->hasOne(PaymentApproval::class);
     }
+
+    public function room()
+    {
+        return $this->hasMany(Room::class);
+    }
 }

@@ -403,16 +403,24 @@ class FunctionalityPermissionSeeder extends Seeder
                 'permissions' => ['providersmanagement.index', 'providersmanagement.update', 'provider.segments.list']
             ],
             [
-                'display_name' => 'Gestionar categorias y segmentos',
-                'key_name' => 'manage_categorys_segments',
-                'module' => 'pprovider_submodule',
-                'permissions' => ['providersmanagement.index', 'provider.category.post', 'provider.segment.post']
-            ],
-            [
                 'display_name' => 'Eliminar proveedor',
                 'key_name' => 'delete_provider',
                 'module' => 'pprovider_submodule',
                 'permissions' => ['providersmanagement.index', 'providersmanagement.destroy']
+            ],
+            [
+                'display_name' => 'Gestionar categorias y segmentos',
+                'key_name' => 'manage_categorys_segments',
+                'module' => 'pprovider_submodule',
+                'permissions' => [
+                    'providersmanagement.index',
+                    'providersmanagement.MCSManagement.index',
+                    'providersmanagement.MCSManagement.getData',
+                    'providersmanagement.MCSManagement.search',
+                    'providersmanagement.MCSManagement.category.store',
+                    'providersmanagement.MCSManagement.category.edit',
+                    'providersmanagement.MCSManagement.category.delete',
+                ]
             ],
         ];
 
@@ -1215,6 +1223,7 @@ class FunctionalityPermissionSeeder extends Seeder
                     'pext.additional.expense.general.index',
                     'pext.expenses.storeOrUpdate',
                     'pext.expenses.delete',
+                    'getExpenses.general',
                     'projectmanagement.pext.expenses.image.show',
                     'pext.additional.expense.general.getCicsaAssignation',
                     'pext.monthly.additional.expense.general.search_advance',
@@ -1226,6 +1235,7 @@ class FunctionalityPermissionSeeder extends Seeder
                     'projectmanagement.pext.additional.reject',
                     'projectmanagement.pext.additional.index_rejected',
                     'pext.additional.expense.index',
+                    'projectmanagement.projectadditional.expenses',
                 ]
             ],
             [

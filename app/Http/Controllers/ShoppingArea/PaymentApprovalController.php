@@ -9,6 +9,8 @@ use App\Http\Requests\ShoppingArea\PaymentApproval\PaymentApprovalRequest;
 use App\Models\CostLine;
 use App\Models\Provider;
 use App\Models\ShoppingArea\PaymentApproval;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -21,18 +23,20 @@ class PaymentApprovalController extends Controller
         $zones = PextConstants::getZone();
         $costLines = CostLine::all();
         $providers = Provider::all();
+        $users= User::whereHas('payment_approval')->get(['id', 'name']);
         $banks = ['BCP', 'INTERBANK', 'BBVA', 'SCOTIABANK'];
         return Inertia::render('ShoppingArea/PaymentApproval/index', [
             'costLines' => $costLines,
             'zones' => $zones,
             'providers' => $providers,
-            'banks' => $banks
+            'banks' => $banks,
+            'users' => $users
         ]);
     }
 
     public function getPaymentApproval()
     {
-        $data = PaymentApproval::with('cost_line')->latest()->paginate(20);
+        $data = PaymentApproval::with('cost_line', 'user:id,name')->latest()->paginate(20);
         $data->getCollection()->each(function ($item) {
             $item->append('state');
         });
@@ -41,7 +45,7 @@ class PaymentApprovalController extends Controller
 
     public function searchPaymentApproval(Request $request)
     {
-        $data = PaymentApproval::with('cost_line')->latest();
+        $data = PaymentApproval::with('cost_line', 'user:id,name')->latest();
         $searchQuery = $request->searchQuery;
         $data->where(function ($e) use ($searchQuery) {
             $e->where('account_number', 'like', "%$searchQuery%")
@@ -51,7 +55,13 @@ class PaymentApprovalController extends Controller
         });
         $zone = $request->selectedZone;
         $costLine = $request->selectedCostLine;
+        $user = $request->selectedUser;
         $banks = $request->selectedBanks;
+        if (count($user) < 8) {
+            $data->whereHas('user', function ($e) use ($user) {
+                $e->whereIn('name', $user);
+            });
+        }
         if (count($zone) < 7) {
             $data->whereIn('zone', $zone);
         }
@@ -83,13 +93,14 @@ class PaymentApprovalController extends Controller
         if ($request->document) {
             $validateData['document'] = FileHandler::generateFilename($name, 'Documento');
         }
+        $validateData['user_id'] = Auth::user()->id;
         $item = PaymentApproval::create($validateData)->fresh();
         if ($request->document) {
             $url = 'documents/shoppingArea/paymentApproval/';
             FileHandler::storeFile($request->file('document'), $url, $validateData['document']);
         }
         $item->append('state');
-        $item->load('cost_line');
+        $item->load('cost_line','user');
         return response()->json($item, 200);
     }
 
