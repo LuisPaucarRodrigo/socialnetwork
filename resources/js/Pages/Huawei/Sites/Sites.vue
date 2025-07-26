@@ -99,9 +99,12 @@ import SitesTable from "./SitesTable.vue";
 
 const props = defineProps({
     sites: Object,
+    users: Object,
     search: String,
     operators: Array,
 });
+
+console.log(props.users);
 
 const isCreateModalOpen = ref(false);
 const isUpdateModalOpen = ref(false);

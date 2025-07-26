@@ -5,6 +5,7 @@
         <template #header>
             Perfil
         </template>
+        <Toaster richColors />
         <form @submit.prevent="submit">
             <div class="space-y-6">
                 <div class="border-b border-gray-900/10 pb-12">
@@ -135,7 +136,7 @@
                                 <InputError :message="form.errors.cost_line_id" />
                             </div>
                         </div>
-                        <div class="mt-3 sm:col-span-2">
+                        <div class="mt-3 col-span-2 md:col-span-1">
                             <InputLabel for="discount_remuneration">
                                 ¿Tiene Descuento sobre remuneración?
                             </InputLabel>
@@ -155,7 +156,25 @@
                                 <InputError :message="form.errors.discount_remuneration" />
                             </div>
                         </div>
-                        <div class="mt-3 sm:col-span-1">
+                        <div class="mt-3 col-span-2 md:col-span-1">
+                            <InputLabel for="life_ley">
+                                ¿Tiene Pòliza de Vida?
+                            </InputLabel>
+                            <div class="mt-2 flex gap-4">
+                                <label class="flex gap-2 items-center">
+                                    Sí
+                                    <input type="radio" v-model="form.life_ley" id="life_ley" :value="true"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                </label>
+                                <label class="flex gap-2 items-center">
+                                    No
+                                    <input type="radio" v-model="form.life_ley" id="life_ley" :value="false"
+                                        class="block border-0 py-1.5 text-gray-900 shadow-sm ring-1 h-4 w-4 ring-inset ring-gray-500 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" />
+                                </label>
+                                <InputError :message="form.errors.life_ley" />
+                            </div>
+                        </div>
+                        <div class="mt-3 col-span-2 md:col-span-1">
                             <InputLabel for="discount_sctr">
                                 ¿Tiene SCTR?
                             </InputLabel>
@@ -174,7 +193,7 @@
                             </div>
                         </div>
 
-                        <div class="mt-3 sm:col-span-1">
+                        <div class="mt-3 col-span-2 md:col-span-1">
                             <InputLabel for="state_travel_expenses">
                                 ¿Tiene Refrigerio?
                             </InputLabel>
@@ -208,6 +227,16 @@
                                     </option>
                                 </select>
                                 <InputError :message="form.errors.pension_type" />
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-2" v-if="form.pension_type !== 'ONP'">
+                            <InputLabel for="cuspp">
+                                CUSPP
+                            </InputLabel>
+                            <div class="mt-2">
+                                <TextInput type="text" v-model="form.cuspp" id="cuspp" maxlength="12" :toUppercase="true"/>
+                                <InputError :message="form.errors.cuspp" />
                             </div>
                         </div>
 
@@ -259,16 +288,6 @@
                                 <TextInput type="number" v-model="form.amount_travel_expenses"
                                     id="amount_travel_expenses" autocomplete="off" />
                                 <InputError :message="form.errors.amount_travel_expenses" />
-                            </div>
-                        </div>
-
-                        <div class="sm:col-span-2">
-                            <InputLabel for="life_ley">Póliza de vida
-                            </InputLabel>
-                            <div class="mt-2">
-                                <TextInput type="number" v-model="form.life_ley" id="life_ley"
-                                    autocomplete="life_ley" />
-                                <InputError :message="form.errors.life_ley" />
                             </div>
                         </div>
 
@@ -653,12 +672,71 @@
             </div>
         </form>
         <ConfirmCreateModal :confirmingcreation="showModal" itemType="empleado" />
+
+        <Modal :show="showDocumentsModal" :max-width="'6xl'">
+            <div class="p-6 flex flex-col gap-6">
+                <h2>Documentos</h2>
+                <div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                        <div v-for="section in sections" :key="section.id"
+                            class="bg-white p-4 rounded-sm shadow-sm border border-gray-300 relative">
+                            <!-- Encabezado de la sección -->
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="flex items-center justify-between w-full cursor-pointer">
+                                    <span class="text-sm font-semibold text-gray-800 break-words">
+                                        {{ section.name }}
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div class="border-t border-gray-200 my-2"></div>
+
+                            <!-- Subdivisiones -->
+                            <div class="space-y-2">
+                                <div v-for="sub in section.subdivisions" :key="sub.id"
+                                    class="flex items-center justify-between">
+                                    <div class="grid grid-cols-2 w-full items-center">
+                                        <div>
+                                            <label class="flex items-center justify-between w-full cursor-pointer">
+                                                <span class="text-sm break-words font-medium">
+                                                    {{ sub.name }}
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <select v-model="documentsForm[sub.id]" :class="[
+                                                'block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6',
+                                                documentsForm[sub.id] === 'No Corresponde' ? 'text-red-600 focus:ring-red-600' : 'text-indigo-700 focus:ring-indigo-600'
+                                            ]">
+                                                <option>Corresponde</option>
+                                                <option>No Corresponde</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 flex items-center justify-end gap-x-3">
+                    <SecondaryButton type="button" @click="closeDocumentsModal"> Cerrar </SecondaryButton>
+                    <PrimaryButton type="button" @click="submitDocuments">
+                        Aceptar
+                    </PrimaryButton>
+                </div>
+            </div>
+        </Modal>
+
+
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmCreateModal from '@/Components/ConfirmCreateModal.vue';
+import Modal from '@/Components/Modal.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 import ModalImage from '@/Layouts/ModalImage.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
@@ -667,6 +745,10 @@ import InputError from '@/Components/InputError.vue';
 import { Head, useForm, router } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { toFormData } from '@/utils/utils';
+import { notify } from '@/Components/Notification';
+import { Toaster } from 'vue-sonner';
+import { useAxiosErrorHandler } from '@/utils/axiosError';
 
 const showModal = ref(false);
 const props = defineProps({
@@ -675,7 +757,11 @@ const props = defineProps({
         type: Object,
         requerid: false
     },
-    costLines: Array
+    costLines: Array,
+    sections: {
+        type: Array,
+        required: false
+    }
 })
 
 const form = useForm({
@@ -694,6 +780,7 @@ const form = useForm({
     cost_line_id: '',
     personal_segment: '',
     type_contract: '',
+    cuspp: '',
     state_travel_expenses: true,
     discount_remuneration: '',
     discount_sctr: '',
@@ -724,6 +811,7 @@ const form = useForm({
     vaccinations: '',
 })
 
+
 if (props.employees) {
     form.curriculum_vitae = null;
     form.cropped_image = null;
@@ -738,6 +826,7 @@ if (props.employees) {
     form.phone1 = props.employees.phone1;
     form.cost_line_id = props.employees.contract.cost_line_id;
     form.type_contract = props.employees.contract.type_contract;
+    form.cuspp = props.employees.contract.cuspp;
     form.state_travel_expenses = props.employees.contract.state_travel_expenses == 1 ? true : false;
     form.discount_remuneration = props.employees.contract.discount_remuneration == 1 ? true : false;
     form.discount_sctr = props.employees.contract.discount_sctr == 1 ? true : false;
@@ -745,7 +834,7 @@ if (props.employees) {
     form.basic_salary = props.employees.contract.basic_salary;
     form.nro_cuenta = props.employees.contract.nro_cuenta;
     form.amount_travel_expenses = props.employees.contract.amount_travel_expenses;
-    form.life_ley = props.employees.contract.life_ley;
+    form.life_ley = props.employees.contract.life_ley == 1 ? true : false;
     form.hire_date = props.employees.contract.hire_date;
     form.education_level = props.employees.education.education_level;
     form.education_status = props.employees.education.education_status;
@@ -769,6 +858,8 @@ if (props.employees) {
     form.vaccinations = props.employees.health.vaccinations;
     form.personal_segment = props.employees.contract.personal_segment
 }
+
+
 
 watch(() => form.state_travel_expenses, (newVal) => {
     form.amount_travel_expenses = ''
@@ -805,31 +896,61 @@ const handleImagenRecortada = (imagenRecorted) => {
     form.cropped_image = imagenRecorted;
 };
 
-const submit = () => {
+const createdEmployee = ref(null)
+const submit = async () => {
     if (props.employees) {
-        form.post(
-            route('management.employees.update', props.employees.id),
-            {
-                onError: (e) => {
-                    console.log(e)
-                }
-            }
-        )
-    } else {
-        form.post(route('management.employees.store'), {
-            onSuccess: () => {
-                showModal.value = true
-                setTimeout(() => {
-                    showModal.value = false;
-                    router.visit(route('management.employees'))
-                }, 2000);
-            },
-            onError: (error) => {
-                console.log(error)
-                console.error('Ha ocurrido un error. Por favor, inténtelo de nuevo.');
+        let url = route('management.employees.update', props.employees.id)
+        form.post(url, {
+            onError: (e) => {
+                console.log(e)
             }
         })
+    } else {
+        try {
+            const payload = form.data()
+            const res = await axios.post(route('management.employees.store'), payload)
+            const id = res.data.employee_id
+            showModal.value = true
+            setTimeout(() => {
+                showModal.value = false;
+                openDocumentsModal(id)
+            }, 2000);
+        } catch (error) {
+            useAxiosErrorHandler(error, form)
+        }
     }
 }
+
+
+
+const showDocumentsModal = ref(false)
+const documentsForm = ref({})
+function openDocumentsModal(id) {
+    props.sections.forEach(item => {
+        item.subdivisions.forEach(subitem => {
+            documentsForm.value[subitem.id] = 'Corresponde'
+        })
+    });
+    createdEmployee.value = id
+    showDocumentsModal.value = true
+}
+
+
+function closeDocumentsModal() {
+    showDocumentsModal.value = false
+    router.visit(route('management.employees'))
+
+}
+
+async function submitDocuments() {
+    const res = await axios.post(route('management.employees.document.register.masive', { employee_id: createdEmployee.value }), documentsForm.value)
+    if (res.status === 200) {
+        notify('Estados de documentos registrados')
+        setTimeout(() => {
+            router.visit(route('management.employees'))
+        }, 2000)
+    }
+}
+
 
 </script>

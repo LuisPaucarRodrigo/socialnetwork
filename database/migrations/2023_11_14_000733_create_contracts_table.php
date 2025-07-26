@@ -19,12 +19,14 @@ return new class extends Migration
             $table->string('state')->default('Active');
             $table->boolean('discount_remuneration');
             $table->boolean('discount_sctr');
-            $table->integer('days_taken')->default(0);  
+            $table->integer('days_taken')->default(0);
             $table->date('hire_date');
             $table->date('fired_date')->nullable();
             $table->boolean('state_travel_expenses')->default(false);
             $table->string('type_contract');
             $table->string('pension_type');
+            $table->string('discharge_document')->nullable();
+            $table->string('cuspp')->nullable();
             $table->float('amount_travel_expenses')->nullable();
             $table->foreignId('employee_id')->constrained()->onDelete('cascade');
             $table->foreignId('cost_line_id')->nullable()->constrained('cost_lines')->nullOnDelete();

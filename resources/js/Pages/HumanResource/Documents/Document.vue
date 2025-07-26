@@ -8,7 +8,7 @@
             <div class="flex flex-col sm:flex-row gap-4 justify-between w-full">
                 <div class="flex gap-4 items-center px-2">
                     <PrimaryButton
-                        v-permission-and="['documents_create']"
+                        v-permission="'add_document_hr'"
                         @click="openCreateDocumentModal"
                         type="button"
                         class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500"
@@ -16,7 +16,11 @@
                         + Agregar Documento
                     </PrimaryButton>
                     <PrimaryButton
-                        v-if="hasPermission('HumanResourceManager')"
+                        v-permission-or="[
+                            'manage_sections_subdivisions_hr',
+                            'delete_new_sections_hr',
+                            'delete_new_subdivisions_hr',
+                        ]"
                         @click="management_section"
                         type="button"
                         class="hidden sm:block rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500"
@@ -24,35 +28,30 @@
                         Gestionar Secciones
                     </PrimaryButton>
 
-                    <div class="sm:hidden">
+                    <div
+                        class="sm:hidden"
+                        v-permission-or="[
+                            'add_document_hr',
+                            'manage_sections_subdivisions_hr',
+                        ]"
+                    >
                         <dropdown align="left">
                             <template #trigger>
                                 <button
                                     @click="dropdownOpen = !dropdownOpen"
                                     class="relative block overflow-hidden rounded-md bg-gray-200 px-2 py-2 text-center text-sm text-white hover:bg-gray-100"
                                 >
-                                    <svg
-                                        width="25px"
-                                        height="25px"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            d="M4 6H20M4 12H20M4 18H20"
-                                            stroke="#000000"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        />
-                                    </svg>
+                                    <MenuIcon />
                                 </button>
                             </template>
 
                             <template #content class="origin-left">
                                 <div>
                                     <!-- Alineación a la derecha -->
-                                    <div class="dropdown">
+                                    <div
+                                        v-permission="'add_document_hr'"
+                                        class="dropdown"
+                                    >
                                         <div class="dropdown-menu">
                                             <button
                                                 @click="openCreateDocumentModal"
@@ -63,7 +62,14 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="dropdown">
+                                    <div
+                                        v-permission-or="[
+                                            'manage_sections_subdivisions_hr',
+                                            'delete_new_sections_hr',
+                                            'delete_new_subdivisions_hr',
+                                        ]"
+                                        class="dropdown"
+                                    >
                                         <div class="dropdown-menu">
                                             <button
                                                 @click="management_section"
@@ -76,11 +82,12 @@
                                     </div>
                                     <div
                                         v-if="
-                                            filterForm.employees.length > 0 ||
-                                            filterForm.external_employees
-                                                .length > 0 ||
-                                            filterForm.sections.length > 0 ||
-                                            filterForm.subdivisions.length > 0
+                                            (filterForm.employees.length > 0 ||
+                                                filterForm.external_employees
+                                                    .length > 0) &&
+                                            (filterForm.sections.length > 0 ||
+                                                filterForm.subdivisions.length >
+                                                    0)
                                         "
                                         class="dropdown"
                                     >
@@ -105,10 +112,10 @@
                 <div v-if="!activatedFilter">
                     <PrimaryButton
                         v-if="
-                            filterForm.employees.length > 0 ||
-                            filterForm.external_employees.length > 0 ||
-                            filterForm.sections.length > 0 ||
-                            filterForm.subdivisions.length > 0
+                            (filterForm.employees.length > 0 ||
+                                filterForm.external_employees.length > 0) &&
+                            (filterForm.sections.length > 0 ||
+                                filterForm.subdivisions.length > 0)
                         "
                         @click="applyFilters"
                         type="button"
@@ -119,12 +126,6 @@
                 </div>
                 <div v-else>
                     <PrimaryButton
-                        v-if="
-                            filterForm.employees.length > 0 ||
-                            filterForm.external_employees.length > 0 ||
-                            filterForm.sections.length > 0 ||
-                            filterForm.subdivisions.length > 0
-                        "
                         @click="massiveZip"
                         type="button"
                         class="hidden sm:block mr-4 rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500"
@@ -215,7 +216,6 @@
                                 >
                                     <label
                                         class="flex items-center space-x-2 text-sm text-black hover:text-black cursor-pointer w-full"
-                                        v-permission="'huawei_expenses_admin'"
                                     >
                                         <input
                                             type="checkbox"
@@ -234,7 +234,6 @@
                                 >
                                     <label
                                         class="flex items-center space-x-2 text-sm text-black hover:text-black cursor-pointer w-full"
-                                        v-permission="'huawei_expenses_admin'"
                                     >
                                         <input
                                             type="checkbox"
@@ -378,12 +377,12 @@
         </div>
 
         <div v-else class="flex flex-col lg:flex-row w-full mt-5 gap-2">
-            <!-- Tabla -->
             <div
                 class="overflow-x-auto"
                 :class="{
-                    'w-full': !fileUrl,
-                    'lg:w-1/2 w-full': fileUrl,
+                    'w-full': true, // siempre w-full por defecto (móviles)
+                    'lg:w-full': !fileUrl, // en pantallas grandes si no hay visor
+                    'lg:w-[50%]': fileUrl, // en pantallas grandes si hay visor
                 }"
             >
                 <div class="max-h-[77vh] overflow-y-auto border rounded-md">
@@ -411,6 +410,17 @@
                                     Empleado
                                 </th>
                                 <th
+                                    class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                >
+                                    Fecha de Vencimiento
+                                </th>
+                                <th
+                                    v-permission-or="[
+                                        'see_document_hr',
+                                        'download_document_hr',
+                                        'edit_document_hr',
+                                        'delete_document_hr',
+                                    ]"
                                     class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                                 >
                                     Acciones
@@ -443,9 +453,23 @@
                                 >
                                     {{ document.emp_name }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td
+                                    class="px-6 py-4 max-w-[150px] text-sm text-gray-700"
+                                >
+                                    {{ formattedDate(document.exp_date) }}
+                                </td>
+                                <td
+                                    v-permission-or="[
+                                        'see_document_hr',
+                                        'download_document_hr',
+                                        'edit_document_hr',
+                                        'delete_document_hr',
+                                    ]"
+                                    class="px-6 py-4 whitespace-nowrap"
+                                >
                                     <div class="flex items-center space-x-3">
                                         <button
+                                            v-permission="'see_document_hr'"
                                             v-if="
                                                 document.title &&
                                                 /\.(pdf|png|jpe?g)$/.test(
@@ -461,6 +485,9 @@
                                             <ShowIcon />
                                         </button>
                                         <button
+                                            v-permission="
+                                                'download_document_hr'
+                                            "
                                             @click="
                                                 downloadDocument(document.id)
                                             "
@@ -468,7 +495,7 @@
                                             <DownloadIcon />
                                         </button>
                                         <button
-                                            v-permission="'documents_update'"
+                                            v-permission="'edit_document_hr'"
                                             @click="
                                                 openEditDocumentModal(document)
                                             "
@@ -476,7 +503,7 @@
                                             <EditIcon />
                                         </button>
                                         <button
-                                            v-permission="'document_delete'"
+                                            v-permission="'delete_document_hr'"
                                             @click="
                                                 confirmDeleteDocument(
                                                     document.id
@@ -495,31 +522,34 @@
 
             <!-- Visor de documento -->
 
-            <div
-                v-if="fileUrl"
-                class="lg:w-1/2 w-full h-[940px] flex flex-col pr-3"
+<div v-if="fileUrl" class="lg:w-1/2 w-full h-[940px] flex flex-col pr-3">
+    <div class="relative flex-1 w-full border rounded overflow-hidden">
+        <!-- Botón tipo gota sobresaliendo del borde izquierdo -->
+        <button
+            @click="fileUrl = null"
+            class="absolute top-1/2 -translate-y-1/2 -left-1 bg-[#403c3c] w-10 h-14 rounded-r-full shadow hover:bg-gray-500 z-10 flex items-center justify-center"
+        >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-6 h-6 text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
             >
-                <div
-                    class="relative flex-1 w-full border rounded overflow-hidden"
-                >
-                    <!-- Botón fijo en la parte superior centrado, aparece solo al pasar el mouse por encima -->
-                    <button
-                        type="button"
-                        @click="fileUrl = null"
-                        class="absolute z-30 top-0 left-1/2 transform -translate-x-1/2 mt-1 px-6 py-1 bg-gray-200 rounded-md shadow text-sm font-medium opacity-0 hover:opacity-100 transition-opacity duration-300"
-                        title="Cerrar visor"
-                    >
-                        ▲
-                    </button>
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 19l-7-7 7-7"
+                />
+            </svg>
+        </button>
 
-                    <!-- Visor PDF -->
-                    <iframe
-                        :src="fileUrl"
-                        class="w-full h-full rounded"
-                        frameborder="0"
-                    ></iframe>
-                </div>
-            </div>
+        <!-- Visor PDF -->
+        <iframe :src="fileUrl" class="w-full h-full rounded" frameborder="0"></iframe>
+    </div>
+</div>
+
         </div>
 
         <Modal :show="create_document || update_document">
@@ -771,13 +801,15 @@ import { ref, computed, nextTick, watchEffect, reactive, watch } from "vue";
 import { Head, useForm, router } from "@inertiajs/vue3";
 import Dropdown from "@/Components/Dropdown.vue";
 import { Toaster } from "vue-sonner";
-import { notifyError } from "@/Components/Notification";
 import {
     EditIcon,
     DeleteIcon,
     ShowIcon,
     DownloadIcon,
-} from "@/Components/Icons/Index";
+    MenuIcon,
+} from "@/Components/Icons";
+import { notify, notifyError } from "@/Components/Notification";
+import { formattedDate } from "@/utils/utils";
 
 const props = defineProps({
     sections: Object,
@@ -785,7 +817,6 @@ const props = defineProps({
     cost_lines: Object,
     employees: Array,
     e_employees: Array,
-    userPermissions: Array,
 });
 
 const mergedEmployeesRaw = computed(() => {
@@ -811,54 +842,51 @@ const selectedCostLines = ref([]);
 const isUpdating = ref(false);
 
 watch(selectedCostLines, (val, oldVal) => {
-  if (isUpdating.value) return;
+    if (isUpdating.value) return;
 
-  const allIds = props.cost_lines.map(cl => cl.id);
-  const hasTodos = val.includes("TODOS");
-  const rawSelected = val.filter(v => v !== 'TODOS');
+    const allIds = props.cost_lines.map((cl) => cl.id);
+    const hasTodos = val.includes("TODOS");
+    const rawSelected = val.filter((v) => v !== "TODOS");
 
-  isUpdating.value = true;
+    isUpdating.value = true;
 
-  if (hasTodos && !oldVal.includes("TODOS")) {
-    selectedCostLines.value = ['TODOS', ...allIds];
-  } else if (!hasTodos && oldVal.includes("TODOS")) {
-    selectedCostLines.value = [];
-  } else if (rawSelected.length > 0) {
-    selectedCostLines.value = ['TODOS', ...rawSelected];
-  } else {
-    selectedCostLines.value = [];
-  }
+    if (hasTodos && !oldVal.includes("TODOS")) {
+        selectedCostLines.value = ["TODOS", ...allIds];
+    } else if (!hasTodos && oldVal.includes("TODOS")) {
+        selectedCostLines.value = [];
+    } else if (rawSelected.length > 0) {
+        selectedCostLines.value = ["TODOS", ...rawSelected];
+    } else {
+        selectedCostLines.value = [];
+    }
 
-  nextTick(() => {
-    isUpdating.value = false;
-
-    // Esperamos al siguiente tick para obtener el valor actualizado
     nextTick(() => {
-      const selected = selectedCostLines.value.filter(v => v !== 'TODOS');
+        isUpdating.value = false;
 
-      const filtered = mergedEmployees.value.filter(emp =>
-        selected.includes(emp.cost_line)
-      );
+        // Esperamos al siguiente tick para obtener el valor actualizado
+        nextTick(() => {
+            const selected = selectedCostLines.value.filter(
+                (v) => v !== "TODOS"
+            );
 
-      filterForm.employees = filtered
-        .filter(emp => emp.type === 'normal')
-        .map(emp => emp.id);
+            const filtered = mergedEmployees.value.filter((emp) =>
+                selected.includes(emp.cost_line)
+            );
 
-      filterForm.external_employees = filtered
-        .filter(emp => emp.type !== 'normal')
-        .map(emp => emp.id);
+            filterForm.employees = filtered
+                .filter((emp) => emp.type === "normal")
+                .map((emp) => emp.id);
+
+            filterForm.external_employees = filtered
+                .filter((emp) => emp.type !== "normal")
+                .map((emp) => emp.id);
+        });
     });
-  });
 });
-
 
 watchEffect(() => {
     mergedEmployees.value = mergedEmployeesRaw.value;
 });
-
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-};
 
 const form = useForm({
     id: "",
@@ -903,8 +931,9 @@ const openEditDocumentModal = (document) => {
     form.section_id = editingDocument.value.subdivision.section_id;
     form.subdivision_id = editingDocument.value.subdivision_id;
     form.employee_id = editingDocument.value.employee_id;
-    form.e_employee_id = document.e_employee_id;
+    form.e_employee_id = editingDocument.value.e_employee_id;
     form.has_exp_date = editingDocument.value.exp_date ? 1 : 0;
+    form.exp_date = editingDocument.value.exp_date;
     form.employeeType = editingDocument.value.employee_id ? 1 : 0;
     update_document.value = true;
 };
@@ -932,7 +961,7 @@ function submit() {
             }, 2000);
         },
         onError: (e) => {
-            console.log(e);
+            console.error(e);
         },
     });
 }
@@ -948,10 +977,16 @@ const submitEdit = () => {
             }, 2000);
         },
         onError: (e) => {
-            console.log(e);
+            console.error(e);
         },
     });
 };
+watch(
+    () => form.has_exp_date,
+    () => {
+        if (!form.has_exp_date) form.exp_date = "";
+    }
+);
 
 //new_test_filter
 const filterForm = reactive({
@@ -1220,8 +1255,8 @@ const deleteDocument = () => {
         router.delete(route("documents.destroy", { id: docId }), {
             onSuccess: () => {
                 closeModalDoc();
+                notify("Documento eliminado");
                 setTimeout(() => {
-                    showEditModal.value = false;
                     router.visit(route("documents.index"));
                 }, 2000);
             },

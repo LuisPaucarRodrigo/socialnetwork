@@ -145,8 +145,9 @@
                                                     title: 'MOD Operativo',
                                                     detArray: operativeMod,
                                                 })
-                                                " type="button" class="text-green-500 hover:text-green-300">
-                                                <InformationCircleIcon class="w-5 h-5" />
+                                                " type="button" >
+                                                <InformationIcon />
+
                                             </button>
                                         </div>
                                     </td>
@@ -229,8 +230,8 @@
                                                         item.expense_type,
                                                     project_id: project.id,
                                                 })
-                                                " type="button" class="text-green-500 hover:text-green-300">
-                                                <InformationCircleIcon class="w-5 h-5" />
+                                                " type="button">
+                                                <InformationIcon />
                                             </button>
                                         </div>
                                     </td>
@@ -287,8 +288,8 @@
                                                         item.expense_type,
                                                     project_id: project.id,
                                                 })
-                                                " type="button" class="text-green-500 hover:text-green-300">
-                                                <InformationCircleIcon class="w-5 h-5" />
+                                                " type="button">
+                                                <InformationIcon />
                                             </button>
                                         </div>
                                     </td>
@@ -347,12 +348,12 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { ref, onMounted } from "vue";
 import { Chart, registerables } from "chart.js/auto";
 import { Head } from "@inertiajs/vue3";
-import { InformationCircleIcon } from "@heroicons/vue/24/outline";
 import MarginProfit from "@/Components/ProjectExpenses/MarginProfit.vue";
 import Modal from "@/Components/Modal.vue";
 import PastProjectUtilities from "@/Components/ProjectExpenses/PastProjectUtilities.vue";
 import ProjectBalance from "@/Components/ProjectExpenses/ProjectBalance.vue";
 import ProjectZoneExpenses from "@/Components/ProjectExpenses/ProjectZoneExpenses.vue";
+import { InformationIcon } from "@/Components/Icons/Index";
 
 const {
     project,

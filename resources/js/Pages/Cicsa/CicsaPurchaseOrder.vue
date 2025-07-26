@@ -24,7 +24,7 @@
                 </div>
             </div>
             <br>
-            <TableStructure>
+            <TableStructure :info="purchaseOrders">
                 <template #thead>
                     <TableTitle :colspan="2">Nombre de Proyecto</TableTitle>
                     <TableTitle :colspan="2">Codigo de Proyecto</TableTitle>
@@ -50,8 +50,8 @@
                                     <button v-if="item.cicsa_purchase_order.length > 0" type="button"
                                         @click="toggleDetails(item?.cicsa_purchase_order)"
                                         class="text-blue-900 whitespace-no-wrap">
-                                        <DownArrow v-if="purcahse_order_row !== item.id" />
-                                        <UpArrow v-else />
+                                        <DownArrowIcon v-if="purcahse_order_row !== item.id" />
+                                        <UpArrowIcon v-else />
                                     </button>
                                 </div>
                             </TableRow>
@@ -220,14 +220,13 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SelectCicsaComponent from '@/Components/SelectCicsaComponent.vue';
 import { formattedDate, setAxiosErrors, toFormData } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
-import axios from 'axios';
 import InputFile from '@/Components/InputFile.vue';
 import { notify, notifyError } from '@/Components/Notification';
 import { Toaster } from 'vue-sonner';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import { DownArrow, UpArrow, PlusCircleIcon, ShowIcon, EditIcon } from '@/Components/Icons/Index';
+import { DownArrowIcon, UpArrowIcon, PlusCircleIcon, ShowIcon, EditIcon } from '@/Components/Icons/Index';
 
 const { purchaseOrder, auth, searchCondition, type } = defineProps({
     purchaseOrder: Object,

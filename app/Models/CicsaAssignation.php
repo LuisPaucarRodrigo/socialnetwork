@@ -20,6 +20,7 @@ class CicsaAssignation extends Model
         'cpe',
         'zone',
         'zone2',
+        'zone3',
         'manager',
         'user_name',
         'user_id',
@@ -74,7 +75,7 @@ class CicsaAssignation extends Model
 
     public function checkAssignation()
     {
-        $campoExcepcion = ['zone2', 'project_id'];
+        $campoExcepcion = ['zone3','zone2', 'project_id','user_id'];
 
         foreach ($this->fillable as $field) {
             if (in_array($field, $campoExcepcion)) {
@@ -268,9 +269,6 @@ class CicsaAssignation extends Model
                 return false;
             }
         }
-
-
-
         return true;
     }
 
@@ -525,9 +523,5 @@ class CicsaAssignation extends Model
                ]);
             }
         });
-
     }
-
-
-
 }

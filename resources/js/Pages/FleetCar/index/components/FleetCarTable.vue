@@ -1,5 +1,5 @@
 <template>
-    <TableStructure :style="'h-[72vh]'">
+    <TableStructure :style="'h-[72vh]'" :info="cars">
         <template #thead>
             <tr>
                 <th class="bg-gray-100">
@@ -45,14 +45,16 @@
                     <TableRow>{{ car.user.name }}</TableRow>
                     <TableRow :colspan="2" v-permission-or="[
                         'mobile_actions_manager',
-                        'mobile_actions',
+                        'mobile_actions'
                     ]">
                         <div class="flex space-x-3 justify-center">
-                            <button v-permission="'mobile_actions'" @click="openformDocument(car)">
+                            <button v-permission-or="['mobile_actions', 'mobile_actions_manager']"
+                                @click="openformDocument(car)">
                                 <DocumentsIcon
                                     :color="car.car_document?.approvel_car_document.length > 0 ? 'text-red-400' : 'text-blue-400'" />
                             </button>
-                            <button v-permission="'mobile_actions'" @click="openFormChangeLog(null, car)" type="button">
+                            <button v-permission-or="['mobile_actions', 'mobile_actions_manager']"
+                                @click="openFormChangeLog(null, car)" type="button">
                                 <svg viewBox="0 0 1024 1024" class="w-6 h-6 icon" version="1.1"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path
@@ -63,18 +65,17 @@
                             <button v-permission="'mobile_actions_manager'" type="button" @click="openEditFormCar(car)">
                                 <EditIcon />
                             </button>
-
-                            <a v-permission="'mobile_actions'" v-if="car.checklist"
+                            
+                            <a v-permission-or="['mobile_actions', 'mobile_actions_manager']"
                                 :href="route('fleet.cars.show_checklist', { car: car.id })">
                                 <ListIcon />
                             </a>
 
                             <button v-permission="'mobile_actions_manager'" type="button"
-                                @click="openModalDeleteCars(car.id)" class="text-blue-900">
+                                @click="openModalDeleteCars(car.id)">
                                 <DeleteIcon />
                             </button>
-                            <button v-if="car.car_changelogs.length > 0" type="button" @click="toogleChangelog(car)"
-                                class="text-blue-900 whitespace-no-wrap">
+                            <button v-if="car.car_changelogs.length > 0" type="button" @click="toogleChangelog(car)">
                                 <DownArrowIcon v-if="carId !== car.id" />
                                 <UpArrowIcon v-else />
                             </button>
@@ -192,15 +193,6 @@
     <div v-if="cars.data" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
         <Pagination :links="cars.links" />
     </div>
-
-    <ConfirmDeleteModal :confirmingDeletion="showModalDeleteCars" itemType="vehiculo" :deleteFunction="deleteCars"
-        @closeModal="openModalDeleteCars(null)" />
-
-    <ConfirmDeleteModal :confirmingDeletion="showModalDeleteChangelog" itemType="registro de cambios"
-        :deleteFunction="deleteChangelog" @closeModal="openModalDeleteChangelog(null)" />
-
-    <FormDocument :cars="cars" ref="formDocument" />
-    <FormChangeLog :cars="cars" ref="formChangeLog" />
 </template>
 <script setup>
 import TableTitle from '@/Components/TableTitle.vue';
@@ -210,30 +202,26 @@ import Pagination from '@/Components/Pagination.vue';
 import TableHeaderCicsaFilter from '@/Components/TableHeaderCicsaFilter.vue';
 import { ref } from 'vue';
 import { formattedDate } from '@/utils/utils';
-import FormChangeLog from './FormChangeLog.vue';
-import FormDocument from './FormDocument.vue';
 import { notify } from '@/Components/Notification';
-import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
-import { ShowIcon, EditIcon, DeleteIcon, DownArrowIcon, UpArrowIcon, ListIcon, DocumentsIcon, AcceptIcon, RejectIcon } from '@/Components/Icons/Index';
+import { ShowIcon, EditIcon, DeleteIcon, DownArrowIcon, UpArrowIcon, ListIcon, DocumentsIcon, AcceptIcon, RejectIcon } from '@/Components/Icons';
 
-const { formSearch, cars, cost_line, openEditFormCar, role_id
+const { formSearch, cars, cost_line, openEditFormCar, openFormChangeLog, openEditFormChangeLog, openformDocument, openModalDeleteCars, openModalDeleteChangelog
 } = defineProps({
     formSearch: Object,
     cars: Object,
     cost_line: Object,
     openEditFormCar: Function,
-    role_id: Function,
+    openFormChangeLog: Function,
+    openEditFormChangeLog: Function,
+    openformDocument: Function,
+    openModalDeleteCars: Function,
+    openModalDeleteChangelog: Function
 })
 
 const carId = ref(null);
 const visibleChangelogs = ref(new Set());
 const uniqueParam = ref(`timestamp=${new Date().getTime()}`);
-const formChangeLog = ref(null)
-const formDocument = ref(null)
-const showModalDeleteChangelog = ref(false);
-const showModalDeleteCars = ref(false);
-const changelogToDelete = ref(null);
-const car_id = ref(null);
+
 
 function toogleChangelog(item) {
     if (carId.value === item.id) {
@@ -265,68 +253,10 @@ async function validateRegister(changelog_id, is_accepted) {
     }
 }
 
-function openFormChangeLog(e, car) {
-    formChangeLog.value.openCreateModalChangelog(e, car)
-}
-
-function openEditFormChangeLog(e, car) {
-    formChangeLog.value.openEditChangelog(e, car)
-}
-
-function openformDocument(item) {
-    formDocument.value.openModalCreateDocument(item)
-}
-
-async function deleteCars() {
-    let url = route("fleet.cars.destroy", { car: car_id.value });
-    try {
-        await axios.delete(url);
-        updateCar(car_id.value, "delete");
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-function openModalDeleteCars(id) {
-    car_id.value = id;
-    showModalDeleteCars.value = !showModalDeleteCars.value;
-}
-
-function openModalDeleteChangelog(id) {
-    changelogToDelete.value = id ?? null;
-    showModalDeleteChangelog.value = !showModalDeleteChangelog.value;
-}
-
-async function deleteChangelog() {
-    const docId = changelogToDelete.value;
-    if (docId) {
-        const response = await axios.delete(
-            route("fleet.cars.destroy_changelog", { car_changelog: docId })
-        );
-        if (response.data) {
-            updateCar(response.data, "deleteChangelog");
-        } else {
-            notifyError("Error al eliminar el registro de cambios");
-        }
-    }
-}
 
 function updateCar(data, action) {
     const validations = cars.data || cars;
-    if (action === "delete") {
-        let index = validations.findIndex((item) => item.id === data);
-        validations.splice(index, 1);
-        openModalDeleteCars(null);
-        notify("Eliminacion Exitosa");
-    } else if (action === "deleteChangelog") {
-        let index = validations.findIndex((item) => item.id === data.id);
-        validations[index] = data;
-        openModalDeleteChangelog(null);
-        if (validations[index].car_changelogs.length === 0) {
-            carId.value = null;
-        }
-        notify("Eliminación Exitosa");
-    } else if (action === "validateChangelog") {
+    if (action === "validateChangelog") {
         let index = validations.findIndex((item) => item.id === data.id);
         validations[index] = data;
         notify("Acción Exitosa");

@@ -5,9 +5,9 @@
         <AuthenticatedLayout :redirectRoute="'documents.index'">
             <Toaster richColors />
 
-            <template #header> Gestión de Secciones </template>
+            <template #header> Gestión de Secciones</template>
             <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
-                <PrimaryButton @click="openCreateSectionModal">
+                <PrimaryButton v-permission="'manage_sections_subdivisions_hr'" @click="openCreateSectionModal">
                     Crear Nueva Sección
                 </PrimaryButton>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
@@ -36,10 +36,11 @@
                                     ">
                                     <DownloadIcon />
                                 </a>
-                                <button @click="openUpdateSectionModal(section)">
+                                <button v-permission="'edit_document_hr'" @click="openUpdateSectionModal(section)">
                                     <EditIcon />
                                 </button>
-                                <button v-if="section.id > 10" @click="confirmDeleteSection(section.id)">
+                                <button v-permission="'delete_new_sections_hr'" v-if="section.id > 10"
+                                    @click="confirmDeleteSection(section.id)">
                                     <DeleteIcon />
                                 </button>
                             </div>
@@ -80,12 +81,13 @@
                                         ">
                                         <EditIcon />
                                     </button>
-                                    <button v-if="subdivision.id > 154" @click="
-                                        confirmDeleteSubdivision(
-                                            section.id,
-                                            subdivision.id
-                                        )
-                                        ">
+                                    <button v-permission="'delete_new_subdivisions_hr'" v-if="subdivision.id > 154"
+                                        @click="
+                                            confirmDeleteSubdivision(
+                                                section.id,
+                                                subdivision.id
+                                            )
+                                            ">
                                         <DeleteIcon />
                                     </button>
                                 </div>
@@ -414,6 +416,7 @@ const submitSub = async (update) => {
         );
 
         if (section) {
+            console.log("dsd", section.subdivisions)
             const index = section.subdivisions.findIndex((sd) => sd.id === newSub.id)
             if (index === -1) section.subdivisions.push(newSub)
             else section.subdivisions[index] = newSub
@@ -439,9 +442,10 @@ const submitSub = async (update) => {
     }
 };
 
-const confirmDeleteSubdivision = (section, subdivisionId) => {
+const confirmDeleteSubdivision = (section_id, subdivisionId) => {
+    console.log(section_id, subdivisionId)
+    sectionId.value = section_id;
     subdivisionToDelete.value = subdivisionId;
-    sectionId.value = section;
     create_subdivision.value = true;
 };
 
@@ -450,6 +454,7 @@ const closeModalSubdivision = () => {
 };
 
 const deleteSubdivision = async () => {
+    console.log()
     try {
         const res = await axios.delete(
             route("documents.destroySubdivision", {
@@ -461,8 +466,9 @@ const deleteSubdivision = async () => {
             const section = dataToRender.value.find(
                 (s) => s.id === sectionId.value
             );
+
             if (section) {
-                const index = section.subdivisions.findIndex((sd) => sd.id === subdivisionToDelete.id)
+                const index = section.subdivisions.findIndex((sd) => sd.id === subdivisionToDelete.value)
                 section.subdivisions.splice(index, 1);
             }
             closeModalSubdivision();

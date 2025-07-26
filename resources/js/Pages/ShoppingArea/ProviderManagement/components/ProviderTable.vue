@@ -1,5 +1,5 @@
 <template>
-    <TableStructure>
+    <TableStructure :info="providers">
         <template #thead>
             <tr>
                 <TableTitle>RUC</TableTitle>

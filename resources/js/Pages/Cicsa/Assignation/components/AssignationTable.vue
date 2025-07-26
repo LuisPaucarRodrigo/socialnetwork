@@ -1,5 +1,5 @@
 <template>
-    <TableStructure>
+    <TableStructure :info="assignations">
         <template #thead>
             <tr>
                 <TableTitle>Nombre del Proyecto</TableTitle>
@@ -22,7 +22,7 @@
                 <TableRow>{{ item.project?.cost_center?.name }}</TableRow>
                 <TableRow>{{ item.project_code }}</TableRow>
                 <TableRow>{{ item.cpe }}</TableRow>
-                <TableRow>{{ item.zone }} {{ item.zone2 }}</TableRow>
+                <TableRow>{{ item.zone || "--" }} {{ item.zone2 }} {{ item.zone3 }}</TableRow>
                 <TableRow>{{ item.manager }}</TableRow>
                 <TableRow>{{ item.user_name }}</TableRow>
                 <TableRow>
@@ -49,6 +49,8 @@ import { EditIcon } from '@/Components/Icons/Index';
 
 const { assignations, updateAssignation } = defineProps({
     assignations: Object,
-    updateAssignation: Function
+    updateAssignation: Function,
 })
+
+
 </script>

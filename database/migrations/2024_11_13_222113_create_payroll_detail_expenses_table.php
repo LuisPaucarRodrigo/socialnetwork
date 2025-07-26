@@ -13,13 +13,14 @@ return new class extends Migration
     {
         Schema::create('payroll_detail_expenses', function (Blueprint $table) {
             $table->id();
-            $table->string('operation_number')->nullable();
-            $table->date('operation_date')->nullable();
-            $table->string('type');
-            $table->foreignId('payroll_detail_id')->constrained()->onDelete('cascade');
-            $table->foreignId('general_expense_id')->nullable()
+            $table->string('employee_name');
+            $table->foreignId('payroll_detail_id')
+                ->constrained('payroll_details')
+                ->cascadeOnDelete();
+            $table->foreignId('general_expense_id')
                 ->constrained('general_expenses')
                 ->cascadeOnDelete();
+            $table->string('photo')->nullable();
             $table->timestamps();
         });
     }

@@ -1,5 +1,5 @@
 <template>
-    <TableStructure :style="'h-[72vh]'">
+    <TableStructure :style="'h-[72vh]'" :info="users">
         <template #thead>
             <tr class="border-b bg-gray-50 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
                 <TableTitle>Nombre</TableTitle>
@@ -32,19 +32,19 @@
                     'delete_user',
                 ]">
                     <div class="flex space-x-3 justify-center">
-                        <button v-if="(user.platform === 'Web/Movil' || user.platform === 'Movil')
+                        <button v-permission="'edit_user'" v-if="(user.platform === 'Web/Movil' || user.platform === 'Movil')
                             && !user.employee" @click="linkEmployee(user.id)">
                             <LinkIcon />
                         </button>
-                        <Link v-permission="'users_details'" class="text-blue-900 whitespace-no-wrap"
+                        <Link v-permission="'see_user'" class="text-blue-900 whitespace-no-wrap"
                             :href="route('users.details', { id: user.id })">
                         <ShowIcon />
                         </Link>
-                        <Link v-permission="'user_edit'" class="text-blue-900 whitespace-no-wrap"
+                        <Link v-permission="'edit_user'" class="text-blue-900 whitespace-no-wrap"
                             :href="route('users.edit', { id: user.id })">
                         <EditIcon />
                         </Link>
-                        <button v-permission="'user_delete'" type="button" @click="confirmUserDeletion(user.id)">
+                        <button v-permission="'delete_user'" type="button" @click="confirmUserDeletion(user.id)">
                             <DeleteIcon />
                         </button>
                     </div>
@@ -65,16 +65,14 @@ import TableHeaderFilter from '@/Components/TableHeaderFilter.vue';
 import { Link } from '@inertiajs/vue3';
 import Pagination from '@/Components/Pagination.vue';
 import { notify, notifyError } from '@/Components/Notification';
-import { ShowIcon, EditIcon, DeleteIcon, LinkIcon } from '@/Components/Icons/Index';
+import { ShowIcon, EditIcon, DeleteIcon, LinkIcon } from '@/Components/Icons';
 
-const { users, formSearch, platforms } = defineProps({
+const { users, formSearch, platforms, confirmUserDeletion } = defineProps({
     users: Object,
     formSearch: Object,
     platforms: Array,
+    confirmUserDeletion: Function
 })
-
-const usersToDelete = defineModel('usersToDelete')
-const confirmingUserDeletion = defineModel('confirmingUserDeletion')
 
 async function linkEmployee(id) {
     let url = route('users.linkEmployee', { user: id })
@@ -96,11 +94,6 @@ async function linkEmployee(id) {
         }
     }
 }
-
-const confirmUserDeletion = (userId) => {
-    confirmingUserDeletion.value = true;
-    usersToDelete.value = userId;
-};
 
 function updateFrontEnd(action, data) {
     const validations = users.data || users

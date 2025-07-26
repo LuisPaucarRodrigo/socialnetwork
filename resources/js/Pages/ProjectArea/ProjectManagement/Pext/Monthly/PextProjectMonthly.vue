@@ -7,14 +7,12 @@
         </template>
         <Toaster richColors />
         <div class="min-w-full">
-            <TableHeader v-model:projects="projects" :userPermissions="userPermissions"
-                :createOrEditModal="createOrEditModal" />
-            <br>
+            <TableHeader v-model:projects="projects" :createOrEditModal="createOrEditModal" />
+            
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3">
-                <ProjectCard v-for="item in projects.data || projects" :key="item.id" :item="item"
-                    :user-permissions="userPermissions" :auth="auth" />
+                <ProjectCard v-for="item in projects.data || projects" :key="item.id" :item="item" :auth="auth" />
             </div>
-            <br>
+            
             <div v-if="projects.data" class="flex flex-col items-center px-5 py-5 xs:flex-row xs:justify-between">
                 <pagination :links="projects.links" />
             </div>
@@ -32,9 +30,8 @@ import ProjectCard from './components/ProjectCard.vue';
 import FormProject from './components/FormProject.vue';
 import TableHeader from './components/TableHeader.vue';
 
-const { project, userPermissions, auth } = defineProps({
+const { project, auth } = defineProps({
     project: Object,
-    userPermissions: Array,
     auth: Object,
 })
 

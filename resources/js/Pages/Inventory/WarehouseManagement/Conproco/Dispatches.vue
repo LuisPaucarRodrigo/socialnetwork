@@ -43,7 +43,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Observaciones
                             </th>
-                            <th v-if="hasPermission('InventoryManager')"
+                            <th 
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                             </th>
                         </tr>
@@ -78,7 +78,7 @@
                                     </p>
                                 </td>
 
-                                <td v-if="hasPermission('InventoryManager')" class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
+                                <td  class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
                                     <div v-if="item.state === null" class="flex space-x-3 justify-center">
                                         <button @click="() => openAcceptModal(item.id)"
                                             class="flex items-center text-blue-500 hover:underline">
@@ -162,13 +162,8 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 const props = defineProps({
     project_entries: Object,
     warehouseId: Number,
-    auth: Object,
-    userPermissions:Array
+    auth: Object
 });
-
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
 
 const declineModal = ref(false);
 const acceptModal = ref(false);

@@ -78,8 +78,8 @@ class HuaweiProjectController extends Controller
                 'total_employee_costs',
                 'total_essalud_employee_cost'
             ])->setRelation('huawei_site', $project->huawei_site->makeHidden([
-                            'huawei_project',
-                        ]));
+                'huawei_project',
+            ]));
         });
 
         return Inertia::render('Huawei/Projects/Projects', [
@@ -139,8 +139,8 @@ class HuaweiProjectController extends Controller
                 'total_employee_costs',
                 'total_essalud_employee_cost'
             ])->setRelation('huawei_site', $project->huawei_site->makeHidden([
-                            'huawei_project',
-                        ]));
+                'huawei_project',
+            ]));
         });
         return Inertia::render('Huawei/Projects/Projects', [
             'projects' => $projects,
@@ -415,7 +415,6 @@ class HuaweiProjectController extends Controller
                     ]);
                 }
             }
-
         } catch (\Throwable $th) {
             DB::rollBack();
             Log::info($th);
@@ -558,7 +557,6 @@ class HuaweiProjectController extends Controller
                     }
                 }
             }
-
         } catch (\Throwable $th) {
             DB::rollBack();
             Log::info($data);
@@ -569,10 +567,6 @@ class HuaweiProjectController extends Controller
         return redirect()->back();
     }
 
-
-
-
-
     //Earnings
 
     public function getEarnings(HuaweiProject $huawei_project)
@@ -582,7 +576,7 @@ class HuaweiProjectController extends Controller
             return $carry + ($item->unit_price * $item->quantity);
         }, 0);
 
-        return Inertia::render('Huawei/ProjectEarnings', [
+        return Inertia::render('Huawei/Earnings/ProjectEarnings', [
             'earnings' => $earnings,
             'total' => $total,
             'huawei_project' => $huawei_project
@@ -605,7 +599,7 @@ class HuaweiProjectController extends Controller
             return $carry + ($item->unit_price * $item->quantity);
         }, 0);
 
-        return Inertia::render('Huawei/ProjectEarnings', [
+        return Inertia::render('Huawei/Earnings/ProjectEarnings', [
             'earnings' => $earnings,
             'huawei_project' => $huawei_project,
             'search' => $request,
@@ -790,7 +784,7 @@ class HuaweiProjectController extends Controller
             ->whereNotNull('deposit_date')
             ->sum('amount');
 
-        return Inertia::render('Huawei/ProjectRealEarnings', [
+        return Inertia::render('Huawei/Earnings/ProjectRealEarnings', [
             'real_earnings' => $real_earnings,
             'total' => $total,
             'huawei_project' => $huawei_project
@@ -813,7 +807,7 @@ class HuaweiProjectController extends Controller
             ->whereNotNull('deposit_date')
             ->sum('amount');
 
-        return Inertia::render('Huawei/ProjectRealEarnings', [
+        return Inertia::render('Huawei/Earnings/ProjectRealEarnings', [
             'real_earnings' => $earnings,
             'huawei_project' => $huawei_project,
             'search' => $request,
@@ -1093,5 +1087,4 @@ class HuaweiProjectController extends Controller
 
         return $sanitized;
     }
-
 }

@@ -8,7 +8,7 @@
         </template>
         <Toaster richColors />
         <div class="mt-3 flex items-center justify-between gap-x-6">
-            <button @click="openCostCenterModal" type="button"
+            <button v-permission="'manage_grupal_documents_hr'" @click="openCostCenterModal" type="button"
                 class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                 + Agregar
             </button>
@@ -81,12 +81,11 @@
                                 <!-- <button @click="assignUser(item.id, item.clc_employees)">
                                     <UserGroupIcon class="w-6 h-6 text-indigo-700"/>
                                 </button> -->
-                                <button type="button" @click="openCostCenterModal(item)"
-                                    class="text-yellow-600 whitespace-no-wrap">
+                                <button v-permission="'manage_grupal_documents_hr'" type="button"
+                                    @click="openCostCenterModal(item)">
                                     <EditIcon />
                                 </button>
-                                <button type="button" @click="openCostCenterDestroyModal(item)"
-                                    class="text-red-600 whitespace-no-wrap">
+                                <button v-permission="'delete_grupal_documents_hr'" type="button" @click="openCostCenterDestroyModal(item)">
                                     <DeleteIcon />
                                 </button>
                             </div>

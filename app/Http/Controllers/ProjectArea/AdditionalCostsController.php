@@ -40,12 +40,13 @@ class AdditionalCostsController extends Controller
         $docTypes = PintConstants::acDocTypes();
         $zones = PintConstants::acZones();
         $stateTypes = PintConstants::acStatesPenAccep();
-        $additionalProjects = Project::where('cost_line_id', 1)
-            ->where('cost_center_id', 3)
-            ->select('id', 'description')
-            ->where('is_accepted', true)
-            ->orderBy('description')
-            ->get();
+
+        // $additionalProjects = Project::where('cost_line_id', 1)
+        //     ->where('cost_center_id', 3)
+        //     ->select('id', 'description')
+        //     ->where('is_accepted', true)
+        //     ->orderBy('description')
+        //     ->get();
 
         $additional_costs = AdditionalCost::where('project_id', $project_id->id)
             ->where(function ($query) {
@@ -58,23 +59,50 @@ class AdditionalCostsController extends Controller
 
         $additional_costs->getCollection()->transform(function ($item) {
             $item->project->setAppends([]);
-            $item->setAppends(['real_amount', 'real_state']);
+            $item->setAppends(['real_amount', 'real_state', 'admin_state']);
             return $item;
         });
 
 
         $providers = Provider::all();
-        return Inertia::render('ProjectArea/ProjectManagement/Pint/AdditionalCosts', [
-            'additional_costs' => $additional_costs,
+        return Inertia::render('ProjectArea/ProjectManagement/Pint/AdditionalCosts/AdditionalCosts', [
+            // 'additional_costs' => $additional_costs,
             'project_id' => $project_id,
             'providers' => $providers,
             'zones' => $zones,
             'expenseTypes' => $expenseTypes,
             'docTypes' => $docTypes,
-            'stateTypes' => $stateTypes,
-            'additional_projects' => $additionalProjects,
+            'stateTypes' => $stateTypes
         ]);
     }
+
+    public function additionalProjects($project_id)
+    {
+        // $additionalProjects = Project::select(['id,description'])
+        //     ->where('cost_line_id', 1)
+        //     ->where('cost_center_id', 3)
+        //     ->select('id', 'description')
+        //     ->where('is_accepted', true)
+        //     ->orderBy('description')
+        //     ->get();
+        // return response()->json($additionalProjects, 200);
+        $additional_costs = AdditionalCost::where('project_id', $project_id)
+            ->where(function ($query) {
+                $query->where('is_accepted', 1)
+                    ->orWhere('is_accepted', null);
+            })
+            ->with(['project', 'provider'])
+            ->orderBy('updated_at', 'desc')
+            ->paginate(20);
+
+        $additional_costs->getCollection()->transform(function ($item) {
+            $item->project->setAppends([]);
+            $item->setAppends(['real_amount', 'real_state', 'admin_state']);
+            return $item;
+        });
+        return response()->json($additional_costs, 200);
+    }
+
     public function indexRejected(Project $project_id)
     {
         $additional_costs = AdditionalCost::where('project_id', $project_id->id)
@@ -84,7 +112,7 @@ class AdditionalCostsController extends Controller
             ->get();
         $additional_costs->transform(function ($item) {
             $item->project->setAppends([]);
-            $item->setAppends(['real_amount', 'real_state']);
+            $item->setAppends(['real_amount', 'real_state', 'admin_state']);
             return $item;
         });
         $providers = Provider::all();
@@ -122,7 +150,7 @@ class AdditionalCostsController extends Controller
         $item = AdditionalCost::create($data);
         $item->load('project', 'provider:id,company_name');
         $item->project->setAppends([]);
-        $item->setAppends(['real_amount', 'real_state']);
+        $item->setAppends(['real_amount', 'real_state', 'admin_state']);
         return response()->json($item, 200);
     }
 
@@ -155,6 +183,7 @@ class AdditionalCostsController extends Controller
             'photo' => 'nullable',
             'igv' => 'required',
             'description' => 'required|string',
+            'ask_admin_review' => 'nullable',
         ]);
         $data['account_statement_id'] = null;
         if (isset($data['operation_number']) && isset($data['operation_date'])) {
@@ -186,10 +215,14 @@ class AdditionalCostsController extends Controller
                 $this->file_delete($filename, 'documents/additionalcosts/');
             }
         }
+        if ((filter_var($data["ask_admin_review"], FILTER_VALIDATE_BOOLEAN))) {
+            unset($data["ask_admin_review"]);
+            $data['admin_is_accepted'] = null;
+        }
         $additional_cost->update($data);
         $additional_cost->load('project', 'provider:id,company_name');
         $additional_cost->project->setAppends([]);
-        $additional_cost->setAppends(['real_amount', 'real_state']);
+        $additional_cost->setAppends(['real_amount', 'real_state', 'admin_state']);
         return response()->json($additional_cost, 200);
     }
 
@@ -258,7 +291,7 @@ class AdditionalCostsController extends Controller
             ->get();
         $updatedCosts->each(function ($cost) {
             $cost->project->setAppends([]);
-            $cost->setAppends(['real_amount', 'real_state']);
+            $cost->setAppends(['real_amount', 'real_state', 'admin_state']);
         });
         return response()->json($updatedCosts, 200);
     }
@@ -302,16 +335,38 @@ class AdditionalCostsController extends Controller
             'ids' => 'required | array | min:1',
             'project_id' => 'required'
         ]);
+        $idsList = [];
         foreach ($data['ids'] as $id) {
-            $ac = AdditionalCost::find($id);
-            $newData = collect($ac->toArray())->except(['id', 'project_id'])->toArray();
-            $newData['project_id'] = $data['project_id'];
-            $ac->photo && $this->file_move_toAdditional($ac->photo);
-            // $newData['fixedOrAdditional'] = ($ac->expense_type === PintConstants::COMBUSTIBLE_GEP || $ac->expense_type === PintConstants::COMBUSTIBLE_UM) ? true : false;
-            $newData['fixedOrAdditional'] = false;
-            PextProjectExpense::create($newData);
+            DB::beginTransaction();
+            try {
+                $ac = AdditionalCost::find($id);
+
+                $newData = collect($ac->toArray())->except(['id', 'project_id'])->toArray();
+                $newData['project_id'] = $data['project_id'];
+                $newData['fixedOrAdditional'] = false;
+
+                $exists = PextProjectExpense::where('ruc', $newData['ruc'])
+                    ->where('doc_number', $newData['doc_number'])
+                    ->exists();
+
+                if ($exists) {
+                    throw new \Exception("Ya existe un gasto con RUC '{$newData['ruc']}' y número de documento '{$newData['doc_number']}'");
+                }
+
+                $ac->photo && $this->file_move_toAdditional($ac->photo);
+
+                PextProjectExpense::create($newData);
+                $ac->delete();
+                $idsList[] = $ac->id;
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return response()->json([
+                    'message' => $e->getMessage(),
+                    'idsList' => $idsList
+                ], 207);
+            }
         }
-        AdditionalCost::whereIn('id', $data['ids'])->delete();
         return response()->json(true, 200);
     }
 
@@ -452,6 +507,32 @@ class AdditionalCostsController extends Controller
         // }
         return response()->json(['additional_cost' => $ac, 'msg' => 'Validación de gasto exitosa'], 200);
     }
+
+    public function rejectRegisters(Request $request, $ac_id)
+    {
+        $data = $request->validate([
+            'reject_reason' => 'nullable',
+            'is_accepted' => 'required'
+        ]);
+        $ac = AdditionalCost::with('project', 'provider')->find($ac_id);
+        $ac->update($data);
+        return response()->json(['additional_cost' => $ac, 'msg' => 'Validación de gasto exitosa'], 200);
+    }
+
+    public function administrativeValidateRegisters(Request $request, $ac_id)
+    {
+        $data = $request->validate([
+            'admin_is_accepted' => 'required',
+            'admin_reject_reason' => 'nullable'
+        ]);
+        $ac = AdditionalCost::with('project', 'provider')->find($ac_id);
+        $ac->update($data);
+        return response()->json(['additional_cost' => $ac, 'msg' => 'Validación de administrativa exitosa'], 200);
+    }
+
+
+
+
 
 
     public function downloadImages(Request $request, $project_id)

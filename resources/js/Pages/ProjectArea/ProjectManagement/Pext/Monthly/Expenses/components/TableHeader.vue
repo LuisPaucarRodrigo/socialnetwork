@@ -1,8 +1,8 @@
 <template>
     <div class="flex gap-4 justify-between">
         <div class="hidden sm:flex sm:items-center space-x-3">
-            <PrimaryButton v-if="hasPermission('ProjectManager') && filterForm.rejected"
-                @click="openCreateAdditionalModal" type="button" class="whitespace-nowrap">
+            <PrimaryButton v-if="filterForm.rejected" @click="openCreateAdditionalModal" type="button"
+                class="whitespace-nowrap">
                 + Agregar
             </PrimaryButton>
             <PrimaryButton data-tooltip-target="update_data_tooltip" type="button" @click="() => {
@@ -30,7 +30,7 @@
                 <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
 
-            <button v-if="hasPermission('UserManager')" type="button"
+            <button type="button"
                 class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500"
                 @click="openModalImport">
                 Importar Gastos
@@ -142,26 +142,21 @@ import Dropdown from "@/Components/Dropdown.vue";
 import Search from "@/Components/Search.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { Link } from "@inertiajs/vue3";
-import { notifyWarning } from "@/Components/Notification";
-import { MenuIcon, ServerIcon } from "@/Components/Icons/Index";
+import { MenuIcon, ServerIcon } from "@/Components/Icons";
 
-const { userPermissions, project_id, fixedOrAdditional, status, actionForm, initialFilterFormState, openCreateAdditionalModal, openModalImport } = defineProps({
-    userPermissions: Array,
+const { project_id, fixedOrAdditional, status, initialFilterFormState, openCreateAdditionalModal, openOpNuDaModal, openModalImport, openSwapCostsModal } = defineProps({
     project_id: String,
     fixedOrAdditional: Boolean,
     status: String,
-    actionForm: Object,
     initialFilterFormState: Object,
     openCreateAdditionalModal: Function,
-    openModalImport: Function
+    openOpNuDaModal: Function,
+    openModalImport: Function,
+    openSwapCostsModal: Function
 })
 
-const showSwapCostsModal = defineModel('showSwapCostsModal')
-const showOpNuDatModal = defineModel('showOpNuDatModal')
 const filterForm = defineModel('filterForm')
-const hasPermission = (permission) => {
-    return userPermissions.includes(permission);
-};
+
 
 function openExportExcel() {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
@@ -179,19 +174,4 @@ function rejectedExpenses() {
     filterForm.value.rejected = !filterForm.value.rejected
 }
 
-const openOpNuDaModal = () => {
-    if (actionForm.ids.length === 0) {
-        notifyWarning("No hay registros seleccionados");
-        return;
-    }
-    showOpNuDatModal.value = true
-}
-
-const openSwapCostsModal = () => {
-    if (actionForm.ids.length === 0) {
-        notifyWarning("No hay registros seleccionados");
-        return;
-    }
-    showSwapCostsModal.value = true
-}
 </script>

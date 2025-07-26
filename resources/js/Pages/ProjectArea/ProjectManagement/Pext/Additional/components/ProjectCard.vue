@@ -4,7 +4,7 @@
             <p class="col-start-1 col-span-1 text-sm font-semibold mb-3">
                 Nombre: {{ item.project_name }}
             </p>
-            <div v-if="hasPermission('ProjectManager')" class="inline-flex justify-end items-start gap-x-2">
+            <div class="inline-flex justify-end items-start gap-x-2">
                 <button type="button" @click="rejectOrReturnAdditionalProject(item.project.id)">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-6 h-6 text-red-500">

@@ -166,7 +166,7 @@
     </Modal>
 </template>
 <script setup>
-import { DeleteIcon, PlusCircleIcon, ShowIcon } from '@/Components/Icons/Index';
+import { DeleteIcon, PlusCircleIcon, ShowIcon } from '@/Components/Icons';
 import InputError from '@/Components/InputError.vue';
 import InputFile from '@/Components/InputFile.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -177,8 +177,6 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { setAxiosErrors } from '@/utils/utils';
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
-
-defineExpose({ openCreateModalChangelog, openEditChangelog })
 
 const { cars } = defineProps({
     cars: Object
@@ -294,4 +292,5 @@ function updateCar(data, action) {
     }
 }
 
+defineExpose({ openCreateModalChangelog, openEditChangelog })
 </script>

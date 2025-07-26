@@ -4,8 +4,7 @@
             <h2 class="text-sm font-semibold mb-3">
                 N° {{ item.code }}
             </h2>
-            <div v-if="auth.user.role_id === 1 || hasPermission('ProjectManager')"
-                class="inline-flex justify-end items-start gap-x-2">
+            <div v-if="auth.user.role_id === 1" class="inline-flex justify-end items-start gap-x-2">
                 <button @click="() => {
                     router.post(route('projectmanagement.liquidation'), { project_id: item.id }, {
                         onSuccess: () => router.visit(route('projectmanagement.pext.index'))
@@ -17,7 +16,7 @@
                 </button>
                 <Link :href="route('projectmanagement.update', { project_id: item.id, type: 2 })"
                     class="flex items-start">
-                <QueueListIcon class="h-6 w-6 text-teal-700" />
+                <EditIcon />
                 </Link>
             </div>
         </div>
@@ -32,34 +31,36 @@
         </p>
         <div class="text-sm ">
             <div class="grid grid-cols-1 gap-y-1">
-                <Link v-if="item?.initial_budget > 0" :href="route('tasks.index', { id: item.id })"
-                    class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Tareas
-                </Link>
-                <span v-else class="text-gray-400">Tareas</span>
-                <Link v-if="item?.initial_budget > 0" :href="route('projectscalendar.show', { project: item.id })"
-                    class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Calendario
-                </Link>
-                <span v-else class="text-gray-400">Calendario</span>
-                <Link v-if="item?.initial_budget > 0"
-                    :href="route('projectmanagement.pext.expenses.index', { project_id: item.id, fixedOrAdditional: false, status: item.status })"
-                    class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y
-                Gastos</Link>
-                <span v-else class="text-gray-400">Compras y Gastos</span>
+                <div v-permission="'pro_pext_tasks'">
+                    <Link v-if="item?.initial_budget > 0" :href="route('tasks.index', { id: item.id })"
+                        class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Tareas
+                    </Link>
+                    <span v-else class="text-gray-400">Tareas</span>
+                </div>
+                <div v-permission="'pro_pext_one_calendar'">
+                    <Link v-if="item?.initial_budget > 0" :href="route('projectscalendar.show', { project: item.id })"
+                        class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Calendario
+                    </Link>
+                    <span v-else class="text-gray-400">Calendario</span>
+                </div>
+                <div v-permission="'pro_pext_purchase_expenses'">
+                    <Link v-if="item?.initial_budget > 0"
+                        :href="route('projectmanagement.pext.expenses.index', { project_id: item.id, fixedOrAdditional: false, status: item.status })"
+                        class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">Compras y
+                    Gastos</Link>
+                    <span v-else class="text-gray-400">Compras y Gastos</span>
+                </div>
             </div>
         </div>
     </div>
 </template>
 <script setup>
-import { QueueListIcon } from '@heroicons/vue/24/outline';
+import { EditIcon } from '@/Components/Icons/Index';
 import { router, Link } from '@inertiajs/vue3';
 
-const { item, auth, userPermissions } = defineProps({
+const { item, auth } = defineProps({
     item: Object,
-    auth: Object,
-    userPermissions: Array
+    auth: Object
 })
 
-function hasPermission(include) {
-    return userPermissions.includes(include)
-}
 </script>

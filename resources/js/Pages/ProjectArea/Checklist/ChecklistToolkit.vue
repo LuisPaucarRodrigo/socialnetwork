@@ -3,7 +3,7 @@
     <Head title="ChecklistHerramientas" />
     <AuthenticatedLayout :redirectRoute="'checklist.index'">
         <template #header> Checklist Herramientas </template>
-        <TableStructure>
+        <TableStructure :info="checklists">
             <template #thead>
                 <tr>
                     <TableTitle>Fecha de Registro</TableTitle>
@@ -183,6 +183,7 @@ import TableStructure from "@/Layouts/TableStructure.vue";
 import TableRow from "@/Components/TableRow.vue";
 import TableTitle from "@/Components/TableTitle.vue";
 import { ShowIcon, DeleteIcon } from '@/Components/Icons/Index';
+import { info } from "autoprefixer";
 
 const { checklists } = defineProps({
     checklists: Object,

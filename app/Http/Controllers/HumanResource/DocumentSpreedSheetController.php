@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\HumanResource;
 
 use App\Http\Controllers\Controller;
-use App\Enums\Permissions\HumanResourcesPermissions;
 use App\Http\Requests\HumanResource\DocumentRegisterRequest;
 use App\Http\Requests\HumanResource\InsuranceExpDateRequest;
 use App\Models\CostLine;
@@ -27,7 +26,7 @@ class DocumentSpreedSheetController extends Controller
         if ($request->isMethod('get')) {
             $employees = Employee::with([
                 'document_registers',
-                'contract:id,state,employee_id,hire_date,discount_sctr',
+                'contract:id,state,employee_id,hire_date,discount_sctr,life_ley',
             ])->whereHas('contract', function ($query) {
                 $query->where('state', 'Active');
             })
@@ -45,7 +44,7 @@ class DocumentSpreedSheetController extends Controller
                 )
                 ->orderBy('name')
                 ->get();
-                $employees->each->setAppends(['sctr_about_to_expire', 'policy_about_to_expire']);
+            $employees->each->setAppends(['sctr_about_to_expire', 'policy_about_to_expire']);
             $e_employees = ExternalEmployee::with([
                 'document_registers',
             ])
@@ -69,7 +68,7 @@ class DocumentSpreedSheetController extends Controller
             $searchquery = $request->searchquery;
             $employees = Employee::with([
                 'document_registers',
-                'contract:id,state,employee_id,hire_date,discount_sctr,cost_line_id',
+                'contract:id,state,employee_id,hire_date,discount_sctr,life_ley,cost_line_id',
                 'contract.cost_line:id,name'
             ])
                 ->whereHas('contract', function ($query) {
@@ -175,11 +174,13 @@ class DocumentSpreedSheetController extends Controller
             $emp->setRelation('document_registers', $formattedDr);
             return $emp;
         });
-        $sections =  DocumentSection::with(['subdivisions' => function($subq) {
-            $subq->where('is_visible', true);
-        }])
-        ->where('is_visible', true)
-        ->get();
+        $sections = DocumentSection::with([
+            'subdivisions' => function ($subq) {
+                $subq->where('is_visible', true);
+            }
+        ])
+            ->where('is_visible', true)
+            ->get();
         $costLines = CostLine::all();
         if ($request->isMethod('get')) {
             return Inertia::render(
@@ -203,7 +204,7 @@ class DocumentSpreedSheetController extends Controller
     public function employee_document_alarms($emp_id, $type)
     {
         $employee = null;
-        if($type === 'employees'){
+        if ($type === 'employees') {
             $employee = Employee::with([
                 'document_registers',
                 'contract:id,state,employee_id,hire_date,discount_sctr',
@@ -221,8 +222,8 @@ class DocumentSpreedSheetController extends Controller
                     'policy_exp_date',
                 )
                 ->find($emp_id);
-        }
-        else if($type === 'external') {
+            $employee->setAppends(['sctr_about_to_expire', 'policy_about_to_expire']);
+        } else if ($type === 'external') {
             $employee = ExternalEmployee::with([
                 'document_registers',
             ])
@@ -241,6 +242,7 @@ class DocumentSpreedSheetController extends Controller
                     'cost_line_id'
                 )
                 ->find($emp_id);
+            $employee->setAppends(['sctr_about_to_expire', 'policy_about_to_expire']);
         }
 
         if ($employee) {
@@ -263,9 +265,11 @@ class DocumentSpreedSheetController extends Controller
             $employee->setRelation('document_registers', $formattedDr);
         }
         //$sectionsToSearch = app(DocumentSpreedSheetPolicy::class)->sections();
-        $sections =  DocumentSection::with(['subdivisions' => function($subq) {
+        $sections = DocumentSection::with([
+            'subdivisions' => function ($subq) {
                 $subq->where('is_visible', true);
-            }])
+            }
+        ])
             ->where('is_visible', true)
             ->get();
         return Inertia::render('HumanResource/DocumentSpreedSheet/EmployeeDocumentAlarms', [
@@ -277,65 +281,74 @@ class DocumentSpreedSheetController extends Controller
 
 
 
-    public function store(DocumentRegisterRequest $request, $dr_id = null)
+    public function create(DocumentRegisterRequest $request)
     {
         $data = $request->validated();
-       
-        if ($data['state'] === 'Completado') { 
-            $docItem = $data['employee_id']
-                ? Document::where('subdivision_id', $data['subdivision_id'])
-                    ->where('employee_id', $data['employee_id'])
-                    ->first()
-                : ($data['e_employee_id']
-                    ? Document::where('subdivision_id', $data['subdivision_id'])
-                        ->where('e_employee_id', $data['e_employee_id'])
-                        ->first()
-                    : null
-                );
-            $document = $request->file('document');
-            $employee_name = $request->employee_id ? Employee::where('id', $data['employee_id'])
-                ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
-                ->first() : ExternalEmployee::where('id', $data['e_employee_id'])
-                ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
-                ->first();
-            $data['title'] = Subdivision::find($data['subdivision_id'])->name . ' - ' . $employee_name->full_name . '.' . $document->getClientOriginalExtension();
-            if($docItem) {
-                $fileName = $docItem->title;
-                $filePath = "documents/documents/$fileName";
-                $path = public_path($filePath);
-                if (file_exists($path) && is_file($path)) {
-                    unlink($path);
-                }
-                $document->move(public_path('documents/documents/'), $data['title']);
-                $docItem->updated_at = now();
-                $docItem->save();
+        $state = $data['state'];
+        $docRegPrev = new DocumentRegister($data);
+        $docItem = $this->getDocument($docRegPrev);
+        if ($state === 'Completado') {
+            if ($docItem) {
+                $this->file_delete($docItem);
+                $document = $request->file('document');
+                $data['title'] = $this->file_store($data, $document);
+                $docItem->update($data);
             } else {
-                $document->move(public_path('documents/documents/'), $data['title']);
+                $document = $request->file('document');
+                $data['title'] = $this->file_store($data, $document);
                 $docItem = Document::create($data);
             }
-            $item = DocumentRegister::where('document_id', $docItem->id)->first();
+            $data['document_id'] = $docItem->id;
+            $docReg = DocumentRegister::create($data);
         } else {
-            $item = DocumentRegister::find($dr_id);
-            if ($item) {
-                $item->update($data);
+            $docReg = DocumentRegister::create($data);
+        }
+        return response()->json([$docReg->subdivision_id => $docReg]);
+    }
+
+
+    public function update(DocumentRegisterRequest $request, $dr_id)
+    {
+        $data = $request->validated();
+        $docReg = DocumentRegister::find($dr_id);
+        $docItem = $this->getDocument($docReg);
+        $state = $data['state'];
+        if ($state === 'Completado') {
+            if ($docItem) {
+                $this->file_delete($docItem);
+                $document = $request->file('document');
+                $data['title'] = $this->file_store($data, $document);
+                $docItem->update($data);
             } else {
-                $item = DocumentRegister::create($data);
+                $document = $request->file('document');
+                $data['title'] = $this->file_store($data, $document);
+                $docItem = Document::create($data);
+                $data['document_id'] = $docItem->id;
             }
         }
-        $item->without('document');
-        return response()->json([$item->subdivision_id => $item], 200);
+        if ($state === 'No Corresponde' && $docItem) {
+            $this->file_delete($docItem);
+            $docItem->delete();
+        }
+        $docReg->update($data);
+        return response()->json([$docReg->subdivision_id => $docReg]);
     }
+
+
+
+
 
 
     public function destroy($dr_id = null)
     {
-        $item = DocumentRegister::find($dr_id);
-        if ($item->document_id) {
-            return response()->json(['msg' => 'El registro del documento ya esta asociado a un archivo en el aplicativo'], 200);
-        } else {
-            $item->delete();
-            return response()->json(['msg' => 'Eliminado'], 200);
+        $item = DocumentRegister::with('document')->find($dr_id);
+        $docItem = $item->document;
+        if ($docItem) {
+            $this->file_delete($docItem);
+            $docItem->delete();
         }
+        $item->delete();
+        return response()->json(['msg' => 'Eliminado'], 200);
     }
 
 
@@ -349,7 +362,9 @@ class DocumentSpreedSheetController extends Controller
             ExternalEmployee::where('sctr', 1)->update(['sctr_exp_date' => $data['exp_date']]);
         }
         if ($data['title'] === 'Póliza') {
-            Employee::where('l_policy', '1')->update(['policy_exp_date' => $data['exp_date']]);
+            Employee::whereHas('contract', function ($query) {
+                $query->where('life_ley', 1);
+            })->update(['policy_exp_date' => $data['exp_date']]);
             ExternalEmployee::where('l_policy', 1)->update(['sctr_exp_date' => $data['exp_date']]);
         }
         return response()->json(['msg' => 'success'], 200);
@@ -376,7 +391,7 @@ class DocumentSpreedSheetController extends Controller
             $employees = array_merge($employees, $e_employees);
             return response()->json($employees, 200);
         } catch (\Exception $e) {
-            return response()->json($e->getMessage(),500);
+            return response()->json($e->getMessage(), 500);
         }
     }
     public function employeesNoDocumentAlarms()
@@ -398,7 +413,33 @@ class DocumentSpreedSheetController extends Controller
             $employees = array_merge($employees, $e_employees);
             return response()->json($employees, 200);
         } catch (\Exception $e) {
-            return response()->json($e->getMessage(),500);
+            return response()->json($e->getMessage(), 500);
+        }
+    }
+
+    public function createMasive(Request $request, $employee_id)
+    {
+        DB::beginTransaction();
+        try {
+            $data = $request->all();
+            foreach ($data as $subdivision_id => $state) {
+                if ($state === 'No corresponde') {
+                    DocumentRegister::create([
+                        'subdivision_id' => $subdivision_id,
+                        'document_id' => null,
+                        'employee_id' => $employee_id,
+                        'e_employee_id' => null,
+                        'exp_date' => null,
+                        'state' => $state,
+                        'observations' => null,
+                    ]);
+                }
+            }
+            DB::commit();
+            return redirect()->back();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $e->getMessage();
         }
     }
 
@@ -458,5 +499,39 @@ class DocumentSpreedSheetController extends Controller
     //     }
 
     // }
+    private function getDocument($docReg)
+    {
+        return Document::where('subdivision_id', $docReg->subdivision_id)
+            ->where('employee_id', $docReg->employee_id)
+            ->where('e_employee_id', $docReg->e_employee_id)
+            ->first();
+    }
 
+    private function file_store($data, $document)
+    {
+        $name = $this->getFileName($data, $document);
+        $document->move(public_path('documents/documents/'), $name);
+        return $name;
+    }
+
+    private function file_delete($docItem)
+    {
+        $fileName = $docItem->title;
+        $filePath = "documents/documents/$fileName";
+        $path = public_path($filePath);
+        if (file_exists($path) && is_file($path)) {
+            unlink($path);
+        }
+    }
+
+    private function getFileName($data, $document)
+    {
+        $employee_name = $data['employee_id'] ? Employee::where('id', $data['employee_id'])
+            ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
+            ->first() : ExternalEmployee::where('id', $data['e_employee_id'])
+            ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
+            ->first();
+        $name = Subdivision::find($data['subdivision_id'])->name . ' - ' . $employee_name->full_name . '.' . $document->getClientOriginalExtension();
+        return $name;
+    }
 }

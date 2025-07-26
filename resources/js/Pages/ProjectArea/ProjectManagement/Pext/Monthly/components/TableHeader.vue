@@ -1,9 +1,9 @@
 <template>
     <div class="mt-6 flex items-center justify-between gap-x-6">
         <div class="hidden sm:flex sm:items-center sm:space-x-3">
-            <PrimaryButton data-tooltip-target="add_preproject" @click=" createOrEditModal()" type="button"
-                customColor="bg-green-600 hover:bg-green-500">
-                <PlusCircleIcon color="text-white"/>
+            <PrimaryButton v-permission="'add_pro_pext'" data-tooltip-target="add_preproject"
+                @click=" createOrEditModal()" type="button" customColor="bg-green-600 hover:bg-green-500">
+                <PlusCircleIcon color="text-white" />
             </PrimaryButton>
             <div id="add_preproject" role="tooltip"
                 class="absolute z-10 invisible inline-block px-2 py-1 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
@@ -16,11 +16,11 @@
                 + Agregar Proyecto Mensual
                 <div class="tooltip-arrow" data-popper-arrow></div>
             </div>
-            <Link :href="route('projectmanagement.pext.additional.index', { type: 2 })"
+            <Link v-permission="'pro_pext_additional_management'" :href="route('projectmanagement.pext.additional.index', { type: 2 })"
                 class="bg-indigo-600 hover:bg-indigo-500 rounded-md px-4 py-2 text-center text-sm text-white">
             P. Adicionales
             </Link>
-            <Link :href="route('projectmanagement.pext.historial')"
+            <Link v-permission="'see_pro_pext_history'" :href="route('projectmanagement.pext.historial')"
                 class="bg-indigo-600 hover:bg-indigo-500 rounded-md px-4 py-2 text-center text-sm text-white">
             Historial
             </Link>
@@ -38,19 +38,19 @@
                 <template #content class="origin-left">
                     <div>
                         <div class="dropdown">
-                            <div class="dropdown-menu">
+                            <div v-permission="'add_pro_pext'" class="dropdown-menu">
                                 <button @click="createOrEditModal()"
                                     class="dropdown-item block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                     Agregar Proyecto
                                 </button>
                             </div>
-                            <div class="dropdown-menu">
+                            <div v-permission="'pro_pext_additional_management'" class="dropdown-menu">
                                 <Link :href="route('projectmanagement.pext.additional.index', { type: 2 })"
                                     class="dropdown-item block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                 P. Adicionales
                                 </Link>
                             </div>
-                            <div class="dropdown-menu">
+                            <div v-permission="'see_pro_pext_history'" class="dropdown-menu">
                                 <Link :href="route('projectmanagement.pext.historial')"
                                     class="dropdown-item block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                 Historial
@@ -79,8 +79,7 @@ import { Link } from '@inertiajs/vue3';
 import TextInput from '@/Components/TextInput.vue';
 import { MenuIcon, PlusCircleIcon } from '@/Components/Icons/Index';
 
-const { userPermissions, createOrEditModal } = defineProps({
-    userPermissions: Array,
+const { createOrEditModal } = defineProps({
     createOrEditModal: Function
 })
 const projects = defineModel('projects')

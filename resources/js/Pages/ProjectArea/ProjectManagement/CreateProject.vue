@@ -130,7 +130,7 @@
                                         al proyecto
                                     </InputLabel>
                                     <button @click="showToAddEmployee" type="button">
-                                        <UserPlusIcon class="text-indigo-800 h-6 w-6 hover:text-purple-400" />
+                                        <AddUserIcon />
                                     </button>
                                 </div>
                                 <br />
@@ -150,9 +150,7 @@
                                                 {{ member.lastname }}:
                                                 {{ member.pivot.charge }}
                                             </p>
-                                            <button v-if="
-                                                hasPermission('UserManager')
-                                            " type="button" @click="
+                                            <button  type="button" @click="
                                                 delete_already_employee(
                                                     member.pivot.id,
                                                     index
@@ -179,9 +177,7 @@ member, index
                                                 {{ member.lastname }}:
                                                 {{ member.pivot.charge }}
                                             </p>
-                                            <button v-if="
-                                                hasPermission('UserManager')
-                                            " type="button" @click="
+                                            <button  type="button" @click="
                                                 delete_already_employee(
                                                     member.pivot.id,
                                                     index
@@ -207,9 +203,7 @@ member, index
                                                 {{ member.name }}
                                                 {{ member.lastname }}
                                             </p>
-                                            <button v-if="
-                                                hasPermission('UserManager')
-                                            " type="button" @click="
+                                            <button  type="button" @click="
                                                 delete_already_employee(
                                                     member.pivot.id,
                                                     index
@@ -227,7 +221,7 @@ member, index
                                         class="grid grid-cols-8 items-center my-2">
                                         <p class=" text-sm col-span-7 line-clamp-2">{{ member.employee.name }} {{
                                             member.employee.lastname }}: {{ member.charge }} </p>
-                                        <button v-if="hasPermission('UserManager')" type="button" @click="delete_employee(index)"
+                                        <button type="button" @click="delete_employee(index)"
                                             class="col-span-1 flex justify-end">
                                             <TrashIcon class=" text-red-500 h-4 w-4 " />
                                         </button>
@@ -334,18 +328,18 @@ import InputError from "@/Components/InputError.vue";
 import Modal from "@/Components/Modal.vue";
 import { ref } from "vue";
 import { Head, router, useForm } from "@inertiajs/vue3";
-import { UserPlusIcon } from "@heroicons/vue/24/outline";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import ErrorOperationModal from "@/Components/ErrorOperationModal.vue";
 import DeleteIcon from "@/Components/Icons/DeleteIcon.vue";
+import { AddUserIcon } from "@/Components/Icons/Index";
 
 const showModal = ref(false);
 const showUpdateModal = ref(false);
 const showEmployeeError = ref(false);
 
 const {
-    userPermissions,
+    
     auth,
     employees,
     start_date,
@@ -358,15 +352,10 @@ const {
     project: Object,
     preprojects: Object,
     auth: Object,
-    userPermissions: Array,
     type: String
 });
 
 const redirectRoute = type == '2' ? 'projectmanagement.pext.index' : 'projectmanagement.index'
-
-const hasPermission = (permission) => {
-    return userPermissions.includes(permission);
-};
 
 const initialState = {
     preproject_id: "",

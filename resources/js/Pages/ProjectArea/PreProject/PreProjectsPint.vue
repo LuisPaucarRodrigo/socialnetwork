@@ -11,10 +11,10 @@
         <div class="min-w-full p-3 rounded-lg shadow">
             <div class="mt-6 flex items-center justify-between gap-x-6">
                 <div class="flex space-x-2">
-                    <Link v-if="preprojects_status === null" :href="route('preprojects.create', { type: type })"
+                    <!-- <Link v-if="preprojects_status === null" :href="route('preprojects.create', { type: type })"
                         class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-500 focus:border-indigo-600 focus:outline-none focus:ring-2 text-white">
                     + Agregar
-                    </Link>
+                    </Link> -->
                     <Link v-if="preprojects_status === null" :href="route('project.auto.pint', { type })"
                         class="inline-flex items-center px-4 py-2 border-2 border-gray-700 rounded-md font-semibold text-xs  uppercase tracking-widest bg-gray-700 hover:underline hover:bg-gray-500 focus:border-indigo-600 focus:outline-none focus:ring-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -81,7 +81,7 @@
                             Informe fotográfico
                             </Link>
                         </div>
-                        <div>
+                        <!-- <div>
                             <Link v-if="item.customer_id == 1"
                                 :href="route('preprojects.products', { preproject: item.id })"
                                 class="text-blue-600 underline whitespace-no-wrap hover:text-purple-600">
@@ -115,7 +115,7 @@
                             Cotización para proyecto
                             </Link>
                             <span v-else class="text-gray-400">Cotización para proyecto</span>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>

@@ -1,5 +1,7 @@
 <template>
     <div>
+
+        <h1 class="font-semibold uppercase my-4">{{ worker.name }}, {{ worker.lastname }}</h1>
         <h1>DATOS DE SEGURIDAD SOCIAL</h1>
         <h3>Periodo Laboral</h3>
         <div>
@@ -65,6 +67,7 @@ onMounted(async () => {
     try {
         const response = await axios.get(url);
         worker.value = response.data;
+        console.log(response.data)
     } catch (error) {
         console.error('Error al cargar datos:', error);
     }

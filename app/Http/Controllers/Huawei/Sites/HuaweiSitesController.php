@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Huawei\Sites;
 use App\Http\Controllers\Controller;
+use App\Models\ContractUser;
 use Illuminate\Http\Request;
 use App\Constants\HuaweiConstants;
 use App\Models\HuaweiSite;
@@ -15,6 +16,7 @@ class HuaweiSitesController extends Controller
     {
         return Inertia::render('Huawei/Sites/Sites', [
             'sites' => HuaweiSite::select('id', 'name', 'address', 'prefix', 'code', 'latitude', 'longitude')->orderBy('name')->paginate(10),
+            'users' => ContractUser::all(),
             'operators' => HuaweiConstants::getOperators()
         ]);
     }

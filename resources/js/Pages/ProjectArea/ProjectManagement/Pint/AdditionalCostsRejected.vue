@@ -70,6 +70,10 @@
                             class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                             Descripción
                         </th>
+                        <th
+                            class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
+                            Motivo de Rechazo
+                        </th>
                         <th v-if="
                             project_id.status === null
                         "
@@ -129,6 +133,11 @@
                         <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
                             <p class="w-[250px]">
                                 {{ item.description }}
+                            </p>
+                        </td>
+                        <td class="border-b border-gray-200 bg-white px-2 py-2 text-center text-[13px]">
+                            <p class="w-[250px]">
+                                {{ item.reject_reason }}
                             </p>
                         </td>
                         <td v-if="
@@ -717,7 +726,7 @@ import { setAxiosErrors, toFormData } from "@/utils/utils";
 import { notify, notifyError } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import Search from "@/Components/Search.vue";
-import { DeleteIcon, DeleteIcon, ShowIcon } from "@/Components/Icons/Index";
+import { DeleteIcon, EditIcon, ShowIcon } from "@/Components/Icons";
 
 
 const props = defineProps({

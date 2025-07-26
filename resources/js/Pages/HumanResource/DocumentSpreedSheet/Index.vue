@@ -13,7 +13,7 @@
           <option value="">Todos</option>
           <option v-for="item, i in costLines" :key="i">{{ item.name }}</option>
         </select>
-        <PrimaryButton v-permission="'document_grupal_documents_index'" type="button"
+        <PrimaryButton v-permission-or="['manage_grupal_documents_hr', 'delete_grupal_documents_hr']" type="button"
           @click="() => router.visit(route('document.grupal_documents.index'))">
           Documentos Grupales
         </PrimaryButton>
@@ -151,7 +151,7 @@
                     </div>
                   </td>
                   <td v-if="sectionIsVisible(sec.name) && sec.id === 9" :class="['px-2 py-2', 'text-center border-2',
-                    (emp.l_policy && emp.policy_exp_date === null) && 'bg-red-100'
+                    (emp.contract?.life_ley && emp.policy_exp_date === null) && 'bg-red-100'
                   ]">
                     <div class="min-w-[170px] flex items-center">
 
@@ -183,10 +183,7 @@
                         }}
                       </p>
                       <div class="w-1/4 justify-end flex gap-3">
-                        <button 
-                          v-permission="'modify_document_status'" 
-                          type="button" 
-                          @click="openDocModal(
+                        <button v-permission="'modify_document_status'" type="button" @click="openDocModal(
                           {
                             emp_name: emp.name + ' ' + emp.lastname,
                             doc_name: sub.name,
@@ -291,10 +288,7 @@
                         }}
                       </p>
                       <div class="w-1/4 justify-end flex gap-3">
-                        <button 
-                          v-permission="'modify_document_status'" 
-                          type="button" 
-                          @click="openDocModal(
+                        <button v-permission="'modify_document_status'" type="button" @click="openDocModal(
                           {
                             emp_name: emp.name + ' ' + emp.lastname,
                             doc_name: sub.name,
@@ -333,6 +327,13 @@
           <h2 class="text-base font-medium leading-7 text-gray-900">
             Colaborador: {{ docForm.emp_name }}
           </h2>
+          <div v-if="docForm.id">
+            <h4 class="text-sm font-light text-black-900 bg-amber-500/10 rounded-lg p-3 ">
+              Si elige el estado <span class="text-red-500">"No Corresponde"</span> o la opción <span
+                class="text-red-500">"Eliminar"</span> el archivo relacionado (de existir) se eliminará.
+            </h4>
+          </div>
+
           <form @submit.prevent="submit">
             <div class="pb-6 pt-3 border-t border-b border-gray-900/10 ">
               <div class=" grid sm:grid-cols-2 gap-6">
@@ -354,7 +355,7 @@
                     <InputLabel for="documentFile">Documento <span class="text-red-600 text-normal">*</span>
                     </InputLabel>
                     <div class="mt-2">
-                      <InputFile type="file" v-model="docForm.document" id="documentFile"
+                      <InputFile required type="file" v-model="docForm.document" id="documentFile"
                         class="w-full ring-1 ring-gray-300" accept=".pdf, .png, .jpeg, .jpg" />
                       <InputError :message="docForm.errors.document" />
                     </div>
@@ -375,7 +376,7 @@
                       <span class="text-red-600 text-normal">*</span>
                     </div>
                     <div v-if="docForm.has_exp_date" class="mt-2 ">
-                      <TextInput type="date" v-model="docForm.exp_date" autocomplete="off" />
+                      <TextInput required type="date" v-model="docForm.exp_date" autocomplete="off" />
                       <InputError :message="docForm.errors.exp_date" />
                     </div>
                   </div>
@@ -453,7 +454,6 @@ import { ref, watch } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { formattedDate } from '@/utils/utils';
-import { InformationCircleIcon } from '@heroicons/vue/24/outline';
 import { principalData, personalData, getProp } from './constants';
 import { Toaster } from 'vue-sonner';
 import { notify, notifyError } from '@/Components/Notification';
@@ -472,29 +472,48 @@ const employeesData = ref([...employees])
 const e_employeesData = ref([...e_employees])
 
 const showDocModal = ref(false)
-const docForm = useForm({})
+
 
 
 //Each cell post transaction
 function openDocModal(item) {
   showDocModal.value = true
-  const cleanItem = JSON.parse(JSON.stringify(item));
-  docForm.defaults(cleanItem);
+  // const cleanItem = JSON.parse(JSON.stringify(item));
+  docForm.defaults(item);
   docForm.reset()
 }
 
+const initStateDocForm = {
+  emp_name: "",
+  doc_name: "",
+  id: "",
+  subdivision_id: "",
+  document_id: "",
+  e_employee_id: "",
+  employee_id: "",
+  exp_date: "",
+  state: "",
+  observations: "",
+  has_exp_date: "",
+  document: null
+}
+
+const docForm = useForm({ ...initStateDocForm })
+
 function closeDocModal() {
-  docForm.defaults({})
+  docForm.defaults({ ...initStateDocForm })
   docForm.reset()
   isLoading.value = false
-  errMsg.value = false
+  errMsg.value = ''
   showDocModal.value = false
 }
 
 const isLoading = ref(false)
 async function submit() {
   isLoading.value = true
-  let url = route('document.rrhh.status.store', { dr_id: docForm?.id })
+  let url = docForm?.id
+    ? route('document.rrhh.status.update', { dr_id: docForm.id })
+    : route('document.rrhh.status.create')
   try {
     const formToSend = toFormData(docForm.data());
     const res = await axios.post(url, formToSend)
@@ -514,12 +533,12 @@ async function submit() {
         ...res.data,
       }
     }
-
     closeDocModal()
     setTimeout(() => {
       notify('Registro Documentario Guardado')
     }, 100)
   } catch (e) {
+    console.error(e)
     closeDocModal()
     setTimeout(() => {
       notifyError('Server Error')
@@ -594,7 +613,7 @@ async function submitInsurance() {
         item.sctr_exp_date = insuranceForm.exp_date
         item.sctr_about_to_expire = actual >= newDate
       }
-      if (item.l_policy && title === 'Póliza') {
+      if (item.contract?.life_ley && title === 'Póliza') {
         item.policy_exp_date = insuranceForm.exp_date
         item.policy_about_to_expire = actual >= newDate
       }
@@ -616,7 +635,8 @@ async function submitInsurance() {
     setTimeout(() => {
       notify(`${title} Actualizado`)
     }, 100)
-  } catch {
+  } catch(error) {
+    console.error(error)
     closeInsuranceModal()
     setTimeout(() => {
       notify('Server Error')
@@ -628,14 +648,12 @@ async function filterExpenseLine(search) {
   let url = route('document.rrhh.status')
   try {
     let response = await axios.post(url, { searchquery: search })
-    console.log(response.data)
     employeesData.value = response.data.employees
     e_employeesData.value = response.data.e_employees
   } catch (error) {
     notifyError(error)
   }
 }
-
 
 watch(() => docForm.has_exp_date, () => {
   if (!docForm.has_exp_date) docForm.exp_date = ''
@@ -645,6 +663,7 @@ watch(() => docForm.state, () => {
   if (docForm.state !== 'Completado') {
     docForm.document = null
     docForm.exp_date = ''
+    docForm.has_exp_date = 0
   }
 })
 

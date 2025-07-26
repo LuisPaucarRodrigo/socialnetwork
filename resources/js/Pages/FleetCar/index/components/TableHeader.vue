@@ -12,10 +12,9 @@
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Search from '@/Components/Search.vue';
 
-const { form, openCreateFormCar, role_id } = defineProps({
+const { form, openCreateFormCar } = defineProps({
     form: Object,
     openCreateFormCar: Function,
-    role_id: Number
 });
 
 </script>

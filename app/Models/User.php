@@ -89,13 +89,13 @@ class User extends Authenticatable
         return $this->hasMany(ProjectQuote::class);
     }
 
-    public function hasPermission($permission)
-    {
-        $role = $this->role; 
-        if($this->role_id === 1) return true;
-        if ($role) return $role->permissions()->where('name', $permission)->exists();
-        return false; 
-    }
+    // public function hasPermission($permission)
+    // {
+    //     $role = $this->role; 
+    //     if($this->role_id === 1) return true;
+    //     if ($role) return $role->permissions()->where('name', $permission)->exists();
+    //     return false; 
+    // }
 
     public function onePermission()
     {

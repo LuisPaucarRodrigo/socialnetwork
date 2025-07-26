@@ -103,13 +103,11 @@ import Modal from "@/Components/Modal.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputFile from "@/Components/InputFile.vue";
 import InputError from "@/Components/InputError.vue";
-import {
-    setAxiosErrors,
-    toFormData,
-} from "@/utils/utils";
-import { notify, notifyError } from "@/Components/Notification";
+import { toFormData } from "@/utils/utils";
+import { notify } from "@/Components/Notification";
 import { ref } from "vue";
 import { useForm } from "@inertiajs/vue3";
+import { useAxiosErrorHandler } from "@/utils/axiosError";
 
 defineExpose({ openModalCreate, openModalEdit })
 
@@ -165,15 +163,7 @@ async function submit() {
         updateCar(response.data, action);
     } catch (error) {
         console.log(error);
-        if (error.response) {
-            if (error.response.data.errors) {
-                setAxiosErrors(error.response.data.errors, form);
-            } else {
-                notifyError("Server error:", error.response.data);
-            }
-        } else {
-            notifyError("Network or other error:", error);
-        }
+        useAxiosErrorHandler(error, form)
     }
 }
 
@@ -190,6 +180,5 @@ function updateCar(data, action) {
         notify("Actualización Exitosa");
     }
 }
-
 
 </script>

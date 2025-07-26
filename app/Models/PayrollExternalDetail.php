@@ -10,7 +10,8 @@ class PayrollExternalDetail extends Model
     use HasFactory;
     protected $fillable = [
         "payroll_id",
-        "external_employee_id",
+        "name",
+        "lastname",
         "doc_type",
         "doc_number",
         "amount",

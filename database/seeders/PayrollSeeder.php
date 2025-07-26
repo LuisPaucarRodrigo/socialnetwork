@@ -27,6 +27,7 @@ class PayrollSeeder extends Seeder
             ['code' => '0201', 'concept' => 'Asignación familiar'],
             ['code' => '0306', 'concept' => 'Bonificaciones regulares'],
             ['code' => '0902', 'concept' => 'Bono de productividad'],
+            ['code' => '0904', 'concept' => 'Compensación por Tiempo de Servicios'],
             ['code' => '0907', 'concept' => 'Licencia de goce de haber'],
             ['code' => '0914', 'concept' => 'Refriger. que no sea aliment. princip'],
             ['code' => '0923', 'concept' => 'Ing. 4ta cat.considerados 5ta cat.'],

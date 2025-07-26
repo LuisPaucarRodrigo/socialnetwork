@@ -42,14 +42,23 @@ import { setAxiosErrors } from '@/utils/utils';
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
-const confirmingUserDeletion = defineModel('confirmingUserDeletion')
-const usersToDelete = defineModel('usersToDelete')
+const confirmingUserDeletion = ref(false)
+const usersToDelete = ref(null)
 const users = defineModel('users')
 const passwordInput = ref(null);
 
 const form = useForm({
     password: '',
 });
+
+function toogleModal() {
+    confirmingUserDeletion.value = !confirmingUserDeletion.value
+}
+
+const confirmUserDeletion = (userId) => {
+    toogleModal()
+    usersToDelete.value = userId;
+};
 
 async function deleteUser() {
     const userId = usersToDelete.value;
@@ -71,7 +80,7 @@ async function deleteUser() {
 };
 
 const closeModal = () => {
-    confirmingUserDeletion.value = false;
+    toogleModal()
     form.reset();
 };
 
@@ -85,4 +94,5 @@ function updateFrontEnd(action, data) {
     }
 }
 
+defineExpose({ confirmUserDeletion })
 </script>

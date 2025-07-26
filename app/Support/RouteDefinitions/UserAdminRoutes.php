@@ -2,6 +2,7 @@
 namespace App\Support\RouteDefinitions;
 
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\ManagementRolsController;
 use App\Http\Controllers\Auth\PasswordController;
@@ -79,7 +80,7 @@ class UserAdminRoutes
             [
                 'uri' => 'register',
                 'method' => 'post',
-                'action' => [RegisteredUserController::class, 'post'],
+                'action' => [RegisteredUserController::class, 'store'],
                 'permission' => true,
                 'name' => 'register.post',
             ],
@@ -120,6 +121,23 @@ class UserAdminRoutes
                 'permission' => true,
                 'name' => 'rols.details',
             ],
+
+
+
+
+
+            [
+                'uri' => 'dev_permissions',
+                'method' => 'get',
+                'action' => [PermissionController::class, 'index'],
+                'permission' => false,
+                'name' => 'dev.permissions.index',
+            ],
+
+
+
+
+
         ];
     }
 }

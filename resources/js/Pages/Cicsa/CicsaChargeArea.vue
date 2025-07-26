@@ -21,7 +21,7 @@
                 </div>
             </div>
             <br>
-            <TableStructure>
+            <TableStructure :info="charge_areas">
                 <template #thead>
                     <tr>
                         <TableTitle :colspan="4">Nombre de Proyecto</TableTitle>
@@ -41,10 +41,9 @@
                             <TableRow>
                                 <div class="flex space-x-3 justify-center">
                                     <button v-if="item.cicsa_charge_area.length > 0" type="button"
-                                        @click="toggleDetails(item?.cicsa_charge_area)"
-                                        class="text-blue-900 whitespace-no-wrap">
-                                        <ChevronDownIcon v-if="charge_area_row !== item.id" class="w-6 h-6" />
-                                        <ChevronUpIcon v-else class="w-6 h-6" />
+                                        @click="toggleDetails(item?.cicsa_charge_area)">
+                                        <DownArrowIcon v-if="charge_area_row !== item.id" />
+                                        <UpArrowIcon v-else />
                                     </button>
                                 </div>
                             </TableRow>
@@ -338,12 +337,11 @@ import SuccessOperationModal from '@/Components/SuccessOperationModal.vue';
 import ErrorOperationModal from '@/Components/ErrorOperationModal.vue';
 import { formattedDate, setAxiosErrors, toFormData } from '@/utils/utils.js';
 import TextInput from '@/Components/TextInput.vue';
-import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/vue/24/outline';
 import InputFile from '@/Components/InputFile.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import { ShowIcon, EditIcon } from '@/Components/Icons/Index';
+import { ShowIcon, EditIcon, DownArrowIcon, UpArrowIcon } from '@/Components/Icons/Index';
 
 const { charge_area, auth, searchCondition, type } = defineProps({
     charge_area: Object,

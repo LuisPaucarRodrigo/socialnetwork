@@ -94,7 +94,7 @@
                                         </p>
                                     </div>
                                 </td>
-                                <td v-if="hasPermission('ProjectManager')" class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
+                                <td class="border-b border-gray-300 bg-white px-5 py-5 text-sm">
                                     <button @click="() => showModalOutput(item.id, item.remaining_quantity)"
                                         class="text-blue-900 whitespace-no-wrap"
                                         :disabled="(item.state && item.remaining_quantity !== 0) ? false : true">

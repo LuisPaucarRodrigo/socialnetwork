@@ -3,7 +3,7 @@
     <Head title="ChecklistDiarioHerramientas" />
     <AuthenticatedLayout :redirectRoute="'checklist.index'">
         <template #header> Checklist Diario de Herramientas </template>
-        <TableStructure>
+        <TableStructure :info="checklists">
             <template #thody>
                 <tr>
                     <TableTitle>Fecha de Registro</TableTitle>

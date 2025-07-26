@@ -13,4 +13,8 @@ class PayrollDetailTaxAndContribution extends Model
         't_a_c_param_id',
         'amount',
     ];
+
+    public function tax_and_contribution_param() {
+        return $this->belongsTo(TaxAndContributionParam::class, 't_a_c_param_id');
+    }
 }

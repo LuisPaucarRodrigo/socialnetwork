@@ -1,6 +1,6 @@
 <template>
 
-    <TableStructure>
+    <TableStructure :info="purchases">
         <template #thead>
             <tr>
                 <TableTitle>Código de Solicitud</TableTitle>
@@ -38,7 +38,7 @@
                 </TableRow>
                 <TableRow>
                     <a target="_blank" :href="route('purchasingrequest.export', { id: purchase.id })">
-                        <ArrowDownTrayIcon class="w-6 h-6 text-blue-600" />
+                        <DownloadIcon />
                     </a>
                 </TableRow>
                 <TableRow>
@@ -64,10 +64,10 @@
                         <button v-permisssion="'purchases_request_actions'"
                             v-if="!purchase.preproject?.has_quote && (purchase.state == 'Pendiente' || purchase.state == 'En progreso')"
                             type="button" @click="confirmPurchase(purchase)">
-                            <DocumentIcon />
+                            <PlusDocumentIcon />
                         </button>
                         <span v-permisssion="'purchases_request_actions'" v-if="purchase.preproject?.has_quote">
-                            <DocumentIcon color="text-gray-400"/>
+                            <PlusDocumentIcon color="text-gray-400" />
                         </span>
                         <div v-permisssion="'purchases_request_actions_manager'">
                             <button v-if="purchase.state != 'Aceptado'" type="button"
@@ -90,14 +90,13 @@
     </div>
 </template>
 <script setup>
-import { DeleteIcon, DocumentIcon, EditIcon, ShowIcon } from '@/Components/Icons/Index';
+import { DeleteIcon, PlusDocumentIcon, DownloadIcon, EditIcon, ShowIcon } from '@/Components/Icons/Index';
 import { notifyError } from '@/Components/Notification';
 import Pagination from '@/Components/Pagination.vue';
 import TableRow from '@/Components/TableRow.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import { formattedDate } from '@/utils/utils';
-import { ArrowDownTrayIcon } from '@heroicons/vue/24/outline';
 import { Link, router } from '@inertiajs/vue3';
 
 const { purchases, confirmPurchasesDeletion } = defineProps({

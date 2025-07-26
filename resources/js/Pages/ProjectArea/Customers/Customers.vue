@@ -6,7 +6,7 @@
             Clientes
         </template>
         <div class="mt-6 flex items-center justify-between gap-x-6">
-            <button @click="add_customer" type="button"
+            <button v-permission="'add_client'" @click="add_customer" type="button"
                 class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                 + Agregar
             </button>
@@ -20,14 +20,17 @@
                 </div>
             </div>
         </div>
-        <TableStructure>
+        <TableStructure :info="customers">
             <template #thead>
                 <tr>
                     <TableTitle>Ruc</TableTitle>
                     <TableTitle>Razón Social</TableTitle>
                     <TableTitle>Categoría</TableTitle>
                     <TableTitle>Dirección</TableTitle>
-                    <TableTitle></TableTitle>
+                    <TableTitle
+                        v-permission-or="['edit_client', 'manage_client_contacts', 'delete_client', 'delete_client_contact']">
+                        Acciones
+                    </TableTitle>
                 </tr>
             </template>
             <template #tbody>
@@ -36,15 +39,17 @@
                     <TableRow>{{ customer.business_name }}</TableRow>
                     <TableRow>{{ customer.category }}</TableRow>
                     <TableRow width="w-[400px]">{{ customer.address }}</TableRow>
-                    <TableRow>
+                    <TableRow
+                        v-permission-or="['edit_client', 'manage_client_contacts', 'delete_client', 'delete_client_contact']">
                         <div class="flex justify-center space-x-3">
-                            <button type="button" @click="openEditCustomerModal(customer)">
+                            <button v-permission="'edit_client'" type="button" @click="openEditCustomerModal(customer)">
                                 <EditIcon />
                             </button>
-                            <button type="button" @click="add_contact(customer.id)">
-                                <DocumentArrowUpIcon class="h-5 w-5 text-blue-600" />
+                            <button v-permission-or="['manage_client_contacts', 'delete_client_contact']" type="button"
+                                @click="add_contact(customer.id)">
+                                <AddUserIcon />
                             </button>
-                            <button v-if="customer.category !== 'Especial'" type="button"
+                            <button v-permission="'delete_client'" v-if="customer.category !== 'Especial'" type="button"
                                 @click="confirmDeleteCustomer(customer.id)">
                                 <DeleteIcon />
                             </button>
@@ -164,16 +169,14 @@ import ConfirmUpdateModal from '@/Components/ConfirmUpdateModal.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
-import { DocumentArrowUpIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import axios from 'axios';
 import TextInput from '@/Components/TextInput.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import { DeleteIcon, EditIcon } from "@/Components/Icons/Index";
+import { AddUserIcon, DeleteIcon, EditIcon } from "@/Components/Icons/Index";
 
 const create_customer = ref(false);
 const showModal = ref(false);

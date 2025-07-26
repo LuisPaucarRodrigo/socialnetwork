@@ -33,7 +33,7 @@
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                             Observaciones
                         </th>
-                        <th v-if="project.status === null && hasPermission('ProjectManager')"
+                        <th v-if="project.status === null "
                             class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-xs font-semibold uppercase tracking-wider text-gray-600 text-center">
                             Acciones
                         </th>
@@ -53,7 +53,7 @@
                         <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                             <p class="text-gray-900 whitespace-no-wrap">{{ item.observation }}</p>
                         </td>
-                        <td v-if="project.status === null && hasPermission('ProjectManager')" class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
+                        <td v-if="project.status === null " class="border-b border-gray-200 bg-white px-5 py-5 text-sm text-center">
                             <div class="flex space-x-3 justify-center">
                                 <Link :href="route('projectmanagement.liquidate.form', {project_id: project_id, project_entry: item.id})"
                                     class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500 ">
@@ -78,16 +78,12 @@ import { Head, Link } from '@inertiajs/vue3';
 import Pagination from '@/Components/Pagination.vue';
 
 
-const { project_entries, project_id, liquidations, project, userPermissions } = defineProps({
+const { project_entries, project_id, liquidations, project } = defineProps({
     project_entries: Object,
     project_id: String,
-    project: Object,
-    userPermissions:Array
+    project: Object
 })
 
-const hasPermission = (permission) => {
-    return userPermissions.includes(permission);
-}
 
 let backUrl = project.status === null 
                 ? 'projectmanagement.index' 

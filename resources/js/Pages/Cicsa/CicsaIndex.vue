@@ -36,6 +36,10 @@
             <div class="mt-6 flex items-center justify-between gap-x-6">
                 <div class="hidden sm:flex sm:items-center sm:space-x-3">
                     <div class="flex space-x-4">
+                        <!-- <button @click="getAllData()"
+                            class="p-2 bg-white ring-1 ring-slate-400 rounded-md text-slate-900 hover:text-slate-400">
+                            Server
+                        </button> -->
                         <FilterProcess v-if="filterForm.typeStages === 'Todos'" :options="selectableOptions"
                             v-model="selectedOptions" :width="'w-[230px]'" />
                         <button @click="router.visit(route('cicsa.index', { type }))" type="button">
@@ -740,7 +744,7 @@
                                     item.zone
                                 )
                                     ">
-                                    {{ item.zone || "--" }} {{ item.zone2 }}
+                                    {{ item.zone || "--" }} {{ item.zone2 }} {{ item.zone3 }}
                                 </p>
                             </td>
                             <td v-if="checkVisibility('Asignación')" :class="stateClass(item.customer)"
@@ -765,7 +769,7 @@
                             <td v-if="checkVisibility('Asignación')"
                                 class="bg-white border-b border-r-2 border-gray-200 px-2 py-1 text-[11px] whitespace-nowrap">
                                 <button
-                                    @click="openBlank(route('projectmanagement.pext.additional.index', { searchCondition: item.cpe, type }))">
+                                    @click="openBlank(route('assignation.index', { type: type, searchCondition: item.cpe }))">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-blue-400">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -1879,7 +1883,7 @@ import Pagination from "@/Components/Pagination.vue";
 import DangerButton from "@/Components/DangerButton.vue";
 import Modal from "@/Components/Modal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import { Head, router, Link } from "@inertiajs/vue3";
+import { Head, router } from "@inertiajs/vue3";
 import { ref, nextTick, onMounted, onUnmounted, watch } from "vue";
 import SelectCicsaComponent from "@/Components/SelectCicsaComponent.vue";
 import { formattedDate } from "@/utils/utils";
@@ -1891,10 +1895,7 @@ import TableDateFilter from "@/Components/TableDateFilter.vue";
 import { notifyError } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import Search from "@/Components/Search.vue";
-import ShowIcon from "@/Components/Icons/ShowIcon.vue";
-import RechargeIcon from "@/Components/Icons/RechargeIcon.vue";
-import UploadIcon from "@/Components/Icons/UploadIcon.vue";
-import { DownloadIcon, MenuIcon } from "@/Components/Icons/Index";
+import { DownloadIcon, MenuIcon, RechargeIcon, ShowIcon } from "@/Components/Icons";
 import DropdownLink from "@/Components/DropdownLink.vue";
 
 const { auth, projects, center_list, type } = defineProps({
@@ -2141,6 +2142,7 @@ async function search_advance($data) {
 const childRef = ref(null);
 const childRef2 = ref(null);
 const childRef3 = ref(null);
+
 // function getAllData() {
 //     filterForm.value.typeStages = ""
 //     filterMode.value = true;

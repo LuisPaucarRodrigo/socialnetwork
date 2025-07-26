@@ -46,6 +46,13 @@ class CicsaRoutes
                 'permission' => true,
                 'name' => 'assignation.export',
             ],
+            [
+                'uri' => 'cicsa_assignation_update/{cicsa_assignation_id}',
+                'method' => 'post',
+                'action' => [CicsaController::class, 'updateAssignation'],
+                'permission' => true,
+                'name' => 'assignation.update',
+            ],
 
             // Rutas Cicsa Feasibilities
             [

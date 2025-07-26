@@ -66,7 +66,7 @@ class AdditionalCostsService
 
         $result->transform(function ($item) {
             $item->project->setAppends([]);
-            $item->setAppends(['real_amount', 'real_state']);
+            $item->setAppends(['real_amount', 'real_state', 'admin_state']);
             return $item;
         });
 

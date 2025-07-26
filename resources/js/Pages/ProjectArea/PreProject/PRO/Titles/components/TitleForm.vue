@@ -4,7 +4,7 @@
             <h2 class="text-base font-medium leading-7 text-gray-900">
                 {{ create_title ? 'Agregar tìtulo' : 'Actualizar tìtulo' }}
             </h2>
-            <form @submit.prevent="create_title ? submit() : submitEdit()">
+            <form @submit.prevent="!form.id ? submit() : submitEdit()">
                 <div class="space-y-12">
                     <div class="border-b border-gray-900/10 pb-12">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-8">
@@ -39,7 +39,7 @@
                                 <div class="mt-2">
                                     <select multiple v-model="form.code_id_array" id="codes" size="15"
                                         class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                        <option v-for="code in props.codes" :key="code.id" :value="code.id">
+                                        <option v-for="code in codes" :key="code.id" :value="code.id">
                                             {{ code.code }}
                                         </option>
                                     </select>
@@ -58,12 +58,13 @@
                         </div>
 
 
-                        <div class="mt-6 flex items-center justify-end gap-x-6">
-                            <SecondaryButton @click="create_title ? close_add_title() : close_edit_title()">
+                        <div class="mt-6 flex items-center justify-end gap-x-3">
+                            <SecondaryButton @click="closeModal()">
                                 Cancelar
                             </SecondaryButton>
                             <PrimaryButton type="submit" :class="{ 'opacity-25': form.processing }">
-                                {{ create_title ? 'Guardar' : 'Actualizar' }}</PrimaryButton>
+                                {{ !form.id ? 'Crear' : 'Actualizar' }}
+                            </PrimaryButton>
                         </div>
                     </div>
                 </div>
@@ -78,6 +79,15 @@ import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { notify } from '@/Components/Notification';
+import { useAxiosErrorHandler } from '@/utils/axiosError';
+
+const { stages, codes, titles } = defineProps({
+    stages: Object,
+    codes: Object,
+    titles: Object,
+})
 
 const create_title = ref(false)
 
@@ -95,7 +105,7 @@ function toogleModal() {
 }
 
 function openModal(item) {
-    form.defaults({ ...item })
+    form.defaults({ ...item, code_id_array: item.codes?.map((i) => i.id) })
     form.reset()
     toogleModal()
 }
@@ -106,33 +116,42 @@ function closeModal() {
     form.reset()
 }
 
-const submit = () => {
-    form.post(route('preprojects.titles.post'), {
-        onSuccess: () => {
-            close_add_title();
-            form.reset();
-            showModal.value = true
-            setTimeout(() => {
-                showModal.value = false;
-                router.get(route('preprojects.titles'))
-            }, 2000);
-        },
-    });
+async function submit() {
+    let url = route('preprojects.titles.post')
+    try {
+        let response = await axios.post(url, form)
+        updateFrontEnd(response.data, 'create', null)
+    } catch (error) {
+        console.error(error)
+        useAxiosErrorHandler(error, form)
+    }
 };
 
-const submitEdit = () => {
-    form.put(route('preprojects.titles.put', { title: form.id }), {
-        onSuccess: () => {
-            close_edit_title();
-            form.reset();
-            showModalEdit.value = true
-            setTimeout(() => {
-                showModalEdit.value = false;
-                router.get(route('preprojects.titles'))
-            }, 2000);
-        }
-    });
+async function submitEdit() {
+    console.log(form)
+    let url = route('preprojects.titles.put', { title: form.id })
+    try {
+        let response = await axios.put(url, form)
+        updateFrontEnd(response.data, 'update', form.id)
+    } catch (error) {
+        console.error(error)
+        useAxiosErrorHandler(error, form)
+    }
 };
+
+function updateFrontEnd(response, action, id) {
+    let data = titles.data || titles
+    if (action === 'create') {
+        data.unshift(response)
+        closeModal();
+        notify("Creacion Exitosa")
+    } else if (action === 'update') {
+        let index = data.findIndex(i => i.id == '38')
+        data[index] = response
+        closeModal();
+        notify("Actualización Exitosa")
+    }
+}
 
 defineExpose({ openModal })
 </script>

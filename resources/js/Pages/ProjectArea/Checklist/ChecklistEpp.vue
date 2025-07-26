@@ -3,7 +3,7 @@
     <Head title="ChecklistEPPS" />
     <AuthenticatedLayout :redirectRoute="'checklist.index'">
         <template #header> Checklist EPPS </template>
-        <TableStructure>
+        <TableStructure :info="checklists">
             <template #thead>
                 <tr>
                     <TableTitle>Fecha de Registro</TableTitle>

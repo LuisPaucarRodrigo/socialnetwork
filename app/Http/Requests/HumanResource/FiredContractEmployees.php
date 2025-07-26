@@ -24,6 +24,7 @@ class FiredContractEmployees extends FormRequest
         return [
             'fired_date' => 'required|date',
             'days_taken' => 'required|numeric',
+            'discharge_document' => 'required|file|mimes:pdf',
             'state' => 'required|string'
         ];
     }

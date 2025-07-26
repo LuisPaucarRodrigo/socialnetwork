@@ -7,13 +7,13 @@
     </template>
     <div class="inline-block min-w-full overflow-hidden">
       <div class="flex gap-4">
-        <button @click="openCreateContactModal" type="button"
+        <button v-permission="'manage_client_contacts'" @click="openCreateContactModal" type="button"
           class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
           + Agregar
         </button>
       </div>
     </div>
-    <TableStructure>
+    <TableStructure :info="contacts">
       <template #thead>
         <tr>
           <TableTitle>Nombre</TableTitle>
@@ -23,16 +23,16 @@
         </tr>
       </template>
       <template #tbody>
-        <tr v-for="contact in props.contacts.data" :key="contact.id">
+        <tr v-for="contact in contacts.data" :key="contact.id">
           <TableRow>{{ contact.name }}</TableRow>
           <TableRow>{{ contact.phone }}</TableRow>
           <TableRow>{{ contact.additional_information }}</TableRow>
           <TableRow>
             <div class="flex justify-center space-x-3">
-              <button @click="openEditContactModal(contact)">
+              <button v-permission="'manage_client_contacts'" @click="openEditContactModal(contact)">
                 <EditIcon />
               </button>
-              <button @click="confirmDeleteContact(contact.id)">
+              <button v-permission="'delete_client_contact'" @click="confirmDeleteContact(contact.id)">
                 <DeleteIcon />
               </button>
             </div>
@@ -112,7 +112,7 @@ import { Head, useForm, router } from '@inertiajs/vue3';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import TableTitle from '@/Components/TableTitle.vue';
 import TableRow from '@/Components/TableRow.vue';
-import { DeleteIcon, EditIcon } from "@/Components/Icons/Index";
+import { DeleteIcon, EditIcon } from "@/Components/Icons";
 
 const props = defineProps({
   contacts: Object,

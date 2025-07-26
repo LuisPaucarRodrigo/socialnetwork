@@ -57,15 +57,13 @@ class CicsaController extends Controller
         $projects = $this->cicsaService->cicsaBaseQuery($type);
         $projects = $projects->where(function ($query) {
             $query->whereDoesntHave('cicsa_charge_area')
-                ->orWhere(function ($query) {
-                    $query->whereHas('cicsa_charge_area', function ($subQuery) {
-                        $subQuery->where(function ($subQuery) {
-                            $subQuery->whereNull('invoice_number')
-                                ->orWhereNull('invoice_date')
-                                ->orWhereNull('amount');
-                        })
-                            ->whereNull('deposit_date');
-                    });
+                ->orWhereHas('cicsa_charge_area', function ($subQuery) {
+                    $subQuery->where(function ($q) {
+                        $q->whereNull('invoice_number')
+                            ->orWhereNull('invoice_date')
+                            ->orWhereNull('amount');
+                    })
+                        ->whereNull('deposit_date');
                 });
         });
         $projects = $this->cicsaService->addRelations($projects)->paginate(20);
@@ -162,10 +160,10 @@ class CicsaController extends Controller
         }
     }
 
-    public function updateAssignation(StoreOrUpdateAssignationRequest $request,$cicsa_assignation_id)
+    public function updateAssignation(StoreOrUpdateAssignationRequest $request, $cicsa_assignation_id)
     {
         $validateData = $request->validated();
-        $assignation = $this->cicsaService->updateAssignation($validateData,$cicsa_assignation_id);
+        $assignation = $this->cicsaService->updateAssignation($validateData, $cicsa_assignation_id);
         return response()->json($assignation, 200);
     }
 

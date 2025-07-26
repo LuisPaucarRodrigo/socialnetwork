@@ -7,7 +7,7 @@
         </template>
         <div class="min-w-full p-3 rounded-lg shadow">
             <div class="flex justify-between items-center gap-4">
-                <Link v-if="hasPermission('UserManager')"
+                <Link
                     :href="route('warehouses.createNormalProduct', { warehouse: props.warehouseId })" type="button"
                     class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
                 + Agregar
@@ -100,8 +100,7 @@ const props = defineProps({
     warehouseId: {
         type: Number,
         required: false
-    },
-    userPermissions: Array
+    }
 });
 
 const hasPermission = (permission) => {

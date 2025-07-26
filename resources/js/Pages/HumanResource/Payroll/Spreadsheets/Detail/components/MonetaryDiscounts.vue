@@ -31,18 +31,28 @@
                                         (e) => handleSubmit(e.target, item.id)
                                     "
                                 />
-                                <div class="flex items-center">
-                                    <span
-                                        v-if="
-                                            !item.saved
-                                        "
-                                        class="absolute inline-flex rounded-full h-2 w-2 bg-fuchsia-500 cursor-pointer"
-                                    >
-                                    </span>
+                                <div class="relative flex items-center">
+                                    <div class="absolute flex items-center">
+                                        <span
+                                            v-if="
+                                                !item.saved
+                                            "
+                                            class="rounded-full h-2 w-2 bg-fuchsia-500 cursor-pointer"
+                                        >
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </TableRow>
                       
+                    </tr>
+                    <tr>
+                        <TableRow :colspan="2"></TableRow>
+                        <TableRow>
+                            <p class="my-3 text-indigo-800 font-semibold ">
+                                S/. {{ Object.values(monetaryDiscounts).reduce((a,b)=>a+Number(b.amount), 0).toFixed(2) }}
+                            </p>
+                        </TableRow>
                     </tr>
                 </template>
             </TableStructure>
@@ -50,14 +60,11 @@
     </div>
 </template>
 <script setup>
-import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TableTitle from "@/Components/TableTitle.vue";
 import TableRow from "@/Components/TableRow.vue";
 import TableStructure from "@/Layouts/TableStructure.vue";
-import TextInput from "@/Components/TextInput.vue";
-import { useForm } from "@inertiajs/vue3";
 import { notify, notifyError, notifyWarning } from "@/Components/Notification";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref } from "vue";
 
 
 const { objectData } = defineProps({

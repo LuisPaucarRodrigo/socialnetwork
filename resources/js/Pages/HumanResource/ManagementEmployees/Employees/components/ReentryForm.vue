@@ -27,8 +27,8 @@
     </Modal>
 </template>
 <script setup>
-import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
+import InputError from '@/Components/InputError.vue';
 import Modal from '@/Components/Modal.vue';
 import { notify, notifyError } from '@/Components/Notification';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -45,8 +45,12 @@ const { employees } = defineProps({
 const showModalFired = ref(false);
 const employeeId = ref(null)
 
-const reentryForm = useForm({
+const initialReentryForm = {
     reentry_date: '',
+}
+
+const reentryForm = useForm({
+    ...initialReentryForm
 })
 
 function toogleModal() {
@@ -60,6 +64,9 @@ const openReentryModal = ($id) => {
 
 const closeReentryModal = () => {
     toogleModal()
+    reentryForm.defaults({ ...initialReentryForm })
+    reentryForm.reset()
+    reentryForm.clearErrors()
 };
 
 async function submit() {
@@ -69,7 +76,7 @@ async function submit() {
         updateFrontEnd(employeeId.value)
     } catch (error) {
         console.log(error)
-        useAxiosErrorHandler(reentryForm)
+        useAxiosErrorHandler(error, reentryForm)
     }
 }
 

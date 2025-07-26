@@ -33,8 +33,8 @@
                                                         item.expense_type,
                                                     project_id: project_id,
                                                 })
-                                                " type="button" class="text-green-500 hover:text-green-300">
-                                                <InformationCircleIcon class="w-5 h-5" />
+                                                " type="button">
+                                                <InformationIcon />
                                             </button>
                                         </div>
                                     </td>
@@ -85,8 +85,8 @@
                                                         item.expense_type,
                                                     project_id: project_id,
                                                 })
-                                                " type="button" class="text-green-500 hover:text-green-300">
-                                                <InformationCircleIcon class="w-5 h-5" />
+                                                " type="button">
+                                                <InformationIcon />
                                             </button>
                                         </div>
                                     </td>
@@ -139,10 +139,10 @@
     </AuthenticatedLayout>
 </template>
 <script setup>
+import { InformationIcon } from '@/Components/Icons/Index';
 import Modal from '@/Components/Modal.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import BarChart from '@/Layouts/BarChart.vue';
-import { InformationCircleIcon } from "@heroicons/vue/24/outline";
 import { Chart, registerables } from 'chart.js/auto';
 import { onMounted, ref } from 'vue';
 
@@ -249,7 +249,7 @@ const closeDetailsModal = () => {
 async function prevOpenModal(form) {
     const url = route('projectmanagement.pext.expenset_type_zone');
     try {
-        const response = await axios.post(url,form)
+        const response = await axios.post(url, form)
         openDetailsModal({ title: form.expense_type, detArray: response.data });
     } catch (error) {
         console.error(error)

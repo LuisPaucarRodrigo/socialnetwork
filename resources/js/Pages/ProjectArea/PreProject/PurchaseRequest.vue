@@ -7,18 +7,17 @@
         </template>
         <div class="inline-block min-w-full overflow-hidden rounded-lg shadow">
             <div class="flex gap-2">
-                <PrimaryButton v-if="!preproject.has_quote && hasPermission('ProjectManager')"
-                    @click="add_purchase_request" type="button">
+                <PrimaryButton v-if="!preproject.has_quote" @click="add_purchase_request" type="button">
                     + Agregar
                 </PrimaryButton>
             </div>
-            <TableStructure>
+            <TableStructure :info="purchases">
                 <template #thead>
                     <tr>
                         <TableTitle>Código</TableTitle>
                         <TableTitle>Solicitud</TableTitle>
                         <TableTitle>Estado</TableTitle>
-                        <TableTitle v-if="hasPermission('ProjectManager')"></TableTitle>
+                        <TableTitle></TableTitle>
                     </tr>
                 </template>
                 <template #tbody>
@@ -39,7 +38,7 @@
                                 </svg>
                                 </Link>
 
-                                <div v-if="hasPermission('ProjectManager')">
+                                <div>
                                     <Link v-if="purchase.state === 'Pendiente'" class="text-blue-900"
                                         :href="route('preprojects.request.edit', { id: purchase.id })">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -57,7 +56,7 @@
                                     </span>
                                 </div>
 
-                                <div v-if="hasPermission('ProjectManager')">
+                                <div>
                                     <button v-if="purchase.state === 'Pendiente'" type="button"
                                         @click="confirmPurchasesDeletion(purchase.id)" class="text-blue-900">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -124,8 +123,7 @@ const purchaseToDelete = ref(null);
 
 const props = defineProps({
     purchases: Object,
-    preproject: Object,
-    userPermissions: Array
+    preproject: Object
 });
 
 let backUrl = (props.preproject?.status === undefined || props.preproject?.status === null)
@@ -134,9 +132,7 @@ let backUrl = (props.preproject?.status === undefined || props.preproject?.statu
         ? { route: 'preprojects.index', params: { type: props.preproject.cost_line_id, preprojects_status: 1 } }
         : { route: 'preprojects.index', params: { type: props.preproject.cost_line_id, preprojects_status: 0 } }
 
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
+
 
 const confirmPurchasesDeletion = (purchaseId) => {
     purchaseToDelete.value = purchaseId;

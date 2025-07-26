@@ -4,8 +4,7 @@
             <thead class="sticky top-0 z-20">
                 <tr
                     class=" border-b bg-gray-50 text-center text-xs font-semibold uppercase tracking-wide text-gray-500">
-
-                    <th class="bg-gray-100 border-b-2 border-gray-20">
+                    <th class="sticky left-0 z-10 bg-gray-100 border-b-2 border-gray-20">
                         <div class="w-2"></div>
                     </th>
                     <th
@@ -97,7 +96,7 @@
             <tbody>
                 <tr v-for="item in expenses.data || expenses" :key="item.id" class="text-gray-700">
                     <td :class="[
-                        'border-b border-gray-200',
+                        'sticky left-0 z-10 border-b border-gray-200',
                         {
                             'bg-indigo-500': item.is_accepted === null,
                             'bg-green-500': item.is_accepted == true,
@@ -193,7 +192,7 @@
                             </div>
                             <div v-else class="w-1/2"></div>
 
-                            <div v-if="hasPermission('ProjectManager')" class="flex gap-3 mr-3">
+                            <div class="flex gap-3 mr-3">
                                 <button v-if="!filterForm.rejected" @click="() => validateRegister(item.id, true)">
                                     <AcceptIcon />
                                 </button>
@@ -241,8 +240,6 @@
         class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
         <pagination :links="expenses.links" />
     </div>
-    <ConfirmDeleteModal :confirmingDeletion="confirmingDocDeletion" itemType="Gasto" :deleteFunction="deleteAdditional"
-        @closeModal="closeModalDoc" />
 </template>
 <script setup>
 import TableDateFilter from "@/Components/TableDateFilter.vue";
@@ -250,42 +247,20 @@ import Pagination from "@/Components/Pagination.vue";
 import TableHeaderFilter from "@/Components/TableHeaderFilter.vue";
 import { formattedDate } from "@/utils/utils";
 import { ref } from "vue";
-import ConfirmDeleteModal from "@/Components/ConfirmDeleteModal.vue";
 import { notify, notifyError } from "@/Components/Notification";
-import { DeleteIcon, EditIcon, AcceptIcon, RejectIcon, ShowIcon } from "@/Components/Icons/Index";
+import { DeleteIcon, EditIcon, AcceptIcon, RejectIcon, ShowIcon } from "@/Components/Icons";
 
-const { expenses, userPermissions, actionForm, filterForm, zones, docTypes, expenseTypes, stateTypes, openEditAdditionalModal } = defineProps({
+const { expenses, filterForm, zones, docTypes, expenseTypes, stateTypes, openEditAdditionalModal, confirmDeleteAdditional } = defineProps({
     expenses: Object,
-    userPermissions: Array,
-    actionForm: Object,
     filterForm: Object,
     zones: Array,
     docTypes: Array,
     expenseTypes: Array,
     stateTypes: Array,
-    openEditAdditionalModal: Function
+    openEditAdditionalModal: Function,
+    confirmDeleteAdditional: Function
 })
-
-const confirmingDocDeletion = ref(false);
-const docToDelete = ref(null);
-
-async function deleteAdditional() {
-    const docId = docToDelete.value;
-    const url = route("pext.expenses.delete", {
-        expense_id: docId,
-    })
-    try {
-        await axios.delete(url)
-        closeModalDoc()
-        updateExpense(docId, "delete")
-    } catch (e) {
-        console.log(e)
-    }
-};
-
-const closeModalDoc = () => {
-    confirmingDocDeletion.value = false;
-};
+const actionForm = defineModel('actionForm')
 
 async function validateRegister(expense_id, is_accepted) {
     const url = route("projectmanagement.pext.expenses.validate", { 'expense_id': expense_id })
@@ -306,10 +281,6 @@ async function validateRegister(expense_id, is_accepted) {
     }
 }
 
-const hasPermission = (permission) => {
-    return userPermissions.includes(permission);
-};
-
 function handlerPreview(id) {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
     window.open(
@@ -320,18 +291,11 @@ function handlerPreview(id) {
     );
 }
 
-const confirmDeleteAdditional = (additionalId) => {
-    docToDelete.value = additionalId;
-    confirmingDocDeletion.value = true;
-};
+
 
 function updateExpense(expense, action, state) {
     let listDate = expenses.data || expenses
-    if (action === "delete") {
-        let index = listDate.findIndex(item => item.id == expense)
-        listDate.splice(index, 1);
-        notify('Gasto Eliminado')
-    } else if (action === "validate") {
+    if (action === "validate") {
         let index = listDate.findIndex(item => item.id == expense)
         if (state) {
             listDate[index].is_accepted = state;
@@ -348,7 +312,9 @@ function updateExpense(expense, action, state) {
 }
 
 const handleCheckAll = (e) => {
-    if (e.target.checked) { actionForm.value.ids = expenses.value.map((item) => item.id); }
+    let listDate = expenses.data || expenses
+    if (e.target.checked) { actionForm.value.ids = listDate.map((item) => item.id); }
     else { actionForm.value.ids = []; }
 };
+
 </script>

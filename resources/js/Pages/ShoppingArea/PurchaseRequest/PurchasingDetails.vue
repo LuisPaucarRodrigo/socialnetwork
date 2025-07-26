@@ -38,7 +38,7 @@
                     </div>
                 </dl>
             </div>
-            <TableStructure>
+            <TableStructure :info="details.products">
                 <template #thead>
                     <tr>
                         <TableTitle>#</TableTitle>

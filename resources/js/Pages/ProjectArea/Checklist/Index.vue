@@ -3,11 +3,11 @@
     <AuthenticatedLayout :redirectRoute="'checklist.index'">
         <template #header> Checklist </template>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            <CheckListCard title="Checklist Vehicular" href="checklist.car.index">
+            <!-- <CheckListCard title="Checklist Vehicular" href="checklist.car.index">
                 <template #icon>
                     <VehicleIcon />
                 </template>
-            </CheckListCard>
+            </CheckListCard> -->
             <CheckListCard title="Checklist de Herramientas" href="checklist.toolkit.index">
                 <template #icon>
                     <ToolIcon />

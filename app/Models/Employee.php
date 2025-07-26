@@ -137,7 +137,8 @@ class Employee extends Model
     public function getPolicyAboutToExpireAttribute()
     {
         if (
-            $this->l_policy && $this->policy_exp_date
+            $this->contract()->first()?->life_ley 
+            && $this->policy_exp_date
         ) {
             $actual = Carbon::now()->addDays(7);
             $exp_date = Carbon::parse($this->policy_exp_date);

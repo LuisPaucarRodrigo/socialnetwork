@@ -31,15 +31,14 @@ class DocumentController extends Controller
 
     public function storeSection(Request $request)
     {
-        $request->validate([
+        $validateData = $request->validate([
             'name' => 'required|string',
             'is_visible' => 'required|boolean',
         ]);
 
-        $section = DocumentSection::create([
-            'name' => $request->name,
-        ]);
-        return response()->json(data: $section);
+        $section = DocumentSection::create($validateData);
+        $section->load('subdivisions');
+        return response()->json($section, 200);
     }
 
     public function updateSection(DocumentSection $section, Request $request)
@@ -153,14 +152,17 @@ class DocumentController extends Controller
             abort(403, 'Acción no permitida');
         }
 
-        $query = Document::with('subdivision.section', 'employee')
+        $query = Document::with('subdivision.section')
             ->where(function ($q) use ($data) {
-                if (!empty($data['employees'])) {
-                    $q->whereIn('employee_id', $data['employees']);
-                }
-                if (!empty($data['external_employees'])) {
-                    $q->whereIn('e_employee_id', $data['external_employees']);
-                }
+                $q->where(function ($subQ) use ($data) {
+                    if (!empty($data['employees'])) {
+                        $subQ->whereIn('employee_id', $data['employees']);
+                    }
+                    if (!empty($data['external_employees'])) {
+                        $subQ->orWhereIn('e_employee_id', $data['external_employees']);
+                    }
+                });
+
                 if (!empty($data['subdivisions'])) {
                     $q->whereIn('subdivision_id', $data['subdivisions']);
                 }
@@ -199,55 +201,17 @@ class DocumentController extends Controller
     {
         $data = $request->validated();
         try {
-            if ($request->hasFile('document')) {
-                $document = $request->file('document');
-                $employee_name = $request->employee_id ? Employee::where('id', $data['employee_id'])
-                    ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
-                    ->first() : ExternalEmployee::where('id', $data['e_employee_id'])
-                        ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
-                        ->first();
-                $data['title'] = Subdivision::find($data['subdivision_id'])->name . ' - ' . $employee_name->full_name . '.' . $document->getClientOriginalExtension();
-                $document->move(public_path('documents/documents/'), $data['title']);
-            }
+            $data = $request->validated();
+            $data['title'] = $this->file_store($data);
             $docItem = Document::create($data);
-            // $docReg = $docItem->employee_id
-            //     ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
-            //         ->where('employee_id', $docItem->employee_id)
-            //         ->first()
-            //     : ($docItem->e_employee_id
-            //         ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
-            //             ->where('e_employee_id', $docItem->e_employee_id)
-            //             ->first()
-            //         : null
-            //     );
-            // if ($docReg) {
-            //     $dataDocReg['document_id'] = $docItem->id;
-            //     if ($docReg->exp_date === null) {
-            //         $dataDocReg['exp_date'] = $docItem->exp_date;
-            //     }
-            //     if (isset($data['exp_date']) && $docReg->exp_date) {
-            //         $newExpDate = Carbon::parse($data['exp_date']);
-            //         $pastExpDate = Carbon::parse($docReg->exp_date);
-            //         if ($newExpDate >= $pastExpDate) {
-            //             $dataDocReg['exp_date'] = $docItem->exp_date;
-            //         }
-            //     }
-            //     $docReg->update($dataDocReg);
-            // } else {
-            //     DocumentRegister::create([
-            //         'subdivision_id' => $docItem->subdivision_id,
-            //         'document_id' => $docItem->id,
-            //         'employee_id' => $docItem->employee_id,
-            //         'e_employee_id' => $docItem->e_employee_id,
-            //         'exp_date' => $docItem->exp_date,
-            //         'state' => 'Completado',
-            //     ]);
-            // }
-
+            $data['state'] = 'Completado';
+            $data['document_id'] = $docItem->id;
+            $docReg = $this->getDocumentRegister($docItem);
+            if ($docReg) $docReg->update($data);
+            else DocumentRegister::create($data);
             return redirect()->back();
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'Ocurrió un error: ' . $e->getMessage());
-
         }
     }
 
@@ -255,61 +219,18 @@ class DocumentController extends Controller
     {
         $data = $request->validated();
         $docItem = Document::find($id);
-        $fileName = $docItem->title;
-        $filePath = "documents/documents/$fileName";
-        $path = public_path($filePath);
-        if (file_exists($path) && is_file($path)) {
-            unlink($path);
+        $prevDocReg = $this->getDocumentRegister($docItem);
+        if (!$this->areTheSameDocItems($docItem, $data) && $prevDocReg) {
+            $prevDocReg->delete();
         }
-        if ($request->hasFile('document')) {
-            $document = $request->file('document');
-            $employee_name = $request->employee_id ? Employee::where('id', $data['employee_id'])
-                ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
-                ->first() : ExternalEmployee::where('id', $data['e_employee_id'])
-                    ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
-                    ->first();
-            $data['title'] = Subdivision::find($data['subdivision_id'])->name . ' - ' . $employee_name->full_name . '.' . $document->getClientOriginalExtension();
-            $document->move(public_path('documents/documents/'), $data['title']);
-        }
-
-
+        $this->file_delete($docItem);
+        $data['title'] = $this->file_store($data);
         $docItem->update($data);
-        // $docReg = $docItem->employee_id
-        //     ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
-        //         ->where('employee_id', $docItem->employee_id)
-        //         ->first()
-        //     : ($docItem->e_employee_id
-        //         ? DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
-        //             ->where('e_employee_id', $docItem->e_employee_id)
-        //             ->first()
-        //         : null
-        //     );
-        // if ($docReg) {
-        //     $dataDocReg['document_id'] = $docItem->id;
-        //     $dataDocReg['employee_id'] = $docItem->employee_id;
-        //     $dataDocReg['e_employee_id'] = $docItem->e_employee_id;
-        //     if ($docReg->exp_date === null) {
-        //         $dataDocReg['exp_date'] = $docItem->exp_date;
-        //     }
-        //     if (isset($data['exp_date']) && $docReg->exp_date) {
-        //         $newExpDate = Carbon::parse($data['exp_date']);
-        //         $pastExpDate = Carbon::parse($docReg->exp_date);
-        //         if ($newExpDate >= $pastExpDate) {
-        //             $dataDocReg['exp_date'] = $docItem->exp_date;
-        //         }
-        //     }
-        //     $docReg->update($dataDocReg);
-        // } else {
-        //     DocumentRegister::create([
-        //         'subdivision_id' => $docItem->subdivision_id,
-        //         'document_id' => $docItem->id,
-        //         'employee_id' => $docItem->employee_id,
-        //         'e_employee_id' => $docItem->e_employee_id,
-        //         'exp_date' => $docItem->exp_date,
-        //         'state' => 'Completado',
-        //     ]);
-        // }
-
+        $data['state'] = 'Completado';
+        $data['document_id'] = $docItem->id;
+        $docReg = $this->getDocumentRegister($docItem);
+        if ($docReg) $docReg->update($data);
+        else DocumentRegister::create($data);
         return redirect()->back();
     }
 
@@ -357,37 +278,14 @@ class DocumentController extends Controller
 
 
 
-
-
-
-
-
-
-    public function destroy(Document $id)
+    public function destroy($id)
     {
-        $fileName = $id->title;
-        $filePath = "documents/documents/$fileName";
-        $path = public_path($filePath);
-        if (file_exists($path)) {
-            unlink($path);
-        }
-
-        $docReg = $id->employee_id
-            ? DocumentRegister::where('subdivision_id', $id->subdivision_id)->where('employee_id', $id->employee_id)->first()
-            : ($id->e_employee_id
-                ? DocumentRegister::where('subdivision_id', $id->subdivision_id)->where('e_employee_id', $id->e_employee_id)->first()
-                : null
-            );
-        if ($docReg) {
-            $docReg->delete();
-        }
-        $id->delete();
-
-
-        // } else {
-        //     dd("El archivo no existe en la ruta: $filePath");
-        // }
-        return to_route('documents.index');
+        $item = Document::find($id);
+        $docReg = $this->getDocumentRegister($item);
+        if ($docReg?->state === 'Completado') $docReg->delete();
+        $this->file_delete($item);
+        $item->delete();
+        return redirect()->back();
     }
 
     public function downloadDocument(Document $document)
@@ -511,7 +409,6 @@ class DocumentController extends Controller
                 ob_end_clean();
                 // Descargar el archivo ZIP y eliminarlo después del envío
                 return response()->download($zipFilePath)->deleteFileAfterSend(true);
-
             } else {
                 // Si no se puede abrir el archivo ZIP para escritura
                 Log::error('No se pudo abrir el archivo ZIP para escritura.');
@@ -597,7 +494,6 @@ class DocumentController extends Controller
                 $zip->close();
                 ob_end_clean();
                 return response()->download($zipFilePath)->deleteFileAfterSend(true);
-
             } else {
                 // Si no se puede abrir el archivo ZIP para escritura
                 Log::error('No se pudo abrir el archivo ZIP para escritura.');
@@ -633,5 +529,49 @@ class DocumentController extends Controller
     //         return response()->json(['status' => 'error', 'message' => 'Ocurrió un error al intentar eliminar el archivo ZIP.'], 500);
     //     }
     // }
-}
 
+    private function areTheSameDocItems($docItem, $data)
+    {
+        if ($docItem->subdivision_id !== (int)$data['subdivision_id']) return false;
+        if ($docItem->e_employee_id !== (int)$data['e_employee_id']) return false;
+        if ($docItem->employee_id !== (int)$data['employee_id']) return false;
+        return true;
+    }
+
+    private function getDocumentRegister($docItem)
+    {
+        return DocumentRegister::where('subdivision_id', $docItem->subdivision_id)
+            ->where('employee_id', $docItem->employee_id)
+            ->where('e_employee_id', $docItem->e_employee_id)
+            ->first();
+    }
+
+    private function file_store($data)
+    {
+        $document = $data['document'];
+        $name = $this->getFileName($data, $document);
+        $document->move(public_path('documents/documents/'), $name);
+        return $name;
+    }
+
+    private function file_delete($docItem)
+    {
+        $fileName = $docItem->title;
+        $filePath = "documents/documents/$fileName";
+        $path = public_path($filePath);
+        if (file_exists($path) && is_file($path)) {
+            unlink($path);
+        }
+    }
+
+    private function getFileName($data, $document)
+    {
+        $employee_name = $data['employee_id'] ? Employee::where('id', $data['employee_id'])
+            ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
+            ->first() : ExternalEmployee::where('id', $data['e_employee_id'])
+            ->selectRaw("CONCAT(name, ' ', lastname) as full_name")
+            ->first();
+        $name = Subdivision::find($data['subdivision_id'])->name . ' - ' . $employee_name->full_name . '.' . $document->getClientOriginalExtension();
+        return $name;
+    }
+}

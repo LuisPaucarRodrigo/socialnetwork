@@ -1,6 +1,6 @@
 <template>
     <div class="flex justify-between items-center gap-4">
-        <PrimaryButton v-if="hasPermission('InventoryManager')" @click="openCreateProduct" type="button">
+        <PrimaryButton @click="openCreateProduct" type="button">
             + Agregar
         </PrimaryButton>
         <div class="flex items-center">
@@ -12,7 +12,6 @@
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Search from '@/Components/Search.vue';
 import { useForm } from '@inertiajs/vue3';
-import axios from 'axios';
 
 const { userPermissions, openCreateProduct } = defineProps({
     userPermissions: Object,
@@ -34,7 +33,4 @@ async function search() {
     }
 }
 
-function hasPermission(permission) {
-    return userPermissions.includes(permission);
-}
 </script>

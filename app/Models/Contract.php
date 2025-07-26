@@ -2,10 +2,8 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\File;
 
 class Contract extends Model
 {
@@ -27,6 +25,8 @@ class Contract extends Model
         'employee_id',
         'pension_type',
         'personal_segment',
+        'discharge_document',
+        'cuspp'
     ];
 
     //RELATIONS
@@ -43,7 +43,7 @@ class Contract extends Model
     //CALCULATED
 
 
-    
+
 
     public function hideAllAppends()
     {
@@ -51,5 +51,20 @@ class Contract extends Model
         $appends = $this->getAppends();
         // Oculta todos los atributos 'appends'
         return $this->makeHidden($appends);
+    }
+
+    protected static function booted()
+    {
+        static::updating(function ($contract) {
+            if ($contract->isDirty('discharge_document')) {
+                $oldDoc = $contract->getOriginal('discharge_document');
+                if ($oldDoc) {
+                    $filePath = public_path('documents/discharge_document/' . $oldDoc);
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    }
+                }
+            }
+        });
     }
 }

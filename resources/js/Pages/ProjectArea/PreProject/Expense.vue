@@ -43,7 +43,7 @@
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 Detalles
                             </th>
-                            <th v-if="hasPermission('ProjectManager')"
+                            <th
                                 class="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                                 ¿Usar esta cotización?
                             </th>
@@ -85,7 +85,7 @@
                                     <ShowIcon />
                                     </Link>
                                 </td>
-                                <td v-if="hasPermission('ProjectManager')"
+                                <td
                                     class="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                                     <div v-if="quote.preproject_state === null" class="flex space-x-3 justify-center">
                                         <button @click="() => setQuotePreprojectStatus(quote.id, true)"

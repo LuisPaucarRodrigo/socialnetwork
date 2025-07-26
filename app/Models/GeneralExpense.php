@@ -10,17 +10,17 @@ class GeneralExpense extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'type',
         'zone',
-        'expense_type',
         'location',
-        'amount',
+        'expense_type',
         'operation_number',
         'operation_date',
-        'account_statement_id',
+        'type_doc',
         'doc_date',
         'doc_number',
-        'type_doc',
-        'type',
+        'amount',
+        'account_statement_id',
     ];
 
     protected $casts = [

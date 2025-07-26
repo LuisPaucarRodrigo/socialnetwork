@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Support\RouteDefinitions;
 
 use App\Http\Controllers\ProjectArea\AdditionalCostsController;
@@ -783,7 +784,7 @@ class ProjectRoutes
                 'name' => 'preprojects.titles.put',
             ],
             [
-                'uri' => '/preprojects/titles/{title}/delete',
+                'uri' => '/preprojects/titles_delete/{title}/delete',
                 'method' => 'delete',
                 'action' => [PreProjectController::class, 'deleteTitle'],
                 'permission' => true,
@@ -1298,7 +1299,7 @@ class ProjectRoutes
                 'name' => 'projectmanagement.pext.additional.store',
             ],
             [
-                'uri' => '/projectPext/additionalOrFixed/expenses/{project_id}/index/{fixedOrAdditional}/{type}',
+                'uri' => '/projectPext/additionalOrFixed/expenses_test/{project_id}/index/{fixedOrAdditional}/{type}',
                 'method' => 'get',
                 'action' => [PextController::class, 'additional_expense_index'],
                 'permission' => true,
@@ -1531,7 +1532,7 @@ class ProjectRoutes
                 'permission' => true,
                 'name' => 'member.cicsa.alarm',
             ],
-                // Pint auto
+            // Pint auto
             [
                 'uri' => '/preproject/auto-create/index/{type}',
                 'method' => 'get',
@@ -1561,7 +1562,7 @@ class ProjectRoutes
                 'name' => 'pint_project.products.cpe',
             ],
 
-                // Pext auto
+            // Pext auto
             [
                 'uri' => '/preproject/auto-create/pext/{type}',
                 'method' => 'get',
@@ -1572,6 +1573,7 @@ class ProjectRoutes
             [
                 'uri' => '/preproject/auto-store/pext',
                 'method' => 'post',
+                
                 'action' => [ProjectPintController::class, 'pext_store_project'],
                 'permission' => true,
                 'name' => 'project.auto_store.pext',
@@ -1584,7 +1586,7 @@ class ProjectRoutes
                 'name' => 'pext_project.products.cpe',
             ],
 
-                // Costs Export
+            // Costs Export
             [
                 'uri' => '/additionalcost_photo/{additional_cost_id}',
                 'method' => 'get',
@@ -1600,7 +1602,7 @@ class ProjectRoutes
                 'name' => 'additionalcost.excel.export',
             ],
 
-                // Update Additional Cost
+            // Update Additional Cost
             [
                 'uri' => '/projectmanagement/purchases_request/additional_costs/{additional_cost}/update',
                 'method' => 'post',
@@ -1609,7 +1611,7 @@ class ProjectRoutes
                 'name' => 'projectmanagement.updateAdditionalCost',
             ],
 
-                // Delete Additional Cost
+            // Delete Additional Cost
             [
                 'uri' => '/projectmanagement/purchases_request/{project_id}/additional_costs/{additional_cost}/destroy',
                 'method' => 'delete',
@@ -1618,7 +1620,7 @@ class ProjectRoutes
                 'name' => 'projectmanagement.deleteAdditionalCost',
             ],
 
-                // Export Static Costs
+            // Export Static Costs
             [
                 'uri' => '/staticcosts/excel_export/{project_id}',
                 'method' => 'get',
@@ -1627,7 +1629,7 @@ class ProjectRoutes
                 'name' => 'staticcost.excel.export',
             ],
 
-                // Update Static Cost
+            // Update Static Cost
             [
                 'uri' => '/projectmanagement/purchases_request/static_costs/{additional_cost}/update',
                 'method' => 'post',
@@ -1636,7 +1638,7 @@ class ProjectRoutes
                 'name' => 'projectmanagement.updateStaticCost',
             ],
 
-                // Delete Static Cost
+            // Delete Static Cost
             [
                 'uri' => '/projectmanagement/purchases_request/{project_id}/static_costs/{additional_cost}/destroy',
                 'method' => 'delete',
@@ -1644,6 +1646,8 @@ class ProjectRoutes
                 'permission' => true,
                 'name' => 'projectmanagement.deleteStaticCost',
             ],
+
+            //Swap
             [
                 'uri' => '/project/statics_to_addproject_massive_swap/',
                 'method' => 'post',
@@ -1658,7 +1662,20 @@ class ProjectRoutes
                 'permission' => true,
                 'name' => 'projectmanagement.additionalToAdditional.swapCosts',
             ],
+            [
+                'uri' => '/project/additional_cost/reject/{ac_id}',
+                'method' => 'post',
+                'action' => [AdditionalCostsController::class, 'rejectRegisters'],
+                'permission' => true,
+                'name' => 'projectmanagement.rejectAdditionalCost',
+            ],
+            [
+                'uri' => '/project/additional_cost/admin_validate/{ac_id}',
+                'method' => 'post',
+                'action' => [AdditionalCostsController::class, 'administrativeValidateRegisters'],
+                'permission' => true,
+                'name' => 'projectmanagement.administrative.validation',
+            ],
         ];
-
     }
 }

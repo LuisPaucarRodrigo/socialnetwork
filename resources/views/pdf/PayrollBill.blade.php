@@ -163,18 +163,21 @@
             </div>
             <div class="header-row">
                 <div class="header-left">(Contiene datos mínimos de una boleta de pago)</div>
-                <div class="header-right">02/06/2025</div>
+                <div class="header-right">{{ \Carbon\Carbon::now()->format('d/m/Y') }}
+                </div>
             </div>
             <div class="header-row">
                 <div class="header-left"></div>
-                <div class="header-right">15:11:5</div>
+                <div class="header-right">
+                    {{ \Carbon\Carbon::now()->format('H:i:s') }}
+                </div>
             </div>
         </div>
 
         <div style="margin-top: 40px;" class="company-info">
             <div>RUC: 20559246272</div>
             <div>Empleador: CORPORACION DE CONTRATISTAS Y PROVEEDORES GENERALES S.R.L. CONPROCO S.R.L.</div>
-            <div>Periodo: 05/2025</div>
+            <div>Periodo: {{$spreadsheet['month']}}</div>
             <div class="plame-row">
                 <div class="plame-left">PDT Planilla Electrónica - PLAME</div>
                 <div class="plame-right">Número de Orden:</div>
@@ -200,8 +203,8 @@
             </tr>
             <tr>
                 <td class="data-cell">DNI</td>
-                <td class="data-cell">71217726</td>
-                <td colspan="4" class="data-cell">CESAR DAVID NINACANSAYA APAZA</td>
+                <td class="data-cell">{{$spreadsheet['dni']}}</td>
+                <td colspan="4" class="data-cell">{{$spreadsheet['name']}}</td>
                 <td colspan="2" class="data-cell">ACTIVO O SUBSIDIADO</td>
             </tr>
             <tr>
@@ -211,10 +214,10 @@
                 <td colspan="2" class="header-cell">CUSPP</td>
             </tr>
             <tr>
-                <td colspan="2" class="data-cell">15/05/2024</td>
+                <td colspan="2" class="data-cell">{{$spreadsheet['hire_date']}}</td>
                 <td colspan="2" class="data-cell">EMPLEADO</td>
-                <td colspan="2" class="data-cell">SPP HABITAT</td>
-                <td colspan="2" class="data-cell">342221CNAAZ0</td>
+                <td colspan="2" class="data-cell">{{$spreadsheet['pension_type']}}</td>
+                <td colspan="2" class="data-cell">{{$spreadsheet['cuspp']}}</td>
             </tr>
             <tr>
                 <td rowspan="2" class="header-cell">Días<br>Laborados</td>
@@ -231,14 +234,14 @@
                 <td class="header-cell">Minutos</td>
             </tr>
             <tr>
-                <td class="data-cell">31</td>
-                <td class="data-cell">0</td>
-                <td class="data-cell">0</td>
+                <td class="data-cell">{{$spreadsheet['days_worked']}}</td>
+                <td class="data-cell">{{$spreadsheet['days_not_worked']}}</td>
+                <td class="data-cell">{{$spreadsheet['days_subsided']}}</td>
                 <td class="data-cell">Domiciliado</td>
-                <td class="data-cell">208</td>
-                <td class="data-cell"></td>
-                <td class="data-cell"></td>
-                <td class="data-cell"></td>
+                <td class="data-cell">{{$spreadsheet['total_ordinary_hours']}}</td>
+                <td class="data-cell">{{$spreadsheet['total_ordinary_minutes']}}</td>
+                <td class="data-cell">{{$spreadsheet['total_overtime_hours']}}</td>
+                <td class="data-cell">{{$spreadsheet['total_overtime_minutes']}}</td>
             </tr>
             <tr>
                 <td colspan="6" class="header-cell">Motivo de Suspensión de Labores</td>
@@ -282,7 +285,7 @@
                 <td style="border-bottom: none; border-top: none; border-left: none; border-right: none;">REMUNERACIÓN O
                     JORNAL BÁSICO</td>
                 <td style="border-bottom: none; border-top: none; border-left: none; border-right: none; text-align: right;"
-                    class="amount-right">2000.00</td>
+                    class="amount-right">{{number_format($spreadsheet['basic_salary'],2)}}</td>
                 <td style="border-bottom: none; border-top: none; border-left: none; border-right: none;"></td>
                 <td style="border-bottom: none; border-top: none; border-left: none;"></td>
             </tr>
@@ -291,7 +294,7 @@
                 <td style="border-bottom: none; border-top: none; border-left: none; border-right: none;">COMPENSACIÓN
                     TIEMPO DE SERVICIOS</td>
                 <td style="border-bottom: none; border-top: none; border-left: none; border-right: none; text-align: right;"
-                    class="amount-right">333.33</td>
+                    class="amount-right">{{number_format($spreadsheet['cts'],2)}}</td>
                 <td style="border-bottom: none; border-top: none; border-left: none; border-right: none;"></td>
                 <td style="border-bottom: none; border-top: none; border-left: none;"></td>
             </tr>
@@ -300,7 +303,7 @@
                 <td style="border-bottom: none; border-top: none; border-left: none; border-right: none;">REFRIGER. QUE
                     NO ES ALIMENT.PRINCIP</td>
                 <td style="border-bottom: none; border-top: none; border-left: none; border-right: none; text-align: right;"
-                    class="amount-right">500.00</td>
+                    class="amount-right">{{number_format($spreadsheet['rnp_amount'],2)}}</td>
                 <td style="border-bottom: none; border-top: none; border-left: none; border-right: none;"></td>
                 <td style="border-bottom: none; border-top: none; border-left: none;"></td>
             </tr>
@@ -330,7 +333,11 @@
                     PORCENTUAL</td>
                 <td style="border-bottom: none; border-top: none; border-left: none; border-right: none;"></td>
                 <td style="border-bottom: none; border-top: none; border-left: none; border-right: none; text-align: right;"
+<<<<<<< HEAD
+                    class="amount-right">{{number_format($spreadsheet['cp_amount'],2)}}</td>
+=======
                     class="amount-right">0.00</td>
+>>>>>>> origin/huawei_data
                 <td style="border-bottom: none; border-top: none; border-left: none;"></td>
             </tr>
             <tr>
@@ -339,7 +346,7 @@
                     CATEGORÍA RETENCIONES</td>
                 <td style="border-bottom: none; border-top: none; border-left: none; border-right: none;"></td>
                 <td style="border-bottom: none; border-top: none; border-left: none; border-right: none; text-align: right;"
-                    class="amount-right">0.00</td>
+                    class="amount-right">{{number_format($spreadsheet['rq_amount'],2)}}</td>
                 <td style="border-bottom: none; border-top: none; border-left: none;"></td>
             </tr>
             <tr>
@@ -348,7 +355,7 @@
                     SEGURO AFP</td>
                 <td style="border-bottom: none; border-top: none; border-left: none; border-right: none;"></td>
                 <td style="border-bottom: none; border-top: none; border-left: none; border-right: none; text-align: right;"
-                    class="amount-right">27.40</td>
+                    class="amount-right">{{ number_format($spreadsheet['ps_amount'],2) }}</td>
                 <td style="border-bottom: none; border-top: none; border-left: none;"></td>
             </tr>
             <tr>
@@ -357,7 +364,7 @@
                     APORTACIÓN OBLIGATORIA</td>
                 <td style="border-bottom: none; border-top: none; border-left: none; border-right: none;"></td>
                 <td style="border-bottom: none; border-top: none; border-left: none; border-right: none; text-align: right;"
-                    class="amount-right">200.00</td>
+                    class="amount-right">{{ number_format($spreadsheet['ap_amount'],2) }}</td>
                 <td style="border-bottom: none; border-top: none; border-left: none;"></td>
             </tr>
             <tr>
@@ -372,7 +379,7 @@
                 <td style="border-bottom: none; border-top: none; border-left: none; border-right: none;"></td>
                 <td style="border-bottom: none; font-weight: normal; border-top: none; border-left: none; text-align: right; vertical-align: bottom;"
                     class="amount-right">
-                    2605.93
+                    {{number_format($spreadsheet['net_pay'],2)}}
                 </td>
             </tr>
             <tr>
@@ -404,7 +411,7 @@
                     <td style="border-top: none; border-bottom: none; border-left: none; border-right: none;"></td>
                     <td style="border-top: none; border-bottom: none; border-left: none; border-right: none;"></td>
                     <td style="border-top: none; border-bottom: none; border-left: none; text-align: right;"
-                        class="amount-right">180.00</td>
+                        class="amount-right">{{number_format($spreadsheet['eSalud'], 2) }}</td>
                 </tr>
                 <tr>
                     <td style="border-top: none; border-bottom: none; border-right: none;">0805</td>

@@ -8,7 +8,7 @@
     <div class="min-w-full rounded-lg shadow">
       <div class="mt-6 flex items-center justify-between gap-x-6">
         <div class="hidden sm:flex sm:items-center sm:space-x-4">
-          <button v-if="hasPermission('ProjectManager')" @click="openCreateSubSectionModal" type="button"
+          <button @click="openCreateSubSectionModal" type="button"
             class="rounded-md bg-indigo-600 px-4 py-2 text-center text-sm text-white hover:bg-indigo-500">
             + Agregar miembro
           </button>
@@ -31,7 +31,7 @@
 
             <template #content class="origin-left">
               <div> <!-- Alineación a la derecha -->
-                <div v-if="hasPermission('ProjectManager')" class="dropdown">
+                <div class="dropdown">
                   <div class="dropdown-menu">
                     <button @click="openCreateSubSectionModal" type="button"
                       class="dropdown-item block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-indigo-600 hover:text-white focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">

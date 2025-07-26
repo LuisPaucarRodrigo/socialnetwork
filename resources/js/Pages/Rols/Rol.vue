@@ -6,30 +6,49 @@
             Roles
         </template>
         <div class="min-w-full overflow-hidden">
-            <PrimaryButton @click="add_rol" type="button">
+            <PrimaryButton v-permission="'add_role'" @click="add_rol" type="button">
                 + Agregar
             </PrimaryButton>
-
-            <RolTable :rols="rols" :editModalRol="editModalRol" :confirmRolsDeletion="confirmRolsDeletion" :showModal="showModal"/>
         </div>
-        <ShowRol ref="showRol"/>
-        <FormRol ref="formRol" :permissions="permissions" :modules="modules"/>
+        <RolTable :rols="rols" :editModalRol="editModalRol" :confirmRolsDeletion="confirmRolsDeletion"
+            :showModal="showModal" />
+        <SuspenseWrapper :when="showShowRol">
+            <template #component>
+                <ShowRol ref="showRol" />
+            </template>
+        </SuspenseWrapper>
+        <SuspenseWrapper :when="showFormRol">
+            <template #component>
+                <FormRol ref="formRol" :permissions="permissions" :modules="modules" />
+            </template>
+        </SuspenseWrapper>
+
         <ConfirmDeleteModal :confirmingDeletion="confirmingRolDeletion" itemType="rol" :deleteFunction="deleteRol"
             @closeModal="closeModalRol" />
+            
     </AuthenticatedLayout>
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmDeleteModal from '@/Components/ConfirmDeleteModal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { ref } from 'vue';
-import { Head,  router } from '@inertiajs/vue3';
+import { defineAsyncComponent, ref } from 'vue';
+import { Head, router } from '@inertiajs/vue3';
 import RolTable from './components/RolTable.vue';
-import FormRol from './components/FormRol.vue';
-import ShowRol from './components/ShowRol.vue';
+import { useLazyRefInvoker } from '@/utils/useLazyRefInvoker';
+import SuspenseWrapper from '@/Components/SuspenseWrapper.vue';
+
+const ShowRol = defineAsyncComponent(() => import('./components/ShowRol.vue'));
+const FormRol = defineAsyncComponent(() => import('./components/FormRol.vue'));
+
+const showShowRol = ref(false)
+const showFormRol = ref(false)
 
 const formRol = ref(null)
 const showRol = ref(null)
+
+const { invokeWhenReady: invokeShowRol } = useLazyRefInvoker(showRol, showShowRol);
+const { invokeWhenReady: invokeFormRol } = useLazyRefInvoker(formRol, showFormRol);
 
 const confirmingRolDeletion = ref(false);
 const rolToDelete = ref(null);
@@ -59,14 +78,14 @@ const closeModalRol = () => {
 };
 
 const add_rol = () => {
-    formRol.value.add_rol()
+    invokeFormRol('add_rol')
 };
 
 function editModalRol(rol) {
-    formRol.value.editModalRol(rol)
+    invokeFormRol('editModalRol', rol)
 };
 
-function showModal(id){
-    showRol.value.showModal(id)
+function showModal(id) {
+    invokeShowRol('showModal', id)
 }
 </script>

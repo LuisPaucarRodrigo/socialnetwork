@@ -17,7 +17,7 @@
                         <h3 class="text-lg font-semibold">Gestión de Capacitaciones</h3>
                         <div class="mb-2">
                             <!-- Icono de Heroicons para Vue -->
-                            <ClipboardDocumentIcon class="h-6 w-6 text-blue-500" />
+                            Icono de Capacitaciones
                         </div>
                     </div>
                 </button>
@@ -29,17 +29,17 @@
                         <h3 class="text-lg font-semibold">Programas de Formación</h3>
                         <div class="mb-2">
                             <!-- Icono de Heroicons para Vue -->
-                            <BookmarkSquareIcon class="h-6 w-6 text-blue-500" />
+                            Icono de Programas de Formación
                         </div>
                     </div>
                 </button>
                 </Link>
-                <Link v-if="hasPermission('HumanResourceManager')" :href="route('management.employees.formation_development.assignation.create')">
+                <Link :href="route('management.employees.formation_development.assignation.create')">
                 <button class="bg-white p-4 rounded-md shadow-md text-left h-full w-full">
                     <div>
                         <h3 class="text-lg font-semibold">Asignación de Programas</h3>
                         <div class="mb-2">
-                            <PaperAirplaneIcon class="h-6 w-6 text-blue-500" />
+                            Icono de Asignación de Programas
                         </div>
                     </div>
                 </button>
@@ -49,7 +49,7 @@
                     <div>
                         <h3 class="text-lg font-semibold">Personal Asignado</h3>
                         <div class="mb-2">
-                            <ClipboardDocumentCheckIcon class="h-6 w-6 text-blue-500" />
+                            Icono de Personal Asignado
                         </div>
                     </div>
                 </button>
@@ -62,14 +62,4 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import { BookmarkSquareIcon, ClipboardDocumentIcon, PaperAirplaneIcon, ClipboardDocumentCheckIcon } from '@heroicons/vue/24/solid'
-
-const props = defineProps({
-    userPermissions:Array
-})
-
-const hasPermission = (permission) => {
-    return props.userPermissions.includes(permission);
-}
-
 </script>

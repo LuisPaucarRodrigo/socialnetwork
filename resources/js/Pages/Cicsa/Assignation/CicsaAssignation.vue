@@ -8,42 +8,48 @@
         </template>
         <Toaster richColors />
         <div class="min-w-full">
-            <TableHeader :type="type" v-model:assignations="assignations" />
+            <TableHeader :type="type" v-model:assignations="assignations" :searchCondition="searchCondition" />
             <br>
             <AssignationTable :assignations="assignations" :updateAssignation="updateAssignation" />
         </div>
-        <AssignationForm ref="assignationForm" :assignations="assignations" />
+        <SuspenseWrapper :when="showAssignationTable">
+            <template #component>
+                <AssignationForm ref="assignationForm" :assignations="assignations" :type="type" />
+            </template>
+        </SuspenseWrapper>
     </AuthenticatedLayout>
 </template>
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { defineAsyncComponent, ref } from 'vue';
 import TableHeader from './components/TableHeader.vue';
 import AssignationTable from './components/AssignationTable.vue';
-import AssignationForm from './components/AssignationForm.vue';
 import { Toaster } from 'vue-sonner';
+import SuspenseWrapper from '@/Components/SuspenseWrapper.vue';
+import { useLazyRefInvoker } from '@/utils/useLazyRefInvoker';
+
+const AssignationForm = defineAsyncComponent(() => import('./components/AssignationForm.vue'));
 
 const { assignation, auth, searchCondition, type } = defineProps({
     assignation: Object,
     auth: Object,
     searchCondition: {
         type: String,
-        Required: false
+        required: false
     },
-    type: String
+    type: String,
 })
 
-
+const showAssignationTable = ref(false)
 const assignations = ref({ ...assignation });
 const assignationForm = ref(null)
+
+const { invokeWhenReady: invokeAssignationForm } = useLazyRefInvoker(assignationForm, showAssignationTable);
+
+
 function updateAssignation(item) {
-    assignationForm.value.updateAssignation(item)
+    invokeAssignationForm('updateAssignation', item)
 }
-
-// if (searchCondition) {
-//     search(searchCondition)
-// }
-
 </script>

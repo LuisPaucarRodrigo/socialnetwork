@@ -13,6 +13,5 @@ foreach (CicsaRoutes::all() as $route) {
 }
 
 // Route::post('/cicsa_purchase_order_validation/store/{cicsa_validation_id}', [CicsaController::class, 'updateOCValidation'])->name('cicsa.purchase_orders.validation.update');
-Route::post('/cicsa_assignation_update/{cicsa_assignation_id}', [CicsaController::class, 'updateAssignation'])->name('assignation.update');
 
 
