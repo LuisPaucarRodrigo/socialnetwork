@@ -6,20 +6,27 @@
             Proveedores
         </template>
         <Toaster richColors />
-        <ProviderHeader v-model:providers="providers" :add_information="add_information" />
-        <ProviderTable :providers="providers" :auth="auth" :add_information="add_information" />
-        <ProviderModal :showModalStoreOrUpdate="showModalStoreOrUpdate" v-model:providers="providers" :form="form"
-            :category="category" :closeModalStoreOrUpdate="closeModalStoreOrUpdate" />
+        <ProviderHeader v-model:providers="providers" :createProviderForm="createProviderForm" />
+        <ProviderTable :providers="providers" :auth="auth" :editProviderForm="editProviderForm" />
+        <SuspenseWrapper :when="showProviderForm">
+            <template #component>
+                <ProviderModal ref="providerForm" v-model:providers="providers" :category="category"
+                    />
+            </template>
+        </SuspenseWrapper>
     </AuthenticatedLayout>
 </template>
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { defineAsyncComponent, ref } from 'vue';
 import { Toaster } from 'vue-sonner';
 import ProviderTable from './components/ProviderTable.vue';
 import ProviderHeader from './components/ProviderHeader.vue';
-import ProviderModal from './components/ProviderModal.vue';
+import SuspenseWrapper from '@/Components/SuspenseWrapper.vue';
+import { useLazyRefInvoker } from '@/utils/useLazyRefInvoker';
+
+const ProviderModal = defineAsyncComponent(() => import('./components/ProviderModal.vue'));
 
 const { provider, auth, category } = defineProps({
     provider: Object,
@@ -28,37 +35,18 @@ const { provider, auth, category } = defineProps({
 });
 
 const providers = ref(provider)
-const showModalStoreOrUpdate = ref(false)
 
+const showProviderForm = ref(false)
+const providerForm = ref(null)
 
-const initialStateForm = {
-    company_name: '',
-    contact_name: '',
-    address: '',
-    phone1: '',
-    phone2: '',
-    email: '',
-    category_id: '',
-    segments: [],
-    account_number: '',
-    zone: '',
-    ruc: '',
-    id: '',
-}
+const { invokeWhenReady: invokeProviderModal } = useLazyRefInvoker(providerForm, showProviderForm);
 
-const form = useForm({ ...initialStateForm });
-
-const add_information = (item) => {
-    form.defaults(item ? { ...item, segments: item.segments.map(item => item.id) } : { ...item })
-    form.reset()
-    showModalStoreOrUpdate.value = true
+const createProviderForm = () => {
+    invokeProviderModal('createProviderForm')
 };
 
-function closeModalStoreOrUpdate() {
-    form.clearErrors()
-    form.defaults({ ...initialStateForm })
-    form.reset()
-    showModalStoreOrUpdate.value = false
-}
+const editProviderForm = (item) => {
+    invokeProviderModal('editProviderForm', item)
+};
 
 </script>

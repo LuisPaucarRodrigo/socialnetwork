@@ -46,6 +46,10 @@ import { toFormData } from '@/utils/utils';
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
+const { cars } = defineProps({
+    cars: Object
+})
+
 const showStoreImage = ref(null)
 const itemId = ref(null)
 
@@ -85,7 +89,10 @@ async function submitImage() {
     try {
         let url = route('room.rental.store_images', { room: itemId.value })
         let formData = toFormData(formImage)
-        await axios.post(url, formData)
+        const res = await axios.post(url, formData)
+        const listData = cars.data || cars
+        const index = listData.findIndex(item => item.id === itemId.value)
+        listData[index].room_images_count = res.data
         notify("Creación exitosa")
         closeImagesForm()
     } catch (error) {

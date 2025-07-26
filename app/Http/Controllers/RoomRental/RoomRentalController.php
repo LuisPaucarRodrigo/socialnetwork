@@ -41,12 +41,13 @@ class RoomRentalController extends Controller
             'room_documents' => function ($query) {
                 $query->orderBy('expiration_date', 'desc');
             },
-        ])->orderBy('created_at', 'desc');
+        ])
+            ->withCount('room_images')->orderBy('created_at', 'desc');
 
         $providers = Provider::whereHas('category', function ($query) {
             $query->where('name', 'like', '%alquiler%');
         })->whereHas('segments', function ($query) {
-            $query->where('name', 'like', '%cuart%');
+            $query->where('name', 'like', '%cuarto%');
         })->get();
 
 
@@ -154,7 +155,8 @@ class RoomRentalController extends Controller
             ]);
             FileHandler::storeFile($file, $this->pathRoom, $filename);
         }
-        return response()->json([], 200);
+        $room->loadCount('room_images');
+        return response()->json($room->room_images_count, 200);
     }
 
     public function getImages($room_id)

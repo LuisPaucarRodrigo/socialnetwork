@@ -9,7 +9,7 @@
         <TableHeader :createPayment="createPayment" :filterForm="filterForm" />
         <PaymentTable v-model:payments="payments" :filterForm="filterForm" :openDocumentModal="openDocumentModal"
             :cost_line="cost_line" :zones="zones" :banks="banks" :states="states" v-model:loading="loading"
-            :confirmPaymentDeletion="confirmPaymentDeletion" :openRejectedModal="openRejectedModal" />
+            :confirmPaymentDeletion="confirmPaymentDeletion" :openRejectedModal="openRejectedModal" :user="user" />
 
         <SuspenseWrapper :when="showPaymentsForm">
             <template #component>
@@ -71,14 +71,16 @@ const { invokeWhenReady: invokeDocumentForm } = useLazyRefInvoker(documentForm, 
 const { invokeWhenReady: invokeConfirmPaymentDelete } = useLazyRefInvoker(confirmPaymentDelete, showConfirmPaymentDelete);
 const { invokeWhenReady: invokeRejection } = useLazyRefInvoker(rejection, showRejection);
 
-const { zones, costLines, providers, banks } = defineProps({
+const { zones, costLines, providers, banks, users } = defineProps({
     zones: Array,
     costLines: Object,
     providers: Object,
-    banks: Array
+    banks: Array,
+    users: Array
 })
 
 const cost_line = costLines.map(item => item.name)
+const user = users.map(item => item.name)
 const states = ['Rechazado', 'Pendiente', 'En Proceso', 'Completado']
 const payments = ref([])
 
@@ -90,6 +92,7 @@ onMounted(async () => {
 
 const filterForm = ref({
     selectedCostLine: [...cost_line],
+    selectedUser: [...user],
     selectedZone: [...zones],
     selectedState: [...states],
     selectedBanks: [...banks],
@@ -99,6 +102,7 @@ const filterForm = ref({
 watch(
     () => [
         filterForm.value.selectedCostLine,
+        filterForm.value.selectedUser,
         filterForm.value.selectedZone,
         filterForm.value.selectedState,
         filterForm.value.selectedBanks,

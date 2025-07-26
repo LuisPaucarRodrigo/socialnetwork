@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Models\ShoppingArea\PaymentApproval;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -51,7 +53,7 @@ class User extends Authenticatable
      *
      * @var array<string, string>
      */
-    
+
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
@@ -65,7 +67,8 @@ class User extends Authenticatable
     //     'profile_photo_url',
     // ];
 
-    public function employee(){
+    public function employee()
+    {
         return $this->hasOne(Employee::class);
     }
 
@@ -87,6 +90,11 @@ class User extends Authenticatable
     public function project_quoute()
     {
         return $this->hasMany(ProjectQuote::class);
+    }
+
+    public function payment_approval()
+    {
+        return $this->hasMany(PaymentApproval::class);
     }
 
     // public function hasPermission($permission)

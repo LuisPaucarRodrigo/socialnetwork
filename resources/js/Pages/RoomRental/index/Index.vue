@@ -41,7 +41,7 @@
 
         <SuspenseWrapper :when="showImagesForm">
             <template #component>
-                <ImagesForm ref="imagesForm" />
+                <ImagesForm ref="imagesForm" :cars="cars"/>
             </template>
         </SuspenseWrapper>
 

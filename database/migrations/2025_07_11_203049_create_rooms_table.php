@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('rental_type');
             $table->string('address');
             $table->text('observations');
-            $table->foreignId('provider_id')->constrained('providers')->onDelete('cascade');
+            $table->foreignId('provider_id')->constrained('providers');
             $table->foreignId('cost_line_id')->constrained('cost_lines')->onDelete('cascade');
             $table->timestamps();
         });
