@@ -102,10 +102,11 @@ const submitSwapRPModal = async () => {
             isFetching.value = false;
             useAxiosErrorHandler(e, swapRPForm)
         });
-
-    dataToRender.value = dataToRender.value.filter(
-        (item) => !actionForm.ids.includes(item.id)
-    );
+    let listData = dataToRender.value.data || dataToRender.value
+    actionForm.ids.forEach(update => {
+        const index = listData.findIndex(item => item.id === update)
+        listData.splice(index, 1)
+    });
     actionForm.ids = []
 
     closeSwapRPModal();

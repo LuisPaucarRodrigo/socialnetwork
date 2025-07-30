@@ -45,6 +45,7 @@
     </Modal>
 </template>
 <script setup>
+import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
 import { notify, notifyWarning } from '@/Components/Notification';
@@ -52,6 +53,10 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { useAxiosErrorHandler } from '@/utils/axiosError';
 import { useForm } from '@inertiajs/vue3';
 import { onMounted, ref } from 'vue';
+
+const { project_id } = defineProps({
+    project_id: Number
+})
 
 const actionForm = defineModel('actionForm')
 const dataToRender = defineModel('dataToRender')
@@ -89,14 +94,15 @@ const submitSwapAPModal = async () => {
                 ...actionForm.value
             }
         );
+        let listData = dataToRender.value.data || dataToRender.value
         if (res?.status === 207) {
             const ids = res.data.idsList;
-            dataToRender.value = dataToRender.value.filter(
+            listData = listData.filter(
                 item => !ids.includes(item.id)
             );
             notifyWarning(`Algunos registros no fueron movidos`);
         } else {
-            dataToRender.value = dataToRender.value.filter(
+            listData = listData.filter(
                 (item) => !actionForm.value.ids.includes(item.id)
             );
             notify("Registros movidos con éxito");
@@ -112,7 +118,7 @@ const submitSwapAPModal = async () => {
 };
 
 onMounted(async () => {
-    const res = await axios.get(route('additionalProjects'));
+    const res = await axios.get(route('additionalcost.additionalProjects'));
     additional_projects.value = res.data;
 });
 

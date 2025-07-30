@@ -92,7 +92,7 @@
     </TableStructure>
     <div v-if="payments.data"
         class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-        <PaginationAxios :links="payments.links" @navigate="fetchExpensesByUrl" />
+        <PaginationAxios :links="payments.links" v-model:loading="loading" v-model:dataToRender="payments" />
     </div>
 </template>
 <script setup>
@@ -126,17 +126,6 @@ let information = [
     'Completado:Se pago la programación y se subio constancia.'
 ]
 
-async function fetchExpensesByUrl(url) {
-    loading.value = true;
-    try {
-        const res = await axios.get(url);
-        payments.value = res.data;
-    } catch (err) {
-        console.error(err);
-    } finally {
-        loading.value = false;
-    }
-}
 
 function documentPreview(paymentId, kind) {
     const url = route('payment.approval.show_document', { id: paymentId, kind: kind });

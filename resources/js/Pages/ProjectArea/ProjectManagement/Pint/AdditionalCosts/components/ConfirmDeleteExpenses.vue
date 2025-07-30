@@ -36,12 +36,13 @@ const deleteAdditional = async () => {
         );
         isFetching.value = false;
         if (res?.data?.msg === "success") {
+            let listData = dataToRender.data || dataToRender
             closeModalDoc();
             notify("Gasto Adicional Eliminado");
-            let index = dataToRender.findIndex(
+            let index = listData.findIndex(
                 (item) => item.id == docId
             );
-            dataToRender.splice(index, 1);
+            listData.splice(index, 1);
         }
     } catch (e) {
         isFetching.value = false;

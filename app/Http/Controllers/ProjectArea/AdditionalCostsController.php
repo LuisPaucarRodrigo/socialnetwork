@@ -42,29 +42,6 @@ class AdditionalCostsController extends Controller
         $zones = PintConstants::acZones();
         $stateTypes = PintConstants::acStatesPenAccep();
 
-        // $additionalProjects = Project::where('cost_line_id', 1)
-        //     ->where('cost_center_id', 3)
-        //     ->select('id', 'description')
-        //     ->where('is_accepted', true)
-        //     ->orderBy('description')
-        //     ->get();
-
-        $additional_costs = AdditionalCost::where('project_id', $project_id->id)
-            ->where(function ($query) {
-                $query->where('is_accepted', 1)
-                    ->orWhere('is_accepted', null);
-            })
-            ->with(['project', 'provider'])
-            ->orderBy('updated_at', 'desc')
-            ->paginate(20);
-
-        $additional_costs->getCollection()->transform(function ($item) {
-            $item->project->setAppends([]);
-            $item->setAppends(['real_amount', 'real_state', 'admin_state']);
-            return $item;
-        });
-
-
         $providers = Provider::all();
         return Inertia::render('ProjectArea/ProjectManagement/Pint/AdditionalCosts/AdditionalCosts', [
             // 'additional_costs' => $additional_costs,
@@ -77,16 +54,8 @@ class AdditionalCostsController extends Controller
         ]);
     }
 
-    public function additionalProjects($project_id)
+    public function getAdditionalCost($project_id)
     {
-        // $additionalProjects = Project::select(['id,description'])
-        //     ->where('cost_line_id', 1)
-        //     ->where('cost_center_id', 3)
-        //     ->select('id', 'description')
-        //     ->where('is_accepted', true)
-        //     ->orderBy('description')
-        //     ->get();
-        // return response()->json($additionalProjects, 200);
         $additional_costs = AdditionalCost::where('project_id', $project_id)
             ->where(function ($query) {
                 $query->where('is_accepted', 1)
@@ -102,6 +71,17 @@ class AdditionalCostsController extends Controller
             return $item;
         });
         return response()->json($additional_costs, 200);
+    }
+
+    public function additionalProjects()
+    {
+        $additionalProjects = Project::where('cost_line_id', 1)
+            ->where('cost_center_id', 3)
+            ->select('id', 'description')
+            ->where('is_accepted', true)
+            ->orderBy('description')
+            ->get();
+        return response()->json($additionalProjects, 200);
     }
 
     public function indexRejected(Project $project_id)

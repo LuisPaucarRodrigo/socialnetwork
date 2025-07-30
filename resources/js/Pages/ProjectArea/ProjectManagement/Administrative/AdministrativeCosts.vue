@@ -28,11 +28,7 @@
                     <button data-tooltip-target="export_tooltip" type="button"
                         class="rounded-md bg-green-600 px-4 py-2 text-center text-sm text-white hover:bg-green-500"
                         @click="openExportExcel">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                d="M9.29289 1.29289C9.48043 1.10536 9.73478 1 10 1H18C19.6569 1 21 2.34315 21 4V9C21 9.55228 20.5523 10 20 10C19.4477 10 19 9.55228 19 9V4C19 3.44772 18.5523 3 18 3H11V8C11 8.55228 10.5523 9 10 9H5V20C5 20.5523 5.44772 21 6 21H7C7.55228 21 8 21.4477 8 22C8 22.5523 7.55228 23 7 23H6C4.34315 23 3 21.6569 3 20V8C3 7.73478 3.10536 7.48043 3.29289 7.29289L9.29289 1.29289ZM6.41421 7H9V4.41421L6.41421 7ZM19 12C19.5523 12 20 12.4477 20 13V19H23C23.5523 19 24 19.4477 24 20C24 20.5523 23.5523 21 23 21H19C18.4477 21 18 20.5523 18 20V13C18 12.4477 18.4477 12 19 12ZM11.8137 12.4188C11.4927 11.9693 10.8682 11.8653 10.4188 12.1863C9.96935 12.5073 9.86526 13.1318 10.1863 13.5812L12.2711 16.5L10.1863 19.4188C9.86526 19.8682 9.96935 20.4927 10.4188 20.8137C10.8682 21.1347 11.4927 21.0307 11.8137 20.5812L13.5 18.2205L15.1863 20.5812C15.5073 21.0307 16.1318 21.1347 16.5812 20.8137C17.0307 20.4927 17.1347 19.8682 16.8137 19.4188L14.7289 16.5L16.8137 13.5812C17.1347 13.1318 17.0307 12.5073 16.5812 12.1863C16.1318 11.8653 15.5073 11.9693 15.1863 12.4188L13.5 14.7795L11.8137 12.4188Z"
-                                fill="#ffffff" />
-                        </svg>
+                        <ExcelIcon />
                     </button>
                     <div id="export_tooltip" role="tooltip"
                         class="absolute z-10 invisible inline-block px-2 py-2 text-xs font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
@@ -82,10 +78,6 @@
                                             class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                             Actualizar Operación
                                         </button>
-                                        <button @click=""
-                                            class="block w-full text-left px-4 py-2 text-sm text-black-700 hover:bg-gray-200 hover:text-black focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
-                                            Swap
-                                        </button>
                                     </div>
                                 </div>
                             </template>
@@ -96,10 +88,10 @@
                     fields="Ruc , Numero de Documento, Numero de Operacion, Descripcion, Monto Total" />
             </div>
         </div>
-        <AdministrativeTable :dataToRender="dataToRender" :listOfData="listOfData" :actionForm="actionForm"
-            :filterForm="filterForm" :openEditAdditionalModal="openEditAdditionalModal"
-            :confirmDeleteAdditional="confirmDeleteAdditional" :expenseTypes="expenseTypes" :docTypes="docTypes"
-            :zones="zones" :stateTypes="stateTypes" v-model:loading="loading" />
+        <AdministrativeTable v-model:dataToRender="dataToRender" :actionForm="actionForm" :filterForm="filterForm"
+            :openEditAdditionalModal="openEditAdditionalModal" :confirmDeleteAdditional="confirmDeleteAdditional"
+            :expenseTypes="expenseTypes" :docTypes="docTypes" :zones="zones" :stateTypes="stateTypes"
+            v-model:loading="loading" />
         <Modal :show="create_additional">
             <div class="p-6">
                 <h2 class="text-base font-medium leading-7 text-gray-900">
@@ -523,7 +515,7 @@ import { notify, notifyError, notifyWarning } from "@/Components/Notification";
 import { Toaster } from "vue-sonner";
 import Dropdown from "@/Components/Dropdown.vue";
 import Search from "@/Components/Search.vue";
-import { MenuIcon, DeleteIcon, ServerIcon } from "@/Components/Icons";
+import { MenuIcon, DeleteIcon, ServerIcon, ExcelIcon } from "@/Components/Icons";
 import SuspenseWrapper from "@/Components/SuspenseWrapper.vue";
 import { useLazyRefInvoker } from "@/utils/useLazyRefInvoker";
 import AdministrativeTable from "./components/AdministrativeTable.vue";
@@ -551,7 +543,6 @@ const showUpdateMassive = ref(false)
 const updateMassive = ref(null)
 
 const dataToRender = ref([]);
-const listOfData = ref([])
 const filterMode = ref(false);
 const loading = ref(true)
 
@@ -560,8 +551,7 @@ const { invokeWhenReady: invokeUpdateMassive } = useLazyRefInvoker(updateMassive
 
 onMounted(async () => {
     const res = await axios.get(route('getExpenses.administrativeCosts', { month_project_id: props.month_project_id.id }));
-    dataToRender.value = res.data.data;
-    listOfData.value = res.data
+    dataToRender.value = res.data;
     loading.value = false;
 });
 
@@ -638,7 +628,8 @@ const submit = async () => {
             route("projectmanagement.storeAdministrativeCost", {
                 month_project_id: props.month_project_id.id,
             }), formToSend)
-        dataToRender.value.unshift(res.data)
+        let listData = dataToRender.value.data || dataToRender.value
+        listData.unshift(res.data)
         closeModal();
         notify('Gasto Administrativo Guardado')
     } catch (e) {
@@ -653,14 +644,16 @@ const submit = async () => {
 
 const submitEdit = async () => {
     try {
+
         isFetching.value = true
         const formToSend = toFormData(form.data())
         const res = await axios.post(
             route("projectmanagement.updateAdministrativeCost", {
                 additional_cost: form.id,
             }), formToSend)
-        let index = dataToRender.value.findIndex(item => item.id == form.id)
-        dataToRender.value[index] = res.data
+        let listData = dataToRender.value.data || dataToRender.value
+        let index = listData.findIndex(item => item.id == form.id)
+        listData[index] = res.data
         closeEditModal();
         notify('Gasto Administrativo Actualizado')
     } catch (e) {
@@ -693,8 +686,9 @@ const deleteAdditional = async () => {
         if (res?.data?.msg === 'success') {
             closeModalDoc()
             notify('Gasto Administrativo Eliminado')
-            let index = dataToRender.value.findIndex(item => item.id == docId)
-            dataToRender.value.splice(index, 1);
+            let listData = dataToRender.value.data || dataToRender.value
+            let index = listData.findIndex(item => item.id == docId)
+            listData.splice(index, 1);
         }
     }
 };
@@ -770,11 +764,6 @@ async function search_advance(data) {
 }
 
 
-// async function handleSearch() {
-//     filterMode.value = true;
-//     search_advance(filterForm.value);
-// }
-
 function openExportExcel() {
     const uniqueParam = `timestamp=${new Date().getTime()}`;
     const url =
@@ -812,52 +801,9 @@ watch(
     { deep: true }
 );
 
-
-// const opNuDateForm = useForm({
-//     operation_date: '',
-//     operation_number: '',
-// })
-
-// const showOpNuDatModal = ref(false)
-
-// const closeOpNuDatModal = () => {
-//     showOpNuDatModal.value = false
-//     isFetching.value = false
-//     opNuDateForm.reset()
-// }
-
 const openOpNuDaModal = () => {
     invokeUpdateMassive('openOpNuDaModal')
 }
-
-// const submitOpNuDatModal = async () => {
-//     isFetching.value = true;
-//     const res = await axios
-//         .post(route("projectmanagement.administrativeCosts.massiveUpdate"), {
-//             ...opNuDateForm.data(),
-//             ...actionForm.value
-//         })
-//         .catch((e) => {
-//             isFetching.value = false;
-//             if (e.response?.data?.errors) {
-//                 setAxiosErrors(e.response.data.errors, opNuDateForm);
-//             } else {
-//                 notifyError("Server Error");
-//             }
-//         });
-
-//     const originalMap = new Map(dataToRender.value.map(item => [item.id, item]));
-//     res.data.forEach(update => {
-//         if (originalMap.has(update.id)) {
-//             originalMap.set(update.id, update);
-//         }
-//     });
-//     const updatedArray = Array.from(originalMap.values());
-//     dataToRender.value = updatedArray
-//     closeOpNuDatModal();
-//     notify("Registros Seleccionados Actualizados");
-// }
-
 
 
 </script>

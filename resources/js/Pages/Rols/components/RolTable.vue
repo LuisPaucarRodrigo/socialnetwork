@@ -36,7 +36,7 @@
         </template>
     </TableStructure>
     <div v-if="rols.data" class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-        <PaginationAxios :links="rols.links" @navigate="fetchExpensesByUrl" />
+        <PaginationAxios :links="rols.links" v-model:loading="loading" v-model:dataToRender="rols" />
     </div>
 </template>
 <script setup>
@@ -55,15 +55,4 @@ const { showModal, editModalRol, confirmRolsDeletion } = defineProps({
 const rols = defineModel('rols')
 const loading = defineModel('loading')
 
-async function fetchExpensesByUrl(url) {
-    loading.value = true;
-    try {
-        const res = await axios.get(url);
-        rols.value = res.data;
-    } catch (err) {
-        console.error(err);
-    } finally {
-        loading.value = false;
-    }
-}
 </script>

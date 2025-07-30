@@ -483,6 +483,13 @@ class ProjectRoutes
                     'name' => 'projectmanagement.additionalCosts',
                 ],
                 [
+                    'uri' => '/project/purchases_request_getAdditionalCost/{project_id}',
+                    'method' => 'get',
+                    'action' => [AdditionalCostsController::class, 'getAdditionalCost'],
+                    'permission' => true,
+                    'name' => 'projectmanagement.getAdditionalCost',
+                ],
+                [
                     'uri' => '/project/purchases_request/{project_id}/additional_costs/rejected',
                     'method' => 'get',
                     'action' => [AdditionalCostsController::class, 'indexRejected'],
@@ -495,6 +502,13 @@ class ProjectRoutes
                     'action' => [AdditionalCostsController::class, 'search_costs'],
                     'permission' => true,
                     'name' => 'additionalcost.advance.search',
+                ],
+                [
+                    'uri' => '/project/additional_Projects',
+                    'method' => 'get',
+                    'action' => [AdditionalCostsController::class, 'additionalProjects'],
+                    'permission' => true,
+                    'name' => 'additionalcost.additionalProjects',
                 ],
 
                 // Static Costs
