@@ -55,7 +55,7 @@
     </TableStructure>
     <div v-if="users.data"
         class="flex flex-col items-center border-t bg-white px-5 py-3 xs:flex-row xs:justify-between">
-        <PaginationAxios :links="users.links" @navigate="fetchExpensesByUrl" />
+        <PaginationAxios :links="users.links" v-model:loading="loading" v-model:dataToRender="users" />
     </div>
 </template>
 <script setup>
@@ -107,15 +107,4 @@ function updateFrontEnd(action, data) {
     }
 }
 
-async function fetchExpensesByUrl(url) {
-    loading.value = true;
-    try {
-        const res = await axios.get(url);
-        users.value = res.data;
-    } catch (err) {
-        console.error(err);
-    } finally {
-        loading.value = false;
-    }
-}
 </script>

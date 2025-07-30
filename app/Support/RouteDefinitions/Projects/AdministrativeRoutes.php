@@ -39,6 +39,13 @@ class AdministrativeRoutes
                 'name' => 'projectmanagement.administrativeCosts',
             ],
             [
+                'uri' => '/project/administrative_costs/{month_project_id}',
+                'method' => 'get',
+                'action' => [AdministrativeCostsController::class, 'getAdminitrativeExpenses'],
+                'permission' => true,
+                'name' => 'getExpenses.administrativeCosts',
+            ],
+            [
                 'uri' => '/administrativecosts_photo/{static_cost_id}',
                 'method' => 'get',
                 'action' => [AdministrativeCostsController::class, 'download_ac_photo'],

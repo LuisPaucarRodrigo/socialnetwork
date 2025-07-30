@@ -87,14 +87,15 @@ async function submitAcceptModal() {
             isFetching.value = false;
             useAxiosErrorHandler(e, opNuDateForm)
         });
+    let listData = dataToRender.data || dataToRender
     if (!res?.data?.additional_cost) {
-        let index = dataToRender.findIndex(
+        let index = listData.findIndex(
             (item) => item.id == itemToAccept.value.id
         );
-        dataToRender.splice(index, 1);
+        listData.splice(index, 1);
     } else {
-        let index = dataToRender.findIndex((item) => item.id == res.data.additional_cost.id);
-        dataToRender[index] = res.data.additional_cost;
+        let index = listData.findIndex((item) => item.id == res.data.additional_cost.id);
+        listData[index] = res.data.additional_cost;
     }
     closeAcceptModal();
     notify(res.data.msg)

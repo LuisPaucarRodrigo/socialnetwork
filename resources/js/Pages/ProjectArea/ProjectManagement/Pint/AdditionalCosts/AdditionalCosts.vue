@@ -17,7 +17,7 @@
             :openExportExcel="openExportExcel" :openExportArchivesModal="openExportArchivesModal"
             :project_id="project_id" :initialFilterFormState="initialFilterFormState" />
 
-        <AdditionalTable :dataToRender="dataToRender" :listOfData="listOfData" :actionForm="actionForm"
+        <AdditionalTable v-model:dataToRender="dataToRender" :actionForm="actionForm"
             :filterForm="filterForm" :filterMode="filterMode" :openEditAdditionalModal="openEditAdditionalModal"
             :confirmDeleteAdditional="confirmDeleteAdditional" :expenseTypes="expenseTypes" :docTypes="docTypes"
             :zones="zones" :stateTypes="stateTypes" v-model:loading="loading" :project_id="project_id"
@@ -45,7 +45,7 @@
 
         <SuspenseWrapper :when="showSwapAPModal">
             <template #component>
-                <SwapAPModal ref="swapAPModal" v-model:actionForm="actionForm" v-model:dataToRender="dataToRender" />
+                <SwapAPModal ref="swapAPModal" v-model:actionForm="actionForm" v-model:dataToRender="dataToRender" :project_id="project_id.id"/>
             </template>
         </SuspenseWrapper>
 
@@ -70,7 +70,7 @@
 
         <SuspenseWrapper :when="showConfirmSwapCostModal">
             <template #component>
-                <ConfirmSwapCostModal ref="confirmSwapCostModal" :actionForm="actionForm" />
+                <ConfirmSwapCostModal ref="confirmSwapCostModal" :actionForm="actionForm" v-model:dataToRender="dataToRender" />
             </template>
         </SuspenseWrapper>
 
@@ -123,7 +123,6 @@ zones.sort()
 stateTypes.sort()
 
 const dataToRender = ref([]);
-const listOfData = ref([])
 const filterMode = ref(false);
 const loading = ref(true)
 
@@ -131,9 +130,8 @@ const showUpdateMassiveOpNuDat = ref(false)
 const updateMassiveOpNuDat = ref(null)
 
 onMounted(async () => {
-    const res = await axios.get(route('additionalProjects', { project_id: props.project_id.id }));
-    dataToRender.value = res.data.data;
-    listOfData.value = res.data
+    const res = await axios.get(route('projectmanagement.getAdditionalCost', { project_id: props.project_id.id }));
+    dataToRender.value = res.data;
     loading.value = false;
 });
 

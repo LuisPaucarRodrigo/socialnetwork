@@ -51,7 +51,7 @@
             </tr>
         </template>
         <template #tbody>
-            <tr v-for="(item, i) in dataToRender" :key="item.id">
+            <tr v-for="(item, i) in dataToRender.data || dataToRender" :key="item.id">
                 <td :class="[
                     'sticky left-0 z-10 border-b border-gray-200 ',
                     {
@@ -118,7 +118,7 @@
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
                     S/.
                     {{
-                        dataToRender
+                        (dataToRender.data || dataToRender)
                             .reduce((a, item) => a + item.amount, 0)
                             .toFixed(2)
                     }}
@@ -126,7 +126,7 @@
                 <td class="border-b border-gray-200 bg-white px-5 py-5 text-sm whitespace-nowrap">
                     S/.
                     {{
-                        dataToRender
+                        (dataToRender.data || dataToRender)
                             .reduce(
                                 (a, item) => a + item.real_amount,
                                 0
@@ -145,7 +145,7 @@
     </TableStructure>
     <div v-if="!filterMode"
         class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-        <PaginationAxios :links="listOfData.links" @navigate="fetchExpensesByUrl" />
+        <PaginationAxios :links="dataToRender.links" v-model:loading="loading" v-model:dataToRender="dataToRender" />
     </div>
 </template>
 <script setup>
@@ -158,8 +158,7 @@ import TableTitle from '@/Components/TableTitle.vue';
 import TableStructure from '@/Layouts/TableStructure.vue';
 import { formattedDate } from '@/utils/utils';
 
-const { listOfData, actionForm, filterForm, filterMode, openEditAdditionalModal, confirmDeleteAdditional, expenseTypes, docTypes, zones, stateTypes } = defineProps({
-    listOfData: Object,
+const { actionForm, filterForm, filterMode, openEditAdditionalModal, confirmDeleteAdditional, expenseTypes, docTypes, zones, stateTypes } = defineProps({
     actionForm: Object,
     filterForm: Object,
     filterMode: Boolean,
@@ -175,8 +174,9 @@ const loading = defineModel('loading')
 const dataToRender = defineModel('dataToRender')
 
 const handleCheckAll = (e) => {
+    let listData = dataToRender.value.data || dataToRender.value
     if (e.target.checked) {
-        actionForm.ids = dataToRender.value.map((item) => item.id);
+        actionForm.ids = listData.map((item) => item.id);
     } else {
         actionForm.ids = [];
     }
@@ -190,17 +190,5 @@ function handlerPreview(id) {
         uniqueParam,
         "_blank"
     );
-}
-
-async function fetchExpensesByUrl(url) {
-    loading.value = true;
-    try {
-        const res = await axios.get(url);
-        dataToRender.value = res.data.data;
-    } catch (err) {
-        console.error(err);
-    } finally {
-        loading.value = false;
-    }
 }
 </script>

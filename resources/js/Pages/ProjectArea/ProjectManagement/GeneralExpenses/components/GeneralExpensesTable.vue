@@ -163,7 +163,7 @@
 
     <div v-if="expenses.data"
         class="flex flex-col items-center border-t bg-white px-5 py-5 xs:flex-row xs:justify-between">
-        <PaginationAxios :links="expenses.links" @navigate="fetchExpensesByUrl" />
+        <PaginationAxios :links="expenses.links" v-model:loading="loading" v-model:dataToRender="expenses" />
     </div>
 </template>
 <script setup>
@@ -241,16 +241,5 @@ function updateExpense(item, expense, action, state) {
     }
 }
 
-async function fetchExpensesByUrl(url) {
-    loading.value = true;
-    try {
-        const res = await axios.get(url);
-        expenses.value = res.data;
-    } catch (err) {
-        console.error(err);
-    } finally {
-        loading.value = false;
-    }
-}
 
 </script>

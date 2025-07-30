@@ -321,20 +321,23 @@ const submit = async () => {
         const res = await axios.post(url, formToSend);
         updateFrontEnd(res.data, action)
     } catch (e) {
-        console.log(e)
         isFetching.value = false;
         useAxiosErrorHandler(e, form)
     }
 };
 
 function updateFrontEnd(data, action) {
+    let listData = dataToRender.data || dataToRender
+    console.log(listData)
     if (action === 'create') {
-        dataToRender.unshift(data);
+        listData.unshift(data);
         closeModal();
         notify("Gasto Adicional Guardado");
     } else if (action === 'update') {
-        let index = dataToRender.findIndex((item) => item.id == form.id);
-        dataToRender[index] = data;
+        console.log(form.id)
+        let index = listData.findIndex((item) => item.id == form.id);
+        console.log(index)
+        listData[index] = data;
         closeModal();
         notify("Gasto Adicional Actualizado");
     }

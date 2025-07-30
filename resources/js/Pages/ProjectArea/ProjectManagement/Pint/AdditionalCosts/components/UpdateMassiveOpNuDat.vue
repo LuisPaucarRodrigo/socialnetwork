@@ -94,23 +94,15 @@ const submitOpNuDatModal = async () => {
             isFetching.value = false;
             useAxiosErrorHandler(e, opNuDateForm)
         });
-    const resIds = res.data.map(item => item.id);
-    const rgsToRemove = actionForm.ids.filter(id => !resIds.includes(id))
-    const originalMap = new Map(dataToRender.value.filter(item => !rgsToRemove.includes(item.id)).
-        map(item => [item.id, item]));
+    let listData = dataToRender.value.data || dataToRender.value
     res.data.forEach(update => {
-        if (originalMap.has(update.id)) {
-            originalMap.set(update.id, update);
+        const index = listData.findIndex(item => item.id === update.id)
+        if (index !== -1) {
+            listData[index] = update;
         }
     });
-    const updatedArray = Array.from(originalMap.values());
-    dataToRender.value = updatedArray
-    actionForm.ids = resIds
     closeOpNuDatModal();
     notify("Registros Seleccionados Actualizados")
-    setTimeout(() => {
-        if (rgsToRemove.length > 0) notify("Algunos fueron movidos a gastos fijos y/o proyecto GEP")
-    }, 1000)
 }
 
 defineExpose({ openOpNuDaModal })

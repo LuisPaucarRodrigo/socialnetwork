@@ -92,15 +92,13 @@ const submitOpNuDatModal = async () => {
             isFetching.value = false;
             useAxiosErrorHandler(e, opNuDateForm)
         });
-
-    const originalMap = new Map(dataToRender.value.map(item => [item.id, item]));
+    let listData = dataToRender.value.data || dataToRender.value
     res.data.forEach(update => {
-        if (originalMap.has(update.id)) {
-            originalMap.set(update.id, update);
+        const index = listData.findIndex(item => item.id === update.id);
+        if (index !== -1) {
+            listData[index] = update;
         }
     });
-    const updatedArray = Array.from(originalMap.values());
-    dataToRender.value = updatedArray
     closeOpNuDatModal();
     notify("Registros Seleccionados Actualizados");
 }

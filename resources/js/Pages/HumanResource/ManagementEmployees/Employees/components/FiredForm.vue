@@ -103,7 +103,7 @@ async function submit() {
 
 function updateFrontEnd(id) {
     const data = employees.data || employees
-    let index = data.findIndex(item => item.id = id)
+    let index = data.findIndex(item => item.id === id)
     data.splice(index, 1)
     notify("Despido Exitoso")
     closeFiredModal()

@@ -1067,6 +1067,8 @@ class FunctionalityPermissionSeeder extends Seeder
                     'projectmanagement.index',
                     'projectmanagement.purchases_request.index',
                     'projectmanagement.additionalCosts',
+                    'projectmanagement.getAdditionalCost',
+                    'additionalcost.additionalProjects',
                     'projectmanagement.staticCosts',
                     'projectmanagement.purchases_request.details',
                     'projectmanagement.purchases_request.edit',
@@ -1315,6 +1317,7 @@ class FunctionalityPermissionSeeder extends Seeder
                 'permissions' => [
                     'monthproject.index',
                     'projectmanagement.administrativeCosts',
+                    'getExpenses.administrativeCosts',
                     'monthproject.store',
                     'monthproject.destroy',
                     'administrativeCosts.archive',

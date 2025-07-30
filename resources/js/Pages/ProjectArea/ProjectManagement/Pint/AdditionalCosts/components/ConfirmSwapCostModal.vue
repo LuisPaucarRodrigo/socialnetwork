@@ -14,7 +14,7 @@ const { actionForm } = defineProps({
 
 const showSwapCostsModal = ref(false)
 const isFetching = ref(false)
-
+const dataToRender = defineModel('dataToRender')
 const closeSwapCostsModal = () => {
     showSwapCostsModal.value = false
     isFetching.value = false
@@ -28,7 +28,7 @@ const openSwapCostsModal = () => {
 }
 const swapCosts = async () => {
     isFetching.value = true;
-    const res = await axios
+    await axios
         .post(route("projectmanagement.additionalCosts.swapCosts"), {
             ...actionForm
         })
@@ -36,9 +36,13 @@ const swapCosts = async () => {
             isFetching.value = false;
             notifyError("Server Error");
         });
-    dataToRender.value = dataToRender.value.filter(
-        (item) => !actionForm.ids.includes(item.id)
-    );
+    let listData = dataToRender.value.data || dataToRender.value
+    actionForm.ids.forEach(update => {
+        const index = listData.findIndex(item => item.id === update);
+        if (index !== -1) {
+            listData.splice(index, 1)
+        }
+    })
     actionForm.ids = []
     closeSwapCostsModal();
     notify("Registros Movidos con éxito");

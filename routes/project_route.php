@@ -14,7 +14,3 @@ foreach (ProjectRoutes::all() as $route) {
         $routeInstance->middleware('permission:' . $route['name']);
     }
 }
-
-//AdditionalCost
-Route::get('/project/additional_Projects/{project_id}', [AdditionalCostsController::class, 'additionalProjects'])->name('additionalProjects');
-Route::get('/project/administrative_costs/{month_project_id}', [AdministrativeCostsController::class, 'getAdminitrativeExpenses'])->name('getExpenses.administrativeCosts');
