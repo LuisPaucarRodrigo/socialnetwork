@@ -11,7 +11,7 @@
                 + Agregar
             </PrimaryButton>
         </div>
-        <RolTable v-model:rols="rols" :editModalRol="editModalRol" :confirmRolsDeletion="confirmRolsDeletion"
+        <RolTable v-model:rols="rols" v-model:loading="loading" :editModalRol="editModalRol" :confirmRolsDeletion="confirmRolsDeletion"
             :showModal="showModal" />
         <SuspenseWrapper :when="showShowRol">
             <template #component>

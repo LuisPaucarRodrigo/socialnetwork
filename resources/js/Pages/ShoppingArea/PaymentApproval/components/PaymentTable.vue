@@ -37,13 +37,13 @@
             </tr>
         </template>
         <template #tbody>
-            <tr v-for="item in payments.data || payments">
+            <tr v-for="item in payments.data || payments" :key="item.id">
                 <TableRow>{{ item.cost_line.name }}</TableRow>
                 <TableRow>{{ item.user?.name }}</TableRow>
                 <TableRow>{{ item.zone }}</TableRow>
                 <TableRow>{{ item.bank }}</TableRow>
                 <TableRow>{{ item.account_number }}</TableRow>
-                <TableRow>{{ item.amount }}</TableRow>
+                <TableRow>{{ item.amount.toFixed(2) }}</TableRow>
                 <TableRow>{{ item.ruc }}</TableRow>
                 <TableRow>{{ item.beneficiary }}</TableRow>
                 <TableRow>
