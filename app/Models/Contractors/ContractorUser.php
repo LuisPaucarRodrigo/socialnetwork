@@ -18,6 +18,12 @@ class ContractorUser extends Model
         'password',
         'role_id',
         'area_id',
-        'phone'
+        'phone',
+        'contractor_id'
     ];
+
+    public function contractor()
+    {
+        return $this->belongsTo(Contractor::class, 'contractor_id');
+    }
 }

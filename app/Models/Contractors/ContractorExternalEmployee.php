@@ -30,6 +30,7 @@ class ContractorExternalEmployee extends Model
         'l_policy',
         'sctr_exp_date',
         'policy_exp_date',
+        'contractor_id',
     ];
 
     // protected $appends = [
@@ -93,6 +94,11 @@ class ContractorExternalEmployee extends Model
     public function document_registers()
     {
         return $this->hasMany(ContractorDocumentRegister::class, 'e_employee_id');
+    }
+    
+    public function contractor()
+    {
+        return $this->belongsTo(Contractor::class, 'contractor_id');
     }
 
     protected static function booted()

@@ -27,6 +27,7 @@ class ContractorEmployee extends Model
         'sctr_exp_date',
         'policy_exp_date',
         'user_id',
+        'contractor_id',
     ];
 
     // protected $appends = [
@@ -75,6 +76,12 @@ class ContractorEmployee extends Model
     {
         return $this->hasMany(ContractorVacation::class);
     }
+
+    public function contractor()
+    {
+        return $this->belongsTo(Contractor::class, 'contractor_id');
+    }
+
     public function formation_programs()
     {
         return $this->belongsToMany(ContractorFormationProgram::class, 'employee_formation_program', 'employee_id', 'formation_program_id');

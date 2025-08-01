@@ -18,7 +18,7 @@ class ContractorControlEmployees extends Controller
             $externalEmployees = ContractorExternalEmployee::select('name', 'dni')->get();
             $controlEmployee = ContractorFixedDocumentation::with('entry_document', 'issuance_documentation')
                 ->paginate();
-            return Inertia::render('HumanResource/ControlEmployees/Index', [
+            return Inertia::render('Contractors/ControlEmployees/Index', [
                 'controlEmployee' => $controlEmployee,
                 'employee' => $employees->concat($externalEmployees),
             ]);
@@ -37,7 +37,7 @@ class ContractorControlEmployees extends Controller
     {
         if ($request->isMethod('get')) {
             $fixedDocumentation = ContractorFixedDocumentation::paginate();
-            return Inertia::render('HumanResource/ControlEmployees/FixedDocumentation', [
+            return Inertia::render('Contractors/ControlEmployees/FixedDocumentation', [
                 'fixedDocumentation' => $fixedDocumentation
             ]);
         } else {
@@ -57,7 +57,7 @@ class ContractorControlEmployees extends Controller
                 ->with('entry_document')
                 ->paginate();
 
-            return Inertia::render('HumanResource/ControlEmployees/EntryDocumentation', [
+            return Inertia::render('Contractors/ControlEmployees/EntryDocumentation', [
                 'entryDocument' => $entryDocument
             ]);
         } else {
@@ -78,7 +78,7 @@ class ContractorControlEmployees extends Controller
                 ->with('issuance_documentation')
                 ->paginate();
 
-            return Inertia::render('HumanResource/ControlEmployees/IssuanceDocumentation', [
+            return Inertia::render('Contractors/ControlEmployees/IssuanceDocumentation', [
                 'issuanceDocumentation' => $issuanceDocumentation
             ]);
         } else {
