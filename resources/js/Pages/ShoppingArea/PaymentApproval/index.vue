@@ -81,7 +81,7 @@ const { zones, costLines, providers, banks, users } = defineProps({
 
 const cost_line = costLines.map(item => item.name)
 const user = users.map(item => item.name)
-const states = ['Rechazado', 'Pendiente', 'En Proceso', 'Completado']
+const states = ['Rechazado', 'Pendiente', 'Programado', 'Completado','Rechazado Vericom']
 const payments = ref([])
 
 onMounted(async () => {
