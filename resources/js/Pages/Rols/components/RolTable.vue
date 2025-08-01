@@ -1,5 +1,5 @@
 <template>
-    <TableStructure :info="rols">
+    <TableStructure :info="rols" :loading="loading">
         <template #thead>
             <tr>
                 <TableTitle>Nombre</TableTitle>

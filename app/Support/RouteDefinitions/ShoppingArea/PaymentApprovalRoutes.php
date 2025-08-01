@@ -46,13 +46,19 @@ class PaymentApprovalRoutes
                 'permission' => true,
                 'name' => 'payment.approval.document',
             ],
-
             [
                 'uri' => 'payment_approval/rejected/{id}',
                 'method' => 'post',
                 'action' => [PaymentApprovalController::class, 'rejected'],
                 'permission' => true,
                 'name' => 'payment.approval.rejected',
+            ],
+            [
+                'uri' => 'payment_approval/rejected_vericom/{id}',
+                'method' => 'get',
+                'action' => [PaymentApprovalController::class, 'rejected_vericom'],
+                'permission' => true,
+                'name' => 'payment.approval.rejected_vericom',
             ],
             [
                 'uri' => 'payment_approval/download_document/{id}/kind/{kind}',

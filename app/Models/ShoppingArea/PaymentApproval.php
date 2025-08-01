@@ -22,6 +22,7 @@ class PaymentApproval extends Model
         'document',
         'proof_payment',
         'is_validated',
+        'is_accepted',
         'reason_rejection',
         'cost_line_id',
         'provider_id',
@@ -30,6 +31,10 @@ class PaymentApproval extends Model
 
     public function getStateAttribute()
     {
+        if ($this->is_accepted == '0') {
+            return 'Rechazado Vericom';
+        }
+
         if ($this->proof_payment) {
             return 'Completado';
         }
@@ -37,7 +42,6 @@ class PaymentApproval extends Model
         if ($this->is_validated == '0') {
             return 'Rechazado';
         }
-
 
         if ($this->is_validated == '1') {
             return 'Programado';

@@ -459,6 +459,8 @@ class FunctionalityPermissionSeeder extends Seeder
                     'payment.approval.document',
                     'payment.approval.show_document',
                     'payment.approval.validate',
+                    'payment.approval.rejected',
+                    'payment.approval.rejected_vericom',
                     'payment.approval.alarm.pending.payments',
                 ]
             ],

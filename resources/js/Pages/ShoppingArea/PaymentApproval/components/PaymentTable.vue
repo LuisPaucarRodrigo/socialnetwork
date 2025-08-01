@@ -37,13 +37,13 @@
             </tr>
         </template>
         <template #tbody>
-            <tr v-for="item in payments.data || payments">
+            <tr v-for="item in payments.data || payments" :key="item.id">
                 <TableRow>{{ item.cost_line.name }}</TableRow>
                 <TableRow>{{ item.user?.name }}</TableRow>
                 <TableRow>{{ item.zone }}</TableRow>
                 <TableRow>{{ item.bank }}</TableRow>
                 <TableRow>{{ item.account_number }}</TableRow>
-                <TableRow>{{ item.amount }}</TableRow>
+                <TableRow>{{ item.amount.toFixed(2) }}</TableRow>
                 <TableRow>{{ item.ruc }}</TableRow>
                 <TableRow>{{ item.beneficiary }}</TableRow>
                 <TableRow>
@@ -65,22 +65,26 @@
                 <TableRow v-permission-or="['add_document_payment_approval', 'delete_payment_approval']">
                     <div class="flex justify-center gap-x-2">
                         <template v-if="item.is_validated === null" class="flex gap-3 justify-center w-1/2">
-                            <button @click="() =>
-                                validateRegister(item.id, true)
-                            " class="flex items-center rounded-xl text-blue-500 hover:bg-green-200">
+                            <button @click="validateRegister(item.id, true)"
+                                class="flex items-center rounded-xl hover:bg-green-200">
                                 <AcceptIcon />
                             </button>
-                            <button @click="() =>
-                                openRejectedModal(item.id)
-                            " class="flex items-center rounded-xl text-blue-500 hover:bg-green-200">
+                            <button @click="openRejectedModal(item.id)"
+                                class="flex items-center rounded-xl hover:bg-red-200">
                                 <RejectIcon />
                             </button>
                         </template>
-                        <template v-else>
-                            <button v-permission="'add_document_payment_approval'" v-if="!item.proof_payment"
-                                @click="openDocumentModal(item.id)">
-                                <PlusDocumentIcon />
-                            </button>
+                        <template v-if="item.is_validated == '1'">
+                            <div class="flex gap-x-2" v-if="item.is_accepted === null && item.proof_payment === null">
+                                <button @click="rejectedVericom(item.id)"
+                                    class="flex items-center rounded-xl hover:bg-red-200">
+                                    <RejectIcon />
+                                </button>
+                                <button v-permission="'add_document_payment_approval'"
+                                    @click="openDocumentModal(item.id)">
+                                    <PlusDocumentIcon />
+                                </button>
+                            </div>
                         </template>
                         <button v-permission="'delete_payment_approval'" @click="confirmPaymentDeletion(item.id)">
                             <DeleteIcon />
@@ -123,7 +127,8 @@ let information = [
     'Rechazado:Se Rechazo por encargado.',
     'Pendiente:Falta aceptar por encargado.',
     'Programado:Se acepto y programo en teleticket.',
-    'Completado:Se pago la programación y se subio constancia.'
+    'Completado:Se pago la programación y se subio constancia.',
+    'Rechazado Vericom:Se rechazo en Vericom.'
 ]
 
 
@@ -142,10 +147,27 @@ async function validateRegister(paymentId, is_validated) {
     }
 }
 
+async function rejectedVericom(paymentId) {
+    const url = route("payment.approval.rejected_vericom", { 'id': paymentId })
+    try {
+        const res = await axios.get(url);
+        updateExpense(res.data, "rejectedVericom", paymentId)
+    } catch (e) {
+        console.log(e);
+    }
+}
+
 function updateExpense(data, action, paymentId) {
     const listData = payments.value.data || payments.value
-    const index = listData.findIndex(item => item.id === paymentId)
-    listData[index] = data
-    notify('Validación Exitosa')
+    if (action === 'validate') {
+        const index = listData.findIndex(item => item.id === paymentId)
+        listData[index] = data
+        notify('Validación Exitosa')
+    } else if (action === 'rejectedVericom') {
+        const index = listData.findIndex(item => item.id === paymentId)
+        listData[index] = data
+        notify('Rechazo Vericom Exitosa')
+    }
+
 }
 </script>

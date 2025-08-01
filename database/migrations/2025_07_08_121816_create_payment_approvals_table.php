@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('document')->nullable();
             $table->string('proof_payment')->nullable();
             $table->boolean('is_validated')->nullable();
+            $table->boolean('is_accepted')->nullable();
             $table->string('reason_rejection')->nullable();
             $table->foreignId('cost_line_id')->constrained();
             $table->foreignId('provider_id')->constrained()->nullable();

@@ -23,7 +23,7 @@ class PaymentApprovalController extends Controller
         $zones = PextConstants::getZone();
         $costLines = CostLine::all();
         $providers = Provider::all();
-        $users= User::whereHas('payment_approval')->get(['id', 'name']);
+        $users = User::whereHas('payment_approval')->get(['id', 'name']);
         $banks = ['BCP', 'INTERBANK', 'BBVA', 'SCOTIABANK'];
         return Inertia::render('ShoppingArea/PaymentApproval/index', [
             'costLines' => $costLines,
@@ -100,7 +100,7 @@ class PaymentApprovalController extends Controller
             FileHandler::storeFile($request->file('document'), $url, $validateData['document']);
         }
         $item->append('state');
-        $item->load('cost_line','user');
+        $item->load('cost_line', 'user');
         return response()->json($item, 200);
     }
 
@@ -115,8 +115,7 @@ class PaymentApprovalController extends Controller
         try {
             $payment->update([
                 'proof_payment' => $validateData['proof_payment'],
-                'is_validated' => 1,
-                'reason_rejection' => null,
+                'is_accepted' => 1,
             ]);
             $url = 'documents/shoppingArea/paymentApproval/';
             FileHandler::storeFile($request->file('proof_payment'), $url, $validateData['proof_payment']);
@@ -135,6 +134,16 @@ class PaymentApprovalController extends Controller
         ]);
         $payment = PaymentApproval::with('cost_line')->find($id);
         $payment->update($validateData);
+        $payment->append('state');
+        return response()->json($payment, 200);
+    }
+
+    public function rejected_vericom($id)
+    {
+        $payment = PaymentApproval::with('cost_line')->find($id);
+        $payment->update([
+            'is_accepted' => 0,
+        ]);
         $payment->append('state');
         return response()->json($payment, 200);
     }
