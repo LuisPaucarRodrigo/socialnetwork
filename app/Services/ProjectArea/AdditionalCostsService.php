@@ -69,11 +69,20 @@ class AdditionalCostsService
             $item->setAppends(['real_amount', 'real_state', 'admin_state']);
             return $item;
         });
+        
+        $needToFilterRealState = $request->state !== false && count($request->selectedStateTypes) < count(PintConstants::acStatesPenAccep());
+        $needToFilterAdminState = count($request->selectedAdminStateTypes) < PintConstants::countAcAdminStateTypes();
 
-        if ($request->state !== false && count($request->selectedStateTypes) < count(PintConstants::acStatesPenAccep())) {
+        if ($needToFilterAdminState || $needToFilterRealState) {
+            if ($needToFilterRealState)
             $result = $result->filter(function ($item) use ($request) {
                 return in_array($item->real_state, $request->selectedStateTypes);
-            })->values()->all();
+            });
+            if($needToFilterAdminState)
+            $result = $result->filter(function ($item) use ($request) {
+                return in_array($item->admin_state, $request->selectedAdminStateTypes);
+            });
+            $result = $result->values()->all();
         }
 
         return $result;

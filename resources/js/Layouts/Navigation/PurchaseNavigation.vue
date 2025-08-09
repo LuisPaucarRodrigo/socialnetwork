@@ -175,8 +175,8 @@ async function fetchPendingPaymentAlarms() {
 let intervalId;
 const fetchAllAlarms = () => {
     return Promise.all([
-        fetchPurchasesRequest(),
-        fetchPurchaseOrderAlarms(),
+        // fetchPurchasesRequest(),
+        // fetchPurchaseOrderAlarms(),
         fetchPendingPaymentAlarms()
     ]);
 };

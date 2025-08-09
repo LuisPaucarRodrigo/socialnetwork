@@ -34,7 +34,7 @@ const swapCosts = async () => {
         })
         .catch((e) => {
             isFetching.value = false;
-            notifyError("Server Error");
+            notifyError("Server Error  wwwww");
         });
     let listData = dataToRender.value.data || dataToRender.value
     actionForm.ids.forEach(update => {

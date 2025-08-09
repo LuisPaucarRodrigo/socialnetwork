@@ -41,6 +41,7 @@ class AdditionalCostsController extends Controller
         $docTypes = PintConstants::acDocTypes();
         $zones = PintConstants::acZones();
         $stateTypes = PintConstants::acStatesPenAccep();
+        $adminStateTypes = PintConstants::acAdminStateTypes();
 
         $providers = Provider::all();
         return Inertia::render('ProjectArea/ProjectManagement/Pint/AdditionalCosts/AdditionalCosts', [
@@ -50,7 +51,8 @@ class AdditionalCostsController extends Controller
             'zones' => $zones,
             'expenseTypes' => $expenseTypes,
             'docTypes' => $docTypes,
-            'stateTypes' => $stateTypes
+            'stateTypes' => $stateTypes,
+            'adminStateTypes' => $adminStateTypes
         ]);
     }
 
@@ -502,6 +504,7 @@ class AdditionalCostsController extends Controller
         ]);
         $ac = AdditionalCost::with('project', 'provider')->find($ac_id);
         $ac->update($data);
+        Log::info('----------------------------kkkkkk-------------');
         return response()->json(['additional_cost' => $ac, 'msg' => 'Validación de administrativa exitosa'], 200);
     }
 

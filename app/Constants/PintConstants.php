@@ -127,6 +127,14 @@ class PintConstants
             self::ACEPTADO_VALIDADO,  
         ];
     }
+    public static function acAdminStateTypes (): array{
+        return [
+            self::NO_DISPONIBLE,
+            self::PENDIENTE,
+            self::ACEPTADO,
+            self::RECHAZADO,  
+        ];
+    }
 
     public static function acStatesPenAccep (): array{
         return [
@@ -357,6 +365,7 @@ class PintConstants
     public static function countAcDocTypes(): int{return count(self::acDocTypes());}
     public static function countAcZones(): int{return count(self::acZones());}
     public static function countAcStateTypes(): int{return count(self::acStateTypes());}
+    public static function countAcAdminStateTypes(): int{return count(self::acAdminStateTypes());}
 
     public static function countScExpenseTypes() : int {return count(self::scExpenseTypes());}
     public static function countScDocTypes(): int{return count(self::scDocTypes());}
