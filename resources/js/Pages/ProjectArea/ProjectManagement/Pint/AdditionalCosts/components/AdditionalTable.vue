@@ -93,7 +93,9 @@
                     <th
                         class="border-b-2 border-gray-200 bg-gray-100 px-2 py-2 text-center text-[11px] font-semibold uppercase tracking-wider text-gray-600">
                         <p class="w-48">
-                            Estado Administrativo
+                            <TableHeaderFilter labelClass="text-[11px]" label="Estado Administrativo" :options="adminStateTypes"
+                            v-model="filterForm.selectedAdminStateTypes" width="w-52" />
+                            
                         </p>
                     </th>
                     <th
@@ -342,7 +344,7 @@ import AdditionalCostsRejectForm from '../../components/AdditionalCostsRejectFor
 import { ref } from 'vue';
 import { notify, notifyError } from '@/Components/Notification';
 
-const { actionForm, filterForm, filterMode, openEditAdditionalModal, confirmDeleteAdditional, expenseTypes, docTypes, zones, stateTypes, project_id, openAcceptModal } = defineProps({
+const { actionForm, filterForm, filterMode, openEditAdditionalModal, confirmDeleteAdditional, expenseTypes, docTypes, zones, stateTypes, adminStateTypes, project_id, openAcceptModal } = defineProps({
     actionForm: Object,
     filterForm: Object,
     filterMode: Boolean,
@@ -352,12 +354,14 @@ const { actionForm, filterForm, filterMode, openEditAdditionalModal, confirmDele
     docTypes: Array,
     zones: Array,
     stateTypes: Array,
+    adminStateTypes: Array,
     project_id: Object,
     openAcceptModal: Function
 })
 
 const loading = defineModel('loading')
 const dataToRender = defineModel('dataToRender')
+
 
 const adminRejectInitState = { id: null, admin_reject_reason: '', admin_is_accepted: null }
 const regToAdminReject = ref({ ...adminRejectInitState })
@@ -401,9 +405,10 @@ async function saveAdminReject() {
 
 async function saveAdminValidate(payload) {
     try {
+        let listData = dataToRender.value.data || dataToRender.value
         const res = await axios.post(route('projectmanagement.administrative.validation', { ac_id: payload.id }), payload)
-        let index = dataToRender.value.findIndex((item) => item.id == res.data.additional_cost.id);
-        dataToRender.value[index] = res.data.additional_cost;
+        let index = listData.findIndex((item) => item.id == res.data.additional_cost.id);
+        listData[index] = res.data.additional_cost;
         notify(res.data.msg)
         closeAdminRejectReason()
     } catch (e) {
@@ -434,7 +439,8 @@ async function saveRejectReason() {
         let index = dataToRender.value.findIndex(
             (item) => item.id == res.data.additional_cost.id
         );
-        dataToRender.value.splice(index, 1);
+        let listData = dataToRender.value.data || dataToRender.value
+        listData.splice(index, 1);
         notify(res.data.msg)
         closeRejectReason()
     } catch (e) {
@@ -444,10 +450,11 @@ async function saveRejectReason() {
 }
 
 function sortValue() {
+    let listData = dataToRender.value.data || dataToRender.value
     if (stateCreateAtSort.value) {
-        dataToRender.value.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+        listData.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
     } else {
-        dataToRender.value.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        listData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     }
     stateCreateAtSort.value = !stateCreateAtSort.value;
 }

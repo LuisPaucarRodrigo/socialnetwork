@@ -17,10 +17,11 @@
             :openExportExcel="openExportExcel" :openExportArchivesModal="openExportArchivesModal"
             :project_id="project_id" :initialFilterFormState="initialFilterFormState" />
 
+
         <AdditionalTable v-model:dataToRender="dataToRender" :actionForm="actionForm"
             :filterForm="filterForm" :filterMode="filterMode" :openEditAdditionalModal="openEditAdditionalModal"
             :confirmDeleteAdditional="confirmDeleteAdditional" :expenseTypes="expenseTypes" :docTypes="docTypes"
-            :zones="zones" :stateTypes="stateTypes" v-model:loading="loading" :project_id="project_id"
+            :zones="zones" :stateTypes="stateTypes" :adminStateTypes="adminStateTypes" v-model:loading="loading" :project_id="project_id"
             :openAcceptModal="openAcceptModal" />
 
         <SuspenseWrapper :when="showExpensesForm">
@@ -114,13 +115,15 @@ const props = defineProps({
     expenseTypes: Array,
     docTypes: Array,
     stateTypes: Array,
+    adminStateTypes: Array,
 });
 
-const { expenseTypes, docTypes, zones, stateTypes } = props
+const { expenseTypes, docTypes, zones, stateTypes, adminStateTypes } = props
 expenseTypes.sort()
 docTypes.sort()
 zones.sort()
 stateTypes.sort()
+adminStateTypes.sort()
 
 const dataToRender = ref([]);
 const filterMode = ref(false);
@@ -197,6 +200,7 @@ const initialFilterFormState = {
     selectedExpenseTypes: expenseTypes,
     selectedDocTypes: docTypes,
     selectedStateTypes: stateTypes,
+    selectedAdminStateTypes: adminStateTypes,
     opStartDate: "",
     opEndDate: "",
     opNoDate: false,
@@ -213,6 +217,7 @@ watch(
         filterForm.value.selectedExpenseTypes,
         filterForm.value.selectedDocTypes,
         filterForm.value.selectedStateTypes,
+        filterForm.value.selectedAdminStateTypes,
         filterForm.value.opStartDate,
         filterForm.value.opEndDate,
         filterForm.value.opNoDate,
